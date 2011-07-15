@@ -31,8 +31,8 @@ import android.util.Xml;
  * 
  * @author Elton Kent
  */
-public final class XMLUtility {
-	private XMLUtility() {
+public final class XMLUtils {
+	private XMLUtils() {
 	}
 
 	/**
