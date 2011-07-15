@@ -318,7 +318,7 @@ public class FileUtils {
 		}
 	}
 
-	public static void inputStreamToFile(InputStream src, File file) throws IOException {
+	public static final void inputStreamToFile(InputStream src, File file) throws IOException {
 		FileOutputStream stream = null;
 		try{
 			if(file.getParentFile() != null)
@@ -350,7 +350,7 @@ public class FileUtils {
 	 * @throws java.io.UnsupportedEncodingException
 	 *             if the encoding is not supported by the VM
 	 */
-	public static List<String> readLines(File file, String encoding) throws IOException {
+	public static final List<String> readLines(File file, String encoding) throws IOException {
 		InputStream in = null;
 		try{
 			in = openInputStream(file);
@@ -372,7 +372,7 @@ public class FileUtils {
 	 * @throws IOException
 	 *             in case of an I/O error
 	 */
-	public static List<String> readLines(File file) throws IOException {
+	public static final List<String> readLines(File file) throws IOException {
 		return readLines(file, null);
 	}
 
@@ -398,7 +398,7 @@ public class FileUtils {
 	 * @throws IOException
 	 *             if the file cannot be read
 	 */
-	public static FileInputStream openInputStream(File file) throws IOException {
+	public static final FileInputStream openInputStream(File file) throws IOException {
 		if(file.exists()){
 			if(file.isDirectory()){
 				throw new IOException("File '" + file + "' exists but is a directory");
