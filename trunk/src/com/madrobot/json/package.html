@@ -1,0 +1,255 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head></head>
+<body>
+A High performance JSON handling utility
+ <p>
+ <font size="12"><center>JSON Encoding</center><font>
+  <b><u>Encode a JSON object</u></b><br/>
+ <pre>  
+  JSONObject obj=new JSONObject();
+  obj.put(&quot;name&quot;,&quot;foo&quot;);
+  obj.put(&quot;num&quot;,new Integer(100));
+  obj.put(&quot;balance&quot;,new Double(1000.21));
+  obj.put(&quot;is_vip&quot;,new Boolean(true));
+  obj.put(&quot;nickname&quot;,null);
+  System.out.print(obj);</pre>
+  <blockquote>Result: {&quot;balance&quot;:1000.21,&quot;num&quot;:100,&quot;nickname&quot;:null,&quot;is_vip&quot;:true,&quot;name&quot;:&quot;foo&quot;}
+  </blockquote>
+  
+  <b><u>Encode a JSON object - Streaming</u></b><br/>
+  <pre>
+  JSONObject obj=new JSONObject();
+  obj.put(&quot;name&quot;,&quot;foo&quot;);
+  obj.put(&quot;num&quot;,new Integer(100));
+  obj.put(&quot;balance&quot;,new Double(1000.21));
+  obj.put(&quot;is_vip&quot;,new Boolean(true));
+  obj.put(&quot;nickname&quot;,null);
+  StringWriter out = new StringWriter();
+  obj.writeJSONString(out);
+  String jsonText = out.toString();
+  System.out.print(jsonText);
+  </pre>
+  <blockquote>Result: {&quot;balance&quot;:1000.21,&quot;num&quot;:100,&quot;nickname&quot;:null,&quot;is_vip&quot;:true,&quot;name&quot;:&quot;foo&quot;} 
+  </blockquote>
+  <b><u>Encode a JSON object - Using Map</u></b><br/>
+  <pre>
+  Map obj=new LinkedHashMap();
+  obj.put(&quot;name&quot;,&quot;foo&quot;);
+  obj.put(&quot;num&quot;,new Integer(100));
+  obj.put(&quot;balance&quot;,new Double(1000.21));
+  obj.put(&quot;is_vip&quot;,new Boolean(true));
+  obj.put(&quot;nickname&quot;,null);
+  String jsonText = JSONValue.toJSONString(obj);
+  System.out.print(jsonText);
+  </pre>
+  <blockquote>Result: {&quot;name&quot;:&quot;foo&quot;,&quot;num&quot;:100,&quot;balance&quot;:1000.21,&quot;is_vip&quot;:true,&quot;nickname&quot;:null} 
+  </blockquote>
+  <b><u>Encode a JSON array</u></b><br/>
+  <pre>
+  JSONArray list = new JSONArray();
+  list.add(&quot;foo&quot;);
+  list.add(new Integer(100));
+  list.add(new Double(1000.21));
+  list.add(new Boolean(true));
+  list.add(null);
+  System.out.print(list);
+  </pre>
+  <blockquote>Result: [&quot;foo&quot;,100,1000.21,true,null] 
+</blockquote>
+<b><u>Combination of JSON primitives, JSON object and JSON arrays</u></b><br/>
+<pre>
+  list1.add(&quot;foo&quot;);
+  list1.add(new Integer(100));
+  list1.add(new Double(1000.21));
+  
+  JSONArray list2 = new JSONArray();
+  list2.add(new Boolean(true));
+  list2.add(null);
+		
+  JSONObject obj = new JSONObject();
+  obj.put(&quot;name&quot;,&quot;foo&quot;);
+  obj.put(&quot;num&quot;,new Integer(100));
+  obj.put(&quot;balance&quot;,new Double(1000.21));
+  obj.put(&quot;is_vip&quot;,new Boolean(true));
+  obj.put(&quot;nickname&quot;,null);
+    
+  obj.put(&quot;list1&quot;, list1);
+  obj.put(&quot;list2&quot;, list2);
+		
+  System.out.println(obj);
+</pre>
+<blockquote>Result: {&quot;balance&quot;:1000.21,&quot;list2&quot;:true,null,&quot;num&quot;:100,&quot;list1&quot;:[&quot;foo&quot;,100,1000.21],&quot;nickname&quot;:null,&quot;is_vip&quot;:true,&quot;name&quot;:&quot;foo&quot;} 
+</blockquote>
+
+ <font size="12"><center>JSON Decoding</center><font>
+ <b><u>Using JSONValue</u></b><br/>
+ <pre>
+ System.out.println("=======decode=======");
+                
+  String s="[0,{\"1\":{\"2\":{\"3\":{\"4\":[5,{\"6\":7}]}}}}]";
+  Object obj=JSONValue.parse(s);
+  JSONArray array=(JSONArray)obj;
+  System.out.println("======the 2nd element of array======");
+  System.out.println(array.get(1));
+  System.out.println();
+                
+  JSONObject obj2=(JSONObject)array.get(1);
+  System.out.println("======field \"1\"==========");
+  System.out.println(obj2.get("1"));    
+
+                
+  s="{}";
+  obj=JSONValue.parse(s);
+  System.out.println(obj);
+                
+  s="[5,]";
+  obj=JSONValue.parse(s);
+  System.out.println(obj);
+                
+  s="[5,,2]";
+  obj=JSONValue.parse(s);
+  System.out.println(obj);
+ </pre>
+  <b><u>Container factory</u></b><br/>
+  <pre>
+  String jsonText = "{\"first\": 123, \"second\": [4, 5, 6], \"third\": 789}";
+  JSONParser parser = new JSONParser();
+  ContainerFactory containerFactory = new ContainerFactory(){
+    public List creatArrayContainer() {
+      return new LinkedList();
+    }
+
+    public Map createObjectContainer() {
+      return new LinkedHashMap();
+    }
+                        
+  };
+                
+  try{
+    Map json = (Map)parser.parse(jsonText, containerFactory);
+    Iterator iter = json.entrySet().iterator();
+    System.out.println("==iterate result==");
+    while(iter.hasNext()){
+      Map.Entry entry = (Map.Entry)iter.next();
+      System.out.println(entry.getKey() + "=>" + entry.getValue());
+    }
+                        
+    System.out.println("==toJSONString()==");
+    System.out.println(JSONValue.toJSONString(json));
+  }
+  catch(ParseException pe){
+    System.out.println(pe);
+  }
+  </pre>
+  <b><u>SAX-like content handler</u></b><br/>
+  This library introduces a simplified and stoppable SAX-like content handler to process JSON text stream. The user can pause at any point of the logical input stream, processing other logic, then resume parsing if needed, or abort parsing if he gets the desired result, without having to wait for the whole input stream to finish. Then we have a very fast parser without sacrificing the flexibility. Here's an example of finding values of any object entry that matches a desired key: 
+  <pre>
+  class KeyFinder implements ContentHandler{
+  private Object value;
+  private boolean found = false;
+  private boolean end = false;
+  private String key;
+  private String matchKey;
+        
+  public void setMatchKey(String matchKey){
+    this.matchKey = matchKey;
+  }
+        
+  public Object getValue(){
+    return value;
+  }
+        
+  public boolean isEnd(){
+    return end;
+  }
+        
+  public void setFound(boolean found){
+    this.found = found;
+  }
+        
+  public boolean isFound(){
+    return found;
+  }
+        
+  public void startJSON() throws ParseException, IOException {
+    found = false;
+    end = false;
+  }
+
+  public void endJSON() throws ParseException, IOException {
+    end = true;
+  }
+
+  public boolean primitive(Object value) throws ParseException, IOException {
+    if(key != null){
+      if(key.equals(matchKey)){
+        found = true;
+        this.value = value;
+        key = null;
+        return false;
+      }
+    }
+    return true;
+  }
+
+  public boolean startArray() throws ParseException, IOException {
+    return true;
+  }
+
+        
+  public boolean startObject() throws ParseException, IOException {
+    return true;
+  }
+
+  public boolean startObjectEntry(String key) throws ParseException, IOException {
+    this.key = key;
+    return true;
+  }
+        
+  public boolean endArray() throws ParseException, IOException {
+    return false;
+  }
+
+  public boolean endObject() throws ParseException, IOException {
+    return true;
+  }
+
+  public boolean endObjectEntry() throws ParseException, IOException {
+    return true;
+  }
+}
+  </pre>
+  Logic:
+  <pre>
+  String jsonText = "{\"first\": 123, \"second\": [{\"k1\":{\"id\":\"id1\"}}, 4, 5, 6, {\"id\": 123}], \"third\": 789, \"id\": null}";
+  JSONParser parser = new JSONParser();
+  KeyFinder finder = new KeyFinder();
+  finder.setMatchKey("id");
+  try{
+    while(!finder.isEnd()){
+      parser.parse(jsonText, finder, true);
+      if(finder.isFound()){
+        finder.setFound(false);
+        System.out.println("found id:");
+        System.out.println(finder.getValue());
+      }
+    }           
+  }
+  catch(ParseException pe){
+    pe.printStackTrace();
+  }
+  </pre>
+  Result: 
+  <pre>
+  found id:
+  id1
+  found id:
+  123
+  found id:
+  null
+  </pre>
+ </p>
+</body>
+
+</html>

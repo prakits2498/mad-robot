@@ -1,0 +1,59 @@
+
+package com.madrobot.xml;
+
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+import android.util.AttributeSet;
+import android.util.Xml;
+
+/**
+ * XML helper utilities
+ * XMLUtility.java
+ * 
+ * @author Elton Kent
+ */
+public final class XMLUtility {
+	private XMLUtility() {
+	}
+
+	/**
+	 * Loads an XML stream into a Document instance
+	 * 
+	 * @param is
+	 * @return XML file loaded in a document
+	 * @throws ParserConfigurationException
+	 * @throws SAXException
+	 * @throws IOException
+	 */
+	public static Document loadDoc(InputStream is) throws ParserConfigurationException, SAXException,
+			IOException {
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder builder = factory.newDocumentBuilder();
+		return builder.parse(is);
+	}
+
+	/**
+	 * Get the xml as a AttributeSet
+	 *
+	 * @param is XML InputStream
+	 * @return AttributeSet representation of the xml stream 
+	 * @throws XmlPullParserException
+	 */
+	public static AttributeSet getAttributeSet(InputStream is) throws XmlPullParserException {
+		XmlPullParser parser = Xml.newPullParser();
+		parser.setInput(is, null);
+		AttributeSet set = Xml.asAttributeSet(parser);
+		return set;
+
+	}
+}
