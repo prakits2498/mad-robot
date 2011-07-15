@@ -12,7 +12,7 @@ package com.madrobot.math;
 
 public class MathUtils {
 	public static double round(double value, int places) {
-		if(places < 0){
+		if (places < 0) {
 			throw new IllegalArgumentException();
 		}
 
@@ -31,10 +31,26 @@ public class MathUtils {
 	 * @since CLDC 1.1
 	 */
 	public static long round(double value) {
-		if(value < 0){
+		if (value < 0) {
 			return (long) (value - 0.5);
-		} else{
+		} else {
 			return (long) (value + 0.5);
 		}
 	}
+
+	/**
+	 * Equivalent to Math.max(low, Math.min(high, amount));
+	 */
+	public static float constrain(final float amount, final float low,
+			final float high) {
+		return amount < low ? low : amount > high ? high : amount;
+	}
+
+	/**
+	 * Equivalent to Math.max(low, Math.min(high, amount));
+	 */
+	public static int constrain(final int amount, final int low, final int high) {
+		return amount < low ? low : amount > high ? high : amount;
+	}
+
 }
