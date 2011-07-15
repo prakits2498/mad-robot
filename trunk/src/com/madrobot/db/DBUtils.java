@@ -23,7 +23,9 @@ import java.util.List;
 import java.util.Map;
 
 import android.database.Cursor;
+import android.database.MatrixCursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.text.TextUtils;
 
 import com.madrobot.beans.BeanInfo;
 import com.madrobot.beans.IntrospectionException;
@@ -51,6 +53,49 @@ public final class DBUtils {
 			}
 		}
 		return ar;
+	}
+
+	/**
+	 * Compares two cursors to see if they contain the same data.
+	 * 
+	 * @return Returns true of the cursors contain the same data and are not
+	 *         null, false otherwise
+	 */
+	public static boolean compareCursors(Cursor c1, Cursor c2) {
+		if (c1 == null || c2 == null)
+			return false;
+
+		final int numColumns = c1.getColumnCount();
+		if (numColumns != c2.getColumnCount())
+			return false;
+
+		if (c1.getCount() != c2.getCount())
+			return false;
+
+		c1.moveToPosition(-1);
+		c2.moveToPosition(-1);
+		while (c1.moveToNext() && c2.moveToNext()) {
+			for (int i = 0; i < numColumns; i++) {
+				if (!TextUtils.equals(c1.getString(i), c2.getString(i)))
+					return false;
+			}
+		}
+
+		return true;
+	}
+
+	public static MatrixCursor matrixCursorFromCursor(Cursor cursor) {
+		final MatrixCursor newCursor = new MatrixCursor(cursor.getColumnNames());
+		final int numColumns = cursor.getColumnCount();
+		final String data[] = new String[numColumns];
+		cursor.moveToPosition(-1);
+		while (cursor.moveToNext()) {
+			for (int i = 0; i < numColumns; i++) {
+				data[i] = cursor.getString(i);
+			}
+			newCursor.addRow(data);
+		}
+		return newCursor;
 	}
 
 	/**
