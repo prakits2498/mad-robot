@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.ek.android.io.BitOutputStream;
+import com.madrobot.io.BitOutputStream;
 
 public class LZWCompressor
 {
