@@ -10,22 +10,13 @@
  ******************************************************************************/
 package com.madrobot;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.util.List;
 
 import android.app.Activity;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 
 import com.ek.android.R;
-import com.madrobot.beans.BeanInfo;
-import com.madrobot.beans.IntrospectionException;
-import com.madrobot.beans.Introspector;
-import com.madrobot.beans.PropertyDescriptor;
-import com.madrobot.db.DBUtils;
 import com.madrobot.device.Contact;
 import com.madrobot.device.ContactUtils;
 
