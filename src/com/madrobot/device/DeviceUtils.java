@@ -62,31 +62,77 @@ public class DeviceUtils {
 		BufferedReader in = null;
 		in = new BufferedReader(new FileReader(MEM_INFO_FILE));
 		String str;
-		while((str = in.readLine()) != null){
-			if(str.startsWith("MemTotal:")){
+		while ((str = in.readLine()) != null) {
+			if (str.startsWith("MemTotal:")) {
 				ram = str;
 				break;
 			}
 		}
 		in.close();
-		if(ram != null && ram.length() > 0){
+		if (ram != null && ram.length() > 0) {
 			StringTokenizer token = new StringTokenizer(ram, ":");
-			while(token.hasMoreElements()){
+			while (token.hasMoreElements()) {
 				ram = (String) token.nextElement();
 			}
 			ram = ram.trim();
 		}
 		Integer ramValue = null;
-		try{
+		try {
 			ramValue = Integer.parseInt(ram.substring(0, ram.length() - 3));
-		} catch(Exception e){
+		} catch (Exception e) {
 			return 0;
 		}
 
-		if(ramValue > 0){
+		if (ramValue > 0) {
 			return ramValue;
 		}
 		return 0;
+	}
+
+	public static float getCpuClockSpeed() {
+		float cpuclock = 0;
+		try {
+			final StringBuffer s = new StringBuffer();
+			final Process p = Runtime.getRuntime().exec("cat /proc/cpuinfo");
+			final BufferedReader input = new BufferedReader(
+					new InputStreamReader(p.getInputStream()));
+			String line = "";
+			while ((line = input.readLine()) != null
+					&& s.toString().length() == 0) {
+				if (line.startsWith("BogoMIPS")) {
+					s.append(line + "\n");
+				}
+			}
+			final String cpuclockstr = s.substring(s.indexOf(":") + 2,
+					s.length());
+			cpuclock = Float.parseFloat(cpuclockstr);
+		} catch (final Exception err) {
+			// if ANYTHING goes wrong, just report 0 since this is only used for
+			// performance appraisal.
+		}
+		return cpuclock;
+	}
+
+	public static String getHardwareName() {
+		String hardwarenamestr = "{}";
+		try {
+			final StringBuffer s = new StringBuffer();
+			final Process p = Runtime.getRuntime().exec("cat /proc/cpuinfo");
+			final BufferedReader input = new BufferedReader(
+					new InputStreamReader(p.getInputStream()));
+			String line = "";
+			while ((line = input.readLine()) != null
+					&& s.toString().length() == 0) {
+				if (line.startsWith("Hardware")) {
+					s.append(line + "\n");
+				}
+			}
+			hardwarenamestr = s.substring(s.indexOf(":") + 2, s.length());
+		} catch (final Exception err) {
+			// if ANYTHING goes wrong, just report 0 since this is only used for
+			// performance appraisal.
+		}
+		return hardwarenamestr;
 	}
 
 	/**
@@ -99,108 +145,110 @@ public class DeviceUtils {
 		Runtime run = Runtime.getRuntime();
 		Process pr = null;
 		/* Parsing Mount Points */
-		try{
+		try {
 			pr = run.exec(cmd);
-		} catch(IOException e){
+		} catch (IOException e) {
 			return 0;
 		}
-		try{
-			if(pr != null){
+		try {
+			if (pr != null) {
 				pr.waitFor();
 			}
-		} catch(InterruptedException e){
+		} catch (InterruptedException e) {
 			return 0;
 		}
 		BufferedReader buf = null;
 
 		String line = null;
 		ArrayList<String> mountPts = new ArrayList<String>(3);
-		try{
+		try {
 			buf = new BufferedReader(new InputStreamReader(pr.getInputStream()));
-			while((line = buf.readLine()) != null){
-				if(line.contains(FLASH_FILE_SYSTEM) || line.contains(UBI_FILE_SYSTEM)){
+			while ((line = buf.readLine()) != null) {
+				if (line.contains(FLASH_FILE_SYSTEM)
+						|| line.contains(UBI_FILE_SYSTEM)) {
 					StringTokenizer token = new StringTokenizer(line, " ");
-					while(token.hasMoreElements()){
+					while (token.hasMoreElements()) {
 						String mntPoint = token.nextToken();
-						if(mntPoint != null && mntPoint.length() > 0 && !mntPoint.startsWith("/dev/block")
-								&& mntPoint.startsWith("/")){
+						if (mntPoint != null && mntPoint.length() > 0
+								&& !mntPoint.startsWith("/dev/block")
+								&& mntPoint.startsWith("/")) {
 							mountPts.add(mntPoint);
 							break;
 						}
 					}
 				}
 			}
-		} catch(IOException e){
+		} catch (IOException e) {
 			Log.e(TAG, "Could not parse mount points!", e);
-		} finally{
-			if(buf != null)
-				try{
+		} finally {
+			if (buf != null)
+				try {
 					buf.close();
-				} catch(IOException e){
+				} catch (IOException e) {
 				}
 		}
 
 		/* Parsing Mount Point sizes */
 		cmd = DF_COMMAND;
-		try{
+		try {
 			pr = run.exec(cmd);
-		} catch(IOException e){
+		} catch (IOException e) {
 			Log.e(TAG, "Could not execute command : " + cmd, e);
 			return 0;
 		}
-		try{
-			if(pr != null){
+		try {
+			if (pr != null) {
 				pr.waitFor();
 			}
-		} catch(InterruptedException e){
+		} catch (InterruptedException e) {
 			Log.e(TAG, "Could not complete command : " + cmd, e);
 			return 0;
 		}
 		ArrayList<String> mountPtsSizes = new ArrayList<String>(mountPts.size());
-		try{
+		try {
 			buf = new BufferedReader(new InputStreamReader(pr.getInputStream()));
-			while((line = buf.readLine()) != null){
-				for(String mntPnt : mountPts){
+			while ((line = buf.readLine()) != null) {
+				for (String mntPnt : mountPts) {
 					boolean found = false;
-					if(line.contains(mntPnt)){
+					if (line.contains(mntPnt)) {
 						found = true;
 						mountPts.remove(mntPnt);
 						StringTokenizer token = new StringTokenizer(line, " ");
 						token.nextToken();
 
-						while(token.hasMoreElements()){
+						while (token.hasMoreElements()) {
 							String size = token.nextToken();
 
-							if(size != null && size.length() > 0){
-								if(size.endsWith("K")){
+							if (size != null && size.length() > 0) {
+								if (size.endsWith("K")) {
 									size = size.substring(0, size.length() - 1);
 								}
 								mountPtsSizes.add(size);
 								break;
 							}
 						}
-						if(found)
+						if (found)
 							break;
 					}
 				}
-				if(mountPts.size() == 0){
+				if (mountPts.size() == 0) {
 					break;
 				}
 			}
-		} catch(IOException e){
+		} catch (IOException e) {
 			Log.e(TAG, "Could not parse mount point sizes!", e);
-		} finally{
-			if(buf != null)
-				try{
+		} finally {
+			if (buf != null)
+				try {
 					buf.close();
-				} catch(IOException e){
+				} catch (IOException e) {
 				}
 		}
 
 		/* Summing mount point sizes */
-		if(mountPtsSizes != null && mountPtsSizes.size() > 0){
+		if (mountPtsSizes != null && mountPtsSizes.size() > 0) {
 			Integer fullSize = new Integer(0);
-			for(String size : mountPtsSizes){
+			for (String size : mountPtsSizes) {
 				fullSize += Integer.parseInt(size);
 			}
 			Log.d(TAG, "Fullsize: " + fullSize + MEMORY_METRIC);
@@ -211,7 +259,8 @@ public class DeviceUtils {
 	}
 
 	public static Display[] getAllDisplays(Context context) {
-		WindowManager winMgr = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+		WindowManager winMgr = (WindowManager) context
+				.getSystemService(Context.WINDOW_SERVICE);
 		Display[] displays = new Display[1];
 		displays[0] = winMgr.getDefaultDisplay();
 		return displays;
@@ -229,7 +278,8 @@ public class DeviceUtils {
 		DisplayMetrics outMetrics = new DisplayMetrics();
 		display.getMetrics(outMetrics);
 		DisplayInfo info = new DisplayInfo();
-		double diagonalSizeInInch = Math.sqrt(Math.pow(outMetrics.widthPixels / outMetrics.xdpi, 2)
+		double diagonalSizeInInch = Math.sqrt(Math.pow(outMetrics.widthPixels
+				/ outMetrics.xdpi, 2)
 				+ Math.pow(outMetrics.heightPixels / outMetrics.ydpi, 2));
 		info.setDiagonalSizeInInch(diagonalSizeInInch);
 		info.setWidthInPixels(outMetrics.widthPixels);
@@ -241,7 +291,7 @@ public class DeviceUtils {
 		info.setVerticalDensity(outMetrics.ydpi);
 		Configuration c = context.getResources().getConfiguration();
 		int touchMethod = c.touchscreen;
-		if(touchMethod == Configuration.TOUCHSCREEN_UNDEFINED
+		if (touchMethod == Configuration.TOUCHSCREEN_UNDEFINED
 				|| touchMethod == Configuration.TOUCHSCREEN_NOTOUCH)
 			info.setTouchEnabled(false);
 		else
@@ -249,13 +299,13 @@ public class DeviceUtils {
 		info.setRefreshRate(display.getRefreshRate());
 
 		float aspectRatio = outMetrics.widthPixels / outMetrics.heightPixels;
-		if(aspectRatio == 0.60037524f){
+		if (aspectRatio == 0.60037524f) {
 			info.setScreenType(DisplayInfo.SCREENTYPE_WIDE);
 		}
-		if(aspectRatio < 0.60037524f){
+		if (aspectRatio < 0.60037524f) {
 			info.setScreenType(DisplayInfo.SCREENTYPE_NORMAL);
 		}
-		if(aspectRatio > 2){
+		if (aspectRatio > 2) {
 			info.setScreenType(DisplayInfo.SCREENTYPE_FULL_WIDTH);
 		}
 
@@ -270,10 +320,10 @@ public class DeviceUtils {
 	 * @return
 	 * @see NetworkInfo
 	 */
-	public NetworkInfo getNetworkInfo(Context context) {
+	public static NetworkInfo getNetworkInfo(Context context) {
 		TelephonyManager teleManager = (TelephonyManager) context
 				.getSystemService(Context.TELEPHONY_SERVICE);
-		if(teleManager != null){
+		if (teleManager != null) {
 			NetworkInfo info = new NetworkInfo();
 			info.setDataState(teleManager.getDataState());
 			info.setNetworkType(teleManager.getNetworkType());
@@ -286,11 +336,11 @@ public class DeviceUtils {
 
 	}
 
-	public DeviceInfo getDeviceInfo(Context context) {
+	public static DeviceInfo getDeviceInfo(Context context) {
 		DeviceInfo info = new DeviceInfo();
 		info.setFirmwareVersion(android.os.Build.VERSION.RELEASE);
 		String kernelRawVersion = readKernelVersionRaw();
-		if(kernelRawVersion != null){
+		if (kernelRawVersion != null) {
 			info.setKernelVersion(formatKernelVersion(kernelRawVersion));
 		}
 		info.setManufacturer(Build.MANUFACTURER);
@@ -299,30 +349,40 @@ public class DeviceUtils {
 		return info;
 	}
 
-	public SensorInfo getSensorInfo(Context context) {
-		SensorManager sensorMgr = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+	public static SensorInfo getSensorInfo(Context context) {
+		SensorManager sensorMgr = (SensorManager) context
+				.getSystemService(Context.SENSOR_SERVICE);
 		SensorInfo info = new SensorInfo();
-		info.setHasAccelerometer(!sensorMgr.getSensorList(Sensor.TYPE_ACCELEROMETER).isEmpty());
-		info.setHasGyroscope(!sensorMgr.getSensorList(Sensor.TYPE_GYROSCOPE).isEmpty());
-		info.setHasLightSensor(!sensorMgr.getSensorList(Sensor.TYPE_LIGHT).isEmpty());
-		info.setHasMagneticSensor(!sensorMgr.getSensorList(Sensor.TYPE_MAGNETIC_FIELD).isEmpty());
-		info.setHasOrientationSensor(!sensorMgr.getSensorList(Sensor.TYPE_ORIENTATION).isEmpty());
-		info.setHasPressureSensor(!sensorMgr.getSensorList(Sensor.TYPE_PRESSURE).isEmpty());
-		info.setHasProximitySensor(!sensorMgr.getSensorList(Sensor.TYPE_PROXIMITY).isEmpty());
-		info.setHasTemperatureSensor(!sensorMgr.getSensorList(Sensor.TYPE_TEMPERATURE).isEmpty());
+		info.setHasAccelerometer(!sensorMgr.getSensorList(
+				Sensor.TYPE_ACCELEROMETER).isEmpty());
+		info.setHasGyroscope(!sensorMgr.getSensorList(Sensor.TYPE_GYROSCOPE)
+				.isEmpty());
+		info.setHasLightSensor(!sensorMgr.getSensorList(Sensor.TYPE_LIGHT)
+				.isEmpty());
+		info.setHasMagneticSensor(!sensorMgr.getSensorList(
+				Sensor.TYPE_MAGNETIC_FIELD).isEmpty());
+		info.setHasOrientationSensor(!sensorMgr.getSensorList(
+				Sensor.TYPE_ORIENTATION).isEmpty());
+		info.setHasPressureSensor(!sensorMgr
+				.getSensorList(Sensor.TYPE_PRESSURE).isEmpty());
+		info.setHasProximitySensor(!sensorMgr.getSensorList(
+				Sensor.TYPE_PROXIMITY).isEmpty());
+		info.setHasTemperatureSensor(!sensorMgr.getSensorList(
+				Sensor.TYPE_TEMPERATURE).isEmpty());
 		return info;
 	}
 
-	private String readKernelVersionRaw() {
+	private static String readKernelVersionRaw() {
 		String kernelVersionRaw = null;
-		try{
-			BufferedReader bReader = new BufferedReader(new FileReader(KERNEL_SOURCE), 256);
-			try{
+		try {
+			BufferedReader bReader = new BufferedReader(new FileReader(
+					KERNEL_SOURCE), 256);
+			try {
 				kernelVersionRaw = bReader.readLine();
-			} finally{
+			} finally {
 				bReader.close();
 			}
-		} catch(Throwable t){
+		} catch (Throwable t) {
 		}
 		return kernelVersionRaw;
 	}
@@ -344,23 +404,27 @@ public class DeviceUtils {
 	"(?:PREEMPT\\s+)?" + /* ignore: PREEMPT (optional) */
 	"(.+)"; /* group 4: date */
 
-	private String formatKernelVersion(String raw) {
-		if(raw != null && raw.length() > 0){
-			try{
+	private static String formatKernelVersion(String raw) {
+		if (raw != null && raw.length() > 0) {
+			try {
 				Pattern p = Pattern.compile(KERNEL_FORMAT_REGEXP);
 				Matcher m = p.matcher(raw);
-				if(!m.matches()){
+				if (!m.matches()) {
 					Log.d(TAG, "Regex did not match on /proc/version: " + raw);
 					return raw;
-				} else if(m.groupCount() < 4){
-					Log.d(TAG, "Regex returned only " + m.groupCount() + "groups");
+				} else if (m.groupCount() < 4) {
+					Log.d(TAG, "Regex returned only " + m.groupCount()
+							+ "groups");
 					return raw;
-				} else{
-					return (new StringBuilder(m.group(1)).append("\n").append(m.group(2)).append(" ")
-							.append(m.group(3)).append("\n").append(m.group(4))).toString();
+				} else {
+					return (new StringBuilder(m.group(1)).append("\n")
+							.append(m.group(2)).append(" ").append(m.group(3))
+							.append("\n").append(m.group(4))).toString();
 				}
-			} catch(Throwable t){
-				Log.e(TAG, "Error formatting raw kernel version: " + t.getMessage(), t);
+			} catch (Throwable t) {
+				Log.e(TAG,
+						"Error formatting raw kernel version: "
+								+ t.getMessage(), t);
 			}
 		}
 		return raw;

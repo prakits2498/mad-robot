@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 
 import com.madrobot.beans.BeanInfo;
 import com.madrobot.beans.IntrospectionException;
@@ -33,14 +34,33 @@ import com.madrobot.reflect.MethodUtils;
 
 public final class DBUtils {
 
+	public static List<String> GetColumns(final SQLiteDatabase db,
+			final String tableName) {
+		List<String> ar = null;
+		Cursor c = null;
+		try {
+			c = db.rawQuery("select * from " + tableName + " limit 1", null);
+			if (c != null) {
+				ar = new ArrayList<String>(Arrays.asList(c.getColumnNames()));
+			}
+		} catch (final Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (c != null) {
+				c.close();
+			}
+		}
+		return ar;
+	}
+
 	/**
-	 * Set a bean's primitive properties to these defaults when SQL NULL
-	 * is returned. These are the same as the defaults that ResultSet get*
-	 * methods return in the event of a NULL column.
+	 * Set a bean's primitive properties to these defaults when SQL NULL is
+	 * returned. These are the same as the defaults that ResultSet get* methods
+	 * return in the event of a NULL column.
 	 */
 	private static final Map<Class<?>, Object> primitiveDefaults = new HashMap<Class<?>, Object>();
 
-	static{
+	static {
 		primitiveDefaults.put(Integer.TYPE, 0);
 		primitiveDefaults.put(Short.TYPE, (Short) ((short) 0));
 		primitiveDefaults.put(Byte.TYPE, (Byte) ((byte) 0));
@@ -59,10 +79,10 @@ public final class DBUtils {
 	private static final int PROPERTY_NOT_FOUND = -1;
 
 	/**
-	 * Convert a <code>ResultSet</code> row into an <code>Object[]</code>.
-	 * This implementation copies column values into the array in the same
-	 * order they're returned from the <code>ResultSet</code>. Array elements
-	 * will be set to <code>null</code> if the column was SQL NULL.
+	 * Convert a <code>ResultSet</code> row into an <code>Object[]</code>. This
+	 * implementation copies column values into the array in the same order
+	 * they're returned from the <code>ResultSet</code>. Array elements will be
+	 * set to <code>null</code> if the column was SQL NULL.
 	 * 
 	 * @param rs
 	 *            ResultSet that supplies the array data
@@ -75,7 +95,7 @@ public final class DBUtils {
 		int cols = meta.getColumnCount();
 		Object[] result = new Object[cols];
 
-		for(int i = 0; i < cols; i++){
+		for (int i = 0; i < cols; i++) {
 			result[i] = rs.getObject(i + 1);
 		}
 
@@ -94,10 +114,10 @@ public final class DBUtils {
 	}
 
 	/**
-	 * Convert a <code>ResultSet</code> row into a JavaBean. This
-	 * implementation uses reflection and <code>BeanInfo</code> classes to
-	 * match column names to bean property names. Properties are matched to
-	 * columns based on several factors: <br/>
+	 * Convert a <code>ResultSet</code> row into a JavaBean. This implementation
+	 * uses reflection and <code>BeanInfo</code> classes to match column names
+	 * to bean property names. Properties are matched to columns based on
+	 * several factors: <br/>
 	 * <ol>
 	 * <li>
 	 * The class has a writable property with the same name as a column. The
@@ -133,8 +153,9 @@ public final class DBUtils {
 	 *             If the mentioned <code>type</code> is not accessible.
 	 * @throws IntrospectionException
 	 */
-	public static <T> T toBean(ResultSet rs, Class<T> type) throws IllegalAccessException,
-			InstantiationException, IntrospectionException, SQLException {
+	public static <T> T toBean(ResultSet rs, Class<T> type)
+			throws IllegalAccessException, InstantiationException,
+			IntrospectionException, SQLException {
 
 		PropertyDescriptor[] props = propertyDescriptors(type);
 
@@ -220,19 +241,20 @@ public final class DBUtils {
 	 *             If the setter methods in the bean are not public
 	 * @throws IllegalArgumentException
 	 */
-	public static <T> List<T> toBeanList(Cursor cursor, Class<T> type) throws IllegalAccessException,
-			InstantiationException, IntrospectionException, IllegalArgumentException,
+	public static <T> List<T> toBeanList(Cursor cursor, Class<T> type)
+			throws IllegalAccessException, InstantiationException,
+			IntrospectionException, IllegalArgumentException,
 			InvocationTargetException {
 		List results = new ArrayList();
-		if(cursor.getCount() == 0)
+		if (cursor.getCount() == 0)
 			return results;
 
 		String[] columns = cursor.getColumnNames();
-		if(columns == null || columns.length == 0)
+		if (columns == null || columns.length == 0)
 			return results;
 		cursor.moveToFirst();
 		PropertyDescriptor[] propDesc = propertyDescriptors(type);
-		for(int i = 0; i < cursor.getCount(); i++){
+		for (int i = 0; i < cursor.getCount(); i++) {
 			Object bean = ClassUtils.newInstance(type);
 			populateBean(bean, cursor, columns, propDesc);
 			results.add(bean);
@@ -241,17 +263,19 @@ public final class DBUtils {
 		return results;
 	}
 
-	private static void populateBean(Object bean, Cursor cursor, String[] columns,
-			PropertyDescriptor[] propDesc) throws IllegalArgumentException, IllegalAccessException,
+	private static void populateBean(Object bean, Cursor cursor,
+			String[] columns, PropertyDescriptor[] propDesc)
+			throws IllegalArgumentException, IllegalAccessException,
 			InvocationTargetException {
-		for(int i = 0; i < columns.length; i++){
-			for(int j = 0; j < propDesc.length; j++){
-				if(columns[i].equalsIgnoreCase(propDesc[j].getName())){
+		for (int i = 0; i < columns.length; i++) {
+			for (int j = 0; j < propDesc.length; j++) {
+				if (columns[i].equalsIgnoreCase(propDesc[j].getName())) {
 					Method method = propDesc[j].getWriteMethod();
-					if(method != null){
+					if (method != null) {
 						int columnIndex = cursor.getColumnIndex(columns[i]);
-						Object[] params = getMethodParamter(method, cursor, columnIndex);
-						if(params != null)
+						Object[] params = getMethodParamter(method, cursor,
+								columnIndex);
+						if (params != null)
 							method.invoke(bean, params);
 					}
 				}
@@ -259,27 +283,28 @@ public final class DBUtils {
 		}
 	}
 
-	private static Object[] getMethodParamter(Method method, Cursor cursor, int columnIndex) {
+	private static Object[] getMethodParamter(Method method, Cursor cursor,
+			int columnIndex) {
 		// method.get
 		Class[] paramTypes = method.getParameterTypes();
-		if(paramTypes != null){
-			if(paramTypes.length > 0){
+		if (paramTypes != null) {
+			if (paramTypes.length > 0) {
 				Class type = paramTypes[0];
-				if(type.equals(int.class)){
+				if (type.equals(int.class)) {
 					// if(cursor.getType(columnIndex) ==
 					// Cursor.FIELD_TYPE_INTEGER)
 					return new Object[] { cursor.getInt(columnIndex) };
-				} else if(type.equals(String.class)){
+				} else if (type.equals(String.class)) {
 					return new Object[] { cursor.getString(columnIndex) };
-				} else if(type.equals(float.class)){
+				} else if (type.equals(float.class)) {
 					return new Object[] { cursor.getFloat(columnIndex) };
-				} else if(type.equals(long.class)){
+				} else if (type.equals(long.class)) {
 					return new Object[] { cursor.getLong(columnIndex) };
-				} else if(type.equals(double.class)){
+				} else if (type.equals(double.class)) {
 					return new Object[] { cursor.getDouble(columnIndex) };
-				} else if(type.equals(byte[].class)){
+				} else if (type.equals(byte[].class)) {
 					return new Object[] { cursor.getBlob(columnIndex) };
-				} else if(type.equals(short.class)){
+				} else if (type.equals(short.class)) {
 					return new Object[] { cursor.getShort(columnIndex) };
 				}
 
@@ -328,11 +353,12 @@ public final class DBUtils {
 	 * @throws IntrospectionException
 	 * @see DBUtils#toBean(ResultSet, Class)
 	 */
-	public static <T> List<T> toBeanList(ResultSet rs, Class<T> type) throws SQLException,
-			IllegalAccessException, InstantiationException, IntrospectionException {
+	public static <T> List<T> toBeanList(ResultSet rs, Class<T> type)
+			throws SQLException, IllegalAccessException,
+			InstantiationException, IntrospectionException {
 		List<T> results = new ArrayList<T>();
 
-		if(!rs.next()){
+		if (!rs.next()) {
 			return results;
 		}
 
@@ -340,9 +366,9 @@ public final class DBUtils {
 		ResultSetMetaData rsmd = rs.getMetaData();
 		int[] columnToProperty = mapColumnsToProperties(rsmd, props);
 
-		do{
+		do {
 			results.add(createBean(rs, type, props, columnToProperty));
-		} while(rs.next());
+		} while (rs.next());
 
 		return results;
 	}
@@ -368,14 +394,15 @@ public final class DBUtils {
 	 * @throws IllegalAccessException
 	 *             if the bean class is not public
 	 */
-	private static <T> T createBean(ResultSet rs, Class<T> type, PropertyDescriptor[] props,
-			int[] columnToProperty) throws SQLException, IllegalAccessException, InstantiationException {
+	private static <T> T createBean(ResultSet rs, Class<T> type,
+			PropertyDescriptor[] props, int[] columnToProperty)
+			throws SQLException, IllegalAccessException, InstantiationException {
 
 		T bean = ClassUtils.newInstance(type);
 
-		for(int i = 1; i < columnToProperty.length; i++){
+		for (int i = 1; i < columnToProperty.length; i++) {
 
-			if(columnToProperty[i] == PROPERTY_NOT_FOUND){
+			if (columnToProperty[i] == PROPERTY_NOT_FOUND) {
 				continue;
 			}
 			PropertyDescriptor prop = props[columnToProperty[i]];
@@ -383,7 +410,7 @@ public final class DBUtils {
 
 			Object value = processColumn(rs, i, propType);
 
-			if(propType != null && value == null && propType.isPrimitive()){
+			if (propType != null && value == null && propType.isPrimitive()) {
 				value = primitiveDefaults.get(propType);
 			}
 			callSetter(bean, prop, value);
@@ -392,8 +419,8 @@ public final class DBUtils {
 	}
 
 	/**
-	 * Calls the setter method on the target object for the given property.
-	 * If no setter method exists for the property, this method does nothing.
+	 * Calls the setter method on the target object for the given property. If
+	 * no setter method exists for the property, this method does nothing.
 	 * 
 	 * @param target
 	 *            The object to set the property on.
@@ -404,54 +431,61 @@ public final class DBUtils {
 	 * @throws SQLException
 	 *             if an error occurs setting the property.
 	 */
-	private static void callSetter(Object target, PropertyDescriptor prop, Object value)
-			throws SQLException {
+	private static void callSetter(Object target, PropertyDescriptor prop,
+			Object value) throws SQLException {
 
 		Method setter = prop.getWriteMethod();
 
-		if(setter == null){
+		if (setter == null) {
 			return;
 		}
 
 		Class<?>[] params = setter.getParameterTypes();
-		try{
+		try {
 			// convert types for some popular ones
-			if(value != null){
-				if(value instanceof java.util.Date){
-					if(params[0].getName().equals("java.sql.Date")){
-						value = new java.sql.Date(((java.util.Date) value).getTime());
-					} else if(params[0].getName().equals("java.sql.Time")){
-						value = new java.sql.Time(((java.util.Date) value).getTime());
-					} else if(params[0].getName().equals("java.sql.Timestamp")){
-						value = new java.sql.Timestamp(((java.util.Date) value).getTime());
+			if (value != null) {
+				if (value instanceof java.util.Date) {
+					if (params[0].getName().equals("java.sql.Date")) {
+						value = new java.sql.Date(
+								((java.util.Date) value).getTime());
+					} else if (params[0].getName().equals("java.sql.Time")) {
+						value = new java.sql.Time(
+								((java.util.Date) value).getTime());
+					} else if (params[0].getName().equals("java.sql.Timestamp")) {
+						value = new java.sql.Timestamp(
+								((java.util.Date) value).getTime());
 					}
 				}
 			}
 
 			// Don't call setter if the value object isn't the right type
-			if(isCompatibleType(value, params[0])){
+			if (isCompatibleType(value, params[0])) {
 				setter.invoke(target, new Object[] { value });
-			} else{
-				throw new SQLException("Cannot set " + prop.getName() + ": incompatible types.");
+			} else {
+				throw new SQLException("Cannot set " + prop.getName()
+						+ ": incompatible types.");
 			}
 
-		} catch(IllegalArgumentException e){
-			throw new SQLException("Cannot set " + prop.getName() + ": " + e.getMessage());
+		} catch (IllegalArgumentException e) {
+			throw new SQLException("Cannot set " + prop.getName() + ": "
+					+ e.getMessage());
 
-		} catch(IllegalAccessException e){
-			throw new SQLException("Cannot set " + prop.getName() + ": " + e.getMessage());
+		} catch (IllegalAccessException e) {
+			throw new SQLException("Cannot set " + prop.getName() + ": "
+					+ e.getMessage());
 
-		} catch(InvocationTargetException e){
-			throw new SQLException("Cannot set " + prop.getName() + ": " + e.getMessage());
+		} catch (InvocationTargetException e) {
+			throw new SQLException("Cannot set " + prop.getName() + ": "
+					+ e.getMessage());
 		}
 	}
 
 	/**
 	 * ResultSet.getObject() returns an Integer object for an INT column. The
 	 * setter method for the property might take an Integer or a primitive int.
-	 * This method returns true if the value can be successfully passed into
-	 * the setter method. Remember, Method.invoke() handles the unwrapping
-	 * of Integer into an int.
+	 * This method returns true if the value can be successfully passed into the
+	 * setter method. Remember, Method.invoke() handles the unwrapping of
+	 * Integer into an int.
 	 * 
 	 * @param value
 	 *            The value to be passed into the setter method.
@@ -461,34 +495,35 @@ public final class DBUtils {
 	 */
 	private static boolean isCompatibleType(Object value, Class<?> type) {
 		// Do object check first, then primitives
-		if(value == null || type.isInstance(value)){
+		if (value == null || type.isInstance(value)) {
 			return true;
 
-		} else if(type.equals(Integer.TYPE) && Integer.class.isInstance(value)){
+		} else if (type.equals(Integer.TYPE) && Integer.class.isInstance(value)) {
 			return true;
 
-		} else if(type.equals(Long.TYPE) && Long.class.isInstance(value)){
+		} else if (type.equals(Long.TYPE) && Long.class.isInstance(value)) {
 			return true;
 
-		} else if(type.equals(Double.TYPE) && Double.class.isInstance(value)){
+		} else if (type.equals(Double.TYPE) && Double.class.isInstance(value)) {
 			return true;
 
-		} else if(type.equals(Float.TYPE) && Float.class.isInstance(value)){
+		} else if (type.equals(Float.TYPE) && Float.class.isInstance(value)) {
 			return true;
 
-		} else if(type.equals(Short.TYPE) && Short.class.isInstance(value)){
+		} else if (type.equals(Short.TYPE) && Short.class.isInstance(value)) {
 			return true;
 
-		} else if(type.equals(Byte.TYPE) && Byte.class.isInstance(value)){
+		} else if (type.equals(Byte.TYPE) && Byte.class.isInstance(value)) {
 			return true;
 
-		} else if(type.equals(Character.TYPE) && Character.class.isInstance(value)){
+		} else if (type.equals(Character.TYPE)
+				&& Character.class.isInstance(value)) {
 			return true;
 
-		} else if(type.equals(Boolean.TYPE) && Boolean.class.isInstance(value)){
+		} else if (type.equals(Boolean.TYPE) && Boolean.class.isInstance(value)) {
 			return true;
 
-		} else{
+		} else {
 			return false;
 		}
 
@@ -497,8 +532,8 @@ public final class DBUtils {
 	/**
 	 * Convert a <code>ResultSet</code> column into an object. Simple
 	 * implementations could just call <code>rs.getObject(index)</code> while
-	 * more complex implementations could perform type manipulation to match
-	 * the column's type to the bean property type.
+	 * more complex implementations could perform type manipulation to match the
+	 * column's type to the bean property type.
 	 * 
 	 * <p>
 	 * This implementation calls the appropriate <code>ResultSet</code> getter
@@ -516,66 +551,69 @@ public final class DBUtils {
 	 *            The current column index being processed.
 	 * 
 	 * @param propType
-	 *            The bean property type that this column needs to be
-	 *            converted into.
+	 *            The bean property type that this column needs to be converted
+	 *            into.
 	 * 
 	 * @throws SQLException
 	 *             if a database access error occurs
 	 * 
 	 * @return The object from the <code>ResultSet</code> at the given column
 	 *         index after optional type processing or <code>null</code> if the
-	 *         column
-	 *         value was SQL NULL.
+	 *         column value was SQL NULL.
 	 */
-	private static Object processColumn(ResultSet rs, int index, Class<?> propType) throws SQLException {
+	private static Object processColumn(ResultSet rs, int index,
+			Class<?> propType) throws SQLException {
 
-		if(!propType.isPrimitive() && rs.getObject(index) == null){
+		if (!propType.isPrimitive() && rs.getObject(index) == null) {
 			return null;
 		}
 
-		if(!propType.isPrimitive() && rs.getObject(index) == null){
+		if (!propType.isPrimitive() && rs.getObject(index) == null) {
 			return null;
 		}
 
-		if(propType.equals(String.class)){
+		if (propType.equals(String.class)) {
 			return rs.getString(index);
 
-		} else if(propType.equals(Integer.TYPE) || propType.equals(Integer.class)){
+		} else if (propType.equals(Integer.TYPE)
+				|| propType.equals(Integer.class)) {
 			return (rs.getInt(index));
 
-		} else if(propType.equals(Boolean.TYPE) || propType.equals(Boolean.class)){
+		} else if (propType.equals(Boolean.TYPE)
+				|| propType.equals(Boolean.class)) {
 			return (rs.getBoolean(index));
 
-		} else if(propType.equals(Long.TYPE) || propType.equals(Long.class)){
+		} else if (propType.equals(Long.TYPE) || propType.equals(Long.class)) {
 			return (rs.getLong(index));
 
-		} else if(propType.equals(Double.TYPE) || propType.equals(Double.class)){
+		} else if (propType.equals(Double.TYPE)
+				|| propType.equals(Double.class)) {
 			return (rs.getDouble(index));
 
-		} else if(propType.equals(Float.TYPE) || propType.equals(Float.class)){
+		} else if (propType.equals(Float.TYPE) || propType.equals(Float.class)) {
 			return (rs.getFloat(index));
 
-		} else if(propType.equals(Short.TYPE) || propType.equals(Short.class)){
+		} else if (propType.equals(Short.TYPE) || propType.equals(Short.class)) {
 			return (rs.getShort(index));
 
-		} else if(propType.equals(Byte.TYPE) || propType.equals(Byte.class)){
+		} else if (propType.equals(Byte.TYPE) || propType.equals(Byte.class)) {
 			return (rs.getByte(index));
 
-		} else if(propType.equals(Timestamp.class)){
+		} else if (propType.equals(Timestamp.class)) {
 			return rs.getTimestamp(index);
 
-		} else{
+		} else {
 			return rs.getObject(index);
 		}
 
 	}
 
 	/**
-	 * The positions in the returned array represent column numbers. The
-	 * values stored at each position represent the index in the
-	 * <code>PropertyDescriptor[]</code> for the bean property that matches
-	 * the column name. If no bean property was found for a column, the
-	 * position is set to <code>PROPERTY_NOT_FOUND</code>.
+	 * The positions in the returned array represent column numbers. The values
+	 * stored at each position represent the index in the
+	 * <code>PropertyDescriptor[]</code> for the bean property that matches the
+	 * column name. If no bean property was found for a column, the position is
+	 * set to <code>PROPERTY_NOT_FOUND</code>.
 	 * 
 	 * @param rsmd
 	 *            The <code>ResultSetMetaData</code> containing column
@@ -590,21 +628,21 @@ public final class DBUtils {
 	 * @return An int[] with column index to property index mappings. The 0th
 	 *         element is meaningless because JDBC column indexing starts at 1.
 	 */
-	private static int[] mapColumnsToProperties(ResultSetMetaData rsmd, PropertyDescriptor[] props)
-			throws SQLException {
+	private static int[] mapColumnsToProperties(ResultSetMetaData rsmd,
+			PropertyDescriptor[] props) throws SQLException {
 
 		int cols = rsmd.getColumnCount();
 		int columnToProperty[] = new int[cols + 1];
 		Arrays.fill(columnToProperty, PROPERTY_NOT_FOUND);
 
-		for(int col = 1; col <= cols; col++){
+		for (int col = 1; col <= cols; col++) {
 			String columnName = rsmd.getColumnLabel(col);
-			if(null == columnName || 0 == columnName.length()){
+			if (null == columnName || 0 == columnName.length()) {
 				columnName = rsmd.getColumnName(col);
 			}
-			for(int i = 0; i < props.length; i++){
+			for (int i = 0; i < props.length; i++) {
 
-				if(columnName.equalsIgnoreCase(props[i].getName())){
+				if (columnName.equalsIgnoreCase(props[i].getName())) {
 					columnToProperty[col] = i;
 					break;
 				}
@@ -623,7 +661,8 @@ public final class DBUtils {
 	 *             if introspection failed.
 	 * @throws IntrospectionException
 	 */
-	private static PropertyDescriptor[] propertyDescriptors(Class<?> c) throws IntrospectionException {
+	private static PropertyDescriptor[] propertyDescriptors(Class<?> c)
+			throws IntrospectionException {
 		// Introspector caches BeanInfo classes for better performance
 		BeanInfo beanInfo = null;
 		beanInfo = Introspector.getBeanInfo(c);
