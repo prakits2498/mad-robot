@@ -8,12 +8,12 @@ import java.net.URISyntaxException;
 
 import org.apache.http.HttpEntity;
 
-import com.ek.android.io.net.HttpTaskHelper;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
+
+import com.madrobot.io.net.HttpTaskHelper;
 
 /**
  * Async task to download a list of bitmaps

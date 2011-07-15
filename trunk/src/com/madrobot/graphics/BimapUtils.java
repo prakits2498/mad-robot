@@ -6,18 +6,18 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.ek.android.io.IOUtils;
-import com.madrobot.math.MathUtils;
-
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Bitmap.CompressFormat;
-import android.graphics.BitmapFactory.Options;
 import android.util.Log;
+
+import com.madrobot.io.IOUtils;
+import com.madrobot.math.MathUtils;
 
 public final class BimapUtils {
 

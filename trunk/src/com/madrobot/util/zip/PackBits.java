@@ -3,7 +3,7 @@ package com.madrobot.util.zip;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import com.ek.android.io.FastByteArrayOutputStream;
+import com.madrobot.io.FastByteArrayOutputStream;
 
 public class PackBits
 {

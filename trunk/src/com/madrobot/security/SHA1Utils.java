@@ -7,7 +7,7 @@ import java.io.InputStream;
 import java.security.MessageDigest;
 import java.util.Arrays;
 
-import com.ek.android.io.IOUtils;
+import com.madrobot.io.IOUtils;
 
 /**
  * 

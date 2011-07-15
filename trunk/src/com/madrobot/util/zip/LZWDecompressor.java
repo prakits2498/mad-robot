@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import com.ek.android.io.BitInputStream;
+import com.madrobot.io.BitInputStream;
 
 public final class LZWDecompressor
 {
