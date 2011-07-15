@@ -12,7 +12,12 @@ package com.madrobot.security;
 
 import java.util.zip.Adler32;
 
-public class CRC {
+/**
+ * Various CRC implementations
+ * @author elton.kent
+ *
+ */
+public final  class CRC {
 
 	public static long getAdler32(byte[] buf) {
 		Adler32 adler = new Adler32();
