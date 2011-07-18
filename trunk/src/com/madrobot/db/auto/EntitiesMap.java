@@ -1,4 +1,4 @@
-package com.madrobot.db;
+package com.madrobot.db.auto;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
