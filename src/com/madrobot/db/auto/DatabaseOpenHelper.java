@@ -1,4 +1,6 @@
-package com.madrobot.db;
+package com.madrobot.db.auto;
+
+import com.madrobot.db.DBException;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

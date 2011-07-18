@@ -1,9 +1,11 @@
-package com.madrobot.db;
+package com.madrobot.db.auto;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.madrobot.db.DBException;
 
 import android.content.ContentValues;
 import android.content.Context;

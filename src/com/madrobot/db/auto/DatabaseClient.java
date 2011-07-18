@@ -1,4 +1,4 @@
-package com.madrobot.db;
+package com.madrobot.db.auto;
 
 import java.lang.reflect.Field;
 import java.sql.Timestamp;
@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.madrobot.db.DBException;
 import com.madrobot.text.WordUtils;
 
 import android.content.ContentValues;
