@@ -43,7 +43,6 @@ public class WordUtils {
 	public WordUtils() {
 		super();
 	}
-	
 
 	/**
 	 * Returns a string that fits into the given<code> width</code>
@@ -60,21 +59,22 @@ public class WordUtils {
 	 * @return <code>string</code> if it fits in the string width, else the
 	 *         string content that fits and with trailing dots (...)
 	 */
-	public static String getFittingString(final String string, final float width, final Paint font,
-			final String endPadding) {
-		if(font.measureText(string) < width){
+	public static String getFittingString(final String string,
+			final float width, final Paint font, final String endPadding) {
+		if (font.measureText(string) < width) {
 			return string;
-		} else{
+		} else {
 			int endPad = (int) font.measureText(endPadding);
-			for(int i = 0; i < string.length(); i++){
-				if(font.measureText(string.substring(0, i)) + endPad > width){
+			for (int i = 0; i < string.length(); i++) {
+				if (font.measureText(string.substring(0, i)) + endPad > width) {
 					endPad = i;
 					break;
 				}
 			}
 			/* final check to see if it conforms to the width */
-			if(font.measureText(string.substring(0, endPad) + endPadding) > width){
-				for(; font.measureText(string.substring(0, endPad) + endPadding) > width;){
+			if (font.measureText(string.substring(0, endPad) + endPadding) > width) {
+				for (; font.measureText(string.substring(0, endPad)
+						+ endPadding) > width;) {
 					endPad--;
 				}
 			}
@@ -98,11 +98,12 @@ public class WordUtils {
 	 *            firstLineWidth
 	 * @return The array containing the substrings
 	 */
-	public static final String[] doTextWrap(final String string, final Paint font, int firstLineWidth,
-			final int lineWidth) {
+	public static final String[] doTextWrap(final String string,
+			final Paint font, int firstLineWidth, final int lineWidth) {
 		boolean hasLineBreaks = (string.indexOf('\n') != -1);
 		float completeWidth = font.measureText(string);
-		if(((completeWidth <= firstLineWidth) && !hasLineBreaks)){ // || (value.
+		if (((completeWidth <= firstLineWidth) && !hasLineBreaks)) { // ||
+																		// (value.
 			// length()
 			// <= 1) ) {
 			// the given string fits on the first line:
@@ -115,36 +116,38 @@ public class WordUtils {
 		}
 		// the given string does not fit on the first line:
 		ArrayList<String> lines = new ArrayList<String>();
-		if(!hasLineBreaks){
+		if (!hasLineBreaks) {
 			wrap(string, font, completeWidth, firstLineWidth, lineWidth, lines);
-		} else{
+		} else {
 			// now the string will be splitted at the line-breaks and
 			// then each line is processed:
 			char[] valueChars = string.toCharArray();
 			int lastIndex = 0;
 			char c = ' ';
 			int lineBreakCount = 0;
-			for(int i = 0; i < valueChars.length; i++){
+			for (int i = 0; i < valueChars.length; i++) {
 				c = valueChars[i];
 				boolean isCRLF = ((c == 0x0D) && (i < valueChars.length - 1) && (valueChars[i + 1] == 0x0A));
-				if((c == '\n') || (i == valueChars.length - 1) || isCRLF){
+				if ((c == '\n') || (i == valueChars.length - 1) || isCRLF) {
 					lineBreakCount++;
 					String line = null;
-					if(i == valueChars.length - 1){
-						line = new String(valueChars, lastIndex, (i + 1) - lastIndex);
+					if (i == valueChars.length - 1) {
+						line = new String(valueChars, lastIndex, (i + 1)
+								- lastIndex);
 						// System.out.println("wrap: adding last line " + line
 						// );
-					} else{
+					} else {
 						line = new String(valueChars, lastIndex, i - lastIndex);
 						// System.out.println("wrap: adding " + line );
 					}
 					completeWidth = font.measureText(line);
-					if(completeWidth <= firstLineWidth){
+					if (completeWidth <= firstLineWidth) {
 						lines.add(line);
-					} else{
-						wrap(line, font, completeWidth, firstLineWidth, lineWidth, lines);
+					} else {
+						wrap(line, font, completeWidth, firstLineWidth,
+								lineWidth, lines);
 					}
-					if(isCRLF){
+					if (isCRLF) {
 						i++;
 					}
 					lastIndex = i + 1;
@@ -152,8 +155,8 @@ public class WordUtils {
 					firstLineWidth = lineWidth;
 				} // for each line
 			} // for all chars
-			// special case for lines that end with \n: add a further line
-			if((lineBreakCount > 1) && ((c == '\n') || (c == 10))){
+				// special case for lines that end with \n: add a further line
+			if ((lineBreakCount > 1) && ((c == '\n') || (c == 10))) {
 				lines.add(" ");
 			}
 		}
@@ -192,31 +195,31 @@ public class WordUtils {
 	 * @param list
 	 *            The list to which the substrings will be added.
 	 */
-	private static void wrap(String value, Paint font, float completeWidth, float firstLineWidth,
-			float lineWidth, ArrayList<String> list) {
+	private static void wrap(String value, Paint font, float completeWidth,
+			float firstLineWidth, float lineWidth, ArrayList<String> list) {
 		char[] valueChars = value.toCharArray();
 		int startPos = 0;
 		int lastSpacePos = -1;
 		int lastSpacePosLength = 0;
 		int currentLineWidth = 0;
-		for(int i = 0; i < valueChars.length; i++){
+		for (int i = 0; i < valueChars.length; i++) {
 			char c = valueChars[i];
 			currentLineWidth += font.measureText(String.valueOf(c));// .charWidth(c);
-			if(c == '\n'){
+			if (c == '\n') {
 				list.add(new String(valueChars, startPos, i - startPos));
 				lastSpacePos = -1;
 				startPos = i + 1;
 				currentLineWidth = 0;
 				firstLineWidth = lineWidth;
 				i = startPos;
-			} else if((currentLineWidth > firstLineWidth) && (i > 0)){
-				if((c == ' ') || (c == '\t')){
+			} else if ((currentLineWidth > firstLineWidth) && (i > 0)) {
+				if ((c == ' ') || (c == '\t')) {
 					list.add(new String(valueChars, startPos, i - startPos));
 					startPos = ++i;
 					currentLineWidth = 0;
 					lastSpacePos = -1;
-				} else if(lastSpacePos == -1){
-					if(i > startPos + 1){
+				} else if (lastSpacePos == -1) {
+					if (i > startPos + 1) {
 						i--;
 					}
 					// System.out.println("value=" + value + ", i=" + i +
@@ -224,14 +227,15 @@ public class WordUtils {
 					list.add(new String(valueChars, startPos, i - startPos));
 					startPos = i;
 					currentLineWidth = 0;
-				} else{
+				} else {
 					currentLineWidth -= lastSpacePosLength;
-					list.add(new String(valueChars, startPos, lastSpacePos - startPos));
+					list.add(new String(valueChars, startPos, lastSpacePos
+							- startPos));
 					startPos = lastSpacePos + 1;
 					lastSpacePos = -1;
 				}
 				firstLineWidth = lineWidth;
-			} else if((c == ' ') || (c == '\t')){
+			} else if ((c == ' ') || (c == '\t')) {
 				lastSpacePos = i;
 				lastSpacePosLength = currentLineWidth;
 			}
@@ -300,48 +304,51 @@ public class WordUtils {
 	 *            true if long words (such as URLs) should be wrapped
 	 * @return a line with newlines inserted, <code>null</code> if null input
 	 */
-	public static String wrap(String str, int wrapLength, String newLineStr, boolean wrapLongWords) {
-		if(str == null){
+	public static String wrap(String str, int wrapLength, String newLineStr,
+			boolean wrapLongWords) {
+		if (str == null) {
 			return null;
 		}
-		if(newLineStr == null){
+		if (newLineStr == null) {
 			newLineStr = "\n";// SystemUtils.LINE_SEPARATOR;
 		}
-		if(wrapLength < 1){
+		if (wrapLength < 1) {
 			wrapLength = 1;
 		}
 		int inputLineLength = str.length();
 		int offset = 0;
 		StringBuilder wrappedLine = new StringBuilder(inputLineLength + 32);
 
-		while((inputLineLength - offset) > wrapLength){
-			if(str.charAt(offset) == ' '){
+		while ((inputLineLength - offset) > wrapLength) {
+			if (str.charAt(offset) == ' ') {
 				offset++;
 				continue;
 			}
 			int spaceToWrapAt = str.lastIndexOf(' ', wrapLength + offset);
 
-			if(spaceToWrapAt >= offset){
+			if (spaceToWrapAt >= offset) {
 				// normal case
 				wrappedLine.append(str.substring(offset, spaceToWrapAt));
 				wrappedLine.append(newLineStr);
 				offset = spaceToWrapAt + 1;
 
-			} else{
+			} else {
 				// really long word or URL
-				if(wrapLongWords){
+				if (wrapLongWords) {
 					// wrap really long word one line at a time
-					wrappedLine.append(str.substring(offset, wrapLength + offset));
+					wrappedLine.append(str.substring(offset, wrapLength
+							+ offset));
 					wrappedLine.append(newLineStr);
 					offset += wrapLength;
-				} else{
+				} else {
 					// do not wrap really long word, just extend beyond limit
 					spaceToWrapAt = str.indexOf(' ', wrapLength + offset);
-					if(spaceToWrapAt >= 0){
-						wrappedLine.append(str.substring(offset, spaceToWrapAt));
+					if (spaceToWrapAt >= 0) {
+						wrappedLine
+								.append(str.substring(offset, spaceToWrapAt));
 						wrappedLine.append(newLineStr);
 						offset = spaceToWrapAt + 1;
-					} else{
+					} else {
 						wrappedLine.append(str.substring(offset));
 						offset = inputLineLength;
 					}
@@ -425,22 +432,22 @@ public class WordUtils {
 	 */
 	public static String capitalize(String str, char... delimiters) {
 		int delimLen = (delimiters == null ? -1 : delimiters.length);
-		if(str == null || str.length() == 0 || delimLen == 0){
+		if (str == null || str.length() == 0 || delimLen == 0) {
 			return str;
 		}
 		int strLen = str.length();
 		StringBuilder buffer = new StringBuilder(strLen);
 		boolean capitalizeNext = true;
-		for(int i = 0; i < strLen; i++){
+		for (int i = 0; i < strLen; i++) {
 			char ch = str.charAt(i);
 
-			if(isDelimiter(ch, delimiters)){
+			if (isDelimiter(ch, delimiters)) {
 				buffer.append(ch);
 				capitalizeNext = true;
-			} else if(capitalizeNext){
+			} else if (capitalizeNext) {
 				buffer.append(Character.toTitleCase(ch));
 				capitalizeNext = false;
-			} else{
+			} else {
 				buffer.append(ch);
 			}
 		}
@@ -512,7 +519,7 @@ public class WordUtils {
 	 */
 	public static String capitalizeFully(String str, char... delimiters) {
 		int delimLen = (delimiters == null ? -1 : delimiters.length);
-		if(str == null || str.length() == 0 || delimLen == 0){
+		if (str == null || str.length() == 0 || delimLen == 0) {
 			return str;
 		}
 		str = str.toLowerCase();
@@ -582,22 +589,22 @@ public class WordUtils {
 	 */
 	public static String uncapitalize(String str, char... delimiters) {
 		int delimLen = (delimiters == null ? -1 : delimiters.length);
-		if(str == null || str.length() == 0 || delimLen == 0){
+		if (str == null || str.length() == 0 || delimLen == 0) {
 			return str;
 		}
 		int strLen = str.length();
 		StringBuilder buffer = new StringBuilder(strLen);
 		boolean uncapitalizeNext = true;
-		for(int i = 0; i < strLen; i++){
+		for (int i = 0; i < strLen; i++) {
 			char ch = str.charAt(i);
 
-			if(isDelimiter(ch, delimiters)){
+			if (isDelimiter(ch, delimiters)) {
 				buffer.append(ch);
 				uncapitalizeNext = true;
-			} else if(uncapitalizeNext){
+			} else if (uncapitalizeNext) {
 				buffer.append(Character.toLowerCase(ch));
 				uncapitalizeNext = false;
-			} else{
+			} else {
 				buffer.append(ch);
 			}
 		}
@@ -635,7 +642,7 @@ public class WordUtils {
 	 */
 	public static String swapCase(String str) {
 		int strLen;
-		if(str == null || (strLen = str.length()) == 0){
+		if (str == null || (strLen = str.length()) == 0) {
 			return str;
 		}
 		StringBuilder buffer = new StringBuilder(strLen);
@@ -644,19 +651,19 @@ public class WordUtils {
 		char ch = 0;
 		char tmp = 0;
 
-		for(int i = 0; i < strLen; i++){
+		for (int i = 0; i < strLen; i++) {
 			ch = str.charAt(i);
-			if(Character.isUpperCase(ch)){
+			if (Character.isUpperCase(ch)) {
 				tmp = Character.toLowerCase(ch);
-			} else if(Character.isTitleCase(ch)){
+			} else if (Character.isTitleCase(ch)) {
 				tmp = Character.toLowerCase(ch);
-			} else if(Character.isLowerCase(ch)){
-				if(whitespace){
+			} else if (Character.isLowerCase(ch)) {
+				if (whitespace) {
 					tmp = Character.toTitleCase(ch);
-				} else{
+				} else {
 					tmp = Character.toUpperCase(ch);
 				}
-			} else{
+			} else {
 				tmp = ch;
 			}
 			buffer.append(tmp);
@@ -733,25 +740,25 @@ public class WordUtils {
 	 * @since 2.2
 	 */
 	public static String initials(String str, char... delimiters) {
-		if(str == null || str.length() == 0){
+		if (str == null || str.length() == 0) {
 			return str;
 		}
-		if(delimiters != null && delimiters.length == 0){
+		if (delimiters != null && delimiters.length == 0) {
 			return "";
 		}
 		int strLen = str.length();
 		char[] buf = new char[strLen / 2 + 1];
 		int count = 0;
 		boolean lastWasGap = true;
-		for(int i = 0; i < strLen; i++){
+		for (int i = 0; i < strLen; i++) {
 			char ch = str.charAt(i);
 
-			if(isDelimiter(ch, delimiters)){
+			if (isDelimiter(ch, delimiters)) {
 				lastWasGap = true;
-			} else if(lastWasGap){
+			} else if (lastWasGap) {
 				buf[count++] = ch;
 				lastWasGap = false;
-			} else{
+			} else {
 				// ignore ch
 			}
 		}
@@ -769,11 +776,11 @@ public class WordUtils {
 	 * @return true if it is a delimiter
 	 */
 	private static boolean isDelimiter(char ch, char[] delimiters) {
-		if(delimiters == null){
+		if (delimiters == null) {
 			return Character.isWhitespace(ch);
 		}
-		for(int i = 0, isize = delimiters.length; i < isize; i++){
-			if(ch == delimiters[i]){
+		for (int i = 0, isize = delimiters.length; i < isize; i++) {
+			if (ch == delimiters[i]) {
 				return true;
 			}
 		}
@@ -785,21 +792,20 @@ public class WordUtils {
 	 * Abbreviates a string nicely.
 	 * 
 	 * This method searches for the first space after the lower limit and
-	 * abbreviates
-	 * the String there. It will also append any String passed as a parameter
-	 * to the end of the String. The upper limit can be specified to forcibly
-	 * abbreviate a String.
+	 * abbreviates the String there. It will also append any String passed as a
+	 * parameter to the end of the String. The upper limit can be specified to
+	 * forcibly abbreviate a String.
 	 * 
 	 * @param str
 	 *            the string to be abbreviated. If null is passed, null is
+	 *            returned. If the empty String is passed, the empty string is
 	 *            returned.
-	 *            If the empty String is passed, the empty string is returned.
 	 * @param lower
 	 *            the lower limit.
 	 * @param upper
-	 *            the upper limit; specify -1 if no limit is desired.
-	 *            If the upper limit is lower than the lower limit, it will be
-	 *            adjusted to be the same as the lower limit.
+	 *            the upper limit; specify -1 if no limit is desired. If the
+	 *            upper limit is lower than the lower limit, it will be adjusted
+	 *            to be the same as the lower limit.
 	 * @param appendToEnd
 	 *            String to be appended to the end of the abbreviated string.
 	 *            This is appended ONLY if the string was indeed abbreviated.
@@ -807,47 +813,152 @@ public class WordUtils {
 	 * @return the abbreviated String.
 	 * @since 2.4
 	 */
-	public static String abbreviate(String str, int lower, int upper, String appendToEnd) {
+	public static String abbreviate(String str, int lower, int upper,
+			String appendToEnd) {
 		// initial parameter checks
-		if(str == null){
+		if (str == null) {
 			return null;
 		}
-		if(str.length() == 0){
+		if (str.length() == 0) {
 			return StringUtils.EMPTY;
 		}
 
 		// if the lower value is greater than the length of the string,
 		// set to the length of the string
-		if(lower > str.length()){
+		if (lower > str.length()) {
 			lower = str.length();
 		}
 		// if the upper value is -1 (i.e. no limit) or is greater
 		// than the length of the string, set to the length of the string
-		if(upper == -1 || upper > str.length()){
+		if (upper == -1 || upper > str.length()) {
 			upper = str.length();
 		}
 		// if upper is less than lower, raise it to lower
-		if(upper < lower){
+		if (upper < lower) {
 			upper = lower;
 		}
 
 		StringBuilder result = new StringBuilder();
 		int index = StringUtils.indexOf(str, " ", lower);
-		if(index == -1){
+		if (index == -1) {
 			result.append(str.substring(0, upper));
 			// only if abbreviation has occured do we append the appendToEnd
 			// value
-			if(upper != str.length()){
+			if (upper != str.length()) {
 				result.append(StringUtils.defaultString(appendToEnd));
 			}
-		} else if(index > upper){
+		} else if (index > upper) {
 			result.append(str.substring(0, upper));
 			result.append(StringUtils.defaultString(appendToEnd));
-		} else{
+		} else {
 			result.append(str.substring(0, index));
 			result.append(StringUtils.defaultString(appendToEnd));
 		}
 		return result.toString();
+	}
+
+	/**
+	 * Convert name of format thisIsAName to THIS_IS_A_NAME For each letter: if
+	 * lower case then convert to upper case if upper case then add '_' to
+	 * output before ading letter
+	 * 
+	 * @param javaNotation
+	 * @return SQL name translated from Java name
+	 */
+	public static String toSQLName(String javaNotation) {
+		if (javaNotation.equalsIgnoreCase("_id"))
+			return "_id";
+
+		StringBuilder sb = new StringBuilder();
+		char[] buf = javaNotation.toCharArray();
+
+		for (int i = 0; i < buf.length; i++) {
+			char prevChar = (i > 0) ? buf[i - 1] : 0;
+			char c = buf[i];
+			char nextChar = (i < buf.length - 1) ? buf[i + 1] : 0;
+			boolean isFirstChar = (i == 0) ? true : false;
+
+			// "AbCd"->"AB_CD"
+			// "ABCd"->"AB_CD"
+			// "AbCD"->"AB_CD"
+			// "ShowplaceDetailsVO"->"SHOWPLACE_DETAILS_VO"
+			if (isFirstChar || Character.isLowerCase(c)) {
+				sb.append(Character.toUpperCase(c));
+			} else if (Character.isUpperCase(c)) {
+				if (Character.isLetterOrDigit(prevChar)) {
+					if (Character.isLowerCase(prevChar)) {
+						sb.append('_').append(Character.toUpperCase(c));
+					} else if (nextChar > 0 && Character.isLowerCase(nextChar)) {
+						sb.append('_').append(Character.toUpperCase(c));
+					} else {
+						sb.append(c);
+					}
+				} else {
+					sb.append(c);
+				}
+			}
+		}
+
+		return sb.toString();
+	}
+
+	/**
+	 * Convert name of format THIS_IS_A_NAME to thisIsAName For each letter: if
+	 * not '_' then convert to lower case and add to output string if '_' then
+	 * skip letter and add next letter to output string without converting to
+	 * lower case
+	 * 
+	 * @param sqlNotation
+	 * @return A name complaint with naming convention for Java methods and
+	 *         fields, converted from SQL name
+	 */
+	public static String toJavaMethodName(String sqlNotation) {
+		StringBuilder dest = new StringBuilder();
+		char[] src = sqlNotation.toCharArray();
+
+		for (int i = 0; i < src.length; i++) {
+			char c = src[i];
+			boolean isFirstChar = (i == 0) ? true : false;
+
+			if (isFirstChar || c != '_') {
+				dest.append(Character.toLowerCase(c));
+			} else {
+				i++;
+				if (i < src.length) {
+					dest.append(src[i]);
+				}
+			}
+		}
+		return dest.toString();
+	}
+
+	/**
+	 * Convert name of format THIS_IS_A_NAME to ThisIsAName For each letter: if
+	 * not '_' then convert to lower case and add to output string if '_' then
+	 * skip letter and add next letter to output string without converting to
+	 * lower case
+	 * 
+	 * @param sqlNotation
+	 * @return A name complaint with naming convention for Java classes,
+	 *         converted from SQL name
+	 */
+	public static String toJavaClassName(String sqlNotation) {
+		StringBuilder sb = new StringBuilder();
+		char[] buf = sqlNotation.toCharArray();
+		for (int i = 0; i < buf.length; i++) {
+			char c = buf[i];
+			if (i == 0) {
+				sb.append(buf[i]);
+			} else if (c != '_') {
+				sb.append(Character.toLowerCase(c));
+			} else {
+				i++;
+				if (i < buf.length) {
+					sb.append(buf[i]);
+				}
+			}
+		}
+		return sb.toString();
 	}
 
 }

@@ -13,14 +13,14 @@ package com.madrobot.json;
 class Yylex {
 
   /** This character denotes the end of file */
-  public static final int YYEOF = -1;
+   static final int YYEOF = -1;
 
   /** initial size of the lookahead buffer */
   private static final int ZZ_BUFFERSIZE = 16384;
 
   /** lexical states */
-  public static final int YYINITIAL = 0;
-  public static final int STRING_BEGIN = 2;
+   static final int YYINITIAL = 0;
+   static final int STRING_BEGIN = 2;
 
   /**
    * ZZ_LEXSTATE[l] is the state in the DFA for the lexical state l
@@ -376,7 +376,7 @@ int getPosition(){
   /**
    * Closes the input stream.
    */
-  public final void yyclose() throws java.io.IOException {
+   final void yyclose() throws java.io.IOException {
     zzAtEOF = true;            /* indicate end of file */
     zzEndRead = zzStartRead;  /* invalidate buffer    */
 
@@ -395,7 +395,7 @@ int getPosition(){
    *
    * @param reader   the new input stream 
    */
-  public final void yyreset(java.io.Reader reader) {
+   final void yyreset(java.io.Reader reader) {
     zzReader = reader;
     zzAtBOL  = true;
     zzAtEOF  = false;
@@ -409,7 +409,7 @@ int getPosition(){
   /**
    * Returns the current lexical state.
    */
-  public final int yystate() {
+   final int yystate() {
     return zzLexicalState;
   }
 
@@ -419,7 +419,7 @@ int getPosition(){
    *
    * @param newState the new lexical state
    */
-  public final void yybegin(int newState) {
+   final void yybegin(int newState) {
     zzLexicalState = newState;
   }
 
@@ -427,7 +427,7 @@ int getPosition(){
   /**
    * Returns the text matched by the current regular expression.
    */
-  public final String yytext() {
+   final String yytext() {
     return new String( zzBuffer, zzStartRead, zzMarkedPos-zzStartRead );
   }
 
@@ -443,7 +443,7 @@ int getPosition(){
    *
    * @return the character at position pos
    */
-  public final char yycharat(int pos) {
+   final char yycharat(int pos) {
     return zzBuffer[zzStartRead+pos];
   }
 
@@ -451,7 +451,7 @@ int getPosition(){
   /**
    * Returns the length of the matched text region.
    */
-  public final int yylength() {
+   final int yylength() {
     return zzMarkedPos-zzStartRead;
   }
 
@@ -491,7 +491,7 @@ int getPosition(){
    * @param number  the number of characters to be read again.
    *                This number must not be greater than yylength()!
    */
-  public void yypushback(int number)  {
+   void yypushback(int number)  {
     if ( number > yylength() )
       zzScanError(ZZ_PUSHBACK_2BIG);
 
@@ -506,7 +506,7 @@ int getPosition(){
    * @return      the next token
    * @exception   java.io.IOException  if any I/O-Error occurs
    */
-  public Yytoken yylex() throws java.io.IOException, JSONParseException {
+   Yytoken yylex() throws java.io.IOException, JSONParseException {
     int zzInput;
     int zzAction;
 

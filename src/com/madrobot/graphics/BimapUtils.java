@@ -78,8 +78,8 @@ public final class BimapUtils {
 
 			pixels[i] = Color.argb(A, R, G, B);
 		}
-		return Bitmap.createBitmap(pixels, bitmap.getWidth(), bitmap
-				.getHeight(), config);
+		return Bitmap.createBitmap(pixels, bitmap.getWidth(),
+				bitmap.getHeight(), config);
 	}
 
 	private static final int bottom = 8 * 1024;
@@ -138,7 +138,7 @@ public final class BimapUtils {
 		// for (int y = 0; y < pich; y++)
 		// for (int x = 0; x < picw; x++) {
 		// int index = y * picw + x;
-		//				
+		//
 		// }
 
 		return Bitmap.createBitmap(pix, picw, pich, config);
@@ -1003,10 +1003,10 @@ public final class BimapUtils {
 	private static Bitmap applyFilter(Bitmap bitmap, int value,
 			byte[][] filter, Bitmap.Config outputConfig) {
 		int[] argbData = getPixels(bitmap);
-		applyFilter(filter, value, argbData, bitmap.getWidth(), bitmap
-				.getHeight());
-		return Bitmap.createBitmap(argbData, bitmap.getWidth(), bitmap
-				.getHeight(), outputConfig);
+		applyFilter(filter, value, argbData, bitmap.getWidth(),
+				bitmap.getHeight());
+		return Bitmap.createBitmap(argbData, bitmap.getWidth(),
+				bitmap.getHeight(), outputConfig);
 
 	}
 
@@ -1133,9 +1133,7 @@ public final class BimapUtils {
 
 		// copy the neccessary imagedata into a small buffer
 		int[] tmpRect = new int[width * (filterMatrix.length)];
-		System
-				.arraycopy(argbData, 0, tmpRect, 0, width
-						* (filterMatrix.length));
+		System.arraycopy(argbData, 0, tmpRect, 0, width * (filterMatrix.length));
 
 		for (int fCol, fRow, col, row = fhRadius - 1; row + fhRadius < height + 1; row++) {
 			for (col = fwRadius - 1; col + fwRadius < width + 1; col++) {
@@ -1299,4 +1297,84 @@ public final class BimapUtils {
 	// }
 	// }
 	// }
+
+	/**
+	 * The weights specified are scaled so that the image average brightness
+	 * should not change after the halftoning.
+	 * 
+	 * @param n0
+	 *            the weight for pixel (r,c+1)
+	 * @param n1
+	 *            the weight for pixel (r,c+2)
+	 * @param n2
+	 *            the weight for pixel (r,c+3)
+	 * @param n3
+	 *            the weight for pixel (r,c+4)
+	 * @param n4
+	 *            the weight for pixel (r,c+5)
+	 */
+	public static final Bitmap deBlurHorizontalHalftone(Bitmap bitmap, int n0,
+			int n1, int n2, int n3, int n4, Bitmap.Config outputConfig) {
+		int sum = n0 + n1 + n2 + n3 + n4;
+		n0 = 8 * n0 / sum;
+		n1 = 8 * n1 / sum;
+		n2 = 8 * n2 / sum;
+		n3 = 8 * n3 / sum;
+		n4 = 8 * n4 / sum;
+		// integer division may make the sum not quite 8. correct this
+		// in the weight for pixel (r,c+1)
+		n0 = 8 - (n0 + n1 + n2 + n3 + n4);
+
+		int[] bData = getPixels(bitmap);
+		for (int i = 0; i < bitmap.getHeight(); i++) {
+			int nRow = i * bitmap.getWidth();
+			for (int j = 0; j < bitmap.getWidth(); j++) {
+				int bVal = bData[nRow + j];
+				int bNewVal;
+				if (bVal >= 0) {
+					bNewVal = Integer.MAX_VALUE;
+				} else {
+					bNewVal = Integer.MIN_VALUE;
+				}
+				int nDiff = bVal - bNewVal;
+				if (j < bitmap.getWidth() - 1) {
+					bData[nRow + j + 1] = (Integer) Math.max(
+							Integer.MIN_VALUE,
+							Math.min(Integer.MAX_VALUE, bData[nRow + j + 1]
+									+ n0 * nDiff / 8));
+				}
+				if (j < bitmap.getWidth() - 2) {
+					bData[nRow + j + 2] = (Integer) Math.max(
+							Integer.MIN_VALUE,
+							Math.min(Integer.MAX_VALUE, bData[nRow + j + 2]
+									+ n1 * nDiff / 8));
+
+				}
+				if (j < bitmap.getWidth() - 3) {
+					bData[nRow + j + 3] = (Integer) Math.max(
+							Integer.MIN_VALUE,
+							Math.min(Integer.MAX_VALUE, bData[nRow + j + 3]
+									+ n2 * nDiff / 8));
+
+				}
+				if (j < bitmap.getWidth() - 4) {
+					bData[nRow + j + 4] = (Integer) Math.max(
+							Integer.MIN_VALUE,
+							Math.min(Integer.MAX_VALUE, bData[nRow + j + 4]
+									+ n3 * nDiff / 8));
+
+				}
+				if (j < bitmap.getWidth() - 5) {
+					bData[nRow + j + 5] = (Integer) Math.max(
+							Integer.MIN_VALUE,
+							Math.min(Integer.MAX_VALUE, bData[nRow + j + 5]
+									+ n4 * nDiff / 8));
+
+				}
+			}
+		}
+		return Bitmap.createBitmap(bData, bitmap.getWidth(),
+				bitmap.getHeight(), outputConfig);
+
+	}
 }
