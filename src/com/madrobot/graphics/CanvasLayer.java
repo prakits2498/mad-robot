@@ -4,6 +4,12 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
+/**
+ * Allows you to perform layer based drawing on a canvas.
+ * 
+ * @author elton.kent
+ * 
+ */
 public class CanvasLayer {
 	private final Bitmap bitmap;
 	/**
@@ -32,5 +38,5 @@ public class CanvasLayer {
 	public void drawLayer(Canvas src, float x, float y) {
 		src.drawBitmap(bitmap, x, y, bmPaint);
 	}
-	
+
 }
