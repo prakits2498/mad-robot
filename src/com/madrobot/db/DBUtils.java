@@ -29,7 +29,7 @@ import com.madrobot.reflect.MethodUtils;
 
 public final class DBUtils {
 
-	public static List<String> GetColumns(final SQLiteDatabase db,
+	public static List<String> getColumns(final SQLiteDatabase db,
 			final String tableName) {
 		List<String> ar = null;
 		Cursor c = null;
