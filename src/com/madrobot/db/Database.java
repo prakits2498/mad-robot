@@ -381,7 +381,7 @@ public class Database {
 			return "blob";
 		if (name.equals("boolean"))
 			return "bool";
-		if (c.getSuperclass() == RecordBase.class)
+		if (c.getSuperclass() == DatabaseClient.class)
 			return "int";
 		throw new IllegalArgumentException(
 				"Class cannot be stored in Sqlite3 database.");

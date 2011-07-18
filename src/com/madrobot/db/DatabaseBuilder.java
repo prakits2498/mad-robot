@@ -11,10 +11,27 @@ import com.madrobot.text.WordUtils;
  * Use this class to specify structure of your DB. Call method addClass() for
  * each table and provide corresponding Java class. <br/>
  * Normally this class instantiated only once at the very beginning of the
- * application lifecycle. Once instantiated it is used by underlying
+ * application life cycle. Once instantiated it is used by underlying
  * SQLDatabaseHelper and provides SQL statements for create or upgrade of DB
- * schema.
+ * schema. <br/>
+ * <br/><b>Building a database from java classes</b>
+ * <pre>
+ * <code>
+ *  DatabaseBuilder builder = new DatabaseBuilder("Test.db");
+ *  builder.addClass(Table1.class);
+ *  builder.addClass(Table2.class);
+ *  Database.setBuilder(builder);
+ *  try{
+ *  DatabaseClient client= DatabaseClient.open(this, "dbName.db",
+ *                                         "dbVersion");
+ *  // purge Table1 table
+ *  _db.delete(Table1.class, null, null);
+ *
+ *  }catch(DBException e){
+ *  }
+ *  </code>
  * 
+ * </pre>
  */
 public class DatabaseBuilder {
 
@@ -38,7 +55,7 @@ public class DatabaseBuilder {
 	 * @param c
 	 *            The class to reference when updating or adding a table.
 	 */
-	public <T extends RecordBase> void addClass(Class<T> c) {
+	public <T extends DatabaseClient> void addClass(Class<T> c) {
 		classes.put(c.getSimpleName(), c);
 	}
 
@@ -67,7 +84,7 @@ public class DatabaseBuilder {
 	 * @throws DBException
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends RecordBase> String getSQLCreate(String table)
+	public <T extends DatabaseClient> String getSQLCreate(String table)
 			throws DBException {
 		StringBuilder sb = null;
 		Class<T> c = getClassBySqlName(table);

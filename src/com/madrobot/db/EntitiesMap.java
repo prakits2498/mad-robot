@@ -9,21 +9,21 @@ import java.util.WeakHashMap;
  * 
  */
 class EntitiesMap {
-	private Map<String, WeakReference<RecordBase>> map = new HashMap<String, WeakReference<RecordBase>>();
-	WeakHashMap<RecordBase, String> _map = new WeakHashMap<RecordBase, String>(); 
+	private Map<String, WeakReference<DatabaseClient>> map = new HashMap<String, WeakReference<DatabaseClient>>();
+	WeakHashMap<DatabaseClient, String> _map = new WeakHashMap<DatabaseClient, String>(); 
 
 	@SuppressWarnings("unchecked")
-	<T extends RecordBase> T get(Class<T> c, long id) {
+	<T extends DatabaseClient> T get(Class<T> c, long id) {
 		String key = makeKey(c, id);
-		WeakReference<RecordBase> i = map.get(key);
+		WeakReference<DatabaseClient> i = map.get(key);
 		if (i == null)
 			return null;
 		return (T) i.get();
 	}
 
-	void set(RecordBase e) {
+	void set(DatabaseClient e) {
 		String key = makeKey(e.getClass(), e.getID());
-		map.put(key, new WeakReference<RecordBase>(e));
+		map.put(key, new WeakReference<DatabaseClient>(e));
 	}
 	
 	@SuppressWarnings("unchecked")
