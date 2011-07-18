@@ -183,6 +183,8 @@ public final class DBUtils {
 	 * the <code>ResultSet</code> get* methods.
 	 * </p>
 	 * 
+	 * To generate table from java beans use {@link DatabaseBuilder} class
+	 * 
 	 * @param <T>
 	 *            The type of bean to create
 	 * @param rs
@@ -271,7 +273,7 @@ public final class DBUtils {
 	 * 
 	 * 
 	 * </p>
-	 * 
+	 * To generate table from java beans use {@link DatabaseBuilder} class
 	 * 
 	 * @param <T>
 	 * @param cursor

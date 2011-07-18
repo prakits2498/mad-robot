@@ -18,7 +18,7 @@ import android.database.sqlite.SQLiteException;
  * 
  * 
  */
-public class RecordBase {
+public class DatabaseClient {
 
 	static EntitiesMap s_EntitiesMap = new EntitiesMap();
 
@@ -33,8 +33,8 @@ public class RecordBase {
 	 * @param db
 	 * @return
 	 */
-	static public RecordBase createInstance(Database db) {
-		return new RecordBase(db);
+	static public DatabaseClient createInstance(Database db) {
+		return new DatabaseClient(db);
 	}
 
 	/**
@@ -46,11 +46,11 @@ public class RecordBase {
 	 * @return
 	 * @throws DBException
 	 */
-	static public RecordBase open(Context ctx, String dbName,
+	static public DatabaseClient open(Context ctx, String dbName,
 			int dbVersion) throws DBException {
 		Database db = Database.createInstance(ctx, dbName, dbVersion);
 		db.open();
-		return RecordBase.createInstance(db);
+		return DatabaseClient.createInstance(db);
 	}
 
 	/**
@@ -82,11 +82,11 @@ public class RecordBase {
 	 * 
 	 * @param db
 	 */
-	protected RecordBase(Database db) {
+	protected DatabaseClient(Database db) {
 		m_Database = db;
 	}
 
-	protected RecordBase() {
+	protected DatabaseClient() {
 	}
 
 	/**
@@ -97,7 +97,7 @@ public class RecordBase {
 	 *            The type of the required entity
 	 * @return New entity instance
 	 */
-	public <T extends RecordBase> T newEntity(Class<T> type)
+	public <T extends DatabaseClient> T newEntity(Class<T> type)
 			throws DBException {
 		T entity = null;
 		try {
@@ -224,8 +224,8 @@ public class RecordBase {
 				columns.add(field);
 			}
 		}
-		if (!getClass().equals(RecordBase.class)) {
-			fields = RecordBase.class.getDeclaredFields();
+		if (!getClass().equals(DatabaseClient.class)) {
+			fields = DatabaseClient.class.getDeclaredFields();
 			for (Field field : fields) {
 				if (!field.getName().startsWith("m_")
 						&& !field.getName().startsWith("s_")) {
@@ -248,11 +248,11 @@ public class RecordBase {
 		ContentValues values = new ContentValues(columns.size());
 		for (Field column : columns) {
 			try {
-				if (column.getType().getSuperclass() == RecordBase.class)
+				if (column.getType().getSuperclass() == DatabaseClient.class)
 					values.put(
 							WordUtils.toSQLName(column.getName()),
 							column.get(this) != null ? String
-									.valueOf(((RecordBase) column
+									.valueOf(((DatabaseClient) column
 											.get(this))._id) : "0");
 				else
 					values.put(WordUtils.toSQLName(column.getName()),
@@ -279,11 +279,11 @@ public class RecordBase {
 		ContentValues values = new ContentValues(columns.size());
 		for (Field column : columns) {
 			try {
-				if (column.getType().getSuperclass() == RecordBase.class)
+				if (column.getType().getSuperclass() == DatabaseClient.class)
 					values.put(
 							WordUtils.toSQLName(column.getName()),
 							column.get(this) != null ? String
-									.valueOf(((RecordBase) column
+									.valueOf(((DatabaseClient) column
 											.get(this))._id) : "0");
 				else
 					values.put(WordUtils.toSQLName(column.getName()),
@@ -382,7 +382,7 @@ public class RecordBase {
 				} else if (typeString.equals("java.sql.Timestamp")) {
 					long l = cursor.getLong(cursor.getColumnIndex(colName));
 					field.set(this, new Timestamp(l));
-				} else if (field.getType().getSuperclass() == RecordBase.class) {
+				} else if (field.getType().getSuperclass() == DatabaseClient.class) {
 					long id = cursor.getLong(cursor.getColumnIndex(colName));
 					if (id > 0)
 						entities.put(field, id);
@@ -403,7 +403,7 @@ public class RecordBase {
 		for (Field f : entities.keySet()) {
 			try {
 				f.set(this, this.findByID(
-						(Class<? extends RecordBase>) f.getType(),
+						(Class<? extends DatabaseClient>) f.getType(),
 						entities.get(f)));
 			} catch (SQLiteException e) {
 				throw new DBException(e.getLocalizedMessage());
@@ -430,7 +430,7 @@ public class RecordBase {
 	 * @throws IllegalAccessException
 	 * @throws InstantiationException
 	 */
-	public <T extends RecordBase> int delete(Class<T> type,
+	public <T extends DatabaseClient> int delete(Class<T> type,
 			String whereClause, String[] whereArgs)
 			throws DBException {
 		if (m_Database == null)
@@ -461,7 +461,7 @@ public class RecordBase {
 	 * @return The number of rows affected.
 	 * @throws DBException
 	 */
-	public <T extends RecordBase> int deleteByColumn(Class<T> type,
+	public <T extends DatabaseClient> int deleteByColumn(Class<T> type,
 			String column, String value) throws DBException {
 		return delete(type, String.format("%s = ?", column),
 				new String[] { value });
@@ -490,7 +490,7 @@ public class RecordBase {
 	 * @throws IllegalAccessException
 	 * @throws InstantiationException
 	 */
-	public <T extends RecordBase> List<T> find(Class<T> type,
+	public <T extends DatabaseClient> List<T> find(Class<T> type,
 			String whereClause, String[] whereArgs)
 			throws DBException {
 		if (m_Database == null)
@@ -550,7 +550,7 @@ public class RecordBase {
 	 * @throws IllegalAccessException
 	 * @throws InstantiationException
 	 */
-	public <T extends RecordBase> List<T> find(Class<T> type,
+	public <T extends DatabaseClient> List<T> find(Class<T> type,
 			boolean distinct, String whereClause, String[] whereArgs,
 			String groupBy, String having, String orderBy, String limit)
 			throws DBException {
@@ -606,7 +606,7 @@ public class RecordBase {
 	 * @return A generic list of all matching entities.
 	 * @throws DBException
 	 */
-	public <T extends RecordBase> List<T> findByColumn(Class<T> type,
+	public <T extends DatabaseClient> List<T> findByColumn(Class<T> type,
 			String column, String value) throws DBException {
 		return find(type, String.format("%s = ?", column),
 				new String[] { value });
@@ -624,7 +624,7 @@ public class RecordBase {
 	 * @return The matching entity if reocrd found in DB, null otherwise
 	 * @throws DBException
 	 */
-	public <T extends RecordBase> T findByID(Class<T> type, long id)
+	public <T extends DatabaseClient> T findByID(Class<T> type, long id)
 			throws DBException {
 		if (m_Database == null)
 			throw new DBException("Set database first");
@@ -666,7 +666,7 @@ public class RecordBase {
 	 * @return A generic list of all matching entities.
 	 * @throws DBException
 	 */
-	public <T extends RecordBase> List<T> findAll(Class<T> type)
+	public <T extends DatabaseClient> List<T> findAll(Class<T> type)
 			throws DBException {
 		return find(type, null, null);
 	}
