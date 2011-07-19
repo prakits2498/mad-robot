@@ -1,20 +1,20 @@
 
 package com.madrobot.util.pdf;
 
-public class CrossReferenceTable extends List {
+ class CrossReferenceTable extends List {
 
 	private int mObjectNumberStart;
 	
-	public CrossReferenceTable() {
+	 CrossReferenceTable() {
 		super();
 		clear();
 	}
 	
-	public void setObjectNumberStart(int Value) {
+	 void setObjectNumberStart(int Value) {
 		mObjectNumberStart = Value;
 	}
 	
-	public int getObjectNumberStart() {
+	 int getObjectNumberStart() {
 		return mObjectNumberStart;
 	}
 	
@@ -22,7 +22,7 @@ public class CrossReferenceTable extends List {
 		return renderList();
 	}
 	
-	public void addObjectXRefInfo(int ByteOffset, int Generation, boolean InUse) {
+	 void addObjectXRefInfo(int ByteOffset, int Generation, boolean InUse) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(String.format("%010d", ByteOffset));
 		sb.append(" ");

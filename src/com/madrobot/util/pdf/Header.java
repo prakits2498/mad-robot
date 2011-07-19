@@ -1,35 +1,34 @@
-
 package com.madrobot.util.pdf;
 
-public class Header extends Base {
+class Header extends Base {
 
 	private String mVersion;
 	private String mRenderedHeader;
-	
-	public Header() {
+
+	Header() {
 		clear();
 	}
-	
-	public void setVersion(int Major, int Minor) {
+
+	void setVersion(int Major, int Minor) {
 		mVersion = Integer.toString(Major) + "." + Integer.toString(Minor);
 		render();
 	}
-	
-	public int getPDFStringSize() {
+
+	int getPDFStringSize() {
 		return mRenderedHeader.length();
 	}
-	
+
 	private void render() {
 		mRenderedHeader = "%PDF-" + mVersion + "\n\n";
 	}
-	
+
 	@Override
-	public String toPDFString() {
+	String toPDFString() {
 		return mRenderedHeader;
 	}
 
 	@Override
-	public void clear() {
+	void clear() {
 		setVersion(1, 4);
 	}
 

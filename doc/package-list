@@ -1,8 +1,11 @@
+com.madrobot
 com.madrobot.beans
 com.madrobot.db
+com.madrobot.db.orm
 com.madrobot.device
 com.madrobot.geom
 com.madrobot.graphics
+com.madrobot.graphics.threeD
 com.madrobot.io
 com.madrobot.io.file
 com.madrobot.io.net
@@ -21,5 +24,6 @@ com.madrobot.tasks
 com.madrobot.text
 com.madrobot.ui
 com.madrobot.util
+com.madrobot.util.pdf
 com.madrobot.util.zip
 com.madrobot.xml

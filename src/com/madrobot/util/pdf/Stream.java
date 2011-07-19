@@ -1,9 +1,9 @@
 
 package com.madrobot.util.pdf;
 
-public class Stream extends EnclosedContent {
+ class Stream extends EnclosedContent {
 
-	public Stream() {
+	 Stream() {
 		super();
 		setBeginKeyword("stream",false,true);
 		setEndKeyword("endstream",false,true);

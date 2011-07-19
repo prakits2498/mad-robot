@@ -1,7 +1,11 @@
 package com.madrobot.util.pdf;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 
 /**
+ * Entry point to create a PDF document
  * 
  * @author elton.kent
  * 
@@ -15,6 +19,7 @@ public final class PDFWriter {
 
 	/**
 	 * Creates a new PDF writer instance with default Paper size A4.
+	 * 
 	 * @see PaperSize
 	 */
 	public PDFWriter() {
@@ -49,7 +54,7 @@ public final class PDFWriter {
 	}
 
 	/**
-	 * Creates a new page. 
+	 * Creates a new page.
 	 * <p>
 	 * All subsequent operations will be performed on this page
 	 * </p>
@@ -121,4 +126,20 @@ public final class PDFWriter {
 		return mDocument.toPDFString();
 	}
 
+	/**
+	 * Write the current PDF document to a OutputStream
+	 * 
+	 * @param os
+	 *            OutputStream
+	 * @param encoding
+	 *            usually "ISO-8859-1"
+	 * @throws IOException
+	 * @throws UnsupportedEncodingException
+	 */
+	public void writeToStream(OutputStream os, String encoding)
+			throws UnsupportedEncodingException, IOException {
+		os.write(asString().getBytes(encoding));
+		os.close();
+
+	}
 }
