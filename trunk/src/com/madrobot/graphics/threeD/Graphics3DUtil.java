@@ -8,7 +8,9 @@
  * Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
-package com.madrobot.graphics;
+package com.madrobot.graphics.threeD;
+
+import com.madrobot.graphics.ColorUtils;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
