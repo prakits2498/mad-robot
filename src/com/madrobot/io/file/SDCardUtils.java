@@ -13,6 +13,7 @@ package com.madrobot.io.file;
 import java.io.File;
 
 import android.os.StatFs;
+import android.util.Log;
 
 public class SDCardUtils {
 	/**
@@ -61,13 +62,16 @@ public class SDCardUtils {
 	public static boolean canWrite(long sizeToWrite) {
 		/* check if the card is mounted */
 		if (!isMounted()) {
+			Log.e("MadRobot","SDcard is not mounted!");
 			return false;
 			/* check if the card is read only */
 		}
 		if (isReadOnly()) {
+			Log.e("MadRobot","SDcard is readonly!");
 			return false;
 		}
 		if (getFreeSpaceOnSDCard() < sizeToWrite) {
+			Log.e("MadRobot","No Space on SDcard!");
 			return false;
 		}
 		return true;

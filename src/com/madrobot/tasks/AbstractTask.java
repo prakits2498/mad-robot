@@ -47,4 +47,24 @@ abstract class AbstractTask extends AsyncTask<Object, Object, Object> {
 	public void setAppContext(Context appContext) {
 		this.appContext = appContext;
 	}
+	
+	protected void onProgressUpdate(Object... objects) {
+		/*
+		 * if null is received then it indicates that the task has just started
+		 */
+		if(objects == null){
+			notifier.onTaskStarted();
+		} else{
+			DataResponse response = (DataResponse) objects[0];
+			if(response.getResponseStatus() > 0){
+				notifier.onSuccess(response);
+			} else{
+				notifier.onError(response.getT());
+			}
+		}
+	}
+	
+	protected void taskStarted(){
+		notifier.onTaskStarted();
+	}
 }

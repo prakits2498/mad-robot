@@ -54,7 +54,8 @@ public class DownloadBitmapTask extends AbstractTask {
 	}
 
 	protected Object doInBackground(Object... params) {
-		publishProgress(null);
+		/*sending*/
+		taskStarted();
 		URI[] uri = (URI[]) params[0];
 		BitmapFactory.Options opt = (Options) params[1];
 		for(int i = 0; i < uri.length; i++){
@@ -83,21 +84,6 @@ public class DownloadBitmapTask extends AbstractTask {
 
 	}
 
-	protected void onProgressUpdate(Object... objects) {
-		/*
-		 * if null is received then it indicates that the task has just started
-		 */
-		if(objects == null){
-			notifier.onTaskStarted();
-		} else{
-			DataResponse response = (DataResponse) objects[0];
-			if(response.getResponseStatus() > 0){
-				notifier.onSuccess(response);
-			} else{
-				notifier.onError(response.getT());
-			}
-		}
-	}
 
 	protected void onPostExecute(Object result) {
 		notifier.onTaskCompleted();
