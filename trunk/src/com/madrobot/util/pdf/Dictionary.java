@@ -1,6 +1,6 @@
 package com.madrobot.util.pdf;
 
-public class Dictionary extends EnclosedContent {
+class Dictionary extends EnclosedContent {
 	
 	public Dictionary() {
 		super();

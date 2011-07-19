@@ -1,7 +1,6 @@
-
 package com.madrobot.util.pdf;
 
-public class IndirectObject extends Base {
+class IndirectObject extends Base {
 
 	private EnclosedContent mContent;
 	private Dictionary mDictionaryContent;
@@ -10,87 +9,88 @@ public class IndirectObject extends Base {
 	private int mByteOffset;
 	private boolean mInUse;
 
-	public IndirectObject() {
+	IndirectObject() {
 		clear();
 	}
-	
-	public void setNumberID(int Value) {
+
+	void setNumberID(int Value) {
 		mID.setNumber(Value);
 	}
 
-	public int getNumberID() {
+	int getNumberID() {
 		return mID.getNumber();
 	}
 
-	public void setGeneration(int Value) {
+	void setGeneration(int Value) {
 		mID.setGeneration(Value);
 	}
 
-	public int getGeneration() {
+	int getGeneration() {
 		return mID.getGeneration();
 	}
-	
-	public String getIndirectReference() {
-		return mID.toPDFString()+" R";
+
+	String getIndirectReference() {
+		return mID.toPDFString() + " R";
 	}
 
-	public void setByteOffset(int Value) {
+	void setByteOffset(int Value) {
 		mByteOffset = Value;
 	}
-	
-	public int getByteOffset() {
+
+	int getByteOffset() {
 		return mByteOffset;
 	}
 
-	public void setInUse(boolean Value) {
+	void setInUse(boolean Value) {
 		mInUse = Value;
 	}
-	
-	public boolean getInUse() {
+
+	boolean getInUse() {
 		return mInUse;
 	}
-	
-	public void addContent(String Value) {
-		mContent.addContent(Value);		
+
+	void addContent(String Value) {
+		mContent.addContent(Value);
 	}
 
-	public void setContent(String Value) {
-		mContent.setContent(Value);		
+	void setContent(String Value) {
+		mContent.setContent(Value);
 	}
 
-	public String getContent() {
+	String getContent() {
 		return mContent.getContent();
 	}
-	
-	public void addDictionaryContent(String Value) {
-		mDictionaryContent.addContent(Value);		
+
+	void addDictionaryContent(String Value) {
+		mDictionaryContent.addContent(Value);
 	}
 
-	public void setDictionaryContent(String Value) {
-		mDictionaryContent.setContent(Value);		
+	void setDictionaryContent(String Value) {
+		mDictionaryContent.setContent(Value);
 	}
 
-	public String getDictionaryContent() {
-		return mDictionaryContent.getContent();		
-	}
-	
-	public void addStreamContent(String Value) {
-		mStreamContent.addContent(Value);		
+	String getDictionaryContent() {
+		return mDictionaryContent.getContent();
 	}
 
-	public void setStreamContent(String Value) {
-		mStreamContent.setContent(Value);		
+	void addStreamContent(String Value) {
+		mStreamContent.addContent(Value);
+	}
+
+	void setStreamContent(String Value) {
+		mStreamContent.setContent(Value);
 	}
 
 	public String getStreamContent() {
 		return mStreamContent.getContent();
 	}
-	
+
 	protected String render() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(mID.toPDFString());
 		sb.append(" ");
-		// j-a-s-d: this can be performed in inherited classes DictionaryObject and StreamObject
+		// j-a-s-d: this can be performed in inherited classes DictionaryObject
+		// and StreamObject
 		if (mDictionaryContent.hasContent()) {
 			mContent.setContent(mDictionaryContent.toPDFString());
 			if (mStreamContent.hasContent())

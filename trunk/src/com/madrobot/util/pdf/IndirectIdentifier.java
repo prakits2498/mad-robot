@@ -1,40 +1,39 @@
-
 package com.madrobot.util.pdf;
 
-public class IndirectIdentifier extends Base {
+class IndirectIdentifier extends Base {
 
 	private int mNumber;
 	private int mGeneration;
 
-	public IndirectIdentifier() {
+	IndirectIdentifier() {
 		clear();
 	}
-	
-	public void setNumber(int Number) {
+
+	void setNumber(int Number) {
 		this.mNumber = Number;
 	}
 
-	public int getNumber() {
+	int getNumber() {
 		return mNumber;
 	}
 
-	public void setGeneration(int Generation) {
+	void setGeneration(int Generation) {
 		this.mGeneration = Generation;
 	}
 
-	public int getGeneration() {
+	int getGeneration() {
 		return mGeneration;
 	}
-	
+
 	@Override
-	public void clear() {
+	void clear() {
 		mNumber = 0;
 		mGeneration = 0;
 	}
 
 	@Override
-	public String toPDFString() {
-		return Integer.toString(mNumber)+" "+Integer.toString(mGeneration);
+	String toPDFString() {
+		return Integer.toString(mNumber) + " " + Integer.toString(mGeneration);
 	}
 
 }

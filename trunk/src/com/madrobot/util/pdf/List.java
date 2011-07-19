@@ -3,15 +3,15 @@ package com.madrobot.util.pdf;
 
 import java.util.ArrayList;
 
-public abstract class List extends Base {
+ abstract class List extends Base {
 
 	protected ArrayList<String> mList;
 
-	public List() {
+	 List() {
 		mList = new ArrayList<String>();
 	}
 	
-	protected String renderList() {
+	 String renderList() {
 		StringBuilder sb = new StringBuilder();
 		int x = 0;
 		while (x < mList.size()) {
@@ -22,7 +22,7 @@ public abstract class List extends Base {
 	}
 	
 	@Override
-	public void clear() {
+	 void clear() {
 		mList.clear();
 	}
 }

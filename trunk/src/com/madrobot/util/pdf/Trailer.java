@@ -1,21 +1,21 @@
 package com.madrobot.util.pdf;
 
-public class Trailer extends Base {
+ class Trailer extends Base {
 
 	private int mXRefByteOffset;
 	private int mObjectsCount;
 	private Dictionary mTrailerDictionary;
 	
-	public Trailer() {
+	 Trailer() {
 		clear();
 	}
 	
-	public void setCrossReferenceTableByteOffset(int Value)
+	 void setCrossReferenceTableByteOffset(int Value)
 	{
 		mXRefByteOffset = Value;
 	}
 
-	public void setObjectsCount(int Value)
+	 void setObjectsCount(int Value)
 	{
 		mObjectsCount = Value;
 	}
@@ -43,12 +43,12 @@ public class Trailer extends Base {
 	}
 	
 	@Override
-	public String toPDFString() {		
+	 String toPDFString() {		
 		return render();
 	}
 
 	@Override
-	public void clear() {
+	 void clear() {
 		mXRefByteOffset = 0;
 		mTrailerDictionary = new Dictionary();
 	}

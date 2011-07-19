@@ -1,9 +1,15 @@
 package com.madrobot.util.pdf;
 
+/**
+ * List of standard PDF document fonts and text angle constants
+ * 
+ * @author elton.kent
+ * 
+ */
 public class StandardFonts {
-	
+
 	public static final String SUBTYPE = "Type1";
-	
+
 	public static final String TIMES_ROMAN = "Times-Roman";
 	public static final String TIMES_BOLD = "Times-Bold";
 	public static final String TIMES_ITALIC = "Times-Italic";
@@ -18,10 +24,10 @@ public class StandardFonts {
 	public static final String COURIER_BOLDOBLIQUE = "Courier-BoldOblique";
 	public static final String SYMBOL = "Symbol";
 	public static final String ZAPDINGBATS = "ZapfDingbats";
-	
+
 	public static final String MAC_ROMAN_ENCODING = "MacRomanEncoding";
 	public static final String WIN_ANSI_ENCODING = "WinAnsiEncoding";
-	
+
 	public static final String DEGREES_0_ROTATION = "1 0 0 1";
 	public static final String DEGREES_45_ROTATION = "1 -1 1 1";
 	public static final String DEGREES_90_ROTATION = "0 -1 1 0";

@@ -1,17 +1,17 @@
 
 package com.madrobot.util.pdf;
 
-public class EnclosedContent extends Base {
+ class EnclosedContent extends Base {
 
 	private String mBegin;
 	private String mEnd;
 	protected StringBuilder mContent;
 	
-	public EnclosedContent() {
+	 EnclosedContent() {
 		clear();
 	}
 	
-	public void setBeginKeyword(String Value, boolean NewLineBefore, boolean NewLineAfter) {
+	 void setBeginKeyword(String Value, boolean NewLineBefore, boolean NewLineAfter) {
 		if (NewLineBefore)
 			mBegin = "\n" + Value;
 		else
@@ -20,7 +20,7 @@ public class EnclosedContent extends Base {
 			mBegin += "\n";
 	}
 
-	public void setEndKeyword(String Value, boolean NewLineBefore, boolean NewLineAfter) {		
+	 void setEndKeyword(String Value, boolean NewLineBefore, boolean NewLineAfter) {		
 		if (NewLineBefore)
 			mEnd = "\n" + Value;
 		else
@@ -29,28 +29,28 @@ public class EnclosedContent extends Base {
 			mEnd += "\n";
 	}
 	
-	public boolean hasContent() {
+	 boolean hasContent() {
 		return mContent.length() > 0;
 	}
 
-	public void setContent(String Value) {
+	 void setContent(String Value) {
 		clear();
 		mContent.append(Value);
 	}
 	
-	public String getContent() {
+	 String getContent() {
 		return mContent.toString();
 	}
 
-	public void addContent(String Value) {
+	 void addContent(String Value) {
 		mContent.append(Value);
 	}
 	
-	public void addNewLine() {
+	 void addNewLine() {
 		mContent.append("\n");
 	}
 
-	public void addSpace() {
+	 void addSpace() {
 		mContent.append(" ");
 	}
 	
