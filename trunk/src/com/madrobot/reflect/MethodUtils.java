@@ -21,8 +21,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import com.madrobot.io.net.client.FingerClient;
-
 /**
  * <p>
  * Utility reflection methods focused on methods, originally from Commons

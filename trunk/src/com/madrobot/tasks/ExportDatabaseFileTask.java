@@ -1,19 +1,22 @@
+/*******************************************************************************
+ * Copyright (c) 2011 MadRobot.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the GNU Lesser Public License v2.1
+ * which accompanies this distribution, and is available at
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * 
+ * Contributors:
+ *  Elton Kent - initial API and implementation
+ ******************************************************************************/
 package com.madrobot.tasks;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.channels.FileChannel;
+
+import android.content.Context;
+import android.util.Log;
 
 import com.madrobot.io.file.FileUtils;
-import com.madrobot.io.file.SDCardUtils;
-
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.os.AsyncTask;
-import android.os.Environment;
-import android.util.Log;
 
 /**
  * Task to back the application's database file to the sdcard

@@ -21,7 +21,6 @@ import android.provider.Contacts;
 import android.provider.ContactsContract;
 
 import com.madrobot.beans.IntrospectionException;
-import com.madrobot.db.DBUtils;
 import com.madrobot.db.orm.BeanGenerator;
 
 /**

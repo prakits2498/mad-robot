@@ -10,10 +10,10 @@
  ******************************************************************************/
 package com.madrobot.graphics.threeD;
 
-import com.madrobot.graphics.ColorUtils;
-
 import android.graphics.Canvas;
 import android.graphics.Paint;
+
+import com.madrobot.graphics.ColorUtils;
 
 /**
  * Helper class to draw 3D primitives on a 2D surface
