@@ -22,7 +22,7 @@ import android.provider.ContactsContract;
 
 import com.madrobot.beans.IntrospectionException;
 import com.madrobot.db.DBUtils;
-import com.madrobot.db.auto.BeanGenerator;
+import com.madrobot.db.orm.BeanGenerator;
 
 /**
  * Utility for accessing phone contacts
