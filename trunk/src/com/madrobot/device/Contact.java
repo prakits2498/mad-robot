@@ -11,7 +11,7 @@
 package com.madrobot.device;
 
 /**
- * Contact information bean
+ * Contact information 
  *
  */
 public class Contact {
