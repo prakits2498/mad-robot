@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2011 MadRobot.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the GNU Lesser Public License v2.1
+ * which accompanies this distribution, and is available at
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * 
+ * Contributors:
+ *  Elton Kent - initial API and implementation
+ ******************************************************************************/
 package com.madrobot.graphics.threeD;
 
 import java.io.BufferedReader;
@@ -7,7 +17,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Vector;
 
 import android.util.Log;
 

@@ -16,13 +16,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.madrobot.db.DBException;
-import com.madrobot.text.WordUtils;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
+
+import com.madrobot.db.DBException;
+import com.madrobot.text.WordUtils;
 
 /**
  * Base class for tables entities

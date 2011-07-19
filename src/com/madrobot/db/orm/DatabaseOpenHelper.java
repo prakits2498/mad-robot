@@ -10,12 +10,12 @@
  ******************************************************************************/
 package com.madrobot.db.orm;
 
-import com.madrobot.db.DBException;
-
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
+import com.madrobot.db.DBException;
 
 /**
  * Internal framework class. Utilize DatabaseBuilder to produce DDL statements

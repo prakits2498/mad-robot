@@ -10,13 +10,13 @@
  ******************************************************************************/
 package com.madrobot;
 
-import com.madrobot.graphics.BimapUtils;
-
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.widget.ImageView;
+
+import com.madrobot.graphics.BimapUtils;
 
 public class TestActivity extends Activity {
 	/** Called when the activity is first created. */
