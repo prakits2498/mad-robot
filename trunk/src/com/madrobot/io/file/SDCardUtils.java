@@ -20,9 +20,9 @@ public class SDCardUtils {
 	 * 
 	 * @return
 	 */
-	public static boolean isSDCardMounted() {
-		return android.os.Environment.getExternalStorageState()
-				.equals(android.os.Environment.MEDIA_MOUNTED);
+	public static boolean isMounted() {
+		return android.os.Environment.getExternalStorageState().equals(
+				android.os.Environment.MEDIA_MOUNTED);
 	}
 
 	/**
@@ -30,8 +30,13 @@ public class SDCardUtils {
 	 * 
 	 * @return
 	 */
-	public static File getSDcardDirectory() {
+	public static File getDirectory() {
 		return android.os.Environment.getExternalStorageDirectory();
+	}
+
+	public static boolean isReadOnly() {
+		return android.os.Environment.getExternalStorageState().equals(
+				android.os.Environment.MEDIA_MOUNTED_READ_ONLY);
 	}
 
 	/**
@@ -40,9 +45,41 @@ public class SDCardUtils {
 	 * @return
 	 */
 	public static long getFreeSpaceOnSDCard() {
-		StatFs cardStatistics = new StatFs(getSDcardDirectory().toString());
-		long freeSpace = (long) cardStatistics.getBlockSize() * cardStatistics.getFreeBlocks();
+		StatFs cardStatistics = new StatFs(getDirectory().toString());
+		long freeSpace = (long) cardStatistics.getBlockSize()
+				* cardStatistics.getFreeBlocks();
 		return freeSpace;
+	}
+
+	/**
+	 * Checks if there is space to write on the SDcard
+	 * 
+	 * @param sizeToWrite
+	 *            The size (in bytes) of the data to write.
+	 * @return true if the size can be written
+	 */
+	public static boolean canWrite(long sizeToWrite) {
+		/* check if the card is mounted */
+		if (!isMounted()) {
+			return false;
+			/* check if the card is read only */
+		}
+		if (isReadOnly()) {
+			return false;
+		}
+		if (getFreeSpaceOnSDCard() < sizeToWrite) {
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Check if the sdcard is writable
+	 * 
+	 * @return true if the card is writable.
+	 */
+	public static boolean canWrite() {
+		return canWrite(0);
 	}
 
 }

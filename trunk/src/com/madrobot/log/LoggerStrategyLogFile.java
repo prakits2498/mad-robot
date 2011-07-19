@@ -46,7 +46,7 @@ public class LoggerStrategyLogFile extends ALogMethod implements LoggerStrategy 
 	 */
 	public LoggerStrategyLogFile(String directory, String fileName) {
 		logDirectory = new File(Environment.getExternalStorageDirectory(), directory);
-		if(SDCardUtils.isSDCardMounted()){
+		if(SDCardUtils.canWrite()){
 			try{
 				String fname = fileName;// "log_" + new Date().getTime() +
 				// ".txt";
