@@ -9,7 +9,7 @@ import java.util.Vector;
 import android.content.Context;
 
 /**
- * Material File loader
+ * Material File loader (Wavefront format material file)
  * @author elton.kent
  *
  */
