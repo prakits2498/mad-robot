@@ -23,6 +23,7 @@ import java.util.List;
 import android.util.Log;
 
 import com.madrobot.io.IOUtils;
+import com.madrobot.text.StringUtils;
 
 public class FileUtils {
 	private static final String TAG = "Lib:FileUtil";
@@ -44,30 +45,30 @@ public class FileUtils {
 	 */
 	public static boolean makeDirectory(String path, String directoryName) {
 		File f = new File(path, directoryName);
-		if(!f.exists()){
+		if (!f.exists()) {
 			return f.mkdir();
 		}
 		return false;
 	}
 
 	/**
-	 * Finds the relative path from base to file. The file returned is
-	 * such that file.getCanonicalPath().equals( new File( base,
-	 * getRelativePath( base, file ).getPath() ).getCanonicalPath )
+	 * Finds the relative path from base to file. The file returned is such that
+	 * file.getCanonicalPath().equals( new File( base, getRelativePath( base,
+	 * file ).getPath() ).getCanonicalPath )
 	 * 
 	 * @param base
 	 *            The base for the relative path
 	 * @param file
 	 *            The destination for the relative path
-	 * @return The relative path betwixt base and file, or null if
-	 *         there was a IOException
+	 * @return The relative path betwixt base and file, or null if there was a
+	 *         IOException
 	 */
 	public static File getRelativePath(File base, File file) {
-		try{
+		try {
 			String absBase = base.getCanonicalPath();
 			String absFile = file.getCanonicalPath();
 
-			if(absBase.equals(absFile)){ // base and file are the same file
+			if (absBase.equals(absFile)) { // base and file are the same file
 				return new File("");
 			}
 
@@ -75,27 +76,29 @@ public class FileUtils {
 			int divergenceCharIndex = 0;
 			int divergenceSeperatorIndex = 0;
 
-			while((divergenceCharIndex < absBase.length()) && (divergenceCharIndex < absFile.length())
-					&& (absBase.charAt(divergenceCharIndex) == absFile.charAt(divergenceCharIndex))){
-				if((absBase.charAt(divergenceCharIndex) == File.separatorChar)
-						|| (absFile.charAt(divergenceCharIndex) == File.separatorChar)){
+			while ((divergenceCharIndex < absBase.length())
+					&& (divergenceCharIndex < absFile.length())
+					&& (absBase.charAt(divergenceCharIndex) == absFile
+							.charAt(divergenceCharIndex))) {
+				if ((absBase.charAt(divergenceCharIndex) == File.separatorChar)
+						|| (absFile.charAt(divergenceCharIndex) == File.separatorChar)) {
 					divergenceSeperatorIndex = divergenceCharIndex;
 				}
 
 				divergenceCharIndex++;
 			}
 
-			if(divergenceCharIndex == absBase.length()){ // simple case where
+			if (divergenceCharIndex == absBase.length()) { // simple case where
 				// the base is an
 				// ancestor of the
 				// target
 				// file
 				return new File(absFile.substring(divergenceCharIndex + 1));
-			} else{ // we need to back up the tree a bit, before coming back
+			} else { // we need to back up the tree a bit, before coming back
 				// down.
 				StringBuilder path = new StringBuilder();
-				for(int i = divergenceSeperatorIndex; i < absBase.length(); i++){
-					if(absBase.charAt(i) == File.separatorChar){
+				for (int i = divergenceSeperatorIndex; i < absBase.length(); i++) {
+					if (absBase.charAt(i) == File.separatorChar) {
 						path.append("..");
 						path.append(File.separatorChar);
 					}
@@ -105,7 +108,7 @@ public class FileUtils {
 
 				return new File(path.toString());
 			}
-		} catch(IOException ioe){
+		} catch (IOException ioe) {
 			ioe.printStackTrace();
 			return null;
 		}
@@ -113,10 +116,9 @@ public class FileUtils {
 
 	/**
 	 * Makes a directory, including any necessary but nonexistent parent
-	 * directories. If a file already exists with specified name but it is
-	 * not a directory then an IOException is thrown.
-	 * If the directory cannot be created (or does not already exist)
-	 * then an IOException is thrown.
+	 * directories. If a file already exists with specified name but it is not a
+	 * directory then an IOException is thrown. If the directory cannot be
+	 * created (or does not already exist) then an IOException is thrown.
 	 * 
 	 * @param directory
 	 *            directory to create, must not be <code>null</code>
@@ -127,17 +129,17 @@ public class FileUtils {
 	 *             but is not a directory
 	 */
 	public static void forceMkdir(File directory) throws IOException {
-		if(directory.exists()){
-			if(!directory.isDirectory()){
+		if (directory.exists()) {
+			if (!directory.isDirectory()) {
 				String message = "File " + directory + " exists and is "
 						+ "not a directory. Unable to create directory.";
 				throw new IOException(message);
 			}
-		} else{
-			if(!directory.mkdirs()){
+		} else {
+			if (!directory.mkdirs()) {
 				// Double-check that some other thread or process hasn't made
 				// the directory in the background
-				if(!directory.isDirectory()){
+				if (!directory.isDirectory()) {
 					String message = "Unable to create directory " + directory;
 					throw new IOException(message);
 				}
@@ -166,13 +168,14 @@ public class FileUtils {
 	 *             in case deletion is unsuccessful
 	 */
 	public static void forceDelete(File file) throws IOException {
-		if(file.isDirectory()){
+		if (file.isDirectory()) {
 			deleteDirectory(file);
-		} else{
+		} else {
 			boolean filePresent = file.exists();
-			if(!file.delete()){
-				if(!filePresent){
-					throw new FileNotFoundException("File does not exist: " + file);
+			if (!file.delete()) {
+				if (!filePresent) {
+					throw new FileNotFoundException("File does not exist: "
+							+ file);
 				}
 				String message = "Unable to delete file: " + file;
 				throw new IOException(message);
@@ -189,10 +192,10 @@ public class FileUtils {
 	 *             in case deletion is unsuccessful
 	 */
 	public static void deleteDirectory(File directory) throws IOException {
-		if(!directory.exists()){
+		if (!directory.exists()) {
 			return;
 		}
-		if(!directory.delete()){
+		if (!directory.delete()) {
 			String message = "Unable to delete directory " + directory + ".";
 			throw new IOException(message);
 		}
@@ -213,14 +216,15 @@ public class FileUtils {
 	 * @throws IOException
 	 * @throws IOException
 	 */
-	public static void removeAllFilesExcept(File directory, File[] toKeep) throws IOException {
+	public static void removeAllFilesExcept(File directory, File[] toKeep)
+			throws IOException {
 		File[] allfiles = directory.listFiles();
-		if(toKeep == null || toKeep.length == 0){
+		if (toKeep == null || toKeep.length == 0) {
 			// no files
 			deleteDirectory(directory);
-		} else{
-			for(int i = 0; i < allfiles.length; i++){
-				if(!contains(toKeep, allfiles[i])){
+		} else {
+			for (int i = 0; i < allfiles.length; i++) {
+				if (!contains(toKeep, allfiles[i])) {
 					allfiles[i].delete();
 				}
 			}
@@ -237,11 +241,11 @@ public class FileUtils {
 	 * @return true on the first occurance of the file.
 	 */
 	public static boolean contains(File[] files, File file) {
-		if(files == null || file == null){
+		if (files == null || file == null) {
 			return false;
 		}
-		for(int i = 0; i < files.length; i++){
-			if(files[i].equals(file)){
+		for (int i = 0; i < files.length; i++) {
+			if (files[i].equals(file)) {
 				return true;
 			}
 		}
@@ -265,18 +269,18 @@ public class FileUtils {
 	public static boolean waitFor(File file, int seconds) {
 		int timeout = 0;
 		int tick = 0;
-		while(!file.exists()){
-			if(tick++ >= 10){
+		while (!file.exists()) {
+			if (tick++ >= 10) {
 				tick = 0;
-				if(timeout++ > seconds){
+				if (timeout++ > seconds) {
 					return false;
 				}
 			}
-			try{
+			try {
 				Thread.sleep(100);
-			} catch(InterruptedException ignore){
+			} catch (InterruptedException ignore) {
 				// ignore exception
-			} catch(Exception ex){
+			} catch (Exception ex) {
 				break;
 			}
 		}
@@ -284,8 +288,8 @@ public class FileUtils {
 	}
 
 	/**
-	 * Reads the contents of a file into a byte array.
-	 * The file is always closed.
+	 * Reads the contents of a file into a byte array. The file is always
+	 * closed.
 	 * 
 	 * @param file
 	 *            the file to read, must not be <code>null</code>
@@ -295,49 +299,51 @@ public class FileUtils {
 	 */
 	public static byte[] readFileToByteArray(File file) throws IOException {
 		InputStream in = null;
-		try{
+		try {
 			in = openInputStream(file);
 			return IOUtils.toByteArray(in);
-		} finally{
+		} finally {
 			in.close();
 		}
 	}
 
-	public static void writeByteArrayToFile(byte[] src, File file) throws IOException {
+	public static void writeByteArrayToFile(byte[] src, File file)
+			throws IOException {
 		ByteArrayInputStream stream = null;
-		try{
+		try {
 			stream = new ByteArrayInputStream(src);
 			inputStreamToFile(stream, file);
-		} finally{
-			try{
-				if(stream != null)
+		} finally {
+			try {
+				if (stream != null)
 					stream.close();
-			} catch(Exception e){
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 	}
 
-	public static final void inputStreamToFile(InputStream src, File file) throws IOException {
+	public static final void inputStreamToFile(InputStream src, File file)
+			throws IOException {
 		FileOutputStream stream = null;
-		try{
-			if(file.getParentFile() != null)
+		try {
+			if (file.getParentFile() != null)
 				file.getParentFile().mkdirs();
 			stream = new FileOutputStream(file);
 			IOUtils.copy(src, stream);
-		} finally{
-			try{
-				if(stream != null)
+		} finally {
+			try {
+				if (stream != null)
 					stream.close();
-			} catch(Exception e){
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 	}
 
 	/**
-	 * Reads the contents of a file line by line to a List of Strings.
-	 * The file is always closed.
+	 * Reads the contents of a file line by line to a List of Strings. The file
+	 * is always closed.
 	 * 
 	 * @param file
 	 *            the file to read, must not be <code>null</code>
@@ -350,20 +356,20 @@ public class FileUtils {
 	 * @throws java.io.UnsupportedEncodingException
 	 *             if the encoding is not supported by the VM
 	 */
-	public static final List<String> readLines(File file, String encoding) throws IOException {
+	public static final List<String> readLines(File file, String encoding)
+			throws IOException {
 		InputStream in = null;
-		try{
+		try {
 			in = openInputStream(file);
 			return IOUtils.readLines(in, encoding);
-		} finally{
+		} finally {
 			in.close();
 		}
 	}
 
 	/**
 	 * Reads the contents of a file line by line to a List of Strings using the
-	 * default encoding for the VM.
-	 * The file is always closed.
+	 * default encoding for the VM. The file is always closed.
 	 * 
 	 * @param file
 	 *            the file to read, must not be <code>null</code>
@@ -398,16 +404,19 @@ public class FileUtils {
 	 * @throws IOException
 	 *             if the file cannot be read
 	 */
-	public static final FileInputStream openInputStream(File file) throws IOException {
-		if(file.exists()){
-			if(file.isDirectory()){
-				throw new IOException("File '" + file + "' exists but is a directory");
+	public static final FileInputStream openInputStream(File file)
+			throws IOException {
+		if (file.exists()) {
+			if (file.isDirectory()) {
+				throw new IOException("File '" + file
+						+ "' exists but is a directory");
 			}
-			if(file.canRead() == false){
+			if (file.canRead() == false) {
 				throw new IOException("File '" + file + "' cannot be read");
 			}
-		} else{
-			throw new FileNotFoundException("File '" + file + "' does not exist");
+		} else {
+			throw new FileNotFoundException("File '" + file
+					+ "' does not exist");
 		}
 		return new FileInputStream(file);
 	}
@@ -422,9 +431,10 @@ public class FileUtils {
 	 * @return
 	 * @throws IOException
 	 */
-	public static final boolean copyFileNio(File src, File dst) throws IOException {
+	public static final boolean copyFileNio(File src, File dst)
+			throws IOException {
 		FileChannel srcChannel = null, dstChannel = null;
-		try{
+		try {
 			// Create channel on the source
 			srcChannel = new FileInputStream(src).getChannel();
 
@@ -439,8 +449,9 @@ public class FileUtils {
 				int safe_max = (64 * 1024 * 1024) / 4;
 				long size = srcChannel.size();
 				long position = 0;
-				while(position < size){
-					position += srcChannel.transferTo(position, safe_max, dstChannel);
+				while (position < size) {
+					position += srcChannel.transferTo(position, safe_max,
+							dstChannel);
 				}
 			}
 
@@ -451,21 +462,33 @@ public class FileUtils {
 			dstChannel = null;
 
 			return true;
-		} finally{
-			try{
-				if(srcChannel != null){
+		} finally {
+			try {
+				if (srcChannel != null) {
 					srcChannel.close();
 				}
-			} catch(IOException e){
+			} catch (IOException e) {
 
 			}
-			try{
-				if(dstChannel != null){
+			try {
+				if (dstChannel != null) {
 					dstChannel.close();
 				}
-			} catch(IOException e){
+			} catch (IOException e) {
 
 			}
 		}
+	}
+
+	/**
+	 * Remove invalid FAT filesystem characters from the given string
+	 * 
+	 * @param str
+	 * @return
+	 */
+	public static String removeInvalidFatChars(String str) {
+		String[] invalidChars = new String[] { ":", "\\", "/", "<", ">", "?",
+				"*", "|", "\"", ";" };
+		return StringUtils.strip(str, invalidChars);
 	}
 }

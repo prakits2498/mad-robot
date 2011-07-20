@@ -1320,6 +1320,18 @@ public final class StringUtils {
 		}
 		return result;
 	}
+	
+	/**
+	 * Remove all the strings contained in the string array from the source string
+	 * @param str String to strip
+	 * @param toStrip strings that need to be stripped
+	 * @return
+	 */
+	public static String strip(String str,String[] toStrip){
+		for (int i = 0; i < toStrip.length; i++)
+			str = str.replace(toStrip[i], "");
+		return str;
+	}
 
 //	/**
 //	 * Strips any defined character from the start and end of a String.
