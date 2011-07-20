@@ -79,6 +79,10 @@ public final class PDFWriter {
 		mCurrentPage.setFont(subType, baseFont, encoding);
 	}
 
+	/**
+	 * Add raw content to the current page
+	 * @param rawContent
+	 */
 	public void addRawContent(String rawContent) {
 		mCurrentPage.addRawContent(rawContent);
 	}

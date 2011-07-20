@@ -58,7 +58,9 @@ package com.madrobot.util.pdf;
 		}
 		mTrailer.setObjectsCount(mBody.getObjectsCount());
 		mTrailer.setCrossReferenceTableByteOffset(sb.length());
-		return sb.toString() + mCRT.toPDFString() + mTrailer.toPDFString();
+		sb.append(mCRT.toPDFString());
+		sb.append(mTrailer.toPDFString());
+		return sb.toString();
 	}
 	
 	@Override
