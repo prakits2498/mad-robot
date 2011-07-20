@@ -28,6 +28,26 @@ import com.madrobot.text.StringUtils;
 public class FileUtils {
 	private static final String TAG = "Lib:FileUtil";
 
+	public static String getDirectoryName(String filename) {
+		int slashposition = filename.lastIndexOf("/");
+		if (slashposition >= 0)
+			filename = filename.substring(0, slashposition);
+		return filename;
+	}
+
+	public static String getFileName(String filename) {
+		int slashposition = filename.lastIndexOf("/");
+		if (slashposition >= 0)
+			filename = filename.substring(slashposition + 1, filename.length());
+		return filename;
+	}
+
+	public static String getFileExtension(String filename) {
+		int dotposition = filename.lastIndexOf(".");
+		String ext = filename.substring(dotposition + 1, filename.length());
+		return ext;
+	}
+
 	/**
 	 * Check if the file exists on the given path
 	 * 
