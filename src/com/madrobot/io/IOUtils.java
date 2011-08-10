@@ -12,12 +12,16 @@ package com.madrobot.io;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.io.StreamCorruptedException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,9 +42,10 @@ public class IOUtils {
 	 * @param buf
 	 *            the char array to use as a buffer
 	 */
-	public static void flow(Reader reader, Writer writer, char[] buf) throws IOException {
+	public static void flow(Reader reader, Writer writer, char[] buf)
+			throws IOException {
 		int numRead;
-		while((numRead = reader.read(buf)) >= 0){
+		while ((numRead = reader.read(buf)) >= 0) {
 			writer.write(buf, 0, numRead);
 		}
 	}
@@ -53,41 +58,42 @@ public class IOUtils {
 	 * @return
 	 * @throws IOException
 	 */
-	public static boolean isStreamsEqual(InputStream stream1, InputStream stream2) throws IOException {
+	public static boolean isStreamsEqual(InputStream stream1,
+			InputStream stream2) throws IOException {
 		byte[] buf1 = new byte[4096];
 		byte[] buf2 = new byte[4096];
 		boolean done1 = false;
 		boolean done2 = false;
-		try{
-			while(!done1){
+		try {
+			while (!done1) {
 				int off1 = 0;
 				int off2 = 0;
 
-				while(off1 < buf1.length){
+				while (off1 < buf1.length) {
 					int count = stream1.read(buf1, off1, buf1.length - off1);
-					if(count < 0){
+					if (count < 0) {
 						done1 = true;
 						break;
 					}
 					off1 += count;
 				}
-				while(off2 < buf2.length){
+				while (off2 < buf2.length) {
 					int count = stream2.read(buf2, off2, buf2.length - off2);
-					if(count < 0){
+					if (count < 0) {
 						done2 = true;
 						break;
 					}
 					off2 += count;
 				}
-				if(off1 != off2 || done1 != done2)
+				if (off1 != off2 || done1 != done2)
 					return false;
-				for(int i = 0; i < off1; i++){
-					if(buf1[i] != buf2[i])
+				for (int i = 0; i < off1; i++) {
+					if (buf1[i] != buf2[i])
 						return false;
 				}
 			}
 			return true;
-		} finally{
+		} finally {
 			stream1.close();
 			stream2.close();
 		}
@@ -113,12 +119,55 @@ public class IOUtils {
 	 * @throws IOException
 	 *             if an I/O error occurs
 	 */
-	public static int copy(InputStream input, OutputStream output) throws IOException {
+	public static int copy(InputStream input, OutputStream output)
+			throws IOException {
 		long count = copyLarge(input, output);
-		if(count > Integer.MAX_VALUE){
+		if (count > Integer.MAX_VALUE) {
 			return -1;
 		}
 		return (int) count;
+	}
+
+	public static byte[] copy(byte[] source, byte[] target) {
+		int len = source.length;
+		if (len > target.length) {
+			target = new byte[len];
+		}
+		System.arraycopy(source, 0, target, 0, len);
+		return target;
+	}
+
+	/**
+	 * Serialize the object to a byte array.
+	 * 
+	 * @param obj
+	 *            the object to serialize
+	 * @return the byte array
+	 * @throws IOException
+	 */
+	public static byte[] serialize(Object obj) throws IOException {
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		ObjectOutputStream os = new ObjectOutputStream(out);
+		os.writeObject(obj);
+		return out.toByteArray();
+	}
+
+	/**
+	 * De-serialize the byte array to an object.
+	 * 
+	 * @param data
+	 *            the byte array
+	 * @return the object
+	 * @throws IOException
+	 * @throws StreamCorruptedException
+	 * @throws ClassNotFoundException 
+	 * @throws DbException
+	 *             if serialization fails
+	 */
+	public static Object deserialize(byte[] data) throws StreamCorruptedException, IOException, ClassNotFoundException {
+			ByteArrayInputStream in = new ByteArrayInputStream(data);
+			ObjectInputStream is = new ObjectInputStream(in);
+			return is.readObject();
 	}
 
 	/**
@@ -130,13 +179,12 @@ public class IOUtils {
 	 * </pre>
 	 * 
 	 * @param pInputStream
-	 *            The input stream, which is being read.
-	 *            It is guaranteed, that {@link InputStream#close()} is called
-	 *            on the stream.
+	 *            The input stream, which is being read. It is guaranteed, that
+	 *            {@link InputStream#close()} is called on the stream.
 	 * @param pOutputStream
-	 *            The output stream, to which data should
-	 *            be written. May be null, in which case the input streams
-	 *            contents are simply discarded.
+	 *            The output stream, to which data should be written. May be
+	 *            null, in which case the input streams contents are simply
+	 *            discarded.
 	 * @param pClose
 	 *            True guarantees, that {@link OutputStream#close()} is called
 	 *            on the stream. False indicates, that only
@@ -146,9 +194,10 @@ public class IOUtils {
 	 * @throws IOException
 	 *             An I/O error occurred.
 	 */
-	public static long copy(InputStream pInputStream, OutputStream pOutputStream, boolean pClose)
-			throws IOException {
-		return copy(pInputStream, pOutputStream, pClose, new byte[DEFAULT_BUFFER_SIZE]);
+	public static long copy(InputStream pInputStream,
+			OutputStream pOutputStream, boolean pClose) throws IOException {
+		return copy(pInputStream, pOutputStream, pClose,
+				new byte[DEFAULT_BUFFER_SIZE]);
 	}
 
 	/**
@@ -156,46 +205,44 @@ public class IOUtils {
 	 * {@link OutputStream}.
 	 * 
 	 * @param pIn
-	 *            The input stream, which is being read.
-	 *            It is guaranteed, that {@link InputStream#close()} is called
-	 *            on the stream.
+	 *            The input stream, which is being read. It is guaranteed, that
+	 *            {@link InputStream#close()} is called on the stream.
 	 * @param pOut
-	 *            The output stream, to which data should
-	 *            be written. May be null, in which case the input streams
-	 *            contents are simply discarded.
+	 *            The output stream, to which data should be written. May be
+	 *            null, in which case the input streams contents are simply
+	 *            discarded.
 	 * @param pClose
 	 *            True guarantees, that {@link OutputStream#close()} is called
 	 *            on the stream. False indicates, that only
 	 *            {@link OutputStream#flush()} should be called finally.
 	 * @param pBuffer
-	 *            Temporary buffer, which is to be used for
-	 *            copying data.
+	 *            Temporary buffer, which is to be used for copying data.
 	 * @return Number of bytes, which have been copied.
 	 * @throws IOException
 	 *             An I/O error occurred.
 	 */
-	public static long copy(InputStream pIn, OutputStream pOut, boolean pClose, byte[] pBuffer)
-			throws IOException {
+	public static long copy(InputStream pIn, OutputStream pOut, boolean pClose,
+			byte[] pBuffer) throws IOException {
 		OutputStream out = pOut;
 		InputStream in = pIn;
-		try{
+		try {
 			long total = 0;
-			for(;;){
+			for (;;) {
 				int res = in.read(pBuffer);
-				if(res == -1){
+				if (res == -1) {
 					break;
 				}
-				if(res > 0){
+				if (res > 0) {
 					total += res;
-					if(out != null){
+					if (out != null) {
 						out.write(pBuffer, 0, res);
 					}
 				}
 			}
-			if(out != null){
-				if(pClose){
+			if (out != null) {
+				if (pClose) {
 					out.close();
-				} else{
+				} else {
 					out.flush();
 				}
 				out = null;
@@ -203,18 +250,18 @@ public class IOUtils {
 			in.close();
 			in = null;
 			return total;
-		} finally{
-			if(in != null){
-				try{
+		} finally {
+			if (in != null) {
+				try {
 					in.close();
-				} catch(Throwable t){
+				} catch (Throwable t) {
 					/* Ignore me */
 				}
 			}
-			if(pClose && out != null){
-				try{
+			if (pClose && out != null) {
+				try {
 					out.close();
-				} catch(Throwable t){
+				} catch (Throwable t) {
 					/* Ignore me */
 				}
 			}
@@ -231,9 +278,10 @@ public class IOUtils {
 	 * @param os
 	 * @throws IOException
 	 */
-	public static void performStreamPiping(InputStream is, OutputStream os) throws IOException {
+	public static void performStreamPiping(InputStream is, OutputStream os)
+			throws IOException {
 		byte[] buf = new byte[2048];
-		while(is.read(buf) != -1){
+		while (is.read(buf) != -1) {
 			os.write(buf);
 		}
 		os.close();
@@ -243,21 +291,20 @@ public class IOUtils {
 	public static void writeToStream(InputStream is) {
 		byte[] buf = new byte[2048];
 		StringBuilder builder = new StringBuilder();
-		try{
-			while(is.read(buf) != -1){
+		try {
+			while (is.read(buf) != -1) {
 				builder.append(new String(buf));
 			}
 			Log.e("Blog/DM", "::: Stream Response " + builder);
-		} catch(IOException e){
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
 	/**
-	 * This convenience method allows to read a
-	 * InputStream
-	 * into a string. The platform's default character encoding
-	 * is used for converting bytes into characters.
+	 * This convenience method allows to read a InputStream into a string. The
+	 * platform's default character encoding is used for converting bytes into
+	 * characters.
 	 * 
 	 * @param pStream
 	 *            The input stream to read.
@@ -273,8 +320,8 @@ public class IOUtils {
 	}
 
 	/**
-	 * This convenience method allows to read a
-	 * InputStream into a string, using the given character encoding.
+	 * This convenience method allows to read a InputStream into a string, using
+	 * the given character encoding.
 	 * 
 	 * @param pStream
 	 *            The input stream to read.
@@ -285,7 +332,8 @@ public class IOUtils {
 	 * @throws IOException
 	 *             An I/O error occurred.
 	 */
-	public static String asString(InputStream pStream, String pEncoding) throws IOException {
+	public static String asString(InputStream pStream, String pEncoding)
+			throws IOException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		copy(pStream, baos, true);
 		return baos.toString(pEncoding);
@@ -305,11 +353,12 @@ public class IOUtils {
 	 * @throws IOException
 	 *             if an I/O error occurs
 	 */
-	private static long copyLarge(InputStream input, OutputStream output) throws IOException {
+	private static long copyLarge(InputStream input, OutputStream output)
+			throws IOException {
 		byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
 		long count = 0;
 		int n = 0;
-		while(-1 != (n = input.read(buffer))){
+		while (-1 != (n = input.read(buffer))) {
 			output.write(buffer, 0, n);
 			count += n;
 		}
@@ -354,18 +403,19 @@ public class IOUtils {
 	 * @throws IOException
 	 *             if an I/O error occurs
 	 */
-	public static boolean contentEquals(InputStream input1, InputStream input2) throws IOException {
-		if(!(input1 instanceof BufferedInputStream)){
+	public static boolean contentEquals(InputStream input1, InputStream input2)
+			throws IOException {
+		if (!(input1 instanceof BufferedInputStream)) {
 			input1 = new BufferedInputStream(input1);
 		}
-		if(!(input2 instanceof BufferedInputStream)){
+		if (!(input2 instanceof BufferedInputStream)) {
 			input2 = new BufferedInputStream(input2);
 		}
 
 		int ch = input1.read();
-		while(-1 != ch){
+		while (-1 != ch) {
 			int ch2 = input2.read();
-			if(ch != ch2){
+			if (ch != ch2) {
 				return false;
 			}
 			ch = input1.read();
@@ -376,8 +426,8 @@ public class IOUtils {
 	}
 
 	/**
-	 * Get the contents of an <code>InputStream</code> as a list of Strings,
-	 * one entry per line, using the default character encoding of the platform.
+	 * Get the contents of an <code>InputStream</code> as a list of Strings, one
+	 * entry per line, using the default character encoding of the platform.
 	 * <p>
 	 * This method buffers the input internally, so there is no need to use a
 	 * <code>BufferedInputStream</code>.
@@ -397,8 +447,8 @@ public class IOUtils {
 	}
 
 	/**
-	 * Get the contents of an <code>InputStream</code> as a list of Strings,
-	 * one entry per line, using the specified character encoding.
+	 * Get the contents of an <code>InputStream</code> as a list of Strings, one
+	 * entry per line, using the specified character encoding.
 	 * <p>
 	 * Character encoding names can be found at <a
 	 * href="http://www.iana.org/assignments/character-sets">IANA</a>.
@@ -417,18 +467,19 @@ public class IOUtils {
 	 *             if an I/O error occurs
 	 * @since Commons IO 1.1
 	 */
-	public static List<String> readLines(InputStream input, String encoding) throws IOException {
-		if(encoding == null){
+	public static List<String> readLines(InputStream input, String encoding)
+			throws IOException {
+		if (encoding == null) {
 			return readLines(input);
-		} else{
+		} else {
 			InputStreamReader reader = new InputStreamReader(input, encoding);
 			return readLines(reader);
 		}
 	}
 
 	/**
-	 * Get the contents of a <code>Reader</code> as a list of Strings,
-	 * one entry per line.
+	 * Get the contents of a <code>Reader</code> as a list of Strings, one entry
+	 * per line.
 	 * <p>
 	 * This method buffers the input internally, so there is no need to use a
 	 * <code>BufferedReader</code>.
@@ -446,7 +497,7 @@ public class IOUtils {
 		BufferedReader reader = new BufferedReader(input);
 		List<String> list = new ArrayList<String>();
 		String line = reader.readLine();
-		while(line != null){
+		while (line != null) {
 			list.add(line);
 			line = reader.readLine();
 		}
