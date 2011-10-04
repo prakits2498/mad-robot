@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.widget.ImageView;
 
 import com.madrobot.graphics.BimapUtils;
+import com.madrobot.io.net.NetUtils;
 
 public class TestActivity extends Activity {
 	/** Called when the activity is first created. */
@@ -24,12 +25,7 @@ public class TestActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		ImageView main = (ImageView) findViewById(R.id.text);
-		ImageView main2 = (ImageView) findViewById(R.id.text2);
-		main.setImageResource(R.drawable.icon);
-		main2.setImageBitmap(BimapUtils.deBlurHorizontalHalftone(
-				BitmapFactory.decodeResource(getResources(), R.drawable.icon),
-				5, 4, 3, 2, 1, Bitmap.Config.ARGB_8888));
+		System.out.println("Valid->"+NetUtils.isValidEmailAddress("elton_kent@accenture.co.in"));
 
 	}
 }

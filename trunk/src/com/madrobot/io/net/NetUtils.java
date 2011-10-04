@@ -24,6 +24,8 @@ import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Enumeration;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -167,6 +169,14 @@ public class NetUtils {
 		return (index > 0)
 				&& (isValidIPv6(address.substring(0, index)) && (isValidIPv6(mask) || isMaskValue(
 						mask, 128)));
+	}
+
+	private final static String emailPattern = "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+
+	public static boolean isValidEmailAddress(String address) {
+		Pattern pattern = Pattern.compile(emailPattern);
+		Matcher matcher = pattern.matcher(address);
+		return matcher.matches();
 	}
 
 	/**
