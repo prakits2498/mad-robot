@@ -357,23 +357,7 @@ public class HttpTaskHelper {
 	 */
 	private void setDefaultRequestHeaders(HttpRequestBase httpRequestBase) {
 		// httpRequestBase.setHeader("Accept", "*/*");
-		// httpRequestBase.setHeader("Accept-Encoding", "");
-		// httpRequestBase.setHeader("Accept-Language", "ko");
-		// String strVersionName = "0.0";
-		// String strDeviceName = "devicename";
-		// try
-		// {
-		// strVersionName =
-		// Controller.getInstance().getPackageManager().getPackageInfo(
-		// "com.nhn.android.wingspoon", 0).versionName;
-		// strDeviceName = Build.MANUFACTURER + " " + Build.MODEL;
-		// } catch(NameNotFoundException e)
-		// {
-		// }
-		// String strUserAgentValue = ("NaverWingspoon/" + strVersionName +
-		// " (Android OS "
-		// + Build.VERSION.RELEASE + ";" + strDeviceName + ")");
-		// httpRequestBase.setHeader("User-Agent", strUserAgentValue);
+				
 	}
 
 	/**
