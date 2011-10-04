@@ -53,4 +53,19 @@ public class MathUtils {
 		return amount < low ? low : amount > high ? high : amount;
 	}
 
+	/**
+	 * Return logarithm to base 10.
+	 * 
+	 * @param x
+	 *            Argument to take logarithm from (x>0)
+	 */
+
+	public static final double log10(double x) throws IllegalArgumentException {
+		if (x <= 0)
+			throw new IllegalArgumentException();
+		else{
+			double LN10 = Math.log(10.0);
+			return Math.log(x) / LN10;
+		}
+	}
 }

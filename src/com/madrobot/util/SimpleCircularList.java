@@ -10,7 +10,11 @@
  ******************************************************************************/
 package com.madrobot.util;
 
-
+/**
+ * Circular list using a simple object array
+ * @author elton.stephen.kent
+ *
+ */
 public class SimpleCircularList {
 	Object[] list;
 	int currentIndex;
