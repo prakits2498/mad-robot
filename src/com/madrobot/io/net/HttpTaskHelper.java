@@ -49,7 +49,7 @@ import android.util.Log;
  * // set the parameters
  * httpTask.setRequestParameter(requestParameter);
  * //set the http method. The default is Http GET.
- * httpTask.setHttpMethod(HttpTaskHelper.HttpMethod.HTTP_GET);
+ * httpTask.getHttpSettings().setHttpMethod(HttpTaskHelper.HttpMethod.HTTP_GET);
  * 
  * 
  * </pre>
@@ -59,43 +59,23 @@ import android.util.Log;
  */
 public class HttpTaskHelper {
 
-	/**
-	 * HTTP session timeout. Default is 30 seconds
-	 */
-	public static Integer HTTP_SESSION_TIME_OUT = 30000;
+	private HttpSettings httpSettings=new HttpSettings();
 
-	/**
-	 * HTTP session socket time-out key
-	 */
-	public static String HTTP_SOCKET_TIME_OUT_PARAM = "http.socket.timeout";
+	
 
-	/**
-	 * Default HTTP payload buffer size 4Kb
-	 */
-	public static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
+	
 
-	/**
-	 * Represents the HTTP GET, POST and DELETE
-	 */
-	public enum HttpMethod {
-		/**
-		 * Http GET method
-		 */
-		HTTP_GET,
-		/**
-		 * Http POST method
-		 */
-		HTTP_POST,
-		/**
-		 * Http DELETE method
-		 */
-		HTTP_DELETE;
+	public HttpSettings getHttpSettings() {
+		return httpSettings;
 	}
 
-	private static final String TAG = "LIB:HttpTaskHelper";
+	public void setHttpSettings(HttpSettings httpSettings) {
+		this.httpSettings = httpSettings;
+	}
+
+	private static final String TAG = "MadRobot";
 
 	private URI requestUrl;
-	private HttpMethod httpMethod = HttpMethod.HTTP_GET;;
 	private List<NameValuePair> requestParameter;
 	private Map<String, String> requestHeader;
 	private Map<String, String> responseHeader;
@@ -163,7 +143,7 @@ public class HttpTaskHelper {
 	 */
 	public HttpEntity execute() throws IOException, URISyntaxException {
 
-		switch(getHttpMethod()) {
+		switch(httpSettings.getHttpMethod()) {
 			case HTTP_GET:
 				return handleHttpGet();
 			case HTTP_POST:
@@ -184,10 +164,10 @@ public class HttpTaskHelper {
 	private HttpClient getHttpClient() {
 		if(httpClient == null){
 			httpClient = new DefaultHttpClient();
-			httpClient.getParams().setParameter(HTTP_SOCKET_TIME_OUT_PARAM, HTTP_SESSION_TIME_OUT);
+			httpClient.getParams().setParameter(HttpSettings.HTTP_SOCKET_TIME_OUT_PARAM, httpSettings.getSocketTimeout());
 			httpClient.getParams().setParameter("http.protocol.version", HttpVersion.HTTP_1_1);
-			httpClient.getParams().setParameter("http.protocol.single-cookie-header", false);
-			httpClient.getParams().setParameter("http.protocol.expect-continue", true);
+			httpClient.getParams().setParameter(HttpSettings.HTTP_SINGLE_COOKIE_PARAM,httpSettings.isSingleCookieHeader());
+			httpClient.getParams().setParameter(HttpSettings.HTTP_EXPECT_CONTINUE_PARAM, httpSettings.isExpectContinue());
 		}
 		return httpClient;
 	}
@@ -195,14 +175,7 @@ public class HttpTaskHelper {
 	// ////////////////////////////////////////////////////////////////////
 	// Private Method's
 
-	/**
-	 * Access point to get the http method
-	 * 
-	 * @return return the http method default is GET
-	 */
-	private HttpMethod getHttpMethod() {
-		return httpMethod;
-	}
+	
 
 	/**
 	 * Private access point to get th http request headers
@@ -358,16 +331,6 @@ public class HttpTaskHelper {
 	private void setDefaultRequestHeaders(HttpRequestBase httpRequestBase) {
 		// httpRequestBase.setHeader("Accept", "*/*");
 				
-	}
-
-	/**
-	 * Access point to change the http method
-	 * 
-	 * @param httpMethod
-	 *            represents the http method
-	 */
-	public void setHttpMethod(HttpMethod httpMethod) {
-		this.httpMethod = httpMethod;
 	}
 
 	/**
