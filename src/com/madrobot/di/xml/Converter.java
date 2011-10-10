@@ -8,7 +8,7 @@
  * Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
-package com.madrobot.xml;
+package com.madrobot.di.xml;
 
 import java.util.Date;
 import java.util.HashMap;

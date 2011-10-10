@@ -8,7 +8,7 @@
  * Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
-package com.madrobot.json;
+package com.madrobot.di.json;
 
 import java.io.IOException;
 import java.io.Writer;

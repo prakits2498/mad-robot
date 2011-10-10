@@ -8,17 +8,23 @@
  * Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
-package com.madrobot.json;
+package com.madrobot.di.xml;
 
-import java.io.IOException;
-import java.io.Writer;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Beans that support customized output of JSON text to a writer shall implement this interface.  
+ * Represents name of the element to which a field in model may map to. <br/>
+ * 
+ * @see BeanReader
  */
-public interface JSONStreamAware {
+@Retention(RetentionPolicy.RUNTIME)
+@Target( { ElementType.FIELD })
+public @interface ElementName {
 	/**
-	 * write JSON string to out.
+	 * Name of the element being deserialized
 	 */
-	void writeJSONString(Writer out) throws IOException;
+	String value();
 }

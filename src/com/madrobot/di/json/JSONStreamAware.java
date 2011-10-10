@@ -8,15 +8,17 @@
  * Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
-package com.madrobot.json;
+package com.madrobot.di.json;
+
+import java.io.IOException;
+import java.io.Writer;
 
 /**
- * Beans that support customized output of JSON text shall implement this
- * interface.
+ * Beans that support customized output of JSON text to a writer shall implement this interface.  
  */
-public interface JSONAware {
+public interface JSONStreamAware {
 	/**
-	 * @return JSON text
+	 * write JSON string to out.
 	 */
-	String toJSONString();
+	void writeJSONString(Writer out) throws IOException;
 }

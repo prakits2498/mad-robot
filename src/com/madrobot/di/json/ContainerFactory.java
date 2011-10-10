@@ -8,7 +8,7 @@
  * Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
-package com.madrobot.json;
+package com.madrobot.di.json;
 
 import java.util.List;
 import java.util.Map;

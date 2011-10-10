@@ -8,7 +8,7 @@
  * Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
-package com.madrobot.json;
+package com.madrobot.di.json;
 
 /**
  * ParseException explains why and where the error occurs in source JSON text.

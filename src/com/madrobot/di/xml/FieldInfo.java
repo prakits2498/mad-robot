@@ -8,7 +8,7 @@
  * Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
-package com.madrobot.xml;
+package com.madrobot.di.xml;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

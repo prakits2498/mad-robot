@@ -8,24 +8,29 @@
  * Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
-package com.madrobot.xml;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package com.madrobot.di.xml;
 
 /**
- * Annotation to specify the item type when the field is a collection. <br/>
- * See {@link BeanReader} for usage
+ * Possible field types, during deserialization
+ * See {@link BeanReader} for more details on its usage
  * 
  * @see BeanReader
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target( { ElementType.FIELD })
-public @interface ItemType {
+enum FieldType {
 	/**
-	 * Represents the type of the item in the collection field.
+	 * Used to indicate that the type of the field is not defined
 	 */
-	Class<?> value();
+	NOT_DEFINED,
+	/**
+	 * Used to indicate that the type of the field is pseudo-primitive
+	 */
+	PSEUDO_PRIMITIVE,
+	/**
+	 * Used to indicate that the type of the field is composite
+	 */
+	COMPOSITE,
+	/**
+	 * Used to indicate that the type of the field is a collection
+	 */
+	COLLECTION
 }

@@ -8,7 +8,7 @@
  * Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
-package com.madrobot.xml;
+package com.madrobot.di.xml;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -16,15 +16,16 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Represents name of the element to which a field in model may map to. <br/>
+ * Annotation to specify the item type when the field is a collection. <br/>
+ * See {@link BeanReader} for usage
  * 
  * @see BeanReader
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target( { ElementType.FIELD })
-public @interface ElementName {
+public @interface ItemType {
 	/**
-	 * Name of the element being deserialized
+	 * Represents the type of the item in the collection field.
 	 */
-	String value();
+	Class<?> value();
 }
