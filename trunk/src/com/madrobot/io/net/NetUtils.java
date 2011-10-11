@@ -288,15 +288,15 @@ public class NetUtils {
 	/**
 	 * Enable Http Response cache. Works only on Ice-cream sandwich.
 	 * @param cacheDir Directory to be used as a response cache
+	 * @param cacheSize Size of the cache
 	 */
-	public static  void enableHttpResponseCache(String cacheDir) {
+	public static void enableHttpResponseCache(String cacheDir,long cacheSize) {
 		try {
-			long httpCacheSize = 10 * 1024 * 1024; // 10 MiB
 			File httpCacheDir = new File(cacheDir, "http");
 			Class.forName("android.net.http.HttpResponseCache")
 					.getMethod("install", File.class, long.class)
-					.invoke(null, httpCacheDir, httpCacheSize);
-		} catch (Exception httpResponseCacheNotAvailable) {
+					.invoke(null, httpCacheDir, cacheSize);
+		} catch (Exception e) {
 		}
 	}
 }
