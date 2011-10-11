@@ -11,6 +11,7 @@
 package com.madrobot.io.net;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Inet4Address;
@@ -284,4 +285,18 @@ public class NetUtils {
 		}
 	}
 
+	/**
+	 * Enable Http Response cache. Works only on Ice-cream sandwich.
+	 * @param cacheDir Directory to be used as a response cache
+	 */
+	public static  void enableHttpResponseCache(String cacheDir) {
+		try {
+			long httpCacheSize = 10 * 1024 * 1024; // 10 MiB
+			File httpCacheDir = new File(cacheDir, "http");
+			Class.forName("android.net.http.HttpResponseCache")
+					.getMethod("install", File.class, long.class)
+					.invoke(null, httpCacheDir, httpCacheSize);
+		} catch (Exception httpResponseCacheNotAvailable) {
+		}
+	}
 }
