@@ -28,6 +28,19 @@ public final class NetworkInfo {
 	private int dataState;
 	private String voicemailNumber;
 	private int phoneType;
+	private boolean hasTelephoneSupport;
+	
+	/**
+	 * Returns true if the device has telephony support
+	 * @return
+	 */
+	public boolean hasTelephoneSupport() {
+		return hasTelephoneSupport;
+	}
+
+	void setHasTelephoneSupport(boolean hasTelephoneSupport) {
+		this.hasTelephoneSupport = hasTelephoneSupport;
+	}
 
 	public int getPhoneType() {
 		return phoneType;
