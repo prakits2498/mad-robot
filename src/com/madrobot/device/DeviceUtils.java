@@ -330,6 +330,7 @@ public class DeviceUtils {
 			info.setRoaming(teleManager.isNetworkRoaming());
 			info.setVoicemailNumber(teleManager.getVoiceMailNumber());
 			info.setPhoneType(teleManager.getPhoneType());
+			info.setHasTelephoneSupport(teleManager.getDeviceId()!=null);
 		}
 		return null;
 
