@@ -17,7 +17,7 @@ import android.os.Bundle;
 import android.widget.ImageView;
 
 import com.madrobot.graphics.BimapUtils;
-import com.madrobot.io.net.NetUtils;
+import com.madrobot.io.net.util.NetUtils;
 
 public class TestActivity extends Activity {
 	/** Called when the activity is first created. */
