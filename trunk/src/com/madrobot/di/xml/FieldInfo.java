@@ -26,9 +26,9 @@ import java.lang.reflect.Method;
  * collection. See {@link Method}</li>
  * </ol>
  * <br/>
- * See {@link BeanReader} for usage
+ * See {@link XMLDeserializer} for usage
  * 
- * @see BeanReader
+ * @see XMLDeserializer
  */
 class FieldInfo {
 	/**

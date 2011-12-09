@@ -12,9 +12,9 @@ package com.madrobot.di.xml;
 
 /**
  * Possible field types, during deserialization
- * See {@link BeanReader} for more details on its usage
+ * See {@link XMLDeserializer} for more details on its usage
  * 
- * @see BeanReader
+ * @see XMLDeserializer
  */
 enum FieldType {
 	/**

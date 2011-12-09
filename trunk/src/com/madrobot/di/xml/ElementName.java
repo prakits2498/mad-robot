@@ -18,7 +18,7 @@ import java.lang.annotation.Target;
 /**
  * Represents name of the element to which a field in model may map to. <br/>
  * 
- * @see BeanReader
+ * @see XMLDeserializer
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target( { ElementType.FIELD })

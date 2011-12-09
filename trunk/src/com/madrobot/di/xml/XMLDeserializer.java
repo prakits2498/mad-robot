@@ -140,7 +140,7 @@ import android.util.Xml;
  * </pre>
  * 
  */
-public final class BeanReader {
+public final class XMLDeserializer {
 	/**
 	 * Cached names of the getter methods
 	 */
@@ -159,7 +159,7 @@ public final class BeanReader {
 	/**
 	 * The single instance of the deserializer
 	 */
-	private static final BeanReader instance = new BeanReader();
+	private static final XMLDeserializer instance = new XMLDeserializer();
 
 	/**
 	 * Regular expression patern for common baseline for Java identifier and XML
@@ -170,7 +170,7 @@ public final class BeanReader {
 	/**
 	 * Private constructor to disallow any public instantiation
 	 */
-	private BeanReader() {
+	private XMLDeserializer() {
 	}
 
 	/**
@@ -552,7 +552,7 @@ public final class BeanReader {
 	 * 
 	 * @return The BeanReader instance
 	 */
-	public static BeanReader getInstance() {
+	public static XMLDeserializer getInstance() {
 		return instance;
 	}
 }

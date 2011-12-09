@@ -17,9 +17,9 @@ import java.lang.annotation.Target;
 
 /**
  * Annotation to specify the item type when the field is a collection. <br/>
- * See {@link BeanReader} for usage
+ * See {@link XMLDeserializer} for usage
  * 
- * @see BeanReader
+ * @see XMLDeserializer
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target( { ElementType.FIELD })
