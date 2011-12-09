@@ -15,8 +15,6 @@ import org.json.JSONObject;
 
 import android.util.Log;
 
-import com.madrobot.di.json.annotations.ItemType;
-import com.madrobot.di.json.annotations.SerializedName;
 
 /**
  * Utility class for json serializer , by using this utility you can convert

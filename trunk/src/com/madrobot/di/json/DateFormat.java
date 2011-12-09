@@ -1,28 +1,26 @@
 
-package com.madrobot.di.json.annotations;
+package com.madrobot.di.json;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.madrobot.di.json.JSONDeserializer;
-import com.madrobot.di.json.JSONSerializer;
 
 /**
- * Annotation to specify the serialized name of the json key. <br/>
+ * Annotation to specify the date format in the json string. <br/>
  * See {@link JSONDeserializer} {@link JSONSerializer} for usage
  * 
  * @see {@link JSONDeserializer}, {@link JSONSerializer}
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.FIELD })
-public @interface SerializedName {
+public @interface DateFormat {
 
 	/**
-	 * Represent the json key name
+	 * Represent the date format
 	 * 
-	 * @return json key name
+	 * @return date format
 	 */
-	String value();
+	String format();
 }
