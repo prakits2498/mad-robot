@@ -1,6 +1,6 @@
 package com.madrobot.util;
 
-import java.util.*;
+import java.util.ArrayList;
 
 /**
  * This class implements a cyclic list based on a ArrayList.

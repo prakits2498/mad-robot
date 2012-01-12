@@ -33,7 +33,6 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.HTTP;
 
-import android.net.http.AndroidHttpClient;
 import android.util.Log;
 
 /**

@@ -11,12 +11,8 @@
 package com.madrobot;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.widget.ImageView;
 
-import com.madrobot.graphics.BimapUtils;
 import com.madrobot.io.net.util.NetUtils;
 
 public class TestActivity extends Activity {
