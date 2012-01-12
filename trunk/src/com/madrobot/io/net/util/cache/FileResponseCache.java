@@ -1,8 +1,5 @@
 package com.madrobot.io.net.util.cache;
 
-import android.os.Build;
-import android.util.Log;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -18,6 +15,9 @@ import java.net.URLConnection;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+
+import android.os.Build;
+import android.util.Log;
 
 /**
  * File-based implementation of {@link ResponseCache}.

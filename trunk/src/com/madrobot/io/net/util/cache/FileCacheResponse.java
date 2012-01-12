@@ -1,8 +1,6 @@
 
 package com.madrobot.io.net.util.cache;
 
-import android.text.format.DateUtils;
-
 import java.io.BufferedInputStream;
 import java.io.DataInput;
 import java.io.DataInputStream;
@@ -16,6 +14,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import android.text.format.DateUtils;
 
 /**
  * Reads a cached HTTP response from a {@link File}.
