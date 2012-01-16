@@ -53,6 +53,23 @@ public class FieldUtils {
         MemberUtils.setAccessibleWorkaround(field);
         return field;
     }
+    
+    public static Field find(Class type, String name) {
+      try {
+          Field result = type.getDeclaredField(name);
+          if (!result.isAccessible()) {
+              result.setAccessible(true);
+          }
+          return result;
+      } catch (NoSuchFieldException e) {
+          throw new IllegalArgumentException("Could not access "
+              + type.getName()
+              + "."
+              + name
+              + " field: "
+              + e.getMessage());
+      }
+  }
 
     /**
      * Gets an accessible <code>Field</code> by name breaking scope
