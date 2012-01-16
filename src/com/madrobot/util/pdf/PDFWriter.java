@@ -6,6 +6,18 @@ import java.io.UnsupportedEncodingException;
 
 /**
  * Entry point to create a PDF document
+ * <p>
+ * The following sample code demonstrates how to create a PDF <code>
+ * <pre>
+ * PDFWriter writer = new PDFWriter();
+ * writer.addText(10, 800, 18, "Hello from elton");
+ * writer.addRawContent("16 1 1 rgb\n");
+ * File file=new File("sdcard://test.pdf");
+ * file.createNewFile();
+ * writer.writeToStream(new FileOutputStream(file), "ISO-8859-1");
+ * </pre>
+ * </code>
+ * </p>
  * 
  * @author elton.kent
  * 
@@ -81,6 +93,7 @@ public final class PDFWriter {
 
 	/**
 	 * Add raw content to the current page
+	 * 
 	 * @param rawContent
 	 */
 	public void addRawContent(String rawContent) {
