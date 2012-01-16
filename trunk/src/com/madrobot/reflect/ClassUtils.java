@@ -10,15 +10,31 @@
  ******************************************************************************/
 package com.madrobot.reflect;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectStreamClass;
+import java.io.ObjectStreamConstants;
+import java.io.Serializable;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.BitSet;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.WeakHashMap;
 
+import com.madrobot.di.xml.wizard.converters.ObjectAccessException;
+import com.madrobot.di.xml.wizard.core.TypedNull;
 import com.madrobot.text.StringUtils;
 
 /**
@@ -51,7 +67,8 @@ public class ClassUtils {
 	 * The package separator String: <code>"&#x2e;"</code>.
 	 * </p>
 	 */
-	public static final String PACKAGE_SEPARATOR = String.valueOf(PACKAGE_SEPARATOR_CHAR);
+	public static final String PACKAGE_SEPARATOR = String
+			.valueOf(PACKAGE_SEPARATOR_CHAR);
 
 	/**
 	 * <p>
@@ -65,14 +82,15 @@ public class ClassUtils {
 	 * The inner class separator String: <code>"$"</code>.
 	 * </p>
 	 */
-	public static final String INNER_CLASS_SEPARATOR = String.valueOf(INNER_CLASS_SEPARATOR_CHAR);
+	public static final String INNER_CLASS_SEPARATOR = String
+			.valueOf(INNER_CLASS_SEPARATOR_CHAR);
 
 	/**
 	 * Maps primitive <code>Class</code>es to their corresponding wrapper
 	 * <code>Class</code>.
 	 */
 	private static final Map<Class<?>, Class<?>> primitiveWrapperMap = new HashMap<Class<?>, Class<?>>();
-	static{
+	static {
 		primitiveWrapperMap.put(Boolean.TYPE, Boolean.class);
 		primitiveWrapperMap.put(Byte.TYPE, Byte.class);
 		primitiveWrapperMap.put(Character.TYPE, Character.class);
@@ -88,10 +106,10 @@ public class ClassUtils {
 	 * Maps wrapper <code>Class</code>es to their corresponding primitive types.
 	 */
 	private static final Map<Class<?>, Class<?>> wrapperPrimitiveMap = new HashMap<Class<?>, Class<?>>();
-	static{
-		for(Class<?> primitiveClass : primitiveWrapperMap.keySet()){
+	static {
+		for (Class<?> primitiveClass : primitiveWrapperMap.keySet()) {
 			Class<?> wrapperClass = primitiveWrapperMap.get(primitiveClass);
-			if(!primitiveClass.equals(wrapperClass)){
+			if (!primitiveClass.equals(wrapperClass)) {
 				wrapperPrimitiveMap.put(wrapperClass, primitiveClass);
 			}
 		}
@@ -125,7 +143,7 @@ public class ClassUtils {
 	/**
 	 * Feed abbreviation maps
 	 */
-	static{
+	static {
 		addAbbreviation("int", "I");
 		addAbbreviation("boolean", "Z");
 		addAbbreviation("float", "F");
@@ -153,12 +171,12 @@ public class ClassUtils {
 	}
 
 	/**
-	 * Factory method that returns a new instance of the given Class. This
-	 * is called at the start of the bean creation process and may be
-	 * overridden to provide custom behavior like returning a cached bean
-	 * instance.
+	 * Factory method that returns a new instance of the given Class. This is
+	 * called at the start of the bean creation process and may be overridden to
+	 * provide custom behavior like returning a cached bean instance.
 	 * <p>
-	 * A more refined class instance creation is defined in {@link ClassUtils#instantiate(Class, String)}
+	 * A more refined class instance creation is defined in
+	 * {@link ClassUtils#instantiate(Class, String)}
 	 * </p>
 	 * 
 	 * @param <T>
@@ -169,10 +187,282 @@ public class ClassUtils {
 	 * @throws InstantiationException
 	 * @throws IllegalAccessException
 	 */
-	public static <T> T newInstance(Class<T> c) throws IllegalAccessException, InstantiationException {
-		return c.newInstance();
-
+	public static <T> T newInstance(Class<T> type) {
+		try {
+			Constructor[] constructors = type.getDeclaredConstructors();
+			for (int i = 0; i < constructors.length; i++) {
+				final Constructor constructor = constructors[i];
+				if (constructor.getParameterTypes().length == 0) {
+					if (!constructor.isAccessible()) {
+						constructor.setAccessible(true);
+					}
+					return (T) constructor.newInstance(new Object[0]);
+				}
+			}
+			if (Serializable.class.isAssignableFrom(type)) {
+				return instantiateUsingSerialization(type);
+			} else {
+				throw new ObjectAccessException("Cannot construct "
+						+ type.getName()
+						+ " as it does not have a no-args constructor");
+			}
+		} catch (InstantiationException e) {
+			throw new ObjectAccessException("Cannot construct "
+					+ type.getName(), e);
+		} catch (IllegalAccessException e) {
+			throw new ObjectAccessException("Cannot construct "
+					+ type.getName(), e);
+		} catch (InvocationTargetException e) {
+			if (e.getTargetException() instanceof RuntimeException) {
+				throw (RuntimeException) e.getTargetException();
+			} else if (e.getTargetException() instanceof Error) {
+				throw (Error) e.getTargetException();
+			} else {
+				throw new ObjectAccessException("Constructor for "
+						+ type.getName() + " threw an exception",
+						e.getTargetException());
+			}
+		}
 	}
+
+	private static <T> T instantiateUsingSerialization(final Class<T> type) {
+		try {
+			Map serializedDataCache = new WeakHashMap();
+			synchronized (serializedDataCache) {
+				byte[] data = (byte[]) serializedDataCache.get(type);
+				if (data == null) {
+					ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+					DataOutputStream stream = new DataOutputStream(bytes);
+					stream.writeShort(ObjectStreamConstants.STREAM_MAGIC);
+					stream.writeShort(ObjectStreamConstants.STREAM_VERSION);
+					stream.writeByte(ObjectStreamConstants.TC_OBJECT);
+					stream.writeByte(ObjectStreamConstants.TC_CLASSDESC);
+					stream.writeUTF(type.getName());
+					stream.writeLong(ObjectStreamClass.lookup(type)
+							.getSerialVersionUID());
+					stream.writeByte(2); // classDescFlags (2 = Serializable)
+					stream.writeShort(0); // field count
+					stream.writeByte(ObjectStreamConstants.TC_ENDBLOCKDATA);
+					stream.writeByte(ObjectStreamConstants.TC_NULL);
+					data = bytes.toByteArray();
+					serializedDataCache.put(type, data);
+				}
+
+				ObjectInputStream in = new ObjectInputStream(
+						new ByteArrayInputStream(data)) {
+					protected Class resolveClass(ObjectStreamClass desc)
+							throws IOException, ClassNotFoundException {
+						return Class.forName(desc.getName(), false,
+								type.getClassLoader());
+					}
+				};
+				return (T) in.readObject();
+			}
+		} catch (IOException e) {
+			throw new ObjectAccessException("Cannot create " + type.getName()
+					+ " by JDK serialization", e);
+		} catch (ClassNotFoundException e) {
+			throw new ObjectAccessException("Cannot find class "
+					+ e.getMessage(), e);
+		}
+	}
+	
+    /**
+     * Create an instance with dependency injection. The given dependencies are used to match the parameters of the
+     * constructors of the type. Constructors with most parameters are examined first. A parameter type sequence
+     * matching the sequence of the dependencies' types match first. Otherwise all the types of the dependencies must
+     * match one of the the parameters although no dependency is used twice. Use a {@link TypedNull} instance to inject
+     * <code>null</code> as parameter.
+     * 
+     * @param type the type to create an instance of
+     * @param dependencies the possible dependencies
+     * @return the instantiated object
+     * @throws ObjectAccessException if no instance can be generated
+     * @since 1.2.2
+     */
+    public static Object newInstance(final Class type, final Object[] dependencies) {
+        return newInstance(type, dependencies, new BitSet());
+    }
+    
+    /**
+     * Create an instance with dependency injection. The given dependencies are used to match the parameters of the
+     * constructors of the type. Constructors with most parameters are examined first. A parameter type sequence
+     * matching the sequence of the dependencies' types match first. Otherwise all the types of the dependencies must
+     * match one of the the parameters although no dependency is used twice. Use a {@link TypedNull} instance to inject
+     * <code>null</code> as parameter.
+     * 
+     * @param type the type to create an instance of
+     * @param dependencies the possible dependencies
+     * @param usedDependencies bit mask set by the method for all used dependencies (may be <code>null</code>)
+     * @return the instantiated object
+     * @throws ObjectAccessException if no instance can be generated
+     * @since 1.4
+     */
+    public static Object newInstance(final Class type, final Object[] dependencies, final BitSet usedDependencies) {
+        Constructor bestMatchingCtor = null;
+        final List matchingDependencies = new ArrayList();
+
+        if (dependencies != null && dependencies.length > 0) {
+            // sort available ctors according their arity
+            final Constructor[] ctors = type.getConstructors();
+            if (ctors.length > 1) {
+                Arrays.sort(ctors, new Comparator() {
+                    public int compare(final Object o1, final Object o2) {
+                        return ((Constructor)o2).getParameterTypes().length
+                            - ((Constructor)o1).getParameterTypes().length;
+                    }
+                });
+            }
+
+            final TypedValue[] typedDependencies = new TypedValue[dependencies.length];
+            for (int i = 0; i < dependencies.length; i++ ) {
+                Object dependency = dependencies[i];
+                Class depType = dependency.getClass();
+                if (depType.isPrimitive()) {
+                    depType = PrimitiveUtils.box(depType);
+                } else if (depType == TypedNull.class) {
+                    depType = ((TypedNull)dependency).getType();
+                    dependency = null;
+                }
+
+                typedDependencies[i] = new TypedValue(depType, dependency);
+            }
+
+            Constructor possibleCtor = null;
+            int arity = Integer.MAX_VALUE;
+            for (int i = 0; bestMatchingCtor == null && i < ctors.length; i++ ) {
+                final Constructor constructor = ctors[i];
+                final Class[] parameterTypes = constructor.getParameterTypes();
+                if (parameterTypes.length > dependencies.length) {
+                    continue;
+                } else if (parameterTypes.length == 0) {
+                    if (possibleCtor == null) {
+                        bestMatchingCtor = constructor;
+                    }
+                    break;
+                }
+                if (arity > parameterTypes.length) {
+                    if (possibleCtor != null) {
+                        bestMatchingCtor = possibleCtor;
+                        continue;
+                    }
+                    arity = parameterTypes.length;
+                }
+
+                for (int j = 0; j < parameterTypes.length; j++ ) {
+                    if (parameterTypes[j].isPrimitive()) {
+                        parameterTypes[j] = PrimitiveUtils.box(parameterTypes[j]);
+                    }
+                }
+
+                // first approach: test the ctor params against the dependencies in the sequence
+                // of the parameter
+                // declaration
+                matchingDependencies.clear();
+                for (int j = usedDependencies.length(); j-- > 0;) {
+                    usedDependencies.clear(j); // JDK 1.3, BitSet.clear() is JDK 1.4
+                }
+                for (int j = 0, k = 0; j < parameterTypes.length
+                    && parameterTypes.length + k - j <= typedDependencies.length; k++ ) {
+                    if (parameterTypes[j].isAssignableFrom(typedDependencies[k].type)) {
+                        matchingDependencies.add(typedDependencies[k].value);
+                        usedDependencies.set(k);
+                        if ( ++j == parameterTypes.length) {
+                            bestMatchingCtor = constructor;
+                            break;
+                        }
+                    }
+                }
+
+                if (bestMatchingCtor == null && possibleCtor == null) {
+                    possibleCtor = constructor; // assumption
+
+                    // try to match all dependencies in the sequence of the parameter
+                    // declaration
+                    final TypedValue[] deps = new TypedValue[typedDependencies.length];
+                    System.arraycopy(typedDependencies, 0, deps, 0, deps.length);
+                    matchingDependencies.clear();
+                    for (int j = usedDependencies.length(); j-- > 0;) {
+                        usedDependencies.clear(j); // JDK 1.3, BitSet.clear() is JDK 1.4
+                    }
+                    for (int j = 0; j < parameterTypes.length; j++ ) {
+                        int assignable = -1;
+                        for (int k = 0; k < deps.length; k++ ) {
+                            if (deps[k] == null) {
+                                continue;
+                            }
+                            if (deps[k].type == parameterTypes[j]) {
+                                assignable = k;
+                                // optimal match
+                                break;
+                            } else if (parameterTypes[j].isAssignableFrom(deps[k].type)) {
+                                // use most specific type
+                                if (assignable < 0
+                                    || (deps[assignable].type != deps[k].type && deps[assignable].type
+                                        .isAssignableFrom(deps[k].type))) {
+                                    assignable = k;
+                                }
+                            }
+                        }
+
+                        if (assignable >= 0) {
+                            matchingDependencies.add(deps[assignable].value);
+                            usedDependencies.set(assignable);
+                            deps[assignable] = null; // do not match same dep twice
+                        } else {
+                            possibleCtor = null;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (bestMatchingCtor == null) {
+                if (possibleCtor == null) {
+                    for (int j = usedDependencies.length(); j-- > 0;) {
+                        usedDependencies.clear(j); // JDK 1.3, BitSet.clear() is JDK 1.4
+                    }
+                    throw new ObjectAccessException("Cannot construct "
+                        + type.getName()
+                        + ", none of the dependencies match any constructor's parameters");
+                } else {
+                    bestMatchingCtor = possibleCtor;
+                }
+            }
+        }
+
+        try {
+            final Object instance;
+            if (bestMatchingCtor == null) {
+                instance = type.newInstance();
+            } else {
+                instance = bestMatchingCtor.newInstance(matchingDependencies.toArray());
+            }
+            return instance;
+        } catch (final InstantiationException e) {
+            throw new ObjectAccessException("Cannot construct " + type.getName(), e);
+        } catch (final IllegalAccessException e) {
+            throw new ObjectAccessException("Cannot construct " + type.getName(), e);
+        } catch (final InvocationTargetException e) {
+            throw new ObjectAccessException("Cannot construct " + type.getName(), e);
+        }
+    }
+
+    private static class TypedValue {
+        final Class type;
+        final Object value;
+
+        public TypedValue(final Class type, final Object value) {
+            super();
+            this.type = type;
+            this.value = value;
+        }
+
+        public String toString()
+        {
+                return type.getName() + ":" + value;
+        }
+    }
 
 	// Short class name
 	// ----------------------------------------------------------------------
@@ -189,7 +479,7 @@ public class ClassUtils {
 	 *         null value
 	 */
 	public static String getShortClassName(Object object, String valueIfNull) {
-		if(object == null){
+		if (object == null) {
 			return valueIfNull;
 		}
 		return getShortClassName(object.getClass());
@@ -205,7 +495,7 @@ public class ClassUtils {
 	 * @return the class name without the package name or an empty string
 	 */
 	public static String getShortClassName(Class<?> cls) {
-		if(cls == null){
+		if (cls == null) {
 			return StringUtils.EMPTY;
 		}
 		return getShortClassName(cls.getName());
@@ -226,36 +516,39 @@ public class ClassUtils {
 	 *         string
 	 */
 	public static String getShortClassName(String className) {
-		if(className == null){
+		if (className == null) {
 			return StringUtils.EMPTY;
 		}
-		if(className.length() == 0){
+		if (className.length() == 0) {
 			return StringUtils.EMPTY;
 		}
 
 		StringBuilder arrayPrefix = new StringBuilder();
 
 		// Handle array encoding
-		if(className.startsWith("[")){
-			while(className.charAt(0) == '['){
+		if (className.startsWith("[")) {
+			while (className.charAt(0) == '[') {
 				className = className.substring(1);
 				arrayPrefix.append("[]");
 			}
 			// Strip Object type encoding
-			if(className.charAt(0) == 'L' && className.charAt(className.length() - 1) == ';'){
+			if (className.charAt(0) == 'L'
+					&& className.charAt(className.length() - 1) == ';') {
 				className = className.substring(1, className.length() - 1);
 			}
 		}
 
-		if(reverseAbbreviationMap.containsKey(className)){
+		if (reverseAbbreviationMap.containsKey(className)) {
 			className = reverseAbbreviationMap.get(className);
 		}
 
 		int lastDotIdx = className.lastIndexOf(PACKAGE_SEPARATOR_CHAR);
-		int innerIdx = className.indexOf(INNER_CLASS_SEPARATOR_CHAR, lastDotIdx == -1 ? 0 : lastDotIdx + 1);
+		int innerIdx = className.indexOf(INNER_CLASS_SEPARATOR_CHAR,
+				lastDotIdx == -1 ? 0 : lastDotIdx + 1);
 		String out = className.substring(lastDotIdx + 1);
-		if(innerIdx != -1){
-			out = out.replace(INNER_CLASS_SEPARATOR_CHAR, PACKAGE_SEPARATOR_CHAR);
+		if (innerIdx != -1) {
+			out = out.replace(INNER_CLASS_SEPARATOR_CHAR,
+					PACKAGE_SEPARATOR_CHAR);
 		}
 		return out + arrayPrefix;
 	}
@@ -274,7 +567,7 @@ public class ClassUtils {
 	 * @return the package name of the object, or the null value
 	 */
 	public static String getPackageName(Object object, String valueIfNull) {
-		if(object == null){
+		if (object == null) {
 			return valueIfNull;
 		}
 		return getPackageName(object.getClass());
@@ -291,7 +584,7 @@ public class ClassUtils {
 	 * @return the package name or an empty string
 	 */
 	public static String getPackageName(Class<?> cls) {
-		if(cls == null){
+		if (cls == null) {
 			return StringUtils.EMPTY;
 		}
 		return getPackageName(cls.getName());
@@ -315,21 +608,22 @@ public class ClassUtils {
 	 * @return the package name or an empty string
 	 */
 	public static String getPackageName(String className) {
-		if(className == null || className.length() == 0){
+		if (className == null || className.length() == 0) {
 			return StringUtils.EMPTY;
 		}
 
 		// Strip array encoding
-		while(className.charAt(0) == '['){
+		while (className.charAt(0) == '[') {
 			className = className.substring(1);
 		}
 		// Strip Object type encoding
-		if(className.charAt(0) == 'L' && className.charAt(className.length() - 1) == ';'){
+		if (className.charAt(0) == 'L'
+				&& className.charAt(className.length() - 1) == ';') {
 			className = className.substring(1);
 		}
 
 		int i = className.lastIndexOf(PACKAGE_SEPARATOR_CHAR);
-		if(i == -1){
+		if (i == -1) {
 			return StringUtils.EMPTY;
 		}
 		return className.substring(0, i);
@@ -348,12 +642,12 @@ public class ClassUtils {
 	 *         one <code>null</code> if null input
 	 */
 	public static List<Class<?>> getAllSuperclasses(Class<?> cls) {
-		if(cls == null){
+		if (cls == null) {
 			return null;
 		}
 		List<Class<?>> classes = new ArrayList<Class<?>>();
 		Class<?> superclass = cls.getSuperclass();
-		while(superclass != null){
+		while (superclass != null) {
 			classes.add(superclass);
 			superclass = superclass.getSuperclass();
 		}
@@ -379,7 +673,7 @@ public class ClassUtils {
 	 *         if null input
 	 */
 	public static List<Class<?>> getAllInterfaces(Class<?> cls) {
-		if(cls == null){
+		if (cls == null) {
 			return null;
 		}
 
@@ -397,12 +691,13 @@ public class ClassUtils {
 	 * @param interfacesFound
 	 *            the <code>Set</code> of interfaces for the class
 	 */
-	private static void getAllInterfaces(Class<?> cls, HashSet<Class<?>> interfacesFound) {
-		while(cls != null){
+	private static void getAllInterfaces(Class<?> cls,
+			HashSet<Class<?>> interfacesFound) {
+		while (cls != null) {
 			Class<?>[] interfaces = cls.getInterfaces();
 
-			for(Class<?> i : interfaces){
-				if(interfacesFound.add(i)){
+			for (Class<?> i : interfaces) {
+				if (interfacesFound.add(i)) {
 					getAllInterfaces(i, interfacesFound);
 				}
 			}
@@ -433,15 +728,16 @@ public class ClassUtils {
 	 * @throws ClassCastException
 	 *             if classNames contains a non String entry
 	 */
-	public static List<Class<?>> convertClassNamesToClasses(List<String> classNames) {
-		if(classNames == null){
+	public static List<Class<?>> convertClassNamesToClasses(
+			List<String> classNames) {
+		if (classNames == null) {
 			return null;
 		}
 		List<Class<?>> classes = new ArrayList<Class<?>>(classNames.size());
-		for(String className : classNames){
-			try{
+		for (String className : classNames) {
+			try {
 				classes.add(Class.forName(className));
-			} catch(Exception ex){
+			} catch (Exception ex) {
 				classes.add(null);
 			}
 		}
@@ -468,14 +764,14 @@ public class ClassUtils {
 	 *             entry
 	 */
 	public static List<String> convertClassesToClassNames(List<Class<?>> classes) {
-		if(classes == null){
+		if (classes == null) {
 			return null;
 		}
 		List<String> classNames = new ArrayList<String>(classes.size());
-		for(Class<?> cls : classes){
-			if(cls == null){
+		for (Class<?> cls : classes) {
+			if (cls == null) {
 				classNames.add(null);
-			} else{
+			} else {
 				classNames.add(cls.getName());
 			}
 		}
@@ -539,14 +835,15 @@ public class ClassUtils {
 	 *            <code>null</code>
 	 * @return <code>true</code> if assignment possible
 	 */
-	public static boolean isAssignable(Class<?>[] classArray, Class<?>[] toClassArray) {
+	public static boolean isAssignable(Class<?>[] classArray,
+			Class<?>[] toClassArray) {
 		return isAssignable(classArray, toClassArray, true);
 	}
 
 	/**
-	 * Try to create an instance of a named class.
-	 * First try the classloader of "sibling", then try the system
-	 * classloader then the class loader of the current Thread.
+	 * Try to create an instance of a named class. First try the classloader of
+	 * "sibling", then try the system classloader then the class loader of the
+	 * current Thread.
 	 * 
 	 * @param sibling
 	 * @param className
@@ -555,27 +852,28 @@ public class ClassUtils {
 	 * @throws IllegalAccessException
 	 * @throws ClassNotFoundException
 	 */
-	public static Object instantiate(Class sibling, String className) throws InstantiationException,
-			IllegalAccessException, ClassNotFoundException {
+	public static Object instantiate(Class sibling, String className)
+			throws InstantiationException, IllegalAccessException,
+			ClassNotFoundException {
 		// First check with sibling's classloader (if any).
 		ClassLoader cl = sibling.getClassLoader();
-		if(cl != null){
-			try{
+		if (cl != null) {
+			try {
 				Class cls = cl.loadClass(className);
 				return cls.newInstance();
-			} catch(Exception ex){
+			} catch (Exception ex) {
 				// Just drop through and try the system classloader.
 			}
 		}
 
 		// Now try the system classloader.
-		try{
+		try {
 			cl = ClassLoader.getSystemClassLoader();
-			if(cl != null){
+			if (cl != null) {
 				Class cls = cl.loadClass(className);
 				return cls.newInstance();
 			}
-		} catch(Exception ex){
+		} catch (Exception ex) {
 			// We're not allowed to access the system class loader or
 			// the class creation failed.
 			// Drop through.
@@ -587,12 +885,10 @@ public class ClassUtils {
 		return cls.newInstance();
 	}
 
-	
 	/**
-	 * Return true if class a is either equivalent to class b, or
-	 * if class a is a subclass of class b, i.e. if a either "extends"
-	 * or "implements" b.
-	 * Note tht either or both "Class" objects may represent interfaces.
+	 * Return true if class a is either equivalent to class b, or if class a is
+	 * a subclass of class b, i.e. if a either "extends" or "implements" b. Note
+	 * tht either or both "Class" objects may represent interfaces.
 	 * 
 	 * @param a
 	 * @param b
@@ -602,20 +898,20 @@ public class ClassUtils {
 		// We rely on the fact that for any given java class or
 		// primtitive type there is a unqiue Class object, so
 		// we can use object equivalence in the comparisons.
-		if(a == b){
+		if (a == b) {
 			return true;
 		}
-		if(a == null || b == null){
+		if (a == null || b == null) {
 			return false;
 		}
-		for(Class x = a; x != null; x = x.getSuperclass()){
-			if(x == b){
+		for (Class x = a; x != null; x = x.getSuperclass()) {
+			if (x == b) {
 				return true;
 			}
-			if(b.isInterface()){
+			if (b.isInterface()) {
 				Class interfaces[] = x.getInterfaces();
-				for(int i = 0; i < interfaces.length; i++){
-					if(isSubclass(interfaces[i], b)){
+				for (int i = 0; i < interfaces.length; i++) {
+					if (isSubclass(interfaces[i], b)) {
 						return true;
 					}
 				}
@@ -674,18 +970,19 @@ public class ClassUtils {
 	 *            and wrappers
 	 * @return <code>true</code> if assignment possible
 	 */
-	public static boolean isAssignable(Class<?>[] classArray, Class<?>[] toClassArray, boolean autoboxing) {
-		if(ArrayUtils.isSameLength(classArray, toClassArray) == false){
+	public static boolean isAssignable(Class<?>[] classArray,
+			Class<?>[] toClassArray, boolean autoboxing) {
+		if (ArrayUtils.isSameLength(classArray, toClassArray) == false) {
 			return false;
 		}
-		if(classArray == null){
+		if (classArray == null) {
 			classArray = ArrayUtils.EMPTY_CLASS_ARRAY;
 		}
-		if(toClassArray == null){
+		if (toClassArray == null) {
 			toClassArray = ArrayUtils.EMPTY_CLASS_ARRAY;
 		}
-		for(int i = 0; i < classArray.length; i++){
-			if(isAssignable(classArray[i], toClassArray[i], autoboxing) == false){
+		for (int i = 0; i < classArray.length; i++) {
+			if (isAssignable(classArray[i], toClassArray[i], autoboxing) == false) {
 				return false;
 			}
 		}
@@ -783,63 +1080,71 @@ public class ClassUtils {
 	 *            and wrappers
 	 * @return <code>true</code> if assignment possible
 	 */
-	public static boolean isAssignable(Class<?> cls, Class<?> toClass, boolean autoboxing) {
-		if(toClass == null){
+	public static boolean isAssignable(Class<?> cls, Class<?> toClass,
+			boolean autoboxing) {
+		if (toClass == null) {
 			return false;
 		}
 		// have to check for null, as isAssignableFrom doesn't
-		if(cls == null){
+		if (cls == null) {
 			return !(toClass.isPrimitive());
 		}
 		// autoboxing:
-		if(autoboxing){
-			if(cls.isPrimitive() && !toClass.isPrimitive()){
+		if (autoboxing) {
+			if (cls.isPrimitive() && !toClass.isPrimitive()) {
 				cls = primitiveToWrapper(cls);
-				if(cls == null){
+				if (cls == null) {
 					return false;
 				}
 			}
-			if(toClass.isPrimitive() && !cls.isPrimitive()){
+			if (toClass.isPrimitive() && !cls.isPrimitive()) {
 				cls = wrapperToPrimitive(cls);
-				if(cls == null){
+				if (cls == null) {
 					return false;
 				}
 			}
 		}
-		if(cls.equals(toClass)){
+		if (cls.equals(toClass)) {
 			return true;
 		}
-		if(cls.isPrimitive()){
-			if(toClass.isPrimitive() == false){
+		if (cls.isPrimitive()) {
+			if (toClass.isPrimitive() == false) {
 				return false;
 			}
-			if(Integer.TYPE.equals(cls)){
+			if (Integer.TYPE.equals(cls)) {
 				return Long.TYPE.equals(toClass) || Float.TYPE.equals(toClass)
 						|| Double.TYPE.equals(toClass);
 			}
-			if(Long.TYPE.equals(cls)){
-				return Float.TYPE.equals(toClass) || Double.TYPE.equals(toClass);
+			if (Long.TYPE.equals(cls)) {
+				return Float.TYPE.equals(toClass)
+						|| Double.TYPE.equals(toClass);
 			}
-			if(Boolean.TYPE.equals(cls)){
+			if (Boolean.TYPE.equals(cls)) {
 				return false;
 			}
-			if(Double.TYPE.equals(cls)){
+			if (Double.TYPE.equals(cls)) {
 				return false;
 			}
-			if(Float.TYPE.equals(cls)){
+			if (Float.TYPE.equals(cls)) {
 				return Double.TYPE.equals(toClass);
 			}
-			if(Character.TYPE.equals(cls)){
-				return Integer.TYPE.equals(toClass) || Long.TYPE.equals(toClass)
-						|| Float.TYPE.equals(toClass) || Double.TYPE.equals(toClass);
+			if (Character.TYPE.equals(cls)) {
+				return Integer.TYPE.equals(toClass)
+						|| Long.TYPE.equals(toClass)
+						|| Float.TYPE.equals(toClass)
+						|| Double.TYPE.equals(toClass);
 			}
-			if(Short.TYPE.equals(cls)){
-				return Integer.TYPE.equals(toClass) || Long.TYPE.equals(toClass)
-						|| Float.TYPE.equals(toClass) || Double.TYPE.equals(toClass);
+			if (Short.TYPE.equals(cls)) {
+				return Integer.TYPE.equals(toClass)
+						|| Long.TYPE.equals(toClass)
+						|| Float.TYPE.equals(toClass)
+						|| Double.TYPE.equals(toClass);
 			}
-			if(Byte.TYPE.equals(cls)){
-				return Short.TYPE.equals(toClass) || Integer.TYPE.equals(toClass)
-						|| Long.TYPE.equals(toClass) || Float.TYPE.equals(toClass)
+			if (Byte.TYPE.equals(cls)) {
+				return Short.TYPE.equals(toClass)
+						|| Integer.TYPE.equals(toClass)
+						|| Long.TYPE.equals(toClass)
+						|| Float.TYPE.equals(toClass)
 						|| Double.TYPE.equals(toClass);
 			}
 			// should never get here
@@ -868,7 +1173,7 @@ public class ClassUtils {
 	 */
 	public static Class<?> primitiveToWrapper(Class<?> cls) {
 		Class<?> convertedClass = cls;
-		if(cls != null && cls.isPrimitive()){
+		if (cls != null && cls.isPrimitive()) {
 			convertedClass = primitiveWrapperMap.get(cls);
 		}
 		return convertedClass;
@@ -883,23 +1188,22 @@ public class ClassUtils {
 	 * @param classes
 	 *            the class array to convert, may be null or empty
 	 * @return an array which contains for each given class, the wrapper class
-	 *         or
-	 *         the original class if class is not a primitive. <code>null</code>
-	 *         if null input.
-	 *         Empty array if an empty array passed in.
+	 *         or the original class if class is not a primitive.
+	 *         <code>null</code> if null input. Empty array if an empty array
+	 *         passed in.
 	 * @since 2.1
 	 */
 	public static Class<?>[] primitivesToWrappers(Class<?>[] classes) {
-		if(classes == null){
+		if (classes == null) {
 			return null;
 		}
 
-		if(classes.length == 0){
+		if (classes.length == 0) {
 			return classes;
 		}
 
 		Class<?>[] convertedClasses = new Class[classes.length];
-		for(int i = 0; i < classes.length; i++){
+		for (int i = 0; i < classes.length; i++) {
 			convertedClasses[i] = primitiveToWrapper(classes[i]);
 		}
 		return convertedClasses;
@@ -921,8 +1225,8 @@ public class ClassUtils {
 	 * 
 	 * @param cls
 	 *            the class to convert, may be <b>null</b>
-	 * @return the corresponding primitive type if <code>cls</code> is a
-	 *         wrapper class, <b>null</b> otherwise
+	 * @return the corresponding primitive type if <code>cls</code> is a wrapper
+	 *         class, <b>null</b> otherwise
 	 * @see #primitiveToWrapper(Class)
 	 * @since 2.4
 	 */
@@ -944,24 +1248,23 @@ public class ClassUtils {
 	 * @param classes
 	 *            the class array to convert, may be null or empty
 	 * @return an array which contains for each given class, the primitive class
-	 *         or
-	 *         <b>null</b> if the original class is not a wrapper class.
-	 *         <code>null</code> if null input.
-	 *         Empty array if an empty array passed in.
+	 *         or <b>null</b> if the original class is not a wrapper class.
+	 *         <code>null</code> if null input. Empty array if an empty array
+	 *         passed in.
 	 * @see #wrapperToPrimitive(Class)
 	 * @since 2.4
 	 */
 	public static Class<?>[] wrappersToPrimitives(Class<?>[] classes) {
-		if(classes == null){
+		if (classes == null) {
 			return null;
 		}
 
-		if(classes.length == 0){
+		if (classes.length == 0) {
 			return classes;
 		}
 
 		Class<?>[] convertedClasses = new Class[classes.length];
-		for(int i = 0; i < classes.length; i++){
+		for (int i = 0; i < classes.length; i++) {
 			convertedClasses[i] = wrapperToPrimitive(classes[i]);
 		}
 		return convertedClasses;
@@ -977,11 +1280,10 @@ public class ClassUtils {
 	 * @param cls
 	 *            the class to check, may be null
 	 * @return <code>true</code> if the class is an inner or static nested
-	 *         class,
-	 *         false if not or <code>null</code>
+	 *         class, false if not or <code>null</code>
 	 */
 	public static boolean isInnerClass(Class<?> cls) {
-		if(cls == null){
+		if (cls == null) {
 			return false;
 		}
 		return cls.getName().indexOf(INNER_CLASS_SEPARATOR_CHAR) >= 0;
@@ -991,10 +1293,9 @@ public class ClassUtils {
 	// ----------------------------------------------------------------------
 	/**
 	 * Returns the class represented by <code>className</code> using the
-	 * <code>classLoader</code>. This implementation supports the syntaxes
-	 * "<code>java.util.Map.Entry[]</code>", "<code>java.util.Map$Entry[]</code>
-	 * ",
-	 * "<code>[Ljava.util.Map.Entry;</code>", and "
+	 * <code>classLoader</code>. This implementation supports the syntaxes "
+	 * <code>java.util.Map.Entry[]</code>", "<code>java.util.Map$Entry[]</code>
+	 * ", "<code>[Ljava.util.Map.Entry;</code>", and "
 	 * <code>[Ljava.util.Map$Entry;</code>".
 	 * 
 	 * @param classLoader
@@ -1008,27 +1309,32 @@ public class ClassUtils {
 	 * @throws ClassNotFoundException
 	 *             if the class is not found
 	 */
-	public static Class<?> getClass(ClassLoader classLoader, String className, boolean initialize)
-			throws ClassNotFoundException {
-		try{
+	public static Class<?> getClass(ClassLoader classLoader, String className,
+			boolean initialize) throws ClassNotFoundException {
+		try {
 			Class<?> clazz;
-			if(abbreviationMap.containsKey(className)){
+			if (abbreviationMap.containsKey(className)) {
 				String clsName = "[" + abbreviationMap.get(className);
-				clazz = Class.forName(clsName, initialize, classLoader).getComponentType();
-			} else{
-				clazz = Class.forName(toCanonicalName(className), initialize, classLoader);
+				clazz = Class.forName(clsName, initialize, classLoader)
+						.getComponentType();
+			} else {
+				clazz = Class.forName(toCanonicalName(className), initialize,
+						classLoader);
 			}
 			return clazz;
-		} catch(ClassNotFoundException ex){
+		} catch (ClassNotFoundException ex) {
 			// allow path separators (.) as inner class name separators
 			int lastDotIndex = className.lastIndexOf(PACKAGE_SEPARATOR_CHAR);
 
-			if(lastDotIndex != -1){
-				try{
-					return getClass(classLoader, className.substring(0, lastDotIndex)
-							+ INNER_CLASS_SEPARATOR_CHAR + className.substring(lastDotIndex + 1),
+			if (lastDotIndex != -1) {
+				try {
+					return getClass(
+							classLoader,
+							className.substring(0, lastDotIndex)
+									+ INNER_CLASS_SEPARATOR_CHAR
+									+ className.substring(lastDotIndex + 1),
 							initialize);
-				} catch(ClassNotFoundException ex2){
+				} catch (ClassNotFoundException ex2) {
 				}
 			}
 
@@ -1038,11 +1344,11 @@ public class ClassUtils {
 
 	/**
 	 * Returns the (initialized) class represented by <code>className</code>
-	 * using the <code>classLoader</code>. This implementation supports
-	 * the syntaxes "<code>java.util.Map.Entry[]</code>",
-	 * "<code>java.util.Map$Entry[]</code>", "
-	 * <code>[Ljava.util.Map.Entry;</code>",
-	 * and "<code>[Ljava.util.Map$Entry;</code>".
+	 * using the <code>classLoader</code>. This implementation supports the
+	 * syntaxes "<code>java.util.Map.Entry[]</code>", "
+	 * <code>java.util.Map$Entry[]</code>", "
+	 * <code>[Ljava.util.Map.Entry;</code>", and "
+	 * <code>[Ljava.util.Map$Entry;</code>".
 	 * 
 	 * @param classLoader
 	 *            the class loader to use to load the class
@@ -1061,10 +1367,10 @@ public class ClassUtils {
 	/**
 	 * Returns the (initialized) class represented by <code>className</code>
 	 * using the current thread's context class loader. This implementation
-	 * supports the syntaxes "<code>java.util.Map.Entry[]</code>",
-	 * "<code>java.util.Map$Entry[]</code>", "
-	 * <code>[Ljava.util.Map.Entry;</code>",
-	 * and "<code>[Ljava.util.Map$Entry;</code>".
+	 * supports the syntaxes "<code>java.util.Map.Entry[]</code>", "
+	 * <code>java.util.Map$Entry[]</code>", "
+	 * <code>[Ljava.util.Map.Entry;</code>", and "
+	 * <code>[Ljava.util.Map$Entry;</code>".
 	 * 
 	 * @param className
 	 *            the class name
@@ -1073,17 +1379,17 @@ public class ClassUtils {
 	 * @throws ClassNotFoundException
 	 *             if the class is not found
 	 */
-	public static Class<?> getClass(String className) throws ClassNotFoundException {
+	public static Class<?> getClass(String className)
+			throws ClassNotFoundException {
 		return getClass(className, true);
 	}
 
 	/**
-	 * Returns the class represented by <code>className</code> using the
-	 * current thread's context class loader. This implementation supports the
-	 * syntaxes "<code>java.util.Map.Entry[]</code>", "
-	 * <code>java.util.Map$Entry[]</code>",
-	 * "<code>[Ljava.util.Map.Entry;</code>", and "
-	 * <code>[Ljava.util.Map$Entry;</code>".
+	 * Returns the class represented by <code>className</code> using the current
+	 * thread's context class loader. This implementation supports the syntaxes
+	 * "<code>java.util.Map.Entry[]</code>", "
+	 * <code>java.util.Map$Entry[]</code>", "<code>[Ljava.util.Map.Entry;</code>
+	 * ", and " <code>[Ljava.util.Map$Entry;</code>".
 	 * 
 	 * @param className
 	 *            the class name
@@ -1094,9 +1400,11 @@ public class ClassUtils {
 	 * @throws ClassNotFoundException
 	 *             if the class is not found
 	 */
-	public static Class<?> getClass(String className, boolean initialize) throws ClassNotFoundException {
+	public static Class<?> getClass(String className, boolean initialize)
+			throws ClassNotFoundException {
 		ClassLoader contextCL = Thread.currentThread().getContextClassLoader();
-		ClassLoader loader = contextCL == null ? ClassUtils.class.getClassLoader() : contextCL;
+		ClassLoader loader = contextCL == null ? ClassUtils.class
+				.getClassLoader() : contextCL;
 		return getClass(loader, className, initialize);
 	}
 
@@ -1112,8 +1420,8 @@ public class ClassUtils {
 	 * >4071957</a>).
 	 * 
 	 * <code><pre>Set set = Collections.unmodifiableSet(...);
-     *  Method method = ClassUtils.getPublicMethod(set.getClass(), "isEmpty",  new Class[0]);
-     *  Object result = method.invoke(set, new Object[]);</pre></code>
+	 *  Method method = ClassUtils.getPublicMethod(set.getClass(), "isEmpty",  new Class[0]);
+	 *  Object result = method.invoke(set, new Object[]);</pre></code>
 	 * </p>
 	 * 
 	 * @param cls
@@ -1128,14 +1436,16 @@ public class ClassUtils {
 	 * @throws SecurityException
 	 *             if a a security violation occured
 	 * @throws NoSuchMethodException
-	 *             if the method is not found in the given class
-	 *             or if the metothod doen't conform with the requirements
+	 *             if the method is not found in the given class or if the
+	 *             metothod doen't conform with the requirements
 	 */
-	public static Method getPublicMethod(Class<?> cls, String methodName, Class<?> parameterTypes[])
-			throws SecurityException, NoSuchMethodException {
+	public static Method getPublicMethod(Class<?> cls, String methodName,
+			Class<?> parameterTypes[]) throws SecurityException,
+			NoSuchMethodException {
 
 		Method declaredMethod = cls.getMethod(methodName, parameterTypes);
-		if(Modifier.isPublic(declaredMethod.getDeclaringClass().getModifiers())){
+		if (Modifier
+				.isPublic(declaredMethod.getDeclaringClass().getModifiers())) {
 			return declaredMethod;
 		}
 
@@ -1143,23 +1453,25 @@ public class ClassUtils {
 		candidateClasses.addAll(getAllInterfaces(cls));
 		candidateClasses.addAll(getAllSuperclasses(cls));
 
-		for(Class<?> candidateClass : candidateClasses){
-			if(!Modifier.isPublic(candidateClass.getModifiers())){
+		for (Class<?> candidateClass : candidateClasses) {
+			if (!Modifier.isPublic(candidateClass.getModifiers())) {
 				continue;
 			}
 			Method candidateMethod;
-			try{
-				candidateMethod = candidateClass.getMethod(methodName, parameterTypes);
-			} catch(NoSuchMethodException ex){
+			try {
+				candidateMethod = candidateClass.getMethod(methodName,
+						parameterTypes);
+			} catch (NoSuchMethodException ex) {
 				continue;
 			}
-			if(Modifier.isPublic(candidateMethod.getDeclaringClass().getModifiers())){
+			if (Modifier.isPublic(candidateMethod.getDeclaringClass()
+					.getModifiers())) {
 				return candidateMethod;
 			}
 		}
 
-		throw new NoSuchMethodException("Can't find a public method for " + methodName + " "
-				+ ArrayUtils.toString(parameterTypes));
+		throw new NoSuchMethodException("Can't find a public method for "
+				+ methodName + " " + ArrayUtils.toString(parameterTypes));
 	}
 
 	// ----------------------------------------------------------------------
@@ -1172,18 +1484,18 @@ public class ClassUtils {
 	 */
 	private static String toCanonicalName(String className) {
 		className = StringUtils.deleteWhitespace(className);
-		if(className == null){
+		if (className == null) {
 			throw new NullPointerException("className must not be null.");
-		} else if(className.endsWith("[]")){
+		} else if (className.endsWith("[]")) {
 			StringBuilder classNameBuffer = new StringBuilder();
-			while(className.endsWith("[]")){
+			while (className.endsWith("[]")) {
 				className = className.substring(0, className.length() - 2);
 				classNameBuffer.append("[");
 			}
 			String abbreviation = abbreviationMap.get(className);
-			if(abbreviation != null){
+			if (abbreviation != null) {
 				classNameBuffer.append(abbreviation);
-			} else{
+			} else {
 				classNameBuffer.append("L").append(className).append(";");
 			}
 			className = classNameBuffer.toString();
@@ -1209,13 +1521,13 @@ public class ClassUtils {
 	 * @since 2.4
 	 */
 	public static Class<?>[] toClass(Object[] array) {
-		if(array == null){
+		if (array == null) {
 			return null;
-		} else if(array.length == 0){
+		} else if (array.length == 0) {
 			return ArrayUtils.EMPTY_CLASS_ARRAY;
 		}
 		Class<?>[] classes = new Class[array.length];
-		for(int i = 0; i < array.length; i++){
+		for (int i = 0; i < array.length; i++) {
 			classes[i] = array[i] == null ? null : array[i].getClass();
 		}
 		return classes;
@@ -1238,7 +1550,7 @@ public class ClassUtils {
 	 * @since 2.4
 	 */
 	public static String getShortCanonicalName(Object object, String valueIfNull) {
-		if(object == null){
+		if (object == null) {
 			return valueIfNull;
 		}
 		return getShortCanonicalName(object.getClass().getName());
@@ -1255,7 +1567,7 @@ public class ClassUtils {
 	 * @since 2.4
 	 */
 	public static String getShortCanonicalName(Class<?> cls) {
-		if(cls == null){
+		if (cls == null) {
 			return StringUtils.EMPTY;
 		}
 		return getShortCanonicalName(cls.getName());
@@ -1295,8 +1607,9 @@ public class ClassUtils {
 	 * @return the package name of the object, or the null value
 	 * @since 2.4
 	 */
-	public static String getPackageCanonicalName(Object object, String valueIfNull) {
-		if(object == null){
+	public static String getPackageCanonicalName(Object object,
+			String valueIfNull) {
+		if (object == null) {
 			return valueIfNull;
 		}
 		return getPackageCanonicalName(object.getClass().getName());
@@ -1314,7 +1627,7 @@ public class ClassUtils {
 	 * @since 2.4
 	 */
 	public static String getPackageCanonicalName(Class<?> cls) {
-		if(cls == null){
+		if (cls == null) {
 			return StringUtils.EMPTY;
 		}
 		return getPackageCanonicalName(cls.getName());
@@ -1367,27 +1680,30 @@ public class ClassUtils {
 	 */
 	private static String getCanonicalName(String className) {
 		className = StringUtils.deleteWhitespace(className);
-		if(className == null){
+		if (className == null) {
 			return null;
-		} else{
+		} else {
 			int dim = 0;
-			while(className.startsWith("[")){
+			while (className.startsWith("[")) {
 				dim++;
 				className = className.substring(1);
 			}
-			if(dim < 1){
+			if (dim < 1) {
 				return className;
-			} else{
-				if(className.startsWith("L")){
-					className = className.substring(1, className.endsWith(";") ? className.length() - 1
-							: className.length());
-				} else{
-					if(className.length() > 0){
-						className = reverseAbbreviationMap.get(className.substring(0, 1));
+			} else {
+				if (className.startsWith("L")) {
+					className = className.substring(1,
+							className.endsWith(";") ? className.length() - 1
+									: className.length());
+				} else {
+					if (className.length() > 0) {
+						className = reverseAbbreviationMap.get(className
+								.substring(0, 1));
 					}
 				}
-				StringBuilder canonicalClassNameBuffer = new StringBuilder(className);
-				for(int i = 0; i < dim; i++){
+				StringBuilder canonicalClassNameBuffer = new StringBuilder(
+						className);
+				for (int i = 0; i < dim; i++) {
 					canonicalClassNameBuffer.append("[]");
 				}
 				return canonicalClassNameBuffer.toString();
