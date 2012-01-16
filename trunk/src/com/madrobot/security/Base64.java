@@ -54,7 +54,7 @@ public final class Base64 {
 	 *            a String to be encoded.
 	 * @return A String with the Base64 encoded data.
 	 */
-	public static String encodeString(String s) {
+	public static String encode(String s) {
 		return new String(encode(s.getBytes()));
 	}
 
