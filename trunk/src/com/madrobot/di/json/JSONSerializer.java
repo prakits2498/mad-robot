@@ -13,6 +13,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.madrobot.di.Converter;
+import com.madrobot.di.json.annotations.ItemType;
+
 import android.util.Log;
 
 
