@@ -1,10 +1,13 @@
 
-package com.madrobot.di.json;
+package com.madrobot.di.json.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import com.madrobot.di.json.JSONDeserializer;
+import com.madrobot.di.json.JSONSerializer;
 
 
 /**
