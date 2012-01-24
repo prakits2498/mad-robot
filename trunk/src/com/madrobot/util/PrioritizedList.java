@@ -65,6 +65,8 @@ public class PrioritizedList {
         }
 
         public boolean equals(Object obj) {
+        	if(obj==null)
+        		return false;
             return this.id == ((PrioritizedItem)obj).id;
         }
 
