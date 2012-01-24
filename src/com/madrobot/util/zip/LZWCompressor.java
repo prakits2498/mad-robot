@@ -133,6 +133,9 @@ public class LZWCompressor
 		@Override
 		public final boolean equals(Object o)
 		{
+			if(o==null){
+				return false;
+			}
 			ByteArray other = (ByteArray) o;
 			if (other.hash != hash){
 				return false;

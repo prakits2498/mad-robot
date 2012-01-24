@@ -11,7 +11,7 @@
  */
 package com.madrobot.util;
 
-import com.madrobot.di.xml.wizard.io.StreamException;
+import com.madrobot.di.wizard.xml.io.StreamException;
 
 import java.io.IOException;
 import java.io.Writer;
