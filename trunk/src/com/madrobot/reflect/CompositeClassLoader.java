@@ -36,7 +36,7 @@ import java.util.List;
 public class CompositeClassLoader extends ClassLoader {
 
     private final ReferenceQueue queue = new ReferenceQueue();
-    private final List classLoaders = new ArrayList();
+    private final List<WeakReference<Object>> classLoaders = new ArrayList<WeakReference<Object>>();
 
     public CompositeClassLoader() {
         addInternal(Object.class.getClassLoader()); // bootstrap loader.
