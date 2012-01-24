@@ -39,6 +39,7 @@ public class Model {
 		this.parts = parts;
 	}
 
+	@Override
 	public String toString() {
 		String str = new String();
 		str += "Number of parts: " + parts.size();

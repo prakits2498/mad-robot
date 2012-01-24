@@ -26,15 +26,18 @@ public class ArrayIterator implements Iterator {
         length = Array.getLength(array);
     }
 
-    public boolean hasNext() {
+    @Override
+	public boolean hasNext() {
         return idx < length;
     }
 
-    public Object next() {
+    @Override
+	public Object next() {
         return Array.get(array, idx++);
     }
 
-    public void remove() {
+    @Override
+	public void remove() {
         throw new UnsupportedOperationException("Remove from array"); 
     }
 }

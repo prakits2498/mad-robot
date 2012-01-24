@@ -39,7 +39,8 @@ public class OrderRetainingMap extends HashMap {
         }
     }
 
-    public Object put(Object key, Object value) {
+    @Override
+	public Object put(Object key, Object value) {
         int idx = keyOrder.lastIndexOf(key);
         if (idx < 0) {
             keyOrder.add(key);
@@ -50,7 +51,8 @@ public class OrderRetainingMap extends HashMap {
         return super.put(key, value);
     }
 
-    public Object remove(Object key) {
+    @Override
+	public Object remove(Object key) {
         int idx = keyOrder.lastIndexOf(key);
         if (idx != 0) {
             keyOrder.remove(idx);
@@ -59,15 +61,18 @@ public class OrderRetainingMap extends HashMap {
         return super.remove(key);
     }
 
-    public Collection values() {
+    @Override
+	public Collection values() {
         return Collections.unmodifiableList(valueOrder);
     }
 
-    public Set keySet() {
+    @Override
+	public Set keySet() {
         return Collections.unmodifiableSet(keyOrder);
     }
 
-    public Set entrySet() {
+    @Override
+	public Set entrySet() {
         Map.Entry[] entries = new Map.Entry[size()];
         for (Iterator iter = super.entrySet().iterator(); iter.hasNext();) {
             Map.Entry entry = (Map.Entry)iter.next();

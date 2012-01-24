@@ -250,6 +250,7 @@ public class ClassUtils {
 
 				ObjectInputStream in = new ObjectInputStream(
 						new ByteArrayInputStream(data)) {
+					@Override
 					protected Class resolveClass(ObjectStreamClass desc)
 							throws IOException, ClassNotFoundException {
 						return Class.forName(desc.getName(), false,
@@ -307,7 +308,8 @@ public class ClassUtils {
             final Constructor[] ctors = type.getConstructors();
             if (ctors.length > 1) {
                 Arrays.sort(ctors, new Comparator() {
-                    public int compare(final Object o1, final Object o2) {
+                    @Override
+					public int compare(final Object o1, final Object o2) {
                         return ((Constructor)o2).getParameterTypes().length
                             - ((Constructor)o1).getParameterTypes().length;
                     }
@@ -458,7 +460,8 @@ public class ClassUtils {
             this.value = value;
         }
 
-        public String toString()
+        @Override
+		public String toString()
         {
                 return type.getName() + ":" + value;
         }

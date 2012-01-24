@@ -89,7 +89,8 @@ public class CircularQueue<E> extends AbstractList<E> implements Queue<E>, Seria
         }
     }
 
-    @SuppressWarnings("unchecked")
+    @Override
+	@SuppressWarnings("unchecked")
     public E poll() {
         if (isEmpty()) {
             return null;
@@ -107,7 +108,8 @@ public class CircularQueue<E> extends AbstractList<E> implements Queue<E>, Seria
         return (E) ret;
     }
 
-    public boolean offer(E item) {
+    @Override
+	public boolean offer(E item) {
         if (item == null) {
             throw new IllegalArgumentException("item");
         }
@@ -118,7 +120,8 @@ public class CircularQueue<E> extends AbstractList<E> implements Queue<E>, Seria
         return true;
     }
 
-    @SuppressWarnings("unchecked")
+    @Override
+	@SuppressWarnings("unchecked")
     public E peek() {
         if (isEmpty()) {
             return null;
@@ -327,14 +330,16 @@ public class CircularQueue<E> extends AbstractList<E> implements Queue<E>, Seria
         return (E) removed;
     }
 
-    public E remove() {
+    @Override
+	public E remove() {
         if (isEmpty()) {
             throw new NoSuchElementException();
         }
         return poll();
     }
 
-    public E element() {
+    @Override
+	public E element() {
         if (isEmpty()) {
             throw new NoSuchElementException();
         }

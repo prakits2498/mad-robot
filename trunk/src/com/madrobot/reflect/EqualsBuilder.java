@@ -970,7 +970,8 @@ import java.util.Set;
      *         
      * @since 3.0
      */
-    public Boolean build() {
+    @Override
+	public Boolean build() {
         return isEquals();
     }
 

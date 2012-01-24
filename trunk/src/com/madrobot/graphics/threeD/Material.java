@@ -131,6 +131,7 @@ public class Material {
 	public void setTextureFile(String textureFile) {
 		this.textureFile = textureFile;
 	}
+	@Override
 	public String toString(){
 		String str=new String();
 		str+="Material name: "+name;	

@@ -38,23 +38,28 @@ public class PresortedMap implements SortedMap {
         this.set = set;
     }
 
-    public Comparator comparator() {
+    @Override
+	public Comparator comparator() {
         return comparator;
     }
 
-    public Set entrySet() {
+    @Override
+	public Set entrySet() {
         return set;
     }
 
-    public Object firstKey() {
+    @Override
+	public Object firstKey() {
         throw new UnsupportedOperationException();
     }
 
-    public SortedMap headMap(Object toKey) {
+    @Override
+	public SortedMap headMap(Object toKey) {
         throw new UnsupportedOperationException();
     }
 
-    public Set keySet() {
+    @Override
+	public Set keySet() {
         Set keySet = new ArraySet();
         for (final Iterator iterator = set.iterator(); iterator.hasNext();) {
             final Entry entry = (Entry)iterator.next();
@@ -63,19 +68,23 @@ public class PresortedMap implements SortedMap {
         return keySet;
     }
 
-    public Object lastKey() {
+    @Override
+	public Object lastKey() {
         throw new UnsupportedOperationException();
     }
 
-    public SortedMap subMap(Object fromKey, Object toKey) {
+    @Override
+	public SortedMap subMap(Object fromKey, Object toKey) {
         throw new UnsupportedOperationException();
     }
 
-    public SortedMap tailMap(Object fromKey) {
+    @Override
+	public SortedMap tailMap(Object fromKey) {
         throw new UnsupportedOperationException();
     }
 
-    public Collection values() {
+    @Override
+	public Collection values() {
         Set values = new ArraySet();
         for (final Iterator iterator = set.iterator(); iterator.hasNext();) {
             final Entry entry = (Entry)iterator.next();
@@ -84,54 +93,66 @@ public class PresortedMap implements SortedMap {
         return values;
     }
 
-    public void clear() {
+    @Override
+	public void clear() {
         throw new UnsupportedOperationException();
     }
 
-    public boolean containsKey(Object key) {
+    @Override
+	public boolean containsKey(Object key) {
         return false;
     }
 
-    public boolean containsValue(Object value) {
+    @Override
+	public boolean containsValue(Object value) {
         throw new UnsupportedOperationException();
     }
 
-    public Object get(Object key) {
+    @Override
+	public Object get(Object key) {
         throw new UnsupportedOperationException();
     }
 
-    public boolean isEmpty() {
+    @Override
+	public boolean isEmpty() {
         return set.isEmpty();
     }
 
-    public Object put(final Object key, final Object value) {
+    @Override
+	public Object put(final Object key, final Object value) {
         set.add(new Entry(){
 
-            public Object getKey() {
+            @Override
+			public Object getKey() {
                 return key;
             }
 
-            public Object getValue() {
+            @Override
+			public Object getValue() {
                 return value;
             }
 
-            public Object setValue(Object value) {
+            @Override
+			public Object setValue(Object value) {
                 throw new UnsupportedOperationException();
             }});
         return null;
     }
 
-    public void putAll(Map m) {
+    @Override
+	public void putAll(Map m) {
         for (final Iterator iter = m.entrySet().iterator(); iter.hasNext();) {
             set.add(iter.next());
         }
     }
 
-    public Object remove(Object key) {
+    @Override
+	public Object remove(Object key) {
         throw new UnsupportedOperationException();
     }
 
-    public int size() {
+    @Override
+	public int size() {
         return set.size();
     }
     
@@ -144,7 +165,8 @@ public class PresortedMap implements SortedMap {
             this.list = list;
         }
         
-        public int compare(Object object1, Object object2) {
+        @Override
+		public int compare(Object object1, Object object2) {
             if (array == null || list.size() != array.length) {
                 Map.Entry[] a = new Map.Entry[list.size()];
                 if (array != null) {

@@ -35,55 +35,68 @@ public class PresortedSet implements SortedSet {
         }
     }
 
-    public boolean add(Object e) {
+    @Override
+	public boolean add(Object e) {
         return this.list.add(e);
     }
 
-    public boolean addAll(Collection c) {
+    @Override
+	public boolean addAll(Collection c) {
         return this.list.addAll(c);
     }
 
-    public void clear() {
+    @Override
+	public void clear() {
         this.list.clear();
     }
 
-    public boolean contains(Object o) {
+    @Override
+	public boolean contains(Object o) {
         return this.list.contains(o);
     }
 
-    public boolean containsAll(Collection c) {
+    @Override
+	public boolean containsAll(Collection c) {
         return this.list.containsAll(c);
     }
 
-    public boolean equals(Object o) {
+    @Override
+	public boolean equals(Object o) {
         return this.list.equals(o);
     }
 
-    public int hashCode() {
+    @Override
+	public int hashCode() {
         return this.list.hashCode();
     }
 
-    public boolean isEmpty() {
+    @Override
+	public boolean isEmpty() {
         return this.list.isEmpty();
     }
 
-    public Iterator iterator() {
+    @Override
+	public Iterator iterator() {
         return this.list.iterator();
     }
 
-    public boolean remove(Object o) {
+    @Override
+	public boolean remove(Object o) {
         return this.list.remove(o);
     }
 
-    public boolean removeAll(Collection c) {
+    @Override
+	public boolean removeAll(Collection c) {
         return this.list.removeAll(c);
     }
 
-    public boolean retainAll(Collection c) {
+    @Override
+	public boolean retainAll(Collection c) {
         return this.list.retainAll(c);
     }
 
-    public int size() {
+    @Override
+	public int size() {
         return this.list.size();
     }
 
@@ -91,35 +104,43 @@ public class PresortedSet implements SortedSet {
         return this.list.subList(fromIndex, toIndex);
     }
 
-    public Object[] toArray() {
+    @Override
+	public Object[] toArray() {
         return this.list.toArray();
     }
 
-    public Object[] toArray(Object[] a) {
+    @Override
+	public Object[] toArray(Object[] a) {
         return this.list.toArray(a);
     }
 
-    public Comparator comparator() {
+    @Override
+	public Comparator comparator() {
         return comparator;
     }
 
-    public Object first() {
+    @Override
+	public Object first() {
         return list.isEmpty() ? null : list.get(0);
     }
 
-    public SortedSet headSet(Object toElement) {
+    @Override
+	public SortedSet headSet(Object toElement) {
         throw new UnsupportedOperationException();
     }
 
-    public Object last() {
+    @Override
+	public Object last() {
         return list.isEmpty() ? null : list.get(list.size() - 1);
     }
 
-    public SortedSet subSet(Object fromElement, Object toElement) {
+    @Override
+	public SortedSet subSet(Object fromElement, Object toElement) {
         throw new UnsupportedOperationException();
     }
 
-    public SortedSet tailSet(Object fromElement) {
+    @Override
+	public SortedSet tailSet(Object fromElement) {
         throw new UnsupportedOperationException();
     }
 }

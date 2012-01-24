@@ -69,10 +69,12 @@ public class CompositeClassLoader extends ClassLoader {
         classLoaders.add(0, refClassLoader != null ? refClassLoader : new WeakReference(classLoader, queue));
     }
 
-    public Class loadClass(String name) throws ClassNotFoundException {
+    @Override
+	public Class loadClass(String name) throws ClassNotFoundException {
         List copy = new ArrayList(classLoaders.size()) {
 
-            public boolean addAll(Collection c) {
+            @Override
+			public boolean addAll(Collection c) {
                 boolean result = false;
                 for(Iterator iter = c.iterator(); iter.hasNext(); ) {
                     result |= add(iter.next());
@@ -80,7 +82,8 @@ public class CompositeClassLoader extends ClassLoader {
                 return result;
             }
 
-            public boolean add(Object ref) {
+            @Override
+			public boolean add(Object ref) {
                 Object classLoader = ((WeakReference)ref).get();
                 if (classLoader != null) {
                     return super.add(classLoader);

@@ -33,7 +33,8 @@ public class ThreadSafeSimpleDateFormat {
         formatString = format;
         this.timeZone = timeZone;
         pool = new Pool(initialPoolSize, maxPoolSize, new Pool.Factory() {
-            public Object newInstance() {
+            @Override
+			public Object newInstance() {
                 SimpleDateFormat dateFormat = new SimpleDateFormat(formatString, Locale.ENGLISH);
                 dateFormat.setLenient(lenient);
                 return dateFormat;
@@ -69,7 +70,8 @@ public class ThreadSafeSimpleDateFormat {
         return format;
     }
 
-    public String toString() {
+    @Override
+	public String toString() {
         return formatString;
     }
 }

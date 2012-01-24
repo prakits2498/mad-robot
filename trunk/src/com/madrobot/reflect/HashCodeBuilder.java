@@ -985,7 +985,8 @@ class HashCodeBuilder implements Builder<Integer> {
      * 
      * @since 3.0
      */
-    public Integer build() {
+    @Override
+	public Integer build() {
         return toHashCode();
     }
 
