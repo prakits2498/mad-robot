@@ -43,17 +43,20 @@ public class WeakCache extends AbstractMap {
         this.map = map;
     }
 
-    public Object get(Object key) {
+    @Override
+	public Object get(Object key) {
         Reference reference = (Reference)map.get(key);
         return reference != null ? reference.get() : null;
     }
 
-    public Object put(Object key, Object value) {
+    @Override
+	public Object put(Object key, Object value) {
         Reference ref = (Reference)map.put(key, createReference(value));
         return ref == null ? null : ref.get();
     }
 
-    public Object remove(Object key) {
+    @Override
+	public Object remove(Object key) {
         Reference ref = (Reference)map.remove(key);
         return ref == null ? null : ref.get();
     }
@@ -62,10 +65,12 @@ public class WeakCache extends AbstractMap {
         return new WeakReference(value);
     }
 
-    public boolean containsValue(final Object value) {
+    @Override
+	public boolean containsValue(final Object value) {
         Boolean result = (Boolean)iterate(new Visitor() {
 
-            public Object visit(Object element) {
+            @Override
+			public Object visit(Object element) {
                 return element.equals(value) ? Boolean.TRUE : null;
             }
 
@@ -73,7 +78,8 @@ public class WeakCache extends AbstractMap {
         return result == Boolean.TRUE;
     }
 
-    public int size() {
+    @Override
+	public int size() {
         if (map.size() == 0) {
             return 0;
         }
@@ -81,7 +87,8 @@ public class WeakCache extends AbstractMap {
         i[0] = 0;
         iterate(new Visitor() {
 
-            public Object visit(Object element) {
+            @Override
+			public Object visit(Object element) {
                 ++i[0];
                 return null;
             }
@@ -90,12 +97,14 @@ public class WeakCache extends AbstractMap {
         return i[0];
     }
 
-    public Collection values() {
+    @Override
+	public Collection values() {
         final Collection collection = new ArrayList();
         if (map.size() != 0) {
             iterate(new Visitor() {
 
-                public Object visit(Object element) {
+                @Override
+				public Object visit(Object element) {
                     collection.add(element);
                     return null;
                 }
@@ -105,24 +114,29 @@ public class WeakCache extends AbstractMap {
         return collection;
     }
 
-    public Set entrySet() {
+    @Override
+	public Set entrySet() {
         final Set set = new HashSet();
         if (map.size() != 0) {
             iterate(new Visitor() {
 
-                public Object visit(Object element) {
+                @Override
+				public Object visit(Object element) {
                     final Map.Entry entry = (Map.Entry)element;
                     set.add(new Map.Entry() {
 
-                        public Object getKey() {
+                        @Override
+						public Object getKey() {
                             return entry.getKey();
                         }
 
-                        public Object getValue() {
+                        @Override
+						public Object getValue() {
                             return ((Reference)entry.getValue()).get();
                         }
 
-                        public Object setValue(Object value) {
+                        @Override
+						public Object setValue(Object value) {
                             return entry.setValue(createReference(value));
                         }
 
@@ -165,27 +179,33 @@ public class WeakCache extends AbstractMap {
         Object visit(Object element);
     }
 
-    public boolean containsKey(Object key) {
+    @Override
+	public boolean containsKey(Object key) {
         return map.containsKey(key);
     }
 
-    public void clear() {
+    @Override
+	public void clear() {
         map.clear();
     }
 
-    public Set keySet() {
+    @Override
+	public Set keySet() {
         return map.keySet();
     }
 
-    public boolean equals(Object o) {
+    @Override
+	public boolean equals(Object o) {
         return map.equals(o);
     }
 
-    public int hashCode() {
+    @Override
+	public int hashCode() {
         return map.hashCode();
     }
 
-    public String toString() {
+    @Override
+	public String toString() {
         return map.toString();
     }
 }

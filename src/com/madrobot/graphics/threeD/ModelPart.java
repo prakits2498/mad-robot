@@ -53,6 +53,7 @@ public class ModelPart {
 		faceBuffer.put(toPrimitiveArrayS(faces));
 		faceBuffer.position(0);
 	}
+	@Override
 	public String toString(){
 		String str=new String();
 		if(material!=null)

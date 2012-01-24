@@ -751,6 +751,7 @@ public class MethodUtils {
 
 		// We have to raise privilege for getDeclaredMethods
 		result = (Method[]) AccessController.doPrivileged(new PrivilegedAction() {
+			@Override
 			public Object run() {
 				return fclz.getDeclaredMethods();
 			}

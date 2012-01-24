@@ -1064,7 +1064,8 @@ class ToStringBuilder implements Builder<String> {
      * 
      * @since 3.0
      */
-    public String build() {
+    @Override
+	public String build() {
         return toString();
     }
 }

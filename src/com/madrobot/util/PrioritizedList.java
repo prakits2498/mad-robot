@@ -56,7 +56,8 @@ public class PrioritizedList {
             this.id = id;
         }
 
-        public int compareTo(Object o) {
+        @Override
+		public int compareTo(Object o) {
             PrioritizedItem other = (PrioritizedItem)o;
             if (this.priority != other.priority) {
                 return (other.priority - this.priority);
@@ -64,7 +65,8 @@ public class PrioritizedList {
             return (other.id - this.id);
         }
 
-        public boolean equals(Object obj) {
+        @Override
+		public boolean equals(Object obj) {
         	if(obj==null)
         		return false;
             return this.id == ((PrioritizedItem)obj).id;
@@ -80,16 +82,19 @@ public class PrioritizedList {
             this.iterator = iterator;
         }
 
-        public void remove() {
+        @Override
+		public void remove() {
             // call iterator.remove()?
             throw new UnsupportedOperationException();
         }
 
-        public boolean hasNext() {
+        @Override
+		public boolean hasNext() {
             return iterator.hasNext();
         }
 
-        public Object next() {
+        @Override
+		public Object next() {
             return ((PrioritizedItem)iterator.next()).value;
         }
 

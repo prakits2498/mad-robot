@@ -138,7 +138,7 @@ public final class BimapUtils {
 		int picw = bitmap.getWidth();
 		int[] pix = getPixels(bitmap);
 		int RY, BY, RYY, GYY, BYY, R, G, B, Y;
-		double angle = (3.14159d * (double) tintDegree) / 180.0d;
+		double angle = (3.14159d * tintDegree) / 180.0d;
 		int S = (int) (256.0d * Math.sin(angle));
 		int C = (int) (256.0d * Math.cos(angle));
 
@@ -1364,34 +1364,34 @@ public final class BimapUtils {
 				}
 				int nDiff = bVal - bNewVal;
 				if (j < bitmap.getWidth() - 1) {
-					bData[nRow + j + 1] = (Integer) Math.max(
+					bData[nRow + j + 1] = Math.max(
 							Integer.MIN_VALUE,
 							Math.min(Integer.MAX_VALUE, bData[nRow + j + 1]
 									+ n0 * nDiff / 8));
 				}
 				if (j < bitmap.getWidth() - 2) {
-					bData[nRow + j + 2] = (Integer) Math.max(
+					bData[nRow + j + 2] = Math.max(
 							Integer.MIN_VALUE,
 							Math.min(Integer.MAX_VALUE, bData[nRow + j + 2]
 									+ n1 * nDiff / 8));
 
 				}
 				if (j < bitmap.getWidth() - 3) {
-					bData[nRow + j + 3] = (Integer) Math.max(
+					bData[nRow + j + 3] = Math.max(
 							Integer.MIN_VALUE,
 							Math.min(Integer.MAX_VALUE, bData[nRow + j + 3]
 									+ n2 * nDiff / 8));
 
 				}
 				if (j < bitmap.getWidth() - 4) {
-					bData[nRow + j + 4] = (Integer) Math.max(
+					bData[nRow + j + 4] = Math.max(
 							Integer.MIN_VALUE,
 							Math.min(Integer.MAX_VALUE, bData[nRow + j + 4]
 									+ n3 * nDiff / 8));
 
 				}
 				if (j < bitmap.getWidth() - 5) {
-					bData[nRow + j + 5] = (Integer) Math.max(
+					bData[nRow + j + 5] = Math.max(
 							Integer.MIN_VALUE,
 							Math.min(Integer.MAX_VALUE, bData[nRow + j + 5]
 									+ n4 * nDiff / 8));

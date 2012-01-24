@@ -90,7 +90,8 @@ public class ExpiringMap<K, V> implements Map<K, V> {
         expirer.setExpirationInterval(expirationInterval);
     }
 
-    public V put(K key, V value) {
+    @Override
+	public V put(K key, V value) {
         ExpiringObject answer = delegate.put(key, new ExpiringObject(key,
                 value, System.currentTimeMillis()));
         if (answer == null) {
@@ -100,7 +101,8 @@ public class ExpiringMap<K, V> implements Map<K, V> {
         return answer.getValue();
     }
 
-    public V get(Object key) {
+    @Override
+	public V get(Object key) {
         ExpiringObject object = delegate.get(key);
 
         if (object != null) {
@@ -112,7 +114,8 @@ public class ExpiringMap<K, V> implements Map<K, V> {
         return null;
     }
 
-    public V remove(Object key) {
+    @Override
+	public V remove(Object key) {
         ExpiringObject answer = delegate.remove(key);
         if (answer == null) {
             return null;
@@ -121,23 +124,28 @@ public class ExpiringMap<K, V> implements Map<K, V> {
         return answer.getValue();
     }
 
-    public boolean containsKey(Object key) {
+    @Override
+	public boolean containsKey(Object key) {
         return delegate.containsKey(key);
     }
 
-    public boolean containsValue(Object value) {
+    @Override
+	public boolean containsValue(Object value) {
         return delegate.containsValue(value);
     }
 
-    public int size() {
+    @Override
+	public int size() {
         return delegate.size();
     }
 
-    public boolean isEmpty() {
+    @Override
+	public boolean isEmpty() {
         return delegate.isEmpty();
     }
 
-    public void clear() {
+    @Override
+	public void clear() {
         delegate.clear();
     }
 
@@ -146,7 +154,8 @@ public class ExpiringMap<K, V> implements Map<K, V> {
         return delegate.hashCode();
     }
 
-    public Set<K> keySet() {
+    @Override
+	public Set<K> keySet() {
         return delegate.keySet();
     }
 
@@ -155,17 +164,20 @@ public class ExpiringMap<K, V> implements Map<K, V> {
         return delegate.equals(obj);
     }
 
-    public void putAll(Map<? extends K, ? extends V> inMap) {
+    @Override
+	public void putAll(Map<? extends K, ? extends V> inMap) {
         for (Entry<? extends K, ? extends V> e : inMap.entrySet()) {
             this.put(e.getKey(), e.getValue());
         }
     }
 
-    public Collection<V> values() {
+    @Override
+	public Collection<V> values() {
         throw new UnsupportedOperationException();
     }
 
-    public Set<Map.Entry<K, V>> entrySet() {
+    @Override
+	public Set<Map.Entry<K, V>> entrySet() {
         throw new UnsupportedOperationException();
     }
 
@@ -283,7 +295,8 @@ public class ExpiringMap<K, V> implements Map<K, V> {
             expirerThread.setDaemon(true);
         }
 
-        public void run() {
+        @Override
+		public void run() {
             while (running) {
                 processExpires();
 

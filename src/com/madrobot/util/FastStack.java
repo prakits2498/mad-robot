@@ -76,7 +76,8 @@ public final class FastStack {
         stack = newStack;
     }
 
-    public String toString() {
+    @Override
+	public String toString() {
         StringBuffer result = new StringBuffer("[");
         for (int i = 0; i < pointer; i++) {
             if (i > 0) {

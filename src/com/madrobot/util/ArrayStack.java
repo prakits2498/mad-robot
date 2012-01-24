@@ -167,6 +167,7 @@ public class ArrayStack extends ArrayList implements Buffer {
 	 * @throws BufferUnderflowException
 	 *             if the stack is empty
 	 */
+	@Override
 	public Object get() {
 		int size = size();
 		if(size == 0){
@@ -182,6 +183,7 @@ public class ArrayStack extends ArrayList implements Buffer {
 	 * @throws BufferUnderflowException
 	 *             if the stack is empty
 	 */
+	@Override
 	public Object remove() {
 		int size = size();
 		if(size == 0){
