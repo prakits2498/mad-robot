@@ -150,7 +150,7 @@ public class Introspector {
 	 * @see #flushFromCaches
 	 */
 	public static BeanInfo getBeanInfo(Class<?> beanClass) throws IntrospectionException {
-		BeanInfo bi = (BeanInfo) beanInfoCache.get(beanClass);
+		BeanInfo bi = beanInfoCache.get(beanClass);
 		if(bi == null){
 			bi = (new Introspector(beanClass, null, USE_ALL_BEANINFO)).getBeanInfo();
 			beanInfoCache.put(beanClass, bi);
@@ -820,7 +820,7 @@ public class Introspector {
 
 				if(read == null && write != null){
 					read = MethodUtils.findAccessibleMethodIncludeInterfaces(result.getClass0(), "get"
-							+ result.capitalize(result.getName()), 0, null);
+							+ FeatureDescriptor.capitalize(result.getName()), 0, null);
 					if(read != null){
 						try{
 							result.setReadMethod(read);
@@ -831,7 +831,7 @@ public class Introspector {
 				}
 				if(write == null && read != null){
 					write = MethodUtils.findAccessibleMethodIncludeInterfaces(result.getClass0(), "set"
-							+ result.capitalize(result.getName()), 1, new Class[] { read.getReturnType() });
+							+ FeatureDescriptor.capitalize(result.getName()), 1, new Class[] { read.getReturnType() });
 					if(write != null){
 						try{
 							result.setWriteMethod(write);
@@ -1288,26 +1288,32 @@ class GenericBeanInfo extends SimpleBeanInfo {
 		targetBeanInfo = old.targetBeanInfo;
 	}
 
+	@Override
 	public PropertyDescriptor[] getPropertyDescriptors() {
 		return properties;
 	}
 
+	@Override
 	public int getDefaultPropertyIndex() {
 		return defaultProperty;
 	}
 
+	@Override
 	public EventSetDescriptor[] getEventSetDescriptors() {
 		return events;
 	}
 
+	@Override
 	public int getDefaultEventIndex() {
 		return defaultEvent;
 	}
 
+	@Override
 	public MethodDescriptor[] getMethodDescriptors() {
 		return methods;
 	}
 
+	@Override
 	public BeanDescriptor getBeanDescriptor() {
 		return beanDescriptor;
 	}

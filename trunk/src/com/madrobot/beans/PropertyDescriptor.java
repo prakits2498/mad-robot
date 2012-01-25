@@ -300,6 +300,7 @@ public class PropertyDescriptor extends FeatureDescriptor {
 	/**
 	 * Overridden to ensure that a super class doesn't take precedent
 	 */
+	@Override
 	void setClass0(Class clz) {
 		if(getClass0() != null && clz.isAssignableFrom(getClass0())){
 			// dont replace a subclass with a superclass
@@ -431,6 +432,7 @@ public class PropertyDescriptor extends FeatureDescriptor {
 	 * 
 	 * @since 1.4
 	 */
+	@Override
 	public boolean equals(Object obj) {
 		if(this == obj){
 			return true;
@@ -633,6 +635,7 @@ public class PropertyDescriptor extends FeatureDescriptor {
 	 * @return a hash code value for this object.
 	 * @since 1.5
 	 */
+	@Override
 	public int hashCode() {
 		int result = 7;
 

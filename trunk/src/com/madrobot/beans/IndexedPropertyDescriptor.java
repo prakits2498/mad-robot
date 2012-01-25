@@ -360,6 +360,7 @@ public class IndexedPropertyDescriptor extends PropertyDescriptor {
 	 * 
 	 * @since 1.4
 	 */
+	@Override
 	public boolean equals(Object obj) {
 		// Note: This would be identical to PropertyDescriptor but they don't
 		// share the same fields.
@@ -457,6 +458,7 @@ public class IndexedPropertyDescriptor extends PropertyDescriptor {
 	 * @return a hash code value for this object.
 	 * @since 1.5
 	 */
+	@Override
 	public int hashCode() {
 		int result = super.hashCode();
 
