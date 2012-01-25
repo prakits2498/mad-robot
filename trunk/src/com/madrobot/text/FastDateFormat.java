@@ -1080,14 +1080,16 @@ public class FastDateFormat extends Format {
         /**
          * {@inheritDoc}
          */
-        public int estimateLength() {
+        @Override
+		public int estimateLength() {
             return 1;
         }
 
         /**
          * {@inheritDoc}
          */
-        public void appendTo(StringBuffer buffer, Calendar calendar) {
+        @Override
+		public void appendTo(StringBuffer buffer, Calendar calendar) {
             buffer.append(mValue);
         }
     }
@@ -1111,14 +1113,16 @@ public class FastDateFormat extends Format {
         /**
          * {@inheritDoc}
          */
-        public int estimateLength() {
+        @Override
+		public int estimateLength() {
             return mValue.length();
         }
 
         /**
          * {@inheritDoc}
          */
-        public void appendTo(StringBuffer buffer, Calendar calendar) {
+        @Override
+		public void appendTo(StringBuffer buffer, Calendar calendar) {
             buffer.append(mValue);
         }
     }
@@ -1145,7 +1149,8 @@ public class FastDateFormat extends Format {
         /**
          * {@inheritDoc}
          */
-        public int estimateLength() {
+        @Override
+		public int estimateLength() {
             int max = 0;
             for (int i=mValues.length; --i >= 0; ) {
                 int len = mValues[i].length();
@@ -1159,7 +1164,8 @@ public class FastDateFormat extends Format {
         /**
          * {@inheritDoc}
          */
-        public void appendTo(StringBuffer buffer, Calendar calendar) {
+        @Override
+		public void appendTo(StringBuffer buffer, Calendar calendar) {
             buffer.append(mValues[calendar.get(mField)]);
         }
     }
@@ -1182,21 +1188,24 @@ public class FastDateFormat extends Format {
         /**
          * {@inheritDoc}
          */
-        public int estimateLength() {
+        @Override
+		public int estimateLength() {
             return 4;
         }
 
         /**
          * {@inheritDoc}
          */
-        public void appendTo(StringBuffer buffer, Calendar calendar) {
+        @Override
+		public void appendTo(StringBuffer buffer, Calendar calendar) {
             appendTo(buffer, calendar.get(mField));
         }
 
         /**
          * {@inheritDoc}
          */
-        public final void appendTo(StringBuffer buffer, int value) {
+        @Override
+		public final void appendTo(StringBuffer buffer, int value) {
             if (value < 10) {
                 buffer.append((char)(value + '0'));
             } else if (value < 100) {
@@ -1225,21 +1234,24 @@ public class FastDateFormat extends Format {
         /**
          * {@inheritDoc}
          */
-        public int estimateLength() {
+        @Override
+		public int estimateLength() {
             return 2;
         }
 
         /**
          * {@inheritDoc}
          */
-        public void appendTo(StringBuffer buffer, Calendar calendar) {
+        @Override
+		public void appendTo(StringBuffer buffer, Calendar calendar) {
             appendTo(buffer, calendar.get(Calendar.MONTH) + 1);
         }
 
         /**
          * {@inheritDoc}
          */
-        public final void appendTo(StringBuffer buffer, int value) {
+        @Override
+		public final void appendTo(StringBuffer buffer, int value) {
             if (value < 10) {
                 buffer.append((char)(value + '0'));
             } else {
@@ -1274,21 +1286,24 @@ public class FastDateFormat extends Format {
         /**
          * {@inheritDoc}
          */
-        public int estimateLength() {
+        @Override
+		public int estimateLength() {
             return 4;
         }
 
         /**
          * {@inheritDoc}
          */
-        public void appendTo(StringBuffer buffer, Calendar calendar) {
+        @Override
+		public void appendTo(StringBuffer buffer, Calendar calendar) {
             appendTo(buffer, calendar.get(mField));
         }
 
         /**
          * {@inheritDoc}
          */
-        public final void appendTo(StringBuffer buffer, int value) {
+        @Override
+		public final void appendTo(StringBuffer buffer, int value) {
             if (value < 100) {
                 for (int i = mSize; --i >= 2; ) {
                     buffer.append('0');
@@ -1329,21 +1344,24 @@ public class FastDateFormat extends Format {
         /**
          * {@inheritDoc}
          */
-        public int estimateLength() {
+        @Override
+		public int estimateLength() {
             return 2;
         }
 
         /**
          * {@inheritDoc}
          */
-        public void appendTo(StringBuffer buffer, Calendar calendar) {
+        @Override
+		public void appendTo(StringBuffer buffer, Calendar calendar) {
             appendTo(buffer, calendar.get(mField));
         }
 
         /**
          * {@inheritDoc}
          */
-        public final void appendTo(StringBuffer buffer, int value) {
+        @Override
+		public final void appendTo(StringBuffer buffer, int value) {
             if (value < 100) {
                 buffer.append((char)(value / 10 + '0'));
                 buffer.append((char)(value % 10 + '0'));
@@ -1369,21 +1387,24 @@ public class FastDateFormat extends Format {
         /**
          * {@inheritDoc}
          */
-        public int estimateLength() {
+        @Override
+		public int estimateLength() {
             return 2;
         }
 
         /**
          * {@inheritDoc}
          */
-        public void appendTo(StringBuffer buffer, Calendar calendar) {
+        @Override
+		public void appendTo(StringBuffer buffer, Calendar calendar) {
             appendTo(buffer, calendar.get(Calendar.YEAR) % 100);
         }
 
         /**
          * {@inheritDoc}
          */
-        public final void appendTo(StringBuffer buffer, int value) {
+        @Override
+		public final void appendTo(StringBuffer buffer, int value) {
             buffer.append((char)(value / 10 + '0'));
             buffer.append((char)(value % 10 + '0'));
         }
@@ -1405,21 +1426,24 @@ public class FastDateFormat extends Format {
         /**
          * {@inheritDoc}
          */
-        public int estimateLength() {
+        @Override
+		public int estimateLength() {
             return 2;
         }
 
         /**
          * {@inheritDoc}
          */
-        public void appendTo(StringBuffer buffer, Calendar calendar) {
+        @Override
+		public void appendTo(StringBuffer buffer, Calendar calendar) {
             appendTo(buffer, calendar.get(Calendar.MONTH) + 1);
         }
 
         /**
          * {@inheritDoc}
          */
-        public final void appendTo(StringBuffer buffer, int value) {
+        @Override
+		public final void appendTo(StringBuffer buffer, int value) {
             buffer.append((char)(value / 10 + '0'));
             buffer.append((char)(value % 10 + '0'));
         }
@@ -1444,14 +1468,16 @@ public class FastDateFormat extends Format {
         /**
          * {@inheritDoc}
          */
-        public int estimateLength() {
+        @Override
+		public int estimateLength() {
             return mRule.estimateLength();
         }
 
         /**
          * {@inheritDoc}
          */
-        public void appendTo(StringBuffer buffer, Calendar calendar) {
+        @Override
+		public void appendTo(StringBuffer buffer, Calendar calendar) {
             int value = calendar.get(Calendar.HOUR);
             if (value == 0) {
                 value = calendar.getLeastMaximum(Calendar.HOUR) + 1;
@@ -1462,7 +1488,8 @@ public class FastDateFormat extends Format {
         /**
          * {@inheritDoc}
          */
-        public void appendTo(StringBuffer buffer, int value) {
+        @Override
+		public void appendTo(StringBuffer buffer, int value) {
             mRule.appendTo(buffer, value);
         }
     }
@@ -1486,14 +1513,16 @@ public class FastDateFormat extends Format {
         /**
          * {@inheritDoc}
          */
-        public int estimateLength() {
+        @Override
+		public int estimateLength() {
             return mRule.estimateLength();
         }
 
         /**
          * {@inheritDoc}
          */
-        public void appendTo(StringBuffer buffer, Calendar calendar) {
+        @Override
+		public void appendTo(StringBuffer buffer, Calendar calendar) {
             int value = calendar.get(Calendar.HOUR_OF_DAY);
             if (value == 0) {
                 value = calendar.getMaximum(Calendar.HOUR_OF_DAY) + 1;
@@ -1504,7 +1533,8 @@ public class FastDateFormat extends Format {
         /**
          * {@inheritDoc}
          */
-        public void appendTo(StringBuffer buffer, int value) {
+        @Override
+		public void appendTo(StringBuffer buffer, int value) {
             mRule.appendTo(buffer, value);
         }
     }
@@ -1546,7 +1576,8 @@ public class FastDateFormat extends Format {
         /**
          * {@inheritDoc}
          */
-        public int estimateLength() {
+        @Override
+		public int estimateLength() {
             if (mTimeZoneForced) {
                 return Math.max(mStandard.length(), mDaylight.length());
             } else if (mStyle == TimeZone.SHORT) {
@@ -1559,7 +1590,8 @@ public class FastDateFormat extends Format {
         /**
          * {@inheritDoc}
          */
-        public void appendTo(StringBuffer buffer, Calendar calendar) {
+        @Override
+		public void appendTo(StringBuffer buffer, Calendar calendar) {
             if (mTimeZoneForced) {
                 if (mTimeZone.useDaylightTime() && calendar.get(Calendar.DST_OFFSET) != 0) {
                     buffer.append(mDaylight);
@@ -1599,14 +1631,16 @@ public class FastDateFormat extends Format {
         /**
          * {@inheritDoc}
          */
-        public int estimateLength() {
+        @Override
+		public int estimateLength() {
             return 5;
         }
 
         /**
          * {@inheritDoc}
          */
-        public void appendTo(StringBuffer buffer, Calendar calendar) {
+        @Override
+		public void appendTo(StringBuffer buffer, Calendar calendar) {
             int offset = calendar.get(Calendar.ZONE_OFFSET) + calendar.get(Calendar.DST_OFFSET);
             
             if (offset < 0) {
