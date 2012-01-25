@@ -27,7 +27,8 @@ public class SimpleBeanInfo implements BeanInfo  {
     * Deny knowledge about the class and customizer of the bean.
     * You can override this if you wish to provide explicit info.
     */
-   public BeanDescriptor  getBeanDescriptor() {
+   @Override
+public BeanDescriptor  getBeanDescriptor() {
    return null;
    }
 
@@ -35,7 +36,8 @@ public class SimpleBeanInfo implements BeanInfo  {
     * Deny knowledge of properties. You can override this
     * if you wish to provide explicit property info.
     */
-   public PropertyDescriptor [] getPropertyDescriptors() {
+   @Override
+public PropertyDescriptor [] getPropertyDescriptors() {
    return null;
    }
 
@@ -43,7 +45,8 @@ public class SimpleBeanInfo implements BeanInfo  {
     * Deny knowledge of a default property. You can override this
     * if you wish to define a default property for the bean.
     */
-   public int getDefaultPropertyIndex() {
+   @Override
+public int getDefaultPropertyIndex() {
    return -1;
    }
 
@@ -51,7 +54,8 @@ public class SimpleBeanInfo implements BeanInfo  {
     * Deny knowledge of event sets. You can override this
     * if you wish to provide explicit event set info.
     */
-   public EventSetDescriptor [] getEventSetDescriptors() {
+   @Override
+public EventSetDescriptor [] getEventSetDescriptors() {
    return null;
    }
 
@@ -59,7 +63,8 @@ public class SimpleBeanInfo implements BeanInfo  {
     * Deny knowledge of a default event. You can override this
     * if you wish to define a default event for the bean.
     */
-   public int getDefaultEventIndex() {
+   @Override
+public int getDefaultEventIndex() {
    return -1;
    }
 
@@ -67,7 +72,8 @@ public class SimpleBeanInfo implements BeanInfo  {
     * Deny knowledge of methods. You can override this
     * if you wish to provide explicit method info.
     */
-   public MethodDescriptor [] getMethodDescriptors() {
+   @Override
+public MethodDescriptor [] getMethodDescriptors() {
    return null;
    }
 
@@ -76,7 +82,8 @@ public class SimpleBeanInfo implements BeanInfo  {
     * may override this if you want to (for example) return a
     * BeanInfo for a base class.
     */
-   public BeanInfo [] getAdditionalBeanInfo() {
+   @Override
+public BeanInfo [] getAdditionalBeanInfo() {
    return null;
    }
 
