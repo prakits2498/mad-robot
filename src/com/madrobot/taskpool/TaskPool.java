@@ -35,6 +35,7 @@ class TaskPool extends ThreadPoolExecutor {
 
 		private AtomicInteger atomicInteger = new AtomicInteger(1);
 
+		@Override
 		public Thread newThread(Runnable runnable) {
 			String threadName = "SessionThread=" + atomicInteger.getAndIncrement();
 			return new Thread(runnable, threadName);
