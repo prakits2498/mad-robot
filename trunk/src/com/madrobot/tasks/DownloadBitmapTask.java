@@ -23,7 +23,7 @@ import java.net.URISyntaxException;
 
 import org.apache.http.HttpEntity;
 
-import com.madrobot.io.net.HttpTaskHelper;
+import com.madrobot.net.HttpTaskHelper;
 
 /**
  * Async task to download a list of bitmaps
