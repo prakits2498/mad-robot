@@ -10,17 +10,18 @@
  ******************************************************************************/
 package com.madrobot.tasks;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
+import android.util.Log;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.apache.http.HttpEntity;
-
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.BitmapFactory.Options;
 
 import com.madrobot.io.net.HttpTaskHelper;
 
@@ -64,11 +65,13 @@ public class DownloadBitmapTask extends AbstractTask {
 			response.setResponseId(i);
 			HttpTaskHelper helper = new HttpTaskHelper(uri[i]);
 			try{
+				Log.d("BitmapTask","Downloading Bitmap->"+uri[i]);
 				HttpEntity entity = helper.execute();
 				InputStream is = entity.getContent();
 				Bitmap bitmap = BitmapFactory.decodeStream(is, null, opt);
 				response.setData(bitmap);
 				response.setResponseStatus(1);
+				Log.d("BitmapTask","Complete!");
 				publishProgress(response);
 			} catch(IOException e){
 				response.setResponseStatus(-1);
@@ -79,7 +82,6 @@ public class DownloadBitmapTask extends AbstractTask {
 				response.setT(e);
 				e.printStackTrace();
 			}
-
 		}
 		return null;
 
