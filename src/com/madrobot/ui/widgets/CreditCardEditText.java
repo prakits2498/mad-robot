@@ -159,7 +159,6 @@ public class CreditCardEditText extends com.madrobot.ui.widgets.EditTexts.Format
 	}
 
 	public boolean validate(boolean isCredit) {
-		//Abhi MOB-621 - (Android) I can add an invaild credit card number and then get the to end before I get error msg.
 		return getValue().length() == getMaxLength(false, isCredit) && getValue().matches("\\d{13,16}");//check if the card number is all numeric
 		}
 
