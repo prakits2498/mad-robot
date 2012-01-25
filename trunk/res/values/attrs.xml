@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Attribute sets for custom widgets -->
+<resources>
+ 
+     <!-- Attributes for WebImageView -->   
+    <declare-styleable name="WebImageView">
+        <attr format="string" name="imageUrl" />
+        <attr format="boolean" name="autoLoad" />
+        <attr format="integer" name="progressDrawable" />
+        <attr format="integer" name="errorDrawable" />
+    </declare-styleable>
+
+</resources>
