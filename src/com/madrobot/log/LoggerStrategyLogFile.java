@@ -69,10 +69,12 @@ public class LoggerStrategyLogFile extends ALogMethod implements LoggerStrategy 
 		}
 	}
 
+	@Override
 	void d(String tag, String message) {
 		write(Log.DEBUG, tag, message);
 	}
 
+	@Override
 	void e(String tag, String message) {
 		write(Log.ERROR, tag, message);
 	}
@@ -81,6 +83,7 @@ public class LoggerStrategyLogFile extends ALogMethod implements LoggerStrategy 
 		return MessageFormat.format("{0,date} {0,time}", date);
 	}
 
+	@Override
 	void i(String tag, String message) {
 		write(Log.INFO, tag, message);
 	}
@@ -89,6 +92,7 @@ public class LoggerStrategyLogFile extends ALogMethod implements LoggerStrategy 
 		return LEVELS[level - 2];
 	}
 
+	@Override
 	void shutdown() {
 		Log.d("Logger", "Shutting down logger");
 		if(!noSdCard){
@@ -122,14 +126,17 @@ public class LoggerStrategyLogFile extends ALogMethod implements LoggerStrategy 
 		}
 	}
 
+	@Override
 	void v(String tag, String message) {
 		write(Log.VERBOSE, tag, message);
 	}
 
+	@Override
 	void w(String tag, String message) {
 		write(Log.WARN, tag, message);
 	}
 
+	@Override
 	void write(int level, String tag, String message) {
 		writeImpl(level, tag, message);
 	}

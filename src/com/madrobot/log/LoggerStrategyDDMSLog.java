@@ -14,31 +14,38 @@ import android.util.Log;
 
 public class LoggerStrategyDDMSLog extends ALogMethod implements LoggerStrategy {
 
+	@Override
 	void d(String tag, String message) {
 		Log.d(tag, message);
 	}
 
+	@Override
 	void e(String tag, String message) {
 		Log.e(tag, message);
 	}
 
+	@Override
 	void i(String tag, String message) {
 		Log.i(tag, message);
 	}
 
+	@Override
 	void shutdown() {
 		// TODO Auto-generated method stub
 
 	}
 
+	@Override
 	void v(String tag, String message) {
 		Log.v(tag, message);
 	}
 
+	@Override
 	void w(String tag, String message) {
 		Log.w(tag, message);
 	}
 
+	@Override
 	void write(int level, String tag, String message) {
 		Log.println(level, tag, message);
 	}
