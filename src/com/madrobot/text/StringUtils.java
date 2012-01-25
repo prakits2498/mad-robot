@@ -1180,7 +1180,7 @@ public final class StringUtils {
 
 		String[] split = new String[stringStack.size()];
 		for (int i = 0; i < split.length; i++) {
-			split[split.length - 1 - i] = (String) stringStack.pop();
+			split[split.length - 1 - i] = stringStack.pop();
 		}
 		stringStack = null;
 		buffer = null;
