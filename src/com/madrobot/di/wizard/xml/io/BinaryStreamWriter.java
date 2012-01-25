@@ -11,7 +11,6 @@
 
 package com.madrobot.di.wizard.xml.io;
 
-
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -23,76 +22,84 @@ import java.util.Map;
  */
 public class BinaryStreamWriter implements ExtendedHierarchicalStreamWriter {
 
-    private final IdRegistry idRegistry = new IdRegistry();
-    private final DataOutputStream out;
-    private final Token.Formatter tokenFormatter = new Token.Formatter();
+	private final IdRegistry idRegistry = new IdRegistry();
+	private final DataOutputStream out;
+	private final Token.Formatter tokenFormatter = new Token.Formatter();
 
-    public BinaryStreamWriter(OutputStream outputStream) {
-        out = new DataOutputStream(outputStream);
-    }
+	public BinaryStreamWriter(OutputStream outputStream) {
+		out = new DataOutputStream(outputStream);
+	}
 
-    public void startNode(String name) {
-        write(new Token.StartNode(idRegistry.getId(name)));
-    }
+	@Override
+	public void startNode(String name) {
+		write(new Token.StartNode(idRegistry.getId(name)));
+	}
 
-    public void startNode(String name, Class clazz) {
-        startNode(name);
-    }
+	@Override
+	public void startNode(String name, Class clazz) {
+		startNode(name);
+	}
 
-    public void addAttribute(String name, String value) {
-        write(new Token.Attribute(idRegistry.getId(name), value));
-    }
+	@Override
+	public void addAttribute(String name, String value) {
+		write(new Token.Attribute(idRegistry.getId(name), value));
+	}
 
-    public void setValue(String text) {
-        write(new Token.Value(text));
-    }
+	@Override
+	public void setValue(String text) {
+		write(new Token.Value(text));
+	}
 
-    public void endNode() {
-        write(new Token.EndNode());
-    }
+	@Override
+	public void endNode() {
+		write(new Token.EndNode());
+	}
 
-    public void flush() {
-        try {
-            out.flush();
-        } catch (IOException e) {
-            throw new StreamException(e);
-        }
-    }
+	@Override
+	public void flush() {
+		try {
+			out.flush();
+		} catch (IOException e) {
+			throw new StreamException(e);
+		}
+	}
 
-    public void close() {
-        try {
-            out.close();
-        } catch (IOException e) {
-            throw new StreamException(e);
-        }
-    }
+	@Override
+	public void close() {
+		try {
+			out.close();
+		} catch (IOException e) {
+			throw new StreamException(e);
+		}
+	}
 
-    public HierarchicalStreamWriter underlyingWriter() {
-        return this;
-    }
+	@Override
+	public HierarchicalStreamWriter underlyingWriter() {
+		return this;
+	}
 
-    private void write(Token token) {
-        try {
-            tokenFormatter.write(out, token);
-        } catch (IOException e) {
-            throw new StreamException(e);
-        }
-    }
+	private void write(Token token) {
+		try {
+			tokenFormatter.write(out, token);
+		} catch (IOException e) {
+			throw new StreamException(e);
+		}
+	}
 
-    private class IdRegistry {
+	private class IdRegistry {
 
-        private long nextId = 0;
-        private Map ids = new HashMap();
+		private long nextId = 0;
+		private Map ids = new HashMap();
 
-        public long getId(String value) {
-            Long id = (Long) ids.get(value);
-            if (id == null) {
-                id = new Long(++nextId);
-                ids.put(value, id);
-                write(new Token.MapIdToValue(id.longValue(), value));
-            }
-            return id.longValue();
-        }
+		public long getId(String value) {
+			Long id = (Long) ids.get(value);
+			if (id == null) {
+				id = new Long(++nextId);
+				ids.put(value, id);
+				write(new Token.MapIdToValue(id.longValue(), value));
+			}
+			return id.longValue();
+		}
 
-    }
+	}
 }

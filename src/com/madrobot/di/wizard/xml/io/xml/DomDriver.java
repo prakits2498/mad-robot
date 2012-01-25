@@ -8,7 +8,7 @@
  *  Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
- 
+
 package com.madrobot.di.wizard.xml.io.xml;
 
 import java.io.File;
@@ -36,90 +36,94 @@ import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
 import com.madrobot.di.wizard.xml.io.NameCoder;
 import com.madrobot.di.wizard.xml.io.StreamException;
 
-
 public class DomDriver extends AbstractDriver {
 
-    private final String encoding;
-    private final DocumentBuilderFactory documentBuilderFactory;
+	private final String encoding;
+	private final DocumentBuilderFactory documentBuilderFactory;
 
-    /**
-     * Construct a DomDriver.
-     */
-    public DomDriver() {
-        this(null);
-    }
+	/**
+	 * Construct a DomDriver.
+	 */
+	public DomDriver() {
+		this(null);
+	}
 
-    /**
-     * Construct a DomDriver with a specified encoding. The created DomReader will ignore any
-     * encoding attribute of the XML header though.
-     */
-    public DomDriver(String encoding) {
-        this(encoding, new XmlFriendlyNameCoder());
-    }
+	/**
+	 * Construct a DomDriver with a specified encoding. The created DomReader will ignore any encoding attribute of the
+	 * XML header though.
+	 */
+	public DomDriver(String encoding) {
+		this(encoding, new XmlFriendlyNameCoder());
+	}
 
-    /**
-     * @since 1.4
-     */
-    public DomDriver(String encoding, NameCoder nameCoder) {
-        super(nameCoder);
-        documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        this.encoding = encoding;
-    }
+	/**
+	 * @since 1.4
+	 */
+	public DomDriver(String encoding, NameCoder nameCoder) {
+		super(nameCoder);
+		documentBuilderFactory = DocumentBuilderFactory.newInstance();
+		this.encoding = encoding;
+	}
 
-    /**
-     * @since 1.2
-     * @deprecated As of 1.4, use {@link #DomDriver(String, NameCoder)} instead.
-     */
-    public DomDriver(String encoding, XmlFriendlyNameCoder replacer) {
-        this(encoding, (NameCoder)replacer);
-    }
+	/**
+	 * @since 1.2
+	 * @deprecated As of 1.4, use {@link #DomDriver(String, NameCoder)} instead.
+	 */
+	@Deprecated
+	public DomDriver(String encoding, XmlFriendlyNameCoder replacer) {
+		this(encoding, (NameCoder) replacer);
+	}
 
-    public HierarchicalStreamReader createReader(Reader in) {
-        return createReader(new InputSource(in));
-    }
+	@Override
+	public HierarchicalStreamReader createReader(Reader in) {
+		return createReader(new InputSource(in));
+	}
 
-    public HierarchicalStreamReader createReader(InputStream in) {
-        return createReader(new InputSource(in));
-    }
+	@Override
+	public HierarchicalStreamReader createReader(InputStream in) {
+		return createReader(new InputSource(in));
+	}
 
-    public HierarchicalStreamReader createReader(URL in) {
-        return createReader(new InputSource(in.toExternalForm()));
-    }
+	@Override
+	public HierarchicalStreamReader createReader(URL in) {
+		return createReader(new InputSource(in.toExternalForm()));
+	}
 
-    public HierarchicalStreamReader createReader(File in) {
-        return createReader(new InputSource(in.toURI().toASCIIString()));
-    }
+	@Override
+	public HierarchicalStreamReader createReader(File in) {
+		return createReader(new InputSource(in.toURI().toASCIIString()));
+	}
 
-    private HierarchicalStreamReader createReader(InputSource source) {
-        try {
-            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-            if (encoding != null) {
-                source.setEncoding(encoding);
-            }
-            Document document = documentBuilder.parse(source);
-            return new DomReader(document, getNameCoder());
-        } catch (FactoryConfigurationError e) {
-            throw new StreamException(e);
-        } catch (ParserConfigurationException e) {
-            throw new StreamException(e);
-        } catch (SAXException e) {
-            throw new StreamException(e);
-        } catch (IOException e) {
-            throw new StreamException(e);
-        }
-    }
+	private HierarchicalStreamReader createReader(InputSource source) {
+		try {
+			DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+			if (encoding != null) {
+				source.setEncoding(encoding);
+			}
+			Document document = documentBuilder.parse(source);
+			return new DomReader(document, getNameCoder());
+		} catch (FactoryConfigurationError e) {
+			throw new StreamException(e);
+		} catch (ParserConfigurationException e) {
+			throw new StreamException(e);
+		} catch (SAXException e) {
+			throw new StreamException(e);
+		} catch (IOException e) {
+			throw new StreamException(e);
+		}
+	}
 
-    public HierarchicalStreamWriter createWriter(Writer out) {
-        return new PrettyPrintWriter(out, getNameCoder());
-    }
+	@Override
+	public HierarchicalStreamWriter createWriter(Writer out) {
+		return new PrettyPrintWriter(out, getNameCoder());
+	}
 
-    public HierarchicalStreamWriter createWriter(OutputStream out) {
-        try {
-            return createWriter(encoding != null
-                ? new OutputStreamWriter(out, encoding)
-                : new OutputStreamWriter(out));
-        } catch (UnsupportedEncodingException e) {
-            throw new StreamException(e);
-        }
-    }
+	@Override
+	public HierarchicalStreamWriter createWriter(OutputStream out) {
+		try {
+			return createWriter(encoding != null ? new OutputStreamWriter(out, encoding) : new OutputStreamWriter(out));
+		} catch (UnsupportedEncodingException e) {
+			throw new StreamException(e);
+		}
+	}
 }

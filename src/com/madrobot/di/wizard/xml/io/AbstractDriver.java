@@ -18,60 +18,60 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-
-
 /**
  * Abstract base class for all HierarchicalStreamDriver implementations. Implementations of
- * {@link HierarchicalStreamDriver} should rather be derived from this class then implementing
- * the interface directly.
+ * {@link HierarchicalStreamDriver} should rather be derived from this class then implementing the interface directly.
  * 
  * @since 1.4
  */
 public abstract class AbstractDriver implements HierarchicalStreamDriver {
 
-    private NameCoder replacer;
+	private NameCoder replacer;
 
-    /**
-     * Creates an AbstractDriver with a NameCoder that does nothing.
-     */
-    public AbstractDriver() {
-        this(new NoNameCoder());
-    }
+	/**
+	 * Creates an AbstractDriver with a NameCoder that does nothing.
+	 */
+	public AbstractDriver() {
+		this(new NoNameCoder());
+	}
 
-    /**
-     * Creates an AbstractDriver with a provided {@link NameCoder}.
-     * 
-     * @param nameCoder the name coder for the target format
-     */
-    public AbstractDriver(NameCoder nameCoder) {
-        this.replacer = nameCoder;
-    }
+	/**
+	 * Creates an AbstractDriver with a provided {@link NameCoder}.
+	 * 
+	 * @param nameCoder
+	 *            the name coder for the target format
+	 */
+	public AbstractDriver(NameCoder nameCoder) {
+		this.replacer = nameCoder;
+	}
 
-    protected NameCoder getNameCoder() {
-        return replacer;
-    }
+	protected NameCoder getNameCoder() {
+		return replacer;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    public HierarchicalStreamReader createReader(URL in) {
-        InputStream stream = null;
-        try {
-            stream = in.openStream();
-        } catch (IOException e) {
-            throw new StreamException(e);
-        }
-        return createReader(stream);
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public HierarchicalStreamReader createReader(URL in) {
+		InputStream stream = null;
+		try {
+			stream = in.openStream();
+		} catch (IOException e) {
+			throw new StreamException(e);
+		}
+		return createReader(stream);
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    public HierarchicalStreamReader createReader(File in) {
-        try {
-            return createReader(new FileInputStream(in));
-        } catch (FileNotFoundException e) {
-            throw new StreamException(e);
-        }
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public HierarchicalStreamReader createReader(File in) {
+		try {
+			return createReader(new FileInputStream(in));
+		} catch (FileNotFoundException e) {
+			throw new StreamException(e);
+		}
+	}
 }

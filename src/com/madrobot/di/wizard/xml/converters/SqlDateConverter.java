@@ -8,24 +8,25 @@
  *  Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
- 
+
 package com.madrobot.di.wizard.xml.converters;
 
 import java.sql.Date;
 
-
 /**
  * Converts a java.sql.Date to text.
- *
+ * 
  */
 public class SqlDateConverter extends AbstractSingleValueConverter {
 
-    public boolean canConvert(Class type) {
-        return type.equals(Date.class);
-    }
+	@Override
+	public boolean canConvert(Class type) {
+		return type.equals(Date.class);
+	}
 
-    public Object fromString(String str) {
-        return Date.valueOf(str);
-    }
+	@Override
+	public Object fromString(String str) {
+		return Date.valueOf(str);
+	}
 
 }

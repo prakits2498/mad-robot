@@ -11,37 +11,38 @@
 
 package com.madrobot.di.wizard.xml;
 
-
 /**
  * Mapper that uses a more meaningful alias for the field in an inner class (this$0) that refers to the outer class.
- *
+ * 
  */
-public class OuterClassMapper extends MapperWrapper {
+class OuterClassMapper extends MapperWrapper {
 
-    private final String alias;
+	private final String alias;
 
-    public OuterClassMapper(Mapper wrapped) {
-        this(wrapped, "outer-class");
-    }
+	OuterClassMapper(Mapper wrapped) {
+		this(wrapped, "outer-class");
+	}
 
-    public OuterClassMapper(Mapper wrapped, String alias) {
-        super(wrapped);
-        this.alias = alias;
-    }
+	OuterClassMapper(Mapper wrapped, String alias) {
+		super(wrapped);
+		this.alias = alias;
+	}
 
-    public String serializedMember(Class type, String memberName) {
-        if (memberName.equals("this$0")) {
-            return alias;
-        } else {
-            return super.serializedMember(type, memberName);
-        }
-    }
+	@Override
+	public String serializedMember(Class type, String memberName) {
+		if (memberName.equals("this$0")) {
+			return alias;
+		} else {
+			return super.serializedMember(type, memberName);
+		}
+	}
 
-    public String realMember(Class type, String serialized) {
-        if (serialized.equals(alias)) {
-            return "this$0";
-        } else {
-            return super.realMember(type, serialized);
-        }
-    }
+	@Override
+	public String realMember(Class type, String serialized) {
+		if (serialized.equals(alias)) {
+			return "this$0";
+		} else {
+			return super.realMember(type, serialized);
+		}
+	}
 }

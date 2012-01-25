@@ -8,26 +8,27 @@
  *  Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
- package com.madrobot.di.wizard.xml.converters;
+package com.madrobot.di.wizard.xml.converters;
 
 import java.util.Currency;
-
 
 /**
  * Converts a java.util.Currency to String. Despite the name of this class, it has nothing to do with converting
  * currencies between exchange rates! It makes sense in the context of XMLWizard.
- *
- * @author Jose A. Illescas 
+ * 
+ * @author Jose A. Illescas
  * @author Joe Walnes
  */
 public class CurrencyConverter extends AbstractSingleValueConverter {
 
-    public boolean canConvert(Class type) {
-        return type.equals(Currency.class);
-    }
+	@Override
+	public boolean canConvert(Class type) {
+		return type.equals(Currency.class);
+	}
 
-    public Object fromString(String str) {
-        return Currency.getInstance(str);
-    }
+	@Override
+	public Object fromString(String str) {
+		return Currency.getInstance(str);
+	}
 
 }

@@ -19,8 +19,6 @@ import java.lang.annotation.Target;
 import com.madrobot.di.wizard.json.JSONDeserializer;
 import com.madrobot.di.wizard.json.JSONSerializer;
 
-
-
 /**
  * Annotation to specify the item type when the field is a collection. <br/>
  * See {@link JSONDeserializer} {@link JSONSerializer} for usage

@@ -25,95 +25,98 @@ import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
 import com.madrobot.reflect.FieldUtils;
 
 /**
- * Serializes a Java 5 EnumSet. If a SecurityManager is set, the converter will only work with permissions
- * for SecurityManager.checkPackageAccess, SecurityManager.checkMemberAccess(this, EnumSet.MEMBER)
- * and ReflectPermission("suppressAccessChecks").   
- *
+ * Serializes a Java 5 EnumSet. If a SecurityManager is set, the converter will only work with permissions for
+ * SecurityManager.checkPackageAccess, SecurityManager.checkMemberAccess(this, EnumSet.MEMBER) and
+ * ReflectPermission("suppressAccessChecks").
+ * 
  * @author Joe Walnes
  * @author J&ouml;rg Schaible
  */
 public class EnumSetConverter implements Converter {
 
-    private final static Field typeField;
-    static {
-        // field name is "elementType" in Sun JDK, but different in Harmony
-        Field assumedTypeField = null;
-        try {
-            Field[] fields = EnumSet.class.getDeclaredFields();
-            for (int i = 0; i < fields.length; i++ ) {
-                if (fields[i].getType() == Class.class) {
-                    // take the fist member of type "Class"
-                    assumedTypeField = fields[i];
-                    assumedTypeField.setAccessible(true);
-                    break;
-                }
-            }
-            if (assumedTypeField == null) {
-                throw new ExceptionInInitializerError("Cannot detect element type of EnumSet");
-            }
-        } catch (SecurityException ex) {
-            // ignore, no access possible with current SecurityManager
-        }
-        typeField = assumedTypeField;
-    }
-    
-    private final Mapper mapper;
+	private final static Field typeField;
+	static {
+		// field name is "elementType" in Sun JDK, but different in Harmony
+		Field assumedTypeField = null;
+		try {
+			Field[] fields = EnumSet.class.getDeclaredFields();
+			for (int i = 0; i < fields.length; i++) {
+				if (fields[i].getType() == Class.class) {
+					// take the fist member of type "Class"
+					assumedTypeField = fields[i];
+					assumedTypeField.setAccessible(true);
+					break;
+				}
+			}
+			if (assumedTypeField == null) {
+				throw new ExceptionInInitializerError("Cannot detect element type of EnumSet");
+			}
+		} catch (SecurityException ex) {
+			// ignore, no access possible with current SecurityManager
+		}
+		typeField = assumedTypeField;
+	}
 
-    public EnumSetConverter(Mapper mapper) {
-        this.mapper = mapper;
-    }
+	private final Mapper mapper;
 
-    public boolean canConvert(Class type) {
-        return typeField != null && EnumSet.class.isAssignableFrom(type);
-    }
+	public EnumSetConverter(Mapper mapper) {
+		this.mapper = mapper;
+	}
 
-    public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
-        EnumSet set = (EnumSet) source;
-        Class enumTypeForSet = null;
+	@Override
+	public boolean canConvert(Class type) {
+		return typeField != null && EnumSet.class.isAssignableFrom(type);
+	}
+
+	@Override
+	public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
+		EnumSet set = (EnumSet) source;
+		Class enumTypeForSet = null;
 		try {
 			enumTypeForSet = (Class) FieldUtils.readField(typeField, set);
 		} catch (IllegalAccessException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        String attributeName = mapper.aliasForSystemAttribute("enum-type");
-        if (attributeName != null) {
-            writer.addAttribute(attributeName, mapper.serializedClass(enumTypeForSet));
-        }
-        writer.setValue(joinEnumValues(set));
-    }
+		String attributeName = mapper.aliasForSystemAttribute("enum-type");
+		if (attributeName != null) {
+			writer.addAttribute(attributeName, mapper.serializedClass(enumTypeForSet));
+		}
+		writer.setValue(joinEnumValues(set));
+	}
 
-    private String joinEnumValues(EnumSet set) {
-        boolean seenFirst = false;
-        StringBuffer result = new StringBuffer();
-        for (Iterator iterator = set.iterator(); iterator.hasNext();) {
-            Enum value = (Enum) iterator.next();
-            if (seenFirst) {
-                result.append(',');
-            } else {
-                seenFirst = true;
-            }
-            result.append(value.name());
-        }
-        return result.toString();
-    }
+	private String joinEnumValues(EnumSet set) {
+		boolean seenFirst = false;
+		StringBuffer result = new StringBuffer();
+		for (Iterator iterator = set.iterator(); iterator.hasNext();) {
+			Enum value = (Enum) iterator.next();
+			if (seenFirst) {
+				result.append(',');
+			} else {
+				seenFirst = true;
+			}
+			result.append(value.name());
+		}
+		return result.toString();
+	}
 
-    @SuppressWarnings("unchecked")
-    public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
-        String attributeName = mapper.aliasForSystemAttribute("enum-type");
-        if (attributeName == null) {
-            throw new ConversionException("No EnumType specified for EnumSet");
-        }
-        Class enumTypeForSet = mapper.realClass(reader.getAttribute(attributeName));
-        EnumSet set = EnumSet.noneOf(enumTypeForSet);
-        String[] enumValues = reader.getValue().split(",");
-        for (int i = 0; i < enumValues.length; i++) {
-            String enumValue = enumValues[i];
-            if(enumValue.length() > 0) {
-                set.add(Enum.valueOf(enumTypeForSet, enumValue));
-            }
-        }
-        return set;
-    }
+	@Override
+	@SuppressWarnings("unchecked")
+	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+		String attributeName = mapper.aliasForSystemAttribute("enum-type");
+		if (attributeName == null) {
+			throw new ConversionException("No EnumType specified for EnumSet");
+		}
+		Class enumTypeForSet = mapper.realClass(reader.getAttribute(attributeName));
+		EnumSet set = EnumSet.noneOf(enumTypeForSet);
+		String[] enumValues = reader.getValue().split(",");
+		for (int i = 0; i < enumValues.length; i++) {
+			String enumValue = enumValues[i];
+			if (enumValue.length() > 0) {
+				set.add(Enum.valueOf(enumTypeForSet, enumValue));
+			}
+		}
+		return set;
+	}
 
 }

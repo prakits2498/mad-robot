@@ -8,7 +8,7 @@
  *  Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
- 
+
 package com.madrobot.di.wizard.xml.io;
 
 /**
@@ -18,44 +18,49 @@ package com.madrobot.di.wizard.xml.io;
  */
 public class NameCoderWrapper implements NameCoder {
 
-    private final NameCoder wrapped;
+	private final NameCoder wrapped;
 
-    /**
-     * Construct a new wrapper for a NameCoder.
-     * 
-     * @param inner the wrapped NameCoder
-     * @since 1.4
-     */
-    public NameCoderWrapper(NameCoder inner) {
-        this.wrapped = inner;
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public String decodeAttribute(String attributeName) {
-        return wrapped.decodeAttribute(attributeName);
-    }
+	/**
+	 * Construct a new wrapper for a NameCoder.
+	 * 
+	 * @param inner
+	 *            the wrapped NameCoder
+	 * @since 1.4
+	 */
+	public NameCoderWrapper(NameCoder inner) {
+		this.wrapped = inner;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    public String decodeNode(String nodeName) {
-        return wrapped.decodeNode(nodeName);
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String decodeAttribute(String attributeName) {
+		return wrapped.decodeAttribute(attributeName);
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    public String encodeAttribute(String name) {
-        return wrapped.encodeAttribute(name);
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String decodeNode(String nodeName) {
+		return wrapped.decodeNode(nodeName);
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    public String encodeNode(String name) {
-        return wrapped.encodeNode(name);
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String encodeAttribute(String name) {
+		return wrapped.encodeAttribute(name);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String encodeNode(String name) {
+		return wrapped.encodeNode(name);
+	}
 
 }

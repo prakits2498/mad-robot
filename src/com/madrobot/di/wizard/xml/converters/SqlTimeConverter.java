@@ -8,25 +8,26 @@
  *  Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
- 
-package com.madrobot.di.wizard.xml.converters;
 
+package com.madrobot.di.wizard.xml.converters;
 
 import java.sql.Time;
 
 /**
  * Converts a java.sql.Time to text. Warning: Any granularity smaller than seconds is lost.
- *
+ * 
  * @author Jose A. Illescas
  */
 public class SqlTimeConverter extends AbstractSingleValueConverter {
 
-    public boolean canConvert(Class type) {
-        return type.equals(Time.class);
-    }
+	@Override
+	public boolean canConvert(Class type) {
+		return type.equals(Time.class);
+	}
 
-    public Object fromString(String str) {
-        return Time.valueOf(str);
-    }
+	@Override
+	public Object fromString(String str) {
+		return Time.valueOf(str);
+	}
 
 }

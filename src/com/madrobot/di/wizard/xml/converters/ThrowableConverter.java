@@ -15,34 +15,38 @@ import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
 
 /**
  * Converter for Throwable (and Exception) that retains stack trace, for JDK1.4 only.
- *
+ * 
  */
 public class ThrowableConverter implements Converter {
-    
-    private Converter defaultConverter;
 
-    public ThrowableConverter(Converter defaultConverter) {
-        this.defaultConverter = defaultConverter;
-    }
+	private Converter defaultConverter;
 
-    public boolean canConvert(final Class type) {
-        return Throwable.class.isAssignableFrom(type);
-    }
+	public ThrowableConverter(Converter defaultConverter) {
+		this.defaultConverter = defaultConverter;
+	}
 
-    public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
-        Throwable throwable = (Throwable) source;
-        if (throwable.getCause() == null) {
-            try {
-                throwable.initCause(null);
-            } catch (IllegalStateException e) {
-                // ignore, initCause failed, cause was already set
-            }
-        }
-        throwable.getStackTrace(); // Force stackTrace field to be lazy loaded by special JVM native witchcraft (outside our control).
-        defaultConverter.marshal(throwable, writer, context);
-    }
+	@Override
+	public boolean canConvert(final Class type) {
+		return Throwable.class.isAssignableFrom(type);
+	}
 
-    public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
-        return defaultConverter.unmarshal(reader, context);
-    }
+	@Override
+	public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
+		Throwable throwable = (Throwable) source;
+		if (throwable.getCause() == null) {
+			try {
+				throwable.initCause(null);
+			} catch (IllegalStateException e) {
+				// ignore, initCause failed, cause was already set
+			}
+		}
+		throwable.getStackTrace(); // Force stackTrace field to be lazy loaded by special JVM native witchcraft (outside
+									// our control).
+		defaultConverter.marshal(throwable, writer, context);
+	}
+
+	@Override
+	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+		return defaultConverter.unmarshal(reader, context);
+	}
 }

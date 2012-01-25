@@ -8,7 +8,7 @@
  *  Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
- 
+
 package com.madrobot.di.wizard.xml.io;
 
 /**
@@ -16,11 +16,11 @@ package com.madrobot.di.wizard.xml.io;
  */
 public interface ExtendedHierarchicalStreamReader extends HierarchicalStreamReader {
 
-    /**
-     * Peek the name of the next child. In situation where {@link #hasMoreChildren()} returns
-     * true, peek the tag name of the child.
-     * 
-     * @since 1.4.2
-     */
-    String peekNextChild();
+	/**
+	 * Peek the name of the next child. In situation where {@link #hasMoreChildren()} returns true, peek the tag name of
+	 * the child.
+	 * 
+	 * @since 1.4.2
+	 */
+	String peekNextChild();
 }

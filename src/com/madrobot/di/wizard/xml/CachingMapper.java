@@ -19,8 +19,7 @@ import java.util.Map;
 import com.madrobot.di.wizard.xml.core.Caching;
 
 /**
- * Mapper that caches which names map to which classes. Prevents repetitive
- * searching and class loading.
+ * Mapper that caches which names map to which classes. Prevents repetitive searching and class loading.
  * 
  */
 class CachingMapper extends MapperWrapper implements Caching {
@@ -32,9 +31,9 @@ class CachingMapper extends MapperWrapper implements Caching {
 		readResolve();
 	}
 
+	@Override
 	public Class realClass(String elementName) {
-		WeakReference reference = (WeakReference) realClassCache
-				.get(elementName);
+		WeakReference reference = (WeakReference) realClassCache.get(elementName);
 		if (reference != null) {
 			Class cached = (Class) reference.get();
 			if (cached != null) {
@@ -47,6 +46,7 @@ class CachingMapper extends MapperWrapper implements Caching {
 		return result;
 	}
 
+	@Override
 	public void flushCache() {
 		realClassCache.clear();
 	}

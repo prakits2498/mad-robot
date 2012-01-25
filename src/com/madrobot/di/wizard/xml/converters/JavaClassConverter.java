@@ -13,7 +13,6 @@ package com.madrobot.di.wizard.xml.converters;
 
 import com.madrobot.reflect.PrimitiveUtils;
 
-
 /**
  * Converts a java.lang.Class to XML.
  * 
@@ -24,45 +23,49 @@ import com.madrobot.reflect.PrimitiveUtils;
  */
 public class JavaClassConverter extends AbstractSingleValueConverter {
 
-    private ClassLoader classLoader;
+	private ClassLoader classLoader;
 
-    public JavaClassConverter(ClassLoader classLoader) {
-        this.classLoader = classLoader;
-    }
+	public JavaClassConverter(ClassLoader classLoader) {
+		this.classLoader = classLoader;
+	}
 
-    public boolean canConvert(Class clazz) {
-        return Class.class.equals(clazz); // :)
-    }
+	@Override
+	public boolean canConvert(Class clazz) {
+		return Class.class.equals(clazz); // :)
+	}
 
-    public String toString(Object obj) {
-        return ((Class) obj).getName();
-    }
+	@Override
+	public String toString(Object obj) {
+		return ((Class) obj).getName();
+	}
 
-    public Object fromString(String str) {
-        try {
-            return loadClass(str);
-        } catch (ClassNotFoundException e) {
-            throw new ConversionException("Cannot load java class " + str, e);
-        }
-    }
+	@Override
+	public Object fromString(String str) {
+		try {
+			return loadClass(str);
+		} catch (ClassNotFoundException e) {
+			throw new ConversionException("Cannot load java class " + str, e);
+		}
+	}
 
-    private Class loadClass(String className) throws ClassNotFoundException {
-        Class resultingClass = PrimitiveUtils.primitiveType(className);
-        if( resultingClass != null ){
-            return resultingClass;
-        }
-        int dimension;
-        for(dimension = 0; className.charAt(dimension) == '['; ++dimension);
-        if (dimension > 0) {
-            final ClassLoader classLoaderToUse;
-            if (className.charAt(dimension) == 'L') {
-                String componentTypeName = className.substring(dimension + 1, className.length() - 1);
-                classLoaderToUse = classLoader.loadClass(componentTypeName).getClassLoader();
-            } else {
-                classLoaderToUse = null;
-            }
-            return Class.forName(className, false, classLoaderToUse);
-        }
-        return classLoader.loadClass(className);
-    }
+	private Class loadClass(String className) throws ClassNotFoundException {
+		Class resultingClass = PrimitiveUtils.primitiveType(className);
+		if (resultingClass != null) {
+			return resultingClass;
+		}
+		int dimension;
+		for (dimension = 0; className.charAt(dimension) == '['; ++dimension)
+			;
+		if (dimension > 0) {
+			final ClassLoader classLoaderToUse;
+			if (className.charAt(dimension) == 'L') {
+				String componentTypeName = className.substring(dimension + 1, className.length() - 1);
+				classLoaderToUse = classLoader.loadClass(componentTypeName).getClassLoader();
+			} else {
+				classLoaderToUse = null;
+			}
+			return Class.forName(className, false, classLoaderToUse);
+		}
+		return classLoader.loadClass(className);
+	}
 }

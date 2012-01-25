@@ -17,11 +17,11 @@ package com.madrobot.di.wizard.xml;
  * @since 1.3
  */
 public class InitializationException extends XMLWizardException {
-    public InitializationException(String message, Throwable cause) {
-        super(message, cause);
-    }
+	public InitializationException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    public InitializationException(String message) {
-        super(message);
-    }
+	public InitializationException(String message) {
+		super(message);
+	}
 }

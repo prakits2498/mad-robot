@@ -12,50 +12,53 @@
 package com.madrobot.di.wizard.xml.core;
 
 public final class FastField {
-    private final String name;
-    private final String declaringClass;
+	private final String name;
+	private final String declaringClass;
 
-    public FastField(String definedIn, String name) {
-        this.name = name;
-        this.declaringClass = definedIn;
-    }
+	public FastField(String definedIn, String name) {
+		this.name = name;
+		this.declaringClass = definedIn;
+	}
 
-    public FastField(Class definedIn, String name) {
-        this(definedIn == null ? null : definedIn.getName(), name);
-    }
+	public FastField(Class definedIn, String name) {
+		this(definedIn == null ? null : definedIn.getName(), name);
+	}
 
-    public String getName() {
-        return this.name;
-    }
+	public String getName() {
+		return this.name;
+	}
 
-    public String getDeclaringClass() {
-        return this.declaringClass;
-    }
+	public String getDeclaringClass() {
+		return this.declaringClass;
+	}
 
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (obj instanceof FastField) {
-            final FastField field = (FastField)obj;
-            if ((declaringClass == null && field.declaringClass != null)
-                || (declaringClass != null && field.declaringClass == null)) {
-                return false;
-            }
-            return name.equals(field.getName())
-                && (declaringClass == null || declaringClass.equals(field.getDeclaringClass()));
-        }
-        return false;
-    }
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (obj instanceof FastField) {
+			final FastField field = (FastField) obj;
+			if ((declaringClass == null && field.declaringClass != null)
+					|| (declaringClass != null && field.declaringClass == null)) {
+				return false;
+			}
+			return name.equals(field.getName())
+					&& (declaringClass == null || declaringClass.equals(field.getDeclaringClass()));
+		}
+		return false;
+	}
 
-    public int hashCode() {
-        return name.hashCode() ^ (declaringClass == null ? 0 : declaringClass.hashCode());
-    }
+	@Override
+	public int hashCode() {
+		return name.hashCode() ^ (declaringClass == null ? 0 : declaringClass.hashCode());
+	}
 
-    public String toString() {
-        return (declaringClass == null ? "" : declaringClass + ".") + name;
-    }
+	@Override
+	public String toString() {
+		return (declaringClass == null ? "" : declaringClass + ".") + name;
+	}
 }

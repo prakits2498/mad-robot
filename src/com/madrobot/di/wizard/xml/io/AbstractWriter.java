@@ -13,70 +13,73 @@ package com.madrobot.di.wizard.xml.io;
 
 import com.madrobot.reflect.ObjectUtils;
 
-
 /**
  * Abstract base class for all HierarchicalStreamWriter implementations. Implementations of
- * {@link HierarchicalStreamWriter} should rather be derived from this class then implementing
- * the interface directly.
+ * {@link HierarchicalStreamWriter} should rather be derived from this class then implementing the interface directly.
  * 
  * @since 1.4
  */
 public abstract class AbstractWriter implements ExtendedHierarchicalStreamWriter {
 
-    private NameCoder nameCoder;
+	private NameCoder nameCoder;
 
-    /**
-     * Creates an AbstractWriter with a NameCoder that does nothing.
-     * 
-     * @since 1.4
-     */
-    protected AbstractWriter() {
-        this(new NoNameCoder());
-    }
+	/**
+	 * Creates an AbstractWriter with a NameCoder that does nothing.
+	 * 
+	 * @since 1.4
+	 */
+	protected AbstractWriter() {
+		this(new NoNameCoder());
+	}
 
-    /**
-     * Creates an AbstractWriter with a provided {@link NameCoder}.
-     * 
-     * @param nameCoder the name coder used to write names in the target format
-     * @since 1.4
-     */
-    protected AbstractWriter(NameCoder nameCoder) {
-        this.nameCoder = (NameCoder)ObjectUtils.cloneIfPossible(nameCoder);
-    }
+	/**
+	 * Creates an AbstractWriter with a provided {@link NameCoder}.
+	 * 
+	 * @param nameCoder
+	 *            the name coder used to write names in the target format
+	 * @since 1.4
+	 */
+	protected AbstractWriter(NameCoder nameCoder) {
+		this.nameCoder = ObjectUtils.cloneIfPossible(nameCoder);
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    public void startNode(String name, Class clazz) {
-        startNode(name);
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void startNode(String name, Class clazz) {
+		startNode(name);
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    public HierarchicalStreamWriter underlyingWriter() {
-        return this;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public HierarchicalStreamWriter underlyingWriter() {
+		return this;
+	}
 
-    /**
-     * Encode the node name into the name of the target format.
-     * 
-     * @param name the original name
-     * @return the name in the target format
-     * @since 1.4
-     */
-    public String encodeNode(String name) {
-        return nameCoder.encodeNode(name);
-    }
+	/**
+	 * Encode the node name into the name of the target format.
+	 * 
+	 * @param name
+	 *            the original name
+	 * @return the name in the target format
+	 * @since 1.4
+	 */
+	public String encodeNode(String name) {
+		return nameCoder.encodeNode(name);
+	}
 
-    /**
-     * Encode the attribute name into the name of the target format.
-     * 
-     * @param name the original name
-     * @return the name in the target format
-     * @since 1.4
-     */
-    public String encodeAttribute(String name) {
-        return nameCoder.encodeAttribute(name);
-    }
+	/**
+	 * Encode the attribute name into the name of the target format.
+	 * 
+	 * @param name
+	 *            the original name
+	 * @return the name in the target format
+	 * @since 1.4
+	 */
+	public String encodeAttribute(String name) {
+		return nameCoder.encodeAttribute(name);
+	}
 }

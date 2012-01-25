@@ -8,23 +8,24 @@
  *  Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
- 
+
 package com.madrobot.di.wizard.xml.converters;
 
 /**
- * To aid debugging, some components expose themselves as ErrorReporter
- * indicating that they can add information in case of an error..
+ * To aid debugging, some components expose themselves as ErrorReporter indicating that they can add information in case
+ * of an error..
  * 
  * @author Joerg Schaible
- *
+ * 
  * @since 1.4
  */
 public interface ErrorReporter {
-    /**
-     * Append context information to an {@link ErrorWriter}.
-     * 
-     * @param errorWriter the error writer
-     * @since 1.4
-     */
-    void appendErrors(ErrorWriter errorWriter);
+	/**
+	 * Append context information to an {@link ErrorWriter}.
+	 * 
+	 * @param errorWriter
+	 *            the error writer
+	 * @since 1.4
+	 */
+	void appendErrors(ErrorWriter errorWriter);
 }

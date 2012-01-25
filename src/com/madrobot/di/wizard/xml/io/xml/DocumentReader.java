@@ -8,11 +8,10 @@
  *  Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
- 
+
 package com.madrobot.di.wizard.xml.io.xml;
 
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamReader;
-
 
 /**
  * A generic interface for all {@link HierarchicalStreamReader} implementations reading a DOM.
@@ -21,11 +20,11 @@ import com.madrobot.di.wizard.xml.io.HierarchicalStreamReader;
  */
 public interface DocumentReader extends HierarchicalStreamReader {
 
-    /**
-     * Retrieve the current processed node of the DOM.
-     * 
-     * @return the current node
-     * @since 1.2.1
-     */
-    public Object getCurrent();
+	/**
+	 * Retrieve the current processed node of the DOM.
+	 * 
+	 * @return the current node
+	 * @since 1.2.1
+	 */
+	public Object getCurrent();
 }

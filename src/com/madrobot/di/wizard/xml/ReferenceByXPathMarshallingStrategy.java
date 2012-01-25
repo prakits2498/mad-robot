@@ -8,31 +8,31 @@
  *  Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
- 
+
 package com.madrobot.di.wizard.xml;
 
 import com.madrobot.di.wizard.xml.converters.ConverterLookup;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamReader;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
 
- class ReferenceByXPathMarshallingStrategy extends AbstractTreeMarshallingStrategy {
+class ReferenceByXPathMarshallingStrategy extends AbstractTreeMarshallingStrategy {
 
-    public static int RELATIVE = 0;
-    public static int ABSOLUTE = 1;
-    public static int SINGLE_NODE = 2;
-    private final int mode;
+	public static int RELATIVE = 0;
+	public static int ABSOLUTE = 1;
+	public static int SINGLE_NODE = 2;
+	private final int mode;
 
-     ReferenceByXPathMarshallingStrategy(int mode) {
-        this.mode = mode;
-    }
+	ReferenceByXPathMarshallingStrategy(int mode) {
+		this.mode = mode;
+	}
 
-    protected TreeUnmarshaller createUnmarshallingContext(Object root,
-        HierarchicalStreamReader reader, ConverterLookup converterLookup, Mapper mapper) {
-        return new ReferenceByXPathUnmarshaller(root, reader, converterLookup, mapper);
-    }
+	@Override
+	protected TreeUnmarshaller createUnmarshallingContext(Object root, HierarchicalStreamReader reader, ConverterLookup converterLookup, Mapper mapper) {
+		return new ReferenceByXPathUnmarshaller(root, reader, converterLookup, mapper);
+	}
 
-    protected TreeMarshaller createMarshallingContext(
-        HierarchicalStreamWriter writer, ConverterLookup converterLookup, Mapper mapper) {
-        return new ReferenceByXPathMarshaller(writer, converterLookup, mapper, mode);
-    }
+	@Override
+	protected TreeMarshaller createMarshallingContext(HierarchicalStreamWriter writer, ConverterLookup converterLookup, Mapper mapper) {
+		return new ReferenceByXPathMarshaller(writer, converterLookup, mapper, mode);
+	}
 }

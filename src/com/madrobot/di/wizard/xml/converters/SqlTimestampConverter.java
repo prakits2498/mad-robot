@@ -8,25 +8,26 @@
  *  Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
- 
-package com.madrobot.di.wizard.xml.converters;
 
+package com.madrobot.di.wizard.xml.converters;
 
 import java.sql.Timestamp;
 
 /**
  * Converts a java.sql.Timestamp to text.
- *
+ * 
  * @author Joe Walnes
  */
 public class SqlTimestampConverter extends AbstractSingleValueConverter {
 
-    public boolean canConvert(Class type) {
-        return type.equals(Timestamp.class);
-    }
+	@Override
+	public boolean canConvert(Class type) {
+		return type.equals(Timestamp.class);
+	}
 
-    public Object fromString(String str) {
-        return Timestamp.valueOf(str);
-    }
+	@Override
+	public Object fromString(String str) {
+		return Timestamp.valueOf(str);
+	}
 
 }

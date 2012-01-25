@@ -8,28 +8,30 @@
  *  Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
- package com.madrobot.di.wizard.xml.converters;
+package com.madrobot.di.wizard.xml.converters;
 
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamReader;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
 
 /**
- * Converts a char[] to XML, storing the contents as a single
- * String.
- *
+ * Converts a char[] to XML, storing the contents as a single String.
+ * 
  */
 public class CharArrayConverter implements Converter {
 
-    public boolean canConvert(Class type) {
-        return type.isArray() && type.getComponentType().equals(char.class);
-    }
+	@Override
+	public boolean canConvert(Class type) {
+		return type.isArray() && type.getComponentType().equals(char.class);
+	}
 
-    public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
-        char[] chars = (char[]) source;
-        writer.setValue(new String(chars));
-    }
+	@Override
+	public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
+		char[] chars = (char[]) source;
+		writer.setValue(new String(chars));
+	}
 
-    public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
-        return reader.getValue().toCharArray();
-    }
+	@Override
+	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+		return reader.getValue().toCharArray();
+	}
 }

@@ -19,7 +19,6 @@ import java.lang.annotation.Target;
 import com.madrobot.di.wizard.json.JSONDeserializer;
 import com.madrobot.di.wizard.json.JSONSerializer;
 
-
 /**
  * Annotation to specify the boolean format in the json string. <br/>
  * See {@link JSONDeserializer} {@link JSONSerializer} for usage

@@ -8,24 +8,24 @@
  *  Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
- 
+
 package com.madrobot.di.wizard.xml.io;
 
 import com.madrobot.di.wizard.xml.XMLWizardException;
 
 public class StreamException extends XMLWizardException {
-    public StreamException(Throwable e) {
-        super(e);
-    }
+	public StreamException(Throwable e) {
+		super(e);
+	}
 
-    public StreamException(String message) {
-        super(message);
-    }
+	public StreamException(String message) {
+		super(message);
+	}
 
-    /**
-     * @since 1.4
-     */
-    public StreamException(String message, Throwable cause) {
-        super(message, cause);
-    }
+	/**
+	 * @since 1.4
+	 */
+	public StreamException(String message, Throwable cause) {
+		super(message, cause);
+	}
 }

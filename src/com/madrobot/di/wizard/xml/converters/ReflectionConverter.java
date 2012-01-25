@@ -8,18 +8,19 @@
  *  Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
- 
+
 package com.madrobot.di.wizard.xml.converters;
 
 import com.madrobot.di.wizard.xml.Mapper;
 
 public class ReflectionConverter extends AbstractReflectionConverter {
 
-    public ReflectionConverter(Mapper mapper, ReflectionProvider reflectionProvider) {
-        super(mapper, reflectionProvider);
-    }
+	public ReflectionConverter(Mapper mapper, ReflectionProvider reflectionProvider) {
+		super(mapper, reflectionProvider);
+	}
 
-    public boolean canConvert(Class type) {
-        return true;
-    }
+	@Override
+	public boolean canConvert(Class type) {
+		return true;
+	}
 }

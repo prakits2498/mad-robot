@@ -17,7 +17,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import com.madrobot.di.wizard.xml.Mapper;
 import com.madrobot.di.wizard.xml.converters.ConversionException;
 import com.madrobot.di.wizard.xml.converters.Converter;
 import com.madrobot.di.wizard.xml.converters.ConverterLookup;
@@ -28,16 +27,15 @@ import com.madrobot.util.PrioritizedList;
  * The default implementation of converters lookup.
  * 
  */
-public class DefaultConverterLookup implements ConverterLookup,
-		ConverterRegistry, Caching {
+public class DefaultConverterLookup implements ConverterLookup, ConverterRegistry, Caching {
 
 	private final PrioritizedList converters = new PrioritizedList();
-	private transient Map typeToConverterMap = Collections
-			.synchronizedMap(new WeakHashMap());
+	private transient Map typeToConverterMap = Collections.synchronizedMap(new WeakHashMap());
 
 	public DefaultConverterLookup() {
 	}
 
+	@Override
 	public Converter lookupConverterForType(Class type) {
 		Converter cachedConverter = (Converter) typeToConverterMap.get(type);
 		if (cachedConverter != null) {
@@ -54,10 +52,10 @@ public class DefaultConverterLookup implements ConverterLookup,
 		throw new ConversionException("No converter specified for " + type);
 	}
 
+	@Override
 	public void registerConverter(Converter converter, int priority) {
 		converters.add(converter, priority);
-		for (Iterator iter = typeToConverterMap.keySet().iterator(); iter
-				.hasNext();) {
+		for (Iterator iter = typeToConverterMap.keySet().iterator(); iter.hasNext();) {
 			Class type = (Class) iter.next();
 			if (converter.canConvert(type)) {
 				iter.remove();
@@ -65,6 +63,7 @@ public class DefaultConverterLookup implements ConverterLookup,
 		}
 	}
 
+	@Override
 	public void flushCache() {
 		typeToConverterMap.clear();
 		Iterator iterator = converters.iterator();

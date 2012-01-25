@@ -8,7 +8,7 @@
  *  Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
- package com.madrobot.di.wizard.xml.annotations;
+package com.madrobot.di.wizard.xml.annotations;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

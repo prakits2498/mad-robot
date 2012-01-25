@@ -8,7 +8,7 @@
  *  Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
- 
+
 package com.madrobot.di.wizard.xml.converters;
 
 import java.util.Comparator;
@@ -22,16 +22,17 @@ import java.util.TreeMap;
  */
 public class ComparingPropertySorter implements PropertySorter {
 
-    private final Comparator comparator;
+	private final Comparator comparator;
 
-    public ComparingPropertySorter(final Comparator propertyNameComparator) {
-        this.comparator = propertyNameComparator;
-    }
+	public ComparingPropertySorter(final Comparator propertyNameComparator) {
+		this.comparator = propertyNameComparator;
+	}
 
-    public Map sort(final Class type, final Map nameMap) {
-        TreeMap map = new TreeMap(comparator);
-        map.putAll(nameMap);
-        return map;
-    }
+	@Override
+	public Map sort(final Class type, final Map nameMap) {
+		TreeMap map = new TreeMap(comparator);
+		map.putAll(nameMap);
+		return map;
+	}
 
 }

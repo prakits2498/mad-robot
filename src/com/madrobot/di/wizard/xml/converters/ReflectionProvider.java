@@ -8,7 +8,7 @@
  *  Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
- 
+
 package com.madrobot.di.wizard.xml.converters;
 
 import java.lang.reflect.Field;
@@ -20,43 +20,53 @@ import java.lang.reflect.Field;
 public interface ReflectionProvider {
 
 	/**
-	 * Creates a new instance of the specified type. It is in the responsibility
-         * of the implementation how such an instance is created.
-	 * @param type	the type to instantiate
-	 * @return	a new instance of this type
+	 * Creates a new instance of the specified type. It is in the responsibility of the implementation how such an
+	 * instance is created.
+	 * 
+	 * @param type
+	 *            the type to instantiate
+	 * @return a new instance of this type
 	 */
-    Object newInstance(Class type);
+	Object newInstance(Class type);
 
-    void visitSerializableFields(Object object, Visitor visitor);
+	void visitSerializableFields(Object object, Visitor visitor);
 
-    void writeField(Object object, String fieldName, Object value, Class definedIn);
+	void writeField(Object object, String fieldName, Object value, Class definedIn);
 
-    Class getFieldType(Object object, String fieldName, Class definedIn);
+	Class getFieldType(Object object, String fieldName, Class definedIn);
 
-    boolean fieldDefinedInClass(String fieldName, Class type);
+	boolean fieldDefinedInClass(String fieldName, Class type);
 
-    /**
-     * A visitor interface for serializable fields defined in a class.
-     *
-     */
-    interface Visitor {
+	/**
+	 * A visitor interface for serializable fields defined in a class.
+	 * 
+	 */
+	interface Visitor {
 
-    	/**
-    	 * Callback for each visit
-    	 * @param name	field name
-    	 * @param type	field type
-    	 * @param definedIn	where the field was defined
-    	 * @param value	field value
-    	 */
-        void visit(String name, Class type, Class definedIn, Object value);
-    }
+		/**
+		 * Callback for each visit
+		 * 
+		 * @param name
+		 *            field name
+		 * @param type
+		 *            field type
+		 * @param definedIn
+		 *            where the field was defined
+		 * @param value
+		 *            field value
+		 */
+		void visit(String name, Class type, Class definedIn, Object value);
+	}
 
-    /**
-     * Returns a field defined in some class.
-     * @param definedIn	class where the field was defined
-     * @param fieldName	field name
-     * @return	the field itself
-     */
+	/**
+	 * Returns a field defined in some class.
+	 * 
+	 * @param definedIn
+	 *            class where the field was defined
+	 * @param fieldName
+	 *            field name
+	 * @return the field itself
+	 */
 	Field getField(Class definedIn, String fieldName);
 
 }

@@ -8,17 +8,17 @@
  *  Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
- 
+
 package com.madrobot.di.wizard.xml.converters;
 
 import com.madrobot.di.wizard.xml.XMLWizardException;
 
 public class ObjectAccessException extends XMLWizardException {
-    public ObjectAccessException(String message) {
-        super(message);
-    }
+	public ObjectAccessException(String message) {
+		super(message);
+	}
 
-    public ObjectAccessException(String message, Throwable cause) {
-        super(message, cause);
-    }
+	public ObjectAccessException(String message, Throwable cause) {
+		super(message, cause);
+	}
 }

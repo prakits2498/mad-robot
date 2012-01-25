@@ -28,10 +28,8 @@ import com.madrobot.di.wizard.json.annotations.SerializedName;
 
 import android.util.Log;
 
-
 /**
- * Utility class for json serializer , by using this utility you can convert
- * predefined java object into valid json
+ * Utility class for json serializer , by using this utility you can convert predefined java object into valid json
  * 
  * @author n.ayyanar
  * 
@@ -56,9 +54,7 @@ public class JSONSerializer {
 	/**
 	 * Serializes the objType into valid JSON format <br/>
 	 * 
-	 * If there is an error while serializes, if possible it will try to ignore
-	 * it,
-	 * otherwise returns a null value.
+	 * If there is an error while serializes, if possible it will try to ignore it, otherwise returns a null value.
 	 * 
 	 * @param objType
 	 *            Java Object to write JSON to
@@ -97,87 +93,87 @@ public class JSONSerializer {
 		Class<?> userClass = userObject.getClass();
 		Field[] fields = userClass.getDeclaredFields();
 
-		for(Field field : fields){
+		for (Field field : fields) {
 
 			String fieldName = field.getName();
 			Class<?> classType = field.getType();
 			String jsonKeyName = getKeyName(field);
 
-			try{
+			try {
 
 				String getMethodName = getGetMethodName(fieldName, classType);
 				Method getMethod = userClass.getDeclaredMethod(getMethodName);
 				Object returnValue = getMethod.invoke(userObject, new Object[] {});
 
-				if(Converter.isPseudoPrimitive(classType)){
+				if (Converter.isPseudoPrimitive(classType)) {
 					Converter.storeValue(jsonObject, jsonKeyName, returnValue, field);
-				} else if(Converter.isCollectionType(classType)){
+				} else if (Converter.isCollectionType(classType)) {
 
 					JSONArray jsonArray = new JSONArray();
 					boolean canAdd = true;
 
-					if(returnValue instanceof Collection){
+					if (returnValue instanceof Collection) {
 						Collection<?> userCollectionObj = (Collection<?>) returnValue;
 
-						if(userCollectionObj.size() != 0){
+						if (userCollectionObj.size() != 0) {
 
 							Iterator<?> iterator = userCollectionObj.iterator();
 
-							while(iterator.hasNext()){
+							while (iterator.hasNext()) {
 								Object itemObject = iterator.next();
 								JSONObject object = new JSONObject();
 								stack.push(itemObject);
 								serializer(object, stack);
 								jsonArray.put(object);
 							}
-						} else if(field.isAnnotationPresent(ItemType.class)){
+						} else if (field.isAnnotationPresent(ItemType.class)) {
 							ItemType itemType = field.getAnnotation(ItemType.class);
 							canAdd = itemType.canEmpty();
 						}
 
-						if(canAdd)
+						if (canAdd)
 							jsonObject.put(jsonKeyName, jsonArray);
-					} else if(returnValue instanceof Map){
+					} else if (returnValue instanceof Map) {
 						Map<?, ?> userMapObj = (Map<?, ?>) returnValue;
 						JSONObject object = new JSONObject(userMapObj);
 						jsonArray.put(object);
 						jsonObject.put(jsonKeyName, jsonArray);
 					}
-				} else{
+				} else {
 					stack.push(returnValue);
 					JSONObject object = new JSONObject();
 					serializer(object, stack);
 					jsonObject.put(jsonKeyName, object);
 				}
 
-			} catch(NoSuchMethodException e){
+			} catch (NoSuchMethodException e) {
 				Log.e(TAG, e.getMessage());
-			} catch(IllegalAccessException e){
+			} catch (IllegalAccessException e) {
 				Log.e(TAG, e.getMessage());
-			} catch(InvocationTargetException e){
+			} catch (InvocationTargetException e) {
 				Log.e(TAG, e.getMessage());
 			}
 		}
 	}
 
 	private String getKeyName(final Field field) {
-		if(field.isAnnotationPresent(SerializedName.class)){
+		if (field.isAnnotationPresent(SerializedName.class)) {
 			SerializedName serializedName = field.getAnnotation(SerializedName.class);
 			return serializedName.value();
-		} else{
+		} else {
 			return field.getName();
 		}
 	}
 
 	private String getGetMethodName(String fieldName, final Class<?> classType) {
 		String methodName = "";
-		if(Converter.isBoolean(classType)){
-			if(fieldName.startsWith("is")){
+		if (Converter.isBoolean(classType)) {
+			if (fieldName.startsWith("is")) {
 				methodName = fieldName;
-			} else{
+			} else {
 				methodName = "is" + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
 			}
-		} else{
+		} else {
 			methodName = "get" + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
 		}
 		return methodName;

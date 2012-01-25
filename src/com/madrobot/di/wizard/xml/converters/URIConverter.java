@@ -14,8 +14,6 @@ package com.madrobot.di.wizard.xml.converters;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-
-
 /**
  * Converts a java.net.URI to a string.
  * 
@@ -23,15 +21,17 @@ import java.net.URISyntaxException;
  */
 public class URIConverter extends AbstractSingleValueConverter {
 
-    public boolean canConvert(Class type) {
-        return type.equals(URI.class);
-    }
+	@Override
+	public boolean canConvert(Class type) {
+		return type.equals(URI.class);
+	}
 
-    public Object fromString(String str) {
-        try {
-            return new URI(str);
-        } catch (URISyntaxException e) {
-            throw new ConversionException(e);
-        }
-    }
+	@Override
+	public Object fromString(String str) {
+		try {
+			return new URI(str);
+		} catch (URISyntaxException e) {
+			throw new ConversionException(e);
+		}
+	}
 }

@@ -8,22 +8,23 @@
  *  Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
- package com.madrobot.di.wizard.xml.converters;
+package com.madrobot.di.wizard.xml.converters;
 
 /**
- * Converts a double primitive or java.lang.Double wrapper to
- * a String.
- *
+ * Converts a double primitive or java.lang.Double wrapper to a String.
+ * 
  * @author Joe Walnes
  */
 public class DoubleConverter extends AbstractSingleValueConverter {
 
-    public boolean canConvert(Class type) {
-        return type.equals(double.class) || type.equals(Double.class);
-    }
+	@Override
+	public boolean canConvert(Class type) {
+		return type.equals(double.class) || type.equals(Double.class);
+	}
 
-    public Object fromString(String str) {
-        return Double.valueOf(str);
-    }
+	@Override
+	public Object fromString(String str) {
+		return Double.valueOf(str);
+	}
 
 }

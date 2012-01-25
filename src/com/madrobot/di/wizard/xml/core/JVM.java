@@ -40,13 +40,13 @@ public class JVM implements Caching {
 
 	private static final String vendor = System.getProperty("java.vm.vendor");
 	private static final float majorJavaVersion = getMajorJavaVersion();
-	private static final boolean reverseFieldOrder = isHarmony()
-			|| (isIBM() && !is15());
+	private static final boolean reverseFieldOrder = isHarmony() || (isIBM() && !is15());
 
 	static final float DEFAULT_JAVA_VERSION = 1.3f;
 
 	static {
 		Comparator comparator = new Comparator() {
+			@Override
 			public int compare(Object o1, Object o2) {
 				throw new RuntimeException();
 			}
@@ -80,15 +80,13 @@ public class JVM implements Caching {
 	}
 
 	/**
-	 * Parses the java version system property to determine the major java
-	 * version, i.e. 1.x
+	 * Parses the java version system property to determine the major java version, i.e. 1.x
 	 * 
 	 * @return A float of the form 1.x
 	 */
 	private static final float getMajorJavaVersion() {
 		try {
-			return isAndroid() ? 1.5f : Float.parseFloat(System
-					.getProperty("java.specification.version"));
+			return isAndroid() ? 1.5f : Float.parseFloat(System.getProperty("java.specification.version"));
 		} catch (NumberFormatException e) {
 			// Some JVMs may not conform to the x.y.z java.version format
 			return DEFAULT_JAVA_VERSION;
@@ -125,8 +123,7 @@ public class JVM implements Caching {
 				return cached;
 			}
 
-			Class clazz = Class.forName(name, false, getClass()
-					.getClassLoader());
+			Class clazz = Class.forName(name, false, getClass().getClassLoader());
 			loaderCache.put(name, clazz);
 			return clazz;
 		} catch (ClassNotFoundException e) {
@@ -182,6 +179,7 @@ public class JVM implements Caching {
 		return canParseUTCDateFormat;
 	}
 
+	@Override
 	public void flushCache() {
 		loaderCache.clear();
 	}

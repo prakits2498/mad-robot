@@ -11,26 +11,25 @@
 
 package com.madrobot.di.wizard.xml;
 
-
-
 /**
  * Mapper that allows aliasing of system attribute names.
  * 
  */
-public class SystemAttributeAliasingMapper extends AbstractAttributeAliasingMapper {
+class SystemAttributeAliasingMapper extends AbstractAttributeAliasingMapper {
 
-    public SystemAttributeAliasingMapper(Mapper wrapped) {
-        super(wrapped);
-    }
+	SystemAttributeAliasingMapper(Mapper wrapped) {
+		super(wrapped);
+	}
 
-    public String aliasForSystemAttribute(String attribute) {
-        String alias = (String)nameToAlias.get(attribute);
-        if (alias == null && !nameToAlias.containsKey(attribute)) {
-            alias = super.aliasForSystemAttribute(attribute);
-            if (alias == attribute) {
-                alias = super.aliasForAttribute(attribute);
-            }
-        }
-        return alias;
-    }
+	@Override
+	public String aliasForSystemAttribute(String attribute) {
+		String alias = (String) nameToAlias.get(attribute);
+		if (alias == null && !nameToAlias.containsKey(attribute)) {
+			alias = super.aliasForSystemAttribute(attribute);
+			if (alias == attribute) {
+				alias = super.aliasForAttribute(attribute);
+			}
+		}
+		return alias;
+	}
 }

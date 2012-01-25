@@ -8,7 +8,7 @@
  *  Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
- 
+
 package com.madrobot.di.wizard.xml;
 
 import java.util.HashMap;
@@ -18,68 +18,60 @@ import com.madrobot.di.wizard.xml.converters.Converter;
 import com.madrobot.di.wizard.xml.converters.SingleValueConverter;
 import com.madrobot.di.wizard.xml.core.FastField;
 
-
 /**
  * A Mapper for locally defined converters for a member field.
  * 
  * @since 1.3
  */
- class LocalConversionMapper extends MapperWrapper {
+class LocalConversionMapper extends MapperWrapper {
 
-    private final Map localConverters = new HashMap();
-    private transient AttributeMapper attributeMapper;
+	private final Map localConverters = new HashMap();
+	private transient AttributeMapper attributeMapper;
 
-    /**
-     * Constructs a LocalConversionMapper.
-     * 
-     * @param wrapped
-     * @since 1.3
-     */
-     LocalConversionMapper(Mapper wrapped) {
-        super(wrapped);
-        readResolve();
-    }
+	/**
+	 * Constructs a LocalConversionMapper.
+	 * 
+	 * @param wrapped
+	 * @since 1.3
+	 */
+	LocalConversionMapper(Mapper wrapped) {
+		super(wrapped);
+		readResolve();
+	}
 
-    public void registerLocalConverter(Class definedIn, String fieldName, Converter converter) {
-        localConverters.put(new FastField(definedIn, fieldName), converter);
-    }
+	public void registerLocalConverter(Class definedIn, String fieldName, Converter converter) {
+		localConverters.put(new FastField(definedIn, fieldName), converter);
+	}
 
-    public Converter getLocalConverter(Class definedIn, String fieldName) {
-        return (Converter)localConverters.get(new FastField(definedIn, fieldName));
-    }
+	@Override
+	public Converter getLocalConverter(Class definedIn, String fieldName) {
+		return (Converter) localConverters.get(new FastField(definedIn, fieldName));
+	}
 
-    public SingleValueConverter getConverterFromAttribute(Class definedIn, String attribute,
-        Class type) {
-        SingleValueConverter converter = getLocalSingleValueConverter(
-            definedIn, attribute, type);
-        return converter == null
-            ? super.getConverterFromAttribute(definedIn, attribute, type)
-            : converter;
-    }
+	@Override
+	public SingleValueConverter getConverterFromAttribute(Class definedIn, String attribute, Class type) {
+		SingleValueConverter converter = getLocalSingleValueConverter(definedIn, attribute, type);
+		return converter == null ? super.getConverterFromAttribute(definedIn, attribute, type) : converter;
+	}
 
-    public SingleValueConverter getConverterFromItemType(String fieldName, Class type,
-        Class definedIn) {
-        SingleValueConverter converter = getLocalSingleValueConverter(
-            definedIn, fieldName, type);
-        return converter == null
-            ? super.getConverterFromItemType(fieldName, type, definedIn)
-            : converter;
-    }
+	@Override
+	public SingleValueConverter getConverterFromItemType(String fieldName, Class type, Class definedIn) {
+		SingleValueConverter converter = getLocalSingleValueConverter(definedIn, fieldName, type);
+		return converter == null ? super.getConverterFromItemType(fieldName, type, definedIn) : converter;
+	}
 
-    private SingleValueConverter getLocalSingleValueConverter(Class definedIn,
-        String fieldName, Class type) {
-        if (attributeMapper != null
-            && attributeMapper.shouldLookForSingleValueConverter(fieldName, type, definedIn)) {
-            Converter converter = getLocalConverter(definedIn, fieldName);
-            if (converter != null && converter instanceof SingleValueConverter) {
-                return (SingleValueConverter)converter;
-            }
-        }
-        return null;
-    }
+	private SingleValueConverter getLocalSingleValueConverter(Class definedIn, String fieldName, Class type) {
+		if (attributeMapper != null && attributeMapper.shouldLookForSingleValueConverter(fieldName, type, definedIn)) {
+			Converter converter = getLocalConverter(definedIn, fieldName);
+			if (converter != null && converter instanceof SingleValueConverter) {
+				return (SingleValueConverter) converter;
+			}
+		}
+		return null;
+	}
 
-    private Object readResolve() {
-        this.attributeMapper = (AttributeMapper)lookupMapperOfType(AttributeMapper.class);
-        return this;
-    }
+	private Object readResolve() {
+		this.attributeMapper = (AttributeMapper) lookupMapperOfType(AttributeMapper.class);
+		return this;
+	}
 }

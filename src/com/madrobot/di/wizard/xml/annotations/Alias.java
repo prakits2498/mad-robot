@@ -8,7 +8,7 @@
  *  Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
- 
+
 package com.madrobot.di.wizard.xml.annotations;
 
 import java.lang.annotation.ElementType;
@@ -18,14 +18,15 @@ import java.lang.annotation.Target;
 
 /**
  * Annotation used to define an XMLWizard class or field value.
- *
+ * 
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.FIELD})
+@Target({ ElementType.TYPE, ElementType.FIELD })
 public @interface Alias {
-    /**
-     * The value of the class or field value
-     */
-    public String value();
-    public Class<?> impl() default Void.class; //Use Void to denote as Null
+	/**
+	 * The value of the class or field value
+	 */
+	public String value();
+
+	public Class<?> impl() default Void.class; // Use Void to denote as Null
 }

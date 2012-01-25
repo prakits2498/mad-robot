@@ -8,22 +8,23 @@
  *  Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
- 
+
 package com.madrobot.di.wizard.xml.converters;
 
 /**
- * Converts a long primitive or java.lang.Long wrapper to
- * a String.
- *
+ * Converts a long primitive or java.lang.Long wrapper to a String.
+ * 
  */
 public class LongConverter extends AbstractSingleValueConverter {
 
-    public boolean canConvert(Class type) {
-        return type.equals(long.class) || type.equals(Long.class);
-    }
+	@Override
+	public boolean canConvert(Class type) {
+		return type.equals(long.class) || type.equals(Long.class);
+	}
 
-    public Object fromString(String str) {
-        return Long.decode(str);
-    }
+	@Override
+	public Object fromString(String str) {
+		return Long.decode(str);
+	}
 
 }

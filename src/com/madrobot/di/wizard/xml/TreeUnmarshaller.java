@@ -8,7 +8,7 @@
  *  Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
- 
+
 package com.madrobot.di.wizard.xml;
 
 import java.util.Iterator;
@@ -26,122 +26,126 @@ import com.madrobot.di.wizard.xml.io.HierarchicalStreamReader;
 import com.madrobot.util.FastStack;
 import com.madrobot.util.PrioritizedList;
 
+class TreeUnmarshaller implements UnmarshallingContext {
 
-public class TreeUnmarshaller implements UnmarshallingContext {
+	private Object root;
+	protected HierarchicalStreamReader reader;
+	private ConverterLookup converterLookup;
+	private Mapper mapper;
+	private FastStack types = new FastStack(16);
+	private DataHolder dataHolder;
+	private final PrioritizedList validationList = new PrioritizedList();
 
-    private Object root;
-    protected HierarchicalStreamReader reader;
-    private ConverterLookup converterLookup;
-    private Mapper mapper;
-    private FastStack types = new FastStack(16);
-    private DataHolder dataHolder;
-    private final PrioritizedList validationList = new PrioritizedList();
+	TreeUnmarshaller(Object root, HierarchicalStreamReader reader, ConverterLookup converterLookup, Mapper mapper) {
+		this.root = root;
+		this.reader = reader;
+		this.converterLookup = converterLookup;
+		this.mapper = mapper;
+	}
 
-    public TreeUnmarshaller(
-        Object root, HierarchicalStreamReader reader, ConverterLookup converterLookup,
-        Mapper mapper) {
-        this.root = root;
-        this.reader = reader;
-        this.converterLookup = converterLookup;
-        this.mapper = mapper;
-    }
+	@Override
+	public Object convertAnother(Object parent, Class type) {
+		return convertAnother(parent, type, null);
+	}
 
-    public Object convertAnother(Object parent, Class type) {
-        return convertAnother(parent, type, null);
-    }
+	@Override
+	public Object convertAnother(Object parent, Class type, Converter converter) {
+		type = mapper.defaultImplementationOf(type);
+		if (converter == null) {
+			converter = converterLookup.lookupConverterForType(type);
+		} else {
+			if (!converter.canConvert(type)) {
+				ConversionException e = new ConversionException("Explicit selected converter cannot handle type");
+				e.add("item-type", type.getName());
+				e.add("converter-type", converter.getClass().getName());
+				throw e;
+			}
+		}
+		return convert(parent, type, converter);
+	}
 
-    public Object convertAnother(Object parent, Class type, Converter converter) {
-        type = mapper.defaultImplementationOf(type);
-        if (converter == null) {
-            converter = converterLookup.lookupConverterForType(type);
-        } else {
-            if (!converter.canConvert(type)) {
-                ConversionException e = new ConversionException(
-                    "Explicit selected converter cannot handle type");
-                e.add("item-type", type.getName());
-                e.add("converter-type", converter.getClass().getName());
-                throw e;
-            }
-        }
-        return convert(parent, type, converter);
-    }
+	protected Object convert(Object parent, Class type, Converter converter) {
+		try {
+			types.push(type);
+			Object result = converter.unmarshal(reader, this);
+			types.popSilently();
+			return result;
+		} catch (ConversionException conversionException) {
+			addInformationTo(conversionException, type, converter, parent);
+			throw conversionException;
+		} catch (RuntimeException e) {
+			ConversionException conversionException = new ConversionException(e);
+			addInformationTo(conversionException, type, converter, parent);
+			throw conversionException;
+		}
+	}
 
-    protected Object convert(Object parent, Class type, Converter converter) {
-        try {
-            types.push(type);
-            Object result = converter.unmarshal(reader, this);
-            types.popSilently();
-            return result;
-        } catch (ConversionException conversionException) {
-            addInformationTo(conversionException, type, converter, parent);
-            throw conversionException;
-        } catch (RuntimeException e) {
-            ConversionException conversionException = new ConversionException(e);
-            addInformationTo(conversionException, type, converter, parent);
-            throw conversionException;
-        }
-    }
+	private void addInformationTo(ErrorWriter errorWriter, Class type, Converter converter, Object parent) {
+		errorWriter.add("class", type.getName());
+		errorWriter.add("required-type", getRequiredType().getName());
+		errorWriter.add("converter-type", converter.getClass().getName());
+		if (converter instanceof ErrorReporter) {
+			((ErrorReporter) converter).appendErrors(errorWriter);
+		}
+		if (parent instanceof ErrorReporter) {
+			((ErrorReporter) parent).appendErrors(errorWriter);
+		}
+		reader.appendErrors(errorWriter);
+	}
 
-    private void addInformationTo(ErrorWriter errorWriter, Class type, Converter converter, Object parent) {
-        errorWriter.add("class", type.getName());
-        errorWriter.add("required-type", getRequiredType().getName());
-        errorWriter.add("converter-type", converter.getClass().getName());
-        if (converter instanceof ErrorReporter) {
-            ((ErrorReporter)converter).appendErrors(errorWriter);
-        }
-        if (parent instanceof ErrorReporter) {
-            ((ErrorReporter)parent).appendErrors(errorWriter);
-        }
-        reader.appendErrors(errorWriter);
-    }
+	@Override
+	public void addCompletionCallback(Runnable work, int priority) {
+		validationList.add(work, priority);
+	}
 
-    public void addCompletionCallback(Runnable work, int priority) {
-        validationList.add(work, priority);
-    }
+	@Override
+	public Object currentObject() {
+		return types.size() == 1 ? root : null;
+	}
 
-    public Object currentObject() {
-        return types.size() == 1 ? root : null;
-    }
+	@Override
+	public Class getRequiredType() {
+		return (Class) types.peek();
+	}
 
-    public Class getRequiredType() {
-        return (Class)types.peek();
-    }
+	@Override
+	public Object get(Object key) {
+		lazilyCreateDataHolder();
+		return dataHolder.get(key);
+	}
 
-    public Object get(Object key) {
-        lazilyCreateDataHolder();
-        return dataHolder.get(key);
-    }
+	@Override
+	public void put(Object key, Object value) {
+		lazilyCreateDataHolder();
+		dataHolder.put(key, value);
+	}
 
-    public void put(Object key, Object value) {
-        lazilyCreateDataHolder();
-        dataHolder.put(key, value);
-    }
+	@Override
+	public Iterator keys() {
+		lazilyCreateDataHolder();
+		return dataHolder.keys();
+	}
 
-    public Iterator keys() {
-        lazilyCreateDataHolder();
-        return dataHolder.keys();
-    }
+	private void lazilyCreateDataHolder() {
+		if (dataHolder == null) {
+			dataHolder = new MapBackedDataHolder();
+		}
+	}
 
-    private void lazilyCreateDataHolder() {
-        if (dataHolder == null) {
-            dataHolder = new MapBackedDataHolder();
-        }
-    }
+	Object start(DataHolder dataHolder) {
+		this.dataHolder = dataHolder;
+		Class type = HierarchicalStreams.readClassType(reader, mapper);
+		Object result = convertAnother(null, type);
+		Iterator validations = validationList.iterator();
+		while (validations.hasNext()) {
+			Runnable runnable = (Runnable) validations.next();
+			runnable.run();
+		}
+		return result;
+	}
 
-    public Object start(DataHolder dataHolder) {
-        this.dataHolder = dataHolder;
-        Class type = HierarchicalStreams.readClassType(reader, mapper);
-        Object result = convertAnother(null, type);
-        Iterator validations = validationList.iterator();
-        while (validations.hasNext()) {
-            Runnable runnable = (Runnable)validations.next();
-            runnable.run();
-        }
-        return result;
-    }
-
-    protected Mapper getMapper() {
-        return this.mapper;
-    }
+	protected Mapper getMapper() {
+		return this.mapper;
+	}
 
 }

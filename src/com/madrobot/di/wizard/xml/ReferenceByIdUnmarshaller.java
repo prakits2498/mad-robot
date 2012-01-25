@@ -14,19 +14,24 @@ package com.madrobot.di.wizard.xml;
 import com.madrobot.di.wizard.xml.converters.ConverterLookup;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamReader;
 
-public class ReferenceByIdUnmarshaller extends AbstractReferenceUnmarshaller {
+class ReferenceByIdUnmarshaller extends AbstractReferenceUnmarshaller {
 
-    public ReferenceByIdUnmarshaller(Object root, HierarchicalStreamReader reader,
-                                     ConverterLookup converterLookup, Mapper mapper) {
-        super(root, reader, converterLookup, mapper);
-    }
+	public ReferenceByIdUnmarshaller(
+			Object root,
+			HierarchicalStreamReader reader,
+			ConverterLookup converterLookup,
+			Mapper mapper) {
+		super(root, reader, converterLookup, mapper);
+	}
 
-    protected Object getReferenceKey(String reference) {
-        return reference;
-    }
+	@Override
+	protected Object getReferenceKey(String reference) {
+		return reference;
+	}
 
-    protected Object getCurrentReferenceKey() {
-        String attributeName = getMapper().aliasForSystemAttribute("id");
-        return attributeName == null ? null : reader.getAttribute(attributeName);
-    }
+	@Override
+	protected Object getCurrentReferenceKey() {
+		String attributeName = getMapper().aliasForSystemAttribute("id");
+		return attributeName == null ? null : reader.getAttribute(attributeName);
+	}
 }

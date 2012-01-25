@@ -9,7 +9,6 @@
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
 
-
 // ***** READ THIS *****
 // This class will only compile with JDK 1.5.0 or above as it test Java enums.
 // If you are using an earlier version of Java, just don't try to build this class. XMLWizard should work fine without it.
@@ -25,70 +24,73 @@ import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
 import com.madrobot.reflect.FieldUtils;
 
 /**
- * Serializes an Java 5 EnumMap, including the type of Enum it's for. If a SecurityManager is set, the converter will only work with permissions
- * for SecurityManager.checkPackageAccess, SecurityManager.checkMemberAccess(this, EnumSet.MEMBER)
- * and ReflectPermission("suppressAccessChecks").
- *
+ * Serializes an Java 5 EnumMap, including the type of Enum it's for. If a SecurityManager is set, the converter will
+ * only work with permissions for SecurityManager.checkPackageAccess, SecurityManager.checkMemberAccess(this,
+ * EnumSet.MEMBER) and ReflectPermission("suppressAccessChecks").
+ * 
  * @author Joe Walnes
  */
 public class EnumMapConverter extends MapConverter {
 
-    private final static Field typeField;
-    static {
-        // field name is "keyType" in Sun JDK, but different in IKVM
-        Field assumedTypeField = null;
-        try {
-            Field[] fields = EnumMap.class.getDeclaredFields();
-            for (int i = 0; i < fields.length; i++ ) {
-                if (fields[i].getType() == Class.class) {
-                    // take the fist member of type "Class"
-                    assumedTypeField = fields[i];
-                    assumedTypeField.setAccessible(true);
-                    break;
-                }
-            }
-            if (assumedTypeField == null) {
-                throw new ExceptionInInitializerError("Cannot detect key type of EnumMap");
-            }
+	private final static Field typeField;
+	static {
+		// field name is "keyType" in Sun JDK, but different in IKVM
+		Field assumedTypeField = null;
+		try {
+			Field[] fields = EnumMap.class.getDeclaredFields();
+			for (int i = 0; i < fields.length; i++) {
+				if (fields[i].getType() == Class.class) {
+					// take the fist member of type "Class"
+					assumedTypeField = fields[i];
+					assumedTypeField.setAccessible(true);
+					break;
+				}
+			}
+			if (assumedTypeField == null) {
+				throw new ExceptionInInitializerError("Cannot detect key type of EnumMap");
+			}
 
-        } catch (SecurityException ex) {
-            // ignore, no access possible with current SecurityManager
-        }
-        typeField = assumedTypeField;
-    }
+		} catch (SecurityException ex) {
+			// ignore, no access possible with current SecurityManager
+		}
+		typeField = assumedTypeField;
+	}
 
-    public EnumMapConverter(Mapper mapper) {
-        super(mapper);
-    }
+	public EnumMapConverter(Mapper mapper) {
+		super(mapper);
+	}
 
-    public boolean canConvert(Class type) {
-        return typeField != null && type == EnumMap.class;
-    }
+	@Override
+	public boolean canConvert(Class type) {
+		return typeField != null && type == EnumMap.class;
+	}
 
-    public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
-        Class type = null;
+	@Override
+	public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
+		Class type = null;
 		try {
 			type = (Class) FieldUtils.readField(typeField, source);
 		} catch (IllegalAccessException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        String attributeName = mapper().aliasForSystemAttribute("enum-type");
-        if (attributeName != null) {
-            writer.addAttribute(attributeName, mapper().serializedClass(type));
-        }
-        super.marshal(source, writer, context);
-    }
+		String attributeName = mapper().aliasForSystemAttribute("enum-type");
+		if (attributeName != null) {
+			writer.addAttribute(attributeName, mapper().serializedClass(type));
+		}
+		super.marshal(source, writer, context);
+	}
 
-    @SuppressWarnings("unchecked")
-    public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
-        String attributeName = mapper().aliasForSystemAttribute("enum-type");
-        if (attributeName == null) {
-            throw new ConversionException("No EnumType specified for EnumMap");
-        }
-        Class type = mapper().realClass(reader.getAttribute(attributeName));
-        EnumMap map = new EnumMap(type);
-        populateMap(reader, context, map);
-        return map;
-    }
+	@Override
+	@SuppressWarnings("unchecked")
+	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+		String attributeName = mapper().aliasForSystemAttribute("enum-type");
+		if (attributeName == null) {
+			throw new ConversionException("No EnumType specified for EnumMap");
+		}
+		Class type = mapper().realClass(reader.getAttribute(attributeName));
+		EnumMap map = new EnumMap(type);
+		populateMap(reader, context, map);
+		return map;
+	}
 }
