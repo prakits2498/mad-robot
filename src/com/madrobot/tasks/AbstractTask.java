@@ -48,6 +48,7 @@ abstract class AbstractTask extends AsyncTask<Object, Object, Object> {
 		this.appContext = appContext;
 	}
 	
+	@Override
 	protected void onProgressUpdate(Object... objects) {
 		/*
 		 * if null is received then it indicates that the task has just started

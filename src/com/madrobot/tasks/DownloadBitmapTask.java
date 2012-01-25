@@ -53,6 +53,7 @@ public class DownloadBitmapTask extends AbstractTask {
 		super(context, notifier);
 	}
 
+	@Override
 	protected Object doInBackground(Object... params) {
 		/*sending*/
 		taskStarted();
@@ -85,6 +86,7 @@ public class DownloadBitmapTask extends AbstractTask {
 	}
 
 
+	@Override
 	protected void onPostExecute(Object result) {
 		notifier.onTaskCompleted();
 	}
