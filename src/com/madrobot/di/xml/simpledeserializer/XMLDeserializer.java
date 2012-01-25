@@ -1,14 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2011 MadRobot.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the GNU Lesser Public License v2.1
- * which accompanies this distribution, and is available at
- * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
- * Contributors:
+ * Copyright (c) 2012 MadRobot.
+ *  All rights reserved. This program and the accompanying materials
+ *  are made available under the terms of the GNU Lesser Public License v2.1
+ *  which accompanies this distribution, and is available at
+ *  http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ *  
+ *  Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
-package com.madrobot.di.xml;
+
+package com.madrobot.di.xml.simpledeserializer;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,54 +26,50 @@ import java.util.regex.Pattern;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import com.madrobot.di.Converter;
+import com.madrobot.di.xml.simpledeserializer.annotations.ElementName;
+import com.madrobot.di.xml.simpledeserializer.annotations.ItemType;
+
 import android.util.Xml;
 
 /**
- * Helper utility to deserialize any XML content into a specified model(java
- * bean). <br/>
+ * Helper utility to deserialize any XML content into a specified model(java bean). <br/>
  * 
  * <p>
  * Steps to design the model:
  * <ol>
- * <li>Start by choosing a name for the model. This will represent the final
- * class.</li>
- * <li>Add fields with names matching that of the elements in the XML to be
- * parsed. For example, if the name of the element is <code>message</code>, add
- * a field with the name <code>message</code>.</li>
- * <li>If the name of the element is such that it does not qualify to be a valid
- * Java identifier, for example, <code>rss2.0</code>, use {@link ElementName}
- * annotation. Give any name to the field and specify the name of the element
- * using the annotation.</li>
+ * <li>Start by choosing a name for the model. This will represent the final class.</li>
+ * <li>Add fields with names matching that of the elements in the XML to be parsed. For example, if the name of the
+ * element is <code>message</code>, add a field with the name <code>message</code>.</li>
+ * <li>If the name of the element is such that it does not qualify to be a valid Java identifier, for example,
+ * <code>rss2.0</code>, use {@link ElementName} annotation. Give any name to the field and specify the name of the
+ * element using the annotation.</li>
  * <li>The type of the fields that are possible are one of the following:
  * <ul>
  * <li>Any custom type with a public parameterless constructor</li>
- * <li>Any class that inherits from {@link List}, for example {@link ArrayList}.
- * Such field will be referred to as a collection field</li>
+ * <li>Any class that inherits from {@link List}, for example {@link ArrayList}. Such field will be referred to as a
+ * collection field</li>
  * </ul>
  * </li>
- * <li>For a collection field, you must specify the type of items in the
- * collection using the annotation {@link ItemType}.</li>
+ * <li>For a collection field, you must specify the type of items in the collection using the annotation
+ * {@link ItemType}.</li>
  * <li>Create getters and setters for non-collection field.</li>
  * <li>
- * For a collection field, you must have the add-method with the name
- * <code>addXXX</code> where <code>XXX</code> is the capitalized name of the
- * field. It must take exactly one parameter, of the type of the item in the
- * collection.</li>
+ * For a collection field, you must have the add-method with the name <code>addXXX</code> where <code>XXX</code> is the
+ * capitalized name of the field. It must take exactly one parameter, of the type of the item in the collection.</li>
  * <li>
- * Use the method {@link #readToBean(InputStream, Class)} to deserialize the XML
- * from the stream to appropriate entity type.</li>
+ * Use the method {@link #readToBean(InputStream, Class)} to deserialize the XML from the stream to appropriate entity
+ * type.</li>
  * </ol>
  * </p>
  * 
  * <p>
  * Notes:
  * <ul>
- * <li>If no matching field is found for a specific element, the field will be
- * ignored.</li>
- * <li>If there is an extra field in the model corresponding to which no element
- * exists, it will continue to have its default value</li>
- * <li>Similarly, if there is an error while converting the value, the field
- * will retain its default value</li>
+ * <li>If no matching field is found for a specific element, the field will be ignored.</li>
+ * <li>If there is an extra field in the model corresponding to which no element exists, it will continue to have its
+ * default value</li>
+ * <li>Similarly, if there is an error while converting the value, the field will retain its default value</li>
  * </ul>
  * </p>
  * 
@@ -136,7 +133,7 @@ import android.util.Xml;
  * <pre>
  * InputStream input = getStreamFromSomewhere();
  * ModelA aValue = XMLDeserializer.getInstance().deserialize(input, ModelA.class);
- * //Work with aValue...
+ * // Work with aValue...
  * </pre>
  * 
  */
@@ -162,8 +159,7 @@ public final class XMLDeserializer {
 	private static final XMLDeserializer instance = new XMLDeserializer();
 
 	/**
-	 * Regular expression patern for common baseline for Java identifier and XML
-	 * element name
+	 * Regular expression patern for common baseline for Java identifier and XML element name
 	 */
 	private static final Pattern validFieldNamePattern = Pattern.compile("^[a-zA-Z][a-zA-Z0-9]*$");
 
@@ -175,8 +171,7 @@ public final class XMLDeserializer {
 
 	/**
 	 * Deserializes the XML data from the input to the corresponding entity type <br/>
-	 * If there is an error while parsing, if possible it will try to ignore it,
-	 * otherwise returns a null value.
+	 * If there is an error while parsing, if possible it will try to ignore it, otherwise returns a null value.
 	 * 
 	 * @param input
 	 *            Input stream to read data from
@@ -187,10 +182,10 @@ public final class XMLDeserializer {
 	 */
 	public <T> T readToBean(InputStream input, Class<T> bean) {
 		XmlPullParser parser = Xml.newPullParser();
-		try{
+		try {
 			parser.setInput(input, null);
 			return readToBean(parser, bean);
-		} catch(Throwable e){
+		} catch (Throwable e) {
 			e.printStackTrace();
 		}
 
@@ -199,8 +194,7 @@ public final class XMLDeserializer {
 
 	/**
 	 * Deserializes the XML data from the input to the corresponding entity type <br/>
-	 * If there is an error while parsing, if possible it will try to ignore it,
-	 * otherwise returns a null value.
+	 * If there is an error while parsing, if possible it will try to ignore it, otherwise returns a null value.
 	 * 
 	 * @param parser
 	 *            Parser to read XML from
@@ -213,14 +207,14 @@ public final class XMLDeserializer {
 		T rv = null;
 		Stack<ClassInfo> stack = new Stack<ClassInfo>();
 
-		try{
+		try {
 			int evtType = -1;
 			evtType = parser.next();
 
-			while(evtType != XmlPullParser.END_DOCUMENT){
-				if(evtType == XmlPullParser.START_TAG){
+			while (evtType != XmlPullParser.END_DOCUMENT) {
+				if (evtType == XmlPullParser.START_TAG) {
 					String name = parser.getName();
-					if(bean != null){
+					if (bean != null) {
 						ClassInfo rootCI = new ClassInfo(bean, name);
 						stack.push(rootCI);
 						rv = bean.newInstance();
@@ -230,7 +224,7 @@ public final class XMLDeserializer {
 				}
 				evtType = parser.next();
 			}
-		} catch(Throwable t){
+		} catch (Throwable t) {
 			t.printStackTrace();
 		}
 		return rv;
@@ -250,82 +244,82 @@ public final class XMLDeserializer {
 	 * @throws IOException
 	 *             If an exception occurs while reading
 	 */
-	private void deserialize(Object obj, XmlPullParser parser, Stack<ClassInfo> stack)
-			throws XmlPullParserException, IOException {
+	private void deserialize(Object obj, XmlPullParser parser, Stack<ClassInfo> stack) throws XmlPullParserException,
+			IOException {
 		int evtType = parser.next();
 		String name;
 		ClassInfo ci = stack.peek();
 		Class<?> clz = ci.getType();
 
 		// Read until the end of the document
-		while(evtType != XmlPullParser.END_DOCUMENT){
+		while (evtType != XmlPullParser.END_DOCUMENT) {
 
 			// If we are done with the parsing of the current element, we done
 			// with this level
-			if(evtType == XmlPullParser.END_TAG){
-				if(ci.getElementName().equals(parser.getName())){
+			if (evtType == XmlPullParser.END_TAG) {
+				if (ci.getElementName().equals(parser.getName())) {
 					break;
 				}
 			}
 
 			// Start of a tag signifies a field to be populated
-			if(evtType == XmlPullParser.START_TAG){
+			if (evtType == XmlPullParser.START_TAG) {
 				name = parser.getName();
 				FieldInfo info = getFieldInfo(clz, name);
 				FieldType ft = info.getFieldType();
 
-				if(ft.equals(FieldType.PSEUDO_PRIMITIVE)){
+				if (ft.equals(FieldType.PSEUDO_PRIMITIVE)) {
 					// For pseudo-primitive fields, directly convert the value
 					// and set
 					String value = parser.nextText();
-					try{
+					try {
 						setFieldValue(obj, info, Converter.convertTo(value, info.getType()));
-					} catch(Throwable e){
+					} catch (Throwable e) {
 						e.printStackTrace();
 					}
-				} else if(ft.equals(FieldType.COLLECTION)){
+				} else if (ft.equals(FieldType.COLLECTION)) {
 					// For collection fields, deserialize the contents within
 					// the element and add the value
 					Field fld = info.getField();
 					ItemType itemType = fld.getAnnotation(ItemType.class);
-					if(itemType != null){
+					if (itemType != null) {
 						Class<?> itemValueType = itemType.value();
 						Object value = null;
-						if(Converter.isPseudoPrimitive(itemValueType)){
+						if (Converter.isPseudoPrimitive(itemValueType)) {
 							value = Converter.convertTo(parser.nextText(), itemValueType);
-						} else{
+						} else {
 							ClassInfo itemCI = new ClassInfo(itemValueType, name);
 							stack.push(itemCI);
-							try{
+							try {
 								Object subObj = itemValueType.newInstance();
 								addFieldValue(obj, info, subObj);
 								deserialize(subObj, parser, stack);
-							} catch(Throwable e){
+							} catch (Throwable e) {
 								e.printStackTrace();
 							}
 						}
-						if(value != null){
-							try{
+						if (value != null) {
+							try {
 								addFieldValue(obj, info, value);
-							} catch(Throwable e){
+							} catch (Throwable e) {
 								e.printStackTrace();
 							}
 						}
 					}
-				} else if(ft.equals(FieldType.COMPOSITE)){
+				} else if (ft.equals(FieldType.COMPOSITE)) {
 					// For composite fields, instantiate appropriate data type
 					// and set the value
 					Class<?> subType = info.getType();
 					ClassInfo itemCI = new ClassInfo(subType, name);
 					stack.push(itemCI);
-					try{
+					try {
 						Object subObj = subType.newInstance();
 						setFieldValue(obj, info, subObj);
 						deserialize(subObj, parser, stack);
-					} catch(Throwable e){
+					} catch (Throwable e) {
 						e.printStackTrace();
 					}
-				} else if(ft.equals(FieldType.NOT_DEFINED)){
+				} else if (ft.equals(FieldType.NOT_DEFINED)) {
 					// process till element end
 					skipElement(parser, name);
 				}
@@ -347,23 +341,20 @@ public final class XMLDeserializer {
 	 * @throws IOException
 	 *             If an exception occurs while reading
 	 */
-	private void skipElement(XmlPullParser parser, String elementName) throws XmlPullParserException,
-			IOException {
+	private void skipElement(XmlPullParser parser, String elementName) throws XmlPullParserException, IOException {
 		int indent = 0;
 		int evtType = parser.next();
 
-		boolean finished = (indent == 0) && (evtType == XmlPullParser.END_TAG)
-				&& parser.getName().equals(elementName);
+		boolean finished = (indent == 0) && (evtType == XmlPullParser.END_TAG) && parser.getName().equals(elementName);
 
-		while(!finished){
+		while (!finished) {
 			evtType = parser.next();
-			if((evtType == XmlPullParser.START_TAG) && parser.getName().equals(elementName)){
+			if ((evtType == XmlPullParser.START_TAG) && parser.getName().equals(elementName)) {
 				indent++;
-			} else if((evtType == XmlPullParser.START_TAG) && parser.getName().equals(elementName)){
+			} else if ((evtType == XmlPullParser.START_TAG) && parser.getName().equals(elementName)) {
 				indent--;
 			}
-			finished = (indent == 0) && (evtType == XmlPullParser.END_TAG)
-					&& parser.getName().equals(elementName);
+			finished = (indent == 0) && (evtType == XmlPullParser.END_TAG) && parser.getName().equals(elementName);
 		}
 	}
 
@@ -407,7 +398,7 @@ public final class XMLDeserializer {
 	 */
 	private void setFieldValue(Object obj, FieldInfo info, Object value) throws IllegalArgumentException,
 			IllegalAccessException, InvocationTargetException {
-		if(value != null){
+		if (value != null) {
 			Method setMethod = info.getSetMethod();
 			setMethod.invoke(obj, value);
 		}
@@ -428,40 +419,40 @@ public final class XMLDeserializer {
 		info.setFieldType(FieldType.NOT_DEFINED);
 
 		String fieldName = getFieldName(clz, elementName);
-		if(fieldName == null){
+		if (fieldName == null) {
 			return info;
 		}
 		info.setFieldName(fieldName);
 
-		try{
+		try {
 			Field field = clz.getDeclaredField(fieldName);
-			if(field != null){
+			if (field != null) {
 				Method method = null;
 				Class<?> type = field.getType();
 				info.setType(type);
 				info.setField(field);
-				if(List.class.isAssignableFrom(field.getType())){
+				if (List.class.isAssignableFrom(field.getType())) {
 					String methodName = getAddMethodName(fieldName);
 					ItemType itemType = field.getAnnotation(ItemType.class);
 					Class<?> itemValueType = (itemType != null) ? itemType.value() : Object.class;
 					method = clz.getDeclaredMethod(methodName, itemValueType);
 					info.setAddMethod(method);
-				} else{
+				} else {
 					String methodName = getSetMethodName(fieldName);
 					method = clz.getDeclaredMethod(methodName, type);
 					info.setSetMethod(method);
 				}
-				if(method != null){
-					if(Converter.isPseudoPrimitive(type)){
+				if (method != null) {
+					if (Converter.isPseudoPrimitive(type)) {
 						info.setFieldType(FieldType.PSEUDO_PRIMITIVE);
-					} else if(List.class.isAssignableFrom(type)){
+					} else if (List.class.isAssignableFrom(type)) {
 						info.setFieldType(FieldType.COLLECTION);
-					} else{
+					} else {
 						info.setFieldType(FieldType.COMPOSITE);
 					}
 				}
 			}
-		} catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
@@ -469,12 +460,10 @@ public final class XMLDeserializer {
 	}
 
 	/**
-	 * Gets the field name for the corresponding element in the specified entity
-	 * type.
+	 * Gets the field name for the corresponding element in the specified entity type.
 	 * <p>
-	 * If the field with exact name does not exist, it makes use of {@see
-	 * ElementName} annotation on any of the fields declared in the class to
-	 * identify the correct field in the entity
+	 * If the field with exact name does not exist, it makes use of {@see ElementName} annotation on any of the fields
+	 * declared in the class to identify the correct field in the entity
 	 * </p>
 	 * 
 	 * @param clz
@@ -484,14 +473,14 @@ public final class XMLDeserializer {
 	 * @return Name of the field, if found, null otherwise
 	 */
 	private String getFieldName(Class<?> clz, String elementName) {
-		if(validFieldNamePattern.matcher(elementName).matches()){
+		if (validFieldNamePattern.matcher(elementName).matches()) {
 			return elementName;
 		}
 		Field[] fields = clz.getDeclaredFields();
 		String fieldName = null;
-		for(Field field : fields){
+		for (Field field : fields) {
 			ElementName ename = field.getAnnotation(ElementName.class);
-			if((ename != null) && elementName.equals(ename.value())){
+			if ((ename != null) && elementName.equals(ename.value())) {
 				fieldName = field.getName();
 				break;
 			}
@@ -507,7 +496,7 @@ public final class XMLDeserializer {
 	 * @return Name of the getter method for the field
 	 */
 	public String getGetMethodName(String fieldName) {
-		if(getMethodNameMap.containsKey(fieldName)){
+		if (getMethodNameMap.containsKey(fieldName)) {
 			return getMethodNameMap.get(fieldName);
 		}
 		String method = "get" + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
@@ -523,7 +512,7 @@ public final class XMLDeserializer {
 	 * @return Name of the setter method for the field
 	 */
 	public String getSetMethodName(String fieldName) {
-		if(setMethodNameMap.containsKey(fieldName)){
+		if (setMethodNameMap.containsKey(fieldName)) {
 			return setMethodNameMap.get(fieldName);
 		}
 		String method = "set" + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
@@ -539,7 +528,7 @@ public final class XMLDeserializer {
 	 * @return Name of the add-method for the field
 	 */
 	public String getAddMethodName(String fieldName) {
-		if(addMethodNameMap.containsKey(fieldName)){
+		if (addMethodNameMap.containsKey(fieldName)) {
 			return addMethodNameMap.get(fieldName);
 		}
 		String method = "add" + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
