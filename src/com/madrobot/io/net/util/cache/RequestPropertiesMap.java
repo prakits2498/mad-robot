@@ -34,14 +34,16 @@ class RequestPropertiesMap implements Map<String, List<String>> {
     /**
      * {@inheritDoc}
      */
-    public void clear() {
+    @Override
+	public void clear() {
         throw new UnsupportedOperationException();
     }
 
     /**
      * {@inheritDoc}
      */
-    public boolean containsKey(Object key) {
+    @Override
+	public boolean containsKey(Object key) {
         if (key instanceof String) {
             String field = (String) key;
             return mConnection.getRequestProperty(field) != null;
@@ -53,21 +55,24 @@ class RequestPropertiesMap implements Map<String, List<String>> {
     /**
      * {@inheritDoc}
      */
-    public boolean containsValue(Object value) {
+    @Override
+	public boolean containsValue(Object value) {
         throw new UnsupportedOperationException();
     }
 
     /**
      * {@inheritDoc}
      */
-    public Set<Entry<String, List<String>>> entrySet() {
+    @Override
+	public Set<Entry<String, List<String>>> entrySet() {
         throw new UnsupportedOperationException();
     }
 
     /**
      * {@inheritDoc}
      */
-    public List<String> get(Object key) {
+    @Override
+	public List<String> get(Object key) {
         if (key instanceof String) {
             String field = (String) key;
             String value = mConnection.getRequestProperty(field);
@@ -80,49 +85,56 @@ class RequestPropertiesMap implements Map<String, List<String>> {
     /**
      * {@inheritDoc}
      */
-    public boolean isEmpty() {
+    @Override
+	public boolean isEmpty() {
         throw new UnsupportedOperationException();
     }
 
     /**
      * {@inheritDoc}
      */
-    public Set<String> keySet() {
+    @Override
+	public Set<String> keySet() {
         throw new UnsupportedOperationException();
     }
 
     /**
      * {@inheritDoc}
      */
-    public List<String> put(String key, List<String> value) {
+    @Override
+	public List<String> put(String key, List<String> value) {
         throw new UnsupportedOperationException();
     }
 
     /**
      * {@inheritDoc}
      */
-    public void putAll(Map<? extends String, ? extends List<String>> value) {
+    @Override
+	public void putAll(Map<? extends String, ? extends List<String>> value) {
         throw new UnsupportedOperationException();
     }
 
     /**
      * {@inheritDoc}
      */
-    public List<String> remove(Object key) {
+    @Override
+	public List<String> remove(Object key) {
         throw new UnsupportedOperationException();
     }
 
     /**
      * {@inheritDoc}
      */
-    public int size() {
+    @Override
+	public int size() {
         throw new UnsupportedOperationException();
     }
 
     /**
      * {@inheritDoc}
      */
-    public Collection<List<String>> values() {
+    @Override
+	public Collection<List<String>> values() {
         throw new UnsupportedOperationException();
     }
 }

@@ -259,6 +259,7 @@ public class NetUtils {
 		try {
 			HttpsURLConnection
 					.setDefaultHostnameVerifier(new HostnameVerifier() {
+						@Override
 						public boolean verify(String hostname,
 								SSLSession session) {
 							return true;
@@ -266,14 +267,17 @@ public class NetUtils {
 					});
 			SSLContext context = SSLContext.getInstance("TLS");
 			context.init(null, new X509TrustManager[] { new X509TrustManager() {
+				@Override
 				public void checkClientTrusted(X509Certificate[] chain,
 						String authType) throws CertificateException {
 				}
 
+				@Override
 				public void checkServerTrusted(X509Certificate[] chain,
 						String authType) throws CertificateException {
 				}
 
+				@Override
 				public X509Certificate[] getAcceptedIssuers() {
 					return new X509Certificate[0];
 				}
