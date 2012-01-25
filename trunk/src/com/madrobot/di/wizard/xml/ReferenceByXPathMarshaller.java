@@ -8,33 +8,38 @@
  *  Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
- 
+
 package com.madrobot.di.wizard.xml;
 
 import com.madrobot.di.wizard.xml.converters.ConverterLookup;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
 import com.madrobot.di.wizard.xml.io.path.Path;
 
- class ReferenceByXPathMarshaller extends AbstractReferenceMarshaller {
+class ReferenceByXPathMarshaller extends AbstractReferenceMarshaller {
 
-    private final int mode;
+	private final int mode;
 
-     ReferenceByXPathMarshaller(HierarchicalStreamWriter writer, ConverterLookup converterLookup, Mapper mapper, int mode) {
-        super(writer, converterLookup, mapper);
-        this.mode = mode;
-    }
+	ReferenceByXPathMarshaller(HierarchicalStreamWriter writer, ConverterLookup converterLookup, Mapper mapper, int mode) {
+		super(writer, converterLookup, mapper);
+		this.mode = mode;
+	}
 
-    protected String createReference(Path currentPath, Object existingReferenceKey) {
-        Path existingPath = (Path)existingReferenceKey;
-        Path referencePath = (mode & ReferenceByXPathMarshallingStrategy.ABSOLUTE) > 0 ? existingPath : currentPath.relativeTo(existingPath);
-        return (mode & ReferenceByXPathMarshallingStrategy.SINGLE_NODE) > 0 ? referencePath.explicit() : referencePath.toString();
-    }
+	@Override
+	protected String createReference(Path currentPath, Object existingReferenceKey) {
+		Path existingPath = (Path) existingReferenceKey;
+		Path referencePath = (mode & ReferenceByXPathMarshallingStrategy.ABSOLUTE) > 0 ? existingPath : currentPath
+				.relativeTo(existingPath);
+		return (mode & ReferenceByXPathMarshallingStrategy.SINGLE_NODE) > 0 ? referencePath.explicit() : referencePath
+				.toString();
+	}
 
-    protected Object createReferenceKey(Path currentPath, Object item) {
-        return currentPath;
-    }
+	@Override
+	protected Object createReferenceKey(Path currentPath, Object item) {
+		return currentPath;
+	}
 
-    protected void fireValidReference(Object referenceKey) {
-        // nothing to do
-    }
+	@Override
+	protected void fireValidReference(Object referenceKey) {
+		// nothing to do
+	}
 }

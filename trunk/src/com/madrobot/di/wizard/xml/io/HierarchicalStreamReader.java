@@ -8,7 +8,7 @@
  *  Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
- 
+
 package com.madrobot.di.wizard.xml.io;
 
 import java.util.Iterator;
@@ -20,86 +20,98 @@ import com.madrobot.di.wizard.xml.converters.ErrorWriter;
  */
 public interface HierarchicalStreamReader extends ErrorReporter {
 
-    /**
-     * Does the node have any more children remaining that have not yet been read?
-     */
-    boolean hasMoreChildren();
+	/**
+	 * Does the node have any more children remaining that have not yet been read?
+	 */
+	boolean hasMoreChildren();
 
-    /**
-     * Select the current child as current node.
-     * A call to this function must be balanced with a call to {@link #moveUp()}.
-     */
-    void moveDown();
+	/**
+	 * Select the current child as current node. A call to this function must be balanced with a call to
+	 * {@link #moveUp()}.
+	 */
+	void moveDown();
 
-    /**
-     * Select the parent node as current node.
-     */
-    void moveUp();
+	/**
+	 * Select the parent node as current node.
+	 */
+	void moveUp();
 
-    /**
-     * Get the name of the current node.
-     */
-    String getNodeName();
+	/**
+	 * Get the name of the current node.
+	 */
+	String getNodeName();
 
-    /**
-     * Get the value (text content) of the current node.
-     */
-    String getValue();
+	/**
+	 * Get the value (text content) of the current node.
+	 */
+	String getValue();
 
-    /**
-     * Get the value of an attribute of the current node.
-     */
-    String getAttribute(String name);
+	/**
+	 * Get the value of an attribute of the current node.
+	 */
+	String getAttribute(String name);
 
-    /**
-     * Get the value of an attribute of the current node, by index.
-     */
-    String getAttribute(int index);
-    
-    /**
-     * Number of attributes in current node.
-     */
-    int getAttributeCount();
+	/**
+	 * Get the value of an attribute of the current node, by index.
+	 */
+	String getAttribute(int index);
 
-    /**
-     * Name of attribute in current node.
-     */
-    String getAttributeName(int index);
+	/**
+	 * Number of attributes in current node.
+	 */
+	int getAttributeCount();
 
-    /**
-     * Names of attributes (as Strings). 
-     */
-    Iterator getAttributeNames();
+	/**
+	 * Name of attribute in current node.
+	 */
+	String getAttributeName(int index);
 
-    /**
-     * If any errors are detected, allow the reader to add any additional information that can aid debugging
-     * (such as line numbers, XPath expressions, etc).
-     */
-    void appendErrors(ErrorWriter errorWriter);
+	/**
+	 * Names of attributes (as Strings).
+	 */
+	Iterator getAttributeNames();
 
-    /**
-     * Close the reader, if necessary.
-     */
-    void close();
+	/**
+	 * If any errors are detected, allow the reader to add any additional information that can aid debugging (such as
+	 * line numbers, XPath expressions, etc).
+	 */
+	@Override
+	void appendErrors(ErrorWriter errorWriter);
 
-    /**
-     * Return the underlying HierarchicalStreamReader implementation.
-     *
-     * <p>If a Converter needs to access methods of a specific HierarchicalStreamReader implementation that are not
-     * defined in the HierarchicalStreamReader interface, it should call this method before casting. This is because
-     * the reader passed to the Converter is often wrapped/decorated by another implementation to provide additional
-     * functionality (such as XPath tracking).</p>
-     *
-     * <p>For example:</p>
-     * <pre>MySpecificReader mySpecificReader = (MySpecificReader)reader; <b>// INCORRECT!</b>
-     * mySpecificReader.doSomethingSpecific();</pre>
+	/**
+	 * Close the reader, if necessary.
+	 */
+	void close();
 
-     * <pre>MySpecificReader mySpecificReader = (MySpecificReader)reader.underlyingReader();  <b>// CORRECT!</b>
-     * mySpecificReader.doSomethingSpecific();</pre>
-     *
-     * <p>Implementations of HierarchicalStreamReader should return 'this', unless they are a decorator, in which case
-     * they should delegate to whatever they are wrapping.</p>
-     */
-    HierarchicalStreamReader underlyingReader();
+	/**
+	 * Return the underlying HierarchicalStreamReader implementation.
+	 * 
+	 * <p>
+	 * If a Converter needs to access methods of a specific HierarchicalStreamReader implementation that are not defined
+	 * in the HierarchicalStreamReader interface, it should call this method before casting. This is because the reader
+	 * passed to the Converter is often wrapped/decorated by another implementation to provide additional functionality
+	 * (such as XPath tracking).
+	 * </p>
+	 * 
+	 * <p>
+	 * For example:
+	 * </p>
+	 * 
+	 * <pre>
+	 * MySpecificReader mySpecificReader = (MySpecificReader)reader; <b>// INCORRECT!</b>
+	 * mySpecificReader.doSomethingSpecific();
+	 * </pre>
+	 * 
+	 * <pre>
+	 * MySpecificReader mySpecificReader = (MySpecificReader)reader.underlyingReader();  <b>// CORRECT!</b>
+	 * mySpecificReader.doSomethingSpecific();
+	 * </pre>
+	 * 
+	 * <p>
+	 * Implementations of HierarchicalStreamReader should return 'this', unless they are a decorator, in which case they
+	 * should delegate to whatever they are wrapping.
+	 * </p>
+	 */
+	HierarchicalStreamReader underlyingReader();
 
 }

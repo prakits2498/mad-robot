@@ -19,8 +19,8 @@ import com.madrobot.di.wizard.xml.io.NameCoder;
 import com.madrobot.util.FastStack;
 
 /**
- * Base class that contains common functionality across HierarchicalStreamReader
- * implementations that need to read from a pull parser.
+ * Base class that contains common functionality across HierarchicalStreamReader implementations that need to read from
+ * a pull parser.
  * 
  */
 public abstract class AbstractPullReader extends AbstractReader {
@@ -52,10 +52,9 @@ public abstract class AbstractPullReader extends AbstractReader {
 
 	/**
 	 * @since 1.2
-	 * @deprecated As of 1.4 use
-	 *             {@link AbstractPullReader#AbstractPullReader(NameCoder)}
-	 *             instead
+	 * @deprecated As of 1.4 use {@link AbstractPullReader#AbstractPullReader(NameCoder)} instead
 	 */
+	@Deprecated
 	protected AbstractPullReader(XmlFriendlyNameCoder replacer) {
 		this((NameCoder) replacer);
 	}
@@ -64,14 +63,13 @@ public abstract class AbstractPullReader extends AbstractReader {
 	 * Pull the next event from the stream.
 	 * 
 	 * <p>
-	 * This MUST return {@link #START_NODE}, {@link #END_NODE}, {@link #TEXT},
-	 * {@link #COMMENT}, {@link #OTHER} or throw
+	 * This MUST return {@link #START_NODE}, {@link #END_NODE}, {@link #TEXT}, {@link #COMMENT}, {@link #OTHER} or throw
 	 * {@link com.madrobot.di.wizard.xml.io.StreamException}.
 	 * </p>
 	 * 
 	 * <p>
-	 * The underlying pull parser will most likely return its own event types.
-	 * These must be mapped to the appropriate events.
+	 * The underlying pull parser will most likely return its own event types. These must be mapped to the appropriate
+	 * events.
 	 * </p>
 	 */
 	protected abstract int pullNextEvent();
@@ -86,6 +84,7 @@ public abstract class AbstractPullReader extends AbstractReader {
 	 */
 	protected abstract String pullText();
 
+	@Override
 	public boolean hasMoreChildren() {
 		mark();
 		while (true) {
@@ -102,6 +101,7 @@ public abstract class AbstractPullReader extends AbstractReader {
 		}
 	}
 
+	@Override
 	public void moveDown() {
 		int currentDepth = elementStack.size();
 		while (elementStack.size() <= currentDepth) {
@@ -112,6 +112,7 @@ public abstract class AbstractPullReader extends AbstractReader {
 		}
 	}
 
+	@Override
 	public void moveUp() {
 		int currentDepth = elementStack.size();
 		while (elementStack.size() >= currentDepth) {
@@ -172,6 +173,7 @@ public abstract class AbstractPullReader extends AbstractReader {
 		marked = false;
 	}
 
+	@Override
 	public String getValue() {
 		// we should collapse together any text which
 		// contains comments
@@ -209,14 +211,17 @@ public abstract class AbstractPullReader extends AbstractReader {
 		}
 	}
 
+	@Override
 	public Iterator getAttributeNames() {
 		return new AttributeNameIterator(this);
 	}
 
+	@Override
 	public String getNodeName() {
 		return decodeNode((String) elementStack.peek());
 	}
 
+	@Override
 	public String peekNextChild() {
 		mark();
 		while (true) {

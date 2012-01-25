@@ -15,15 +15,15 @@ import com.madrobot.di.wizard.xml.converters.ConverterLookup;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamReader;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
 
- class TreeMarshallingStrategy extends AbstractTreeMarshallingStrategy {
+class TreeMarshallingStrategy extends AbstractTreeMarshallingStrategy {
 
-    protected TreeUnmarshaller createUnmarshallingContext(Object root,
-        HierarchicalStreamReader reader, ConverterLookup converterLookup, Mapper mapper) {
-        return new TreeUnmarshaller(root, reader, converterLookup, mapper);
-    }
+	@Override
+	protected TreeUnmarshaller createUnmarshallingContext(Object root, HierarchicalStreamReader reader, ConverterLookup converterLookup, Mapper mapper) {
+		return new TreeUnmarshaller(root, reader, converterLookup, mapper);
+	}
 
-     protected TreeMarshaller createMarshallingContext(
-        HierarchicalStreamWriter writer, ConverterLookup converterLookup, Mapper mapper) {
-        return new TreeMarshaller(writer, converterLookup, mapper);
-    }
+	@Override
+	protected TreeMarshaller createMarshallingContext(HierarchicalStreamWriter writer, ConverterLookup converterLookup, Mapper mapper) {
+		return new TreeMarshaller(writer, converterLookup, mapper);
+	}
 }

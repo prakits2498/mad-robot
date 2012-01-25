@@ -8,42 +8,44 @@
  *  Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
- 
+
 package com.madrobot.di.wizard.xml.converters;
 
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamReader;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
 
 /**
- * A special converter that prevents self-serialization. The serializing XStream instance
- * adds a converter of this type to prevent self-serialization and will throw an
- * exception instead.
+ * A special converter that prevents self-serialization. The serializing XStream instance adds a converter of this type
+ * to prevent self-serialization and will throw an exception instead.
  * 
  * @since 1.2
  */
 public class SelfStreamingInstanceChecker implements Converter {
 
-    private final Object self;
-    private Converter defaultConverter;
+	private final Object self;
+	private Converter defaultConverter;
 
-    public SelfStreamingInstanceChecker(Converter defaultConverter, Object xstream) {
-        this.defaultConverter = defaultConverter;
-        this.self = xstream;
-    }
+	public SelfStreamingInstanceChecker(Converter defaultConverter, Object xstream) {
+		this.defaultConverter = defaultConverter;
+		this.self = xstream;
+	}
 
-    public boolean canConvert(Class type) {
-        return type == self.getClass();
-    }
+	@Override
+	public boolean canConvert(Class type) {
+		return type == self.getClass();
+	}
 
-    public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
-        if (source == self) {
-            throw new ConversionException("Cannot marshal the XStream instance in action");
-        }
-        defaultConverter.marshal(source, writer, context);
-    }
+	@Override
+	public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
+		if (source == self) {
+			throw new ConversionException("Cannot marshal the XStream instance in action");
+		}
+		defaultConverter.marshal(source, writer, context);
+	}
 
-    public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
-        return defaultConverter.unmarshal(reader, context);
-    }
+	@Override
+	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+		return defaultConverter.unmarshal(reader, context);
+	}
 
 }

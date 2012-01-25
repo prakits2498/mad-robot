@@ -19,25 +19,28 @@ import java.util.Map;
 import com.madrobot.di.wizard.xml.converters.DataHolder;
 
 public class MapBackedDataHolder implements DataHolder {
-    private final Map map;
+	private final Map map;
 
-    public MapBackedDataHolder() {
-        this(new HashMap());
-    }
+	public MapBackedDataHolder() {
+		this(new HashMap());
+	}
 
-    public MapBackedDataHolder(Map map) {
-        this.map = map;
-    }
+	public MapBackedDataHolder(Map map) {
+		this.map = map;
+	}
 
-    public Object get(Object key) {
-        return map.get(key);
-    }
+	@Override
+	public Object get(Object key) {
+		return map.get(key);
+	}
 
-    public void put(Object key, Object value) {
-        map.put(key, value);
-    }
+	@Override
+	public void put(Object key, Object value) {
+		map.put(key, value);
+	}
 
-    public Iterator keys() {
-        return Collections.unmodifiableCollection(map.keySet()).iterator();
-    }
+	@Override
+	public Iterator keys() {
+		return Collections.unmodifiableCollection(map.keySet()).iterator();
+	}
 }

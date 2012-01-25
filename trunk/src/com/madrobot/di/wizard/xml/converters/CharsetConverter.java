@@ -8,9 +8,8 @@
  *  Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
- 
-package com.madrobot.di.wizard.xml.converters;
 
+package com.madrobot.di.wizard.xml.converters;
 
 import java.nio.charset.Charset;
 
@@ -21,16 +20,18 @@ import java.nio.charset.Charset;
  */
 public class CharsetConverter extends AbstractSingleValueConverter {
 
-    public boolean canConvert(Class type) {
-        return Charset.class.isAssignableFrom(type);
-    }
+	@Override
+	public boolean canConvert(Class type) {
+		return Charset.class.isAssignableFrom(type);
+	}
 
-    public String toString(Object obj) {
-        return obj == null ? null : ((Charset)obj).name();
-    }
+	@Override
+	public String toString(Object obj) {
+		return obj == null ? null : ((Charset) obj).name();
+	}
 
-
-    public Object fromString(String str) {
-        return Charset.forName(str);
-    }
+	@Override
+	public Object fromString(String str) {
+		return Charset.forName(str);
+	}
 }

@@ -8,7 +8,7 @@
  *  Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
- 
+
 package com.madrobot.di.wizard.xml;
 
 import com.madrobot.di.wizard.xml.converters.ConverterLookup;
@@ -16,8 +16,9 @@ import com.madrobot.di.wizard.xml.converters.DataHolder;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamReader;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
 
- interface MarshallingStrategy {
+interface MarshallingStrategy {
 
-    Object unmarshal(Object root, HierarchicalStreamReader reader, DataHolder dataHolder, ConverterLookup converterLookup, Mapper mapper);
-    void marshal(HierarchicalStreamWriter writer, Object obj, ConverterLookup converterLookup, Mapper mapper, DataHolder dataHolder);
+	Object unmarshal(Object root, HierarchicalStreamReader reader, DataHolder dataHolder, ConverterLookup converterLookup, Mapper mapper);
+
+	void marshal(HierarchicalStreamWriter writer, Object obj, ConverterLookup converterLookup, Mapper mapper, DataHolder dataHolder);
 }

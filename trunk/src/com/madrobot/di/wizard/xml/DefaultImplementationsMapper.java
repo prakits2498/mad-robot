@@ -15,68 +15,65 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import com.madrobot.di.wizard.xml.Mapper.Null;
-
-
 /**
- * Mapper that resolves default implementations of classes. For example,
- * mapper.serializedClass(ArrayList.class) will return java.util.List. Calling
- * mapper.defaultImplementationOf(List.class) will return ArrayList.
+ * Mapper that resolves default implementations of classes. For example, mapper.serializedClass(ArrayList.class) will
+ * return java.util.List. Calling mapper.defaultImplementationOf(List.class) will return ArrayList.
  * 
  */
- class DefaultImplementationsMapper extends MapperWrapper {
+class DefaultImplementationsMapper extends MapperWrapper {
 
-    private final Map typeToImpl = new HashMap();
-    private transient Map implToType = new HashMap();
+	private final Map typeToImpl = new HashMap();
+	private transient Map implToType = new HashMap();
 
-     DefaultImplementationsMapper(Mapper wrapped) {
-        super(wrapped);
-        addDefaults();
-    }
+	DefaultImplementationsMapper(Mapper wrapped) {
+		super(wrapped);
+		addDefaults();
+	}
 
-    protected void addDefaults() {
-        // null handling
-        addDefaultImplementation(null, Mapper.Null.class);
-        // register primitive types
-        addDefaultImplementation(Boolean.class, boolean.class);
-        addDefaultImplementation(Character.class, char.class);
-        addDefaultImplementation(Integer.class, int.class);
-        addDefaultImplementation(Float.class, float.class);
-        addDefaultImplementation(Double.class, double.class);
-        addDefaultImplementation(Short.class, short.class);
-        addDefaultImplementation(Byte.class, byte.class);
-        addDefaultImplementation(Long.class, long.class);
-    }
+	protected void addDefaults() {
+		// null handling
+		addDefaultImplementation(null, Mapper.Null.class);
+		// register primitive types
+		addDefaultImplementation(Boolean.class, boolean.class);
+		addDefaultImplementation(Character.class, char.class);
+		addDefaultImplementation(Integer.class, int.class);
+		addDefaultImplementation(Float.class, float.class);
+		addDefaultImplementation(Double.class, double.class);
+		addDefaultImplementation(Short.class, short.class);
+		addDefaultImplementation(Byte.class, byte.class);
+		addDefaultImplementation(Long.class, long.class);
+	}
 
-    public void addDefaultImplementation(Class defaultImplementation, Class ofType) {
-        if (defaultImplementation != null && defaultImplementation.isInterface()) {
-            throw new InitializationException(
-                "Default implementation is not a concrete class: "
-                    + defaultImplementation.getName());
-        }
-        typeToImpl.put(ofType, defaultImplementation);
-        implToType.put(defaultImplementation, ofType);
-    }
+	public void addDefaultImplementation(Class defaultImplementation, Class ofType) {
+		if (defaultImplementation != null && defaultImplementation.isInterface()) {
+			throw new InitializationException("Default implementation is not a concrete class: "
+					+ defaultImplementation.getName());
+		}
+		typeToImpl.put(ofType, defaultImplementation);
+		implToType.put(defaultImplementation, ofType);
+	}
 
-    public String serializedClass(Class type) {
-        Class baseType = (Class)implToType.get(type);
-        return baseType == null ? super.serializedClass(type) : super.serializedClass(baseType);
-    }
+	@Override
+	public String serializedClass(Class type) {
+		Class baseType = (Class) implToType.get(type);
+		return baseType == null ? super.serializedClass(type) : super.serializedClass(baseType);
+	}
 
-    public Class defaultImplementationOf(Class type) {
-        if (typeToImpl.containsKey(type)) {
-            return (Class)typeToImpl.get(type);
-        } else {
-            return super.defaultImplementationOf(type);
-        }
-    }
+	@Override
+	public Class defaultImplementationOf(Class type) {
+		if (typeToImpl.containsKey(type)) {
+			return (Class) typeToImpl.get(type);
+		} else {
+			return super.defaultImplementationOf(type);
+		}
+	}
 
-    private Object readResolve() {
-        implToType = new HashMap();
-        for (final Iterator iter = typeToImpl.keySet().iterator(); iter.hasNext();) {
-            final Object type = iter.next();
-            implToType.put(typeToImpl.get(type), type);
-        }
-        return this;
-    }
+	private Object readResolve() {
+		implToType = new HashMap();
+		for (final Iterator iter = typeToImpl.keySet().iterator(); iter.hasNext();) {
+			final Object type = iter.next();
+			implToType.put(typeToImpl.get(type), type);
+		}
+		return this;
+	}
 }

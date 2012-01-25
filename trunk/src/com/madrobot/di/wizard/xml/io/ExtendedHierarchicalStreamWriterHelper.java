@@ -8,15 +8,15 @@
  *  Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
- 
+
 package com.madrobot.di.wizard.xml.io;
 
 public class ExtendedHierarchicalStreamWriterHelper {
-    public static void startNode(HierarchicalStreamWriter writer, String name, Class clazz) {
-        if (writer instanceof ExtendedHierarchicalStreamWriter) {
-            ((ExtendedHierarchicalStreamWriter) writer).startNode(name, clazz);
-        } else {
-            writer.startNode(name);
-        }
-    }
+	public static void startNode(HierarchicalStreamWriter writer, String name, Class clazz) {
+		if (writer instanceof ExtendedHierarchicalStreamWriter) {
+			((ExtendedHierarchicalStreamWriter) writer).startNode(name, clazz);
+		} else {
+			writer.startNode(name);
+		}
+	}
 }

@@ -8,7 +8,7 @@
  *  Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
- 
+
 package com.madrobot.di.wizard.xml.converters;
 
 /**
@@ -19,6 +19,6 @@ package com.madrobot.di.wizard.xml.converters;
  */
 public interface ConverterRegistry {
 
-    void registerConverter(Converter converter, int priority);
+	void registerConverter(Converter converter, int priority);
 
 }

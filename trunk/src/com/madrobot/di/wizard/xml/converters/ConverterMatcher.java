@@ -11,9 +11,8 @@
 package com.madrobot.di.wizard.xml.converters;
 
 /**
- * ConverterMatcher allows to match converters to classes by 
- * determining if a given type can be converted by the converter instance.
- * ConverterMatcher is the base interface of any converter. 
+ * ConverterMatcher allows to match converters to classes by determining if a given type can be converted by the
+ * converter instance. ConverterMatcher is the base interface of any converter.
  * 
  * @see com.madrobot.di.wizard.xml.converters.Converter
  * @see com.madrobot.di.wizard.xml.converters.SingleValueConverter
@@ -21,10 +20,12 @@ package com.madrobot.di.wizard.xml.converters;
  */
 public interface ConverterMatcher {
 
-    /**
-     * Determines whether the converter can marshall a particular type.
-     * @param type the Class representing the object type to be converted
-     */
-    boolean canConvert(Class type);
+	/**
+	 * Determines whether the converter can marshall a particular type.
+	 * 
+	 * @param type
+	 *            the Class representing the object type to be converted
+	 */
+	boolean canConvert(Class type);
 
 }

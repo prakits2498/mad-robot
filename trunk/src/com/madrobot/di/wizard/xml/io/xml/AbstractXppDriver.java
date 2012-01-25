@@ -30,65 +30,71 @@ import com.madrobot.di.wizard.xml.io.NameCoder;
 import com.madrobot.di.wizard.xml.io.StreamException;
 
 /**
- * An abstract base class for a driver using an XPP implementation. 
+ * An abstract base class for a driver using an XPP implementation.
  * 
  * @since 1.4
  */
 public abstract class AbstractXppDriver extends AbstractDriver {
 
-    /**
-     * Construct an AbstractXppDriver.
-     * 
-     * @param nameCoder the replacer for XML friendly tag and attribute names
-     * @since 1.4
-     */
-    public AbstractXppDriver(NameCoder nameCoder) {
-        super(nameCoder);
-    }
+	/**
+	 * Construct an AbstractXppDriver.
+	 * 
+	 * @param nameCoder
+	 *            the replacer for XML friendly tag and attribute names
+	 * @since 1.4
+	 */
+	public AbstractXppDriver(NameCoder nameCoder) {
+		super(nameCoder);
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    public HierarchicalStreamReader createReader(Reader in) {
-        try {
-            return new XppReader(in, createParser(), getNameCoder());
-        } catch (XmlPullParserException e) {
-            throw new StreamException("Cannot create XmlPullParser");
-        }
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public HierarchicalStreamReader createReader(Reader in) {
+		try {
+			return new XppReader(in, createParser(), getNameCoder());
+		} catch (XmlPullParserException e) {
+			throw new StreamException("Cannot create XmlPullParser");
+		}
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    public HierarchicalStreamReader createReader(InputStream in) {
-        try {
-            return createReader(new XmlHeaderAwareReader(in));
-        } catch (UnsupportedEncodingException e) {
-            throw new StreamException(e);
-        } catch (IOException e) {
-            throw new StreamException(e);
-        }
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public HierarchicalStreamReader createReader(InputStream in) {
+		try {
+			return createReader(new XmlHeaderAwareReader(in));
+		} catch (UnsupportedEncodingException e) {
+			throw new StreamException(e);
+		} catch (IOException e) {
+			throw new StreamException(e);
+		}
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    public HierarchicalStreamWriter createWriter(Writer out) {
-        return new PrettyPrintWriter(out, getNameCoder());
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public HierarchicalStreamWriter createWriter(Writer out) {
+		return new PrettyPrintWriter(out, getNameCoder());
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    public HierarchicalStreamWriter createWriter(OutputStream out) {
-        return createWriter(new OutputStreamWriter(out));
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public HierarchicalStreamWriter createWriter(OutputStream out) {
+		return createWriter(new OutputStreamWriter(out));
+	}
 
-    /**
-     * Create the parser of the XPP implementation.
-
-     * @throws XmlPullParserException if the parser cannot be created
-     * @since 1.4
-     */
-    protected abstract XmlPullParser createParser() throws XmlPullParserException;
+	/**
+	 * Create the parser of the XPP implementation.
+	 * 
+	 * @throws XmlPullParserException
+	 *             if the parser cannot be created
+	 * @since 1.4
+	 */
+	protected abstract XmlPullParser createParser() throws XmlPullParserException;
 }

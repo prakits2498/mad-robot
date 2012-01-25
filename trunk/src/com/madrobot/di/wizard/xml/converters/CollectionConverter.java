@@ -8,7 +8,7 @@
  *  Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
- package com.madrobot.di.wizard.xml.converters;
+package com.madrobot.di.wizard.xml.converters;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,56 +23,55 @@ import com.madrobot.di.wizard.xml.io.HierarchicalStreamReader;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
 
 /**
- * Converts most common Collections (Lists and Sets) to XML, specifying a nested
- * element for each item.
+ * Converts most common Collections (Lists and Sets) to XML, specifying a nested element for each item.
  * <p/>
- * <p>Supports java.util.ArrayList, java.util.HashSet,
- * java.util.LinkedList, java.util.Vector and java.util.LinkedHashSet.</p>
- *
+ * <p>
+ * Supports java.util.ArrayList, java.util.HashSet, java.util.LinkedList, java.util.Vector and java.util.LinkedHashSet.
+ * </p>
+ * 
  */
 public class CollectionConverter extends AbstractCollectionConverter {
 
-    public CollectionConverter(Mapper mapper) {
-        super(mapper);
-    }
+	public CollectionConverter(Mapper mapper) {
+		super(mapper);
+	}
 
-    public boolean canConvert(Class type) {
-        return type.equals(ArrayList.class)
-                || type.equals(HashSet.class)
-                || type.equals(LinkedList.class)
-                || type.equals(Vector.class)
-                || (JVM.is14() && type.getName().equals("java.util.LinkedHashSet"));
-    }
+	@Override
+	public boolean canConvert(Class type) {
+		return type.equals(ArrayList.class) || type.equals(HashSet.class) || type.equals(LinkedList.class)
+				|| type.equals(Vector.class) || (JVM.is14() && type.getName().equals("java.util.LinkedHashSet"));
+	}
 
-    public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
-        Collection collection = (Collection) source;
-        for (Iterator iterator = collection.iterator(); iterator.hasNext();) {
-            Object item = iterator.next();
-            writeItem(item, context, writer);
-        }
-    }
+	@Override
+	public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
+		Collection collection = (Collection) source;
+		for (Iterator iterator = collection.iterator(); iterator.hasNext();) {
+			Object item = iterator.next();
+			writeItem(item, context, writer);
+		}
+	}
 
-    public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
-        Collection collection = (Collection) createCollection(context.getRequiredType());
-        populateCollection(reader, context, collection);
-        return collection;
-    }
+	@Override
+	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+		Collection collection = (Collection) createCollection(context.getRequiredType());
+		populateCollection(reader, context, collection);
+		return collection;
+	}
 
-    protected void populateCollection(HierarchicalStreamReader reader, UnmarshallingContext context, Collection collection) {
-        populateCollection(reader, context, collection, collection);
-    }
+	protected void populateCollection(HierarchicalStreamReader reader, UnmarshallingContext context, Collection collection) {
+		populateCollection(reader, context, collection, collection);
+	}
 
-    protected void populateCollection(HierarchicalStreamReader reader, UnmarshallingContext context, Collection collection, Collection target) {
-        while (reader.hasMoreChildren()) {
-            reader.moveDown();
-            addCurrentElementToCollection(reader, context, collection, target);
-            reader.moveUp();
-        }
-    }
+	protected void populateCollection(HierarchicalStreamReader reader, UnmarshallingContext context, Collection collection, Collection target) {
+		while (reader.hasMoreChildren()) {
+			reader.moveDown();
+			addCurrentElementToCollection(reader, context, collection, target);
+			reader.moveUp();
+		}
+	}
 
-    protected void addCurrentElementToCollection(HierarchicalStreamReader reader, UnmarshallingContext context,
-        Collection collection, Collection target) {
-        Object item = readItem(reader, context, collection);
-        target.add(item);
-    }
+	protected void addCurrentElementToCollection(HierarchicalStreamReader reader, UnmarshallingContext context, Collection collection, Collection target) {
+		Object item = readItem(reader, context, collection);
+		target.add(item);
+	}
 }

@@ -11,24 +11,25 @@
 
 package com.madrobot.di.wizard.xml;
 
-
 /**
  * Exception thrown if a mapper cannot locate the appropriate class for an element.
  * 
  * @since 1.2
  */
 public class CannotResolveClassException extends XMLWizardException {
-    /**
+	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -6193525574710063951L;
+
 	public CannotResolveClassException(String className) {
-        super(className);
-    }
-    /**
-     * @since 1.4.2
-     */
-    public CannotResolveClassException(String className, Throwable cause) {
-        super(className, cause);
-    }
+		super(className);
+	}
+
+	/**
+	 * @since 1.4.2
+	 */
+	public CannotResolveClassException(String className, Throwable cause) {
+		super(className, cause);
+	}
 }

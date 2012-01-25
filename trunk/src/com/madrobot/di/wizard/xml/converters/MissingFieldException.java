@@ -13,41 +13,46 @@ package com.madrobot.di.wizard.xml.converters;
 
 /**
  * Indicates a missing field or property creating an object.
- *
+ * 
  * @since 1.4.2
  */
 public class MissingFieldException extends ObjectAccessException {
 
-    private final String fieldName;
-    private final String className;
-    
-    /**
-     * Construct a MissingFieldException.
-     * @param className the name of the class missing the field
-     * @param fieldName the name of the missed field
-     * @since 1.4.2
-     */
-    public MissingFieldException(final String className, final String fieldName) {
-        super("No field '" + fieldName + "' found in class '" + className + "'");
-        this.className = className;
-        this.fieldName = fieldName;
-    }
+	private final String fieldName;
+	private final String className;
 
-    /**
-     * Retrieve the name of the missing field.
-     * @return the field name
-     * @since 1.4.2
-     */
-    public String getFieldName() {
-        return fieldName;
-    }
+	/**
+	 * Construct a MissingFieldException.
+	 * 
+	 * @param className
+	 *            the name of the class missing the field
+	 * @param fieldName
+	 *            the name of the missed field
+	 * @since 1.4.2
+	 */
+	public MissingFieldException(final String className, final String fieldName) {
+		super("No field '" + fieldName + "' found in class '" + className + "'");
+		this.className = className;
+		this.fieldName = fieldName;
+	}
 
-    /**
-     * Retrieve the name of the class with the missing field.
-     * @return the class name
-     * @since 1.4.2
-     */
-    protected String getClassName() {
-        return className;
-    }
+	/**
+	 * Retrieve the name of the missing field.
+	 * 
+	 * @return the field name
+	 * @since 1.4.2
+	 */
+	public String getFieldName() {
+		return fieldName;
+	}
+
+	/**
+	 * Retrieve the name of the class with the missing field.
+	 * 
+	 * @return the class name
+	 * @since 1.4.2
+	 */
+	protected String getClassName() {
+		return className;
+	}
 }

@@ -11,26 +11,27 @@
 
 package com.madrobot.di.wizard.xml.converters;
 
-
 import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
  * Converts a java.net.URL to a string.
- *
+ * 
  */
 public class URLConverter extends AbstractSingleValueConverter {
 
-    public boolean canConvert(Class type) {
-        return type.equals(URL.class);
-    }
+	@Override
+	public boolean canConvert(Class type) {
+		return type.equals(URL.class);
+	}
 
-    public Object fromString(String str) {
-        try {
-            return new URL(str);
-        } catch (MalformedURLException e) {
-            throw new ConversionException(e);
-        }
-    }
+	@Override
+	public Object fromString(String str) {
+		try {
+			return new URL(str);
+		} catch (MalformedURLException e) {
+			throw new ConversionException(e);
+		}
+	}
 
 }

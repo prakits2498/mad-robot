@@ -14,27 +14,33 @@ package com.madrobot.di.wizard.xml.converters;
 /**
  * SingleValueConverter implementations are marshallable to/from a single value String representation.
  * <p/>
- * <p>{@link com.madrobot.di.wizard.xml.converters.AbstractSingleValueConverter}
- * provides a starting point for objects that can store all information in a single value String.</p>
- *
+ * <p>
+ * {@link com.madrobot.di.wizard.xml.converters.AbstractSingleValueConverter} provides a starting point for objects that
+ * can store all information in a single value String.
+ * </p>
+ * 
  * @see com.madrobot.di.wizard.xml.converters.Converter
  * @see com.madrobot.di.wizard.xml.converters.AbstractSingleValueConverter
  * @since 1.2
  */
 public interface SingleValueConverter extends ConverterMatcher {
 
-    /**
-     * Marshals an Object into a single value representation.
-     * @param obj the Object to be converted
-     * @return a String with the single value of the Object or <code>null</code>
-     */
-    public String toString(Object obj);
+	/**
+	 * Marshals an Object into a single value representation.
+	 * 
+	 * @param obj
+	 *            the Object to be converted
+	 * @return a String with the single value of the Object or <code>null</code>
+	 */
+	public String toString(Object obj);
 
-    /**
-     * Unmarshals an Object from its single value representation.
-     * @param str the String with the single value of the Object
-     * @return the Object
-     */
-    public Object fromString(String str);
+	/**
+	 * Unmarshals an Object from its single value representation.
+	 * 
+	 * @param str
+	 *            the String with the single value of the Object
+	 * @return the Object
+	 */
+	public Object fromString(String str);
 
 }

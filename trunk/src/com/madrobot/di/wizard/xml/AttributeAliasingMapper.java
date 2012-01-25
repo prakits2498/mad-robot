@@ -11,7 +11,6 @@
 
 package com.madrobot.di.wizard.xml;
 
-
 /**
  * Mapper that allows aliasing of attribute names.
  * 
@@ -19,15 +18,17 @@ package com.madrobot.di.wizard.xml;
  */
 class AttributeAliasingMapper extends AbstractAttributeAliasingMapper {
 
-	 AttributeAliasingMapper(Mapper wrapped) {
+	AttributeAliasingMapper(Mapper wrapped) {
 		super(wrapped);
 	}
 
+	@Override
 	public String aliasForAttribute(String attribute) {
 		String alias = (String) nameToAlias.get(attribute);
 		return alias == null ? super.aliasForAttribute(attribute) : alias;
 	}
 
+	@Override
 	public String attributeForAlias(String alias) {
 		String name = (String) aliasToName.get(alias);
 		return name == null ? super.attributeForAlias(alias) : name;

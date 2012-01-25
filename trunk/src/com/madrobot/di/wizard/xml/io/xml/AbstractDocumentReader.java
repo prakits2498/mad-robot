@@ -21,78 +21,89 @@ import com.madrobot.util.FastStack;
 
 public abstract class AbstractDocumentReader extends AbstractReader implements DocumentReader {
 
-    private FastStack pointers = new FastStack(16);
-    private Object current;
+	private FastStack pointers = new FastStack(16);
+	private Object current;
 
-    protected AbstractDocumentReader(Object rootElement) {
-        this(rootElement, new XmlFriendlyNameCoder());
-    }
+	protected AbstractDocumentReader(Object rootElement) {
+		this(rootElement, new XmlFriendlyNameCoder());
+	}
 
-    /**
-    * @since 1.4
-    */ 
-    protected AbstractDocumentReader(Object rootElement, NameCoder nameCoder) {
-        super(nameCoder);
-        this.current = rootElement;
-        pointers.push(new Pointer());
-        reassignCurrentElement(current);
-    }
+	/**
+	 * @since 1.4
+	 */
+	protected AbstractDocumentReader(Object rootElement, NameCoder nameCoder) {
+		super(nameCoder);
+		this.current = rootElement;
+		pointers.push(new Pointer());
+		reassignCurrentElement(current);
+	}
 
-    /**
-    * @since 1.2
-    * @deprecated As of 1.4, use {@link AbstractDocumentReader#AbstractDocumentReader(Object, NameCoder)} instead.
-    */ 
-    protected AbstractDocumentReader(Object rootElement, XmlFriendlyNameCoder replacer) {
-        this(rootElement, (NameCoder)replacer);
-    }
-    
-    protected abstract void reassignCurrentElement(Object current);
-    protected abstract Object getParent();
-    protected abstract Object getChild(int index);
-    protected abstract int getChildCount();
+	/**
+	 * @since 1.2
+	 * @deprecated As of 1.4, use {@link AbstractDocumentReader#AbstractDocumentReader(Object, NameCoder)} instead.
+	 */
+	@Deprecated
+	protected AbstractDocumentReader(Object rootElement, XmlFriendlyNameCoder replacer) {
+		this(rootElement, (NameCoder) replacer);
+	}
 
-    private static class Pointer {
-        public int v;
-    }
+	protected abstract void reassignCurrentElement(Object current);
 
-    public boolean hasMoreChildren() {
-        Pointer pointer = (Pointer) pointers.peek();
+	protected abstract Object getParent();
 
-        if (pointer.v < getChildCount()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+	protected abstract Object getChild(int index);
 
-    public void moveUp() {
-        current = getParent();
-        pointers.popSilently();
-        reassignCurrentElement(current);
-    }
+	protected abstract int getChildCount();
 
-    public void moveDown() {
-        Pointer pointer = (Pointer) pointers.peek();
-        pointers.push(new Pointer());
+	private static class Pointer {
+		public int v;
+	}
 
-        current = getChild(pointer.v);
+	@Override
+	public boolean hasMoreChildren() {
+		Pointer pointer = (Pointer) pointers.peek();
 
-        pointer.v++;
-        reassignCurrentElement(current);
-    }
+		if (pointer.v < getChildCount()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
-    public Iterator getAttributeNames() {
-        return new AttributeNameIterator(this);
-    }
+	@Override
+	public void moveUp() {
+		current = getParent();
+		pointers.popSilently();
+		reassignCurrentElement(current);
+	}
 
-    public void appendErrors(ErrorWriter errorWriter) {
-    }
-    
-    public Object getCurrent() {
-        return this.current;
-    }
+	@Override
+	public void moveDown() {
+		Pointer pointer = (Pointer) pointers.peek();
+		pointers.push(new Pointer());
 
-    public void close() {
-        // don't need to do anything
-    }
+		current = getChild(pointer.v);
+
+		pointer.v++;
+		reassignCurrentElement(current);
+	}
+
+	@Override
+	public Iterator getAttributeNames() {
+		return new AttributeNameIterator(this);
+	}
+
+	@Override
+	public void appendErrors(ErrorWriter errorWriter) {
+	}
+
+	@Override
+	public Object getCurrent() {
+		return this.current;
+	}
+
+	@Override
+	public void close() {
+		// don't need to do anything
+	}
 }

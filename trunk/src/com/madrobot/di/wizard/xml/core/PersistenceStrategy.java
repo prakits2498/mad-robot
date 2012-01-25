@@ -13,21 +13,20 @@ package com.madrobot.di.wizard.xml.core;
 
 import java.util.Iterator;
 
-
 /**
  * A key to a persistent storage and vice-versa strategy interface.
  * 
  */
 public interface PersistenceStrategy {
 
-    Iterator iterator();
+	Iterator iterator();
 
-    int size();
+	int size();
 
-    Object get(Object key);
+	Object get(Object key);
 
-    Object put(Object key, Object value);
+	Object put(Object key, Object value);
 
-    Object remove(Object key);
+	Object remove(Object key);
 
 }

@@ -8,20 +8,22 @@
  *  Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
- 
+
 package com.madrobot.di.wizard.xml.converters;
 
 /**
  * Converts the contents of a StringBuffer to XML.
- *
+ * 
  */
 public class StringBufferConverter extends AbstractSingleValueConverter {
 
-    public Object fromString(String str) {
-        return new StringBuffer(str);
-    }
+	@Override
+	public Object fromString(String str) {
+		return new StringBuffer(str);
+	}
 
-    public boolean canConvert(Class type) {
-        return type.equals(StringBuffer.class);
-    }
+	@Override
+	public boolean canConvert(Class type) {
+		return type.equals(StringBuffer.class);
+	}
 }

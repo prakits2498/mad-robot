@@ -17,47 +17,50 @@ import com.madrobot.di.wizard.xml.io.NameCoder;
 
 public class CompactWriter extends PrettyPrintWriter {
 
-    public CompactWriter(Writer writer) {
-        super(writer);
-    }
+	public CompactWriter(Writer writer) {
+		super(writer);
+	}
 
-    /**
-     * @since 1.3
-     */
-    public CompactWriter(Writer writer, int mode) {
-        super(writer, mode);
-    }
+	/**
+	 * @since 1.3
+	 */
+	public CompactWriter(Writer writer, int mode) {
+		super(writer, mode);
+	}
 
-    /**
-     * @since 1.4
-     */
-    public CompactWriter(Writer writer, NameCoder nameCoder) {
-        super(writer, nameCoder);
-    }
+	/**
+	 * @since 1.4
+	 */
+	public CompactWriter(Writer writer, NameCoder nameCoder) {
+		super(writer, nameCoder);
+	}
 
-    /**
-     * @since 1.4
-     */
-    public CompactWriter(Writer writer, int mode, NameCoder nameCoder) {
-        super(writer, mode, nameCoder);
-    }
+	/**
+	 * @since 1.4
+	 */
+	public CompactWriter(Writer writer, int mode, NameCoder nameCoder) {
+		super(writer, mode, nameCoder);
+	}
 
-    /**
-     * @deprecated As of 1.4 use {@link CompactWriter#CompactWriter(Writer, NameCoder)} instead.
-     */
-    public CompactWriter(Writer writer, XmlFriendlyNameCoder replacer) {
-        super(writer, replacer);
-    }
+	/**
+	 * @deprecated As of 1.4 use {@link CompactWriter#CompactWriter(Writer, NameCoder)} instead.
+	 */
+	@Deprecated
+	public CompactWriter(Writer writer, XmlFriendlyNameCoder replacer) {
+		super(writer, replacer);
+	}
 
-    /**
-     * @since 1.3
-     * @deprecated As of 1.4 use {@link CompactWriter#CompactWriter(Writer, int, NameCoder)} instead.
-     */
-    public CompactWriter(Writer writer, int mode, XmlFriendlyNameCoder replacer) {
-        super(writer, mode, replacer);
-    }
-    
-    protected void endOfLine() {
-        // override parent: don't write anything at end of line
-    }
+	/**
+	 * @since 1.3
+	 * @deprecated As of 1.4 use {@link CompactWriter#CompactWriter(Writer, int, NameCoder)} instead.
+	 */
+	@Deprecated
+	public CompactWriter(Writer writer, int mode, XmlFriendlyNameCoder replacer) {
+		super(writer, mode, replacer);
+	}
+
+	@Override
+	protected void endOfLine() {
+		// override parent: don't write anything at end of line
+	}
 }

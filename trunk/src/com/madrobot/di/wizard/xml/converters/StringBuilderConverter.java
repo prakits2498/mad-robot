@@ -8,20 +8,22 @@
  *  Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
- 
+
 package com.madrobot.di.wizard.xml.converters;
 
 /**
  * Converts the contents of a StringBuilder to XML.
- *
+ * 
  */
 public class StringBuilderConverter extends AbstractSingleValueConverter {
 
-    public Object fromString(String str) {
-        return new StringBuilder(str);
-    }
+	@Override
+	public Object fromString(String str) {
+		return new StringBuilder(str);
+	}
 
-    public boolean canConvert(Class type) {
-        return type.equals(StringBuilder.class);
-    }
+	@Override
+	public boolean canConvert(Class type) {
+		return type.equals(StringBuilder.class);
+	}
 }

@@ -30,10 +30,8 @@ import com.madrobot.di.wizard.json.annotations.SerializedName;
 
 import android.util.Log;
 
-
 /**
- * Utility class for json deserializer , by using this utility you can convert
- * json into predefined java object
+ * Utility class for json deserializer , by using this utility you can convert json into predefined java object
  * 
  * @author n.ayyanar
  * 
@@ -62,8 +60,7 @@ public final class JSONDeserializer {
 
 	/**
 	 * Deserialize the json data from the input to the corresponding entity type <br/>
-	 * If there is an error while parsing, if possible it will try to ignore it,
-	 * otherwise returns a null value.
+	 * If there is an error while parsing, if possible it will try to ignore it, otherwise returns a null value.
 	 * 
 	 * @param input
 	 *            Input stream to read data from
@@ -87,8 +84,7 @@ public final class JSONDeserializer {
 
 	/**
 	 * Deserialize the json data from the input to the corresponding entity type <br/>
-	 * If there is an error while parsing, if possible it will try to ignore it,
-	 * otherwise returns a null value.
+	 * If there is an error while parsing, if possible it will try to ignore it, otherwise returns a null value.
 	 * 
 	 * @param jsonContent
 	 *            String to read data from
@@ -107,10 +103,8 @@ public final class JSONDeserializer {
 	}
 
 	/**
-	 * Deserializes the JSON data from the input to the corresponding entity
-	 * type <br/>
-	 * If there is an error while parsing, if possible it will try to ignore it,
-	 * otherwise returns a null value.
+	 * Deserializes the JSON data from the input to the corresponding entity type <br/>
+	 * If there is an error while parsing, if possible it will try to ignore it, otherwise returns a null value.
 	 * 
 	 * @param parser
 	 *            Parser to read XML from
@@ -122,7 +116,7 @@ public final class JSONDeserializer {
 	 */
 	public <T> T deserialize(final Class<T> objType, final JSONObject jsonObject) throws JSONException {
 
-		try{
+		try {
 
 			Stack<Class<?>> stack = new Stack<Class<?>>();
 			stack.push(objType);
@@ -132,9 +126,9 @@ public final class JSONDeserializer {
 			deserialize(resultObject, jsonObject, stack);
 
 			return resultObject;
-		} catch(IllegalAccessException e){
+		} catch (IllegalAccessException e) {
 			Log.e(TAG, e.getMessage());
-		} catch(InstantiationException e){
+		} catch (InstantiationException e) {
 			Log.e(TAG, e.getMessage());
 		}
 
@@ -158,21 +152,21 @@ public final class JSONDeserializer {
 		Iterator<?> iterator = jsonObject.keys();
 		Class<?> userClass = stack.peek();
 
-		while(iterator.hasNext()){
+		while (iterator.hasNext()) {
 			Object jsonKey = iterator.next();
 
-			if(jsonKey instanceof String){
+			if (jsonKey instanceof String) {
 				String key = (String) jsonKey;
 				Object jsonElement = jsonObject.get(key);
 
-				try{
+				try {
 
 					Field field = getField(userClass, key);
 					String fieldName = field.getName();
 					Class<?> classType = field.getType();
 
-					if(jsonElement instanceof JSONObject){
-						if(!Converter.isPseudoPrimitive(classType)){
+					if (jsonElement instanceof JSONObject) {
+						if (!Converter.isPseudoPrimitive(classType)) {
 
 							String setMethodName = getSetMethodName(fieldName, classType);
 							Method setMethod = userClass.getDeclaredMethod(setMethodName, classType);
@@ -184,26 +178,26 @@ public final class JSONDeserializer {
 							deserialize(itemObj, fieldObject, stack);
 
 							setMethod.invoke(obj, itemObj);
-						} else{
+						} else {
 							Log.e(TAG, "Expecting composite type for " + fieldName);
 						}
-					} else if(jsonElement instanceof JSONArray){
-						if(Converter.isCollectionType(classType)){
-							if(field.isAnnotationPresent(ItemType.class)){
+					} else if (jsonElement instanceof JSONArray) {
+						if (Converter.isCollectionType(classType)) {
+							if (field.isAnnotationPresent(ItemType.class)) {
 								ItemType itemType = field.getAnnotation(ItemType.class);
 								Class<?> itemValueType = itemType.value();
 								int size = itemType.size();
 
 								JSONArray fieldArrayObject = (JSONArray) jsonElement;
 
-								if(size == JSONDeserializer.DEFAULT_ITEM_COLLECTION_SIZE
-										|| size > fieldArrayObject.length()){
+								if (size == JSONDeserializer.DEFAULT_ITEM_COLLECTION_SIZE
+										|| size > fieldArrayObject.length()) {
 									size = fieldArrayObject.length();
 								}
 
-								for(int index = 0; index < size; index++){
+								for (int index = 0; index < size; index++) {
 									Object value = fieldArrayObject.get(index);
-									if(value instanceof JSONObject){
+									if (value instanceof JSONObject) {
 										stack.push(itemValueType);
 										Object itemObj = itemValueType.newInstance();
 										deserialize(itemObj, (JSONObject) value, stack);
@@ -214,29 +208,29 @@ public final class JSONDeserializer {
 									}
 								}
 							}
-						} else{
+						} else {
 							Log.e(TAG, "Expecting collection type for " + fieldName);
 						}
-					} else if(Converter.isPseudoPrimitive(classType)){
+					} else if (Converter.isPseudoPrimitive(classType)) {
 
 						Object value = Converter.convertTo(jsonObject, key, classType, field);
 
 						String setMethodName = getSetMethodName(fieldName, classType);
 						Method setMethod = userClass.getDeclaredMethod(setMethodName, classType);
 						setMethod.invoke(obj, value);
-					} else{
+					} else {
 						Log.e(TAG, "Unknown datatype");
 					}
 
-				} catch(NoSuchFieldException e){
+				} catch (NoSuchFieldException e) {
 					Log.e(TAG, e.getMessage());
-				} catch(NoSuchMethodException e){
+				} catch (NoSuchMethodException e) {
 					Log.e(TAG, e.getMessage());
-				} catch(IllegalAccessException e){
+				} catch (IllegalAccessException e) {
 					Log.e(TAG, e.getMessage());
-				} catch(InvocationTargetException e){
+				} catch (InvocationTargetException e) {
 					Log.e(TAG, e.getMessage());
-				} catch(InstantiationException e){
+				} catch (InstantiationException e) {
 					Log.e(TAG, e.getMessage());
 				}
 			}
@@ -246,20 +240,20 @@ public final class JSONDeserializer {
 	private Field getField(final Class<?> userClass, final String jsonKey) throws NoSuchFieldException {
 
 		Field targetField = null;
-		for(Field field : userClass.getDeclaredFields()){
-			if(field.getName().equals(jsonKey)){
+		for (Field field : userClass.getDeclaredFields()) {
+			if (field.getName().equals(jsonKey)) {
 				targetField = field;
 				break;
-			} else if(field.isAnnotationPresent(SerializedName.class)){
+			} else if (field.isAnnotationPresent(SerializedName.class)) {
 				SerializedName serializedNameObj = field.getAnnotation(SerializedName.class);
-				if(serializedNameObj.value().equals(jsonKey)){
+				if (serializedNameObj.value().equals(jsonKey)) {
 					targetField = field;
 					break;
 				}
 			}
 		}
 
-		if(targetField == null)
+		if (targetField == null)
 			throw new NoSuchFieldException("NoSuchFieldException : " + jsonKey);
 
 		return targetField;
@@ -267,9 +261,9 @@ public final class JSONDeserializer {
 
 	private String getSetMethodName(final String fieldName, final Class<?> classType) {
 		String methodName = null;
-		if(Converter.isBoolean(classType) && fieldName.startsWith("is")){
+		if (Converter.isBoolean(classType) && fieldName.startsWith("is")) {
 			methodName = "set" + Character.toUpperCase(fieldName.charAt(2)) + fieldName.substring(3);
-		} else{
+		} else {
 			methodName = "set" + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
 		}
 		return methodName;
@@ -283,7 +277,7 @@ public final class JSONDeserializer {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 		StringBuilder sb = new StringBuilder();
 		String line = null;
-		while((line = reader.readLine()) != null){
+		while ((line = reader.readLine()) != null) {
 			sb.append(line + "\n");
 		}
 		is.close();

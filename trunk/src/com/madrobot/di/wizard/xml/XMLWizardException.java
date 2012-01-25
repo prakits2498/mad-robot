@@ -12,8 +12,7 @@
 package com.madrobot.di.wizard.xml;
 
 /**
- * Base exception for all thrown exceptions with XStream. JDK 1.3 friendly cause
- * handling.
+ * Base exception for all thrown exceptions with XStream. JDK 1.3 friendly cause handling.
  * 
  * @since 1.3
  */
@@ -45,8 +44,7 @@ public class XMLWizardException extends RuntimeException {
 	}
 
 	/**
-	 * Constructs an XStreamException as wrapper for a different causing
-	 * {@link Throwable}.
+	 * Constructs an XStreamException as wrapper for a different causing {@link Throwable}.
 	 * 
 	 * @param cause
 	 * @since 1.3
@@ -56,8 +54,7 @@ public class XMLWizardException extends RuntimeException {
 	}
 
 	/**
-	 * Constructs an XStreamException with a message as wrapper for a different
-	 * causing {@link Throwable}.
+	 * Constructs an XStreamException with a message as wrapper for a different causing {@link Throwable}.
 	 * 
 	 * @param message
 	 * @param cause
@@ -68,6 +65,7 @@ public class XMLWizardException extends RuntimeException {
 		this.cause = cause;
 	}
 
+	@Override
 	public Throwable getCause() {
 		return cause;
 	}

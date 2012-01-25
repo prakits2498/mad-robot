@@ -8,7 +8,7 @@
  *  Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
- 
+
 package com.madrobot.di.wizard.xml.core;
 
 /**
@@ -17,5 +17,5 @@ package com.madrobot.di.wizard.xml.core;
  * @since 1.4
  */
 public interface Caching {
-    void flushCache();
+	void flushCache();
 }

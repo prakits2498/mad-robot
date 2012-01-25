@@ -133,10 +133,9 @@ import com.madrobot.reflect.CompositeClassLoader;
  * <h3>Aliasing classes</h3>
  * <p/>
  * <p>
- * To create shorter XML, you can specify aliases for classes using the
- * <code>alias()</code> method. For example, you can shorten all occurrences of
- * element <code>&lt;com.blah.MyThing&gt;</code> to
- * <code>&lt;my-thing&gt;</code> by registering an alias for the class.
+ * To create shorter XML, you can specify aliases for classes using the <code>alias()</code> method. For example, you
+ * can shorten all occurrences of element <code>&lt;com.blah.MyThing&gt;</code> to <code>&lt;my-thing&gt;</code> by
+ * registering an alias for the class.
  * <p>
  * <hr>
  * <blockquote>
@@ -151,21 +150,16 @@ import com.madrobot.reflect.CompositeClassLoader;
  * <h3>Converters</h3>
  * <p/>
  * <p>
- * XMLWizard contains a map of
- * {@link com.madrobot.di.wizard.xml.converters.Converter} instances, each of
- * which acts as a strategy for converting a particular type of class to XML and
- * back again. Out of the box, XMLWizard contains converters for most basic
- * types (String, Date, int, boolean, etc) and collections (Map, List, Set,
- * Properties, etc). For other objects reflection is used to serialize each
- * field recursively.
+ * XMLWizard contains a map of {@link com.madrobot.di.wizard.xml.converters.Converter} instances, each of which acts as
+ * a strategy for converting a particular type of class to XML and back again. Out of the box, XMLWizard contains
+ * converters for most basic types (String, Date, int, boolean, etc) and collections (Map, List, Set, Properties, etc).
+ * For other objects reflection is used to serialize each field recursively.
  * </p>
  * <p/>
  * <p>
- * Extra converters can be registered using the <code>registerConverter()</code>
- * method. Some non-standard converters are supplied in the
- * {@link com.madrobot.di.wizard.xml.converters} package and you can create your
- * own by implementing the
- * {@link com.madrobot.di.wizard.xml.converters.Converter} interface.
+ * Extra converters can be registered using the <code>registerConverter()</code> method. Some non-standard converters
+ * are supplied in the {@link com.madrobot.di.wizard.xml.converters} package and you can create your own by implementing
+ * the {@link com.madrobot.di.wizard.xml.converters.Converter} interface.
  * </p>
  * <p/>
  * <p>
@@ -180,14 +174,11 @@ import com.madrobot.reflect.CompositeClassLoader;
  * </blockquote>
  * <hr>
  * <p>
- * The converters can be registered with an explicit priority. By default they
- * are registered with XmlWizard.PRIORITY_NORMAL. Converters of same priority
- * will be used in the reverse sequence they have been registered. The default
- * converter, i.e. the converter which will be used if no other registered
- * converter is suitable, can be registered with priority
- * XMLWizard.PRIORITY_VERY_LOW. XMLWizard uses by default the
- * {@link com.madrobot.di.wizard.xml.converters.ReflectionConverter} as the
- * fallback converter.
+ * The converters can be registered with an explicit priority. By default they are registered with
+ * XmlWizard.PRIORITY_NORMAL. Converters of same priority will be used in the reverse sequence they have been
+ * registered. The default converter, i.e. the converter which will be used if no other registered converter is
+ * suitable, can be registered with priority XMLWizard.PRIORITY_VERY_LOW. XMLWizard uses by default the
+ * {@link com.madrobot.di.wizard.xml.converters.ReflectionConverter} as the fallback converter.
  * </p>
  * <p/>
  * <p>
@@ -195,8 +186,7 @@ import com.madrobot.reflect.CompositeClassLoader;
  * <b>Example</b><blockquote>
  * 
  * <pre>
- * xmlWizard.registerConverter(new CustomDefaultConverter(),
- * 		XMLWizard.PRIORITY_VERY_LOW);
+ * xmlWizard.registerConverter(new CustomDefaultConverter(), XMLWizard.PRIORITY_VERY_LOW);
  * </pre>
  * 
  * </blockquote>
@@ -205,66 +195,61 @@ import com.madrobot.reflect.CompositeClassLoader;
  * <h3>Object graphs</h3>
  * <p/>
  * <p>
- * XmlWizard has support for object graphs; a deserialized object graph will
- * keep references intact, including circular references.
+ * XmlWizard has support for object graphs; a deserialized object graph will keep references intact, including circular
+ * references.
  * </p>
  * <p/>
  * <p>
- * XmlWizard can signify references in XML using either relative/absolute XPath
- * or IDs. The mode can be changed using <code>setMode()</code>:
+ * XmlWizard can signify references in XML using either relative/absolute XPath or IDs. The mode can be changed using
+ * <code>setMode()</code>:
  * </p>
  * <p/>
  * <table border='1'>
  * <tr>
  * <td><code>xmlWizard.setMode(XMLWizard.XPATH_RELATIVE_REFERENCES);</code></td>
- * <td><i>(Default)</i> Uses XPath relative references to signify duplicate
- * references. This produces XML with the least clutter.</td>
+ * <td><i>(Default)</i> Uses XPath relative references to signify duplicate references. This produces XML with the least
+ * clutter.</td>
  * </tr>
  * <tr>
  * <td><code>XMLWizard.setMode(XmlWizard.XPATH_ABSOLUTE_REFERENCES);</code></td>
- * <td>Uses XPath absolute references to signify duplicate references. This
- * produces XML with the least clutter.</td>
+ * <td>Uses XPath absolute references to signify duplicate references. This produces XML with the least clutter.</td>
  * </tr>
  * <tr>
  * <td>
- * <code>xmlWizard.setMode(XmlWizard.SINGLE_NODE_XPATH_RELATIVE_REFERENCES);</code>
- * </td>
- * <td>Uses XPath relative references to signify duplicate references. The XPath
- * expression ensures that a single node only is selected always.</td>
+ * <code>xmlWizard.setMode(XmlWizard.SINGLE_NODE_XPATH_RELATIVE_REFERENCES);</code></td>
+ * <td>Uses XPath relative references to signify duplicate references. The XPath expression ensures that a single node
+ * only is selected always.</td>
  * </tr>
  * <tr>
  * <td>
- * <code>xmlWizard.setMode(XmlWizard.SINGLE_NODE_XPATH_ABSOLUTE_REFERENCES);</code>
- * </td>
- * <td>Uses XPath absolute references to signify duplicate references. The XPath
- * expression ensures that a single node only is selected always.</td>
+ * <code>xmlWizard.setMode(XmlWizard.SINGLE_NODE_XPATH_ABSOLUTE_REFERENCES);</code></td>
+ * <td>Uses XPath absolute references to signify duplicate references. The XPath expression ensures that a single node
+ * only is selected always.</td>
  * </tr>
  * <tr>
  * <td><code>XMLWizard.setMode(XmlWizard.ID_REFERENCES);</code></td>
- * <td>Uses ID references to signify duplicate references. In some scenarios,
- * such as when using hand-written XML, this is easier to work with.</td>
+ * <td>Uses ID references to signify duplicate references. In some scenarios, such as when using hand-written XML, this
+ * is easier to work with.</td>
  * </tr>
  * <tr>
  * <td><code>xmlWizard.setMode(XmlWizard.NO_REFERENCES);</code></td>
- * <td>This disables object graph support and treats the object structure like a
- * tree. Duplicate references are treated as two separate objects and circular
- * references cause an exception. This is slightly faster and uses less memory
- * than the other two modes.</td>
+ * <td>This disables object graph support and treats the object structure like a tree. Duplicate references are treated
+ * as two separate objects and circular references cause an exception. This is slightly faster and uses less memory than
+ * the other two modes.</td>
  * </tr>
  * </table>
  * <h3>Thread safety</h3>
  * <p>
- * The XmlWizard instance is thread-safe. That is, once the XmlWizard instance
- * has been created and configured, it may be shared across multiple threads
- * allowing objects to be serialized/deserialized concurrently.
+ * The XmlWizard instance is thread-safe. That is, once the XmlWizard instance has been created and configured, it may
+ * be shared across multiple threads allowing objects to be serialized/deserialized concurrently.
  * <em>Note, that this only applies if annotations are not 
  * auto-detected on -the-fly.</em>
  * </p>
  * <h3>Implicit collections</h3>
  * <p/>
  * <p>
- * To avoid the need for special tags for collections, you can define implicit
- * collections using one of the <code>addImplicitCollection</code> methods.
+ * To avoid the need for special tags for collections, you can define implicit collections using one of the
+ * <code>addImplicitCollection</code> methods.
  * </p>
  * 
  */
@@ -310,9 +295,8 @@ public class XMLWizard {
 	private static final String ANNOTATION_MAPPER_TYPE = "com.madrobot.di.wizard.xml.AnnotationMapper";
 
 	/**
-	 * Constructs a default XMLWizard. The instance will use the
-	 * {@link XppDriver} as default and tries to determine the best match for
-	 * the {@link ReflectionProvider} on its own.
+	 * Constructs a default XMLWizard. The instance will use the {@link XppDriver} as default and tries to determine the
+	 * best match for the {@link ReflectionProvider} on its own.
 	 * 
 	 * @throws InitializationException
 	 *             in case of an initialization problem
@@ -322,8 +306,8 @@ public class XMLWizard {
 	}
 
 	/**
-	 * Constructs an XMLWizard with a special {@link ReflectionProvider}. The
-	 * instance will use the {@link XppDriver} as default.
+	 * Constructs an XMLWizard with a special {@link ReflectionProvider}. The instance will use the {@link XppDriver} as
+	 * default.
 	 * 
 	 * @throws InitializationException
 	 *             in case of an initialization problem
@@ -333,9 +317,8 @@ public class XMLWizard {
 	}
 
 	/**
-	 * Constructs an XMLWizard with a special {@link HierarchicalStreamDriver}.
-	 * The instance will tries to determine the best match for the
-	 * {@link ReflectionProvider} on its own.
+	 * Constructs an XMLWizard with a special {@link HierarchicalStreamDriver}. The instance will tries to determine the
+	 * best match for the {@link ReflectionProvider} on its own.
 	 * 
 	 * @throws InitializationException
 	 *             in case of an initialization problem
@@ -345,87 +328,80 @@ public class XMLWizard {
 	}
 
 	/**
-	 * Constructs an XMLWizard with a special {@link HierarchicalStreamDriver}
-	 * and {@link ReflectionProvider}.
+	 * Constructs an XMLWizard with a special {@link HierarchicalStreamDriver} and {@link ReflectionProvider}.
 	 * 
 	 * @throws InitializationException
 	 *             in case of an initialization problem
 	 */
-	public XMLWizard(ReflectionProvider reflectionProvider,
-			HierarchicalStreamDriver hierarchicalStreamDriver) {
+	public XMLWizard(ReflectionProvider reflectionProvider, HierarchicalStreamDriver hierarchicalStreamDriver) {
 		this(reflectionProvider, (Mapper) null, hierarchicalStreamDriver);
 	}
 
 	/**
-	 * Constructs an XMLWizard with a special {@link HierarchicalStreamDriver}
-	 * and {@link ReflectionProvider} and additionally with a prepared
-	 * {@link Mapper}.
+	 * Constructs an XMLWizard with a special {@link HierarchicalStreamDriver} and {@link ReflectionProvider} and
+	 * additionally with a prepared {@link Mapper}.
 	 * 
 	 * @throws InitializationException
 	 *             in case of an initialization problem
-	 * @deprecated As of 1.3, use
-	 *             {@link #XMLWizard(ReflectionProvider, HierarchicalStreamDriver, ClassLoader, Mapper)}
+	 * @deprecated As of 1.3, use {@link #XMLWizard(ReflectionProvider, HierarchicalStreamDriver, ClassLoader, Mapper)}
 	 *             instead
 	 */
-	public XMLWizard(ReflectionProvider reflectionProvider, Mapper mapper,
-			HierarchicalStreamDriver driver) {
-		this(reflectionProvider, driver, new ClassLoaderReference(
-				new CompositeClassLoader()), mapper,
+	@Deprecated
+	public XMLWizard(ReflectionProvider reflectionProvider, Mapper mapper, HierarchicalStreamDriver driver) {
+		this(reflectionProvider, driver, new ClassLoaderReference(new CompositeClassLoader()), mapper,
 				new DefaultConverterLookup(), null);
 	}
 
 	/**
-	 * Constructs an XMLWizard with a special {@link HierarchicalStreamDriver}
-	 * and {@link ReflectionProvider} and additionally with a prepared
-	 * {@link ClassLoader} to use.
+	 * Constructs an XMLWizard with a special {@link HierarchicalStreamDriver} and {@link ReflectionProvider} and
+	 * additionally with a prepared {@link ClassLoader} to use.
 	 * 
 	 * @throws InitializationException
 	 *             in case of an initialization problem
 	 * @since 1.3
 	 */
-	public XMLWizard(ReflectionProvider reflectionProvider,
-			HierarchicalStreamDriver driver, ClassLoader classLoader) {
+	public XMLWizard(ReflectionProvider reflectionProvider, HierarchicalStreamDriver driver, ClassLoader classLoader) {
 		this(reflectionProvider, driver, classLoader, null);
 	}
 
 	/**
-	 * Constructs an XMLWizard with a special {@link HierarchicalStreamDriver}
-	 * and {@link ReflectionProvider} and additionally with a prepared
-	 * {@link Mapper} and the {@link ClassLoader} in use.
+	 * Constructs an XMLWizard with a special {@link HierarchicalStreamDriver} and {@link ReflectionProvider} and
+	 * additionally with a prepared {@link Mapper} and the {@link ClassLoader} in use.
 	 * <p>
-	 * Note, if the class loader should be changed later again, you should
-	 * provide a {@link ClassLoaderReference} as {@link ClassLoader} that is
-	 * also use in the {@link Mapper} chain.
+	 * Note, if the class loader should be changed later again, you should provide a {@link ClassLoaderReference} as
+	 * {@link ClassLoader} that is also use in the {@link Mapper} chain.
 	 * </p>
 	 * 
 	 * @throws InitializationException
 	 *             in case of an initialization problem
 	 * @since 1.3
 	 */
-	public XMLWizard(ReflectionProvider reflectionProvider,
-			HierarchicalStreamDriver driver, ClassLoader classLoader,
+	public XMLWizard(
+			ReflectionProvider reflectionProvider,
+			HierarchicalStreamDriver driver,
+			ClassLoader classLoader,
 			Mapper mapper) {
-		this(reflectionProvider, driver, classLoader, mapper,
-				new DefaultConverterLookup(), null);
+		this(reflectionProvider, driver, classLoader, mapper, new DefaultConverterLookup(), null);
 	}
 
 	/**
-	 * Constructs an XMLWizard with a special {@link HierarchicalStreamDriver},
-	 * {@link ReflectionProvider}, a prepared {@link Mapper} and the
-	 * {@link ClassLoader} in use and an own {@link ConverterRegistry}.
+	 * Constructs an XMLWizard with a special {@link HierarchicalStreamDriver}, {@link ReflectionProvider}, a prepared
+	 * {@link Mapper} and the {@link ClassLoader} in use and an own {@link ConverterRegistry}.
 	 * <p>
-	 * Note, if the class loader should be changed later again, you should
-	 * provide a {@link ClassLoaderReference} as {@link ClassLoader} that is
-	 * also use in the {@link Mapper} chain.
+	 * Note, if the class loader should be changed later again, you should provide a {@link ClassLoaderReference} as
+	 * {@link ClassLoader} that is also use in the {@link Mapper} chain.
 	 * </p>
 	 * 
 	 * @throws InitializationException
 	 *             in case of an initialization problem
 	 * @since 1.3
 	 */
-	public XMLWizard(ReflectionProvider reflectionProvider,
-			HierarchicalStreamDriver driver, ClassLoader classLoader,
-			Mapper mapper, ConverterLookup converterLookup,
+	public XMLWizard(
+			ReflectionProvider reflectionProvider,
+			HierarchicalStreamDriver driver,
+			ClassLoader classLoader,
+			Mapper mapper,
+			ConverterLookup converterLookup,
 			ConverterRegistry converterRegistry) {
 		jvm = new JVM();
 		if (reflectionProvider == null) {
@@ -437,8 +413,7 @@ public class XMLWizard {
 				: new ClassLoaderReference(classLoader);
 		this.converterLookup = converterLookup;
 		this.converterRegistry = converterRegistry != null ? converterRegistry
-				: (converterLookup instanceof ConverterRegistry ? (ConverterRegistry) converterLookup
-						: null);
+				: (converterLookup instanceof ConverterRegistry ? (ConverterRegistry) converterLookup : null);
 		this.mapper = mapper == null ? buildMapper() : mapper;
 
 		setupMappers();
@@ -452,8 +427,7 @@ public class XMLWizard {
 	private Mapper buildMapper() {
 		Mapper mapper = new DefaultMapper(classLoaderReference);
 		/*
-		 * if (useXMLWizard11XmlFriendlyMapper()) { mapper = new
-		 * XMLWizard11XmlFriendlyMapper(mapper); }
+		 * if (useXMLWizard11XmlFriendlyMapper()) { mapper = new XMLWizard11XmlFriendlyMapper(mapper); }
 		 */
 		mapper = new DynamicProxyMapper(mapper);
 		mapper = new PackageAliasingMapper(mapper);
@@ -465,39 +439,32 @@ public class XMLWizard {
 		mapper = new OuterClassMapper(mapper);
 		mapper = new ArrayMapper(mapper);
 		mapper = new DefaultImplementationsMapper(mapper);
-		mapper = new AttributeMapper(mapper, converterLookup,
-				reflectionProvider);
+		mapper = new AttributeMapper(mapper, converterLookup, reflectionProvider);
 		if (JVM.is15()) {
-			mapper = buildMapperDynamically(
-					"com.madrobot.di.wizard.xml.EnumMapper",
-					new Class[] { Mapper.class }, new Object[] { mapper });
+			mapper = buildMapperDynamically("com.madrobot.di.wizard.xml.EnumMapper", new Class[] { Mapper.class },
+					new Object[] { mapper });
 		}
 		mapper = new LocalConversionMapper(mapper);
 		mapper = new ImmutableTypesMapper(mapper);
 		if (JVM.is15()) {
-			mapper = buildMapperDynamically(ANNOTATION_MAPPER_TYPE,
-					new Class[] { Mapper.class, ConverterRegistry.class,
-							ConverterLookup.class, ClassLoader.class,
-							ReflectionProvider.class, JVM.class },
-					new Object[] { mapper, converterLookup, converterLookup,
-							classLoaderReference, reflectionProvider, jvm });
+			mapper = buildMapperDynamically(ANNOTATION_MAPPER_TYPE, new Class[] { Mapper.class,
+					ConverterRegistry.class, ConverterLookup.class, ClassLoader.class, ReflectionProvider.class,
+					JVM.class }, new Object[] { mapper, converterLookup, converterLookup, classLoaderReference,
+					reflectionProvider, jvm });
 		}
 		mapper = wrapMapper((MapperWrapper) mapper);
 		mapper = new CachingMapper(mapper);
 		return mapper;
 	}
 
-	private Mapper buildMapperDynamically(String className,
-			Class[] constructorParamTypes, Object[] constructorParamValues) {
+	private Mapper buildMapperDynamically(String className, Class[] constructorParamTypes, Object[] constructorParamValues) {
 		try {
-			Class type = Class.forName(className, false,
-					classLoaderReference.getReference());
-			Constructor constructor = type
-					.getConstructor(constructorParamTypes);
+			Class type = Class.forName(className, false, classLoaderReference.getReference());
+			Constructor constructor = type.getConstructor(constructorParamTypes);
 			return (Mapper) constructor.newInstance(constructorParamValues);
 		} catch (Exception e) {
-			throw new com.madrobot.di.wizard.xml.InitializationException(
-					"Could not instantiate mapper : " + className, e);
+			throw new com.madrobot.di.wizard.xml.InitializationException("Could not instantiate mapper : " + className,
+					e);
 		}
 	}
 
@@ -510,14 +477,10 @@ public class XMLWizard {
 	}
 
 	private void setupMappers() {
-		packageAliasingMapper = (PackageAliasingMapper) this.mapper
-				.lookupMapperOfType(PackageAliasingMapper.class);
-		classAliasingMapper = (ClassAliasingMapper) this.mapper
-				.lookupMapperOfType(ClassAliasingMapper.class);
-		fieldAliasingMapper = (FieldAliasingMapper) this.mapper
-				.lookupMapperOfType(FieldAliasingMapper.class);
-		attributeMapper = (AttributeMapper) this.mapper
-				.lookupMapperOfType(AttributeMapper.class);
+		packageAliasingMapper = (PackageAliasingMapper) this.mapper.lookupMapperOfType(PackageAliasingMapper.class);
+		classAliasingMapper = (ClassAliasingMapper) this.mapper.lookupMapperOfType(ClassAliasingMapper.class);
+		fieldAliasingMapper = (FieldAliasingMapper) this.mapper.lookupMapperOfType(FieldAliasingMapper.class);
+		attributeMapper = (AttributeMapper) this.mapper.lookupMapperOfType(AttributeMapper.class);
 		attributeAliasingMapper = (AttributeAliasingMapper) this.mapper
 				.lookupMapperOfType(AttributeAliasingMapper.class);
 		systemAttributeAliasingMapper = (SystemAttributeAliasingMapper) this.mapper
@@ -526,10 +489,8 @@ public class XMLWizard {
 				.lookupMapperOfType(ImplicitCollectionMapper.class);
 		defaultImplementationsMapper = (DefaultImplementationsMapper) this.mapper
 				.lookupMapperOfType(DefaultImplementationsMapper.class);
-		immutableTypesMapper = (ImmutableTypesMapper) this.mapper
-				.lookupMapperOfType(ImmutableTypesMapper.class);
-		localConversionMapper = (LocalConversionMapper) this.mapper
-				.lookupMapperOfType(LocalConversionMapper.class);
+		immutableTypesMapper = (ImmutableTypesMapper) this.mapper.lookupMapperOfType(ImmutableTypesMapper.class);
+		localConversionMapper = (LocalConversionMapper) this.mapper.lookupMapperOfType(LocalConversionMapper.class);
 		annotationConfiguration = (AnnotationConfiguration) this.mapper
 				.lookupMapperOfType(AnnotationConfiguration.class);
 	}
@@ -631,14 +592,11 @@ public class XMLWizard {
 	}
 
 	protected void setupConverters() {
-		final ReflectionConverter reflectionConverter = new ReflectionConverter(
-				mapper, reflectionProvider);
+		final ReflectionConverter reflectionConverter = new ReflectionConverter(mapper, reflectionProvider);
 		registerConverter(reflectionConverter, PRIORITY_VERY_LOW);
 
-		registerConverter(new SerializableConverter(mapper, reflectionProvider,
-				classLoaderReference), PRIORITY_LOW);
-		registerConverter(new ExternalizableConverter(mapper,
-				classLoaderReference), PRIORITY_LOW);
+		registerConverter(new SerializableConverter(mapper, reflectionProvider, classLoaderReference), PRIORITY_LOW);
+		registerConverter(new ExternalizableConverter(mapper, classLoaderReference), PRIORITY_LOW);
 
 		registerConverter(new NullConverter(), PRIORITY_VERY_HIGH);
 		registerConverter(new IntConverter(), PRIORITY_NORMAL);
@@ -665,12 +623,10 @@ public class XMLWizard {
 		registerConverter(new MapConverter(mapper), PRIORITY_NORMAL);
 		registerConverter(new TreeMapConverter(mapper), PRIORITY_NORMAL);
 		registerConverter(new TreeSetConverter(mapper), PRIORITY_NORMAL);
-		registerConverter(new SingletonCollectionConverter(mapper),
-				PRIORITY_NORMAL);
+		registerConverter(new SingletonCollectionConverter(mapper), PRIORITY_NORMAL);
 		registerConverter(new SingletonMapConverter(mapper), PRIORITY_NORMAL);
 		registerConverter(new PropertiesConverter(), PRIORITY_NORMAL);
-		registerConverter((Converter) new EncodedByteArrayConverter(),
-				PRIORITY_NORMAL);
+		registerConverter((Converter) new EncodedByteArrayConverter(), PRIORITY_NORMAL);
 
 		registerConverter(new FileConverter(), PRIORITY_NORMAL);
 		if (jvm.supportsSQL()) {
@@ -678,14 +634,10 @@ public class XMLWizard {
 			registerConverter(new SqlTimeConverter(), PRIORITY_NORMAL);
 			registerConverter(new SqlDateConverter(), PRIORITY_NORMAL);
 		}
-		registerConverter(new DynamicProxyConverter(mapper,
-				classLoaderReference), PRIORITY_NORMAL);
-		registerConverter(new JavaClassConverter(classLoaderReference),
-				PRIORITY_NORMAL);
-		registerConverter(new JavaMethodConverter(classLoaderReference),
-				PRIORITY_NORMAL);
-		registerConverter(new JavaFieldConverter(classLoaderReference),
-				PRIORITY_NORMAL);
+		registerConverter(new DynamicProxyConverter(mapper, classLoaderReference), PRIORITY_NORMAL);
+		registerConverter(new JavaClassConverter(classLoaderReference), PRIORITY_NORMAL);
+		registerConverter(new JavaMethodConverter(classLoaderReference), PRIORITY_NORMAL);
+		registerConverter(new JavaFieldConverter(classLoaderReference), PRIORITY_NORMAL);
 		// if (jvm.supportsAWT()) {
 		// registerConverter(new FontConverter(), PRIORITY_NORMAL);
 		// registerConverter(new ColorConverter(), PRIORITY_NORMAL);
@@ -703,27 +655,18 @@ public class XMLWizard {
 			// late bound converters - allows XMLWizard to be compiled on
 			// earlier
 			// JDKs
-			registerConverterDynamically(
-					"com.madrobot.di.wizard.xml.converters.SubjectConverter",
-					PRIORITY_NORMAL, new Class[] { Mapper.class },
-					new Object[] { mapper });
-			registerConverterDynamically(
-					"com.madrobot.di.wizard.xml.converters.ThrowableConverter",
-					PRIORITY_NORMAL, new Class[] { Converter.class },
-					new Object[] { reflectionConverter });
-			registerConverterDynamically(
-					"com.madrobot.di.wizard.xml.converters.StackTraceElementConverter",
+			registerConverterDynamically("com.madrobot.di.wizard.xml.converters.SubjectConverter", PRIORITY_NORMAL,
+					new Class[] { Mapper.class }, new Object[] { mapper });
+			registerConverterDynamically("com.madrobot.di.wizard.xml.converters.ThrowableConverter", PRIORITY_NORMAL,
+					new Class[] { Converter.class }, new Object[] { reflectionConverter });
+			registerConverterDynamically("com.madrobot.di.wizard.xml.converters.StackTraceElementConverter",
 					PRIORITY_NORMAL, null, null);
-			registerConverterDynamically(
-					"com.madrobot.di.wizard.xml.converters.CurrencyConverter",
-					PRIORITY_NORMAL, null, null);
-			registerConverterDynamically(
-					"com.madrobot.di.wizard.xml.converters.RegexPatternConverter",
-					PRIORITY_NORMAL, new Class[] { Converter.class },
-					new Object[] { reflectionConverter });
-			registerConverterDynamically(
-					"com.madrobot.di.wizard.xml.converters.CharsetConverter",
-					PRIORITY_NORMAL, null, null);
+			registerConverterDynamically("com.madrobot.di.wizard.xml.converters.CurrencyConverter", PRIORITY_NORMAL,
+					null, null);
+			registerConverterDynamically("com.madrobot.di.wizard.xml.converters.RegexPatternConverter",
+					PRIORITY_NORMAL, new Class[] { Converter.class }, new Object[] { reflectionConverter });
+			registerConverterDynamically("com.madrobot.di.wizard.xml.converters.CharsetConverter", PRIORITY_NORMAL,
+					null, null);
 		}
 
 		if (JVM.is15()) {
@@ -731,40 +674,28 @@ public class XMLWizard {
 			// earlier
 			// JDKs
 			if (jvm.loadClass("javax.xml.datatype.Duration") != null) {
-				registerConverterDynamically(
-						"com.madrobot.di.wizard.xml.converters.DurationConverter",
+				registerConverterDynamically("com.madrobot.di.wizard.xml.converters.DurationConverter",
 						PRIORITY_NORMAL, null, null);
 			}
-			registerConverterDynamically(
-					"com.madrobot.di.wizard.xml.converters.EnumConverter",
+			registerConverterDynamically("com.madrobot.di.wizard.xml.converters.EnumConverter", PRIORITY_NORMAL, null,
+					null);
+			registerConverterDynamically("com.madrobot.di.wizard.xml.converters.EnumSetConverter", PRIORITY_NORMAL,
+					new Class[] { Mapper.class }, new Object[] { mapper });
+			registerConverterDynamically("com.madrobot.di.wizard.xml.converters.EnumMapConverter", PRIORITY_NORMAL,
+					new Class[] { Mapper.class }, new Object[] { mapper });
+			registerConverterDynamically("com.madrobot.di.wizard.xml.converters.StringBuilderConverter",
 					PRIORITY_NORMAL, null, null);
-			registerConverterDynamically(
-					"com.madrobot.di.wizard.xml.converters.EnumSetConverter",
-					PRIORITY_NORMAL, new Class[] { Mapper.class },
-					new Object[] { mapper });
-			registerConverterDynamically(
-					"com.madrobot.di.wizard.xml.converters.EnumMapConverter",
-					PRIORITY_NORMAL, new Class[] { Mapper.class },
-					new Object[] { mapper });
-			registerConverterDynamically(
-					"com.madrobot.di.wizard.xml.converters.StringBuilderConverter",
-					PRIORITY_NORMAL, null, null);
-			registerConverterDynamically(
-					"com.madrobot.di.wizard.xml.converters.UUIDConverter",
-					PRIORITY_NORMAL, null, null);
+			registerConverterDynamically("com.madrobot.di.wizard.xml.converters.UUIDConverter", PRIORITY_NORMAL, null,
+					null);
 		}
 
-		registerConverter(new SelfStreamingInstanceChecker(reflectionConverter,
-				this), PRIORITY_NORMAL);
+		registerConverter(new SelfStreamingInstanceChecker(reflectionConverter, this), PRIORITY_NORMAL);
 	}
 
-	private void registerConverterDynamically(String className, int priority,
-			Class[] constructorParamTypes, Object[] constructorParamValues) {
+	private void registerConverterDynamically(String className, int priority, Class[] constructorParamTypes, Object[] constructorParamValues) {
 		try {
-			Class type = Class.forName(className, false,
-					classLoaderReference.getReference());
-			Constructor constructor = type
-					.getConstructor(constructorParamTypes);
+			Class type = Class.forName(className, false, classLoaderReference.getReference());
+			Constructor constructor = type.getConstructor(constructorParamTypes);
 			Object instance = constructor.newInstance(constructorParamValues);
 			if (instance instanceof Converter) {
 				registerConverter((Converter) instance, priority);
@@ -772,8 +703,8 @@ public class XMLWizard {
 				registerConverter((SingleValueConverter) instance, priority);
 			}
 		} catch (Exception e) {
-			throw new com.madrobot.di.wizard.xml.InitializationException(
-					"Could not instantiate converter : " + className, e);
+			throw new com.madrobot.di.wizard.xml.InitializationException("Could not instantiate converter : "
+					+ className, e);
 		}
 	}
 
@@ -846,15 +777,14 @@ public class XMLWizard {
 	}
 
 	/**
-	 * Serialize an object to the given Writer as pretty-printed XML. The Writer
-	 * will be flushed afterwards and in case of an exception.
+	 * Serialize an object to the given Writer as pretty-printed XML. The Writer will be flushed afterwards and in case
+	 * of an exception.
 	 * 
 	 * @throws XMLWizardException
 	 *             if the object cannot be serialized
 	 */
 	public void toXML(Object obj, Writer out) {
-		HierarchicalStreamWriter writer = hierarchicalStreamDriver
-				.createWriter(out);
+		HierarchicalStreamWriter writer = hierarchicalStreamDriver.createWriter(out);
 		try {
 			marshal(obj, writer);
 		} finally {
@@ -863,15 +793,14 @@ public class XMLWizard {
 	}
 
 	/**
-	 * Serialize an object to the given OutputStream as pretty-printed XML. The
-	 * OutputStream will be flushed afterwards and in case of an exception.
+	 * Serialize an object to the given OutputStream as pretty-printed XML. The OutputStream will be flushed afterwards
+	 * and in case of an exception.
 	 * 
 	 * @throws XMLWizardException
 	 *             if the object cannot be serialized
 	 */
 	public void toXML(Object obj, OutputStream out) {
-		HierarchicalStreamWriter writer = hierarchicalStreamDriver
-				.createWriter(out);
+		HierarchicalStreamWriter writer = hierarchicalStreamDriver.createWriter(out);
 		try {
 			marshal(obj, writer);
 		} finally {
@@ -893,16 +822,13 @@ public class XMLWizard {
 	 * Serialize and object to a hierarchical data structure (such as XML).
 	 * 
 	 * @param dataHolder
-	 *            Extra data you can use to pass to your converters. Use this as
-	 *            you want. If not present, XMLWizard shall create one lazily as
-	 *            needed.
+	 *            Extra data you can use to pass to your converters. Use this as you want. If not present, XMLWizard
+	 *            shall create one lazily as needed.
 	 * @throws XMLWizardException
 	 *             if the object cannot be serialized
 	 */
-	public void marshal(Object obj, HierarchicalStreamWriter writer,
-			DataHolder dataHolder) {
-		marshallingStrategy.marshal(writer, obj, converterLookup, mapper,
-				dataHolder);
+	public void marshal(Object obj, HierarchicalStreamWriter writer, DataHolder dataHolder) {
+		marshallingStrategy.marshal(writer, obj, converterLookup, mapper, dataHolder);
 	}
 
 	/**
@@ -938,8 +864,8 @@ public class XMLWizard {
 	/**
 	 * Deserialize an object from a URL.
 	 * 
-	 * Depending on the parser implementation, some might take the file path as
-	 * SystemId to resolve additional references.
+	 * Depending on the parser implementation, some might take the file path as SystemId to resolve additional
+	 * references.
 	 * 
 	 * @throws XMLWizardException
 	 *             if the object cannot be deserialized
@@ -952,8 +878,8 @@ public class XMLWizard {
 	/**
 	 * Deserialize an object from a file.
 	 * 
-	 * Depending on the parser implementation, some might take the file path as
-	 * SystemId to resolve additional references.
+	 * Depending on the parser implementation, some might take the file path as SystemId to resolve additional
+	 * references.
 	 * 
 	 * @throws XMLWizardException
 	 *             if the object cannot be deserialized
@@ -964,10 +890,9 @@ public class XMLWizard {
 	}
 
 	/**
-	 * Deserialize an object from an XML String, populating the fields of the
-	 * given root object instead of instantiating a new one. Note, that this is
-	 * a special use case! With the ReflectionConverter XMLWizard will write
-	 * directly into the raw memory area of the existing object. Use with care!
+	 * Deserialize an object from an XML String, populating the fields of the given root object instead of instantiating
+	 * a new one. Note, that this is a special use case! With the ReflectionConverter XMLWizard will write directly into
+	 * the raw memory area of the existing object. Use with care!
 	 * 
 	 * @throws XMLWizardException
 	 *             if the object cannot be deserialized
@@ -977,10 +902,9 @@ public class XMLWizard {
 	}
 
 	/**
-	 * Deserialize an object from an XML Reader, populating the fields of the
-	 * given root object instead of instantiating a new one. Note, that this is
-	 * a special use case! With the ReflectionConverter XMLWizard will write
-	 * directly into the raw memory area of the existing object. Use with care!
+	 * Deserialize an object from an XML Reader, populating the fields of the given root object instead of instantiating
+	 * a new one. Note, that this is a special use case! With the ReflectionConverter XMLWizard will write directly into
+	 * the raw memory area of the existing object. Use with care!
 	 * 
 	 * @throws XMLWizardException
 	 *             if the object cannot be deserialized
@@ -990,13 +914,12 @@ public class XMLWizard {
 	}
 
 	/**
-	 * Deserialize an object from a URL, populating the fields of the given root
-	 * object instead of instantiating a new one. Note, that this is a special
-	 * use case! With the ReflectionConverter XMLWizard will write directly into
-	 * the raw memory area of the existing object. Use with care!
+	 * Deserialize an object from a URL, populating the fields of the given root object instead of instantiating a new
+	 * one. Note, that this is a special use case! With the ReflectionConverter XMLWizard will write directly into the
+	 * raw memory area of the existing object. Use with care!
 	 * 
-	 * Depending on the parser implementation, some might take the file path as
-	 * SystemId to resolve additional references.
+	 * Depending on the parser implementation, some might take the file path as SystemId to resolve additional
+	 * references.
 	 * 
 	 * @throws XMLWizardException
 	 *             if the object cannot be deserialized
@@ -1007,13 +930,12 @@ public class XMLWizard {
 	}
 
 	/**
-	 * Deserialize an object from a file, populating the fields of the given
-	 * root object instead of instantiating a new one. Note, that this is a
-	 * special use case! With the ReflectionConverter XMLWizard will write
-	 * directly into the raw memory area of the existing object. Use with care!
+	 * Deserialize an object from a file, populating the fields of the given root object instead of instantiating a new
+	 * one. Note, that this is a special use case! With the ReflectionConverter XMLWizard will write directly into the
+	 * raw memory area of the existing object. Use with care!
 	 * 
-	 * Depending on the parser implementation, some might take the file path as
-	 * SystemId to resolve additional references.
+	 * Depending on the parser implementation, some might take the file path as SystemId to resolve additional
+	 * references.
 	 * 
 	 * @throws XMLWizardException
 	 *             if the object cannot be deserialized
@@ -1024,9 +946,8 @@ public class XMLWizard {
 	}
 
 	/**
-	 * Deserialize an object from an XML InputStream, populating the fields of
-	 * the given root object instead of instantiating a new one. Note, that this
-	 * is a special use case! With the ReflectionConverter XMLWizard will write
+	 * Deserialize an object from an XML InputStream, populating the fields of the given root object instead of
+	 * instantiating a new one. Note, that this is a special use case! With the ReflectionConverter XMLWizard will write
 	 * directly into the raw memory area of the existing object. Use with care!
 	 * 
 	 * @throws XMLWizardException
@@ -1047,11 +968,9 @@ public class XMLWizard {
 	}
 
 	/**
-	 * Deserialize an object from a hierarchical data structure (such as XML),
-	 * populating the fields of the given root object instead of instantiating a
-	 * new one. Note, that this is a special use case! With the
-	 * ReflectionConverter XMLWizard will write directly into the raw memory
-	 * area of the existing object. Use with care!
+	 * Deserialize an object from a hierarchical data structure (such as XML), populating the fields of the given root
+	 * object instead of instantiating a new one. Note, that this is a special use case! With the ReflectionConverter
+	 * XMLWizard will write directly into the raw memory area of the existing object. Use with care!
 	 * 
 	 * @throws XMLWizardException
 	 *             if the object cannot be deserialized
@@ -1064,28 +983,22 @@ public class XMLWizard {
 	 * Deserialize an object from a hierarchical data structure (such as XML).
 	 * 
 	 * @param root
-	 *            If present, the passed in object will have its fields
-	 *            populated, as opposed to XMLWizard creating a new instance.
-	 *            Note, that this is a special use case! With the
-	 *            ReflectionConverter XMLWizard will write directly into the raw
-	 *            memory area of the existing object. Use with care!
+	 *            If present, the passed in object will have its fields populated, as opposed to XMLWizard creating a
+	 *            new instance. Note, that this is a special use case! With the ReflectionConverter XMLWizard will write
+	 *            directly into the raw memory area of the existing object. Use with care!
 	 * @param dataHolder
-	 *            Extra data you can use to pass to your converters. Use this as
-	 *            you want. If not present, XMLWizard shall create one lazily as
-	 *            needed.
+	 *            Extra data you can use to pass to your converters. Use this as you want. If not present, XMLWizard
+	 *            shall create one lazily as needed.
 	 * @throws XMLWizardException
 	 *             if the object cannot be deserialized
 	 */
-	public Object unmarshal(HierarchicalStreamReader reader, Object root,
-			DataHolder dataHolder) {
+	public Object unmarshal(HierarchicalStreamReader reader, Object root, DataHolder dataHolder) {
 		try {
-			return marshallingStrategy.unmarshal(root, reader, dataHolder,
-					converterLookup, mapper);
+			return marshallingStrategy.unmarshal(root, reader, dataHolder, converterLookup, mapper);
 
 		} catch (ConversionException e) {
 			Package pkg = getClass().getPackage();
-			e.add("version", pkg != null ? pkg.getImplementationVersion()
-					: "not available");
+			e.add("version", pkg != null ? pkg.getImplementationVersion() : "not available");
 			throw e;
 		}
 	}
@@ -1102,15 +1015,15 @@ public class XMLWizard {
 	 */
 	public void alias(String name, Class type) {
 		if (classAliasingMapper == null) {
-			throw new com.madrobot.di.wizard.xml.InitializationException("No "
-					+ ClassAliasingMapper.class.getName() + " available");
+			throw new com.madrobot.di.wizard.xml.InitializationException("No " + ClassAliasingMapper.class.getName()
+					+ " available");
 		}
 		classAliasingMapper.addClassAlias(name, type);
 	}
 
 	/**
-	 * Alias a type to a shorter name to be used in XML elements. Any class that
-	 * is assignable to this type will be aliased to the same name.
+	 * Alias a type to a shorter name to be used in XML elements. Any class that is assignable to this type will be
+	 * aliased to the same name.
 	 * 
 	 * @param name
 	 *            Short name
@@ -1122,8 +1035,8 @@ public class XMLWizard {
 	 */
 	public void aliasType(String name, Class type) {
 		if (classAliasingMapper == null) {
-			throw new com.madrobot.di.wizard.xml.InitializationException("No "
-					+ ClassAliasingMapper.class.getName() + " available");
+			throw new com.madrobot.di.wizard.xml.InitializationException("No " + ClassAliasingMapper.class.getName()
+					+ " available");
 		}
 		classAliasingMapper.addTypeAlias(name, type);
 	}
@@ -1138,8 +1051,7 @@ public class XMLWizard {
 	 * @param defaultImplementation
 	 *            Default implementation of type to use if no other specified.
 	 * @throws InitializationException
-	 *             if no {@link DefaultImplementationsMapper} or no
-	 *             {@link ClassAliasingMapper} is available
+	 *             if no {@link DefaultImplementationsMapper} or no {@link ClassAliasingMapper} is available
 	 */
 	public void alias(String name, Class type, Class defaultImplementation) {
 		alias(name, type);
@@ -1154,14 +1066,13 @@ public class XMLWizard {
 	 * @param pkgName
 	 *            package to be aliased
 	 * @throws InitializationException
-	 *             if no {@link DefaultImplementationsMapper} or no
-	 *             {@link PackageAliasingMapper} is available
+	 *             if no {@link DefaultImplementationsMapper} or no {@link PackageAliasingMapper} is available
 	 * @since 1.3.1
 	 */
 	public void aliasPackage(String name, String pkgName) {
 		if (packageAliasingMapper == null) {
-			throw new com.madrobot.di.wizard.xml.InitializationException("No "
-					+ PackageAliasingMapper.class.getName() + " available");
+			throw new com.madrobot.di.wizard.xml.InitializationException("No " + PackageAliasingMapper.class.getName()
+					+ " available");
 		}
 		packageAliasingMapper.addPackageAlias(name, pkgName);
 	}
@@ -1180,8 +1091,8 @@ public class XMLWizard {
 	 */
 	public void aliasField(String alias, Class definedIn, String fieldName) {
 		if (fieldAliasingMapper == null) {
-			throw new com.madrobot.di.wizard.xml.InitializationException("No "
-					+ FieldAliasingMapper.class.getName() + " available");
+			throw new com.madrobot.di.wizard.xml.InitializationException("No " + FieldAliasingMapper.class.getName()
+					+ " available");
 		}
 		fieldAliasingMapper.addFieldAlias(alias, definedIn, fieldName);
 	}
@@ -1205,11 +1116,9 @@ public class XMLWizard {
 	}
 
 	/**
-	 * Create an alias for a system attribute. XMLWizard will not write a system
-	 * attribute if its alias is set to <code>null</code>. However, this is not
-	 * reversible, i.e. deserialization of the result is likely to fail
-	 * afterwards and will not produce an object equal to the originally written
-	 * one.
+	 * Create an alias for a system attribute. XMLWizard will not write a system attribute if its alias is set to
+	 * <code>null</code>. However, this is not reversible, i.e. deserialization of the result is likely to fail
+	 * afterwards and will not produce an object equal to the originally written one.
 	 * 
 	 * @param alias
 	 *            the alias itself (may be <code>null</code>)
@@ -1222,8 +1131,7 @@ public class XMLWizard {
 	public void aliasSystemAttribute(String alias, String systemAttributeName) {
 		if (systemAttributeAliasingMapper == null) {
 			throw new com.madrobot.di.wizard.xml.InitializationException("No "
-					+ SystemAttributeAliasingMapper.class.getName()
-					+ " available");
+					+ SystemAttributeAliasingMapper.class.getName() + " available");
 		}
 		systemAttributeAliasingMapper.addAliasFor(systemAttributeName, alias);
 	}
@@ -1241,8 +1149,7 @@ public class XMLWizard {
 	 *             if no {@link AttributeAliasingMapper} is available
 	 * @since 1.2.2
 	 */
-	public void aliasAttribute(Class definedIn, String attributeName,
-			String alias) {
+	public void aliasAttribute(Class definedIn, String attributeName, String alias) {
 		aliasField(alias, definedIn, attributeName);
 		useAttributeFor(definedIn, attributeName);
 	}
@@ -1260,8 +1167,8 @@ public class XMLWizard {
 	 */
 	public void useAttributeFor(String fieldName, Class type) {
 		if (attributeMapper == null) {
-			throw new com.madrobot.di.wizard.xml.InitializationException("No "
-					+ AttributeMapper.class.getName() + " available");
+			throw new com.madrobot.di.wizard.xml.InitializationException("No " + AttributeMapper.class.getName()
+					+ " available");
 		}
 		attributeMapper.addAttributeFor(fieldName, type);
 	}
@@ -1279,8 +1186,8 @@ public class XMLWizard {
 	 */
 	public void useAttributeFor(Class definedIn, String fieldName) {
 		if (attributeMapper == null) {
-			throw new com.madrobot.di.wizard.xml.InitializationException("No "
-					+ AttributeMapper.class.getName() + " available");
+			throw new com.madrobot.di.wizard.xml.InitializationException("No " + AttributeMapper.class.getName()
+					+ " available");
 		}
 		attributeMapper.addAttributeFor(definedIn, fieldName);
 	}
@@ -1296,16 +1203,15 @@ public class XMLWizard {
 	 */
 	public void useAttributeFor(Class type) {
 		if (attributeMapper == null) {
-			throw new com.madrobot.di.wizard.xml.InitializationException("No "
-					+ AttributeMapper.class.getName() + " available");
+			throw new com.madrobot.di.wizard.xml.InitializationException("No " + AttributeMapper.class.getName()
+					+ " available");
 		}
 		attributeMapper.addAttributeFor(type);
 	}
 
 	/**
-	 * Associate a default implementation of a class with an object. Whenever
-	 * XMLWizard encounters an instance of this type, it will use the default
-	 * implementation instead. For example, java.util.ArrayList is the default
+	 * Associate a default implementation of a class with an object. Whenever XMLWizard encounters an instance of this
+	 * type, it will use the default implementation instead. For example, java.util.ArrayList is the default
 	 * implementation of java.util.List.
 	 * 
 	 * @param defaultImplementation
@@ -1313,28 +1219,25 @@ public class XMLWizard {
 	 * @throws InitializationException
 	 *             if no {@link DefaultImplementationsMapper} is available
 	 */
-	public void addDefaultImplementation(Class defaultImplementation,
-			Class ofType) {
+	public void addDefaultImplementation(Class defaultImplementation, Class ofType) {
 		if (defaultImplementationsMapper == null) {
 			throw new com.madrobot.di.wizard.xml.InitializationException("No "
-					+ DefaultImplementationsMapper.class.getName()
-					+ " available");
+					+ DefaultImplementationsMapper.class.getName() + " available");
 		}
-		defaultImplementationsMapper.addDefaultImplementation(
-				defaultImplementation, ofType);
+		defaultImplementationsMapper.addDefaultImplementation(defaultImplementation, ofType);
 	}
 
 	/**
-	 * Add immutable types. The value of the instances of these types will
-	 * always be written into the stream even if they appear multiple times.
+	 * Add immutable types. The value of the instances of these types will always be written into the stream even if
+	 * they appear multiple times.
 	 * 
 	 * @throws InitializationException
 	 *             if no {@link ImmutableTypesMapper} is available
 	 */
 	public void addImmutableType(Class type) {
 		if (immutableTypesMapper == null) {
-			throw new com.madrobot.di.wizard.xml.InitializationException("No "
-					+ ImmutableTypesMapper.class.getName() + " available");
+			throw new com.madrobot.di.wizard.xml.InitializationException("No " + ImmutableTypesMapper.class.getName()
+					+ " available");
 		}
 		immutableTypesMapper.addImmutableType(type);
 	}
@@ -1355,8 +1258,7 @@ public class XMLWizard {
 
 	public void registerConverter(SingleValueConverter converter, int priority) {
 		if (converterRegistry != null) {
-			converterRegistry.registerConverter(
-					new SingleValueConverterWrapper(converter), priority);
+			converterRegistry.registerConverter(new SingleValueConverterWrapper(converter), priority);
 		}
 	}
 
@@ -1371,14 +1273,12 @@ public class XMLWizard {
 	 *            the converter to use
 	 * @since 1.3
 	 */
-	public void registerLocalConverter(Class definedIn, String fieldName,
-			Converter converter) {
+	public void registerLocalConverter(Class definedIn, String fieldName, Converter converter) {
 		if (localConversionMapper == null) {
-			throw new com.madrobot.di.wizard.xml.InitializationException("No "
-					+ LocalConversionMapper.class.getName() + " available");
+			throw new com.madrobot.di.wizard.xml.InitializationException("No " + LocalConversionMapper.class.getName()
+					+ " available");
 		}
-		localConversionMapper.registerLocalConverter(definedIn, fieldName,
-				converter);
+		localConversionMapper.registerLocalConverter(definedIn, fieldName, converter);
 	}
 
 	/**
@@ -1392,15 +1292,12 @@ public class XMLWizard {
 	 *            the converter to use
 	 * @since 1.3
 	 */
-	public void registerLocalConverter(Class definedIn, String fieldName,
-			SingleValueConverter converter) {
-		registerLocalConverter(definedIn, fieldName,
-				(Converter) new SingleValueConverterWrapper(converter));
+	public void registerLocalConverter(Class definedIn, String fieldName, SingleValueConverter converter) {
+		registerLocalConverter(definedIn, fieldName, (Converter) new SingleValueConverterWrapper(converter));
 	}
 
 	/**
-	 * Retrieve the {@link Mapper}. This is by default a chain of
-	 * {@link MapperWrapper MapperWrappers}.
+	 * Retrieve the {@link Mapper}. This is by default a chain of {@link MapperWrapper MapperWrappers}.
 	 * 
 	 * @return the mapper
 	 * @since 1.2
@@ -1424,10 +1321,8 @@ public class XMLWizard {
 	}
 
 	/**
-	 * Change mode for dealing with duplicate references. Valid values are
-	 * <code>XPATH_ABSOLUTE_REFERENCES</code>,
-	 * <code>XPATH_RELATIVE_REFERENCES</code>,
-	 * <code>XMLWizard.ID_REFERENCES</code> and
+	 * Change mode for dealing with duplicate references. Valid values are <code>XPATH_ABSOLUTE_REFERENCES</code>,
+	 * <code>XPATH_RELATIVE_REFERENCES</code>, <code>XMLWizard.ID_REFERENCES</code> and
 	 * <code>XMLWizard.NO_REFERENCES</code> .
 	 * 
 	 * @throws IllegalArgumentException
@@ -1446,22 +1341,18 @@ public class XMLWizard {
 			setMarshallingStrategy(new ReferenceByIdMarshallingStrategy());
 			break;
 		case XPATH_RELATIVE_REFERENCES:
-			setMarshallingStrategy(new ReferenceByXPathMarshallingStrategy(
-					ReferenceByXPathMarshallingStrategy.RELATIVE));
+			setMarshallingStrategy(new ReferenceByXPathMarshallingStrategy(ReferenceByXPathMarshallingStrategy.RELATIVE));
 			break;
 		case XPATH_ABSOLUTE_REFERENCES:
-			setMarshallingStrategy(new ReferenceByXPathMarshallingStrategy(
-					ReferenceByXPathMarshallingStrategy.ABSOLUTE));
+			setMarshallingStrategy(new ReferenceByXPathMarshallingStrategy(ReferenceByXPathMarshallingStrategy.ABSOLUTE));
 			break;
 		case SINGLE_NODE_XPATH_RELATIVE_REFERENCES:
-			setMarshallingStrategy(new ReferenceByXPathMarshallingStrategy(
-					ReferenceByXPathMarshallingStrategy.RELATIVE
-							| ReferenceByXPathMarshallingStrategy.SINGLE_NODE));
+			setMarshallingStrategy(new ReferenceByXPathMarshallingStrategy(ReferenceByXPathMarshallingStrategy.RELATIVE
+					| ReferenceByXPathMarshallingStrategy.SINGLE_NODE));
 			break;
 		case SINGLE_NODE_XPATH_ABSOLUTE_REFERENCES:
-			setMarshallingStrategy(new ReferenceByXPathMarshallingStrategy(
-					ReferenceByXPathMarshallingStrategy.ABSOLUTE
-							| ReferenceByXPathMarshallingStrategy.SINGLE_NODE));
+			setMarshallingStrategy(new ReferenceByXPathMarshallingStrategy(ReferenceByXPathMarshallingStrategy.ABSOLUTE
+					| ReferenceByXPathMarshallingStrategy.SINGLE_NODE));
 			break;
 		default:
 			throw new IllegalArgumentException("Unknown mode : " + mode);
@@ -1469,50 +1360,43 @@ public class XMLWizard {
 	}
 
 	/**
-	 * Adds a default implicit collection which is used for any unmapped XML
-	 * tag.
+	 * Adds a default implicit collection which is used for any unmapped XML tag.
 	 * 
 	 * @param ownerType
 	 *            class owning the implicit collection
 	 * @param fieldName
-	 *            name of the field in the ownerType. This field must be a
-	 *            concrete collection type or matching the default
-	 *            implementation type of the collection type.
+	 *            name of the field in the ownerType. This field must be a concrete collection type or matching the
+	 *            default implementation type of the collection type.
 	 */
 	public void addImplicitCollection(Class ownerType, String fieldName) {
 		addImplicitCollection(ownerType, fieldName, null, null);
 	}
 
 	/**
-	 * Adds implicit collection which is used for all items of the given
-	 * itemType.
+	 * Adds implicit collection which is used for all items of the given itemType.
 	 * 
 	 * @param ownerType
 	 *            class owning the implicit collection
 	 * @param fieldName
-	 *            name of the field in the ownerType. This field must be a
-	 *            concrete collection type or matching the default
-	 *            implementation type of the collection type.
+	 *            name of the field in the ownerType. This field must be a concrete collection type or matching the
+	 *            default implementation type of the collection type.
 	 * @param itemType
 	 *            type of the items to be part of this collection
 	 * @throws InitializationException
 	 *             if no {@link ImplicitCollectionMapper} is available
 	 */
-	public void addImplicitCollection(Class ownerType, String fieldName,
-			Class itemType) {
+	public void addImplicitCollection(Class ownerType, String fieldName, Class itemType) {
 		addImplicitCollection(ownerType, fieldName, null, itemType);
 	}
 
 	/**
-	 * Adds implicit collection which is used for all items of the given element
-	 * name defined by itemFieldName.
+	 * Adds implicit collection which is used for all items of the given element name defined by itemFieldName.
 	 * 
 	 * @param ownerType
 	 *            class owning the implicit collection
 	 * @param fieldName
-	 *            name of the field in the ownerType. This field must be a
-	 *            concrete collection type or matching the default
-	 *            implementation type of the collection type.
+	 *            name of the field in the ownerType. This field must be a concrete collection type or matching the
+	 *            default implementation type of the collection type.
 	 * @param itemFieldName
 	 *            element name of the implicit collection
 	 * @param itemType
@@ -1520,8 +1404,7 @@ public class XMLWizard {
 	 * @throws InitializationException
 	 *             if no {@link ImplicitCollectionMapper} is available
 	 */
-	public void addImplicitCollection(Class ownerType, String fieldName,
-			String itemFieldName, Class itemType) {
+	public void addImplicitCollection(Class ownerType, String fieldName, String itemFieldName, Class itemType) {
 		addImplicitMap(ownerType, fieldName, itemFieldName, itemType, null);
 	}
 
@@ -1539,8 +1422,7 @@ public class XMLWizard {
 	}
 
 	/**
-	 * Adds an implicit array which is used for all items of the given itemType
-	 * when the array type matches.
+	 * Adds an implicit array which is used for all items of the given itemType when the array type matches.
 	 * 
 	 * @param ownerType
 	 *            class owning the implicit array
@@ -1549,18 +1431,15 @@ public class XMLWizard {
 	 * @param itemType
 	 *            type of the items to be part of this array
 	 * @throws InitializationException
-	 *             if no {@link ImplicitCollectionMapper} is available or the
-	 *             array type does not match the itemType
+	 *             if no {@link ImplicitCollectionMapper} is available or the array type does not match the itemType
 	 * @since 1.4
 	 */
-	public void addImplicitArray(Class ownerType, String fieldName,
-			Class itemType) {
+	public void addImplicitArray(Class ownerType, String fieldName, Class itemType) {
 		addImplicitCollection(ownerType, fieldName, itemType);
 	}
 
 	/**
-	 * Adds an implicit array which is used for all items of the given element
-	 * name defined by itemName.
+	 * Adds an implicit array which is used for all items of the given element name defined by itemName.
 	 * 
 	 * @param ownerType
 	 *            class owning the implicit array
@@ -1572,8 +1451,7 @@ public class XMLWizard {
 	 *             if no {@link ImplicitCollectionMapper} is available
 	 * @since 1.4
 	 */
-	public void addImplicitArray(Class ownerType, String fieldName,
-			String itemName) {
+	public void addImplicitArray(Class ownerType, String fieldName, String itemName) {
 		addImplicitCollection(ownerType, fieldName, itemName, null);
 	}
 
@@ -1583,18 +1461,15 @@ public class XMLWizard {
 	 * @param ownerType
 	 *            class owning the implicit map
 	 * @param fieldName
-	 *            name of the field in the ownerType. This field must be a
-	 *            concrete map type or matching the default implementation type
-	 *            of the map type.
+	 *            name of the field in the ownerType. This field must be a concrete map type or matching the default
+	 *            implementation type of the map type.
 	 * @param itemType
 	 *            type of the items to be part of this map as value
 	 * @param keyFieldName
-	 *            the name of the filed of the itemType that is used for the key
-	 *            in the map
+	 *            the name of the filed of the itemType that is used for the key in the map
 	 * @since 1.4
 	 */
-	public void addImplicitMap(Class ownerType, String fieldName,
-			Class itemType, String keyFieldName) {
+	public void addImplicitMap(Class ownerType, String fieldName, Class itemType, String keyFieldName) {
 		addImplicitMap(ownerType, fieldName, null, itemType, keyFieldName);
 	}
 
@@ -1604,29 +1479,24 @@ public class XMLWizard {
 	 * @param ownerType
 	 *            class owning the implicit map
 	 * @param fieldName
-	 *            name of the field in the ownerType. This field must be a
-	 *            concrete map type or matching the default implementation type
-	 *            of the map type.
+	 *            name of the field in the ownerType. This field must be a concrete map type or matching the default
+	 *            implementation type of the map type.
 	 * @param itemType
 	 *            type of the items to be part of this map as value
 	 * @param keyFieldName
-	 *            the name of the filed of the itemType that is used for the key
-	 *            in the map
+	 *            the name of the filed of the itemType that is used for the key in the map
 	 * @since 1.4
 	 */
-	public void addImplicitMap(Class ownerType, String fieldName,
-			String itemFieldName, Class itemType, String keyFieldName) {
+	public void addImplicitMap(Class ownerType, String fieldName, String itemFieldName, Class itemType, String keyFieldName) {
 		if (implicitCollectionMapper == null) {
 			throw new com.madrobot.di.wizard.xml.InitializationException("No "
 					+ ImplicitCollectionMapper.class.getName() + " available");
 		}
-		implicitCollectionMapper.add(ownerType, fieldName, itemFieldName,
-				itemType, keyFieldName);
+		implicitCollectionMapper.add(ownerType, fieldName, itemFieldName, itemType, keyFieldName);
 	}
 
 	/**
-	 * Create a DataHolder that can be used to pass data to the converters. The
-	 * DataHolder is provided with a call to
+	 * Create a DataHolder that can be used to pass data to the converters. The DataHolder is provided with a call to
 	 * {@link #marshal(Object, HierarchicalStreamWriter, DataHolder)} or
 	 * {@link #unmarshal(HierarchicalStreamReader, Object, DataHolder)}.
 	 * 
@@ -1637,102 +1507,80 @@ public class XMLWizard {
 	}
 
 	/**
-	 * Creates an ObjectOutputStream that serializes a stream of objects to the
-	 * writer using XMLWizard.
+	 * Creates an ObjectOutputStream that serializes a stream of objects to the writer using XMLWizard.
 	 * <p>
 	 * To change the name of the root element (from &lt;object-stream&gt;), use
 	 * {@link #createObjectOutputStream(java.io.Writer, String)}.
 	 * </p>
 	 * 
-	 * @see #createObjectOutputStream(com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter,
-	 *      String)
+	 * @see #createObjectOutputStream(com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter, String)
 	 * @see #createObjectInputStream(com.madrobot.di.wizard.xml.io.HierarchicalStreamReader)
 	 * @since 1.0.3
 	 */
-	public ObjectOutputStream createObjectOutputStream(Writer writer)
-			throws IOException {
-		return createObjectOutputStream(
-				hierarchicalStreamDriver.createWriter(writer), "object-stream");
+	public ObjectOutputStream createObjectOutputStream(Writer writer) throws IOException {
+		return createObjectOutputStream(hierarchicalStreamDriver.createWriter(writer), "object-stream");
 	}
 
 	/**
-	 * Creates an ObjectOutputStream that serializes a stream of objects to the
-	 * writer using XMLWizard.
+	 * Creates an ObjectOutputStream that serializes a stream of objects to the writer using XMLWizard.
 	 * <p>
 	 * To change the name of the root element (from &lt;object-stream&gt;), use
 	 * {@link #createObjectOutputStream(java.io.Writer, String)}.
 	 * </p>
 	 * 
-	 * @see #createObjectOutputStream(com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter,
-	 *      String)
+	 * @see #createObjectOutputStream(com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter, String)
 	 * @see #createObjectInputStream(com.madrobot.di.wizard.xml.io.HierarchicalStreamReader)
 	 * @since 1.0.3
 	 */
-	public ObjectOutputStream createObjectOutputStream(
-			HierarchicalStreamWriter writer) throws IOException {
+	public ObjectOutputStream createObjectOutputStream(HierarchicalStreamWriter writer) throws IOException {
 		return createObjectOutputStream(writer, "object-stream");
 	}
 
 	/**
-	 * Creates an ObjectOutputStream that serializes a stream of objects to the
-	 * writer using XMLWizard.
+	 * Creates an ObjectOutputStream that serializes a stream of objects to the writer using XMLWizard.
 	 * 
-	 * @see #createObjectOutputStream(com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter,
-	 *      String)
+	 * @see #createObjectOutputStream(com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter, String)
 	 * @see #createObjectInputStream(com.madrobot.di.wizard.xml.io.HierarchicalStreamReader)
 	 * @since 1.0.3
 	 */
-	public ObjectOutputStream createObjectOutputStream(Writer writer,
-			String rootNodeName) throws IOException {
-		return createObjectOutputStream(
-				hierarchicalStreamDriver.createWriter(writer), rootNodeName);
+	public ObjectOutputStream createObjectOutputStream(Writer writer, String rootNodeName) throws IOException {
+		return createObjectOutputStream(hierarchicalStreamDriver.createWriter(writer), rootNodeName);
 	}
 
 	/**
-	 * Creates an ObjectOutputStream that serializes a stream of objects to the
-	 * OutputStream using XMLWizard.
+	 * Creates an ObjectOutputStream that serializes a stream of objects to the OutputStream using XMLWizard.
 	 * <p>
 	 * To change the name of the root element (from &lt;object-stream&gt;), use
 	 * {@link #createObjectOutputStream(java.io.Writer, String)}.
 	 * </p>
 	 * 
-	 * @see #createObjectOutputStream(com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter,
-	 *      String)
+	 * @see #createObjectOutputStream(com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter, String)
 	 * @see #createObjectInputStream(com.madrobot.di.wizard.xml.io.HierarchicalStreamReader)
 	 * @since 1.3
 	 */
-	public ObjectOutputStream createObjectOutputStream(OutputStream out)
-			throws IOException {
-		return createObjectOutputStream(
-				hierarchicalStreamDriver.createWriter(out), "object-stream");
+	public ObjectOutputStream createObjectOutputStream(OutputStream out) throws IOException {
+		return createObjectOutputStream(hierarchicalStreamDriver.createWriter(out), "object-stream");
 	}
 
 	/**
-	 * Creates an ObjectOutputStream that serializes a stream of objects to the
-	 * OutputStream using XMLWizard.
+	 * Creates an ObjectOutputStream that serializes a stream of objects to the OutputStream using XMLWizard.
 	 * 
-	 * @see #createObjectOutputStream(com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter,
-	 *      String)
+	 * @see #createObjectOutputStream(com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter, String)
 	 * @see #createObjectInputStream(com.madrobot.di.wizard.xml.io.HierarchicalStreamReader)
 	 * @since 1.3
 	 */
-	public ObjectOutputStream createObjectOutputStream(OutputStream out,
-			String rootNodeName) throws IOException {
-		return createObjectOutputStream(
-				hierarchicalStreamDriver.createWriter(out), rootNodeName);
+	public ObjectOutputStream createObjectOutputStream(OutputStream out, String rootNodeName) throws IOException {
+		return createObjectOutputStream(hierarchicalStreamDriver.createWriter(out), rootNodeName);
 	}
 
 	/**
-	 * Creates an ObjectOutputStream that serializes a stream of objects to the
-	 * writer using XMLWizard.
+	 * Creates an ObjectOutputStream that serializes a stream of objects to the writer using XMLWizard.
 	 * <p>
-	 * Because an ObjectOutputStream can contain multiple items and XML only
-	 * allows a single root node, the stream must be written inside an enclosing
-	 * node.
+	 * Because an ObjectOutputStream can contain multiple items and XML only allows a single root node, the stream must
+	 * be written inside an enclosing node.
 	 * </p>
 	 * <p>
-	 * It is necessary to call ObjectOutputStream.close() when done, otherwise
-	 * the stream will be incomplete.
+	 * It is necessary to call ObjectOutputStream.close() when done, otherwise the stream will be incomplete.
 	 * </p>
 	 * <h3>Example</h3>
 	 * 
@@ -1751,74 +1599,65 @@ public class XMLWizard {
 	 * @see #createObjectInputStream(com.madrobot.di.wizard.xml.io.HierarchicalStreamReader)
 	 * @since 1.0.3
 	 */
-	public ObjectOutputStream createObjectOutputStream(
-			final HierarchicalStreamWriter writer, String rootNodeName)
+	public ObjectOutputStream createObjectOutputStream(final HierarchicalStreamWriter writer, String rootNodeName)
 			throws IOException {
 		final StatefulWriter statefulWriter = new StatefulWriter(writer);
 		statefulWriter.startNode(rootNodeName, null);
-		return new CustomObjectOutputStream(
-				new CustomObjectOutputStream.StreamCallback() {
-					public void writeToStream(Object object) {
-						marshal(object, statefulWriter);
-					}
+		return new CustomObjectOutputStream(new CustomObjectOutputStream.StreamCallback() {
+			@Override
+			public void writeToStream(Object object) {
+				marshal(object, statefulWriter);
+			}
 
-					public void writeFieldsToStream(Map fields)
-							throws NotActiveException {
-						throw new NotActiveException(
-								"not in call to writeObject");
-					}
+			@Override
+			public void writeFieldsToStream(Map fields) throws NotActiveException {
+				throw new NotActiveException("not in call to writeObject");
+			}
 
-					public void defaultWriteObject() throws NotActiveException {
-						throw new NotActiveException(
-								"not in call to writeObject");
-					}
+			@Override
+			public void defaultWriteObject() throws NotActiveException {
+				throw new NotActiveException("not in call to writeObject");
+			}
 
-					public void flush() {
-						statefulWriter.flush();
-					}
+			@Override
+			public void flush() {
+				statefulWriter.flush();
+			}
 
-					public void close() {
-						if (statefulWriter.state() != StatefulWriter.STATE_CLOSED) {
-							statefulWriter.endNode();
-							statefulWriter.close();
-						}
-					}
-				});
+			@Override
+			public void close() {
+				if (statefulWriter.state() != StatefulWriter.STATE_CLOSED) {
+					statefulWriter.endNode();
+					statefulWriter.close();
+				}
+			}
+		});
 	}
 
 	/**
-	 * Creates an ObjectInputStream that deserializes a stream of objects from a
-	 * reader using XMLWizard.
+	 * Creates an ObjectInputStream that deserializes a stream of objects from a reader using XMLWizard.
 	 * 
 	 * @see #createObjectInputStream(com.madrobot.di.wizard.xml.io.HierarchicalStreamReader)
-	 * @see #createObjectOutputStream(com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter,
-	 *      String)
+	 * @see #createObjectOutputStream(com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter, String)
 	 * @since 1.0.3
 	 */
-	public ObjectInputStream createObjectInputStream(Reader xmlReader)
-			throws IOException {
-		return createObjectInputStream(hierarchicalStreamDriver
-				.createReader(xmlReader));
+	public ObjectInputStream createObjectInputStream(Reader xmlReader) throws IOException {
+		return createObjectInputStream(hierarchicalStreamDriver.createReader(xmlReader));
 	}
 
 	/**
-	 * Creates an ObjectInputStream that deserializes a stream of objects from
-	 * an InputStream using XMLWizard.
+	 * Creates an ObjectInputStream that deserializes a stream of objects from an InputStream using XMLWizard.
 	 * 
 	 * @see #createObjectInputStream(com.madrobot.di.wizard.xml.io.HierarchicalStreamReader)
-	 * @see #createObjectOutputStream(com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter,
-	 *      String)
+	 * @see #createObjectOutputStream(com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter, String)
 	 * @since 1.3
 	 */
-	public ObjectInputStream createObjectInputStream(InputStream in)
-			throws IOException {
-		return createObjectInputStream(hierarchicalStreamDriver
-				.createReader(in));
+	public ObjectInputStream createObjectInputStream(InputStream in) throws IOException {
+		return createObjectInputStream(hierarchicalStreamDriver.createReader(in));
 	}
 
 	/**
-	 * Creates an ObjectInputStream that deserializes a stream of objects from a
-	 * reader using XMLWizard. <h3>Example</h3>
+	 * Creates an ObjectInputStream that deserializes a stream of objects from a reader using XMLWizard. <h3>Example</h3>
 	 * 
 	 * <pre>
 	 * ObjectInputStream in = XMLWizard.createObjectOutputStream(aReader);
@@ -1827,53 +1666,49 @@ public class XMLWizard {
 	 * Object c = out.readObject();
 	 * </pre>
 	 * 
-	 * @see #createObjectOutputStream(com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter,
-	 *      String)
+	 * @see #createObjectOutputStream(com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter, String)
 	 * @since 1.0.3
 	 */
-	public ObjectInputStream createObjectInputStream(
-			final HierarchicalStreamReader reader) throws IOException {
-		return new CustomObjectInputStream(
-				new CustomObjectInputStream.StreamCallback() {
-					public Object readFromStream() throws EOFException {
-						if (!reader.hasMoreChildren()) {
-							throw new EOFException();
-						}
-						reader.moveDown();
-						Object result = unmarshal(reader);
-						reader.moveUp();
-						return result;
-					}
+	public ObjectInputStream createObjectInputStream(final HierarchicalStreamReader reader) throws IOException {
+		return new CustomObjectInputStream(new CustomObjectInputStream.StreamCallback() {
+			@Override
+			public Object readFromStream() throws EOFException {
+				if (!reader.hasMoreChildren()) {
+					throw new EOFException();
+				}
+				reader.moveDown();
+				Object result = unmarshal(reader);
+				reader.moveUp();
+				return result;
+			}
 
-					public Map readFieldsFromStream() throws IOException {
-						throw new NotActiveException(
-								"not in call to readObject");
-					}
+			@Override
+			public Map readFieldsFromStream() throws IOException {
+				throw new NotActiveException("not in call to readObject");
+			}
 
-					public void defaultReadObject() throws NotActiveException {
-						throw new NotActiveException(
-								"not in call to readObject");
-					}
+			@Override
+			public void defaultReadObject() throws NotActiveException {
+				throw new NotActiveException("not in call to readObject");
+			}
 
-					public void registerValidation(
-							ObjectInputValidation validation, int priority)
-							throws NotActiveException {
-						throw new NotActiveException("stream inactive");
-					}
+			@Override
+			public void registerValidation(ObjectInputValidation validation, int priority) throws NotActiveException {
+				throw new NotActiveException("stream inactive");
+			}
 
-					public void close() {
-						reader.close();
-					}
-				}, classLoaderReference);
+			@Override
+			public void close() {
+				reader.close();
+			}
+		}, classLoaderReference);
 	}
 
 	/**
-	 * Change the ClassLoader XMLWizard uses to load classes. Creating an
-	 * XMLWizard instance it will register for all kind of classes and types of
-	 * the current JDK, but not for any 3rd party type. To ensure that all other
-	 * types are loaded with your class loader, you should call this method as
-	 * early as possible - or consider to provide the class loader directly in
-	 * the constructor.
+	 * Change the ClassLoader XMLWizard uses to load classes. Creating an XMLWizard instance it will register for all
+	 * kind of classes and types of the current JDK, but not for any 3rd party type. To ensure that all other types are
+	 * loaded with your class loader, you should call this method as early as possible - or consider to provide the
+	 * class loader directly in the constructor.
 	 * 
 	 * @since 1.1.1
 	 */
@@ -1891,9 +1726,8 @@ public class XMLWizard {
 	}
 
 	/**
-	 * Prevents a field from being serialized. To omit a field you must always
-	 * provide the declaring type and not necessarily the type that is
-	 * converted.
+	 * Prevents a field from being serialized. To omit a field you must always provide the declaring type and not
+	 * necessarily the type that is converted.
 	 * 
 	 * @since 1.1.3
 	 * @throws InitializationException
@@ -1901,8 +1735,8 @@ public class XMLWizard {
 	 */
 	public void omitField(Class definedIn, String fieldName) {
 		if (fieldAliasingMapper == null) {
-			throw new com.madrobot.di.wizard.xml.InitializationException("No "
-					+ FieldAliasingMapper.class.getName() + " available");
+			throw new com.madrobot.di.wizard.xml.InitializationException("No " + FieldAliasingMapper.class.getName()
+					+ " available");
 		}
 		fieldAliasingMapper.omitField(definedIn, fieldName);
 	}
@@ -1916,16 +1750,14 @@ public class XMLWizard {
 	 */
 	public void processAnnotations(final Class[] types) {
 		if (annotationConfiguration == null) {
-			throw new com.madrobot.di.wizard.xml.InitializationException("No "
-					+ ANNOTATION_MAPPER_TYPE + " available");
+			throw new com.madrobot.di.wizard.xml.InitializationException("No " + ANNOTATION_MAPPER_TYPE + " available");
 		}
 		annotationConfiguration.processAnnotations(types);
 	}
 
 	/**
-	 * Process the annotations of the given type and configure the XMLWizard. A
-	 * call of this method will automatically turn the auto-detection mode for
-	 * annotations off.
+	 * Process the annotations of the given type and configure the XMLWizard. A call of this method will automatically
+	 * turn the auto-detection mode for annotations off.
 	 * 
 	 * @param type
 	 *            the type with XMLWizard annotations
@@ -1936,11 +1768,9 @@ public class XMLWizard {
 	}
 
 	/**
-	 * Set the auto-detection mode of the AnnotationMapper. Note that
-	 * auto-detection implies that the XMLWizard is configured while it is
-	 * processing the XML steams. This is a potential concurrency problem. Also
-	 * is it technically not possible to detect all class aliases at
-	 * deserialization. You have been warned!
+	 * Set the auto-detection mode of the AnnotationMapper. Note that auto-detection implies that the XMLWizard is
+	 * configured while it is processing the XML steams. This is a potential concurrency problem. Also is it technically
+	 * not possible to detect all class aliases at deserialization. You have been warned!
 	 * 
 	 * @param mode
 	 *            <code>true</code> if annotations are auto-detected

@@ -22,7 +22,6 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface Include
-{
-    public Class<?>[] value();
+public @interface Include {
+	public Class<?>[] value();
 }

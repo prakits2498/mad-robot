@@ -8,17 +8,18 @@
  *  Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
- 
+
 package com.madrobot.di.wizard.xml.converters;
 
 import java.util.Map;
 
 /**
  * Does not change the order of the fields.
- *
+ * 
  */
 public class ImmutableFieldKeySorter implements FieldKeySorter {
 
+	@Override
 	public Map sort(Class type, Map keyedByFieldKey) {
 		return keyedByFieldKey;
 	}

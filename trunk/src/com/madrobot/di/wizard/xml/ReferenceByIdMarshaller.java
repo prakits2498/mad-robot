@@ -8,47 +8,49 @@
  *  Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
- 
+
 package com.madrobot.di.wizard.xml;
 
 import com.madrobot.di.wizard.xml.converters.ConverterLookup;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
 import com.madrobot.di.wizard.xml.io.path.Path;
 
- class ReferenceByIdMarshaller extends AbstractReferenceMarshaller {
+class ReferenceByIdMarshaller extends AbstractReferenceMarshaller {
 
-    private final IDGenerator idGenerator;
+	private final IDGenerator idGenerator;
 
-    public static interface IDGenerator {
-        String next(Object item);
-    }
+	public static interface IDGenerator {
+		String next(Object item);
+	}
 
-     ReferenceByIdMarshaller(HierarchicalStreamWriter writer,
-                                   ConverterLookup converterLookup,
-                                   Mapper mapper,
-                                   IDGenerator idGenerator) {
-        super(writer, converterLookup, mapper);
-        this.idGenerator = idGenerator;
-    }
+	ReferenceByIdMarshaller(
+			HierarchicalStreamWriter writer,
+			ConverterLookup converterLookup,
+			Mapper mapper,
+			IDGenerator idGenerator) {
+		super(writer, converterLookup, mapper);
+		this.idGenerator = idGenerator;
+	}
 
-     ReferenceByIdMarshaller(HierarchicalStreamWriter writer,
-                                   ConverterLookup converterLookup,
-                                   Mapper mapper) {
-        this(writer, converterLookup, mapper, new SequenceGenerator(1));
-    }
+	ReferenceByIdMarshaller(HierarchicalStreamWriter writer, ConverterLookup converterLookup, Mapper mapper) {
+		this(writer, converterLookup, mapper, new SequenceGenerator(1));
+	}
 
-    protected String createReference(Path currentPath, Object existingReferenceKey) {
-        return existingReferenceKey.toString();
-    }
+	@Override
+	protected String createReference(Path currentPath, Object existingReferenceKey) {
+		return existingReferenceKey.toString();
+	}
 
-    protected Object createReferenceKey(Path currentPath, Object item) {
-        return idGenerator.next(item);
-    }
+	@Override
+	protected Object createReferenceKey(Path currentPath, Object item) {
+		return idGenerator.next(item);
+	}
 
-    protected void fireValidReference(Object referenceKey) {
-        String attributeName = getMapper().aliasForSystemAttribute("id");
-        if (attributeName != null) {
-            writer.addAttribute(attributeName, referenceKey.toString());
-        }
-    }
+	@Override
+	protected void fireValidReference(Object referenceKey) {
+		String attributeName = getMapper().aliasForSystemAttribute("id");
+		if (attributeName != null) {
+			writer.addAttribute(attributeName, referenceKey.toString());
+		}
+	}
 }

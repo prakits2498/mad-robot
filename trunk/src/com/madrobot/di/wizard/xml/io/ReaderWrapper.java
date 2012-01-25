@@ -8,7 +8,7 @@
  *  Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
- 
+
 package com.madrobot.di.wizard.xml.io;
 
 import java.util.Iterator;
@@ -17,73 +17,87 @@ import com.madrobot.di.wizard.xml.converters.ErrorWriter;
 
 /**
  * Base class to make it easy to create wrappers (decorators) for HierarchicalStreamReader.
- *
+ * 
  * @author Joe Walnes
  */
 public abstract class ReaderWrapper implements ExtendedHierarchicalStreamReader {
 
-    protected HierarchicalStreamReader wrapped;
+	protected HierarchicalStreamReader wrapped;
 
-    protected ReaderWrapper(HierarchicalStreamReader reader) {
-        this.wrapped = reader;
-    }
+	protected ReaderWrapper(HierarchicalStreamReader reader) {
+		this.wrapped = reader;
+	}
 
-    public boolean hasMoreChildren() {
-        return wrapped.hasMoreChildren();
-    }
+	@Override
+	public boolean hasMoreChildren() {
+		return wrapped.hasMoreChildren();
+	}
 
-    public void moveDown() {
-        wrapped.moveDown();
-    }
+	@Override
+	public void moveDown() {
+		wrapped.moveDown();
+	}
 
-    public void moveUp() {
-        wrapped.moveUp();
-    }
+	@Override
+	public void moveUp() {
+		wrapped.moveUp();
+	}
 
-    public String getNodeName() {
-        return wrapped.getNodeName();
-    }
+	@Override
+	public String getNodeName() {
+		return wrapped.getNodeName();
+	}
 
-    public String getValue() {
-        return wrapped.getValue();
-    }
+	@Override
+	public String getValue() {
+		return wrapped.getValue();
+	}
 
-    public String getAttribute(String name) {
-        return wrapped.getAttribute(name);
-    }
+	@Override
+	public String getAttribute(String name) {
+		return wrapped.getAttribute(name);
+	}
 
-    public String getAttribute(int index) {
-        return wrapped.getAttribute(index);
-    }
+	@Override
+	public String getAttribute(int index) {
+		return wrapped.getAttribute(index);
+	}
 
-    public int getAttributeCount() {
-        return wrapped.getAttributeCount();
-    }
+	@Override
+	public int getAttributeCount() {
+		return wrapped.getAttributeCount();
+	}
 
-    public String getAttributeName(int index) {
-        return wrapped.getAttributeName(index);
-    }
+	@Override
+	public String getAttributeName(int index) {
+		return wrapped.getAttributeName(index);
+	}
 
-    public Iterator getAttributeNames() {
-        return wrapped.getAttributeNames();
-    }
+	@Override
+	public Iterator getAttributeNames() {
+		return wrapped.getAttributeNames();
+	}
 
-    public void appendErrors(ErrorWriter errorWriter) {
-        wrapped.appendErrors(errorWriter);
-    }
+	@Override
+	public void appendErrors(ErrorWriter errorWriter) {
+		wrapped.appendErrors(errorWriter);
+	}
 
-    public void close() {
-        wrapped.close();
-    }
+	@Override
+	public void close() {
+		wrapped.close();
+	}
 
-    public String peekNextChild() {
-        if (! (wrapped instanceof ExtendedHierarchicalStreamReader)) {
-            throw new UnsupportedOperationException("peekNextChild");
-        }
-        return ((ExtendedHierarchicalStreamReader)wrapped).peekNextChild();
-    }
+	@Override
+	public String peekNextChild() {
+		if (!(wrapped instanceof ExtendedHierarchicalStreamReader)) {
+			throw new UnsupportedOperationException("peekNextChild");
+		}
+		return ((ExtendedHierarchicalStreamReader) wrapped).peekNextChild();
+	}
 
-    public HierarchicalStreamReader underlyingReader() {
-        return wrapped.underlyingReader();
-    }
+	@Override
+	public HierarchicalStreamReader underlyingReader() {
+		return wrapped.underlyingReader();
+	}
 }

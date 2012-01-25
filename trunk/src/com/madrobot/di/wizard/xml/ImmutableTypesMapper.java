@@ -8,36 +8,36 @@
  *  Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
- 
+
 package com.madrobot.di.wizard.xml;
 
 import java.util.HashSet;
 import java.util.Set;
 
-
 /**
  * Mapper that specifies which types are basic immutable types. Types that are marked as immutable will be written
  * multiple times in the serialization stream without using references.
- *
+ * 
  */
- class ImmutableTypesMapper extends MapperWrapper {
+class ImmutableTypesMapper extends MapperWrapper {
 
-    private final Set immutableTypes = new HashSet();
+	private final Set immutableTypes = new HashSet();
 
-     ImmutableTypesMapper(Mapper wrapped) {
-        super(wrapped);
-    }
+	ImmutableTypesMapper(Mapper wrapped) {
+		super(wrapped);
+	}
 
-    public void addImmutableType(Class type) {
-        immutableTypes.add(type);
-    }
+	public void addImmutableType(Class type) {
+		immutableTypes.add(type);
+	}
 
-    public boolean isImmutableValueType(Class type) {
-        if (immutableTypes.contains(type)) {
-            return true;
-        } else {
-            return super.isImmutableValueType(type);
-        }
-    }
+	@Override
+	public boolean isImmutableValueType(Class type) {
+		if (immutableTypes.contains(type)) {
+			return true;
+		} else {
+			return super.isImmutableValueType(type);
+		}
+	}
 
 }

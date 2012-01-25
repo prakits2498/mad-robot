@@ -8,46 +8,52 @@
  *  Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
- 
+
 package com.madrobot.di.wizard.xml.converters;
 
 import java.lang.reflect.Field;
 
 /**
  * A wrapper implementation for the ReflectionProvider.
- *
+ * 
  * @since 1.2
  */
 public class ReflectionProviderWrapper implements ReflectionProvider {
 
-    final protected ReflectionProvider wrapped;
+	final protected ReflectionProvider wrapped;
 
-    public ReflectionProviderWrapper(ReflectionProvider wrapper) {
-        this.wrapped = wrapper;
-    }
+	public ReflectionProviderWrapper(ReflectionProvider wrapper) {
+		this.wrapped = wrapper;
+	}
 
-    public boolean fieldDefinedInClass(String fieldName, Class type) {
-        return this.wrapped.fieldDefinedInClass(fieldName, type);
-    }
+	@Override
+	public boolean fieldDefinedInClass(String fieldName, Class type) {
+		return this.wrapped.fieldDefinedInClass(fieldName, type);
+	}
 
-    public Field getField(Class definedIn, String fieldName) {
-        return this.wrapped.getField(definedIn, fieldName);
-    }
+	@Override
+	public Field getField(Class definedIn, String fieldName) {
+		return this.wrapped.getField(definedIn, fieldName);
+	}
 
-    public Class getFieldType(Object object, String fieldName, Class definedIn) {
-        return this.wrapped.getFieldType(object, fieldName, definedIn);
-    }
+	@Override
+	public Class getFieldType(Object object, String fieldName, Class definedIn) {
+		return this.wrapped.getFieldType(object, fieldName, definedIn);
+	}
 
-    public Object newInstance(Class type) {
-        return this.wrapped.newInstance(type);
-    }
+	@Override
+	public Object newInstance(Class type) {
+		return this.wrapped.newInstance(type);
+	}
 
-    public void visitSerializableFields(Object object, Visitor visitor) {
-        this.wrapped.visitSerializableFields(object, visitor);
-    }
+	@Override
+	public void visitSerializableFields(Object object, Visitor visitor) {
+		this.wrapped.visitSerializableFields(object, visitor);
+	}
 
-    public void writeField(Object object, String fieldName, Object value, Class definedIn) {
-        this.wrapped.writeField(object, fieldName, value, definedIn);
-    }
+	@Override
+	public void writeField(Object object, String fieldName, Object value, Class definedIn) {
+		this.wrapped.writeField(object, fieldName, value, definedIn);
+	}
 
 }

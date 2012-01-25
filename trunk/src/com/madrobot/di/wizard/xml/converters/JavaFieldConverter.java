@@ -8,7 +8,7 @@
  *  Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
- 
+
 package com.madrobot.di.wizard.xml.converters;
 
 import java.lang.reflect.Field;
@@ -23,48 +23,51 @@ import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
  */
 public class JavaFieldConverter implements Converter {
 
-    private final SingleValueConverter javaClassConverter;
+	private final SingleValueConverter javaClassConverter;
 
-    public JavaFieldConverter(ClassLoader classLoader) {
-        this.javaClassConverter = new JavaClassConverter(classLoader);
-    }
+	public JavaFieldConverter(ClassLoader classLoader) {
+		this.javaClassConverter = new JavaClassConverter(classLoader);
+	}
 
-    public boolean canConvert(Class type) {
-        return type.equals(Field.class);
-    }
+	@Override
+	public boolean canConvert(Class type) {
+		return type.equals(Field.class);
+	}
 
-    public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
-        Field field = (Field) source;
+	@Override
+	public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
+		Field field = (Field) source;
 
-        writer.startNode("name");
-        writer.setValue(field.getName());
-        writer.endNode();
+		writer.startNode("name");
+		writer.setValue(field.getName());
+		writer.endNode();
 
-        writer.startNode("clazz");
-        writer.setValue(javaClassConverter.toString(field.getDeclaringClass()));
-        writer.endNode();
-    }
+		writer.startNode("clazz");
+		writer.setValue(javaClassConverter.toString(field.getDeclaringClass()));
+		writer.endNode();
+	}
 
-    public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
-        String methodName = null;
-        String declaringClassName = null;
-        
-        while((methodName == null || declaringClassName == null) && reader.hasMoreChildren()) {
-            reader.moveDown();
-            
-            if (reader.getNodeName().equals("name")) {
-                methodName = reader.getValue();
-            } else if (reader.getNodeName().equals("clazz")) {
-                declaringClassName = reader.getValue();
-            }
-            reader.moveUp();
-        }
-        
-        Class declaringClass = (Class)javaClassConverter.fromString(declaringClassName);
-        try {
-            return declaringClass.getDeclaredField(methodName);
-        } catch (NoSuchFieldException e) {
-            throw new ConversionException(e);
-        }
-    }
+	@Override
+	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+		String methodName = null;
+		String declaringClassName = null;
+
+		while ((methodName == null || declaringClassName == null) && reader.hasMoreChildren()) {
+			reader.moveDown();
+
+			if (reader.getNodeName().equals("name")) {
+				methodName = reader.getValue();
+			} else if (reader.getNodeName().equals("clazz")) {
+				declaringClassName = reader.getValue();
+			}
+			reader.moveUp();
+		}
+
+		Class declaringClass = (Class) javaClassConverter.fromString(declaringClassName);
+		try {
+			return declaringClass.getDeclaredField(methodName);
+		} catch (NoSuchFieldException e) {
+			throw new ConversionException(e);
+		}
+	}
 }

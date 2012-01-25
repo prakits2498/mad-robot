@@ -14,17 +14,17 @@ package com.madrobot.di.wizard.xml;
 import com.madrobot.reflect.PrimitiveUtils;
 
 /**
- * Mapper that detects arrays and changes the name so it can identified as an
- * array (for example Foo[] gets serialized as foo-array). Supports
- * multi-dimensional arrays.
+ * Mapper that detects arrays and changes the name so it can identified as an array (for example Foo[] gets serialized
+ * as foo-array). Supports multi-dimensional arrays.
  * 
  */
 class ArrayMapper extends MapperWrapper {
 
-	 ArrayMapper(Mapper wrapped) {
+	ArrayMapper(Mapper wrapped) {
 		super(wrapped);
 	}
 
+	@Override
 	public String serializedClass(Class type) {
 		StringBuffer arraySuffix = new StringBuffer();
 		String name = null;
@@ -51,6 +51,7 @@ class ArrayMapper extends MapperWrapper {
 		}
 	}
 
+	@Override
 	public Class realClass(String elementName) {
 		int dimensions = 0;
 

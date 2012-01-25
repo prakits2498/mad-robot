@@ -8,12 +8,10 @@
  *  Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
- 
+
 package com.madrobot.di.wizard.xml.converters;
 
-
 import java.util.UUID;
-
 
 /**
  * Converts a java.util.UUID to a string.
@@ -22,16 +20,18 @@ import java.util.UUID;
  */
 public class UUIDConverter extends AbstractSingleValueConverter {
 
-    public boolean canConvert(Class type) {
-        return type.equals(UUID.class);
-    }
+	@Override
+	public boolean canConvert(Class type) {
+		return type.equals(UUID.class);
+	}
 
-    public Object fromString(String str) {
-        try {
-            return UUID.fromString(str);
-        } catch(IllegalArgumentException e) {
-            throw new ConversionException("Cannot create UUID instance", e);
-        }
-    }
+	@Override
+	public Object fromString(String str) {
+		try {
+			return UUID.fromString(str);
+		} catch (IllegalArgumentException e) {
+			throw new ConversionException("Cannot create UUID instance", e);
+		}
+	}
 
 }

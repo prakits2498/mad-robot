@@ -8,20 +8,20 @@
  *  Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
- 
+
 package com.madrobot.di.wizard.xml;
 
+class SequenceGenerator implements ReferenceByIdMarshaller.IDGenerator {
 
- class SequenceGenerator implements ReferenceByIdMarshaller.IDGenerator {
+	private int counter;
 
-    private int counter;
+	SequenceGenerator(int startsAt) {
+		this.counter = startsAt;
+	}
 
-     SequenceGenerator(int startsAt) {
-        this.counter = startsAt;
-    }
-
-    public String next(Object item) {
-        return String.valueOf(counter++);
-    }
+	@Override
+	public String next(Object item) {
+		return String.valueOf(counter++);
+	}
 
 }

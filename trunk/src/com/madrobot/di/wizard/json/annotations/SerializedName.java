@@ -19,7 +19,6 @@ import java.lang.annotation.Target;
 import com.madrobot.di.wizard.json.JSONDeserializer;
 import com.madrobot.di.wizard.json.JSONSerializer;
 
-
 /**
  * Annotation to specify the serialized name of the json key. <br/>
  * See {@link JSONDeserializer} {@link JSONSerializer} for usage

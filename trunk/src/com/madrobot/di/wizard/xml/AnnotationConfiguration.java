@@ -8,7 +8,7 @@
  *  Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
- 
+
 package com.madrobot.di.wizard.xml;
 
 /**
@@ -16,10 +16,10 @@ package com.madrobot.di.wizard.xml;
  * 
  * @since 1.3
  */
- interface AnnotationConfiguration {
+interface AnnotationConfiguration {
 
-    void autodetectAnnotations(boolean mode);
+	void autodetectAnnotations(boolean mode);
 
-    void processAnnotations(Class[] types);
+	void processAnnotations(Class[] types);
 
 }
