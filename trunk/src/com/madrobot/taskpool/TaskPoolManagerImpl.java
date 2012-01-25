@@ -187,6 +187,7 @@ public final class TaskPoolManagerImpl implements TaskPoolManager {
 	 * 
 	 * @see super{@link #cancelAllTasks()}
 	 */
+	@Override
 	public void cancelAllTasks() {
 		listLock.lock();
 
@@ -219,6 +220,7 @@ public final class TaskPoolManagerImpl implements TaskPoolManager {
 	 * 
 	 * @see super{@link #shutdown()}
 	 */
+	@Override
 	public void shutdown() {
 		isRunning = false;
 		sessionThreadPool.shutdownNow();
@@ -230,6 +232,7 @@ public final class TaskPoolManagerImpl implements TaskPoolManager {
 	 * 
 	 * @see super{@link #submit(Task)}
 	 */
+	@Override
 	public <T> void submit(Task<T> task) {
 		if(isRunning){
 			ManagedServiceTask<T> managedTask = new ManagedServiceTask<T>(task);
