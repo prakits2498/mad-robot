@@ -1,4 +1,4 @@
-package com.madrobot.ui.custom.dialogs;
+package com.madrobot.ui.dialogs;
 
 import android.content.Context;
 import android.graphics.Canvas;
