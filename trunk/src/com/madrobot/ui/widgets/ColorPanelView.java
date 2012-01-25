@@ -8,7 +8,7 @@
  * Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
-package com.madrobot.ui.widgets.custom;
+package com.madrobot.ui.widgets;
 
 import android.content.Context;
 import android.graphics.Canvas;

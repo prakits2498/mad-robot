@@ -13,7 +13,7 @@ package com.madrobot;
 import android.app.Activity;
 import android.os.Bundle;
 
-import com.madrobot.io.net.util.NetUtils;
+import com.madrobot.di.wizard.xml.XMLWizard;
 
 public class TestActivity extends Activity {
 	/** Called when the activity is first created. */
@@ -21,7 +21,24 @@ public class TestActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		System.out.println("Valid->"+NetUtils.isValidEmailAddress("elton_kent@accenture.co.in"));
+		
+		Person person=new Person();
+		person.setAge("12");
+		person.setName("elton");
+		Asset ass=new Asset("test","test2");
+		ass.setCar("carrol");
+		ass.setBike("sdfs");
+		person.setAsset(ass);
+		
+		
+		XMLWizard xx=new XMLWizard();
+		xx.alias("pekkrson", Person.class);
+		xx.alias("Ass", Asset.class);
+		String xml=xx.toXML(person);
+		System.out.println("XML->"+xml);
 
+		Person pe=(Person) xx.fromXML(xml);
+		System.out.println(pe.getName());
+		System.out.println(pe.list[0].getBike());
 	}
 }

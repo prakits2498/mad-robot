@@ -8,7 +8,7 @@
  * Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
-package com.madrobot.ui.widgets.custom;
+package com.madrobot.ui.widgets;
 //
 //package com.ek.android.ui;
 //
