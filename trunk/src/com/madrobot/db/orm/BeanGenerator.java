@@ -46,11 +46,11 @@ public class BeanGenerator {
 
 	static {
 		primitiveDefaults.put(Integer.TYPE, 0);
-		primitiveDefaults.put(Short.TYPE, (Short) ((short) 0));
-		primitiveDefaults.put(Byte.TYPE, (Byte) ((byte) 0));
-		primitiveDefaults.put(Float.TYPE, (Float) (float) (0));
-		primitiveDefaults.put(Double.TYPE, (Double) (double) (0));
-		primitiveDefaults.put(Long.TYPE, (Long) (0L));
+		primitiveDefaults.put(Short.TYPE, ((short) 0));
+		primitiveDefaults.put(Byte.TYPE, ((byte) 0));
+		primitiveDefaults.put(Float.TYPE, (float) (0));
+		primitiveDefaults.put(Double.TYPE, (double) (0));
+		primitiveDefaults.put(Long.TYPE, (0L));
 		primitiveDefaults.put(Boolean.TYPE, Boolean.FALSE);
 		primitiveDefaults.put(Character.TYPE, '\u0000');
 	}
