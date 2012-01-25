@@ -1,14 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2011 MadRobot.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the GNU Lesser Public License v2.1
- * which accompanies this distribution, and is available at
- * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
- * Contributors:
+ * Copyright (c) 2012 MadRobot.
+ *  All rights reserved. This program and the accompanying materials
+ *  are made available under the terms of the GNU Lesser Public License v2.1
+ *  which accompanies this distribution, and is available at
+ *  http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ *  
+ *  Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
-package com.madrobot.di.xml;
+
+package com.madrobot.di.xml.simpledeserializer;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -22,8 +23,7 @@ import java.lang.reflect.Method;
  * <li>Class information of the field</li>
  * <li>Type of the field. See {@link FieldType}</li>
  * <li>Reference to the field. See {@link Field}</li>
- * <li>References to the methods to get or set the value, or add in case of a
- * collection. See {@link Method}</li>
+ * <li>References to the methods to get or set the value, or add in case of a collection. See {@link Method}</li>
  * </ol>
  * <br/>
  * See {@link XMLDeserializer} for usage
