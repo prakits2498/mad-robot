@@ -100,9 +100,9 @@ public class CreditCardEditText extends com.madrobot.ui.widgets.EditTexts.Format
 				return source;
 			}
 		} });
-		setHint("Card Number");
+//		setHint("Card Number");
 		// setHint("xxxx xxxx xxxx xxxx");
-		setTag("Card Number");
+//		setTag("Card Number");
 		super.doCustomize(context);
 		addTextChangedListener(new FormattedTextWatcher() {
 			@Override

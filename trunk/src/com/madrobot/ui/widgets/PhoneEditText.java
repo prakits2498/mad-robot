@@ -26,8 +26,8 @@ public class PhoneEditText extends CustomEditText<String> {
 	@Override
 	protected void doCustomize(Context context) {
 		setInputType(InputType.TYPE_CLASS_PHONE);
-		setTag("Phone");
-		setHint("Phone #");
+//		setTag("Phone");
+//		setHint("Phone #");
 		setFilters(new InputFilter[] {new LeadingOnesLengthFilter(LENGTH)});
 		addTextChangedListener(new PhoneNumberFormattingTextWatcher());
 	}

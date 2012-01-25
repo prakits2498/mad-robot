@@ -92,7 +92,7 @@ public class EditTexts {
 		
 		private void doCustomizeInner(Context context) {
 			//TODO set the hint color
-			setHintTextColor(0x000000);
+//			setHintTextColor(0x000000);
 			doCustomize(context);
 		}
 
