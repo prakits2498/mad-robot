@@ -10,6 +10,8 @@
  ******************************************************************************/
 package com.madrobot.io.net.client;
 
+import android.util.Base64;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
@@ -28,13 +30,12 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlSerializer;
 
-import com.madrobot.security.Base64;
-
 //import android.util.Log;
 
 class XMLRPCSerializer implements IXMLRPCSerializer {
 	static SimpleDateFormat dateFormat = new SimpleDateFormat(DATETIME_FORMAT);
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public void serialize(XmlSerializer serializer, Object object) throws IOException {
 		// This code supplied by mattias.ellback as part of issue #19
@@ -64,7 +65,7 @@ class XMLRPCSerializer implements IXMLRPCSerializer {
 			serializer.startTag(null, TYPE_DATE_TIME_ISO8601).text(dateStr).endTag(null, TYPE_DATE_TIME_ISO8601);
 		} else
 		if (object instanceof byte[] ){
-			String value = new String(Base64.encode((byte[])object));
+			String value = new String(Base64.encode(((byte[])object),Base64.DEFAULT));
 			serializer.startTag(null, TYPE_BASE64).text(value).endTag(null, TYPE_BASE64);
 		} else
 		if (object instanceof List) {
@@ -116,6 +117,7 @@ class XMLRPCSerializer implements IXMLRPCSerializer {
 		}
 	}
 	
+	@Override
 	public Object deserialize(XmlPullParser parser) throws XmlPullParserException, IOException {
 		parser.require(XmlPullParser.START_TAG, null, TAG_VALUE);
 
@@ -181,7 +183,7 @@ class XMLRPCSerializer implements IXMLRPCSerializer {
 				while ((line = reader.readLine()) != null) {
 					sb.append(line);
 				}
-				obj = Base64.decode(sb.toString());
+				obj = Base64.decode(sb.toString(),Base64.DEFAULT);
 			} else
 			if (typeNodeName.equals(TYPE_ARRAY)) {
 				parser.nextTag(); // TAG_DATA (<data>)
