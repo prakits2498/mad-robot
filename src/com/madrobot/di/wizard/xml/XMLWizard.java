@@ -441,13 +441,13 @@ public class XMLWizard {
 		mapper = new DefaultImplementationsMapper(mapper);
 		mapper = new AttributeMapper(mapper, converterLookup, reflectionProvider);
 		if (JVM.is15()) {
-			mapper = buildMapperDynamically("com.madrobot.di.wizard.xml.EnumMapper", new Class[] { Mapper.class },
+			mapper = buildMapperDynamically(EnumMapper.class, new Class[] { Mapper.class },
 					new Object[] { mapper });
 		}
 		mapper = new LocalConversionMapper(mapper);
 		mapper = new ImmutableTypesMapper(mapper);
 		if (JVM.is15()) {
-			mapper = buildMapperDynamically(ANNOTATION_MAPPER_TYPE, new Class[] { Mapper.class,
+			mapper = buildMapperDynamically(AnnotationMapper.class, new Class[] { Mapper.class,
 					ConverterRegistry.class, ConverterLookup.class, ClassLoader.class, ReflectionProvider.class,
 					JVM.class }, new Object[] { mapper, converterLookup, converterLookup, classLoaderReference,
 					reflectionProvider, jvm });
@@ -457,13 +457,13 @@ public class XMLWizard {
 		return mapper;
 	}
 
-	private Mapper buildMapperDynamically(String className, Class[] constructorParamTypes, Object[] constructorParamValues) {
+	private Mapper buildMapperDynamically(Class type, Class[] constructorParamTypes, Object[] constructorParamValues) {
 		try {
-			Class type = Class.forName(className, false, classLoaderReference.getReference());
+//			Class type = Class.forName(className, false, classLoaderReference.getReference());
 			Constructor constructor = type.getConstructor(constructorParamTypes);
 			return (Mapper) constructor.newInstance(constructorParamValues);
 		} catch (Exception e) {
-			throw new com.madrobot.di.wizard.xml.InitializationException("Could not instantiate mapper : " + className,
+			throw new com.madrobot.di.wizard.xml.InitializationException("Could not instantiate mapper : " +type.getName(),
 					e);
 		}
 	}

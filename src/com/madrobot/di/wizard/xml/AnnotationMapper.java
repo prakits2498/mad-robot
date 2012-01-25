@@ -72,7 +72,7 @@ class AnnotationMapper extends MapperWrapper implements AnnotationConfiguration 
 	 *            the next {@link Mapper} in the chain
 	 * @since 1.3
 	 */
-	AnnotationMapper(
+	public AnnotationMapper(
 			final Mapper wrapped,
 			final ConverterRegistry converterRegistry,
 			final ConverterLookup converterLookup,
