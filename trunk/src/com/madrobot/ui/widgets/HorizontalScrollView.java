@@ -1,495 +1,684 @@
 package com.madrobot.ui.widgets;
 
-import com.madrobot.R;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
+import android.content.Context;
 import android.content.res.TypedArray;
-import android.util.DisplayMetrics;
+import android.graphics.Rect;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.util.AttributeSet;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.WindowManager;
 import android.widget.Scroller;
-import android.content.Context;
-import android.util.AttributeSet;
+
+import com.madrobot.R;
 
 /**
- * A view group that allows users to switch between multiple screens (layouts) in the same way as
- * the Android home screen (Launcher application).
+ * A ViewGroup that arranges Views/ViewGroups horizontally.
  * <p>
- * You can add and remove views using the normal methods {@link ViewGroup#addView(View)},
- * {@link ViewGroup#removeView(View)} etc. You may want to listen for updates by calling
- * {@link HorizontalScrollView#setOnScreenSwitchListener(OnScreenSwitchListener)} in order to perform
- * operations once a new screen has been selected.
- *
- *<b>Styled Attributes</b>
+ * <b>Styled Attributes</b>
  * <ul>
- * <li><b>snapVelocity</b>(integer):The velocity at which a fling gesture will cause us to snap to the next screen. The default is 1000</li>
- * <li><b>screenAnimationDuration</b>(integer):How long to animate between screens/pages
+ * <li><b>pageWidth</b>(dip):</li> Width of each horizontal page in dip. If not specified, the value mentioned in the
+ * layout_height is used.
+ * <li><b>snapVelocity</b>(integer):The velocity at which a fling gesture will cause us to snap to the next page. The
+ * default is 1000</li>
+ * <li><b>screenAnimationDuration</b>(integer):Duration to animate each page.The default is 600ms.
  * </ul>
  * <br/>
  * <b>Example Usage:</b><br/>
+ * 
  * <pre>
  * 			&lt;HorizontalScrollView  android:layout_width="fill_parent" android:layout_height="fill_parent" my_namespace:pageWidth="230dp">
+ * 				<!--This is page1. Can be any View/viewgroup -->
  * 				&lt;LinearLayout android:id="@+id/page1 android:layout_width="fill_parent" android:layout_height="fill_parent">
  * 					.. contents of first page
  * 				&lt;/LinearLayout>
+ * 				<!--This is page2. Can be any View/viewgroup -->
  * 				&lt;LinearLayout android:id="@+id/page2 android:layout_width="fill_parent" android:layout_height="fill_parent">
  * 					.. contents of second page
  * 				&lt;/LinearLayout>
+ * 				<!--This is page3. Can be any View/viewgroup -->
  * 				&lt;LinearLayout android:id="@+id/page1 android:layout_width="fill_parent" android:layout_height="fill_parent">
  * 					.. contents of third page
  * 				&lt;/LinearLayout>
  * 			&lt;/HorizontalScrollView>
-   </pre>
-   <p>
- *
+ * </pre>
+ * 
+ * </p>
+ * 
+ * @author elton.stephen.kent
+ * 
  */
-public final class HorizontalScrollView extends ViewGroup {
-    /*
-     * How long to animate between screens when programmatically setting with setCurrentScreen using
-     * the animate parameter
-     */
-    private static int ANIMATION_SCREEN_SET_DURATION_MILLIS;
-    // What fraction (1/x) of the screen the user must swipe to indicate a page change
-    private static final int FRACTION_OF_SCREEN_WIDTH_FOR_SWIPE = 2;
-    private static final int INVALID_SCREEN = -1;
-    /*
-     * Velocity of a swipe (in density-independent pixels per second) to force a swipe to the
-     * next/previous screen. Adjusted into mDensityAdjustedSnapVelocity on init.
-     */
-    private int SNAP_VELOCITY_DIP_PER_SECOND = 600;
-    
-    
-    // Argument to getVelocity for units to give pixels per second (1 = pixels per millisecond).
-    private static final int VELOCITY_UNIT_PIXELS_PER_SECOND = 1000;
+public class HorizontalScrollView extends ViewGroup {
+	/**
+	 * Implement to receive events on scroll position and page snaps.
+	 */
+	public static interface OnScrollListener {
+		/**
+		 * Receives the current scroll X value. This value will be adjusted to assume the left edge of the first page
+		 * has a scroll position of 0. Note that values less than 0 and greater than the right edge of the last page are
+		 * possible due to touch events scrolling beyond the edges.
+		 * 
+		 * @param scrollX
+		 *            Scroll X value
+		 */
+		void onScroll(int scrollX);
 
-    private static final int TOUCH_STATE_REST = 0;
-    private static final int TOUCH_STATE_HORIZONTAL_SCROLLING = 1;
-    private static final int TOUCH_STATE_VERTICAL_SCROLLING = -1;
-    private int mCurrentScreen;
-    private int mDensityAdjustedSnapVelocity;
-    private boolean mFirstLayout = true;
-    private float mLastMotionX;
-    private float mLastMotionY;
-    private OnScreenSwitchListener mOnScreenSwitchListener;
-    private int mMaximumVelocity;
-    private int mNextScreen = INVALID_SCREEN;
-    private Scroller mScroller;
-    private int mTouchSlop;
-    private int mTouchState = TOUCH_STATE_REST;
-    private VelocityTracker mVelocityTracker;
-    private int mLastSeenLayoutWidth = -1;
+		/**
+		 * Invoked when scrolling is finished (settled on a page, centered).
+		 * 
+		 * @param currentPage
+		 *            The current page
+		 */
+		void onViewScrollFinished(int currentPage);
+	}
 
+	public static class SavedState extends BaseSavedState {
+		int currentPage = -1;
 
-    /**
-     * Constructor that is called when inflating a view from XML. This is called
-     * when a view is being constructed from an XML file, supplying attributes
-     * that were specified in the XML file. This version uses a default style of
-     * 0, so the only attribute values applied are those in the Context's Theme
-     * and the given AttributeSet.
-     *
-     * <p>
-     * The method onFinishInflate() will be called after all children have been
-     * added.
-     *
-     * @param context The Context the view is running in, through which it can
-     *        access the current theme, resources, etc.
-     * @param attrs The attributes of the XML tag that is inflating the view.
-     * @see #View(Context, AttributeSet, int)
-     */
-    public HorizontalScrollView(final Context context, final AttributeSet attrs) {
-        super(context, attrs);
-        init(context,attrs);
-    }
+		public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() {
+			public SavedState createFromParcel(Parcel in) {
+				return new SavedState(in);
+			}
 
-    /**
-     * Sets up the scroller and touch/fling sensitivity parameters for the pager.
-     */
-    private void init(Context context,final AttributeSet attrs) {
-    	TypedArray styledAttrs = context.obtainStyledAttributes(attrs, R.styleable.HorizontalScrollView);
-    	
-    	ANIMATION_SCREEN_SET_DURATION_MILLIS=styledAttrs.getInt(R.styleable.HorizontalScrollView_screenAnimationDuration, 600);
-    	SNAP_VELOCITY_DIP_PER_SECOND=styledAttrs.getInt(R.styleable.HorizontalScrollView_snapVelocity, 600);
-    	
-    	
-        mScroller = new Scroller(getContext());
+			public SavedState[] newArray(int size) {
+				return new SavedState[size];
+			}
+		};
 
-        // Calculate the density-dependent snap velocity in pixels
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay()
-                .getMetrics(displayMetrics);
-        mDensityAdjustedSnapVelocity =
-                (int) (displayMetrics.density * SNAP_VELOCITY_DIP_PER_SECOND);
+		private SavedState(Parcel in) {
+			super(in);
+			currentPage = in.readInt();
+		}
 
-        final ViewConfiguration configuration = ViewConfiguration.get(getContext());
-        mTouchSlop = configuration.getScaledTouchSlop();
-        mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
-    }
+		SavedState(Parcelable superState) {
+			super(superState);
+		}
 
-    @Override
-    protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+		@Override
+		public void writeToParcel(Parcel out, int flags) {
+			super.writeToParcel(out, flags);
+			out.writeInt(currentPage);
+		}
+	}
 
-        final int width = MeasureSpec.getSize(widthMeasureSpec);
-        final int widthMode = MeasureSpec.getMode(widthMeasureSpec);
-        if (widthMode != MeasureSpec.EXACTLY) {
-            throw new IllegalStateException("ViewSwitcher can only be used in EXACTLY mode.");
-        }
+	public static final String TAG = "HorizontalScrollView";
 
-        final int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-        if (heightMode != MeasureSpec.EXACTLY) {
-            throw new IllegalStateException("ViewSwitcher can only be used in EXACTLY mode.");
-        }
+	private static final int INVALID_PAGE = -1;
 
-        // The children are given the same width and height as the workspace
-        final int count = getChildCount();
-        for (int i = 0; i < count; i++) {
-            getChildAt(i).measure(widthMeasureSpec, heightMeasureSpec);
-        }
+	public static final int SPEC_UNDEFINED = -1;
+	/**
+	 * The velocity at which a fling gesture will cause us to snap to the next screen
+	 */
+	private int snapVelocity;
+	private int pageWidthSpec, pageWidth;
 
-        if (mFirstLayout) {
-            scrollTo(mCurrentScreen * width, 0);
-            mFirstLayout = false;
-        }
+	private int pageAnimationDuration;
+	private boolean mFirstLayout = true;
 
-        else if (width != mLastSeenLayoutWidth) { // Width has changed
-            /*
-             * Recalculate the width and scroll to the right position to be sure we're in the right
-             * place in the event that we had a rotation that didn't result in an activity restart
-             * (code by aveyD). Without this you can end up between two pages after a rotation.
-             */
-            Display display =
-                    ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE))
-                            .getDefaultDisplay();
-            int displayWidth = display.getWidth();
+	private int mCurrentPage;
+	private int mNextPage = INVALID_PAGE;
 
-            mNextScreen = Math.max(0, Math.min(getCurrentScreen(), getChildCount() - 1));
-            final int newX = mNextScreen * displayWidth;
-            final int delta = newX - getScrollX();
+	private Scroller mScroller;
+	private VelocityTracker mVelocityTracker;
 
-            mScroller.startScroll(getScrollX(), 0, delta, 0, 0);
-        }
+	private int mTouchSlop;
+	private int mMaximumVelocity;
 
-        mLastSeenLayoutWidth   = width;
-    }
+	private float mLastMotionX;
+	private float mLastMotionY;
 
-    @Override
-    protected void onLayout(final boolean changed, final int l, final int t, final int r,
-            final int b) {
-        int childLeft = 0;
-        final int count = getChildCount();
+	private final static int TOUCH_STATE_REST = 0;
 
-        for (int i = 0; i < count; i++) {
-            final View child = getChildAt(i);
-            if (child.getVisibility() != View.GONE) {
-                final int childWidth = child.getMeasuredWidth();
-                child.layout(childLeft, 0, childLeft + childWidth, child.getMeasuredHeight());
-                childLeft += childWidth;
-            }
-        }
-    }
+	private final static int TOUCH_STATE_SCROLLING = 1;
 
-    @Override
-    public boolean onInterceptTouchEvent(final MotionEvent ev) {
-        /*
-         * By Yoni Samlan: Modified onInterceptTouchEvent based on standard ScrollView's
-         * onIntercept. The logic is designed to support a nested vertically scrolling view inside
-         * this one; once a scroll registers for X-wise scrolling, handle it in this view and don't
-         * let the children, but once a scroll registers for y-wise scrolling, let the children
-         * handle it exclusively.
-         */
-        final int action = ev.getAction();
-        boolean intercept = false;
+	private int mTouchState = TOUCH_STATE_REST;
 
-        switch (action) {
-            case MotionEvent.ACTION_MOVE:
-                /*
-                 * If we're in a horizontal scroll event, take it (intercept further events). But if
-                 * we're mid-vertical-scroll, don't even try; let the children deal with it. If we
-                 * haven't found a scroll event yet, check for one.
-                 */
-                if (mTouchState == TOUCH_STATE_HORIZONTAL_SCROLLING) {
-                    /*
-                     * We've already started a horizontal scroll; set intercept to true so we can
-                     * take the remainder of all touch events in onTouchEvent.
-                     */
-                    intercept = true;
-                } else if (mTouchState == TOUCH_STATE_VERTICAL_SCROLLING) {
-                    // Let children handle the events for the duration of the scroll event.
-                    intercept = false;
-                } else { // We haven't picked up a scroll event yet; check for one.
+	private boolean mAllowLongPress;
 
-                    /*
-                     * If we detected a horizontal scroll event, start stealing touch events (mark
-                     * as scrolling). Otherwise, see if we had a vertical scroll event -- if so, let
-                     * the children handle it and don't look to intercept again until the motion is
-                     * done.
-                     */
+	private Set<OnScrollListener> mListeners = new HashSet<OnScrollListener>();
 
-                    final float x = ev.getX();
-                    final int xDiff = (int) Math.abs(x - mLastMotionX);
-                    boolean xMoved = xDiff > mTouchSlop;
+	private int mLastSeenLayoutWidth = -1;
 
-                    if (xMoved) {
-                        // Scroll if the user moved far enough along the X axis
-                        mTouchState = TOUCH_STATE_HORIZONTAL_SCROLLING;
-                        mLastMotionX = x;
-                    }
+	private static final int TOUCH_STATE_VERTICAL_SCROLLING = -1;
 
-                    final float y = ev.getY();
-                    final int yDiff = (int) Math.abs(y - mLastMotionY);
-                    boolean yMoved = yDiff > mTouchSlop;
+	private static final int TOUCH_STATE_HORIZONTAL_SCROLLING = 1;
 
-                    if (yMoved) {
-                        mTouchState = TOUCH_STATE_VERTICAL_SCROLLING;
-                    }
-                }
+	/**
+	 * Used to inflate the Workspace from XML.
+	 * 
+	 * @param context
+	 *            The application's context.
+	 * @param attrs
+	 *            The attribtues set containing the Workspace's customization values.
+	 */
+	public HorizontalScrollView(Context context, AttributeSet attrs) {
+		this(context, attrs, 0);
+	}
 
-                break;
-            case MotionEvent.ACTION_CANCEL:
-            case MotionEvent.ACTION_UP:
-                // Release the drag.
-                mTouchState = TOUCH_STATE_REST;
-                break;
-            case MotionEvent.ACTION_DOWN:
-                /*
-                 * No motion yet, but register the coordinates so we can check for intercept at the
-                 * next MOVE event.
-                 */
-                mLastMotionY = ev.getY();
-                mLastMotionX = ev.getX();
-                break;
-            default:
-                break;
-            }
+	/**
+	 * Used to inflate the Workspace from XML.
+	 * 
+	 * @param context
+	 *            The application's context.
+	 * @param attrs
+	 *            The attribtues set containing the Workspace's customization values.
+	 * @param defStyle
+	 *            Unused.
+	 */
+	public HorizontalScrollView(Context context, AttributeSet attrs, int defStyle) {
+		super(context, attrs, defStyle);
 
-        return intercept;
-    }
+		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.HorizontalScrollView);
+		pageWidthSpec = a.getDimensionPixelSize(R.styleable.HorizontalScrollView_pageWidth, SPEC_UNDEFINED);
+		snapVelocity = a.getInt(R.styleable.HorizontalScrollView_snapVelocity, 1000);
+		pageAnimationDuration = a.getInt(R.styleable.HorizontalScrollView_pageAnimationDuration, 600);
+		a.recycle();
 
-    @Override
-    public boolean onTouchEvent(final MotionEvent ev) {
+		init();
+	}
 
-        if (mVelocityTracker == null) {
-            mVelocityTracker = VelocityTracker.obtain();
-        }
-        mVelocityTracker.addMovement(ev);
+	@Override
+	public void addFocusables(ArrayList<View> views, int direction) {
+		getChildAt(mCurrentPage).addFocusables(views, direction);
+		if (direction == View.FOCUS_LEFT) {
+			if (mCurrentPage > 0) {
+				getChildAt(mCurrentPage - 1).addFocusables(views, direction);
+			}
+		} else if (direction == View.FOCUS_RIGHT) {
+			if (mCurrentPage < getChildCount() - 1) {
+				getChildAt(mCurrentPage + 1).addFocusables(views, direction);
+			}
+		}
+	}
 
-        final int action = ev.getAction();
-        final float x = ev.getX();
+	public void addOnScrollListener(OnScrollListener listener) {
+		mListeners.add(listener);
+	}
 
-        switch (action) {
-            case MotionEvent.ACTION_DOWN:
-                /*
-                 * If being flinged and user touches, stop the fling. isFinished will be false if
-                 * being flinged.
-                 */
-                if (!mScroller.isFinished()) {
-                    mScroller.abortAnimation();
-                }
+	/**
+	 * @return True is long presses are still allowed for the current touch
+	 */
+	public boolean allowLongPress() {
+		return mAllowLongPress;
+	}
 
-                // Remember where the motion event started
-                mLastMotionX = x;
+	private void checkStartScroll(float x, float y) {
+		/*
+		 * Locally do absolute value. mLastMotionX is set to the y value of the down event.
+		 */
+		final int xDiff = (int) Math.abs(x - mLastMotionX);
+		final int yDiff = (int) Math.abs(y - mLastMotionY);
 
-                if (mScroller.isFinished()) {
-                    mTouchState = TOUCH_STATE_REST;
-                } else {
-                    mTouchState = TOUCH_STATE_HORIZONTAL_SCROLLING;
-                }
+		boolean xMoved = xDiff > mTouchSlop;
+		boolean yMoved = yDiff > mTouchSlop;
 
-                break;
-            case MotionEvent.ACTION_MOVE:
-                final int xDiff = (int) Math.abs(x - mLastMotionX);
-                boolean xMoved = xDiff > mTouchSlop;
+		if (xMoved || yMoved) {
 
-                if (xMoved) {
-                    // Scroll if the user moved far enough along the X axis
-                    mTouchState = TOUCH_STATE_HORIZONTAL_SCROLLING;
-                }
+			if (xMoved) {
+				// Scroll if the user moved far enough along the X axis
+				mTouchState = TOUCH_STATE_SCROLLING;
+				enableChildrenCache();
+			}
+			// Either way, cancel any pending longpress
+			if (mAllowLongPress) {
+				mAllowLongPress = false;
+				// Try canceling the long press. It could also have been scheduled
+				// by a distant descendant, so use the mAllowLongPress flag to block
+				// everything
+				final View currentPage = getChildAt(mCurrentPage);
+				currentPage.cancelLongPress();
+			}
+		}
+	}
 
-                if (mTouchState == TOUCH_STATE_HORIZONTAL_SCROLLING) {
-                    // Scroll to follow the motion event
-                    final int deltaX = (int) (mLastMotionX - x);
-                    mLastMotionX = x;
-                    final int scrollX = getScrollX();
+	private void clearChildrenCache() {
+		setChildrenDrawnWithCacheEnabled(false);
+	}
 
-                    if (deltaX < 0) {
-                        if (scrollX > 0) {
-                            scrollBy(Math.max(-scrollX, deltaX), 0);
-                        }
-                    } else if (deltaX > 0) {
-                        final int availableToScroll =
-                                getChildAt(getChildCount() - 1).getRight() - scrollX - getWidth();
+	@Override
+	public void computeScroll() {
+		if (mScroller.computeScrollOffset()) {
+			scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
+			postInvalidate();
+			intimateScroll(mScroller.getCurrX(), "ComputeScroll");
+		} else if (mNextPage != INVALID_PAGE) {
+			mCurrentPage = mNextPage;
+			mNextPage = INVALID_PAGE;
+			clearChildrenCache();
+			intimateNextPage(mCurrentPage, "ComputeScroll");
+			// Notify observer about screen change
+		}
+	}
 
-                        if (availableToScroll > 0) {
-                            scrollBy(Math.min(availableToScroll, deltaX), 0);
-                        }
-                    }
-                }
+	@Override
+	public boolean dispatchUnhandledMove(View focused, int direction) {
+		if (direction == View.FOCUS_LEFT) {
+			if (getCurrentPage() > 0) {
+				snapToPage(getCurrentPage() - 1);
+				return true;
+			}
+		} else if (direction == View.FOCUS_RIGHT) {
+			if (getCurrentPage() < getChildCount() - 1) {
+				snapToPage(getCurrentPage() + 1);
+				return true;
+			}
+		}
+		return super.dispatchUnhandledMove(focused, direction);
+	}
 
-                break;
+	private void enableChildrenCache() {
+		setChildrenDrawingCacheEnabled(true);
+		setChildrenDrawnWithCacheEnabled(true);
+	}
 
-            case MotionEvent.ACTION_UP:
-                if (mTouchState == TOUCH_STATE_HORIZONTAL_SCROLLING) {
-                    final VelocityTracker velocityTracker = mVelocityTracker;
-                    velocityTracker.computeCurrentVelocity(VELOCITY_UNIT_PIXELS_PER_SECOND,
-                            mMaximumVelocity);
-                    int velocityX = (int) velocityTracker.getXVelocity();
+	/**
+	 * Returns the index of the currently displayed page.
+	 * 
+	 * @return The zero based index of the currently displayed page.
+	 */
+	public int getCurrentPage() {
+		return mCurrentPage;
+	}
 
-                    if (velocityX > mDensityAdjustedSnapVelocity && mCurrentScreen > 0) {
-                        // Fling hard enough to move left
-                        snapToScreen(mCurrentScreen - 1);
-                    } else if (velocityX < -mDensityAdjustedSnapVelocity
-                            && mCurrentScreen < getChildCount() - 1) {
-                        // Fling hard enough to move right
-                        snapToScreen(mCurrentScreen + 1);
-                    } else {
-                        snapToDestination();
-                    }
+	/**
+	 * Get the width of each page
+	 * 
+	 * @return
+	 */
+	public int getPageWidth() {
+		return pageWidth;
+	}
 
-                    if (mVelocityTracker != null) {
-                        mVelocityTracker.recycle();
-                        mVelocityTracker = null;
-                    }
-                }
+	/**
+	 * Get the page at which the given view is present
+	 * 
+	 * @param v
+	 * @return
+	 */
+	public int getPageForView(View v) {
+		int result = -1;
+		if (v != null) {
+			ViewParent vp = v.getParent();
+			int count = getChildCount();
+			for (int i = 0; i < count; i++) {
+				if (vp == getChildAt(i)) {
+					return i;
+				}
+			}
+		}
+		return result;
+	}
 
-                mTouchState = TOUCH_STATE_REST;
+	/**
+	 * Gets the value that getScrollX() should return if the specified page is the current page (and no other scrolling
+	 * is occurring). Use this to pass a value to scrollTo(), for example.
+	 * 
+	 * @param whichPage
+	 * @return
+	 */
+	private int getScrollXForPage(int whichPage) {
+		return (whichPage * pageWidth) - pageWidthPadding();
+	}
 
-                break;
-            case MotionEvent.ACTION_CANCEL:
-                mTouchState = TOUCH_STATE_REST;
-                break;
-            default:
-                break;
-        }
+	/**
+	 * Initializes various states for this workspace.
+	 */
+	private void init() {
+		mScroller = new Scroller(getContext());
+		mCurrentPage = 0;
+		final ViewConfiguration configuration = ViewConfiguration.get(getContext());
+		mTouchSlop = configuration.getScaledTouchSlop();
+		mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
+	}
 
-        return true;
-    }
+	private void intimateNextPage(int page, String from) {
+		for (OnScrollListener mListener : mListeners) {
+			mListener.onViewScrollFinished(page);
+		}
+	}
 
-    @Override
-    public void computeScroll() {
-        if (mScroller.computeScrollOffset()) {
-            scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
-            postInvalidate();
-        } else if (mNextScreen != INVALID_SCREEN) {
-            mCurrentScreen = Math.max(0, Math.min(mNextScreen, getChildCount() - 1));
+	private void intimateScroll(int scrollX, String from) {
+		for (OnScrollListener mListener : mListeners) {
+			mListener.onScroll(scrollX);
+		}
+	}
 
-            // Notify observer about screen change
-            if (mOnScreenSwitchListener != null) {
-                mOnScreenSwitchListener.onScreenSwitched(mCurrentScreen);
-            }
+	@Override
+	public boolean onInterceptTouchEvent(MotionEvent ev) {
+		// Log.d(TAG, "onInterceptTouchEvent::action=" + ev.getAction());
 
-            mNextScreen = INVALID_SCREEN;
-        }
-    }
+		/*
+		 * This method JUST determines whether we want to intercept the motion. If we return true, onTouchEvent will be
+		 * called and we do the actual scrolling there.
+		 */
 
-    /**
-     * Returns the index of the currently displayed screen.
-     *
-     * @return The index of the currently displayed screen.
-     */
-    public int getCurrentScreen() {
-        return mCurrentScreen;
-    }
+		/*
+		 * Shortcut the most recurring case: the user is in the dragging state and he is moving his finger. We want to
+		 * intercept this motion.
+		 */
+		final int action = ev.getAction();
+		final float x = ev.getX();
+		final float y = ev.getY();
+		boolean intercept = false;
 
-    /**
-     * Sets the current screen.
-     *
-     * @param currentScreen The new screen.
-     * @param animate True to smoothly scroll to the screen, false to snap instantly
-     */
-    public void setCurrentScreen(final int currentScreen, final boolean animate) {
-        mCurrentScreen = Math.max(0, Math.min(currentScreen, getChildCount() - 1));
-        if (animate) {
-            snapToScreen(currentScreen, ANIMATION_SCREEN_SET_DURATION_MILLIS);
-        } else {
-            scrollTo(mCurrentScreen * getWidth(), 0);
-        }
-        invalidate();
-    }
+		switch (action) {
+		case MotionEvent.ACTION_MOVE:
+			/*
+			 * If we're in a horizontal scroll event, take it (intercept further events). But if we're
+			 * mid-vertical-scroll, don't even try; let the children deal with it. If we haven't found a scroll event
+			 * yet, check for one.
+			 */
+			if (mTouchState == TOUCH_STATE_HORIZONTAL_SCROLLING) {
+				/*
+				 * We've already started a horizontal scroll; set intercept to true so we can take the remainder of all
+				 * touch events in onTouchEvent.
+				 */
+				intercept = true;
+			} else if (mTouchState == TOUCH_STATE_VERTICAL_SCROLLING) {
+				// Let children handle the events for the duration of the scroll event.
+				intercept = false;
+			} else { // We haven't picked up a scroll event yet; check for one.
 
-    /**
-     * Sets the {@link OnScreenSwitchListener}.
-     *
-     * @param onScreenSwitchListener The listener for switch events.
-     */
-    public void setOnScreenSwitchListener(final OnScreenSwitchListener onScreenSwitchListener) {
-        mOnScreenSwitchListener = onScreenSwitchListener;
-    }
+				/*
+				 * If we detected a horizontal scroll event, start stealing touch events (mark as scrolling). Otherwise,
+				 * see if we had a vertical scroll event -- if so, let the children handle it and don't look to
+				 * intercept again until the motion is done.
+				 */
 
-    /**
-     * Snaps to the screen we think the user wants (the current screen for very small movements; the
-     * next/prev screen for bigger movements).
-     */
-    private void snapToDestination() {
-        final int screenWidth = getWidth();
-        int scrollX = getScrollX();
-        int whichScreen = mCurrentScreen;
-        int deltaX = scrollX - (screenWidth * mCurrentScreen);
+				// final float x = ev.getX();
+				final int xDiff = (int) Math.abs(x - mLastMotionX);
+				boolean xMoved = xDiff > mTouchSlop;
 
-        // Check if they want to go to the prev. screen
-        if ((deltaX < 0) && mCurrentScreen != 0
-                && ((screenWidth / FRACTION_OF_SCREEN_WIDTH_FOR_SWIPE) < -deltaX)) {
-            whichScreen--;
-            // Check if they want to go to the next screen
-        } else if ((deltaX > 0) && (mCurrentScreen + 1 != getChildCount())
-                && ((screenWidth / FRACTION_OF_SCREEN_WIDTH_FOR_SWIPE) < deltaX)) {
-            whichScreen++;
-        }
+				if (xMoved) {
+					// Scroll if the user moved far enough along the X axis
+					mTouchState = TOUCH_STATE_HORIZONTAL_SCROLLING;
+					mLastMotionX = x;
+				}
 
-        snapToScreen(whichScreen);
-    }
+				// final float y = ev.getY();
+				final int yDiff = (int) Math.abs(y - mLastMotionY);
+				boolean yMoved = yDiff > mTouchSlop;
 
-    /**
-     * Snap to a specific screen, animating automatically for a duration proportional to the
-     * distance left to scroll.
-     *
-     * @param whichScreen Screen to snap to
-     */
-    private void snapToScreen(final int whichScreen) {
-        snapToScreen(whichScreen, -1);
-    }
+				if (yMoved) {
+					mTouchState = TOUCH_STATE_VERTICAL_SCROLLING;
+				}
+			}
+			break;
+		case MotionEvent.ACTION_CANCEL:
+		case MotionEvent.ACTION_UP:
+			// Release the drag.
+			mTouchState = TOUCH_STATE_REST;
+			break;
+		case MotionEvent.ACTION_DOWN:
+			/*
+			 * No motion yet, but register the coordinates so we can check for intercept at the next MOVE event.
+			 */
+			mLastMotionY = ev.getY();
+			mLastMotionX = ev.getX();
+			break;
+		default:
+			break;
+		}
 
-    /**
-     * Snaps to a specific screen, animating for a specific amount of time to get there.
-     *
-     * @param whichScreen Screen to snap to
-     * @param duration -1 to automatically time it based on scroll distance; a positive number to
-     *            make the scroll take an exact duration.
-     */
-    private void snapToScreen(final int whichScreen, final int duration) {
-        /*
-         * Modified by Yoni Samlan: Allow new snapping even during an ongoing scroll animation. This
-         * is intended to make HorizontalPager work as expected when used in conjunction with a
-         * RadioGroup used as "tabbed" controls. Also, make the animation take a percentage of our
-         * normal animation time, depending how far they've already scrolled.
-         */
-        mNextScreen = Math.max(0, Math.min(whichScreen, getChildCount() - 1));
-        final int newX = mNextScreen * getWidth();
-        final int delta = newX - getScrollX();
+		return intercept;
+	}
 
-        if (duration < 0) {
-             // E.g. if they've scrolled 80% of the way, only animation for 20% of the duration
-            mScroller.startScroll(getScrollX(), 0, delta, 0, (int) (Math.abs(delta)
-                    / (float) getWidth() * ANIMATION_SCREEN_SET_DURATION_MILLIS));
-        } else {
-            mScroller.startScroll(getScrollX(), 0, delta, 0, duration);
-        }
+	@Override
+	protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+		int childLeft = 0;
 
-        invalidate();
-    }
+		final int count = getChildCount();
+		for (int i = 0; i < count; i++) {
+			final View child = getChildAt(i);
+			if (child.getVisibility() != View.GONE) {
+				final int childWidth = child.getMeasuredWidth();
+				child.layout(childLeft, 0, childLeft + childWidth, child.getMeasuredHeight());
+				childLeft += childWidth;
+			}
+		}
+	}
 
-    /**
-     * Listener for the event that the HorizontalPager switches to a new view.
-     */
-    public static interface OnScreenSwitchListener {
-        /**
-         * Notifies listeners about the new screen. Runs after the animation completed.
-         *
-         * @param screen The new screen index.
-         */
-        void onScreenSwitched(int screen);
-    }
+	@Override
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+		final int width = MeasureSpec.getSize(widthMeasureSpec);
+		pageWidth = pageWidthSpec == SPEC_UNDEFINED ? getMeasuredWidth() : pageWidthSpec;
+		pageWidth = Math.min(pageWidth, getMeasuredWidth());
+
+		final int count = getChildCount();
+		for (int i = 0; i < count; i++) {
+			getChildAt(i).measure(MeasureSpec.makeMeasureSpec(pageWidth, MeasureSpec.EXACTLY), heightMeasureSpec);
+		}
+
+		if (mFirstLayout) {
+			scrollTo(getScrollXForPage(mCurrentPage), 0);
+			mFirstLayout = false;
+		} else if (width != mLastSeenLayoutWidth) { // Width has changed
+			/*
+			 * Recalculate the width and scroll to the right position to be sure we're in the right place in the event
+			 * that we had a rotation that didn't result in an activity restart (code by aveyD). Without this you can
+			 * end up between two pages after a rotation.
+			 */
+			Display display = ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE))
+					.getDefaultDisplay();
+			int displayWidth = display.getWidth();
+
+			mNextPage = Math.max(0, Math.min(mCurrentPage, getChildCount() - 1));
+			final int newX = mNextPage * displayWidth;
+			final int delta = newX - getScrollX();
+			mScroller.startScroll(getScrollX(), 0, delta, 0, 0);
+		}
+
+		mLastSeenLayoutWidth = width;
+	}
+
+	@Override
+	protected boolean onRequestFocusInDescendants(int direction, Rect previouslyFocusedRect) {
+		int focusablePage;
+		if (mNextPage != INVALID_PAGE) {
+			focusablePage = mNextPage;
+		} else {
+			focusablePage = mCurrentPage;
+		}
+		getChildAt(focusablePage).requestFocus(direction, previouslyFocusedRect);
+		return false;
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Parcelable state) {
+		SavedState savedState = (SavedState) state;
+		super.onRestoreInstanceState(savedState.getSuperState());
+		if (savedState.currentPage != INVALID_PAGE) {
+			mCurrentPage = savedState.currentPage;
+		}
+	}
+
+	@Override
+	protected Parcelable onSaveInstanceState() {
+		final SavedState state = new SavedState(super.onSaveInstanceState());
+		state.currentPage = mCurrentPage;
+		return state;
+	}
+
+	@Override
+	public boolean onTouchEvent(MotionEvent ev) {
+		if (mVelocityTracker == null) {
+			mVelocityTracker = VelocityTracker.obtain();
+		}
+		mVelocityTracker.addMovement(ev);
+
+		final int action = ev.getAction();
+		final float x = ev.getX();
+		final float y = ev.getY();
+
+		switch (action) {
+		case MotionEvent.ACTION_DOWN:
+
+			/*
+			 * If being flinged and user touches, stop the fling. isFinished will be false if being flinged.
+			 */
+			if (!mScroller.isFinished()) {
+				mScroller.abortAnimation();
+			}
+
+			// Remember where the motion event started
+			mLastMotionX = x;
+
+			if (mScroller.isFinished()) {
+				mTouchState = TOUCH_STATE_REST;
+			} else {
+				mTouchState = TOUCH_STATE_HORIZONTAL_SCROLLING;
+			}
+			break;
+		case MotionEvent.ACTION_MOVE:
+			final int xDiff = (int) Math.abs(x - mLastMotionX);
+			boolean xMoved = xDiff > mTouchSlop;
+			if (xMoved) {
+				// Scroll if the user moved far enough along the X axis
+				mTouchState = TOUCH_STATE_HORIZONTAL_SCROLLING;
+			}
+
+			if (mTouchState == TOUCH_STATE_REST) {
+				checkStartScroll(x, y);
+			}
+
+			else if (mTouchState == TOUCH_STATE_HORIZONTAL_SCROLLING) {
+				// Scroll to follow the motion event
+				int deltaX = (int) (mLastMotionX - x);
+				mLastMotionX = x;
+				final int scrollX = getScrollX();
+
+				if (deltaX < 0) {
+					if (scrollX > 0) {
+						scrollBy(Math.max(-scrollX, deltaX), 0);
+					}
+				}
+
+				else if (getScrollX() < 0 || getScrollX() > getChildAt(getChildCount() - 1).getLeft()) {
+					deltaX /= 2;
+				}
+
+				scrollBy(deltaX, 0);
+
+			}
+
+			break;
+		case MotionEvent.ACTION_UP:
+			if (mTouchState == TOUCH_STATE_HORIZONTAL_SCROLLING) {
+				final VelocityTracker velocityTracker = mVelocityTracker;
+				velocityTracker.computeCurrentVelocity(1000, mMaximumVelocity);
+				int velocityX = (int) velocityTracker.getXVelocity();
+
+				if (velocityX > snapVelocity && mCurrentPage > 0) {
+					// Fling hard enough to move left
+					snapToPage(mCurrentPage - 1);
+				} else if (velocityX < -snapVelocity && mCurrentPage < getChildCount() - 1) {
+					// Fling hard enough to move right
+					snapToPage(mCurrentPage + 1);
+				} else {
+					snapToDestination();
+				}
+
+				if (mVelocityTracker != null) {
+					mVelocityTracker.recycle();
+					mVelocityTracker = null;
+				}
+			}
+			mTouchState = TOUCH_STATE_REST;
+			break;
+		case MotionEvent.ACTION_CANCEL:
+			mTouchState = TOUCH_STATE_REST;
+		}
+
+		return true;
+	}
+
+	private int pageWidthPadding() {
+		return ((getMeasuredWidth() - pageWidth) / 2);
+	}
+
+	public void removeOnScrollListener(OnScrollListener listener) {
+		mListeners.remove(listener);
+	}
+
+	@Override
+	public boolean requestChildRectangleOnScreen(View child, Rect rectangle, boolean immediate) {
+		int screen = indexOfChild(child);
+		if (screen != mCurrentPage || !mScroller.isFinished()) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Sets the current page
+	 * 
+	 * @param currentPage
+	 *            Zero based index of the pages in this layout
+	 * @param animate
+	 *            If true, the scrolling to the given page is animated
+	 */
+	public void setCurrentPage(int currentPage, boolean animate) {
+		mCurrentPage = Math.max(0, Math.min(currentPage, getChildCount()));
+		if (animate) {
+			snapToPage(currentPage);
+		} else {
+			int scrollLength = getScrollXForPage(mCurrentPage);
+			scrollTo(scrollLength, 0);
+			invalidate();
+			intimateScroll(scrollLength, "setCurrentPage");
+		}
+
+	}
+
+	/**
+	 * Set the width of each page
+	 * 
+	 * @param pageWidth
+	 */
+	public void setPageWidth(int pageWidth) {
+		this.pageWidthSpec = pageWidth;
+		requestLayout();
+	}
+
+	private void snapToDestination() {
+		final int startX = getScrollXForPage(mCurrentPage);
+		int whichPage = mCurrentPage;
+		if (getScrollX() < startX - getWidth() / 8) {
+			whichPage = Math.max(0, whichPage - 1);
+		} else if (getScrollX() > startX + getWidth() / 8) {
+			whichPage = Math.min(getChildCount() - 1, whichPage + 1);
+		}
+
+		snapToPage(whichPage);
+	}
+
+	private void snapToPage(int whichPage) {
+		enableChildrenCache();
+
+		boolean changingPages = whichPage != mCurrentPage;
+
+		mNextPage = whichPage;
+
+		View focusedChild = getFocusedChild();
+		if (focusedChild != null && changingPages && focusedChild == getChildAt(mCurrentPage)) {
+			focusedChild.clearFocus();
+			getChildAt(mNextPage).requestFocus();
+		}
+		final int newX = getScrollXForPage(whichPage);
+		final int delta = newX - getScrollX();
+		mScroller.startScroll(getScrollX(), 0, delta, 0, pageAnimationDuration);
+		invalidate();
+	}
+
 }

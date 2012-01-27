@@ -12,8 +12,8 @@
 
     <!-- Attributes for com.madrobot.ui.widgets.HorizontalScrollView -->
     <declare-styleable name="HorizontalScrollView">
-       <attr format="integer" name="snapVelocity" />
-        <attr format="integer" name="screenAnimationDuration" />
+        <attr format="integer" name="snapVelocity" />
+        <attr format="dimension" name="pageWidth" />
+        <attr format="integer" name="pageAnimationDuration" />
     </declare-styleable>
-
 </resources>
