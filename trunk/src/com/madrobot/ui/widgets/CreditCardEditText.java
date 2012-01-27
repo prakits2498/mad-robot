@@ -15,6 +15,11 @@ import android.util.AttributeSet;
 import com.madrobot.ui.widgets.EditTexts.DigitsLengthFilter;
 import com.madrobot.ui.widgets.EditTexts.DigitsLengthFilter.MaxDigitsGetter;
 
+/**
+ * An EditText that formats text like credit card numbers
+ * @author elton.stephen.kent
+ *
+ */
 public class CreditCardEditText extends com.madrobot.ui.widgets.EditTexts.FormattedEditText<String> {
 	private static final int LENGTH = 16;
 	private static final int LENGTH_AMEX = 15;
