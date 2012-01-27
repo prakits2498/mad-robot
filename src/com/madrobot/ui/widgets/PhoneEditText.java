@@ -12,6 +12,11 @@ import android.text.Spanned;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
+/**
+ * EditText that formats the text entered like phone numbers
+ * @author elton.stephen.kent
+ *
+ */
 public class PhoneEditText extends CustomEditText<String> {
 	private static final int LENGTH = 10;
 	

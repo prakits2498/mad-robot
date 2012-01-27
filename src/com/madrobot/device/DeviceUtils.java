@@ -13,6 +13,7 @@ package com.madrobot.device;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
@@ -428,6 +429,19 @@ public class DeviceUtils {
 			}
 		}
 		return raw;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
+	public static InputStream getLogcatLogs() throws IOException{
+		ProcessBuilder builder = new ProcessBuilder("logcat", "-d");
+		builder.redirectErrorStream(true);
+		Process process = builder.start();
+		//process.waitFor();
+		return process.getInputStream();
 	}
 
 }
