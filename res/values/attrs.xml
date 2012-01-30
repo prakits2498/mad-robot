@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Attribute sets for custom widgets -->
+<!-- Attribute sets for custom widgets DO NOT EDIT-->
 <resources>
 
     <!-- Attributes for com.madrobot.ui.widgets.WebImageView -->
@@ -16,4 +16,15 @@
         <attr format="dimension" name="pageWidth" />
         <attr format="integer" name="pageAnimationDuration" />
     </declare-styleable>
+    <!-- Attributes for com.madrobot.ui.widgets.WheelView -->
+    <declare-styleable name="WheelView">
+        <attr format="integer" name="topDrawable" />
+        <attr format="integer" name="bottomDrawable" />
+        <attr format="boolean" name="isCyclic" />
+        <attr format="boolean" name="drawTopDrawable" />
+        <attr format="boolean" name="drawBottomDrawable" />
+        <attr format="integer" name="selectorDrawable" />
+        <attr format="boolean" name="drawSelector" />
+    </declare-styleable>
+
 </resources>
