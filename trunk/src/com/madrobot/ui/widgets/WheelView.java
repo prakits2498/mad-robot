@@ -22,8 +22,77 @@ import com.madrobot.ui.adapters.WheelViewAdapter;
 
 /**
  * iPhone style wheel based selector
+ * <p>
+ * The following are the WheelView attributes (attrs.xml)
+ * <table border="0" width="250" cellpadding="3">
+ * <tr>
+ * <th><b>Attribute</b></td>
+ * <td><b>Type</b></td>
+ * <td><b>Default</b></td>
+ * <td><b>Description</b></td>
+ * </tr>
+ * <tr>
+ * <td><code>isCyclic</code</td>
+ * <td>Boolean</td>
+ * <td>false</td>
+ * <td>If true, the wheelview's adapter is cyclic. (Snap's back to the first item after the last)</td>
+ * </tr>
  * 
- * @author elton.stephen.kent
+ * <tr>
+ * <td><code>topDrawable</code></td>
+ * <td>Drawable</td>
+ * <td>Black shadow</td>
+ * <td>
+ * <p>
+ * Drawable to be used as a top shadow.Can be set to not be rendered using the <code>drawTopDrawable</code>
+ * attribute
+ * </p>
+ * </td>
+ * </tr>
+ * <tr>
+ * <td><code>bottomDrawable</code></td>
+ * <td>Drawable</td>
+ * <td>Black shadow</td>
+ * <td>
+ * <p>
+ * Drawable to be used as a bottom shadow.Can be set to not be rendered using the <code>drawBottomDrawable</code>
+ * attribute
+ * </p>
+ * </td>
+ * </tr>
+ * <tr>
+ * <td><code>selectorDrawable</code></td>
+ * <td>Drawable</td>
+ * <td>Semi-transparent box</td>
+ * <td>
+ * <p>
+ * Drawable used as the wheel's selector.Can be set not to be rendered using the <code>drawSelector</code>
+ * </p>
+ * </td>
+ * </tr>
+ * <tr>
+ * <td><code>drawTopDrawable</code</td>
+ * <td>Boolean</td>
+ * <td>false</td>
+ * <td>If true, the top shadow drawable is not rendered</td>
+ * </tr>
+ * <tr>
+ * <td><code>drawBottomDrawable</code</td>
+ * <td>Boolean</td>
+ * <td>false</td>
+ * <td>If true, the bottom shadow drawable is not rendered</td>
+ * </tr>
+ * 
+ * <tr>
+ * <td><code>drawSelector</code</td>
+ * <td>Boolean</td>
+ * <td>false</td>
+ * <td>If true,the selector is not rendered</td>
+ * </tr>
+ * </table>
+ * </p>
+ * 
+ * @author elton.kent
  * 
  */
 public class WheelView extends View {
