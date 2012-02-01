@@ -24,7 +24,7 @@ import com.madrobot.ui.adapters.WheelViewAdapter;
  * iPhone style wheel based selector
  * <p>
  * The following are the WheelView attributes (attrs.xml)
- * <table border="0" width="250" cellpadding="3">
+ * <table border="0" width="250" cellspacing="1">
  * <tr>
  * <th><b>Attribute</b></td>
  * <td><b>Type</b></td>
@@ -44,8 +44,7 @@ import com.madrobot.ui.adapters.WheelViewAdapter;
  * <td>Black shadow</td>
  * <td>
  * <p>
- * Drawable to be used as a top shadow.Can be set to not be rendered using the <code>drawTopDrawable</code>
- * attribute
+ * Drawable to be used as a top shadow.Can be set to not be rendered using the <code>drawTopDrawable</code> attribute
  * </p>
  * </td>
  * </tr>
@@ -90,6 +89,16 @@ import com.madrobot.ui.adapters.WheelViewAdapter;
  * <td>If true,the selector is not rendered</td>
  * </tr>
  * </table>
+ * <br/>
+ * <b>Using the WheelView</b><br/>
+ * <code>
+ * 		&lt;com.madrobot.ui.widgets.WheelView 
+ * 					android:layout_width="wrap_content" 
+ * 					android:layout_height="wrap_content"
+ * 					android:background="#fff"
+ * 					{your_namespace}:isCyclic="true">
+ * </code><br/>
+ * <b>Creating a WheelView Adapter</b></br>
  * </p>
  * 
  * @author elton.kent
