@@ -32,7 +32,7 @@ import com.madrobot.ui.adapters.WheelViewAdapter;
  * <td><b>Description</b></td>
  * </tr>
  * <tr>
- * <td><code>isCyclic</code</td>
+ * <td><code>isCyclic</code></td>
  * <td>Boolean</td>
  * <td>false</td>
  * <td>If true, the wheelview's adapter is cyclic. (Snap's back to the first item after the last)</td>
@@ -70,20 +70,20 @@ import com.madrobot.ui.adapters.WheelViewAdapter;
  * </td>
  * </tr>
  * <tr>
- * <td><code>drawTopDrawable</code</td>
+ * <td><code>drawTopDrawable</code></td>
  * <td>Boolean</td>
  * <td>false</td>
  * <td>If true, the top shadow drawable is not rendered</td>
  * </tr>
  * <tr>
- * <td><code>drawBottomDrawable</code</td>
+ * <td><code>drawBottomDrawable</code></td>
  * <td>Boolean</td>
  * <td>false</td>
  * <td>If true, the bottom shadow drawable is not rendered</td>
  * </tr>
  * 
  * <tr>
- * <td><code>drawSelector</code</td>
+ * <td><code>drawSelector</code></td>
  * <td>Boolean</td>
  * <td>false</td>
  * <td>If true,the selector is not rendered</td>

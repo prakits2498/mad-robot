@@ -1,4 +1,4 @@
-package com.madrobot.device;
+package com.madrobot.location;
 
 
 interface ILocationService {
