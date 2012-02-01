@@ -83,6 +83,7 @@ public class NetUtils {
 	}
 
 	/**
+	 * Encode the given IP address segments
 	 * @param a
 	 * @param b
 	 * @param c
