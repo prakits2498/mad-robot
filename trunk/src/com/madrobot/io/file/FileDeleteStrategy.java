@@ -40,7 +40,7 @@ import java.io.IOException;
  * This class captures the strategy to use and is designed for user subclassing.
  * 
  */
-class FileDeleteStrategy {
+public class FileDeleteStrategy {
 
 	/**
 	 * The singleton instance for normal file deletion, which does not permit
