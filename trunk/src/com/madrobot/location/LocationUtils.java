@@ -18,6 +18,8 @@ import static java.lang.Math.tan;
 
 import java.util.List;
 
+import android.location.Location;
+
 public final class LocationUtils {
 
 	/**
@@ -46,8 +48,7 @@ public final class LocationUtils {
 	private static final double FACTOR_DOUBLE_TO_INT = 1000000;
 
 	/**
-	 * Checks the given latitude value and throws an exception if the value is
-	 * out of range.
+	 * Checks the given latitude value and throws an exception if the value is out of range.
 	 * 
 	 * @param lat
 	 *            the latitude value that should be checked.
@@ -56,18 +57,17 @@ public final class LocationUtils {
 	 *             if the latitude value is < LATITUDE_MIN or > LATITUDE_MAX.
 	 */
 	public static double validateLatitude(double lat) {
-		if(lat < LATITUDE_MIN){
+		if (lat < LATITUDE_MIN) {
 			throw new IllegalArgumentException("invalid latitude value: " + lat);
-		} else if(lat > LATITUDE_MAX){
+		} else if (lat > LATITUDE_MAX) {
 			throw new IllegalArgumentException("invalid latitude value: " + lat);
-		} else{
+		} else {
 			return lat;
 		}
 	}
 
 	/**
-	 * Checks the given longitude value and throws an exception if the value is
-	 * out of range.
+	 * Checks the given longitude value and throws an exception if the value is out of range.
 	 * 
 	 * @param lon
 	 *            the longitude value that should be checked.
@@ -76,25 +76,20 @@ public final class LocationUtils {
 	 *             if the longitude value is < LONGITUDE_MIN or > LONGITUDE_MAX.
 	 */
 	public static double validateLongitude(double lon) {
-		if(lon < LONGITUDE_MIN){
+		if (lon < LONGITUDE_MIN) {
 			throw new IllegalArgumentException("invalid longitude value: " + lon);
-		} else if(lon > LONGITUDE_MAX){
+		} else if (lon > LONGITUDE_MAX) {
 			throw new IllegalArgumentException("invalid longitude value: " + lon);
-		} else{
+		} else {
 			return lon;
 		}
 	}
 
 	/**
-	 * Calculate the spherical distance between two GeoCoordinates in meters
-	 * using the Haversine
-	 * formula.
+	 * Calculate the spherical distance between two GeoCoordinates in meters using the Haversine formula.
 	 * 
-	 * This calculation is done using the assumption, that the earth is a
-	 * sphere, it is not
-	 * though. If you need a higher precision and can afford a longer execution
-	 * time you might
-	 * want to use vincentyDistance
+	 * This calculation is done using the assumption, that the earth is a sphere, it is not though. If you need a higher
+	 * precision and can afford a longer execution time you might want to use vincentyDistance
 	 * 
 	 * @param lon1
 	 *            longitude of first coordinate
@@ -120,11 +115,9 @@ public final class LocationUtils {
 	}
 
 	/**
-	 * Calculate the spherical distance between two points using the Spherical
-	 * law of Cosines formula.
+	 * Calculate the spherical distance between two points using the Spherical law of Cosines formula.
 	 * <p>
-	 * Its a more accurate than the haversine distance and gives an accuracy of
-	 * upto 1 metre.
+	 * Its a more accurate than the haversine distance and gives an accuracy of upto 1 metre.
 	 * </p>
 	 * 
 	 * @param lon1
@@ -134,8 +127,7 @@ public final class LocationUtils {
 	 * @return Distance in Km
 	 */
 	public static double lawOfCosineDistance(double lon1, double lat1, double lon2, double lat2) {
-		return Math.acos(Math.sin(lat1) * Math.sin(lat2) + Math.cos(lat1) * Math.cos(lat2)
-				* Math.cos(lon2 - lon1)) * 6371;
+		return Math.acos(Math.sin(lat1) * Math.sin(lat2) + Math.cos(lat1) * Math.cos(lat2) * Math.cos(lon2 - lon1)) * 6371;
 	}
 
 	public static GPSCoordinate getMidPoint(double lon1, double lat1, double lon2, double lat2) {
@@ -143,8 +135,8 @@ public final class LocationUtils {
 		double dLon = Math.toRadians((lon2 - lon1));
 		double Bx = Math.cos(lat2) * Math.cos(dLon);
 		double By = Math.cos(lat2) * Math.sin(dLon);
-		double lat3 = Math.atan2(Math.sin(lat1) + Math.sin(lat2), Math.sqrt((Math.cos(lat1) + Bx)
-				* (Math.cos(lat1) + Bx) + By * By));
+		double lat3 = Math.atan2(Math.sin(lat1) + Math.sin(lat2),
+				Math.sqrt((Math.cos(lat1) + Bx) * (Math.cos(lat1) + Bx) + By * By));
 		double lon3 = lon1 + Math.atan2(By, Math.cos(lat1) + Bx);
 		return new GPSCoordinate(lat3, lon3);
 	}
@@ -166,20 +158,14 @@ public final class LocationUtils {
 	}
 
 	/**
-	 * Calculates geodetic distance between two GeoCoordinates using Vincenty
-	 * inverse formula
-	 * for ellipsoids. This is very accurate but consumes more resources and
-	 * time than the
-	 * sphericalDistance method
+	 * Calculates geodetic distance between two GeoCoordinates using Vincenty inverse formula for ellipsoids. This is
+	 * very accurate but consumes more resources and time than the sphericalDistance method
 	 * 
-	 * Adaptation of Chriss Veness' JavaScript Code on
-	 * http://www.movable-type.co.uk/scripts/latlong-vincenty.html
+	 * Adaptation of Chriss Veness' JavaScript Code on http://www.movable-type.co.uk/scripts/latlong-vincenty.html
 	 * 
-	 * Paper: Vincenty inverse formula - T Vincenty, "Direct and Inverse
-	 * Solutions of Geodesics
-	 * on the Ellipsoid with application of nested equations", Survey Review,
-	 * vol XXII no 176,
-	 * 1975 (http://www.ngs.noaa.gov/PUBS_LIB/inverse.pdf)
+	 * Paper: Vincenty inverse formula - T Vincenty, "Direct and Inverse Solutions of Geodesics on the Ellipsoid with
+	 * application of nested equations", Survey Review, vol XXII no 176, 1975
+	 * (http://www.ngs.noaa.gov/PUBS_LIB/inverse.pdf)
 	 * 
 	 * @param gc1
 	 *            first GeoCoordinate
@@ -199,41 +185,36 @@ public final class LocationUtils {
 		double lambda = L, lambdaP, iterLimit = 100;
 
 		double cosSqAlpha = 0, sinSigma = 0, cosSigma = 0, cos2SigmaM = 0, sigma = 0, sinLambda = 0, sinAlpha = 0, cosLambda = 0;
-		do{
+		do {
 			sinLambda = Math.sin(lambda);
 			cosLambda = Math.cos(lambda);
 			sinSigma = Math.sqrt((cosU2 * sinLambda) * (cosU2 * sinLambda)
-					+ (cosU1 * sinU2 - sinU1 * cosU2 * cosLambda)
-					* (cosU1 * sinU2 - sinU1 * cosU2 * cosLambda));
-			if(sinSigma == 0){
+					+ (cosU1 * sinU2 - sinU1 * cosU2 * cosLambda) * (cosU1 * sinU2 - sinU1 * cosU2 * cosLambda));
+			if (sinSigma == 0) {
 				return 0; // co-incident points
 			}
 			cosSigma = sinU1 * sinU2 + cosU1 * cosU2 * cosLambda;
 			sigma = Math.atan2(sinSigma, cosSigma);
 			sinAlpha = cosU1 * cosU2 * sinLambda / sinSigma;
 			cosSqAlpha = 1 - sinAlpha * sinAlpha;
-			if(cosSqAlpha != 0){
+			if (cosSqAlpha != 0) {
 				cos2SigmaM = cosSigma - 2 * sinU1 * sinU2 / cosSqAlpha;
-			} else{
+			} else {
 				cos2SigmaM = 0;
 			}
 			double C = f / 16 * cosSqAlpha * (4 + f * (4 - 3 * cosSqAlpha));
 			lambdaP = lambda;
-			lambda = L
-					+ (1 - C)
-					* f
-					* sinAlpha
-					* (sigma + C * sinSigma
-							* (cos2SigmaM + C * cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM)));
-		} while((Math.abs(lambda - lambdaP) > 1e-12) && (--iterLimit > 0));
+			lambda = L + (1 - C) * f * sinAlpha
+					* (sigma + C * sinSigma * (cos2SigmaM + C * cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM)));
+		} while ((Math.abs(lambda - lambdaP) > 1e-12) && (--iterLimit > 0));
 
-		if(iterLimit == 0){
+		if (iterLimit == 0) {
 			return 0; // formula failed to converge
 		}
 
 		double uSq = cosSqAlpha
-				* (Math.pow(LocationConstants.EQUATORIALRADIUS, 2) - Math.pow(
-						LocationConstants.POLARRADIUS, 2)) / Math.pow(LocationConstants.POLARRADIUS, 2);
+				* (Math.pow(LocationConstants.EQUATORIALRADIUS, 2) - Math.pow(LocationConstants.POLARRADIUS, 2))
+				/ Math.pow(LocationConstants.POLARRADIUS, 2);
 		double A = 1 + uSq / 16384 * (4096 + uSq * (-768 + uSq * (320 - 175 * uSq)));
 		double B = uSq / 1024 * (256 + uSq * (-128 + uSq * (74 - 47 * uSq)));
 		double deltaSigma = B
@@ -248,8 +229,7 @@ public final class LocationUtils {
 	}
 
 	/**
-	 * Calculate the amount of degrees of latitude for a given distance in
-	 * meters.
+	 * Calculate the amount of degrees of latitude for a given distance in meters.
 	 * 
 	 * @param meters
 	 *            distance in meters
@@ -260,8 +240,7 @@ public final class LocationUtils {
 	}
 
 	/**
-	 * Calculate the amount of degrees of longitude for a given distance in
-	 * meters.
+	 * Calculate the amount of degrees of longitude for a given distance in meters.
 	 * 
 	 * @param meters
 	 *            distance in meters
@@ -270,13 +249,11 @@ public final class LocationUtils {
 	 * @return longitude degrees
 	 */
 	public static double longitudeDistance(int meters, double latitude) {
-		return (meters * 360)
-				/ (2 * Math.PI * LocationConstants.EQUATORIALRADIUS * Math.cos(Math.toRadians(latitude)));
+		return (meters * 360) / (2 * Math.PI * LocationConstants.EQUATORIALRADIUS * Math.cos(Math.toRadians(latitude)));
 	}
 
 	/**
-	 * Calculate the amount of degrees of longitude for a given distance in
-	 * meters.
+	 * Calculate the amount of degrees of longitude for a given distance in meters.
 	 * 
 	 * @param meters
 	 *            distance in meters
@@ -286,8 +263,7 @@ public final class LocationUtils {
 	 */
 	public static double longitudeDistance(int meters, int latitude) {
 		return (meters * 360)
-				/ (2 * Math.PI * LocationConstants.EQUATORIALRADIUS * Math.cos(Math
-						.toRadians(intToDouble(latitude))));
+				/ (2 * Math.PI * LocationConstants.EQUATORIALRADIUS * Math.cos(Math.toRadians(intToDouble(latitude))));
 	}
 
 	/**
@@ -309,37 +285,37 @@ public final class LocationUtils {
 	 */
 	public static String getDirection(float degrees) {
 
-		if((degrees >= 11.25) && (degrees <= 33.75)){
+		if ((degrees >= 11.25) && (degrees <= 33.75)) {
 			return "NNE";
-		} else if((degrees > 33.75) && (degrees <= 56.25)){
+		} else if ((degrees > 33.75) && (degrees <= 56.25)) {
 			return "NE";
-		} else if((degrees > 56.25) && (degrees <= 78.75)){
+		} else if ((degrees > 56.25) && (degrees <= 78.75)) {
 			return "ENE";
-		} else if((degrees > 78.75) && (degrees <= 101.25)){
+		} else if ((degrees > 78.75) && (degrees <= 101.25)) {
 			return "E";
-		} else if((degrees > 101.25) && (degrees <= 123.75)){
+		} else if ((degrees > 101.25) && (degrees <= 123.75)) {
 			return "ESE";
-		} else if((degrees > 123.75) && (degrees <= 146.25)){
+		} else if ((degrees > 123.75) && (degrees <= 146.25)) {
 			return "SE";
-		} else if((degrees > 146.25) && (degrees <= 168.75)){
+		} else if ((degrees > 146.25) && (degrees <= 168.75)) {
 			return "SSE";
-		} else if((degrees > 168.75) && (degrees <= 191.25)){
+		} else if ((degrees > 168.75) && (degrees <= 191.25)) {
 			return "S";
-		} else if((degrees > 191.25) && (degrees <= 213.75)){
+		} else if ((degrees > 191.25) && (degrees <= 213.75)) {
 			return "SSW";
-		} else if((degrees > 213.75) && (degrees <= 236.25)){
+		} else if ((degrees > 213.75) && (degrees <= 236.25)) {
 			return "SW";
-		} else if((degrees > 236.25) && (degrees <= 258.75)){
+		} else if ((degrees > 236.25) && (degrees <= 258.75)) {
 			return "WSW";
-		} else if((degrees > 258.75) && (degrees <= 281.25)){
+		} else if ((degrees > 258.75) && (degrees <= 281.25)) {
 			return "W";
-		} else if((degrees > 281.25) && (degrees <= 303.75)){
+		} else if ((degrees > 281.25) && (degrees <= 303.75)) {
 			return "WNW";
-		} else if((degrees > 303.75) && (degrees <= 326.25)){
+		} else if ((degrees > 303.75) && (degrees <= 326.25)) {
 			return "NW";
-		} else if((degrees > 326.2) && (degrees <= 348.75)){
+		} else if ((degrees > 326.2) && (degrees <= 348.75)) {
 			return "NNW";
-		} else if((degrees > 348.75) && (degrees < 11.25)){
+		} else if ((degrees > 348.75) && (degrees < 11.25)) {
 			return "N";
 		}
 		return "U/K";
@@ -360,7 +336,7 @@ public final class LocationUtils {
 						+ "version=\"1.1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
 						+ "xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 "
 						+ "http://www.topografix.com/GPX/1/1/gpx.xsd\">").append("\n");
-		for(GPSCoordinate c : g){
+		for (GPSCoordinate c : g) {
 			sb.append("\t<wpt ").append("lat=\"").append(c.getLatitude()).append("\" ");
 			sb.append("lon=\"").append(c.getLongitude()).append("\"/>");
 			sb.append("\n");
@@ -370,26 +346,6 @@ public final class LocationUtils {
 		return sb.toString();
 	}
 
-	public static String arraysSVG(List<float[]> closedPolygons) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>").append("\n");
-		sb.append("<svg xmlns=\"http://www.w3.org/2000/svg\" "
-				+ "xmlns:xlink=\"http://www.w3.org/1999/xlink\" "
-				+ "xmlns:ev=\"http://www.w3.org/2001/xml-events\" "
-				+ "version=\"1.1\" baseProfile=\"full\" width=\"800mm\" height=\"600mm\">");
-
-		for(float[] fs : closedPolygons){
-			sb.append("<polygon points=\"");
-			for(float f : fs){
-				sb.append(f).append(" ");
-			}
-			sb.append("\" />");
-		}
-
-		sb.append("</svg>");
-
-		return sb.toString();
-	}
 
 	/**
 	 * Convert UTM coordinates to GPS coordinates
@@ -420,8 +376,7 @@ public final class LocationUtils {
 		double tq1 = tan(q1);
 
 		double N1 = LocationConstants.E_R_WGS84 / sqrt(1. - LocationConstants.UTM_HOR * (sq1 * sq1));
-		double R1 = (N1 * (1. - LocationConstants.UTM_HOR))
-				/ (1. - LocationConstants.UTM_HOR * (sq1 * sq1));
+		double R1 = (N1 * (1. - LocationConstants.UTM_HOR)) / (1. - LocationConstants.UTM_HOR * (sq1 * sq1));
 		double C1 = LocationConstants.UTM_VER * (cq1 * cq1);
 		double T1 = tq1 * tq1;
 		double D = (x - LocationConstants.UTMK_WIDTH) / (N1 * LocationConstants.UTMK_SCALE);
@@ -429,8 +384,7 @@ public final class LocationUtils {
 		double dLat = q1
 				- ((N1 * tq1) / R1)
 				* ((D * D) / 2. - pow(D, 4.) / 24.
-						* (5. + 3. * T1 + 10. * C1 - 4. * (C1 * C1) - 9. * LocationConstants.UTM_VER) + pow(
-						D, 6.)
+						* (5. + 3. * T1 + 10. * C1 - 4. * (C1 * C1) - 9. * LocationConstants.UTM_VER) + pow(D, 6.)
 						/ 720.
 						* (61. + 90. * T1 + 298. * C1 + 45. * (T1 * T1) - 252. * LocationConstants.UTM_VER - 3. * (C1 * C1)));
 		double dLong = LocationConstants.UTMK_LON
@@ -438,8 +392,7 @@ public final class LocationUtils {
 				+ (1. / cq1)
 				* (D - pow(D, 3.) / 6. * (1. + (2. * T1) + C1) + pow(D, 5.)
 						/ 120.
-						* (5. - (2. * C1) + (28. * T1) - (3. * (C1 * C1))
-								+ (8. * LocationConstants.UTM_VER) + (24 * (T1 * T1))));
+						* (5. - (2. * C1) + (28. * T1) - (3. * (C1 * C1)) + (8. * LocationConstants.UTM_VER) + (24 * (T1 * T1))));
 
 		dLat *= LocationConstants.DEG;
 		dLong *= LocationConstants.DEG;
@@ -483,14 +436,8 @@ public final class LocationUtils {
 						* (5. - 18. * T + T * T + 72. * C - 58. * LocationConstants.UTM_VER))
 				+ LocationConstants.UTMK_WIDTH;
 		double y = LocationConstants.UTMK_SCALE
-				* (M - M0 + N * tlat * A * A / 2. + A * A * A * A / 24. * (5. - T + 9. * C + 4. * C * C) + A
-						* A
-						* A
-						* A
-						* A
-						* A
-						/ 720.
-						* (61. - 58. * T + T * T + 600. * C - 330. * LocationConstants.UTM_VER))
+				* (M - M0 + N * tlat * A * A / 2. + A * A * A * A / 24. * (5. - T + 9. * C + 4. * C * C) + A * A * A
+						* A * A * A / 720. * (61. - 58. * T + T * T + 600. * C - 330. * LocationConstants.UTM_VER))
 				+ LocationConstants.UTMK_HEIGHT;
 
 		x = x * 10. + 340000000;
@@ -517,5 +464,69 @@ public final class LocationUtils {
 
 	private static double curvature(double e1f, double e2f, double e3f, double e4f, double p) {
 		return e1f * p - e2f * sin(2. * p) + e3f * sin(4. * p) - e4f * sin(6. * p);
+	}
+
+	/**
+	 * @param location
+	 * @param currentBestLocation
+	 */
+
+	/**
+	 * Determines whether one Location reading is better than the current Location fix
+	 * 
+	 * @param location
+	 *            The new Location that you want to evaluate
+	 * @param currentBestLocation
+	 *            The Location fix, to which you want to compare the new one
+	 * @return true of {@code location} is better that {@code currentBestLocation}
+	 */
+	public static boolean isBetterLocation(Location location, Location currentBestLocation) {
+		 final int TWO_MINUTES = 1000 * 60 * 2;
+		if (currentBestLocation == null) {
+			// A new location is always better than no location
+			return true;
+		}
+
+		// Check whether the new location fix is newer or older
+		long timeDelta = location.getTime() - currentBestLocation.getTime();
+		boolean isSignificantlyNewer = timeDelta > TWO_MINUTES;
+		boolean isSignificantlyOlder = timeDelta < -TWO_MINUTES;
+		boolean isNewer = timeDelta > 0;
+
+		// If it's been more than two minutes since the current location, use the new location
+		// because the user has likely moved
+		if (isSignificantlyNewer) {
+			return true;
+			// If the new location is more than two minutes older, it must be worse
+		} else if (isSignificantlyOlder) {
+			return false;
+		}
+
+		// Check whether the new location fix is more or less accurate
+		int accuracyDelta = (int) (location.getAccuracy() - currentBestLocation.getAccuracy());
+		boolean isLessAccurate = accuracyDelta > 0;
+		boolean isMoreAccurate = accuracyDelta < 0;
+		boolean isSignificantlyLessAccurate = accuracyDelta > 200;
+
+		// Check if the old and new location are from the same provider
+		boolean isFromSameProvider = isSameProvider(location.getProvider(), currentBestLocation.getProvider());
+
+		// Determine location quality using a combination of timeliness and accuracy
+		if (isMoreAccurate) {
+			return true;
+		} else if (isNewer && !isLessAccurate) {
+			return true;
+		} else if (isNewer && !isSignificantlyLessAccurate && isFromSameProvider) {
+			return true;
+		}
+		return false;
+	}
+
+	/** Checks whether two providers are the same */
+	private static boolean isSameProvider(String provider1, String provider2) {
+		if (provider1 == null) {
+			return provider2 == null;
+		}
+		return provider1.equals(provider2);
 	}
 }
