@@ -1,8 +1,5 @@
 package com.madrobot.location;
 
-import com.madrobot.device.ILocationService;
-import com.madrobot.device.ILocationService.Stub;
-
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
