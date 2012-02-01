@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.channels.FileChannel;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import android.util.Log;
 
@@ -510,5 +512,67 @@ public class FileUtils {
 		String[] invalidChars = new String[] { ":", "\\", "/", "<", ">", "?",
 				"*", "|", "\"", ";" };
 		return StringUtils.strip(str, invalidChars);
+	}
+	
+
+	/**
+	 * Extract the given {@code zip_file} to the given {@code directory}
+	 * @param zip_file
+	 * @param directory
+	 */
+	public void extractZipFiles(String zip_file, String directory) {
+		byte[] data = new byte[2048];
+		String name, path, zipDir;
+		ZipEntry entry;
+		ZipInputStream zipstream;
+
+		if(!(directory.charAt(directory.length() - 1) == '/'))
+			directory += "/";
+
+		if(zip_file.contains("/")) {
+			path = zip_file;
+			name = path.substring(path.lastIndexOf("/") + 1, 
+								  path.length() - 4);
+			zipDir = directory + name + "/";
+
+		} else {
+			path = directory + zip_file;
+			name = path.substring(path.lastIndexOf("/") + 1, 
+		 			  			  path.length() - 4);
+			zipDir = directory + name + "/";
+		}
+
+		new File(zipDir).mkdir();
+
+		try {
+			zipstream = new ZipInputStream(new FileInputStream(path));
+
+			while((entry = zipstream.getNextEntry()) != null) {
+				String buildDir = zipDir;
+				String[] dirs = entry.getName().split("/");
+
+				if(dirs != null && dirs.length > 0) {
+					for(int i = 0; i < dirs.length - 1; i++) {
+						buildDir += dirs[i] + "/";
+						new File(buildDir).mkdir();
+					}
+				}
+
+				int read = 0;
+				FileOutputStream out = new FileOutputStream(
+										zipDir + entry.getName());
+				while((read = zipstream.read(data, 0, 2048)) != -1)
+					out.write(data, 0, read);
+
+				zipstream.closeEntry();
+				out.close();
+			}
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
