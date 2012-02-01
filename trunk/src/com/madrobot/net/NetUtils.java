@@ -8,7 +8,7 @@
  * Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
-package com.madrobot.net.util;
+package com.madrobot.net;
 
 import java.io.BufferedReader;
 import java.io.File;

@@ -1,6 +1,6 @@
 package com.madrobot;
 
-import com.madrobot.net.util.NetUtils;
+import com.madrobot.net.NetUtils;
 
 public class TestMain {
 	public static void main(String[] args){
