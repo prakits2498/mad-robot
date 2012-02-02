@@ -91,6 +91,7 @@ import com.madrobot.ui.adapters.WheelViewAdapter;
  * </table>
  * <br/>
  * <b>Using the WheelView</b><br/>
+ * A background needs to be set for the WheelView if the transparent look is not desired.
  * <code>
  * 		&lt;com.madrobot.ui.widgets.WheelView 
  * 					android:layout_width="wrap_content" 

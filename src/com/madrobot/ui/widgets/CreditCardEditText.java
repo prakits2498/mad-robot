@@ -46,41 +46,11 @@ public class CreditCardEditText extends com.madrobot.ui.widgets.EditTexts.Format
 		cardTypes.put(5, MASTERCARD_CREDIT);
 	}
 
+	public static String getMaskedLast4(String last4) {
+		return "**** **** **** " + last4;
+	}
+
 	private String source = "";
-
-	protected int getMaxLength() {
-		return getMaxLength(false, true);
-	}
-
-	protected int getMaxLength(boolean padded, boolean isCredit) {
-		if (isCredit
-				&& getCardType() != null
-				&& getCardType()
-						.equalsIgnoreCase(AMEX_CREDIT))
-			return LENGTH_AMEX + (padded ? 2 : 0);
-		else
-			return LENGTH + (padded ? 3 : 0);
-	}
-
-	public String getCardType() {
-		if (getValue().length() == 0)
-			return null;
-		String actual = getValue();
-		String digit = actual.substring(0, 1);
-		if (actual.length() > 0) {
-			try {
-				if (digit.equals("6") && actual.length() > 3) {
-					digit = actual.substring(0, 4);
-				} else {
-					digit = actual.substring(0, 1);
-				}
-				return cardTypes.get(Integer.parseInt(digit));
-			} catch (Exception e) {
-				return null;
-			}
-		} else
-			return null;
-	}
 
 	public CreditCardEditText(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -124,12 +94,6 @@ public class CreditCardEditText extends com.madrobot.ui.widgets.EditTexts.Format
 		});
 	}
 
-	@Override
-	protected void format(Editable arg0) {
-		CharSequence dollars = doObscure(getFormatted(getValue()));
-		replaceText(arg0, dollars);
-	}
-
 	private String doObscure(String formatted) {
 		char[] chars = formatted.toCharArray();
 		int trailing = (getCardType() != null && getCardType()
@@ -145,6 +109,32 @@ public class CreditCardEditText extends com.madrobot.ui.widgets.EditTexts.Format
 	}
 
 	@Override
+	protected void format(Editable arg0) {
+		CharSequence dollars = doObscure(getFormatted(getValue()));
+		replaceText(arg0, dollars);
+	}
+
+	public String getCardType() {
+		if (getValue().length() == 0)
+			return null;
+		String actual = getValue();
+		String digit = actual.substring(0, 1);
+		if (actual.length() > 0) {
+			try {
+				if (digit.equals("6") && actual.length() > 3) {
+					digit = actual.substring(0, 4);
+				} else {
+					digit = actual.substring(0, 1);
+				}
+				return cardTypes.get(Integer.parseInt(digit));
+			} catch (Exception e) {
+				return null;
+			}
+		} else
+			return null;
+	}
+
+	@Override
 	protected String getFormatted(String typedText) {
 		String regex = "(\\d{0,4})(\\d{0,4})(\\d{0,4})(\\d{0,4})";
 		String replace = "$1 $2 $3 $4";
@@ -156,6 +146,32 @@ public class CreditCardEditText extends com.madrobot.ui.widgets.EditTexts.Format
 		}
 		Matcher matcher = Pattern.compile(regex).matcher(typedText);
 		return matcher.replaceFirst(replace).trim();
+	}
+
+	protected int getMaxLength() {
+		return getMaxLength(false, true);
+	}
+
+	protected int getMaxLength(boolean padded, boolean isCredit) {
+		if (isCredit
+				&& getCardType() != null
+				&& getCardType()
+						.equalsIgnoreCase(AMEX_CREDIT))
+			return LENGTH_AMEX + (padded ? 2 : 0);
+		else
+			return LENGTH + (padded ? 3 : 0);
+	}
+
+	@Override
+	public String getValue() {
+		return source;
+	}
+
+	@Override
+	protected void setFocus() {
+		String text = getText().toString();
+		text = Pattern.compile("[\\s]+$").matcher(text).replaceFirst("");
+		setSelection(text.length());
 	}
 
 	@Override
@@ -176,21 +192,5 @@ public class CreditCardEditText extends com.madrobot.ui.widgets.EditTexts.Format
 					|| cardType
 							.equalsIgnoreCase(MASTERCARD_CREDIT);
 		return true;
-	}
-
-	@Override
-	public String getValue() {
-		return source;
-	}
-
-	@Override
-	protected void setFocus() {
-		String text = getText().toString();
-		text = Pattern.compile("[\\s]+$").matcher(text).replaceFirst("");
-		setSelection(text.length());
-	}
-
-	public static String getMaskedLast4(String last4) {
-		return "**** **** **** " + last4;
 	}
 }

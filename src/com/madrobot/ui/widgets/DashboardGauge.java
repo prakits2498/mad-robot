@@ -81,6 +81,8 @@ public final class DashboardGauge extends CustomWidget {
 	private float handAcceleration = 0.0f;
 	private long lastHandMoveTime = -1L;
 
+	private String title = "";
+
 	public DashboardGauge(Context context) {
 		super(context);
 	}
@@ -91,6 +93,200 @@ public final class DashboardGauge extends CustomWidget {
 
 	public DashboardGauge(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
+	}
+
+	private int chooseDimension(int mode, int size) {
+		if(mode == MeasureSpec.AT_MOST || mode == MeasureSpec.EXACTLY){
+			return size;
+		} else{ // (mode == MeasureSpec.UNSPECIFIED)
+			return getPreferredSize();
+		}
+	}
+
+	
+
+	private float degreeToAngle(float degree) {
+		return (degree - centerDegree) / 2.0f * degreesPerNick;
+	}
+
+	private void drawBackground(Canvas canvas) {
+		if(background == null){
+			Log.w(TAG, "Background not created");
+		} else{
+			canvas.drawBitmap(background, 0, 0, backgroundPaint);
+		}
+	}
+
+	private void drawFace(Canvas canvas) {
+		canvas.drawOval(faceRect, facePaint);
+		// draw the inner rim circle
+		canvas.drawOval(faceRect, rimCirclePaint);
+		// draw the rim shadow inside the face
+		canvas.drawOval(faceRect, rimShadowPaint);
+	}
+
+	
+
+	private void drawHand(Canvas canvas) {
+		if(handInitialized){
+			float handAngle = degreeToAngle(handPosition);
+			canvas.save(Canvas.MATRIX_SAVE_FLAG);
+			canvas.rotate(handAngle, 0.5f, 0.5f);
+			canvas.drawPath(handPath, handPaint);
+			canvas.restore();
+
+			canvas.drawCircle(0.5f, 0.5f, 0.01f, handScrewPaint);
+		}
+	}
+
+	private void drawLogo(Canvas canvas) {
+		canvas.save(Canvas.MATRIX_SAVE_FLAG);
+		canvas.translate(0.5f - logo.getWidth() * logoScale / 2.0f, 0.5f - logo.getHeight() * logoScale
+				/ 2.0f);
+
+		int color = 0x00000000;
+		float position = getRelativeTemperaturePosition();
+		if(position < 0){
+			color |= (int) ((0xf0) * -position); // blue
+		} else{
+			color |= ((int) ((0xf0) * position)) << 16; // red
+		}
+		// Log.d(TAG, "*** " + Integer.toHexString(color));
+		LightingColorFilter logoFilter = new LightingColorFilter(0xff008822, color);
+		logoPaint.setColorFilter(logoFilter);
+		if(logo != null)
+			canvas.drawBitmap(logo, logoMatrix, logoPaint);
+		canvas.restore();
+	}
+
+	private void drawRim(Canvas canvas) {
+		// first, draw the metallic body
+		canvas.drawOval(rimRect, rimPaint);
+		// now the outer rim circle
+		canvas.drawOval(rimRect, rimCirclePaint);
+	}
+
+	private void drawScale(Canvas canvas) {
+		canvas.drawOval(scaleRect, scalePaint);
+		canvas.save(Canvas.MATRIX_SAVE_FLAG);
+		for(int i = 0; i < totalNicks; ++i){
+			float y1 = scaleRect.top;
+			float y2 = y1 - 0.020f;
+
+			canvas.drawLine(0.5f, y1, 0.5f, y2, scalePaint);
+
+			if(i % 5 == 0){
+				int value = nickToDegree(i);
+
+				if(value >= minDegrees && value <= maxDegrees){
+					String valueString = Integer.toString(value);
+					canvas.drawText(valueString, 0.5f, y2 - 0.015f, scalePaint);
+				}
+			}
+			canvas.rotate(degreesPerNick, 0.5f, 0.5f);
+		}
+		canvas.restore();
+	}
+
+	private void drawTitle(Canvas canvas) {
+		String title = getTitle();
+		canvas.drawTextOnPath(title, titlePath, 0.0f, 0.0f, titlePaint);
+	}
+
+	// in case there is no size specified
+	private int getPreferredSize() {
+		return 300;
+	}
+
+	private float getRelativeTemperaturePosition() {
+		if(handPosition < centerDegree){
+			return -(centerDegree - handPosition) / (centerDegree - minDegrees);
+		} else{
+			return (handPosition - centerDegree) / (maxDegrees - centerDegree);
+		}
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	private boolean handNeedsToMove() {
+		return Math.abs(handPosition - handTarget) > 0.01f;
+	}
+
+	private void moveHand() {
+		if(!handNeedsToMove()){
+			return;
+		}
+
+		if(lastHandMoveTime != -1L){
+			long currentTime = System.currentTimeMillis();
+			float delta = (currentTime - lastHandMoveTime) / 1000.0f;
+
+			float direction = Math.signum(handVelocity);
+			if(Math.abs(handVelocity) < 90.0f){
+				handAcceleration = 5.0f * (handTarget - handPosition);
+			} else{
+				handAcceleration = 0.0f;
+			}
+			handPosition += handVelocity * delta;
+			handVelocity += handAcceleration * delta;
+			if((handTarget - handPosition) * direction < 0.01f * direction){
+				handPosition = handTarget;
+				handVelocity = 0.0f;
+				handAcceleration = 0.0f;
+				lastHandMoveTime = -1L;
+			} else{
+				lastHandMoveTime = System.currentTimeMillis();
+			}
+			invalidate();
+		} else{
+			lastHandMoveTime = System.currentTimeMillis();
+			moveHand();
+		}
+	}
+
+	private int nickToDegree(int nick) {
+		int rawDegree = ((nick < totalNicks / 2) ? nick : (nick - totalNicks)) * 2;
+		int shiftedDegree = rawDegree + centerDegree;
+		return shiftedDegree;
+	}
+
+	@Override
+	protected void onDraw(Canvas canvas) {
+		drawBackground(canvas);
+
+		float scale = getWidth();
+		canvas.save(Canvas.MATRIX_SAVE_FLAG);
+		canvas.scale(scale, scale);
+
+		drawLogo(canvas);
+		drawHand(canvas);
+
+		canvas.restore();
+
+		if(handNeedsToMove()){
+			moveHand();
+		}
+	}
+
+	@Override
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+		Log.d(TAG, "Width spec: " + MeasureSpec.toString(widthMeasureSpec));
+		Log.d(TAG, "Height spec: " + MeasureSpec.toString(heightMeasureSpec));
+
+		int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+		int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+
+		int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+		int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+
+		int chosenWidth = chooseDimension(widthMode, widthSize);
+		int chosenHeight = chooseDimension(heightMode, heightSize);
+
+		int chosenDimension = Math.min(chosenWidth, chosenHeight);
+
+		setMeasuredDimension(chosenDimension, chosenDimension);
 	}
 
 	@Override
@@ -122,20 +318,65 @@ public final class DashboardGauge extends CustomWidget {
 		return state;
 	}
 
-	
+	@Override
+	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+		Log.d(TAG, "Size changed to " + w + "x" + h);
 
-	private String title = "";
+		regenerateBackground();
+	}
+
+	private void regenerateBackground() {
+		// free the old bitmap
+		if(background != null){
+			background.recycle();
+		}
+
+		background = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
+		Canvas backgroundCanvas = new Canvas(background);
+		float scale = getWidth();
+		backgroundCanvas.scale(scale, scale);
+
+		drawRim(backgroundCanvas);
+		drawFace(backgroundCanvas);
+		drawScale(backgroundCanvas);
+		drawTitle(backgroundCanvas);
+	}
+
+	public void setHandTarget(float value) {
+		if(value < minDegrees){
+			value = minDegrees;
+		} else if(value > maxDegrees){
+			value = maxDegrees;
+		}
+		handTarget = value;
+		handInitialized = true;
+		invalidate();
+	}
+
+	public void setScaleLogo(Bitmap logo) {
+		this.logo = logo;
+		logoMatrix = new Matrix();
+		logoScale = (1.0f / logo.getWidth()) * 0.3f;
+		logoMatrix.setScale(logoScale, logoScale);
+		invalidate();
+	}
+
+	public void setScaleTexture(Bitmap texture) {
+		this.faceTexture = texture;
+		BitmapShader paperShader = new BitmapShader(faceTexture, Shader.TileMode.MIRROR,
+				Shader.TileMode.MIRROR);
+		Matrix paperMatrix = new Matrix();
+		paperMatrix.setScale(1.0f / faceTexture.getWidth(), 1.0f / faceTexture.getHeight());
+		paperShader.setLocalMatrix(paperMatrix);
+		facePaint.setFilterBitmap(true);
+		facePaint.setShader(paperShader);
+		invalidate();
+	}
 
 	public void setTitle(String title) {
 		this.title = title;
 		invalidate();
 	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	
 
 	@Override
 	protected void setupDrawingTools() {
@@ -220,246 +461,5 @@ public final class DashboardGauge extends CustomWidget {
 
 		backgroundPaint = new Paint();
 		backgroundPaint.setFilterBitmap(true);
-	}
-
-	public void setScaleTexture(Bitmap texture) {
-		this.faceTexture = texture;
-		BitmapShader paperShader = new BitmapShader(faceTexture, Shader.TileMode.MIRROR,
-				Shader.TileMode.MIRROR);
-		Matrix paperMatrix = new Matrix();
-		paperMatrix.setScale(1.0f / faceTexture.getWidth(), 1.0f / faceTexture.getHeight());
-		paperShader.setLocalMatrix(paperMatrix);
-		facePaint.setFilterBitmap(true);
-		facePaint.setShader(paperShader);
-		invalidate();
-	}
-
-	public void setScaleLogo(Bitmap logo) {
-		this.logo = logo;
-		logoMatrix = new Matrix();
-		logoScale = (1.0f / logo.getWidth()) * 0.3f;
-		logoMatrix.setScale(logoScale, logoScale);
-		invalidate();
-	}
-
-	@Override
-	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-		Log.d(TAG, "Width spec: " + MeasureSpec.toString(widthMeasureSpec));
-		Log.d(TAG, "Height spec: " + MeasureSpec.toString(heightMeasureSpec));
-
-		int widthMode = MeasureSpec.getMode(widthMeasureSpec);
-		int widthSize = MeasureSpec.getSize(widthMeasureSpec);
-
-		int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-		int heightSize = MeasureSpec.getSize(heightMeasureSpec);
-
-		int chosenWidth = chooseDimension(widthMode, widthSize);
-		int chosenHeight = chooseDimension(heightMode, heightSize);
-
-		int chosenDimension = Math.min(chosenWidth, chosenHeight);
-
-		setMeasuredDimension(chosenDimension, chosenDimension);
-	}
-
-	private int chooseDimension(int mode, int size) {
-		if(mode == MeasureSpec.AT_MOST || mode == MeasureSpec.EXACTLY){
-			return size;
-		} else{ // (mode == MeasureSpec.UNSPECIFIED)
-			return getPreferredSize();
-		}
-	}
-
-	// in case there is no size specified
-	private int getPreferredSize() {
-		return 300;
-	}
-
-	private void drawRim(Canvas canvas) {
-		// first, draw the metallic body
-		canvas.drawOval(rimRect, rimPaint);
-		// now the outer rim circle
-		canvas.drawOval(rimRect, rimCirclePaint);
-	}
-
-	private void drawFace(Canvas canvas) {
-		canvas.drawOval(faceRect, facePaint);
-		// draw the inner rim circle
-		canvas.drawOval(faceRect, rimCirclePaint);
-		// draw the rim shadow inside the face
-		canvas.drawOval(faceRect, rimShadowPaint);
-	}
-
-	private void drawScale(Canvas canvas) {
-		canvas.drawOval(scaleRect, scalePaint);
-		canvas.save(Canvas.MATRIX_SAVE_FLAG);
-		for(int i = 0; i < totalNicks; ++i){
-			float y1 = scaleRect.top;
-			float y2 = y1 - 0.020f;
-
-			canvas.drawLine(0.5f, y1, 0.5f, y2, scalePaint);
-
-			if(i % 5 == 0){
-				int value = nickToDegree(i);
-
-				if(value >= minDegrees && value <= maxDegrees){
-					String valueString = Integer.toString(value);
-					canvas.drawText(valueString, 0.5f, y2 - 0.015f, scalePaint);
-				}
-			}
-			canvas.rotate(degreesPerNick, 0.5f, 0.5f);
-		}
-		canvas.restore();
-	}
-
-	private int nickToDegree(int nick) {
-		int rawDegree = ((nick < totalNicks / 2) ? nick : (nick - totalNicks)) * 2;
-		int shiftedDegree = rawDegree + centerDegree;
-		return shiftedDegree;
-	}
-
-	private float degreeToAngle(float degree) {
-		return (degree - centerDegree) / 2.0f * degreesPerNick;
-	}
-
-	private void drawTitle(Canvas canvas) {
-		String title = getTitle();
-		canvas.drawTextOnPath(title, titlePath, 0.0f, 0.0f, titlePaint);
-	}
-
-	private void drawLogo(Canvas canvas) {
-		canvas.save(Canvas.MATRIX_SAVE_FLAG);
-		canvas.translate(0.5f - logo.getWidth() * logoScale / 2.0f, 0.5f - logo.getHeight() * logoScale
-				/ 2.0f);
-
-		int color = 0x00000000;
-		float position = getRelativeTemperaturePosition();
-		if(position < 0){
-			color |= (int) ((0xf0) * -position); // blue
-		} else{
-			color |= ((int) ((0xf0) * position)) << 16; // red
-		}
-		// Log.d(TAG, "*** " + Integer.toHexString(color));
-		LightingColorFilter logoFilter = new LightingColorFilter(0xff008822, color);
-		logoPaint.setColorFilter(logoFilter);
-		if(logo != null)
-			canvas.drawBitmap(logo, logoMatrix, logoPaint);
-		canvas.restore();
-	}
-
-	private void drawHand(Canvas canvas) {
-		if(handInitialized){
-			float handAngle = degreeToAngle(handPosition);
-			canvas.save(Canvas.MATRIX_SAVE_FLAG);
-			canvas.rotate(handAngle, 0.5f, 0.5f);
-			canvas.drawPath(handPath, handPaint);
-			canvas.restore();
-
-			canvas.drawCircle(0.5f, 0.5f, 0.01f, handScrewPaint);
-		}
-	}
-
-	private void drawBackground(Canvas canvas) {
-		if(background == null){
-			Log.w(TAG, "Background not created");
-		} else{
-			canvas.drawBitmap(background, 0, 0, backgroundPaint);
-		}
-	}
-
-	@Override
-	protected void onDraw(Canvas canvas) {
-		drawBackground(canvas);
-
-		float scale = getWidth();
-		canvas.save(Canvas.MATRIX_SAVE_FLAG);
-		canvas.scale(scale, scale);
-
-		drawLogo(canvas);
-		drawHand(canvas);
-
-		canvas.restore();
-
-		if(handNeedsToMove()){
-			moveHand();
-		}
-	}
-
-	@Override
-	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-		Log.d(TAG, "Size changed to " + w + "x" + h);
-
-		regenerateBackground();
-	}
-
-	private void regenerateBackground() {
-		// free the old bitmap
-		if(background != null){
-			background.recycle();
-		}
-
-		background = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
-		Canvas backgroundCanvas = new Canvas(background);
-		float scale = getWidth();
-		backgroundCanvas.scale(scale, scale);
-
-		drawRim(backgroundCanvas);
-		drawFace(backgroundCanvas);
-		drawScale(backgroundCanvas);
-		drawTitle(backgroundCanvas);
-	}
-
-	private boolean handNeedsToMove() {
-		return Math.abs(handPosition - handTarget) > 0.01f;
-	}
-
-	private void moveHand() {
-		if(!handNeedsToMove()){
-			return;
-		}
-
-		if(lastHandMoveTime != -1L){
-			long currentTime = System.currentTimeMillis();
-			float delta = (currentTime - lastHandMoveTime) / 1000.0f;
-
-			float direction = Math.signum(handVelocity);
-			if(Math.abs(handVelocity) < 90.0f){
-				handAcceleration = 5.0f * (handTarget - handPosition);
-			} else{
-				handAcceleration = 0.0f;
-			}
-			handPosition += handVelocity * delta;
-			handVelocity += handAcceleration * delta;
-			if((handTarget - handPosition) * direction < 0.01f * direction){
-				handPosition = handTarget;
-				handVelocity = 0.0f;
-				handAcceleration = 0.0f;
-				lastHandMoveTime = -1L;
-			} else{
-				lastHandMoveTime = System.currentTimeMillis();
-			}
-			invalidate();
-		} else{
-			lastHandMoveTime = System.currentTimeMillis();
-			moveHand();
-		}
-	}
-
-	private float getRelativeTemperaturePosition() {
-		if(handPosition < centerDegree){
-			return -(centerDegree - handPosition) / (centerDegree - minDegrees);
-		} else{
-			return (handPosition - centerDegree) / (maxDegrees - centerDegree);
-		}
-	}
-
-	public void setHandTarget(float value) {
-		if(value < minDegrees){
-			value = minDegrees;
-		} else if(value > maxDegrees){
-			value = maxDegrees;
-		}
-		handTarget = value;
-		handInitialized = true;
-		invalidate();
 	}
 }

@@ -61,12 +61,27 @@ public class ColorPanelView extends View{
 		init();
 	}
 	
+	/**
+	 * Get the color of the border surrounding the panel.
+	 */
+	public int getBorderColor(){
+		return mBorderColor;
+	}
+	
+	
+	/**
+	 * Get the color currently show by this view.
+	 * @return
+	 */
+	public int getColor(){
+		return mColor;
+	}
+		
 	private void init(){
 		mBorderPaint = new Paint();
 		mColorPaint = new Paint();
 		mDensity = getContext().getResources().getDisplayMetrics().density;
 	}
-	
 	
 	@Override
 	protected void onDraw(Canvas canvas) {
@@ -86,7 +101,7 @@ public class ColorPanelView extends View{
 		
 		canvas.drawRect(rect, mColorPaint);
 	}
-		
+	
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		
@@ -110,6 +125,24 @@ public class ColorPanelView extends View{
 		
 	}
 	
+	/**
+	 * Set the color of the border surrounding the panel.
+	 * @param color
+	 */
+	public void setBorderColor(int color){
+		mBorderColor = color;
+		invalidate();
+	}
+	
+	/**
+	 * Set the color that should be shown by this view.
+	 * @param color
+	 */
+	public void setColor(int color){
+		mColor = color;
+		invalidate();
+	}
+
 	private void setUpColorRect(){
 		final RectF	dRect = mDrawingRect;		
 		
@@ -127,39 +160,6 @@ public class ColorPanelView extends View{
 				Math.round(mColorRect.right), 
 				Math.round(mColorRect.bottom));
 		
-	}
-	
-	/**
-	 * Set the color that should be shown by this view.
-	 * @param color
-	 */
-	public void setColor(int color){
-		mColor = color;
-		invalidate();
-	}
-	
-	/**
-	 * Get the color currently show by this view.
-	 * @return
-	 */
-	public int getColor(){
-		return mColor;
-	}
-	
-	/**
-	 * Set the color of the border surrounding the panel.
-	 * @param color
-	 */
-	public void setBorderColor(int color){
-		mBorderColor = color;
-		invalidate();
-	}
-
-	/**
-	 * Get the color of the border surrounding the panel.
-	 */
-	public int getBorderColor(){
-		return mBorderColor;
 	}
 	
 }

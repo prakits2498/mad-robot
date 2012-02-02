@@ -7,7 +7,6 @@ import java.util.Set;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
-import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.Display;
@@ -264,15 +263,6 @@ public class HorizontalScrollView extends ViewGroup {
 	}
 
 	/**
-	 * Get the width of each page
-	 * 
-	 * @return
-	 */
-	public int getPageWidth() {
-		return pageWidth;
-	}
-
-	/**
 	 * Get the page at which the given view is present
 	 * 
 	 * @param v
@@ -290,6 +280,15 @@ public class HorizontalScrollView extends ViewGroup {
 			}
 		}
 		return result;
+	}
+
+	/**
+	 * Get the width of each page
+	 * 
+	 * @return
+	 */
+	public int getPageWidth() {
+		return pageWidth;
 	}
 
 	/**
