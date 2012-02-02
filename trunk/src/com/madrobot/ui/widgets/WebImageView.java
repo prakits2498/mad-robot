@@ -2,11 +2,6 @@ package com.madrobot.ui.widgets;
 
 import java.net.URI;
 
-import com.madrobot.R;
-import com.madrobot.tasks.DataResponse;
-import com.madrobot.tasks.DownloadBitmapTask;
-import com.madrobot.tasks.TaskNotifier;
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -19,6 +14,11 @@ import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.ProgressBar;
 import android.widget.ViewSwitcher;
+
+import com.madrobot.R;
+import com.madrobot.tasks.DataResponse;
+import com.madrobot.tasks.DownloadBitmapTask;
+import com.madrobot.tasks.TaskNotifier;
 
 /**
  * An image view that fetches its image off the web using the supplied URL. While the image is being downloaded, a
@@ -47,6 +47,29 @@ public class WebImageView extends ViewSwitcher implements TaskNotifier {
 	private ScaleType scaleType = ScaleType.CENTER_CROP;
 
 	private Drawable progressDrawable, errorDrawable;
+
+	private boolean autoload;
+
+	public WebImageView(Context context, AttributeSet attributes) {
+		super(context, attributes);
+		TypedArray styledAttrs = context.obtainStyledAttributes(attributes, R.styleable.WebImageView);
+
+		int progressDrawableId = styledAttrs.getInt(R.styleable.WebImageView_progressDrawable, 0);
+
+		int errorDrawableId = styledAttrs.getInt(R.styleable.WebImageView_errorDrawable, 0);
+
+		Drawable progressDrawable = null;
+		if (progressDrawableId > 0) {
+			progressDrawable = context.getResources().getDrawable(progressDrawableId);
+		}
+		Drawable errorDrawable = null;
+		if (errorDrawableId > 0) {
+			errorDrawable = context.getResources().getDrawable(errorDrawableId);
+		}
+		initialize(context, styledAttrs.getString(R.styleable.WebImageView_imageUrl), progressDrawable, errorDrawable,
+				styledAttrs.getBoolean(R.styleable.WebImageView_autoLoad, true));
+		// styles.recycle();
+	}
 
 	/**
 	 * @param context
@@ -101,40 +124,12 @@ public class WebImageView extends ViewSwitcher implements TaskNotifier {
 		initialize(context, imageUrl, progressDrawable, errorDrawable, autoLoad);
 	}
 
-	public WebImageView(Context context, AttributeSet attributes) {
-		super(context, attributes);
-		TypedArray styledAttrs = context.obtainStyledAttributes(attributes, R.styleable.WebImageView);
-
-		int progressDrawableId = styledAttrs.getInt(R.styleable.WebImageView_progressDrawable, 0);
-
-		int errorDrawableId = styledAttrs.getInt(R.styleable.WebImageView_errorDrawable, 0);
-
-		Drawable progressDrawable = null;
-		if (progressDrawableId > 0) {
-			progressDrawable = context.getResources().getDrawable(progressDrawableId);
-		}
-		Drawable errorDrawable = null;
-		if (errorDrawableId > 0) {
-			errorDrawable = context.getResources().getDrawable(errorDrawableId);
-		}
-		initialize(context, styledAttrs.getString(R.styleable.WebImageView_imageUrl), progressDrawable, errorDrawable,
-				styledAttrs.getBoolean(R.styleable.WebImageView_autoLoad, true));
-		// styles.recycle();
-	}
-
-	private boolean autoload;
-
-	private void initialize(Context context, String imageUrl, Drawable progressDrawable, Drawable errorDrawable, boolean autoLoad) {
-		this.imageUrl = imageUrl;
-		this.progressDrawable = progressDrawable;
-		this.errorDrawable = errorDrawable;
-		this.autoload = autoLoad;
-		addLoadingSpinnerView(context);
-		addImageView(context);
-
-		if (autoLoad && imageUrl != null) {
-			loadImage();
-		}
+	private void addImageView(Context context) {
+		imageView = new ImageView(context);
+		imageView.setScaleType(scaleType);
+		LayoutParams lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		lp.gravity = Gravity.CENTER;
+		addView(imageView, 1, lp);
 	}
 
 	private void addLoadingSpinnerView(Context context) {
@@ -153,12 +148,30 @@ public class WebImageView extends ViewSwitcher implements TaskNotifier {
 		addView(loadingSpinner, 0, lp);
 	}
 
-	private void addImageView(Context context) {
-		imageView = new ImageView(context);
-		imageView.setScaleType(scaleType);
-		LayoutParams lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-		lp.gravity = Gravity.CENTER;
-		addView(imageView, 1, lp);
+	/**
+	 * Returns the URL of the image to show
+	 * 
+	 * @return
+	 */
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	private void initialize(Context context, String imageUrl, Drawable progressDrawable, Drawable errorDrawable, boolean autoLoad) {
+		this.imageUrl = imageUrl;
+		this.progressDrawable = progressDrawable;
+		this.errorDrawable = errorDrawable;
+		this.autoload = autoLoad;
+		addLoadingSpinnerView(context);
+		addImageView(context);
+
+		if (autoLoad && imageUrl != null) {
+			loadImage();
+		}
+	}
+
+	public boolean isLoaded() {
+		return isLoaded;
 	}
 
 	/**
@@ -175,6 +188,42 @@ public class WebImageView extends ViewSwitcher implements TaskNotifier {
 		task.execute(param);
 	}
 
+	@Override
+	public void onCarrierChanged(int bearerStatus) {
+
+	}
+
+	@Override
+	public void onError(Throwable t) {
+
+	}
+
+	@Override
+	public void onSuccess(DataResponse response) {
+
+		if (response.getResponseStatus() > 0) {
+			Object data = response.getData();
+			if (data != null) {
+				imageView.setImageBitmap((Bitmap) data);
+			}
+		} else {
+			// error occured
+			imageView.setImageDrawable(errorDrawable);
+		}
+		isLoaded = true;
+		setDisplayedChild(1);
+	}
+
+	@Override
+	public void onTaskCompleted() {
+
+	}
+
+	@Override
+	public void onTaskStarted() {
+
+	}
+
 	/**
 	 * Reload the imageview with a new url or use the existing one.
 	 * 
@@ -187,8 +236,11 @@ public class WebImageView extends ViewSwitcher implements TaskNotifier {
 		loadImage();
 	}
 
-	public boolean isLoaded() {
-		return isLoaded;
+	@Override
+	public void reset() {
+		super.reset();
+
+		this.setDisplayedChild(0);
 	}
 
 	/**
@@ -212,57 +264,5 @@ public class WebImageView extends ViewSwitcher implements TaskNotifier {
 	public void setNoImageDrawable(int imageResourceId) {
 		imageView.setImageDrawable(getContext().getResources().getDrawable(imageResourceId));
 		setDisplayedChild(1);
-	}
-
-	@Override
-	public void reset() {
-		super.reset();
-
-		this.setDisplayedChild(0);
-	}
-
-	/**
-	 * Returns the URL of the image to show
-	 * 
-	 * @return
-	 */
-	public String getImageUrl() {
-		return imageUrl;
-	}
-
-	@Override
-	public void onSuccess(DataResponse response) {
-
-		if (response.getResponseStatus() > 0) {
-			Object data = response.getData();
-			if (data != null) {
-				imageView.setImageBitmap((Bitmap) data);
-			}
-		} else {
-			// error occured
-			imageView.setImageDrawable(errorDrawable);
-		}
-		isLoaded = true;
-		setDisplayedChild(1);
-	}
-
-	@Override
-	public void onError(Throwable t) {
-
-	}
-
-	@Override
-	public void onCarrierChanged(int bearerStatus) {
-
-	}
-
-	@Override
-	public void onTaskStarted() {
-
-	}
-
-	@Override
-	public void onTaskCompleted() {
-
 	}
 }

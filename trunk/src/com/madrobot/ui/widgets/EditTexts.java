@@ -12,21 +12,38 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 public class EditTexts {	
-	public static class NumericFilter implements InputFilter {
+	public static abstract class CustomEditText<T> extends EditText{
+		public CustomEditText(Context context, AttributeSet attrs) {
+			super(context, attrs);
+			doCustomizeInner(context);
+		}
 
-		@Override
-		public CharSequence filter(CharSequence arg0, int arg1, int arg2,
-				Spanned arg3, int arg4, int arg5) {
-			return extractNumber(arg0.toString());
-		}	
+		public CustomEditText(Context context, AttributeSet attrs, int defStyle) {
+			super(context, attrs, defStyle);
+			doCustomizeInner(context);
+		}
+
+		protected abstract void doCustomize(Context context);
+		
+		private void doCustomizeInner(Context context) {
+			//TODO set the hint color
+//			setHintTextColor(0x000000);
+			doCustomize(context);
+		}
+
+		protected String extractNumber() {
+			return EditTexts.extractDigits(this);
+		}
+		public abstract T getValue();
+		public abstract boolean validate();
 	}
 	
     protected static class DigitsLengthFilter implements InputFilter {
-    	private MaxDigitsGetter mMaxGetter;
-    	
     	protected interface MaxDigitsGetter {
     		int getMax(CharSequence source);
     	}
+    	
+    	private MaxDigitsGetter mMaxGetter;
         public DigitsLengthFilter(final int max) {
             mMaxGetter = new MaxDigitsGetter() {
 				@Override
@@ -56,91 +73,19 @@ public class EditTexts {
             }
         }
         
-        protected boolean isEdgeCase(CharSequence source) {
-        	return false;
-        }
-        
         protected String getFormattedDigits(Spanned dest) {
         	return extractNumber(dest.toString());
         }
+        
+        protected boolean isEdgeCase(CharSequence source) {
+        	return false;
+        }
     }
 
-	public static String extractDigits(TextView tv) {
-		return extractNumber(tv.getText().toString());
-	}
-	
-	public static String extractNumber(String tv) {
-		String expression="\\D";   
-		Pattern pattern = Pattern.compile(expression,Pattern.CASE_INSENSITIVE);  
-		return pattern.matcher(tv).replaceAll("");
-	}
-	
-	public static abstract class CustomEditText<T> extends EditText{
-		public CustomEditText(Context context, AttributeSet attrs) {
-			super(context, attrs);
-			doCustomizeInner(context);
-		}
-
-		public CustomEditText(Context context, AttributeSet attrs, int defStyle) {
-			super(context, attrs, defStyle);
-			doCustomizeInner(context);
-		}
-
-		protected String extractNumber() {
-			return EditTexts.extractDigits(this);
-		}
-		
-		private void doCustomizeInner(Context context) {
-			//TODO set the hint color
-//			setHintTextColor(0x000000);
-			doCustomize(context);
-		}
-
-		protected abstract void doCustomize(Context context);
-		public abstract boolean validate();
-		public abstract T getValue();
-	}
-	
 	public static abstract class FormattedEditText<T> extends CustomEditText<T> {
-		public FormattedEditText(Context context, AttributeSet attrs) {
-			super(context, attrs);
-		}
-
-		public FormattedEditText(Context context, AttributeSet attrs, int defStyle) {
-			super(context, attrs, defStyle);
-		}
-		
-		protected void format(Editable arg0) {
-			CharSequence dollars = getFormatted(getValue());
-			replaceText(arg0, dollars);
-		}
-
-		protected abstract CharSequence getFormatted(T typedText);
-		
-		protected void replaceText(Editable arg0, CharSequence dollars) {
-			if (!dollars.equals(getText().toString()))
-				arg0.replace(0, arg0.length(), dollars);
-		}
-		
-		@Override
-		protected void doCustomize(Context context) {
-			addTextChangedListener(new FormattedTextWatcher());
-		}
-		
-		protected void setFocus() { }
-		
 		protected class FormattedTextWatcher implements TextWatcher {
 			private boolean editing = false;
 
-			@Override
-			public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-			}
-			
-			@Override
-			public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
-					int arg3) {
-			}
-			
 			@Override
 			public synchronized void afterTextChanged(Editable arg0) {
 				if (!editing)
@@ -151,6 +96,61 @@ public class EditTexts {
 				setFocus();
 				editing = false;
 			}
+			
+			@Override
+			public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+					int arg3) {
+			}
+			
+			@Override
+			public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+			}
 		}
+
+		public FormattedEditText(Context context, AttributeSet attrs) {
+			super(context, attrs);
+		}
+		
+		public FormattedEditText(Context context, AttributeSet attrs, int defStyle) {
+			super(context, attrs, defStyle);
+		}
+
+		@Override
+		protected void doCustomize(Context context) {
+			addTextChangedListener(new FormattedTextWatcher());
+		}
+		
+		protected void format(Editable arg0) {
+			CharSequence dollars = getFormatted(getValue());
+			replaceText(arg0, dollars);
+		}
+		
+		protected abstract CharSequence getFormatted(T typedText);
+		
+		protected void replaceText(Editable arg0, CharSequence dollars) {
+			if (!dollars.equals(getText().toString()))
+				arg0.replace(0, arg0.length(), dollars);
+		}
+		
+		protected void setFocus() { }
+	}
+	
+	public static class NumericFilter implements InputFilter {
+
+		@Override
+		public CharSequence filter(CharSequence arg0, int arg1, int arg2,
+				Spanned arg3, int arg4, int arg5) {
+			return extractNumber(arg0.toString());
+		}	
+	}
+	
+	public static String extractDigits(TextView tv) {
+		return extractNumber(tv.getText().toString());
+	}
+	
+	public static String extractNumber(String tv) {
+		String expression="\\D";   
+		Pattern pattern = Pattern.compile(expression,Pattern.CASE_INSENSITIVE);  
+		return pattern.matcher(tv).replaceAll("");
 	}
 }
