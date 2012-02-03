@@ -36,4 +36,19 @@
         <attr format="integer" name="angleTolerant" />
     </declare-styleable>
 
+    <!-- Attributes for com.madrobot.ui.widgets.SortableListView -->
+    <declare-styleable name="SortableListView">
+        <attr format="dimension" name="normalHeight" />
+        <attr format="dimension" name="expandedHeight" />
+        <attr format="reference" name="grabberView" />
+        <attr format="integer" name="draggingBackgroundDrawable" />
+        <attr name="removeMode">
+            <enum name="none" value="-1" />
+            <enum name="fling" value="0" />
+            <enum name="slide" value="1" />
+            <enum name="slideRight" value="1" />
+            <enum name="slideLeft" value="2" />
+        </attr>
+    </declare-styleable>
+
 </resources>
