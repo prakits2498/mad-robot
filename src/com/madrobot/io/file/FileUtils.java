@@ -25,10 +25,16 @@ import java.util.zip.ZipInputStream;
 import android.util.Log;
 
 import com.madrobot.io.IOUtils;
+import com.madrobot.io.IOUtils.ProgressCallback;
 import com.madrobot.text.StringUtils;
 
+/**
+ * 
+ * @author elton.stephen.kent
+ * 
+ */
 public class FileUtils {
-	private static final String TAG = "Lib:FileUtil";
+	private static final String TAG = "MadRobot:FileUtil";
 
 	/**
 	 * Check if the given file is contained in the list of files
@@ -38,6 +44,7 @@ public class FileUtils {
 	 * @param file
 	 *            the file to search for
 	 * @return true on the first occurance of the file.
+	 * 
 	 */
 	public static boolean contains(File[] files, File file) {
 		if (files == null || file == null) {
@@ -60,9 +67,9 @@ public class FileUtils {
 	 *            Destination Path
 	 * @return
 	 * @throws IOException
+	 * @see {@link FileUtils#recursiveCopy(File, File, boolean, boolean)}
 	 */
-	public static final boolean copyFileNio(File src, File dst)
-			throws IOException {
+	public static final boolean copyFileNio(File src, File dst) throws IOException {
 		FileChannel srcChannel = null, dstChannel = null;
 		try {
 			// Create channel on the source
@@ -80,8 +87,7 @@ public class FileUtils {
 				long size = srcChannel.size();
 				long position = 0;
 				while (position < size) {
-					position += srcChannel.transferTo(position, safe_max,
-							dstChannel);
+					position += srcChannel.transferTo(position, safe_max, dstChannel);
 				}
 			}
 
@@ -111,12 +117,43 @@ public class FileUtils {
 	}
 
 	/**
+	 * Copy a file from one location to another
+	 * 
+	 * @param from
+	 * @param to
+	 * @param overwrite
+	 * @param deleteOriginal
+	 * @param callback
+	 *            Progres callback, can be null
+	 */
+	public static void copyFileToFile(File from, File to, boolean overwrite, boolean deleteOriginal, ProgressCallback callback) {
+		if ((!from.exists()) || from.isDirectory())
+			return;
+		try {
+			inputStreamToFile(new FileInputStream(from), to, callback);
+			if (deleteOriginal) {
+				from.delete();
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			if (callback != null)
+				callback.onError(e);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			if (callback != null)
+				callback.onError(e);
+		}
+	}
+
+	/**
 	 * Deletes a directory recursively.
 	 * 
 	 * @param directory
 	 *            directory to delete
 	 * @throws IOException
 	 *             in case deletion is unsuccessful
+	 * @see FileUtils#recursiveDelete(File)
 	 */
 	public static void deleteDirectory(File directory) throws IOException {
 		if (!directory.exists()) {
@@ -141,14 +178,12 @@ public class FileUtils {
 	}
 
 	/**
-	 * Deletes a file. If file is a directory, delete it and all
-	 * sub-directories.
+	 * Deletes a file. If file is a directory, delete it and all sub-directories.
 	 * <p>
 	 * The difference between File.delete() and this method are:
 	 * <ul>
 	 * <li>A directory to be deleted does not have to be empty.</li>
-	 * <li>You get exceptions when a file or directory cannot be deleted.
-	 * (java.io.File methods returns a boolean)</li>
+	 * <li>You get exceptions when a file or directory cannot be deleted. (java.io.File methods returns a boolean)</li>
 	 * </ul>
 	 * 
 	 * @param file
@@ -167,8 +202,7 @@ public class FileUtils {
 			boolean filePresent = file.exists();
 			if (!file.delete()) {
 				if (!filePresent) {
-					throw new FileNotFoundException("File does not exist: "
-							+ file);
+					throw new FileNotFoundException("File does not exist: " + file);
 				}
 				String message = "Unable to delete file: " + file;
 				throw new IOException(message);
@@ -177,18 +211,16 @@ public class FileUtils {
 	}
 
 	/**
-	 * Makes a directory, including any necessary but nonexistent parent
-	 * directories. If a file already exists with specified name but it is not a
-	 * directory then an IOException is thrown. If the directory cannot be
-	 * created (or does not already exist) then an IOException is thrown.
+	 * Makes a directory, including any necessary but nonexistent parent directories. If a file already exists with
+	 * specified name but it is not a directory then an IOException is thrown. If the directory cannot be created (or
+	 * does not already exist) then an IOException is thrown.
 	 * 
 	 * @param directory
 	 *            directory to create, must not be <code>null</code>
 	 * @throws NullPointerException
 	 *             if the directory is <code>null</code>
 	 * @throws IOException
-	 *             if the directory cannot be created or the file already exists
-	 *             but is not a directory
+	 *             if the directory cannot be created or the file already exists but is not a directory
 	 */
 	public static void forceMkdir(File directory) throws IOException {
 		if (directory.exists()) {
@@ -230,16 +262,14 @@ public class FileUtils {
 	}
 
 	/**
-	 * Finds the relative path from base to file. The file returned is such that
-	 * file.getCanonicalPath().equals( new File( base, getRelativePath( base,
-	 * file ).getPath() ).getCanonicalPath )
+	 * Finds the relative path from base to file. The file returned is such that file.getCanonicalPath().equals( new
+	 * File( base, getRelativePath( base, file ).getPath() ).getCanonicalPath )
 	 * 
 	 * @param base
 	 *            The base for the relative path
 	 * @param file
 	 *            The destination for the relative path
-	 * @return The relative path betwixt base and file, or null if there was a
-	 *         IOException
+	 * @return The relative path betwixt base and file, or null if there was a IOException
 	 */
 	public static File getRelativePath(File base, File file) {
 		try {
@@ -254,10 +284,8 @@ public class FileUtils {
 			int divergenceCharIndex = 0;
 			int divergenceSeperatorIndex = 0;
 
-			while ((divergenceCharIndex < absBase.length())
-					&& (divergenceCharIndex < absFile.length())
-					&& (absBase.charAt(divergenceCharIndex) == absFile
-							.charAt(divergenceCharIndex))) {
+			while ((divergenceCharIndex < absBase.length()) && (divergenceCharIndex < absFile.length())
+					&& (absBase.charAt(divergenceCharIndex) == absFile.charAt(divergenceCharIndex))) {
 				if ((absBase.charAt(divergenceCharIndex) == File.separatorChar)
 						|| (absFile.charAt(divergenceCharIndex) == File.separatorChar)) {
 					divergenceSeperatorIndex = divergenceCharIndex;
@@ -292,20 +320,23 @@ public class FileUtils {
 		}
 	}
 
-	public static final void inputStreamToFile(InputStream src, File file)
+	public static final void inputStreamToFile(InputStream src, File file, ProgressCallback callback)
 			throws IOException {
 		FileOutputStream stream = null;
 		try {
 			if (file.getParentFile() != null)
 				file.getParentFile().mkdirs();
 			stream = new FileOutputStream(file);
-			IOUtils.copy(src, stream);
+			IOUtils.copy(src, stream, callback);
 		} finally {
 			try {
 				if (stream != null)
 					stream.close();
 			} catch (Exception e) {
+
 				e.printStackTrace();
+				if (callback != null)
+					callback.onError(e);
 			}
 		}
 	}
@@ -322,16 +353,13 @@ public class FileUtils {
 	}
 
 	/**
-	 * Opens a {@link FileInputStream} for the specified file, providing better
-	 * error messages than simply calling <code>new FileInputStream(file)</code>
-	 * .
+	 * Opens a {@link FileInputStream} for the specified file, providing better error messages than simply calling
+	 * <code>new FileInputStream(file)</code> .
 	 * <p>
-	 * At the end of the method either the stream will be successfully opened,
-	 * or an exception will have been thrown.
+	 * At the end of the method either the stream will be successfully opened, or an exception will have been thrown.
 	 * <p>
-	 * An exception is thrown if the file does not exist. An exception is thrown
-	 * if the file object exists but is a directory. An exception is thrown if
-	 * the file exists but cannot be read.
+	 * An exception is thrown if the file does not exist. An exception is thrown if the file object exists but is a
+	 * directory. An exception is thrown if the file exists but cannot be read.
 	 * 
 	 * @param file
 	 *            the file to open for input, must not be <code>null</code>
@@ -343,26 +371,22 @@ public class FileUtils {
 	 * @throws IOException
 	 *             if the file cannot be read
 	 */
-	public static final FileInputStream openInputStream(File file)
-			throws IOException {
+	public static final FileInputStream openInputStream(File file) throws IOException {
 		if (file.exists()) {
 			if (file.isDirectory()) {
-				throw new IOException("File '" + file
-						+ "' exists but is a directory");
+				throw new IOException("File '" + file + "' exists but is a directory");
 			}
 			if (file.canRead() == false) {
 				throw new IOException("File '" + file + "' cannot be read");
 			}
 		} else {
-			throw new FileNotFoundException("File '" + file
-					+ "' does not exist");
+			throw new FileNotFoundException("File '" + file + "' does not exist");
 		}
 		return new FileInputStream(file);
 	}
 
 	/**
-	 * Reads the contents of a file into a byte array. The file is always
-	 * closed.
+	 * Reads the contents of a file into a byte array. The file is always closed.
 	 * 
 	 * @param file
 	 *            the file to read, must not be <code>null</code>
@@ -381,13 +405,12 @@ public class FileUtils {
 	}
 
 	/**
-	 * Reads the contents of a file line by line to a List of Strings using the
-	 * default encoding for the VM. The file is always closed.
+	 * Reads the contents of a file line by line to a List of Strings using the default encoding for the VM. The file is
+	 * always closed.
 	 * 
 	 * @param file
 	 *            the file to read, must not be <code>null</code>
-	 * @return the list of Strings representing each line in the file, never
-	 *         <code>null</code>
+	 * @return the list of Strings representing each line in the file, never <code>null</code>
 	 * @throws IOException
 	 *             in case of an I/O error
 	 */
@@ -396,22 +419,19 @@ public class FileUtils {
 	}
 
 	/**
-	 * Reads the contents of a file line by line to a List of Strings. The file
-	 * is always closed.
+	 * Reads the contents of a file line by line to a List of Strings. The file is always closed.
 	 * 
 	 * @param file
 	 *            the file to read, must not be <code>null</code>
 	 * @param encoding
 	 *            the encoding to use, <code>null</code> means platform default
-	 * @return the list of Strings representing each line in the file, never
-	 *         <code>null</code>
+	 * @return the list of Strings representing each line in the file, never <code>null</code>
 	 * @throws IOException
 	 *             in case of an I/O error
 	 * @throws java.io.UnsupportedEncodingException
 	 *             if the encoding is not supported by the VM
 	 */
-	public static final List<String> readLines(File file, String encoding)
-			throws IOException {
+	public static final List<String> readLines(File file, String encoding) throws IOException {
 		InputStream in = null;
 		try {
 			in = openInputStream(file);
@@ -422,10 +442,90 @@ public class FileUtils {
 	}
 
 	/**
+	 * 
+	 * @param from
+	 * @param targetDirectory
+	 * @param overwrite
+	 * @param deleteOriginal
+	 * @param callback
+	 *            Progress callback. can be null.
+	 */
+	public static void recursiveCopy(File from, File targetDirectory, boolean overwrite, boolean deleteOriginal, ProgressCallback callback) {
+		if (!from.exists())
+			return;
+
+		if (!targetDirectory.exists())
+			targetDirectory.mkdirs();
+
+		File newTo = new File(targetDirectory.getAbsolutePath() + "/" + from.getName());
+		if (from.isDirectory()) {
+			newTo.mkdirs();
+			File[] contents = from.listFiles();
+			for (int i = 0; i < contents.length; i++) {
+				recursiveCopy(contents[i], newTo, overwrite, deleteOriginal, callback);
+			}
+			if (deleteOriginal)
+				from.delete();
+		} else {
+			copyFileToFile(from, newTo, overwrite, deleteOriginal, callback);
+		}
+	}
+
+	/**
+	 * Recursively delete the contents of a directory or just delete a file
+	 * 
+	 * @param file
+	 *            File or directory to delete
+	 */
+	public static void recursiveDelete(File file) {
+		if (!file.exists())
+			return;
+		if (file.isDirectory()) {
+			File[] contents = file.listFiles();
+			for (int i = 0; i < contents.length; i++)
+				recursiveDelete(contents[i]);
+		}
+		try {
+			file.delete();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Return the size of a directory. The current java implementation returns 0 if a file is a directory.
+	 * <p>
+	 * Could be a blocking method, good to use in a non blocking thread.
+	 * </p>
+	 * @param file
+	 * @return Size in bytes of the directory, 0 if the file does not exist 
+	 */
+	public static long getDirectorySize(File file) {
+		long size = 0;
+		if (!file.exists())
+			return 0;
+		if(file.isDirectory()){
+			File[] contents = file.listFiles();
+			for (int i = 0; i < contents.length; i++){
+				if(contents[i].isDirectory()){
+					size +=getDirectorySize(contents[i]);
+				}else{
+					size +=contents[i].length();
+				}
+			}
+		}else{
+			size=file.length();
+		}
+		
+		return size;
+
+	}
+
+
+	/**
 	 * Removes all files from the directory
 	 * <p>
-	 * If the <code>toKeep</code> is null or an empty array, then the directory
-	 * is just deleted.
+	 * If the <code>toKeep</code> is null or an empty array, then the directory is just deleted.
 	 * </p>
 	 * 
 	 * @param directory
@@ -436,8 +536,7 @@ public class FileUtils {
 	 * @throws IOException
 	 * @throws IOException
 	 */
-	public static void removeAllFilesExcept(File directory, File[] toKeep)
-			throws IOException {
+	public static void removeAllFilesExcept(File directory, File[] toKeep) throws IOException {
 		File[] allfiles = directory.listFiles();
 		if (toKeep == null || toKeep.length == 0) {
 			// no files
@@ -457,17 +556,16 @@ public class FileUtils {
 	 * @param str
 	 * @return
 	 */
-	public static String removeInvalidFatChars(String str) {
-		String[] invalidChars = new String[] { ":", "\\", "/", "<", ">", "?",
-				"*", "|", "\"", ";" };
+	public static String removeInvalidFATChars(String str) {
+		String[] invalidChars = new String[] { ":", "\\", "/", "<", ">", "?", "*", "|", "\"", ";" };
 		return StringUtils.strip(str, invalidChars);
 	}
 
 	/**
 	 * Waits for File System to propagate a file creation, imposing a timeout.
 	 * <p>
-	 * This method repeatedly tests {@link File#exists()} until it returns true
-	 * up to the maximum time specified in seconds.
+	 * This method repeatedly tests {@link File#exists()} until it returns true up to the maximum time specified in
+	 * seconds.
 	 * 
 	 * @param file
 	 *            the file to check, must not be <code>null</code>
@@ -498,25 +596,34 @@ public class FileUtils {
 		return true;
 	}
 
-	public static void writeByteArrayToFile(byte[] src, File file)
-			throws IOException {
+	/**
+	 * 
+	 * @param src
+	 * @param file
+	 * @param callback
+	 *            Progress callback. can be null
+	 * @throws IOException
+	 */
+	public static void writeByteArrayToFile(byte[] src, File file, ProgressCallback callback) throws IOException {
 		ByteArrayInputStream stream = null;
 		try {
 			stream = new ByteArrayInputStream(src);
-			inputStreamToFile(stream, file);
+			inputStreamToFile(stream, file, callback);
 		} finally {
 			try {
 				if (stream != null)
 					stream.close();
 			} catch (Exception e) {
 				e.printStackTrace();
+				if (callback != null)
+					callback.onError(e);
 			}
 		}
 	}
-	
 
 	/**
 	 * Extract the given {@code zip_file} to the given {@code directory}
+	 * 
 	 * @param zip_file
 	 * @param directory
 	 */
@@ -526,19 +633,17 @@ public class FileUtils {
 		ZipEntry entry;
 		ZipInputStream zipstream;
 
-		if(!(directory.charAt(directory.length() - 1) == '/'))
+		if (!(directory.charAt(directory.length() - 1) == '/'))
 			directory += "/";
 
-		if(zip_file.contains("/")) {
+		if (zip_file.contains("/")) {
 			path = zip_file;
-			name = path.substring(path.lastIndexOf("/") + 1, 
-								  path.length() - 4);
+			name = path.substring(path.lastIndexOf("/") + 1, path.length() - 4);
 			zipDir = directory + name + "/";
 
 		} else {
 			path = directory + zip_file;
-			name = path.substring(path.lastIndexOf("/") + 1, 
-		 			  			  path.length() - 4);
+			name = path.substring(path.lastIndexOf("/") + 1, path.length() - 4);
 			zipDir = directory + name + "/";
 		}
 
@@ -547,21 +652,20 @@ public class FileUtils {
 		try {
 			zipstream = new ZipInputStream(new FileInputStream(path));
 
-			while((entry = zipstream.getNextEntry()) != null) {
+			while ((entry = zipstream.getNextEntry()) != null) {
 				String buildDir = zipDir;
 				String[] dirs = entry.getName().split("/");
 
-				if(dirs != null && dirs.length > 0) {
-					for(int i = 0; i < dirs.length - 1; i++) {
+				if (dirs != null && dirs.length > 0) {
+					for (int i = 0; i < dirs.length - 1; i++) {
 						buildDir += dirs[i] + "/";
 						new File(buildDir).mkdir();
 					}
 				}
 
 				int read = 0;
-				FileOutputStream out = new FileOutputStream(
-										zipDir + entry.getName());
-				while((read = zipstream.read(data, 0, 2048)) != -1)
+				FileOutputStream out = new FileOutputStream(zipDir + entry.getName());
+				while ((read = zipstream.read(data, 0, 2048)) != -1)
 					out.write(data, 0, read);
 
 				zipstream.closeEntry();
