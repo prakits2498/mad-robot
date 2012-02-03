@@ -36,15 +36,23 @@ import com.madrobot.net.client.oauth.signature.SigningStrategy;
  */
 public interface OAuthConsumer extends Serializable {
 
+	public String getConsumerKey();
+
+	public String getConsumerSecret();
+
 	/**
-	 * Sets the message signer that should be used to generate the OAuth signature.
+	 * Returns all parameters collected from the HTTP request during message signing (this means the return value may be
+	 * NULL before a call to {@link #sign}), plus all required OAuth parameters that were added because the request
+	 * didn't contain them beforehand. In other words, this is the exact set of parameters that were used for creating
+	 * the message signature.
 	 * 
-	 * @param messageSigner
-	 *            the signer
-	 * @see HmacSha1MessageSigner
-	 * @see PlainTextMessageSigner
+	 * @return the request parameters used for message signing
 	 */
-	public void setMessageSigner(OAuthMessageSigner messageSigner);
+	public HttpParameters getRequestParameters();
+
+	public String getToken();
+
+	public String getTokenSecret();
 
 	/**
 	 * Allows you to add parameters (typically OAuth parameters such as oauth_callback or oauth_verifier) which will go
@@ -58,14 +66,14 @@ public interface OAuthConsumer extends Serializable {
 	public void setAdditionalParameters(HttpParameters additionalParameters);
 
 	/**
-	 * Defines which strategy should be used to write a signature to an HTTP request.
+	 * Sets the message signer that should be used to generate the OAuth signature.
 	 * 
-	 * @param signingStrategy
-	 *            the strategy
-	 * @see AuthorizationHeaderSigningStrategy
-	 * @see QueryStringSigningStrategy
+	 * @param messageSigner
+	 *            the signer
+	 * @see HmacSha1MessageSigner
+	 * @see PlainTextMessageSigner
 	 */
-	public void setSigningStrategy(SigningStrategy signingStrategy);
+	public void setMessageSigner(OAuthMessageSigner messageSigner);
 
 	/**
 	 * <p>
@@ -77,6 +85,26 @@ public interface OAuthConsumer extends Serializable {
 	 *            true or false
 	 */
 	public void setSendEmptyTokens(boolean enable);
+
+	/**
+	 * Defines which strategy should be used to write a signature to an HTTP request.
+	 * 
+	 * @param signingStrategy
+	 *            the strategy
+	 * @see AuthorizationHeaderSigningStrategy
+	 * @see QueryStringSigningStrategy
+	 */
+	public void setSigningStrategy(SigningStrategy signingStrategy);
+
+	/**
+	 * Sets the OAuth token and token secret used for message signing.
+	 * 
+	 * @param token
+	 *            the token
+	 * @param tokenSecret
+	 *            the token secret
+	 */
+	public void setTokenWithSecret(String token, String tokenSecret);
 
 	/**
 	 * Signs the given HTTP request by writing an OAuth signature (and other required OAuth parameters) to it. Where
@@ -128,32 +156,4 @@ public interface OAuthConsumer extends Serializable {
 	 */
 	public String sign(String url) throws OAuthMessageSignerException, OAuthExpectationFailedException,
 			OAuthCommunicationException;
-
-	/**
-	 * Sets the OAuth token and token secret used for message signing.
-	 * 
-	 * @param token
-	 *            the token
-	 * @param tokenSecret
-	 *            the token secret
-	 */
-	public void setTokenWithSecret(String token, String tokenSecret);
-
-	public String getToken();
-
-	public String getTokenSecret();
-
-	public String getConsumerKey();
-
-	public String getConsumerSecret();
-
-	/**
-	 * Returns all parameters collected from the HTTP request during message signing (this means the return value may be
-	 * NULL before a call to {@link #sign}), plus all required OAuth parameters that were added because the request
-	 * didn't contain them beforehand. In other words, this is the exact set of parameters that were used for creating
-	 * the message signature.
-	 * 
-	 * @return the request parameters used for message signing
-	 */
-	public HttpParameters getRequestParameters();
 }

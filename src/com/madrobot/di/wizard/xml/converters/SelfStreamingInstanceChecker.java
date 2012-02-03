@@ -22,8 +22,8 @@ import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
  */
 public class SelfStreamingInstanceChecker implements Converter {
 
-	private final Object self;
 	private Converter defaultConverter;
+	private final Object self;
 
 	public SelfStreamingInstanceChecker(Converter defaultConverter, Object xstream) {
 		this.defaultConverter = defaultConverter;

@@ -23,9 +23,9 @@ import com.madrobot.reflect.PrimitiveUtils;
  */
 class ClassAliasingMapper extends MapperWrapper {
 
-	private final Map typeToName = new HashMap();
 	private final Map classToName = new HashMap();
 	private transient Map nameToType = new HashMap();
+	private final Map typeToName = new HashMap();
 
 	ClassAliasingMapper(Mapper wrapped) {
 		super(wrapped);
@@ -41,20 +41,12 @@ class ClassAliasingMapper extends MapperWrapper {
 		typeToName.put(type, name);
 	}
 
-	@Override
-	public String serializedClass(Class type) {
-		String alias = (String) classToName.get(type.getName());
-		if (alias != null) {
-			return alias;
-		} else {
-			for (final Iterator iter = typeToName.keySet().iterator(); iter.hasNext();) {
-				final Class compatibleType = (Class) iter.next();
-				if (compatibleType.isAssignableFrom(type)) {
-					return (String) typeToName.get(compatibleType);
-				}
-			}
-			return super.serializedClass(type);
-		}
+	public boolean aliasIsAttribute(String name) {
+		return nameToType.containsKey(name);
+	}
+
+	public boolean itemTypeAsAttribute(Class clazz) {
+		return classToName.containsKey(clazz);
 	}
 
 	@Override
@@ -72,12 +64,20 @@ class ClassAliasingMapper extends MapperWrapper {
 		return super.realClass(elementName);
 	}
 
-	public boolean itemTypeAsAttribute(Class clazz) {
-		return classToName.containsKey(clazz);
-	}
-
-	public boolean aliasIsAttribute(String name) {
-		return nameToType.containsKey(name);
+	@Override
+	public String serializedClass(Class type) {
+		String alias = (String) classToName.get(type.getName());
+		if (alias != null) {
+			return alias;
+		} else {
+			for (final Iterator iter = typeToName.keySet().iterator(); iter.hasNext();) {
+				final Class compatibleType = (Class) iter.next();
+				if (compatibleType.isAssignableFrom(type)) {
+					return (String) typeToName.get(compatibleType);
+				}
+			}
+			return super.serializedClass(type);
+		}
 	}
 
 //	private Object readResolve() {

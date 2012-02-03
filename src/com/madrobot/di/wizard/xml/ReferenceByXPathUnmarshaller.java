@@ -31,8 +31,8 @@ import com.madrobot.di.wizard.xml.io.path.PathTrackingReader;
 
 class ReferenceByXPathUnmarshaller extends AbstractReferenceUnmarshaller {
 
-	private PathTracker pathTracker = new PathTracker();
 	protected boolean isNameEncoding;
+	private PathTracker pathTracker = new PathTracker();
 
 	ReferenceByXPathUnmarshaller(
 			Object root,
@@ -45,16 +45,16 @@ class ReferenceByXPathUnmarshaller extends AbstractReferenceUnmarshaller {
 	}
 
 	@Override
+	protected Object getCurrentReferenceKey() {
+		return pathTracker.getPath();
+	}
+
+	@Override
 	protected Object getReferenceKey(String reference) {
 		final Path path = new Path(isNameEncoding ? ((AbstractReader) reader.underlyingReader()).decodeNode(reference)
 				: reference);
 		// We have absolute references, if path starts with '/'
 		return reference.charAt(0) != '/' ? pathTracker.getPath().apply(path) : path;
-	}
-
-	@Override
-	protected Object getCurrentReferenceKey() {
-		return pathTracker.getPath();
 	}
 
 }

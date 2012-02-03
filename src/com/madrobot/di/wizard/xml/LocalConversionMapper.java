@@ -25,8 +25,8 @@ import com.madrobot.di.wizard.xml.core.FastField;
  */
 class LocalConversionMapper extends MapperWrapper {
 
-	private final Map localConverters = new HashMap();
 	private transient AttributeMapper attributeMapper;
+	private final Map localConverters = new HashMap();
 
 	/**
 	 * Constructs a LocalConversionMapper.
@@ -39,15 +39,6 @@ class LocalConversionMapper extends MapperWrapper {
 		readResolve();
 	}
 
-	public void registerLocalConverter(Class definedIn, String fieldName, Converter converter) {
-		localConverters.put(new FastField(definedIn, fieldName), converter);
-	}
-
-	@Override
-	public Converter getLocalConverter(Class definedIn, String fieldName) {
-		return (Converter) localConverters.get(new FastField(definedIn, fieldName));
-	}
-
 	@Override
 	public SingleValueConverter getConverterFromAttribute(Class definedIn, String attribute, Class type) {
 		SingleValueConverter converter = getLocalSingleValueConverter(definedIn, attribute, type);
@@ -58,6 +49,11 @@ class LocalConversionMapper extends MapperWrapper {
 	public SingleValueConverter getConverterFromItemType(String fieldName, Class type, Class definedIn) {
 		SingleValueConverter converter = getLocalSingleValueConverter(definedIn, fieldName, type);
 		return converter == null ? super.getConverterFromItemType(fieldName, type, definedIn) : converter;
+	}
+
+	@Override
+	public Converter getLocalConverter(Class definedIn, String fieldName) {
+		return (Converter) localConverters.get(new FastField(definedIn, fieldName));
 	}
 
 	private SingleValueConverter getLocalSingleValueConverter(Class definedIn, String fieldName, Class type) {
@@ -73,5 +69,9 @@ class LocalConversionMapper extends MapperWrapper {
 	private Object readResolve() {
 		this.attributeMapper = (AttributeMapper) lookupMapperOfType(AttributeMapper.class);
 		return this;
+	}
+
+	public void registerLocalConverter(Class definedIn, String fieldName, Converter converter) {
+		localConverters.put(new FastField(definedIn, fieldName), converter);
 	}
 }

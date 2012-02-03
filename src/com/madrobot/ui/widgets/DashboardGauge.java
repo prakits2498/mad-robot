@@ -32,56 +32,56 @@ import android.util.Log;
 
 public final class DashboardGauge extends CustomWidget {
 
-	private static final String TAG = DashboardGauge.class.getSimpleName();
+	private static final int centerDegree = 40; // the one in the top center (12
 
-
-	// drawing tools
-	private RectF rimRect;
-	private Paint rimPaint;
-	private Paint rimCirclePaint;
-
-	private RectF faceRect;
-	private Bitmap faceTexture;
-	private Paint facePaint;
-	private Paint rimShadowPaint;
-
-	private Paint scalePaint;
-	private RectF scaleRect;
-
-	private Paint titlePaint;
-	private Path titlePath;
-
-	private Paint logoPaint;
-	private Bitmap logo;
-	private Matrix logoMatrix;
-	private float logoScale;
-
-	private Paint handPaint;
-	private Path handPath;
-	private Paint handScrewPaint;
-
-	private Paint backgroundPaint;
-	// end drawing tools
-
-	private Bitmap background; // holds the cached static part
 
 	// scale configuration
 	private static final int totalNicks = 100;
 	private static final float degreesPerNick = 360.0f / totalNicks;
-	private static final int centerDegree = 40; // the one in the top center (12
+	private static final int maxDegrees = 110;
 	// o'clock)
 	private static final int minDegrees = -30;
-	private static final int maxDegrees = 110;
+
+	private static final String TAG = DashboardGauge.class.getSimpleName();
+	private Bitmap background; // holds the cached static part
+	private Paint backgroundPaint;
+	// end drawing tools
+
+	private Paint facePaint;
+	private RectF faceRect;
+
+	private Bitmap faceTexture;
+	private float handAcceleration = 0.0f;
 
 	// hand dynamics -- all are angular expressed in F degrees
 	private boolean handInitialized = false;
+	private Paint handPaint;
+	private Path handPath;
 	private float handPosition = centerDegree;
+
+	private Paint handScrewPaint;
 	private float handTarget = centerDegree;
 	private float handVelocity = 0.0f;
-	private float handAcceleration = 0.0f;
+
 	private long lastHandMoveTime = -1L;
 
+	private Bitmap logo;
+
+	private Matrix logoMatrix;
+	private Paint logoPaint;
+	private float logoScale;
+	private Paint rimCirclePaint;
+	private Paint rimPaint;
+
+	// drawing tools
+	private RectF rimRect;
+	private Paint rimShadowPaint;
+	private Paint scalePaint;
+	private RectF scaleRect;
 	private String title = "";
+	private Paint titlePaint;
+
+	private Path titlePath;
 
 	public DashboardGauge(Context context) {
 		super(context);

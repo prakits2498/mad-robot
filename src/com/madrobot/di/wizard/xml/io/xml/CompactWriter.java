@@ -31,23 +31,8 @@ public class CompactWriter extends PrettyPrintWriter {
 	/**
 	 * @since 1.4
 	 */
-	public CompactWriter(Writer writer, NameCoder nameCoder) {
-		super(writer, nameCoder);
-	}
-
-	/**
-	 * @since 1.4
-	 */
 	public CompactWriter(Writer writer, int mode, NameCoder nameCoder) {
 		super(writer, mode, nameCoder);
-	}
-
-	/**
-	 * @deprecated As of 1.4 use {@link CompactWriter#CompactWriter(Writer, NameCoder)} instead.
-	 */
-	@Deprecated
-	public CompactWriter(Writer writer, XmlFriendlyNameCoder replacer) {
-		super(writer, replacer);
 	}
 
 	/**
@@ -57,6 +42,21 @@ public class CompactWriter extends PrettyPrintWriter {
 	@Deprecated
 	public CompactWriter(Writer writer, int mode, XmlFriendlyNameCoder replacer) {
 		super(writer, mode, replacer);
+	}
+
+	/**
+	 * @since 1.4
+	 */
+	public CompactWriter(Writer writer, NameCoder nameCoder) {
+		super(writer, nameCoder);
+	}
+
+	/**
+	 * @deprecated As of 1.4 use {@link CompactWriter#CompactWriter(Writer, NameCoder)} instead.
+	 */
+	@Deprecated
+	public CompactWriter(Writer writer, XmlFriendlyNameCoder replacer) {
+		super(writer, replacer);
 	}
 
 	@Override

@@ -44,42 +44,42 @@ import com.madrobot.net.client.command.ProtocolCommandSupport;
  ***/
 
 public class POP3 extends SocketClient {
+	// We have to ensure that the protocol communication is in ASCII
+	// but we use ISO-8859-1 just in case 8-bit characters cross
+	// the wire.
+	private static final String __DEFAULT_ENCODING = "ISO-8859-1";
+	static final String _ERROR = "-ERR";
+	static final String _OK = "+OK";
+	/*** A constant representing the POP3 authorization state. ***/
+	public static final int AUTHORIZATION_STATE = 0;
 	/*** The default POP3 port. Set to 110 according to RFC 1288. ***/
 	public static final int DEFAULT_PORT = 110;
+
 	/***
 	 * A constant representing the state where the client is not yet connected
 	 * to a POP3 server.
 	 ***/
 	public static final int DISCONNECTED_STATE = -1;
-	/*** A constant representing the POP3 authorization state. ***/
-	public static final int AUTHORIZATION_STATE = 0;
 	/*** A constant representing the POP3 transaction state. ***/
 	public static final int TRANSACTION_STATE = 1;
+
 	/*** A constant representing the POP3 update state. ***/
 	public static final int UPDATE_STATE = 2;
 
-	static final String _OK = "+OK";
-	static final String _ERROR = "-ERR";
-
-	// We have to ensure that the protocol communication is in ASCII
-	// but we use ISO-8859-1 just in case 8-bit characters cross
-	// the wire.
-	private static final String __DEFAULT_ENCODING = "ISO-8859-1";
-
+	private StringBuffer __commandBuffer;
 	private int __popState;
 	private BufferedWriter __writer;
-	private StringBuffer __commandBuffer;
-
-	BufferedReader _reader;
-	int _replyCode;
-	String _lastReplyLine;
-	Vector<String> _replyLines;
 
 	/***
 	 * A ProtocolCommandSupport object used to manage the registering of
 	 * ProtocolCommandListeners and te firing of ProtocolCommandEvents.
 	 ***/
 	protected ProtocolCommandSupport _commandSupport_;
+	String _lastReplyLine;
+	BufferedReader _reader;
+	int _replyCode;
+
+	Vector<String> _replyLines;
 
 	/***
 	 * The default POP3Client constructor. Initializes the state
@@ -147,37 +147,23 @@ public class POP3 extends SocketClient {
 	}
 
 	/***
-	 * Removes a ProtocolCommandListener. Delegates this task to
-	 * {@link #_commandSupport_ _commandSupport_ }.
+	 * Disconnects the client from the server, and sets the state to
+	 * <code> DISCONNECTED_STATE </code>. The reply text information
+	 * from the last issued command is voided to allow garbage collection
+	 * of the memory used to store that information.
 	 * <p>
 	 * 
-	 * @param listener
-	 *            The ProtocolCommandListener to remove.
+	 * @exception IOException
+	 *                If there is an error in disconnecting.
 	 ***/
-	public void removeProtocolCommandistener(ProtocolCommandListener listener) {
-		_commandSupport_.removeProtocolCommandListener(listener);
-	}
-
-	/***
-	 * Sets POP3 client state. This must be one of the <code>_STATE</code>
-	 * constants.
-	 * <p>
-	 * 
-	 * @param state
-	 *            The new state.
-	 ***/
-	public void setState(int state) {
-		__popState = state;
-	}
-
-	/***
-	 * Returns the current POP3 client state.
-	 * <p>
-	 * 
-	 * @return The current POP3 client state.
-	 ***/
-	public int getState() {
-		return __popState;
+	@Override
+	public void disconnect() throws IOException {
+		super.disconnect();
+		_reader = null;
+		__writer = null;
+		_lastReplyLine = null;
+		_replyLines.setSize(0);
+		setState(DISCONNECTED_STATE);
 	}
 
 	/***
@@ -197,23 +183,113 @@ public class POP3 extends SocketClient {
 	}
 
 	/***
-	 * Disconnects the client from the server, and sets the state to
-	 * <code> DISCONNECTED_STATE </code>. The reply text information
-	 * from the last issued command is voided to allow garbage collection
-	 * of the memory used to store that information.
+	 * Returns the reply to the last command sent to the server.
+	 * The value is a single string containing all the reply lines including
+	 * newlines. If the reply is a single line, but its format ndicates it
+	 * should be a multiline reply, then you must call
+	 * {@link #getAdditionalReply getAdditionalReply() } to
+	 * fetch the rest of the reply, and then call <code>getReplyString</code>
+	 * again. You only have to worry about this if you are implementing
+	 * your own client using the {@link #sendCommand sendCommand } methods.
 	 * <p>
 	 * 
-	 * @exception IOException
-	 *                If there is an error in disconnecting.
+	 * @return The last server response.
 	 ***/
-	@Override
-	public void disconnect() throws IOException {
-		super.disconnect();
-		_reader = null;
-		__writer = null;
-		_lastReplyLine = null;
-		_replyLines.setSize(0);
-		setState(DISCONNECTED_STATE);
+	public String getReplyString() {
+		Enumeration<String> en;
+		StringBuilder buffer = new StringBuilder(256);
+
+		en = _replyLines.elements();
+		while(en.hasMoreElements()){
+			buffer.append(en.nextElement());
+			buffer.append(SocketClient.NETASCII_EOL);
+		}
+
+		return buffer.toString();
+	}
+
+	/***
+	 * Returns an array of lines received as a reply to the last command
+	 * sent to the server. The lines have end of lines truncated. If
+	 * the reply is a single line, but its format ndicates it should be
+	 * a multiline reply, then you must call {@link #getAdditionalReply
+	 * getAdditionalReply() } to
+	 * fetch the rest of the reply, and then call <code>getReplyStrings</code>
+	 * again. You only have to worry about this if you are implementing
+	 * your own client using the {@link #sendCommand sendCommand } methods.
+	 * <p>
+	 * 
+	 * @return The last server response.
+	 ***/
+	public String[] getReplyStrings() {
+		String[] lines;
+		lines = new String[_replyLines.size()];
+		_replyLines.copyInto(lines);
+		return lines;
+	}
+
+	/***
+	 * Returns the current POP3 client state.
+	 * <p>
+	 * 
+	 * @return The current POP3 client state.
+	 ***/
+	public int getState() {
+		return __popState;
+	}
+
+	/***
+	 * Removes a ProtocolCommandListener. Delegates this task to
+	 * {@link #_commandSupport_ _commandSupport_ }.
+	 * <p>
+	 * 
+	 * @param listener
+	 *            The ProtocolCommandListener to remove.
+	 ***/
+	public void removeProtocolCommandistener(ProtocolCommandListener listener) {
+		_commandSupport_.removeProtocolCommandListener(listener);
+	}
+
+	/***
+	 * Sends a command with no arguments to the server and returns the
+	 * reply code.
+	 * <p>
+	 * 
+	 * @param command
+	 *            The POP3 command to send
+	 *            (one of the POP3Command constants).
+	 * @return The server reply code (either POP3Reply.OK or POP3Reply.ERROR).
+	 ***/
+	public int sendCommand(int command) throws IOException {
+		return sendCommand(POP3Command.getCommand(command), null);
+	}
+
+	/***
+	 * Sends a command an arguments to the server and returns the reply code.
+	 * <p>
+	 * 
+	 * @param command
+	 *            The POP3 command to send
+	 *            (one of the POP3Command constants).
+	 * @param args
+	 *            The command arguments.
+	 * @return The server reply code (either POP3Reply.OK or POP3Reply.ERROR).
+	 ***/
+	public int sendCommand(int command, String args) throws IOException {
+		return sendCommand(POP3Command.getCommand(command), args);
+	}
+
+	/***
+	 * Sends a command with no arguments to the server and returns the
+	 * reply code.
+	 * <p>
+	 * 
+	 * @param command
+	 *            The POP3 command to send.
+	 * @return The server reply code (either POP3Reply.OK or POP3Reply.ERROR).
+	 ***/
+	public int sendCommand(String command) throws IOException {
+		return sendCommand(command, null);
 	}
 
 	/***
@@ -250,91 +326,15 @@ public class POP3 extends SocketClient {
 	}
 
 	/***
-	 * Sends a command with no arguments to the server and returns the
-	 * reply code.
+	 * Sets POP3 client state. This must be one of the <code>_STATE</code>
+	 * constants.
 	 * <p>
 	 * 
-	 * @param command
-	 *            The POP3 command to send.
-	 * @return The server reply code (either POP3Reply.OK or POP3Reply.ERROR).
+	 * @param state
+	 *            The new state.
 	 ***/
-	public int sendCommand(String command) throws IOException {
-		return sendCommand(command, null);
-	}
-
-	/***
-	 * Sends a command an arguments to the server and returns the reply code.
-	 * <p>
-	 * 
-	 * @param command
-	 *            The POP3 command to send
-	 *            (one of the POP3Command constants).
-	 * @param args
-	 *            The command arguments.
-	 * @return The server reply code (either POP3Reply.OK or POP3Reply.ERROR).
-	 ***/
-	public int sendCommand(int command, String args) throws IOException {
-		return sendCommand(POP3Command.getCommand(command), args);
-	}
-
-	/***
-	 * Sends a command with no arguments to the server and returns the
-	 * reply code.
-	 * <p>
-	 * 
-	 * @param command
-	 *            The POP3 command to send
-	 *            (one of the POP3Command constants).
-	 * @return The server reply code (either POP3Reply.OK or POP3Reply.ERROR).
-	 ***/
-	public int sendCommand(int command) throws IOException {
-		return sendCommand(POP3Command.getCommand(command), null);
-	}
-
-	/***
-	 * Returns an array of lines received as a reply to the last command
-	 * sent to the server. The lines have end of lines truncated. If
-	 * the reply is a single line, but its format ndicates it should be
-	 * a multiline reply, then you must call {@link #getAdditionalReply
-	 * getAdditionalReply() } to
-	 * fetch the rest of the reply, and then call <code>getReplyStrings</code>
-	 * again. You only have to worry about this if you are implementing
-	 * your own client using the {@link #sendCommand sendCommand } methods.
-	 * <p>
-	 * 
-	 * @return The last server response.
-	 ***/
-	public String[] getReplyStrings() {
-		String[] lines;
-		lines = new String[_replyLines.size()];
-		_replyLines.copyInto(lines);
-		return lines;
-	}
-
-	/***
-	 * Returns the reply to the last command sent to the server.
-	 * The value is a single string containing all the reply lines including
-	 * newlines. If the reply is a single line, but its format ndicates it
-	 * should be a multiline reply, then you must call
-	 * {@link #getAdditionalReply getAdditionalReply() } to
-	 * fetch the rest of the reply, and then call <code>getReplyString</code>
-	 * again. You only have to worry about this if you are implementing
-	 * your own client using the {@link #sendCommand sendCommand } methods.
-	 * <p>
-	 * 
-	 * @return The last server response.
-	 ***/
-	public String getReplyString() {
-		Enumeration<String> en;
-		StringBuilder buffer = new StringBuilder(256);
-
-		en = _replyLines.elements();
-		while(en.hasMoreElements()){
-			buffer.append(en.nextElement());
-			buffer.append(SocketClient.NETASCII_EOL);
-		}
-
-		return buffer.toString();
+	public void setState(int state) {
+		__popState = state;
 	}
 
 }

@@ -28,8 +28,8 @@ import com.madrobot.util.FastStack;
 abstract class AbstractReferenceUnmarshaller extends TreeUnmarshaller {
 
 	private static final Object NULL = new Object();
-	private Map values = new HashMap();
 	private FastStack parentStack = new FastStack(16);
+	private Map values = new HashMap();
 
 	AbstractReferenceUnmarshaller(
 			Object root,
@@ -73,7 +73,7 @@ abstract class AbstractReferenceUnmarshaller extends TreeUnmarshaller {
 		return result;
 	}
 
-	protected abstract Object getReferenceKey(String reference);
-
 	protected abstract Object getCurrentReferenceKey();
+
+	protected abstract Object getReferenceKey(String reference);
 }

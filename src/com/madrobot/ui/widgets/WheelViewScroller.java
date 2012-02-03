@@ -41,50 +41,15 @@ class WheelViewScroller {
 		void onStarted();
 	}
 
-	/** Scrolling duration */
-	private static final int SCROLLING_DURATION = 400;
-
 	/** Minimum delta for scrolling */
 	public static final int MIN_DELTA_FOR_SCROLLING = 1;
 
-	// Listener
-	private ScrollingListener listener;
-
-	// Context
-	private Context context;
-
-	// Scrolling
-	private GestureDetector gestureDetector;
-	private Scroller scroller;
-	private int lastScrollY;
-	private float lastTouchedY;
-	private boolean isScrollingPerformed;
-
-	// gesture listener
-	private SimpleOnGestureListener gestureListener = new SimpleOnGestureListener() {
-		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-			lastScrollY = 0;
-			final int maxY = 0x7FFFFFFF;
-			final int minY = -maxY;
-			scroller.fling(0, lastScrollY, 0, (int) -velocityY, 0, 0, minY, maxY);
-			setNextMessage(MESSAGE_SCROLL);
-			return true;
-		}
-
-		public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-			// Do scrolling in onTouchEvent() since onScroll() are not call immediately
-			// when user touch and move the wheel
-			return true;
-		}
-	};
-
-	// Messages
-	private final int MESSAGE_SCROLL = 0;
-
-	private final int MESSAGE_JUSTIFY = 1;
+	/** Scrolling duration */
+	private static final int SCROLLING_DURATION = 400;
 
 	// animation handler
 	private Handler animationHandler = new Handler() {
+		@Override
 		public void handleMessage(Message msg) {
 			scroller.computeScrollOffset();
 			int currY = scroller.getCurrY();
@@ -109,6 +74,44 @@ class WheelViewScroller {
 			}
 		}
 	};
+
+	// Context
+	private Context context;
+
+	// Scrolling
+	private GestureDetector gestureDetector;
+	// gesture listener
+	private SimpleOnGestureListener gestureListener = new SimpleOnGestureListener() {
+		@Override
+		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+			lastScrollY = 0;
+			final int maxY = 0x7FFFFFFF;
+			final int minY = -maxY;
+			scroller.fling(0, lastScrollY, 0, (int) -velocityY, 0, 0, minY, maxY);
+			setNextMessage(MESSAGE_SCROLL);
+			return true;
+		}
+
+		@Override
+		public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+			// Do scrolling in onTouchEvent() since onScroll() are not call immediately
+			// when user touch and move the wheel
+			return true;
+		}
+	};
+	private boolean isScrollingPerformed;
+	private int lastScrollY;
+	private float lastTouchedY;
+
+	// Listener
+	private ScrollingListener listener;
+
+	private final int MESSAGE_JUSTIFY = 1;
+
+	// Messages
+	private final int MESSAGE_SCROLL = 0;
+
+	private Scroller scroller;
 
 	/**
 	 * Constructor

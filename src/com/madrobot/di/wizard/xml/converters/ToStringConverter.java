@@ -36,11 +36,6 @@ public class ToStringConverter extends AbstractSingleValueConverter {
 	}
 
 	@Override
-	public String toString(Object obj) {
-		return obj == null ? null : obj.toString();
-	}
-
-	@Override
 	public Object fromString(String str) {
 		try {
 			return ctor.newInstance(new Object[] { str });
@@ -51,5 +46,10 @@ public class ToStringConverter extends AbstractSingleValueConverter {
 		} catch (InvocationTargetException e) {
 			throw new ConversionException("Unable to target single String param constructor", e.getTargetException());
 		}
+	}
+
+	@Override
+	public String toString(Object obj) {
+		return obj == null ? null : obj.toString();
 	}
 }

@@ -36,6 +36,18 @@ public class DefaultConverterLookup implements ConverterLookup, ConverterRegistr
 	}
 
 	@Override
+	public void flushCache() {
+		typeToConverterMap.clear();
+		Iterator iterator = converters.iterator();
+		while (iterator.hasNext()) {
+			Converter converter = (Converter) iterator.next();
+			if (converter instanceof Caching) {
+				((Caching) converter).flushCache();
+			}
+		}
+	}
+
+	@Override
 	public Converter lookupConverterForType(Class type) {
 		Converter cachedConverter = (Converter) typeToConverterMap.get(type);
 		if (cachedConverter != null) {
@@ -52,6 +64,11 @@ public class DefaultConverterLookup implements ConverterLookup, ConverterRegistr
 		throw new ConversionException("No converter specified for " + type);
 	}
 
+	private Object readResolve() {
+		typeToConverterMap = Collections.synchronizedMap(new HashMap());
+		return this;
+	}
+
 	@Override
 	public void registerConverter(Converter converter, int priority) {
 		converters.add(converter, priority);
@@ -61,22 +78,5 @@ public class DefaultConverterLookup implements ConverterLookup, ConverterRegistr
 				iter.remove();
 			}
 		}
-	}
-
-	@Override
-	public void flushCache() {
-		typeToConverterMap.clear();
-		Iterator iterator = converters.iterator();
-		while (iterator.hasNext()) {
-			Converter converter = (Converter) iterator.next();
-			if (converter instanceof Caching) {
-				((Caching) converter).flushCache();
-			}
-		}
-	}
-
-	private Object readResolve() {
-		typeToConverterMap = Collections.synchronizedMap(new HashMap());
-		return this;
 	}
 }

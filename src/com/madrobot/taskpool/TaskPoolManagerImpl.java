@@ -114,28 +114,11 @@ public final class TaskPoolManagerImpl implements TaskPoolManager {
 		}
 	}
 
-	// ////////////////////////////////////////////////////////////
-	// Fields
-	/**
-	 * Field to block the operation
-	 */
-	private final Lock listLock = new ReentrantLock();
-	/**
-	 * Field to hold the active task
-	 */
-	private final List<ManagedServiceTask<?>> activeTasks = new ArrayList<ManagedServiceTask<?>>();
 	/**
 	 * Field to hold the service manager singleton instance
 	 */
 	private static TaskPoolManager serviceManager;
-
-	/**
-	 * Field to hold the thread pool executor instance
-	 */
-	private TaskPool sessionThreadPool;
-
 	private static String TAG = "LIB:TaskManager";
-
 	// ////////////////////////////////////////////////////////////
 	// Public methods
 	/**
@@ -154,7 +137,24 @@ public final class TaskPoolManagerImpl implements TaskPoolManager {
 		return serviceManager;
 	}
 
+	/**
+	 * Field to hold the active task
+	 */
+	private final List<ManagedServiceTask<?>> activeTasks = new ArrayList<ManagedServiceTask<?>>();
+
 	private boolean isRunning = true;
+
+	// ////////////////////////////////////////////////////////////
+	// Fields
+	/**
+	 * Field to block the operation
+	 */
+	private final Lock listLock = new ReentrantLock();
+
+	/**
+	 * Field to hold the thread pool executor instance
+	 */
+	private TaskPool sessionThreadPool;
 
 	// ////////////////////////////////////////////////////////////
 	// Private methods

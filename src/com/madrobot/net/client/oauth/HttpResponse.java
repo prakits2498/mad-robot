@@ -5,11 +5,11 @@ import java.io.InputStream;
 
 public interface HttpResponse {
 
-    int getStatusCode() throws IOException;
+    InputStream getContent() throws IOException;
 
     String getReasonPhrase() throws Exception;
 
-    InputStream getContent() throws IOException;
+    int getStatusCode() throws IOException;
 
     /**
      * Returns the underlying response object, in case you need to work on it

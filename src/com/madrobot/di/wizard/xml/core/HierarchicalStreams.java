@@ -21,17 +21,6 @@ import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
  */
 public class HierarchicalStreams {
 
-	public static Class readClassType(HierarchicalStreamReader reader, Mapper mapper) {
-		String classAttribute = readClassAttribute(reader, mapper);
-		Class type;
-		if (classAttribute == null) {
-			type = mapper.realClass(reader.getNodeName());
-		} else {
-			type = mapper.realClass(classAttribute);
-		}
-		return type;
-	}
-
 	public static String readClassAttribute(HierarchicalStreamReader reader, Mapper mapper) {
 		String attributeName = mapper.aliasForSystemAttribute("resolves-to");
 		String classAttribute = attributeName == null ? null : reader.getAttribute(attributeName);
@@ -42,6 +31,17 @@ public class HierarchicalStreams {
 			}
 		}
 		return classAttribute;
+	}
+
+	public static Class readClassType(HierarchicalStreamReader reader, Mapper mapper) {
+		String classAttribute = readClassAttribute(reader, mapper);
+		Class type;
+		if (classAttribute == null) {
+			type = mapper.realClass(reader.getNodeName());
+		} else {
+			type = mapper.realClass(classAttribute);
+		}
+		return type;
 	}
 
 }

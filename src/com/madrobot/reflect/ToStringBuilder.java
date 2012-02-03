@@ -109,28 +109,6 @@ class ToStringBuilder implements Builder<String> {
         return defaultStyle;
     }
 
-    /**
-     * <p>Sets the default <code>ToStringStyle</code> to use.</p>
-     * 
-     * <p>This method sets a singleton default value, typically for the whole JVM.
-     * Changing this default should generally only be done during application startup.
-     * It is recommended to pass a <code>ToStringStyle</code> to the constructor instead
-     * of changing this global default.</p>
-     * 
-     * <p>This method is not intended for use from multiple threads.
-     * Internally, a <code>volatile</code> variable is used to provide the guarantee
-     * that the latest value set is the value returned from {@link #getDefaultStyle}.</p>
-     * 
-     * @param style  the default <code>ToStringStyle</code>
-     * @throws IllegalArgumentException if the style is <code>null</code>
-     */
-    public static void setDefaultStyle(ToStringStyle style) {
-        if (style == null) {
-            throw new IllegalArgumentException("The style must not be null");
-        }
-        defaultStyle = style;
-    }
-
     //----------------------------------------------------------------------------
     /**
      * <p>Uses <code>ReflectionToStringBuilder</code> to generate a
@@ -189,6 +167,28 @@ class ToStringBuilder implements Builder<String> {
         boolean outputTransients,
         Class<? super T> reflectUpToClass) {
         return ReflectionToStringBuilder.toString(object, style, outputTransients, false, reflectUpToClass);
+    }
+
+    /**
+     * <p>Sets the default <code>ToStringStyle</code> to use.</p>
+     * 
+     * <p>This method sets a singleton default value, typically for the whole JVM.
+     * Changing this default should generally only be done during application startup.
+     * It is recommended to pass a <code>ToStringStyle</code> to the constructor instead
+     * of changing this global default.</p>
+     * 
+     * <p>This method is not intended for use from multiple threads.
+     * Internally, a <code>volatile</code> variable is used to provide the guarantee
+     * that the latest value set is the value returned from {@link #getDefaultStyle}.</p>
+     * 
+     * @param style  the default <code>ToStringStyle</code>
+     * @throws IllegalArgumentException if the style is <code>null</code>
+     */
+    public static void setDefaultStyle(ToStringStyle style) {
+        if (style == null) {
+            throw new IllegalArgumentException("The style must not be null");
+        }
+        defaultStyle = style;
     }
 
     //----------------------------------------------------------------------------
@@ -1004,6 +1004,21 @@ class ToStringBuilder implements Builder<String> {
     }
 
     /**
+     * Returns the String that was build as an object representation. The 
+     * default implementation utilizes the {@link #toString()} implementation.
+     * 
+     * @return the String <code>toString</code>
+     * 
+     * @see #toString()
+     * 
+     * @since 3.0
+     */
+    @Override
+	public String build() {
+        return toString();
+    }
+
+    /**
      * <p>Returns the <code>Object</code> being output.</p>
      * 
      * @return The object being output.
@@ -1013,6 +1028,8 @@ class ToStringBuilder implements Builder<String> {
         return object;
     }
 
+    //----------------------------------------------------------------------------
+
     /**
      * <p>Gets the <code>StringBuffer</code> being populated.</p>
      * 
@@ -1021,8 +1038,6 @@ class ToStringBuilder implements Builder<String> {
     public StringBuffer getStringBuffer() {
         return buffer;
     }
-
-    //----------------------------------------------------------------------------
 
     /**
      * <p>Gets the <code>ToStringStyle</code> being used.</p>
@@ -1052,20 +1067,5 @@ class ToStringBuilder implements Builder<String> {
             style.appendEnd(this.getStringBuffer(), this.getObject());
         }
         return this.getStringBuffer().toString();
-    }
-
-    /**
-     * Returns the String that was build as an object representation. The 
-     * default implementation utilizes the {@link #toString()} implementation.
-     * 
-     * @return the String <code>toString</code>
-     * 
-     * @see #toString()
-     * 
-     * @since 3.0
-     */
-    @Override
-	public String build() {
-        return toString();
     }
 }

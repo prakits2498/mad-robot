@@ -31,11 +31,11 @@ import com.madrobot.di.wizard.xml.core.FastField;
  */
 public class SerializationMethodInvoker implements Caching {
 
+	private static final Object[] EMPTY_ARGS = new Object[0];
 	private static final Method NO_METHOD = (new Object() {
 		private void noMethod() {
 		}
 	}).getClass().getDeclaredMethods()[0];
-	private static final Object[] EMPTY_ARGS = new Object[0];
 	private static final FastField[] OBJECT_TYPE_FIELDS = new FastField[] { new FastField(Object.class, "readResolve"),
 			new FastField(Object.class, "writeReplace"), new FastField(Object.class, "readObject"),
 			new FastField(Object.class, "writeObject") };
@@ -43,6 +43,18 @@ public class SerializationMethodInvoker implements Caching {
 	{
 		for (int i = 0; i < OBJECT_TYPE_FIELDS.length; ++i) {
 			cache.put(OBJECT_TYPE_FIELDS[i], NO_METHOD);
+		}
+	}
+
+	public void callReadObject(Class type, Object object, ObjectInputStream stream) {
+		try {
+			Method readObjectMethod = getMethod(type, "readObject", new Class[] { ObjectInputStream.class }, false);
+			readObjectMethod.invoke(object, new Object[] { stream });
+		} catch (IllegalAccessException e) {
+			throw new ConversionException("Could not call " + object.getClass().getName() + ".readObject()", e);
+		} catch (InvocationTargetException e) {
+			throw new ConversionException("Could not call " + object.getClass().getName() + ".readObject()",
+					e.getTargetException());
 		}
 	}
 
@@ -70,6 +82,18 @@ public class SerializationMethodInvoker implements Caching {
 		}
 	}
 
+	public void callWriteObject(Class type, Object instance, ObjectOutputStream stream) {
+		try {
+			Method readObjectMethod = getMethod(type, "writeObject", new Class[] { ObjectOutputStream.class }, false);
+			readObjectMethod.invoke(instance, new Object[] { stream });
+		} catch (IllegalAccessException e) {
+			throw new ConversionException("Could not call " + instance.getClass().getName() + ".writeObject()", e);
+		} catch (InvocationTargetException e) {
+			throw new ConversionException("Could not call " + instance.getClass().getName() + ".writeObject()",
+					e.getTargetException());
+		}
+	}
+
 	public Object callWriteReplace(Object object) {
 		if (object == null) {
 			return null;
@@ -91,41 +115,9 @@ public class SerializationMethodInvoker implements Caching {
 		}
 	}
 
-	public boolean supportsReadObject(Class type, boolean includeBaseClasses) {
-		return getMethod(type, "readObject", new Class[] { ObjectInputStream.class }, includeBaseClasses) != null;
-	}
-
-	public void callReadObject(Class type, Object object, ObjectInputStream stream) {
-		try {
-			Method readObjectMethod = getMethod(type, "readObject", new Class[] { ObjectInputStream.class }, false);
-			readObjectMethod.invoke(object, new Object[] { stream });
-		} catch (IllegalAccessException e) {
-			throw new ConversionException("Could not call " + object.getClass().getName() + ".readObject()", e);
-		} catch (InvocationTargetException e) {
-			throw new ConversionException("Could not call " + object.getClass().getName() + ".readObject()",
-					e.getTargetException());
-		}
-	}
-
-	public boolean supportsWriteObject(Class type, boolean includeBaseClasses) {
-		return getMethod(type, "writeObject", new Class[] { ObjectOutputStream.class }, includeBaseClasses) != null;
-	}
-
-	public void callWriteObject(Class type, Object instance, ObjectOutputStream stream) {
-		try {
-			Method readObjectMethod = getMethod(type, "writeObject", new Class[] { ObjectOutputStream.class }, false);
-			readObjectMethod.invoke(instance, new Object[] { stream });
-		} catch (IllegalAccessException e) {
-			throw new ConversionException("Could not call " + instance.getClass().getName() + ".writeObject()", e);
-		} catch (InvocationTargetException e) {
-			throw new ConversionException("Could not call " + instance.getClass().getName() + ".writeObject()",
-					e.getTargetException());
-		}
-	}
-
-	private Method getMethod(Class type, String name, Class[] parameterTypes, boolean includeBaseclasses) {
-		Method method = getMethod(type, name, parameterTypes);
-		return method == NO_METHOD || (!includeBaseclasses && !method.getDeclaringClass().equals(type)) ? null : method;
+	@Override
+	public void flushCache() {
+		cache.keySet().retainAll(Arrays.asList(OBJECT_TYPE_FIELDS));
 	}
 
 	private Method getMethod(Class type, String name, Class[] parameterTypes) {
@@ -146,8 +138,16 @@ public class SerializationMethodInvoker implements Caching {
 		return result;
 	}
 
-	@Override
-	public void flushCache() {
-		cache.keySet().retainAll(Arrays.asList(OBJECT_TYPE_FIELDS));
+	private Method getMethod(Class type, String name, Class[] parameterTypes, boolean includeBaseclasses) {
+		Method method = getMethod(type, name, parameterTypes);
+		return method == NO_METHOD || (!includeBaseclasses && !method.getDeclaringClass().equals(type)) ? null : method;
+	}
+
+	public boolean supportsReadObject(Class type, boolean includeBaseClasses) {
+		return getMethod(type, "readObject", new Class[] { ObjectInputStream.class }, includeBaseClasses) != null;
+	}
+
+	public boolean supportsWriteObject(Class type, boolean includeBaseClasses) {
+		return getMethod(type, "writeObject", new Class[] { ObjectOutputStream.class }, includeBaseClasses) != null;
 	}
 }

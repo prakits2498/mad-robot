@@ -25,16 +25,32 @@ import com.madrobot.reflect.MethodUtils;
  */
 public class EventSetDescriptor extends FeatureDescriptor {
 
-	private MethodDescriptor[] listenerMethodDescriptors;
+	private static String getListenerClassName(Class cls) {
+		String className = cls.getName();
+		return className.substring(className.lastIndexOf('.') + 1);
+	}
+	private static Method getMethod(Class cls, String name, int args) throws IntrospectionException {
+		if(name == null){
+			return null;
+		}
+		Method method = MethodUtils.findAccessibleMethodIncludeInterfaces(cls, name, args,null);
+		if(method == null){
+			throw new IntrospectionException("Method not found: " + name + " on class " + cls.getName());
+		}
+		return method;
+	}
 	private MethodDescriptor addMethodDescriptor;
-	private MethodDescriptor removeMethodDescriptor;
 	private MethodDescriptor getMethodDescriptor;
+
+	private boolean inDefaultEventSet = true;
+	private MethodDescriptor[] listenerMethodDescriptors;
 
 	private Reference listenerMethodsRef;
 	private Reference listenerTypeRef;
 
+	private MethodDescriptor removeMethodDescriptor;
+
 	private boolean unicast;
-	private boolean inDefaultEventSet = true;
 
 	/**
 	 * Creates an <TT>EventSetDescriptor</TT> assuming that you are
@@ -78,11 +94,6 @@ public class EventSetDescriptor extends FeatureDescriptor {
 						+ "\" should have argument \"" + eventName + "\"");
 			}
 		}
-	}
-
-	private static String getListenerClassName(Class cls) {
-		String className = cls.getName();
-		return className.substring(className.lastIndexOf('.') + 1);
 	}
 
 	/**
@@ -180,15 +191,69 @@ public class EventSetDescriptor extends FeatureDescriptor {
 		}
 	}
 
-	private static Method getMethod(Class cls, String name, int args) throws IntrospectionException {
-		if(name == null){
-			return null;
+	/*
+	 * Package-private dup constructor
+	 * This must isolate the new object from any changes to the old object.
+	 */
+	EventSetDescriptor(EventSetDescriptor old) {
+		super(old);
+		if(old.listenerMethodDescriptors != null){
+			int len = old.listenerMethodDescriptors.length;
+			listenerMethodDescriptors = new MethodDescriptor[len];
+			for(int i = 0; i < len; i++){
+				listenerMethodDescriptors[i] = new MethodDescriptor(old.listenerMethodDescriptors[i]);
+			}
 		}
-		Method method = MethodUtils.findAccessibleMethodIncludeInterfaces(cls, name, args,null);
-		if(method == null){
-			throw new IntrospectionException("Method not found: " + name + " on class " + cls.getName());
+		listenerTypeRef = old.listenerTypeRef;
+
+		addMethodDescriptor = old.addMethodDescriptor;
+		removeMethodDescriptor = old.removeMethodDescriptor;
+		getMethodDescriptor = old.getMethodDescriptor;
+
+		unicast = old.unicast;
+		inDefaultEventSet = old.inDefaultEventSet;
+	}
+
+	/*
+	 * Package-private constructor
+	 * Merge two event set descriptors. Where they conflict, give the
+	 * second argument (y) priority over the first argument (x).
+	 * 
+	 * @param x The first (lower priority) EventSetDescriptor
+	 * 
+	 * @param y The second (higher priority) EventSetDescriptor
+	 */
+	EventSetDescriptor(EventSetDescriptor x, EventSetDescriptor y) {
+		super(x, y);
+		listenerMethodDescriptors = x.listenerMethodDescriptors;
+		if(y.listenerMethodDescriptors != null){
+			listenerMethodDescriptors = y.listenerMethodDescriptors;
 		}
-		return method;
+
+		listenerTypeRef = x.listenerTypeRef;
+		if(y.listenerTypeRef != null){
+			listenerTypeRef = y.listenerTypeRef;
+		}
+
+		addMethodDescriptor = x.addMethodDescriptor;
+		if(y.addMethodDescriptor != null){
+			addMethodDescriptor = y.addMethodDescriptor;
+		}
+
+		removeMethodDescriptor = x.removeMethodDescriptor;
+		if(y.removeMethodDescriptor != null){
+			removeMethodDescriptor = y.removeMethodDescriptor;
+		}
+
+		getMethodDescriptor = x.getMethodDescriptor;
+		if(y.getMethodDescriptor != null){
+			getMethodDescriptor = y.getMethodDescriptor;
+		}
+
+		unicast = y.unicast;
+		if(!x.inDefaultEventSet || !y.inDefaultEventSet){
+			inDefaultEventSet = false;
+		}
 	}
 
 	/**
@@ -288,17 +353,35 @@ public class EventSetDescriptor extends FeatureDescriptor {
 	}
 
 	/**
-	 * Gets the <TT>Class</TT> object for the target interface.
+	 * Gets the method used to add event listeners.
 	 * 
-	 * @return The Class object for the target interface that will
-	 *         get invoked when the event is fired.
+	 * @return The method used to register a listener at the event source.
 	 */
-	public Class<?> getListenerType() {
-		return (Class) getObject(listenerTypeRef);
+	public synchronized Method getAddListenerMethod() {
+		return (addMethodDescriptor != null ? addMethodDescriptor.getMethod() : null);
 	}
 
-	private void setListenerType(Class cls) {
-		listenerTypeRef = createReference(cls);
+	/**
+	 * Gets the method used to access the registered event listeners.
+	 * 
+	 * @return The method used to access the array of listeners at the event
+	 *         source or null if it doesn't exist.
+	 * @since 1.4
+	 */
+	public synchronized Method getGetListenerMethod() {
+		return (getMethodDescriptor != null ? getMethodDescriptor.getMethod() : null);
+	}
+
+	/**
+	 * Gets the <code>MethodDescriptor</code>s of the target listener interface.
+	 * 
+	 * @return An array of <code>MethodDescriptor</code> objects for the target
+	 *         methods
+	 *         within the target listener interface that will get called when
+	 *         events are fired.
+	 */
+	public synchronized MethodDescriptor[] getListenerMethodDescriptors() {
+		return listenerMethodDescriptors;
 	}
 
 	/**
@@ -322,42 +405,48 @@ public class EventSetDescriptor extends FeatureDescriptor {
 		return methods;
 	}
 
-	private void setListenerMethods(Method[] methods) {
-		if(methods == null){
-			return;
-		}
-		if(listenerMethodDescriptors == null){
-			listenerMethodDescriptors = new MethodDescriptor[methods.length];
-			for(int i = 0; i < methods.length; i++){
-				listenerMethodDescriptors[i] = new MethodDescriptor(methods[i]);
-			}
-		}
-		listenerMethodsRef = createReference(methods, true);
-	}
-
 	private Method[] getListenerMethods0() {
 		return (Method[]) getObject(listenerMethodsRef);
 	}
 
 	/**
-	 * Gets the <code>MethodDescriptor</code>s of the target listener interface.
+	 * Gets the <TT>Class</TT> object for the target interface.
 	 * 
-	 * @return An array of <code>MethodDescriptor</code> objects for the target
-	 *         methods
-	 *         within the target listener interface that will get called when
-	 *         events are fired.
+	 * @return The Class object for the target interface that will
+	 *         get invoked when the event is fired.
 	 */
-	public synchronized MethodDescriptor[] getListenerMethodDescriptors() {
-		return listenerMethodDescriptors;
+	public Class<?> getListenerType() {
+		return (Class) getObject(listenerTypeRef);
 	}
 
 	/**
-	 * Gets the method used to add event listeners.
+	 * Gets the method used to remove event listeners.
 	 * 
-	 * @return The method used to register a listener at the event source.
+	 * @return The method used to remove a listener at the event source.
 	 */
-	public synchronized Method getAddListenerMethod() {
-		return (addMethodDescriptor != null ? addMethodDescriptor.getMethod() : null);
+	public synchronized Method getRemoveListenerMethod() {
+		return (removeMethodDescriptor != null ? removeMethodDescriptor.getMethod() : null);
+	}
+
+	/**
+	 * Reports if an event set is in the &quot;default&quot; set.
+	 * 
+	 * @return <TT>true</TT> if the event set is in
+	 *         the &quot;default&quot; set. Defaults to <TT>true</TT>.
+	 */
+	public boolean isInDefaultEventSet() {
+		return inDefaultEventSet;
+	}
+
+	/**
+	 * Normally event sources are multicast. However there are some
+	 * exceptions that are strictly unicast.
+	 * 
+	 * @return <TT>true</TT> if the event set is unicast.
+	 *         Defaults to <TT>false</TT>.
+	 */
+	public boolean isUnicast() {
+		return unicast;
 	}
 
 	private synchronized void setAddListenerMethod(Method method) {
@@ -370,36 +459,6 @@ public class EventSetDescriptor extends FeatureDescriptor {
 		addMethodDescriptor = new MethodDescriptor(method);
 	}
 
-	/**
-	 * Gets the method used to remove event listeners.
-	 * 
-	 * @return The method used to remove a listener at the event source.
-	 */
-	public synchronized Method getRemoveListenerMethod() {
-		return (removeMethodDescriptor != null ? removeMethodDescriptor.getMethod() : null);
-	}
-
-	private synchronized void setRemoveListenerMethod(Method method) {
-		if(method == null){
-			return;
-		}
-		if(getClass0() == null){
-			setClass0(method.getDeclaringClass());
-		}
-		removeMethodDescriptor = new MethodDescriptor(method);
-	}
-
-	/**
-	 * Gets the method used to access the registered event listeners.
-	 * 
-	 * @return The method used to access the array of listeners at the event
-	 *         source or null if it doesn't exist.
-	 * @since 1.4
-	 */
-	public synchronized Method getGetListenerMethod() {
-		return (getMethodDescriptor != null ? getMethodDescriptor.getMethod() : null);
-	}
-
 	private synchronized void setGetListenerMethod(Method method) {
 		if(method == null){
 			return;
@@ -408,27 +467,6 @@ public class EventSetDescriptor extends FeatureDescriptor {
 			setClass0(method.getDeclaringClass());
 		}
 		getMethodDescriptor = new MethodDescriptor(method);
-	}
-
-	/**
-	 * Mark an event set as unicast (or not).
-	 * 
-	 * @param unicast
-	 *            True if the event set is unicast.
-	 */
-	public void setUnicast(boolean unicast) {
-		this.unicast = unicast;
-	}
-
-	/**
-	 * Normally event sources are multicast. However there are some
-	 * exceptions that are strictly unicast.
-	 * 
-	 * @return <TT>true</TT> if the event set is unicast.
-	 *         Defaults to <TT>false</TT>.
-	 */
-	public boolean isUnicast() {
-		return unicast;
 	}
 
 	/**
@@ -443,78 +481,40 @@ public class EventSetDescriptor extends FeatureDescriptor {
 		this.inDefaultEventSet = inDefaultEventSet;
 	}
 
-	/**
-	 * Reports if an event set is in the &quot;default&quot; set.
-	 * 
-	 * @return <TT>true</TT> if the event set is in
-	 *         the &quot;default&quot; set. Defaults to <TT>true</TT>.
-	 */
-	public boolean isInDefaultEventSet() {
-		return inDefaultEventSet;
-	}
-
-	/*
-	 * Package-private constructor
-	 * Merge two event set descriptors. Where they conflict, give the
-	 * second argument (y) priority over the first argument (x).
-	 * 
-	 * @param x The first (lower priority) EventSetDescriptor
-	 * 
-	 * @param y The second (higher priority) EventSetDescriptor
-	 */
-	EventSetDescriptor(EventSetDescriptor x, EventSetDescriptor y) {
-		super(x, y);
-		listenerMethodDescriptors = x.listenerMethodDescriptors;
-		if(y.listenerMethodDescriptors != null){
-			listenerMethodDescriptors = y.listenerMethodDescriptors;
+	private void setListenerMethods(Method[] methods) {
+		if(methods == null){
+			return;
 		}
-
-		listenerTypeRef = x.listenerTypeRef;
-		if(y.listenerTypeRef != null){
-			listenerTypeRef = y.listenerTypeRef;
-		}
-
-		addMethodDescriptor = x.addMethodDescriptor;
-		if(y.addMethodDescriptor != null){
-			addMethodDescriptor = y.addMethodDescriptor;
-		}
-
-		removeMethodDescriptor = x.removeMethodDescriptor;
-		if(y.removeMethodDescriptor != null){
-			removeMethodDescriptor = y.removeMethodDescriptor;
-		}
-
-		getMethodDescriptor = x.getMethodDescriptor;
-		if(y.getMethodDescriptor != null){
-			getMethodDescriptor = y.getMethodDescriptor;
-		}
-
-		unicast = y.unicast;
-		if(!x.inDefaultEventSet || !y.inDefaultEventSet){
-			inDefaultEventSet = false;
-		}
-	}
-
-	/*
-	 * Package-private dup constructor
-	 * This must isolate the new object from any changes to the old object.
-	 */
-	EventSetDescriptor(EventSetDescriptor old) {
-		super(old);
-		if(old.listenerMethodDescriptors != null){
-			int len = old.listenerMethodDescriptors.length;
-			listenerMethodDescriptors = new MethodDescriptor[len];
-			for(int i = 0; i < len; i++){
-				listenerMethodDescriptors[i] = new MethodDescriptor(old.listenerMethodDescriptors[i]);
+		if(listenerMethodDescriptors == null){
+			listenerMethodDescriptors = new MethodDescriptor[methods.length];
+			for(int i = 0; i < methods.length; i++){
+				listenerMethodDescriptors[i] = new MethodDescriptor(methods[i]);
 			}
 		}
-		listenerTypeRef = old.listenerTypeRef;
+		listenerMethodsRef = createReference(methods, true);
+	}
 
-		addMethodDescriptor = old.addMethodDescriptor;
-		removeMethodDescriptor = old.removeMethodDescriptor;
-		getMethodDescriptor = old.getMethodDescriptor;
+	private void setListenerType(Class cls) {
+		listenerTypeRef = createReference(cls);
+	}
 
-		unicast = old.unicast;
-		inDefaultEventSet = old.inDefaultEventSet;
+	private synchronized void setRemoveListenerMethod(Method method) {
+		if(method == null){
+			return;
+		}
+		if(getClass0() == null){
+			setClass0(method.getDeclaringClass());
+		}
+		removeMethodDescriptor = new MethodDescriptor(method);
+	}
+
+	/**
+	 * Mark an event set as unicast (or not).
+	 * 
+	 * @param unicast
+	 *            True if the event set is unicast.
+	 */
+	public void setUnicast(boolean unicast) {
+		this.unicast = unicast;
 	}
 }

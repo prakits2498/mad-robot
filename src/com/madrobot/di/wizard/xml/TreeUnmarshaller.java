@@ -28,12 +28,12 @@ import com.madrobot.util.PrioritizedList;
 
 class TreeUnmarshaller implements UnmarshallingContext {
 
-	private Object root;
-	protected HierarchicalStreamReader reader;
 	private ConverterLookup converterLookup;
-	private Mapper mapper;
-	private FastStack types = new FastStack(16);
 	private DataHolder dataHolder;
+	private Mapper mapper;
+	protected HierarchicalStreamReader reader;
+	private Object root;
+	private FastStack types = new FastStack(16);
 	private final PrioritizedList validationList = new PrioritizedList();
 
 	TreeUnmarshaller(Object root, HierarchicalStreamReader reader, ConverterLookup converterLookup, Mapper mapper) {
@@ -41,6 +41,40 @@ class TreeUnmarshaller implements UnmarshallingContext {
 		this.reader = reader;
 		this.converterLookup = converterLookup;
 		this.mapper = mapper;
+	}
+
+	@Override
+	public void addCompletionCallback(Runnable work, int priority) {
+		validationList.add(work, priority);
+	}
+
+	private void addInformationTo(ErrorWriter errorWriter, Class type, Converter converter, Object parent) {
+		errorWriter.add("class", type.getName());
+		errorWriter.add("required-type", getRequiredType().getName());
+		errorWriter.add("converter-type", converter.getClass().getName());
+		if (converter instanceof ErrorReporter) {
+			((ErrorReporter) converter).appendErrors(errorWriter);
+		}
+		if (parent instanceof ErrorReporter) {
+			((ErrorReporter) parent).appendErrors(errorWriter);
+		}
+		reader.appendErrors(errorWriter);
+	}
+
+	protected Object convert(Object parent, Class type, Converter converter) {
+		try {
+			types.push(type);
+			Object result = converter.unmarshal(reader, this);
+			types.popSilently();
+			return result;
+		} catch (ConversionException conversionException) {
+			addInformationTo(conversionException, type, converter, parent);
+			throw conversionException;
+		} catch (RuntimeException e) {
+			ConversionException conversionException = new ConversionException(e);
+			addInformationTo(conversionException, type, converter, parent);
+			throw conversionException;
+		}
 	}
 
 	@Override
@@ -64,48 +98,9 @@ class TreeUnmarshaller implements UnmarshallingContext {
 		return convert(parent, type, converter);
 	}
 
-	protected Object convert(Object parent, Class type, Converter converter) {
-		try {
-			types.push(type);
-			Object result = converter.unmarshal(reader, this);
-			types.popSilently();
-			return result;
-		} catch (ConversionException conversionException) {
-			addInformationTo(conversionException, type, converter, parent);
-			throw conversionException;
-		} catch (RuntimeException e) {
-			ConversionException conversionException = new ConversionException(e);
-			addInformationTo(conversionException, type, converter, parent);
-			throw conversionException;
-		}
-	}
-
-	private void addInformationTo(ErrorWriter errorWriter, Class type, Converter converter, Object parent) {
-		errorWriter.add("class", type.getName());
-		errorWriter.add("required-type", getRequiredType().getName());
-		errorWriter.add("converter-type", converter.getClass().getName());
-		if (converter instanceof ErrorReporter) {
-			((ErrorReporter) converter).appendErrors(errorWriter);
-		}
-		if (parent instanceof ErrorReporter) {
-			((ErrorReporter) parent).appendErrors(errorWriter);
-		}
-		reader.appendErrors(errorWriter);
-	}
-
-	@Override
-	public void addCompletionCallback(Runnable work, int priority) {
-		validationList.add(work, priority);
-	}
-
 	@Override
 	public Object currentObject() {
 		return types.size() == 1 ? root : null;
-	}
-
-	@Override
-	public Class getRequiredType() {
-		return (Class) types.peek();
 	}
 
 	@Override
@@ -114,10 +109,13 @@ class TreeUnmarshaller implements UnmarshallingContext {
 		return dataHolder.get(key);
 	}
 
+	protected Mapper getMapper() {
+		return this.mapper;
+	}
+
 	@Override
-	public void put(Object key, Object value) {
-		lazilyCreateDataHolder();
-		dataHolder.put(key, value);
+	public Class getRequiredType() {
+		return (Class) types.peek();
 	}
 
 	@Override
@@ -132,6 +130,12 @@ class TreeUnmarshaller implements UnmarshallingContext {
 		}
 	}
 
+	@Override
+	public void put(Object key, Object value) {
+		lazilyCreateDataHolder();
+		dataHolder.put(key, value);
+	}
+
 	Object start(DataHolder dataHolder) {
 		this.dataHolder = dataHolder;
 		Class type = HierarchicalStreams.readClassType(reader, mapper);
@@ -142,10 +146,6 @@ class TreeUnmarshaller implements UnmarshallingContext {
 			runnable.run();
 		}
 		return result;
-	}
-
-	protected Mapper getMapper() {
-		return this.mapper;
 	}
 
 }

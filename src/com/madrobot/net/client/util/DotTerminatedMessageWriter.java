@@ -31,12 +31,12 @@ import java.io.Writer;
  ***/
 
 public final class DotTerminatedMessageWriter extends Writer {
-	private static final int __NOTHING_SPECIAL_STATE = 0;
 	private static final int __LAST_WAS_CR_STATE = 1;
 	private static final int __LAST_WAS_NL_STATE = 2;
+	private static final int __NOTHING_SPECIAL_STATE = 0;
 
-	private int __state;
 	private Writer __output;
+	private int __state;
 
 	/***
 	 * Creates a DotTerminatedMessageWriter that wraps an existing Writer
@@ -50,6 +50,90 @@ public final class DotTerminatedMessageWriter extends Writer {
 		super(output);
 		__output = output;
 		__state = __NOTHING_SPECIAL_STATE;
+	}
+
+	/***
+	 * Flushes the underlying output, writing all buffered output, but doesn't
+	 * actually close the underlying stream. The underlying stream may still
+	 * be used for communicating with the server and therefore is not closed.
+	 * <p>
+	 * 
+	 * @exception IOException
+	 *                If an error occurs while writing to the underlying
+	 *                output or closing the Writer.
+	 ***/
+	@Override
+	public void close() throws IOException {
+		synchronized(lock){
+			if(__output == null){
+				return;
+			}
+
+			if(__state == __LAST_WAS_CR_STATE){
+				__output.write('\n');
+			} else if(__state != __LAST_WAS_NL_STATE){
+				__output.write("\r\n");
+			}
+
+			__output.write(".\r\n");
+
+			__output.flush();
+			__output = null;
+		}
+	}
+
+	/***
+	 * Flushes the underlying output, writing all buffered output.
+	 * <p>
+	 * 
+	 * @exception IOException
+	 *                If an error occurs while writing to the underlying
+	 *                output.
+	 ***/
+	@Override
+	public void flush() throws IOException {
+		synchronized(lock){
+			__output.flush();
+		}
+	}
+
+	/***
+	 * Writes a character array to the output.
+	 * <p>
+	 * 
+	 * @param buffer
+	 *            The character array to write.
+	 * @exception IOException
+	 *                If an error occurs while writing to the underlying
+	 *                output.
+	 ***/
+	@Override
+	public void write(char[] buffer) throws IOException {
+		write(buffer, 0, buffer.length);
+	}
+
+	/***
+	 * Writes a number of characters from a character array to the output
+	 * starting from a given offset.
+	 * <p>
+	 * 
+	 * @param buffer
+	 *            The character array to write.
+	 * @param offset
+	 *            The offset into the array at which to start copying data.
+	 * @param length
+	 *            The number of characters to write.
+	 * @exception IOException
+	 *                If an error occurs while writing to the underlying
+	 *                output.
+	 ***/
+	@Override
+	public void write(char[] buffer, int offset, int length) throws IOException {
+		synchronized(lock){
+			while(length-- > 0){
+				write(buffer[offset++]);
+			}
+		}
 	}
 
 	/***
@@ -96,45 +180,6 @@ public final class DotTerminatedMessageWriter extends Writer {
 	}
 
 	/***
-	 * Writes a number of characters from a character array to the output
-	 * starting from a given offset.
-	 * <p>
-	 * 
-	 * @param buffer
-	 *            The character array to write.
-	 * @param offset
-	 *            The offset into the array at which to start copying data.
-	 * @param length
-	 *            The number of characters to write.
-	 * @exception IOException
-	 *                If an error occurs while writing to the underlying
-	 *                output.
-	 ***/
-	@Override
-	public void write(char[] buffer, int offset, int length) throws IOException {
-		synchronized(lock){
-			while(length-- > 0){
-				write(buffer[offset++]);
-			}
-		}
-	}
-
-	/***
-	 * Writes a character array to the output.
-	 * <p>
-	 * 
-	 * @param buffer
-	 *            The character array to write.
-	 * @exception IOException
-	 *                If an error occurs while writing to the underlying
-	 *                output.
-	 ***/
-	@Override
-	public void write(char[] buffer) throws IOException {
-		write(buffer, 0, buffer.length);
-	}
-
-	/***
 	 * Writes a String to the output.
 	 * <p>
 	 * 
@@ -166,51 +211,6 @@ public final class DotTerminatedMessageWriter extends Writer {
 	@Override
 	public void write(String string, int offset, int length) throws IOException {
 		write(string.toCharArray(), offset, length);
-	}
-
-	/***
-	 * Flushes the underlying output, writing all buffered output.
-	 * <p>
-	 * 
-	 * @exception IOException
-	 *                If an error occurs while writing to the underlying
-	 *                output.
-	 ***/
-	@Override
-	public void flush() throws IOException {
-		synchronized(lock){
-			__output.flush();
-		}
-	}
-
-	/***
-	 * Flushes the underlying output, writing all buffered output, but doesn't
-	 * actually close the underlying stream. The underlying stream may still
-	 * be used for communicating with the server and therefore is not closed.
-	 * <p>
-	 * 
-	 * @exception IOException
-	 *                If an error occurs while writing to the underlying
-	 *                output or closing the Writer.
-	 ***/
-	@Override
-	public void close() throws IOException {
-		synchronized(lock){
-			if(__output == null){
-				return;
-			}
-
-			if(__state == __LAST_WAS_CR_STATE){
-				__output.write('\n');
-			} else if(__state != __LAST_WAS_NL_STATE){
-				__output.write("\r\n");
-			}
-
-			__output.write(".\r\n");
-
-			__output.flush();
-			__output = null;
-		}
 	}
 
 }

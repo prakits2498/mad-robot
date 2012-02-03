@@ -18,7 +18,7 @@ import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
 
 interface MarshallingStrategy {
 
-	Object unmarshal(Object root, HierarchicalStreamReader reader, DataHolder dataHolder, ConverterLookup converterLookup, Mapper mapper);
-
 	void marshal(HierarchicalStreamWriter writer, Object obj, ConverterLookup converterLookup, Mapper mapper, DataHolder dataHolder);
+
+	Object unmarshal(Object root, HierarchicalStreamReader reader, DataHolder dataHolder, ConverterLookup converterLookup, Mapper mapper);
 }

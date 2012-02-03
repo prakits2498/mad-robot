@@ -66,11 +66,38 @@ class PercentEscaper extends UnicodeEscaper {
   public static final String SAFEQUERYSTRINGCHARS_URLENCODER
       = "-_.!~*'()@:$,;/?:";
   
+  private static final char[] UPPER_HEX_DIGITS =
+      "0123456789ABCDEF".toCharArray();
+
   // In some uri escapers spaces are escaped to '+'
   private static final char[] URI_ESCAPED_SPACE = { '+' };
 
-  private static final char[] UPPER_HEX_DIGITS =
-      "0123456789ABCDEF".toCharArray();
+  /**
+   * Creates a boolean[] with entries corresponding to the character values
+   * for 0-9, A-Z, a-z and those specified in safeChars set to true. The array
+   * is as small as is required to hold the given character information.
+   */
+  private static boolean[] createSafeOctets(String safeChars) {
+    int maxChar = 'z';
+    char[] safeCharArray = safeChars.toCharArray();
+    for (char c : safeCharArray) {
+      maxChar = Math.max(c, maxChar);
+    }
+    boolean[] octets = new boolean[maxChar + 1];
+    for (int c = '0'; c <= '9'; c++) {
+      octets[c] = true;
+    }
+    for (int c = 'A'; c <= 'Z'; c++) {
+      octets[c] = true;
+    }
+    for (int c = 'a'; c <= 'z'; c++) {
+      octets[c] = true;
+    }
+    for (char c : safeCharArray) {
+      octets[c] = true;
+    }
+    return octets;
+  }
 
   /**
    * If true we should convert space to the {@code +} character.
@@ -114,66 +141,6 @@ class PercentEscaper extends UnicodeEscaper {
     }
     this.plusForSpace = plusForSpace;
     this.safeOctets = createSafeOctets(safeChars);
-  }
-
-  /**
-   * Creates a boolean[] with entries corresponding to the character values
-   * for 0-9, A-Z, a-z and those specified in safeChars set to true. The array
-   * is as small as is required to hold the given character information.
-   */
-  private static boolean[] createSafeOctets(String safeChars) {
-    int maxChar = 'z';
-    char[] safeCharArray = safeChars.toCharArray();
-    for (char c : safeCharArray) {
-      maxChar = Math.max(c, maxChar);
-    }
-    boolean[] octets = new boolean[maxChar + 1];
-    for (int c = '0'; c <= '9'; c++) {
-      octets[c] = true;
-    }
-    for (int c = 'A'; c <= 'Z'; c++) {
-      octets[c] = true;
-    }
-    for (int c = 'a'; c <= 'z'; c++) {
-      octets[c] = true;
-    }
-    for (char c : safeCharArray) {
-      octets[c] = true;
-    }
-    return octets;
-  }
-
-  /*
-   * Overridden for performance. For unescaped strings this improved the
-   * performance of the uri escaper from ~760ns to ~400ns as measured by
-   * {@link CharEscapersBenchmark}.
-   */
-  @Override
-  protected int nextEscapeIndex(CharSequence csq, int index, int end) {
-    for (; index < end; index++) {
-      char c = csq.charAt(index);
-      if (c >= safeOctets.length || !safeOctets[c]) {
-        break;
-      }
-    }
-    return index;
-  }
-
-  /*
-   * Overridden for performance. For unescaped strings this improved the
-   * performance of the uri escaper from ~400ns to ~170ns as measured by
-   * {@link CharEscapersBenchmark}.
-   */
-  @Override
-  public String escape(String s) {
-    int slen = s.length();
-    for (int index = 0; index < slen; index++) {
-      char c = s.charAt(index);
-      if (c >= safeOctets.length || !safeOctets[c]) {
-        return escapeSlow(s, index);
-      }
-    }
-    return s;
   }
 
   /**
@@ -255,5 +222,38 @@ class PercentEscaper extends UnicodeEscaper {
       throw new IllegalArgumentException(
           "Invalid unicode character value " + cp);
     }
+  }
+
+  /*
+   * Overridden for performance. For unescaped strings this improved the
+   * performance of the uri escaper from ~400ns to ~170ns as measured by
+   * {@link CharEscapersBenchmark}.
+   */
+  @Override
+  public String escape(String s) {
+    int slen = s.length();
+    for (int index = 0; index < slen; index++) {
+      char c = s.charAt(index);
+      if (c >= safeOctets.length || !safeOctets[c]) {
+        return escapeSlow(s, index);
+      }
+    }
+    return s;
+  }
+
+  /*
+   * Overridden for performance. For unescaped strings this improved the
+   * performance of the uri escaper from ~760ns to ~400ns as measured by
+   * {@link CharEscapersBenchmark}.
+   */
+  @Override
+  protected int nextEscapeIndex(CharSequence csq, int index, int end) {
+    for (; index < end; index++) {
+      char c = csq.charAt(index);
+      if (c >= safeOctets.length || !safeOctets[c]) {
+        break;
+      }
+    }
+    return index;
   }
 }

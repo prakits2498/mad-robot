@@ -31,8 +31,8 @@ import com.madrobot.util.OrderRetainingMap;
  */
 public class FieldDictionary implements Caching {
 
-	private transient Map keyedByFieldNameCache;
 	private transient Map keyedByFieldKeyCache;
+	private transient Map keyedByFieldNameCache;
 	private final FieldKeySorter sorter;
 
 	public FieldDictionary() {
@@ -42,81 +42,6 @@ public class FieldDictionary implements Caching {
 	public FieldDictionary(FieldKeySorter sorter) {
 		this.sorter = sorter;
 		init();
-	}
-
-	private void init() {
-		keyedByFieldNameCache = new HashMap();
-		keyedByFieldKeyCache = new HashMap();
-		keyedByFieldNameCache.put(Object.class, Collections.EMPTY_MAP);
-		keyedByFieldKeyCache.put(Object.class, Collections.EMPTY_MAP);
-	}
-
-	/**
-	 * Returns an iterator for all fields for some class
-	 * 
-	 * @param cls
-	 *            the class you are interested on
-	 * @return an iterator for its fields
-	 * @deprecated As of 1.3, use {@link #fieldsFor(Class)} instead
-	 */
-	@Deprecated
-	public Iterator serializableFieldsFor(Class cls) {
-		return fieldsFor(cls);
-	}
-
-	/**
-	 * Returns an iterator for all fields for some class
-	 * 
-	 * @param cls
-	 *            the class you are interested on
-	 * @return an iterator for its fields
-	 */
-	public Iterator fieldsFor(final Class cls) {
-		return buildMap(cls, true).values().iterator();
-	}
-
-	/**
-	 * Returns an specific field of some class. If definedIn is null, it searches for the field named 'name' inside the
-	 * class cls. If definedIn is different than null, tries to find the specified field name in the specified class cls
-	 * which should be defined in class definedIn (either equals cls or a one of it's superclasses)
-	 * 
-	 * @param cls
-	 *            the class where the field is to be searched
-	 * @param name
-	 *            the field name
-	 * @param definedIn
-	 *            the superclass (or the class itself) of cls where the field was defined
-	 * @return the field itself
-	 * @throws ObjectAccessException
-	 *             if no field can be found
-	 */
-	public Field field(Class cls, String name, Class definedIn) {
-		Field field = fieldOrNull(cls, name, definedIn);
-		if (field == null) {
-			throw new MissingFieldException(cls.getName(), name);
-		} else {
-			return field;
-		}
-	}
-
-	/**
-	 * Returns an specific field of some class. If definedIn is null, it searches for the field named 'name' inside the
-	 * class cls. If definedIn is different than null, tries to find the specified field name in the specified class cls
-	 * which should be defined in class definedIn (either equals cls or a one of it's superclasses)
-	 * 
-	 * @param cls
-	 *            the class where the field is to be searched
-	 * @param name
-	 *            the field name
-	 * @param definedIn
-	 *            the superclass (or the class itself) of cls where the field was defined
-	 * @return the field itself or <code>null</code>
-	 * @since 1.4
-	 */
-	public Field fieldOrNull(Class cls, String name, Class definedIn) {
-		Map fields = buildMap(cls, definedIn != null);
-		Field field = (Field) fields.get(definedIn != null ? (Object) new FieldKey(name, definedIn, 0) : (Object) name);
-		return field;
 	}
 
 	private Map buildMap(final Class type, boolean tupleKeyed) {
@@ -179,6 +104,61 @@ public class FieldDictionary implements Caching {
 		return result;
 	}
 
+	/**
+	 * Returns an specific field of some class. If definedIn is null, it searches for the field named 'name' inside the
+	 * class cls. If definedIn is different than null, tries to find the specified field name in the specified class cls
+	 * which should be defined in class definedIn (either equals cls or a one of it's superclasses)
+	 * 
+	 * @param cls
+	 *            the class where the field is to be searched
+	 * @param name
+	 *            the field name
+	 * @param definedIn
+	 *            the superclass (or the class itself) of cls where the field was defined
+	 * @return the field itself
+	 * @throws ObjectAccessException
+	 *             if no field can be found
+	 */
+	public Field field(Class cls, String name, Class definedIn) {
+		Field field = fieldOrNull(cls, name, definedIn);
+		if (field == null) {
+			throw new MissingFieldException(cls.getName(), name);
+		} else {
+			return field;
+		}
+	}
+
+	/**
+	 * Returns an specific field of some class. If definedIn is null, it searches for the field named 'name' inside the
+	 * class cls. If definedIn is different than null, tries to find the specified field name in the specified class cls
+	 * which should be defined in class definedIn (either equals cls or a one of it's superclasses)
+	 * 
+	 * @param cls
+	 *            the class where the field is to be searched
+	 * @param name
+	 *            the field name
+	 * @param definedIn
+	 *            the superclass (or the class itself) of cls where the field was defined
+	 * @return the field itself or <code>null</code>
+	 * @since 1.4
+	 */
+	public Field fieldOrNull(Class cls, String name, Class definedIn) {
+		Map fields = buildMap(cls, definedIn != null);
+		Field field = (Field) fields.get(definedIn != null ? (Object) new FieldKey(name, definedIn, 0) : (Object) name);
+		return field;
+	}
+
+	/**
+	 * Returns an iterator for all fields for some class
+	 * 
+	 * @param cls
+	 *            the class you are interested on
+	 * @return an iterator for its fields
+	 */
+	public Iterator fieldsFor(final Class cls) {
+		return buildMap(cls, true).values().iterator();
+	}
+
 	@Override
 	public synchronized void flushCache() {
 		Set objectTypeSet = Collections.singleton(Object.class);
@@ -187,6 +167,26 @@ public class FieldDictionary implements Caching {
 		if (sorter instanceof Caching) {
 			((Caching) sorter).flushCache();
 		}
+	}
+
+	private void init() {
+		keyedByFieldNameCache = new HashMap();
+		keyedByFieldKeyCache = new HashMap();
+		keyedByFieldNameCache.put(Object.class, Collections.EMPTY_MAP);
+		keyedByFieldKeyCache.put(Object.class, Collections.EMPTY_MAP);
+	}
+
+	/**
+	 * Returns an iterator for all fields for some class
+	 * 
+	 * @param cls
+	 *            the class you are interested on
+	 * @return an iterator for its fields
+	 * @deprecated As of 1.3, use {@link #fieldsFor(Class)} instead
+	 */
+	@Deprecated
+	public Iterator serializableFieldsFor(Class cls) {
+		return fieldsFor(cls);
 	}
 
 	// protected Object readResolve() {

@@ -14,17 +14,20 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 abstract class AbstractTask extends AsyncTask<Object, Object, Object> {
-	protected TaskNotifier notifier;
 	protected Context appContext;
+	protected TaskNotifier notifier;
 
 	AbstractTask(Context context, TaskNotifier notifier) {
 		this.notifier = notifier;
 		this.appContext = context;
 	}
 
-	@Override
-	protected void onPreExecute() {
-		super.onPreExecute();
+	public Context getAppContext() {
+		return appContext;
+	}
+
+	public TaskNotifier getNotifier() {
+		return notifier;
 	}
 
 	@Override
@@ -32,22 +35,11 @@ abstract class AbstractTask extends AsyncTask<Object, Object, Object> {
 		super.onCancelled();
 	}
 
-	public TaskNotifier getNotifier() {
-		return notifier;
+	@Override
+	protected void onPreExecute() {
+		super.onPreExecute();
 	}
 
-	public void setNotifier(TaskNotifier notifier) {
-		this.notifier = notifier;
-	}
-
-	public Context getAppContext() {
-		return appContext;
-	}
-
-	public void setAppContext(Context appContext) {
-		this.appContext = appContext;
-	}
-	
 	@Override
 	protected void onProgressUpdate(Object... objects) {
 		/*
@@ -63,6 +55,14 @@ abstract class AbstractTask extends AsyncTask<Object, Object, Object> {
 				notifier.onError(response.getT());
 			}
 		}
+	}
+
+	public void setAppContext(Context appContext) {
+		this.appContext = appContext;
+	}
+	
+	public void setNotifier(TaskNotifier notifier) {
+		this.notifier = notifier;
 	}
 	
 	protected void taskStarted(){

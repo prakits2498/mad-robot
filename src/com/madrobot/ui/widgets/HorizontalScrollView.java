@@ -83,47 +83,47 @@ public class HorizontalScrollView extends ViewGroup {
 
 	
 
-	public static final String TAG = "HorizontalScrollView";
-
 	private static final int INVALID_PAGE = -1;
 
 	public static final int SPEC_UNDEFINED = -1;
+
+	public static final String TAG = "HorizontalScrollView";
+	private static final int TOUCH_STATE_HORIZONTAL_SCROLLING = 1;
+	private final static int TOUCH_STATE_REST = 0;
+
+	private final static int TOUCH_STATE_SCROLLING = 1;
+	private static final int TOUCH_STATE_VERTICAL_SCROLLING = -1;
+
+	private boolean mAllowLongPress;
+	private int mCurrentPage;
+
+	private boolean mFirstLayout = true;
+	private float mLastMotionX;
+
+	private float mLastMotionY;
+	private int mLastSeenLayoutWidth = -1;
+
+	private Set<OnScrollListener> mListeners = new HashSet<OnScrollListener>();
+	private int mMaximumVelocity;
+
+	private int mNextPage = INVALID_PAGE;
+
+	private Scroller mScroller;
+
+	private int mTouchSlop;
+
+	private int mTouchState = TOUCH_STATE_REST;
+
+	private VelocityTracker mVelocityTracker;
+
+	private int pageAnimationDuration;
+
+	private int pageWidthSpec, pageWidth;
+
 	/**
 	 * The velocity at which a fling gesture will cause us to snap to the next screen
 	 */
 	private int snapVelocity;
-	private int pageWidthSpec, pageWidth;
-
-	private int pageAnimationDuration;
-	private boolean mFirstLayout = true;
-
-	private int mCurrentPage;
-	private int mNextPage = INVALID_PAGE;
-
-	private Scroller mScroller;
-	private VelocityTracker mVelocityTracker;
-
-	private int mTouchSlop;
-	private int mMaximumVelocity;
-
-	private float mLastMotionX;
-	private float mLastMotionY;
-
-	private final static int TOUCH_STATE_REST = 0;
-
-	private final static int TOUCH_STATE_SCROLLING = 1;
-
-	private int mTouchState = TOUCH_STATE_REST;
-
-	private boolean mAllowLongPress;
-
-	private Set<OnScrollListener> mListeners = new HashSet<OnScrollListener>();
-
-	private int mLastSeenLayoutWidth = -1;
-
-	private static final int TOUCH_STATE_VERTICAL_SCROLLING = -1;
-
-	private static final int TOUCH_STATE_HORIZONTAL_SCROLLING = 1;
 
 	/**
 	 * Used to inflate the Workspace from XML.

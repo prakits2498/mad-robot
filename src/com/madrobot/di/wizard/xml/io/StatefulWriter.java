@@ -28,23 +28,11 @@ import com.madrobot.util.FastStack;
 public class StatefulWriter extends WriterWrapper {
 
 	/**
-	 * <code>STATE_OPEN</code> is the initial value of the writer.
+	 * <code>STATE_CLOSED</code> is the state if the writer has been closed.
 	 * 
 	 * @since 1.2
 	 */
-	public static int STATE_OPEN = 0;
-	/**
-	 * <code>STATE_NODE_START</code> is the state of a new node has been started.
-	 * 
-	 * @since 1.2
-	 */
-	public static int STATE_NODE_START = 1;
-	/**
-	 * <code>STATE_VALUE</code> is the state if the value of a node has been written.
-	 * 
-	 * @since 1.2
-	 */
-	public static int STATE_VALUE = 2;
+	public static int STATE_CLOSED = 4;
 	/**
 	 * <code>STATE_NODE_END</code> is the state if a node has ended
 	 * 
@@ -52,15 +40,27 @@ public class StatefulWriter extends WriterWrapper {
 	 */
 	public static int STATE_NODE_END = 3;
 	/**
-	 * <code>STATE_CLOSED</code> is the state if the writer has been closed.
+	 * <code>STATE_NODE_START</code> is the state of a new node has been started.
 	 * 
 	 * @since 1.2
 	 */
-	public static int STATE_CLOSED = 4;
+	public static int STATE_NODE_START = 1;
+	/**
+	 * <code>STATE_OPEN</code> is the initial value of the writer.
+	 * 
+	 * @since 1.2
+	 */
+	public static int STATE_OPEN = 0;
+	/**
+	 * <code>STATE_VALUE</code> is the state if the value of a node has been written.
+	 * 
+	 * @since 1.2
+	 */
+	public static int STATE_VALUE = 2;
 
-	private transient int state = STATE_OPEN;
-	private transient int balance;
 	private transient FastStack attributes;
+	private transient int balance;
+	private transient int state = STATE_OPEN;
 
 	/**
 	 * Constructs a StatefulWriter.
@@ -72,6 +72,70 @@ public class StatefulWriter extends WriterWrapper {
 	public StatefulWriter(final HierarchicalStreamWriter wrapped) {
 		super(wrapped);
 		attributes = new FastStack(16);
+	}
+
+	@Override
+	public void addAttribute(String name, String value) {
+		checkClosed();
+		if (state != STATE_NODE_START) {
+			throw new StreamException(new IllegalStateException("Writing attribute '" + name
+					+ "' without an opened node"));
+		}
+		Set currentAttributes = (Set) attributes.peek();
+		if (currentAttributes.contains(name)) {
+			throw new StreamException(new IllegalStateException("Writing attribute '" + name + "' twice"));
+		}
+		currentAttributes.add(name);
+		super.addAttribute(name, value);
+	}
+
+	private void checkClosed() {
+		if (state == STATE_CLOSED) {
+			throw new StreamException(new IOException("Writing on a closed stream"));
+		}
+	}
+
+	@Override
+	public void close() {
+		if (state != STATE_NODE_END && state != STATE_OPEN) {
+			// calling close in a finally block should not throw again
+			// throw new StreamException(new IllegalStateException("Closing with unbalanced tag"));
+		}
+		state = STATE_CLOSED;
+		super.close();
+	}
+
+	@Override
+	public void endNode() {
+		checkClosed();
+		if (balance-- == 0) {
+			throw new StreamException(new IllegalStateException("Unbalanced node"));
+		}
+		attributes.popSilently();
+		state = STATE_NODE_END;
+		super.endNode();
+	}
+
+	@Override
+	public void flush() {
+		checkClosed();
+		super.flush();
+	}
+
+	private Object readResolve() {
+		attributes = new FastStack(16);
+		return this;
+	}
+
+	@Override
+	public void setValue(String text) {
+		checkClosed();
+		if (state != STATE_NODE_START) {
+			// STATE_NODE_END is legal XML, but not in XStream ... ?
+			throw new StreamException(new IllegalStateException("Writing text without an opened node"));
+		}
+		state = STATE_VALUE;
+		super.setValue(text);
 	}
 
 	@Override
@@ -97,65 +161,6 @@ public class StatefulWriter extends WriterWrapper {
 		attributes.push(new HashSet());
 	}
 
-	@Override
-	public void addAttribute(String name, String value) {
-		checkClosed();
-		if (state != STATE_NODE_START) {
-			throw new StreamException(new IllegalStateException("Writing attribute '" + name
-					+ "' without an opened node"));
-		}
-		Set currentAttributes = (Set) attributes.peek();
-		if (currentAttributes.contains(name)) {
-			throw new StreamException(new IllegalStateException("Writing attribute '" + name + "' twice"));
-		}
-		currentAttributes.add(name);
-		super.addAttribute(name, value);
-	}
-
-	@Override
-	public void setValue(String text) {
-		checkClosed();
-		if (state != STATE_NODE_START) {
-			// STATE_NODE_END is legal XML, but not in XStream ... ?
-			throw new StreamException(new IllegalStateException("Writing text without an opened node"));
-		}
-		state = STATE_VALUE;
-		super.setValue(text);
-	}
-
-	@Override
-	public void endNode() {
-		checkClosed();
-		if (balance-- == 0) {
-			throw new StreamException(new IllegalStateException("Unbalanced node"));
-		}
-		attributes.popSilently();
-		state = STATE_NODE_END;
-		super.endNode();
-	}
-
-	@Override
-	public void flush() {
-		checkClosed();
-		super.flush();
-	}
-
-	@Override
-	public void close() {
-		if (state != STATE_NODE_END && state != STATE_OPEN) {
-			// calling close in a finally block should not throw again
-			// throw new StreamException(new IllegalStateException("Closing with unbalanced tag"));
-		}
-		state = STATE_CLOSED;
-		super.close();
-	}
-
-	private void checkClosed() {
-		if (state == STATE_CLOSED) {
-			throw new StreamException(new IOException("Writing on a closed stream"));
-		}
-	}
-
 	/**
 	 * Retrieve the state of the writer.
 	 * 
@@ -169,10 +174,5 @@ public class StatefulWriter extends WriterWrapper {
 	 */
 	public int state() {
 		return state;
-	}
-
-	private Object readResolve() {
-		attributes = new FastStack(16);
-		return this;
 	}
 }

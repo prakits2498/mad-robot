@@ -19,6 +19,20 @@ import java.util.Map;
 class SinkContentHandler extends ContentHandler {
     private static final int BUFFER_SIZE = 4096;
 
+    private static List<String> getVia(URLConnection connection) {
+        Map<String, List<String>> headerFields = connection.getHeaderFields();
+        List<String> via = headerFields.get("via");
+        if (via == null) {
+            via = Collections.emptyList();
+        }
+        return via;
+    }
+
+    static boolean isViaLocalhost(URLConnection connection) {
+        List<String> via = getVia(connection);
+        return via.contains("1.0 localhost") || via.contains("1.1 localhost");
+    }
+
     /**
      * Consumes the entire {@link InputStream}.
      */
@@ -37,20 +51,6 @@ class SinkContentHandler extends ContentHandler {
         byte[] buffer = new byte[BUFFER_SIZE];
         while (-1 != input.read(buffer)) {
         }
-    }
-
-    private static List<String> getVia(URLConnection connection) {
-        Map<String, List<String>> headerFields = connection.getHeaderFields();
-        List<String> via = headerFields.get("via");
-        if (via == null) {
-            via = Collections.emptyList();
-        }
-        return via;
-    }
-
-    static boolean isViaLocalhost(URLConnection connection) {
-        List<String> via = getVia(connection);
-        return via.contains("1.0 localhost") || via.contains("1.1 localhost");
     }
 
     @Override

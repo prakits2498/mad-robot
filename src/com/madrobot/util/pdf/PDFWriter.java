@@ -24,10 +24,10 @@ import java.io.UnsupportedEncodingException;
  */
 public final class PDFWriter {
 
-	private PDFDocument mDocument;
 	private IndirectObject mCatalog;
-	private Pages mPages;
 	private Page mCurrentPage;
+	private PDFDocument mDocument;
+	private Pages mPages;
 
 	/**
 	 * Creates a new PDF writer instance with default Paper size A4.
@@ -50,45 +50,8 @@ public final class PDFWriter {
 		newDocument(pageWidth, pageHeight);
 	}
 
-	private void newDocument(int pageWidth, int pageHeight) {
-		mDocument = new PDFDocument();
-		mCatalog = mDocument.newIndirectObject();
-		mDocument.includeIndirectObject(mCatalog);
-		mPages = new Pages(mDocument, pageWidth, pageHeight);
-		mDocument.includeIndirectObject(mPages.getIndirectObject());
-		renderCatalog();
-		newPage();
-	}
-
-	private void renderCatalog() {
-		mCatalog.setDictionaryContent("  /Type /Catalog\n  /Pages "
-				+ mPages.getIndirectObject().getIndirectReference() + "\n");
-	}
-
-	/**
-	 * Creates a new page.
-	 * <p>
-	 * All subsequent operations will be performed on this page
-	 * </p>
-	 */
-	public void newPage() {
-		mCurrentPage = mPages.newPage();
-		mDocument.includeIndirectObject(mCurrentPage.getIndirectObject());
-		mPages.render();
-	}
-
-	/**
-	 * @see StandardFonts#SUBTYPE
-	 * @see StandardFonts
-	 * @param subType
-	 * @param baseFont
-	 */
-	public void setFont(String subType, String baseFont) {
-		mCurrentPage.setFont(subType, baseFont);
-	}
-
-	public void setFont(String subType, String baseFont, String encoding) {
-		mCurrentPage.setFont(subType, baseFont, encoding);
+	public void addLine(int fromLeft, int fromBottom, int toLeft, int toBottom) {
+		mCurrentPage.addLine(fromLeft, fromBottom, toLeft, toBottom);
 	}
 
 	/**
@@ -98,6 +61,11 @@ public final class PDFWriter {
 	 */
 	public void addRawContent(String rawContent) {
 		mCurrentPage.addRawContent(rawContent);
+	}
+
+	public void addRectangle(int fromLeft, int fromBottom, int toLeft,
+			int toBottom) {
+		mCurrentPage.addRectangle(fromLeft, fromBottom, toLeft, toBottom);
 	}
 
 	/**
@@ -124,15 +92,6 @@ public final class PDFWriter {
 				text, transformation);
 	}
 
-	public void addLine(int fromLeft, int fromBottom, int toLeft, int toBottom) {
-		mCurrentPage.addLine(fromLeft, fromBottom, toLeft, toBottom);
-	}
-
-	public void addRectangle(int fromLeft, int fromBottom, int toLeft,
-			int toBottom) {
-		mCurrentPage.addRectangle(fromLeft, fromBottom, toLeft, toBottom);
-	}
-
 	/**
 	 * Return the PDF content as String
 	 * 
@@ -141,6 +100,47 @@ public final class PDFWriter {
 	public String asString() {
 		mPages.render();
 		return mDocument.toPDFString();
+	}
+
+	private void newDocument(int pageWidth, int pageHeight) {
+		mDocument = new PDFDocument();
+		mCatalog = mDocument.newIndirectObject();
+		mDocument.includeIndirectObject(mCatalog);
+		mPages = new Pages(mDocument, pageWidth, pageHeight);
+		mDocument.includeIndirectObject(mPages.getIndirectObject());
+		renderCatalog();
+		newPage();
+	}
+
+	/**
+	 * Creates a new page.
+	 * <p>
+	 * All subsequent operations will be performed on this page
+	 * </p>
+	 */
+	public void newPage() {
+		mCurrentPage = mPages.newPage();
+		mDocument.includeIndirectObject(mCurrentPage.getIndirectObject());
+		mPages.render();
+	}
+
+	private void renderCatalog() {
+		mCatalog.setDictionaryContent("  /Type /Catalog\n  /Pages "
+				+ mPages.getIndirectObject().getIndirectReference() + "\n");
+	}
+
+	/**
+	 * @see StandardFonts#SUBTYPE
+	 * @see StandardFonts
+	 * @param subType
+	 * @param baseFont
+	 */
+	public void setFont(String subType, String baseFont) {
+		mCurrentPage.setFont(subType, baseFont);
+	}
+
+	public void setFont(String subType, String baseFont, String encoding) {
+		mCurrentPage.setFont(subType, baseFont, encoding);
 	}
 
 	/**

@@ -15,35 +15,14 @@ import java.util.Map;
  */
 public class ObjectIdDictionary {
 
-	private final Map map = new HashMap();
-	private final ReferenceQueue queue = new ReferenceQueue();
-
-	private static interface Wrapper {
-		@Override
-		int hashCode();
-
-		@Override
-		boolean equals(Object obj);
-
-		@Override
-		String toString();
-
-		Object get();
-	}
-
 	private static class IdWrapper implements Wrapper {
 
-		private final Object obj;
 		private final int hashCode;
+		private final Object obj;
 
 		public IdWrapper(Object obj) {
 			hashCode = System.identityHashCode(obj);
 			this.obj = obj;
-		}
-
-		@Override
-		public int hashCode() {
-			return hashCode;
 		}
 
 		@Override
@@ -54,16 +33,20 @@ public class ObjectIdDictionary {
 		}
 
 		@Override
-		public String toString() {
-			return obj.toString();
-		}
-
-		@Override
 		public Object get() {
 			return obj;
 		}
-	}
 
+		@Override
+		public int hashCode() {
+			return hashCode;
+		}
+
+		@Override
+		public String toString() {
+			return obj.toString();
+		}
+	}
 	private class WeakIdWrapper extends WeakReference implements Wrapper {
 
 		private final int hashCode;
@@ -74,13 +57,13 @@ public class ObjectIdDictionary {
 		}
 
 		@Override
-		public int hashCode() {
-			return hashCode;
+		public boolean equals(Object other) {
+			return get() == ((Wrapper) other).get();
 		}
 
 		@Override
-		public boolean equals(Object other) {
-			return get() == ((Wrapper) other).get();
+		public int hashCode() {
+			return hashCode;
 		}
 
 		@Override
@@ -90,19 +73,43 @@ public class ObjectIdDictionary {
 		}
 	}
 
+	private static interface Wrapper {
+		@Override
+		boolean equals(Object obj);
+
+		Object get();
+
+		@Override
+		int hashCode();
+
+		@Override
+		String toString();
+	}
+
+	private final Map map = new HashMap();
+
+	private final ReferenceQueue queue = new ReferenceQueue();
+
 	public void associateId(Object obj, Object id) {
 		map.put(new WeakIdWrapper(obj), id);
 		cleanup();
 	}
 
-	public Object lookupId(Object obj) {
-		Object id = map.get(new IdWrapper(obj));
-		return id;
+	private void cleanup() {
+		WeakIdWrapper wrapper;
+		while ((wrapper = (WeakIdWrapper) queue.poll()) != null) {
+			map.remove(wrapper);
+		}
 	}
 
 	public boolean containsId(Object item) {
 		boolean b = map.containsKey(new IdWrapper(item));
 		return b;
+	}
+
+	public Object lookupId(Object obj) {
+		Object id = map.get(new IdWrapper(obj));
+		return id;
 	}
 
 	public void removeId(Object item) {
@@ -113,12 +120,5 @@ public class ObjectIdDictionary {
 	public int size() {
 		cleanup();
 		return map.size();
-	}
-
-	private void cleanup() {
-		WeakIdWrapper wrapper;
-		while ((wrapper = (WeakIdWrapper) queue.poll()) != null) {
-			map.remove(wrapper);
-		}
 	}
 }

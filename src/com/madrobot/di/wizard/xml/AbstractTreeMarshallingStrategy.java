@@ -23,11 +23,9 @@ import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
  */
 abstract class AbstractTreeMarshallingStrategy implements MarshallingStrategy {
 
-	@Override
-	public Object unmarshal(Object root, HierarchicalStreamReader reader, DataHolder dataHolder, ConverterLookup converterLookup, Mapper mapper) {
-		TreeUnmarshaller context = createUnmarshallingContext(root, reader, converterLookup, mapper);
-		return context.start(dataHolder);
-	}
+	protected abstract TreeMarshaller createMarshallingContext(HierarchicalStreamWriter writer, ConverterLookup converterLookup, Mapper mapper);
+
+	protected abstract TreeUnmarshaller createUnmarshallingContext(Object root, HierarchicalStreamReader reader, ConverterLookup converterLookup, Mapper mapper);
 
 	@Override
 	public void marshal(HierarchicalStreamWriter writer, Object obj, ConverterLookup converterLookup, Mapper mapper, DataHolder dataHolder) {
@@ -35,7 +33,9 @@ abstract class AbstractTreeMarshallingStrategy implements MarshallingStrategy {
 		context.start(obj, dataHolder);
 	}
 
-	protected abstract TreeUnmarshaller createUnmarshallingContext(Object root, HierarchicalStreamReader reader, ConverterLookup converterLookup, Mapper mapper);
-
-	protected abstract TreeMarshaller createMarshallingContext(HierarchicalStreamWriter writer, ConverterLookup converterLookup, Mapper mapper);
+	@Override
+	public Object unmarshal(Object root, HierarchicalStreamReader reader, DataHolder dataHolder, ConverterLookup converterLookup, Mapper mapper) {
+		TreeUnmarshaller context = createUnmarshallingContext(root, reader, converterLookup, mapper);
+		return context.start(dataHolder);
+	}
 }

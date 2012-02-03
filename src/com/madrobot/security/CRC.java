@@ -19,79 +19,6 @@ import java.util.zip.Adler32;
  */
 public final  class CRC {
 
-	public static long getAdler32(byte[] buf) {
-		Adler32 adler = new Adler32();
-		adler.update(buf);
-		return adler.getValue();
-	}
-
-	/**
-	 * Perform a MD5 checksum on the given byte array
-	 * 
-	 * @param data
-	 * @return Hash array of 16 bytes
-	 */
-	public static byte[] doMD5(byte[] data) {
-		final MD5 md5 = new MD5(data);
-		return md5.Final();
-	}
-
-	/**
-	 * Perform a MD5 checksum on the given object
-	 * 
-	 * @param object
-	 * @return Hash array of 16 bytes
-	 */
-	public static byte[] doMD5(Object object) {
-		final MD5 md5 = new MD5(object);
-		return md5.Final();
-	}
-
-	/**
-	 * Perform a MD5 checksum on the given byte array
-	 * 
-	 * @param data
-	 * @return String representation of the MD5 checksum
-	 */
-	public static String doMD5asHEX(byte[] data) {
-		final MD5 md5 = new MD5(data);
-		return md5.asHex();
-	}
-
-	/**
-	 * Perform a MD5 checksum on the given object
-	 * 
-	 * @param object
-	 * @return String representation of the MD5 checksum
-	 */
-	public static String doMD5asHEX(Object object) {
-		final MD5 md5 = new MD5(object);
-		return md5.asHex();
-	}
-
-	/**
-	 * Luhn Algorithm implementation.
-	 * 
-	 * <p>
-	 * Luhn Algorithm is used as a simple checksum for a variety of
-	 * identification numbers like credit card numbers, IMEI numbers, SSN etc.
-	 * <a href="http://en.wikipedia.org/wiki/Luhn_algorithm">Luhn</a> validation
-	 * </p>
-	 * 
-	 * @param number
-	 *            to validate using luhn algorithm
-	 * @return true if the checksum passes (ie) Result%10 ==0 ||Result%5==0.
-	 */
-	public static boolean luhnMod10(String number) {
-		final int[][] sumTable = { { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, { 0, 2, 4, 6, 8, 1, 3, 5, 7, 9 } };
-		int sum = 0, flip = 0;
-
-		for(int i = number.length() - 1; i >= 0; i--, flip++)
-			sum += sumTable[flip & 0x1][number.charAt(i) - '0'];
-		System.out.println("Luhn Sum " + sum + " Result " + (sum % 10 == 0));
-		return (sum % 10 == 0) || (sum % 5 == 0);
-	}
-
 	/**
 	 * BSD Checksum implementation
 	 * 
@@ -146,5 +73,78 @@ public final  class CRC {
 			crc = (crc >>> 8) ^ t;
 		}
 		return crc ^ 0xFFFFFFFF;
+	}
+
+	/**
+	 * Perform a MD5 checksum on the given byte array
+	 * 
+	 * @param data
+	 * @return Hash array of 16 bytes
+	 */
+	public static byte[] doMD5(byte[] data) {
+		final MD5 md5 = new MD5(data);
+		return md5.Final();
+	}
+
+	/**
+	 * Perform a MD5 checksum on the given object
+	 * 
+	 * @param object
+	 * @return Hash array of 16 bytes
+	 */
+	public static byte[] doMD5(Object object) {
+		final MD5 md5 = new MD5(object);
+		return md5.Final();
+	}
+
+	/**
+	 * Perform a MD5 checksum on the given byte array
+	 * 
+	 * @param data
+	 * @return String representation of the MD5 checksum
+	 */
+	public static String doMD5asHEX(byte[] data) {
+		final MD5 md5 = new MD5(data);
+		return md5.asHex();
+	}
+
+	/**
+	 * Perform a MD5 checksum on the given object
+	 * 
+	 * @param object
+	 * @return String representation of the MD5 checksum
+	 */
+	public static String doMD5asHEX(Object object) {
+		final MD5 md5 = new MD5(object);
+		return md5.asHex();
+	}
+
+	public static long getAdler32(byte[] buf) {
+		Adler32 adler = new Adler32();
+		adler.update(buf);
+		return adler.getValue();
+	}
+
+	/**
+	 * Luhn Algorithm implementation.
+	 * 
+	 * <p>
+	 * Luhn Algorithm is used as a simple checksum for a variety of
+	 * identification numbers like credit card numbers, IMEI numbers, SSN etc.
+	 * <a href="http://en.wikipedia.org/wiki/Luhn_algorithm">Luhn</a> validation
+	 * </p>
+	 * 
+	 * @param number
+	 *            to validate using luhn algorithm
+	 * @return true if the checksum passes (ie) Result%10 ==0 ||Result%5==0.
+	 */
+	public static boolean luhnMod10(String number) {
+		final int[][] sumTable = { { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, { 0, 2, 4, 6, 8, 1, 3, 5, 7, 9 } };
+		int sum = 0, flip = 0;
+
+		for(int i = number.length() - 1; i >= 0; i--, flip++)
+			sum += sumTable[flip & 0x1][number.charAt(i) - '0'];
+		System.out.println("Luhn Sum " + sum + " Result " + (sum % 10 == 0));
+		return (sum % 10 == 0) || (sum % 5 == 0);
 	}
 }

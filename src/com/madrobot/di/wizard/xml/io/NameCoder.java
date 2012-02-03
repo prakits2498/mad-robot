@@ -38,24 +38,14 @@ package com.madrobot.di.wizard.xml.io;
  */
 public interface NameCoder {
 	/**
-	 * Encode an object name for a node in the target format.
+	 * Decode an attribute name to an object name.
 	 * 
-	 * @param name
-	 *            the name of the object data
-	 * @return the node name in the target format
+	 * @param attributeName
+	 *            the name of the attribute
+	 * @return the name of the meta-data
 	 * @since 1.4
 	 */
-	String encodeNode(String name);
-
-	/**
-	 * Encode a meta-data name for an attribute in the target format.
-	 * 
-	 * @param name
-	 *            the name of the meta-data
-	 * @return the attribute name in the target format
-	 * @since 1.4
-	 */
-	String encodeAttribute(String name);
+	String decodeAttribute(String attributeName);
 
 	/**
 	 * Decode a node name to an object name.
@@ -68,12 +58,22 @@ public interface NameCoder {
 	String decodeNode(String nodeName);
 
 	/**
-	 * Decode an attribute name to an object name.
+	 * Encode a meta-data name for an attribute in the target format.
 	 * 
-	 * @param attributeName
-	 *            the name of the attribute
-	 * @return the name of the meta-data
+	 * @param name
+	 *            the name of the meta-data
+	 * @return the attribute name in the target format
 	 * @since 1.4
 	 */
-	String decodeAttribute(String attributeName);
+	String encodeAttribute(String name);
+
+	/**
+	 * Encode an object name for a node in the target format.
+	 * 
+	 * @param name
+	 *            the name of the object data
+	 * @return the node name in the target format
+	 * @since 1.4
+	 */
+	String encodeNode(String name);
 }

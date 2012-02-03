@@ -12,38 +12,6 @@ package com.madrobot.geom;
 
 public class Angle {
 
-	private float anglePercent;
-
-	public Angle(float rad) {
-		anglePercent = (float) (rad / (2 * Math.PI));
-	}
-
-	public static float convertToRadians(float degrees) {
-		return (float) ((degrees / 360) * 2 * Math.PI);
-	}
-
-	public static float convertToDegrees(float rad) {
-		return (float) ((rad / (2 * Math.PI)) * 360);
-	}
-
-	public float getRadians() {
-		return (float) (anglePercent * 2 * Math.PI);
-	}
-
-	public float getDegrees() {
-		return (anglePercent * 360);
-	}
-
-	public Angle add(Angle a) {
-		float newAngleRad = (float) ((anglePercent + a.anglePercent) * 2 * Math.PI);
-		return new Angle(newAngleRad);
-	}
-
-	public Angle subtract(Angle a) {
-		float newAngleRad = (float) ((anglePercent - a.anglePercent) * 2 * Math.PI);
-		return new Angle(newAngleRad);
-	}
-
 	/**
 	 * Get the distance between two angles
 	 * 
@@ -59,6 +27,14 @@ public class Angle {
 		}
 
 		return diff;
+	}
+
+	public static float convertToDegrees(float rad) {
+		return (float) ((rad / (2 * Math.PI)) * 360);
+	}
+
+	public static float convertToRadians(float degrees) {
+		return (float) ((degrees / 360) * 2 * Math.PI);
 	}
 
 	/**
@@ -77,6 +53,30 @@ public class Angle {
 		if(a < b)
 			return a <= n && n <= b;
 		return 0 <= n && n <= b || a <= n && n < 360;
+	}
+
+	private float anglePercent;
+
+	public Angle(float rad) {
+		anglePercent = (float) (rad / (2 * Math.PI));
+	}
+
+	public Angle add(Angle a) {
+		float newAngleRad = (float) ((anglePercent + a.anglePercent) * 2 * Math.PI);
+		return new Angle(newAngleRad);
+	}
+
+	public float getDegrees() {
+		return (anglePercent * 360);
+	}
+
+	public float getRadians() {
+		return (float) (anglePercent * 2 * Math.PI);
+	}
+
+	public Angle subtract(Angle a) {
+		float newAngleRad = (float) ((anglePercent - a.anglePercent) * 2 * Math.PI);
+		return new Angle(newAngleRad);
 	}
 
 }

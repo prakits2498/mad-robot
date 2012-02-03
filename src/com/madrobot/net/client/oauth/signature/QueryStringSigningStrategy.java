@@ -17,7 +17,8 @@ public class QueryStringSigningStrategy implements SigningStrategy {
 
     private static final long serialVersionUID = 1L;
 
-    public String writeSignature(String signature, HttpRequest request,
+    @Override
+	public String writeSignature(String signature, HttpRequest request,
             HttpParameters requestParameters) {
 
         // add the signature

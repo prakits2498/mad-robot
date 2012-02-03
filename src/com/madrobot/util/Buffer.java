@@ -33,15 +33,6 @@ import java.util.Collection;
 public interface Buffer extends Collection {
 
 	/**
-	 * Gets and removes the next object from the buffer.
-	 * 
-	 * @return the next object in the buffer, which is also removed
-	 * @throws BufferUnderflowException
-	 *             if the buffer is already empty
-	 */
-	Object remove();
-
-	/**
 	 * Gets the next object from the buffer without removing it.
 	 * 
 	 * @return the next object in the buffer, which is not removed
@@ -49,5 +40,14 @@ public interface Buffer extends Collection {
 	 *             if the buffer is empty
 	 */
 	Object get();
+
+	/**
+	 * Gets and removes the next object from the buffer.
+	 * 
+	 * @return the next object in the buffer, which is also removed
+	 * @throws BufferUnderflowException
+	 *             if the buffer is already empty
+	 */
+	Object remove();
 
 }

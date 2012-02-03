@@ -25,13 +25,17 @@ import java.net.URL;
 public interface HierarchicalStreamDriver {
 
 	/**
-	 * Create the HierarchicalStreamReader with the stream parser reading from the IO reader.
+	 * Create the HierarchicalStreamReader with the stream parser reading from a File.
+	 * 
+	 * Depending on the parser implementation, some might take the file path as SystemId to resolve additional
+	 * references.
 	 * 
 	 * @param in
-	 *            the {@link Reader} with the data to parse
+	 *            the {@link URL} defining the location with the data to parse
 	 * @return the HierarchicalStreamReader
+	 * @since 1.4
 	 */
-	HierarchicalStreamReader createReader(Reader in);
+	HierarchicalStreamReader createReader(File in);
 
 	/**
 	 * Create the HierarchicalStreamReader with the stream parser reading from the input stream.
@@ -41,6 +45,15 @@ public interface HierarchicalStreamDriver {
 	 * @since 1.1.3
 	 */
 	HierarchicalStreamReader createReader(InputStream in);
+
+	/**
+	 * Create the HierarchicalStreamReader with the stream parser reading from the IO reader.
+	 * 
+	 * @param in
+	 *            the {@link Reader} with the data to parse
+	 * @return the HierarchicalStreamReader
+	 */
+	HierarchicalStreamReader createReader(Reader in);
 
 	/**
 	 * Create the HierarchicalStreamReader with the stream parser reading from a URL.
@@ -55,17 +68,14 @@ public interface HierarchicalStreamDriver {
 	HierarchicalStreamReader createReader(URL in);
 
 	/**
-	 * Create the HierarchicalStreamReader with the stream parser reading from a File.
+	 * Create the HierarchicalStreamWriter with the formatted writer.
 	 * 
-	 * Depending on the parser implementation, some might take the file path as SystemId to resolve additional
-	 * references.
-	 * 
-	 * @param in
-	 *            the {@link URL} defining the location with the data to parse
-	 * @return the HierarchicalStreamReader
-	 * @since 1.4
+	 * @param out
+	 *            the {@link OutputStream} to receive the formatted data
+	 * @return the HierarchicalStreamWriter
+	 * @since 1.1.3
 	 */
-	HierarchicalStreamReader createReader(File in);
+	HierarchicalStreamWriter createWriter(OutputStream out);
 
 	/**
 	 * Create the HierarchicalStreamWriter with the formatted writer.
@@ -75,15 +85,5 @@ public interface HierarchicalStreamDriver {
 	 * @return the HierarchicalStreamWriter
 	 */
 	HierarchicalStreamWriter createWriter(Writer out);
-
-	/**
-	 * Create the HierarchicalStreamWriter with the formatted writer.
-	 * 
-	 * @param out
-	 *            the {@link OutputStream} to receive the formatted data
-	 * @return the HierarchicalStreamWriter
-	 * @since 1.1.3
-	 */
-	HierarchicalStreamWriter createWriter(OutputStream out);
 
 }

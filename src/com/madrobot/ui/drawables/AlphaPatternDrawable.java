@@ -26,19 +26,19 @@ import android.graphics.drawable.Drawable;
  */
 public class AlphaPatternDrawable extends Drawable {
 
-	private int mRectangleSize = 10;
-
-	private Paint mPaint = new Paint();
-	private Paint mPaintWhite = new Paint();
-	private Paint mPaintGray = new Paint();
-
-	private int numRectanglesHorizontal;
-	private int numRectanglesVertical;
-
 	/**
 	 * Bitmap in which the pattern will be cahched.
 	 */
 	private Bitmap mBitmap;
+
+	private Paint mPaint = new Paint();
+	private Paint mPaintGray = new Paint();
+	private Paint mPaintWhite = new Paint();
+
+	private int mRectangleSize = 10;
+	private int numRectanglesHorizontal;
+
+	private int numRectanglesVertical;
 
 	public AlphaPatternDrawable(int rectangleSize) {
 		mRectangleSize = rectangleSize;
@@ -49,35 +49,6 @@ public class AlphaPatternDrawable extends Drawable {
 	@Override
 	public void draw(Canvas canvas) {
 		canvas.drawBitmap(mBitmap, null, getBounds(), mPaint);
-	}
-
-	@Override
-	public int getOpacity() {
-		return 0;
-	}
-
-	@Override
-	public void setAlpha(int alpha) {
-		throw new UnsupportedOperationException("Alpha is not supported by this drawwable.");
-	}
-
-	@Override
-	public void setColorFilter(ColorFilter cf) {
-		throw new UnsupportedOperationException("ColorFilter is not supported by this drawwable.");
-	}
-
-	@Override
-	protected void onBoundsChange(Rect bounds) {
-		super.onBoundsChange(bounds);
-
-		int height = bounds.height();
-		int width = bounds.width();
-
-		numRectanglesHorizontal = (int) Math.ceil((width / mRectangleSize));
-		numRectanglesVertical = (int) Math.ceil(height / mRectangleSize);
-
-		generatePatternBitmap();
-
 	}
 
 	/**
@@ -117,6 +88,35 @@ public class AlphaPatternDrawable extends Drawable {
 
 		}
 
+	}
+
+	@Override
+	public int getOpacity() {
+		return 0;
+	}
+
+	@Override
+	protected void onBoundsChange(Rect bounds) {
+		super.onBoundsChange(bounds);
+
+		int height = bounds.height();
+		int width = bounds.width();
+
+		numRectanglesHorizontal = (int) Math.ceil((width / mRectangleSize));
+		numRectanglesVertical = (int) Math.ceil(height / mRectangleSize);
+
+		generatePatternBitmap();
+
+	}
+
+	@Override
+	public void setAlpha(int alpha) {
+		throw new UnsupportedOperationException("Alpha is not supported by this drawwable.");
+	}
+
+	@Override
+	public void setColorFilter(ColorFilter cf) {
+		throw new UnsupportedOperationException("ColorFilter is not supported by this drawwable.");
 	}
 
 }

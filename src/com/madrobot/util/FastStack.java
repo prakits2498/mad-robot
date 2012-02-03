@@ -19,23 +19,23 @@ package com.madrobot.util;
  */
 public final class FastStack {
 
-    private Object[] stack;
     private int pointer;
+    private Object[] stack;
 
     public FastStack(int initialCapacity) {
         stack = new Object[initialCapacity];
     }
 
-    public Object push(Object value) {
-        if (pointer + 1 >= stack.length) {
-            resizeStack(stack.length * 2);
-        }
-        stack[pointer++] = value;
-        return value;
+    public Object get(int i) {
+        return stack[i];
     }
 
-    public void popSilently() {
-        stack[--pointer] = null;
+    public boolean hasStuff() {
+        return pointer > 0;
+    }
+
+    public Object peek() {
+        return pointer == 0 ? null : stack[pointer - 1];
     }
 
     public Object pop() {
@@ -44,8 +44,16 @@ public final class FastStack {
         return result;
     }
 
-    public Object peek() {
-        return pointer == 0 ? null : stack[pointer - 1];
+    public void popSilently() {
+        stack[--pointer] = null;
+    }
+
+    public Object push(Object value) {
+        if (pointer + 1 >= stack.length) {
+            resizeStack(stack.length * 2);
+        }
+        stack[pointer++] = value;
+        return value;
     }
 
     public Object replace(Object value) {
@@ -58,22 +66,14 @@ public final class FastStack {
         stack[pointer - 1] = value;
     }
 
-    public int size() {
-        return pointer;
-    }
-
-    public boolean hasStuff() {
-        return pointer > 0;
-    }
-
-    public Object get(int i) {
-        return stack[i];
-    }
-
     private void resizeStack(int newCapacity) {
         Object[] newStack = new Object[newCapacity];
         System.arraycopy(stack, 0, newStack, 0, Math.min(pointer, newCapacity));
         stack = newStack;
+    }
+
+    public int size() {
+        return pointer;
     }
 
     @Override

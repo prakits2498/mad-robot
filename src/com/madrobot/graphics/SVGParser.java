@@ -54,554 +54,15 @@ import android.util.Log;
  */
 public class SVGParser {
 
-    static final String TAG = "SVGAndroid";
-
-    /**
-     * Parse SVG data from an input stream.
-     * @param svgData the input stream, with SVG XML data in UTF-8 character encoding.
-     * @return the parsed SVG.
-     * @throws SVGParseException if there is an error while parsing.
-     */
-    public static SVG getSVGFromInputStream(InputStream svgData) throws SVGParseException {
-        return SVGParser.parse(svgData, 0, 0, false);
-    }
-
-    /**
-     * Parse SVG data from a string.
-     * @param svgData the string containing SVG XML data.
-     * @return the parsed SVG.
-     * @throws SVGParseException if there is an error while parsing.
-     */
-    public static SVG getSVGFromString(String svgData) throws SVGParseException {
-        return SVGParser.parse(new ByteArrayInputStream(svgData.getBytes()), 0, 0, false);
-    }
-
-    /**
-     * Parse SVG data from an Android application resource.
-     * @param resources the Android context resources.
-     * @param resId the ID of the raw resource SVG.
-     * @return the parsed SVG.
-     * @throws SVGParseException if there is an error while parsing.
-     */
-    public static SVG getSVGFromResource(Resources resources, int resId) throws SVGParseException {
-        return SVGParser.parse(resources.openRawResource(resId), 0, 0, false);
-    }
-
-    /**
-     * Parse SVG data from an Android application asset.
-     * @param assetMngr the Android asset manager.
-     * @param svgPath the path to the SVG file in the application's assets.
-     * @return the parsed SVG.
-     * @throws SVGParseException if there is an error while parsing.
-     * @throws IOException if there was a problem reading the file.
-     */
-    public static SVG getSVGFromAsset(AssetManager assetMngr, String svgPath) throws SVGParseException, IOException {
-        InputStream inputStream = assetMngr.open(svgPath);
-        SVG svg = getSVGFromInputStream(inputStream);
-        inputStream.close();
-        return svg;
-    }
-
-    /**
-     * Parse SVG data from an input stream, replacing a single color with another color.
-     * @param svgData the input stream, with SVG XML data in UTF-8 character encoding.
-     * @param searchColor the color in the SVG to replace.
-     * @param replaceColor the color with which to replace the search color.
-     * @return the parsed SVG.
-     * @throws SVGParseException if there is an error while parsing.
-     */
-    public static SVG getSVGFromInputStream(InputStream svgData, int searchColor, int replaceColor) throws SVGParseException {
-        return SVGParser.parse(svgData, searchColor, replaceColor, false);
-    }
-
-    /**
-     * Parse SVG data from a string.
-     * @param svgData the string containing SVG XML data.
-     * @param searchColor the color in the SVG to replace.
-     * @param replaceColor the color with which to replace the search color.
-     * @return the parsed SVG.
-     * @throws SVGParseException if there is an error while parsing.
-     */
-    public static SVG getSVGFromString(String svgData, int searchColor, int replaceColor) throws SVGParseException {
-        return SVGParser.parse(new ByteArrayInputStream(svgData.getBytes()), searchColor, replaceColor, false);
-    }
-
-    /**
-     * Parse SVG data from an Android application resource.
-     * @param resources the Android context
-     * @param resId the ID of the raw resource SVG.
-     * @param searchColor the color in the SVG to replace.
-     * @param replaceColor the color with which to replace the search color.
-     * @return the parsed SVG.
-     * @throws SVGParseException if there is an error while parsing.
-     */
-    public static SVG getSVGFromResource(Resources resources, int resId, int searchColor, int replaceColor) throws SVGParseException {
-        return SVGParser.parse(resources.openRawResource(resId), searchColor, replaceColor, false);
-    }
-
-    /**
-     * Parse SVG data from an Android application asset.
-     * @param assetMngr the Android asset manager.
-     * @param svgPath the path to the SVG file in the application's assets.
-     * @param searchColor the color in the SVG to replace.
-     * @param replaceColor the color with which to replace the search color.
-     * @return the parsed SVG.
-     * @throws SVGParseException if there is an error while parsing.
-     * @throws IOException if there was a problem reading the file.
-     */
-    public static SVG getSVGFromAsset(AssetManager assetMngr, String svgPath, int searchColor, int replaceColor) throws SVGParseException, IOException {
-        InputStream inputStream = assetMngr.open(svgPath);
-        SVG svg = getSVGFromInputStream(inputStream, searchColor, replaceColor);
-        inputStream.close();
-        return svg;
-    }
-
-    /**
-     * Parses a single SVG path and returns it as a <code>android.graphics.Path</code> object.
-     * An example path is <code>M250,150L150,350L350,350Z</code>, which draws a triangle.
-     *
-     * @param pathString the SVG path, see the specification <a href="http://www.w3.org/TR/SVG/paths.html">here</a>.
-     */
-    public static Path parsePath(String pathString) {
-        return doPath(pathString);
-    }
-
-    private static SVG parse(InputStream in, Integer searchColor, Integer replaceColor, boolean whiteMode) throws SVGParseException {
-//        Util.debug("Parsing SVG...");
-        try {
-            long start = System.currentTimeMillis();
-            SAXParserFactory spf = SAXParserFactory.newInstance();
-            SAXParser sp = spf.newSAXParser();
-            XMLReader xr = sp.getXMLReader();
-            final Picture picture = new Picture();
-            SVGHandler handler = new SVGHandler(picture);
-            handler.setColorSwap(searchColor, replaceColor);
-            handler.setWhiteMode(whiteMode);
-            xr.setContentHandler(handler);
-            xr.parse(new InputSource(in));
-//        Util.debug("Parsing complete in " + (System.currentTimeMillis() - start) + " millis.");
-            SVG result = new SVG(picture, handler.bounds);
-            // Skip bounds if it was an empty pic
-            if (!Float.isInfinite(handler.limits.top)) {
-                result.setLimits(handler.limits);
-            }
-            return result;
-        } catch (Exception e) {
-            throw new SVGParseException(e);
-        }
-    }
-
-    private static NumberParse parseNumbers(String s) {
-        //Util.debug("Parsing numbers from: '" + s + "'");
-        int n = s.length();
-        int p = 0;
-        ArrayList<Float> numbers = new ArrayList<Float>();
-        boolean skipChar = false;
-        for (int i = 1; i < n; i++) {
-            if (skipChar) {
-                skipChar = false;
-                continue;
-            }
-            char c = s.charAt(i);
-            switch (c) {
-                // This ends the parsing, as we are on the next element
-                case 'M':
-                case 'm':
-                case 'Z':
-                case 'z':
-                case 'L':
-                case 'l':
-                case 'H':
-                case 'h':
-                case 'V':
-                case 'v':
-                case 'C':
-                case 'c':
-                case 'S':
-                case 's':
-                case 'Q':
-                case 'q':
-                case 'T':
-                case 't':
-                case 'a':
-                case 'A':
-                case ')': {
-                    String str = s.substring(p, i);
-                    if (str.trim().length() > 0) {
-                        //Util.debug("  Last: " + str);
-                        Float f = Float.parseFloat(str);
-                        numbers.add(f);
-                    }
-                    p = i;
-                    return new NumberParse(numbers, p);
-                }
-                case '\n':
-                case '\t':
-                case ' ':
-                case ',':
-                case '-': {
-                    String str = s.substring(p, i);
-                    // Just keep moving if multiple whitespace
-                    if (str.trim().length() > 0) {
-                        //Util.debug("  Next: " + str);
-                        Float f = Float.parseFloat(str);
-                        numbers.add(f);
-                        if (c == '-') {
-                            p = i;
-                        } else {
-                            p = i + 1;
-                            skipChar = true;
-                        }
-                    } else {
-                        p++;
-                    }
-                    break;
-                }
-            }
-        }
-        String last = s.substring(p);
-        if (last.length() > 0) {
-            //Util.debug("  Last: " + last);
-            try {
-                numbers.add(Float.parseFloat(last));
-            } catch (NumberFormatException nfe) {
-                // Just white-space, forget it
-            }
-            p = s.length();
-        }
-        return new NumberParse(numbers, p);
-    }
-
-    private static Matrix parseTransform(String s) {
-        if (s.startsWith("matrix(")) {
-            NumberParse np = parseNumbers(s.substring("matrix(".length()));
-            if (np.numbers.size() == 6) {
-                Matrix matrix = new Matrix();
-                matrix.setValues(new float[]{
-                        // Row 1
-                        np.numbers.get(0),
-                        np.numbers.get(2),
-                        np.numbers.get(4),
-                        // Row 2
-                        np.numbers.get(1),
-                        np.numbers.get(3),
-                        np.numbers.get(5),
-                        // Row 3
-                        0,
-                        0,
-                        1,
-                });
-                return matrix;
-            }
-        } else if (s.startsWith("translate(")) {
-            NumberParse np = parseNumbers(s.substring("translate(".length()));
-            if (np.numbers.size() > 0) {
-                float tx = np.numbers.get(0);
-                float ty = 0;
-                if (np.numbers.size() > 1) {
-                    ty = np.numbers.get(1);
-                }
-                Matrix matrix = new Matrix();
-                matrix.postTranslate(tx, ty);
-                return matrix;
-            }
-        } else if (s.startsWith("scale(")) {
-            NumberParse np = parseNumbers(s.substring("scale(".length()));
-            if (np.numbers.size() > 0) {
-                float sx = np.numbers.get(0);
-                float sy = 0;
-                if (np.numbers.size() > 1) {
-                    sy = np.numbers.get(1);
-                }
-                Matrix matrix = new Matrix();
-                matrix.postScale(sx, sy);
-                return matrix;
-            }
-        } else if (s.startsWith("skewX(")) {
-            NumberParse np = parseNumbers(s.substring("skewX(".length()));
-            if (np.numbers.size() > 0) {
-                float angle = np.numbers.get(0);
-                Matrix matrix = new Matrix();
-                matrix.postSkew((float) Math.tan(angle), 0);
-                return matrix;
-            }
-        } else if (s.startsWith("skewY(")) {
-            NumberParse np = parseNumbers(s.substring("skewY(".length()));
-            if (np.numbers.size() > 0) {
-                float angle = np.numbers.get(0);
-                Matrix matrix = new Matrix();
-                matrix.postSkew(0, (float) Math.tan(angle));
-                return matrix;
-            }
-        } else if (s.startsWith("rotate(")) {
-            NumberParse np = parseNumbers(s.substring("rotate(".length()));
-            if (np.numbers.size() > 0) {
-                float angle = np.numbers.get(0);
-                float cx = 0;
-                float cy = 0;
-                if (np.numbers.size() > 2) {
-                    cx = np.numbers.get(1);
-                    cy = np.numbers.get(2);
-                }
-                Matrix matrix = new Matrix();
-                matrix.postTranslate(cx, cy);
-                matrix.postRotate(angle);
-                matrix.postTranslate(-cx, -cy);
-                return matrix;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * This is where the hard-to-parse paths are handled.
-     * Uppercase rules are absolute positions, lowercase are relative.
-     * Types of path rules:
-     * <p/>
-     * <ol>
-     * <li>M/m - (x y)+ - Move to (without drawing)
-     * <li>Z/z - (no params) - Close path (back to starting point)
-     * <li>L/l - (x y)+ - Line to
-     * <li>H/h - x+ - Horizontal ine to
-     * <li>V/v - y+ - Vertical line to
-     * <li>C/c - (x1 y1 x2 y2 x y)+ - Cubic bezier to
-     * <li>S/s - (x2 y2 x y)+ - Smooth cubic bezier to (shorthand that assumes the x2, y2 from previous C/S is the x1, y1 of this bezier)
-     * <li>Q/q - (x1 y1 x y)+ - Quadratic bezier to
-     * <li>T/t - (x y)+ - Smooth quadratic bezier to (assumes previous control point is "reflection" of last one w.r.t. to current point)
-     * </ol>
-     * <p/>
-     * Numbers are separate by whitespace, comma or nothing at all (!) if they are self-delimiting, (ie. begin with a - sign)
-     *
-     * @param s the path string from the XML
-     */
-    private static Path doPath(String s) {
-        int n = s.length();
-        SVGParserHelper ph = new SVGParserHelper(s, 0);
-        ph.skipWhitespace();
-        Path p = new Path();
-        float lastX = 0;
-        float lastY = 0;
-        float lastX1 = 0;
-        float lastY1 = 0;
-        while (ph.pos < n) {
-            char cmd = s.charAt(ph.pos);
-            //Util.debug("* Commands remaining: '" + path + "'.");
-            ph.advance();
-            boolean wasCurve = false;
-            switch (cmd) {
-                case 'M':
-                case 'm': {
-                    float x = ph.nextFloat();
-                    float y = ph.nextFloat();
-                    if (cmd == 'm') {
-                        p.rMoveTo(x, y);
-                        lastX += x;
-                        lastY += y;
-                    } else {
-                        p.moveTo(x, y);
-                        lastX = x;
-                        lastY = y;
-                    }
-                    break;
-                }
-                case 'Z':
-                case 'z': {
-                    p.close();
-                    break;
-                }
-                case 'L':
-                case 'l': {
-                    float x = ph.nextFloat();
-                    float y = ph.nextFloat();
-                    if (cmd == 'l') {
-                        p.rLineTo(x, y);
-                        lastX += x;
-                        lastY += y;
-                    } else {
-                        p.lineTo(x, y);
-                        lastX = x;
-                        lastY = y;
-                    }
-                    break;
-                }
-                case 'H':
-                case 'h': {
-                    float x = ph.nextFloat();
-                    if (cmd == 'h') {
-                        p.rLineTo(x, 0);
-                        lastX += x;
-                    } else {
-                        p.lineTo(x, lastY);
-                        lastX = x;
-                    }
-                    break;
-                }
-                case 'V':
-                case 'v': {
-                    float y = ph.nextFloat();
-                    if (cmd == 'v') {
-                        p.rLineTo(0, y);
-                        lastY += y;
-                    } else {
-                        p.lineTo(lastX, y);
-                        lastY = y;
-                    }
-                    break;
-                }
-                case 'C':
-                case 'c': {
-                    wasCurve = true;
-                    float x1 = ph.nextFloat();
-                    float y1 = ph.nextFloat();
-                    float x2 = ph.nextFloat();
-                    float y2 = ph.nextFloat();
-                    float x = ph.nextFloat();
-                    float y = ph.nextFloat();
-                    if (cmd == 'c') {
-                        x1 += lastX;
-                        x2 += lastX;
-                        x += lastX;
-                        y1 += lastY;
-                        y2 += lastY;
-                        y += lastY;
-                    }
-                    p.cubicTo(x1, y1, x2, y2, x, y);
-                    lastX1 = x2;
-                    lastY1 = y2;
-                    lastX = x;
-                    lastY = y;
-                    break;
-                }
-                case 'S':
-                case 's': {
-                    wasCurve = true;
-                    float x2 = ph.nextFloat();
-                    float y2 = ph.nextFloat();
-                    float x = ph.nextFloat();
-                    float y = ph.nextFloat();
-                    if (cmd == 's') {
-                        x2 += lastX;
-                        x += lastX;
-                        y2 += lastY;
-                        y += lastY;
-                    }
-                    float x1 = 2 * lastX - lastX1;
-                    float y1 = 2 * lastY - lastY1;
-                    p.cubicTo(x1, y1, x2, y2, x, y);
-                    lastX1 = x2;
-                    lastY1 = y2;
-                    lastX = x;
-                    lastY = y;
-                    break;
-                }
-                case 'A':
-                case 'a': {
-                    float rx = ph.nextFloat();
-                    float ry = ph.nextFloat();
-                    float theta = ph.nextFloat();
-                    int largeArc = (int) ph.nextFloat();
-                    int sweepArc = (int) ph.nextFloat();
-                    float x = ph.nextFloat();
-                    float y = ph.nextFloat();
-                    drawArc(p, lastX, lastY, x, y, rx, ry, theta, largeArc, sweepArc);
-                    lastX = x;
-                    lastY = y;
-                    break;
-                }
-            }
-            if (!wasCurve) {
-                lastX1 = lastX;
-                lastY1 = lastY;
-            }
-            ph.skipWhitespace();
-        }
-        return p;
-    }
-
-    private static void drawArc(Path p, float lastX, float lastY, float x, float y, float rx, float ry, float theta, int largeArc, int sweepArc) {
-        // todo - not implemented yet, may be very hard to do using Android drawing facilities.
-    }
-
-    private static NumberParse getNumberParseAttr(String name, Attributes attributes) {
-        int n = attributes.getLength();
-        for (int i = 0; i < n; i++) {
-            if (attributes.getLocalName(i).equals(name)) {
-                return parseNumbers(attributes.getValue(i));
-            }
-        }
-        return null;
-    }
-
-    private static String getStringAttr(String name, Attributes attributes) {
-        int n = attributes.getLength();
-        for (int i = 0; i < n; i++) {
-            if (attributes.getLocalName(i).equals(name)) {
-                return attributes.getValue(i);
-            }
-        }
-        return null;
-    }
-
-    private static Float getFloatAttr(String name, Attributes attributes) {
-        return getFloatAttr(name, attributes, null);
-    }
-
-    private static Float getFloatAttr(String name, Attributes attributes, Float defaultValue) {
-        String v = getStringAttr(name, attributes);
-        if (v == null) {
-            return defaultValue;
-        } else {
-            if (v.endsWith("px")) {
-                v = v.substring(0, v.length() - 2);
-            }
-//            Log.d(TAG, "Float parsing '" + name + "=" + v + "'");
-            return Float.parseFloat(v);
-        }
-    }
-
-    private static Integer getHexAttr(String name, Attributes attributes) {
-        String v = getStringAttr(name, attributes);
-        //Util.debug("Hex parsing '" + name + "=" + v + "'");
-        if (v == null) {
-            return null;
-        } else {
-            try {
-                return Integer.parseInt(v.substring(1), 16);
-            } catch (NumberFormatException nfe) {
-                // todo - parse word-based color here
-                return null;
-            }
-        }
-    }
-
-    private static class NumberParse {
-        private ArrayList<Float> numbers;
-        private int nextCmd;
-
-        public NumberParse(ArrayList<Float> numbers, int nextCmd) {
-            this.numbers = numbers;
-            this.nextCmd = nextCmd;
-        }
-
-        public int getNextCmd() {
-            return nextCmd;
-        }
-
-        public float getNumber(int index) {
-            return numbers.get(index);
-        }
-
-    }
-
     private static class Gradient {
-        String id;
-        String xlink;
-        boolean isLinear;
-        float x1, y1, x2, y2;
-        float x, y, radius;
-        ArrayList<Float> positions = new ArrayList<Float>();
         ArrayList<Integer> colors = new ArrayList<Integer>();
+        String id;
+        boolean isLinear;
         Matrix matrix = null;
+        ArrayList<Float> positions = new ArrayList<Float>();
+        float x, y, radius;
+        float x1, y1, x2, y2;
+        String xlink;
 
         public Gradient createChild(Gradient g) {
             Gradient child = new Gradient();
@@ -631,27 +92,28 @@ public class SVGParser {
         }
     }
 
-    private static class StyleSet {
-        HashMap<String, String> styleMap = new HashMap<String, String>();
+    private static class NumberParse {
+        private int nextCmd;
+        private ArrayList<Float> numbers;
 
-        private StyleSet(String string) {
-            String[] styles = string.split(";");
-            for (String s : styles) {
-                String[] style = s.split(":");
-                if (style.length == 2) {
-                    styleMap.put(style[0], style[1]);
-                }
-            }
+        public NumberParse(ArrayList<Float> numbers, int nextCmd) {
+            this.numbers = numbers;
+            this.nextCmd = nextCmd;
         }
 
-        public String getStyle(String name) {
-            return styleMap.get(name);
+        public int getNextCmd() {
+            return nextCmd;
         }
+
+        public float getNumber(int index) {
+            return numbers.get(index);
+        }
+
     }
 
     private static class Properties {
-        StyleSet styles = null;
         Attributes atts;
+        StyleSet styles = null;
 
         private Properties(Attributes atts) {
             this.atts = atts;
@@ -672,8 +134,26 @@ public class SVGParser {
             return v;
         }
 
-        public String getString(String name) {
-            return getAttr(name);
+        public Float getFloat(String name) {
+            String v = getAttr(name);
+            if (v == null) {
+                return null;
+            } else {
+                try {
+                    return Float.parseFloat(v);
+                } catch (NumberFormatException nfe) {
+                    return null;
+                }
+            }
+        }
+
+        public Float getFloat(String name, float defaultValue) {
+            Float v = getFloat(name);
+            if (v == null) {
+                return defaultValue;
+            } else {
+                return v;
+            }
         }
 
         public Integer getHex(String name) {
@@ -690,49 +170,55 @@ public class SVGParser {
             }
         }
 
-        public Float getFloat(String name, float defaultValue) {
-            Float v = getFloat(name);
-            if (v == null) {
-                return defaultValue;
-            } else {
-                return v;
+        public String getString(String name) {
+            return getAttr(name);
+        }
+    }
+
+    private static class StyleSet {
+        HashMap<String, String> styleMap = new HashMap<String, String>();
+
+        private StyleSet(String string) {
+            String[] styles = string.split(";");
+            for (String s : styles) {
+                String[] style = s.split(":");
+                if (style.length == 2) {
+                    styleMap.put(style[0], style[1]);
+                }
             }
         }
 
-        public Float getFloat(String name) {
-            String v = getAttr(name);
-            if (v == null) {
-                return null;
-            } else {
-                try {
-                    return Float.parseFloat(v);
-                } catch (NumberFormatException nfe) {
-                    return null;
-                }
-            }
+        public String getStyle(String name) {
+            return styleMap.get(name);
         }
     }
 
     private static class SVGHandler extends DefaultHandler {
 
-        Picture picture;
-        Canvas canvas;
-        Paint paint;
-        // Scratch rect (so we aren't constantly making new ones)
-        RectF rect = new RectF();
         RectF bounds = null;
-        RectF limits = new RectF(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY, Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY);
-
-        Integer searchColor = null;
-        Integer replaceColor = null;
-
-        boolean whiteMode = false;
-
-        boolean pushed = false;
-
+        private boolean boundsMode = false;
+        Canvas canvas;
+        Gradient gradient = null;
         HashMap<String, Shader> gradientMap = new HashMap<String, Shader>();
         HashMap<String, Gradient> gradientRefMap = new HashMap<String, Gradient>();
-        Gradient gradient = null;
+
+        private boolean hidden = false;
+        private int hiddenLevel = 0;
+
+        RectF limits = new RectF(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY, Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY);
+
+        Paint paint;
+
+        Picture picture;
+        boolean pushed = false;
+        // Scratch rect (so we aren't constantly making new ones)
+        RectF rect = new RectF();
+
+        Integer replaceColor = null;
+
+        Integer searchColor = null;
+
+        boolean whiteMode = false;
 
         private SVGHandler(Picture picture) {
             this.picture = picture;
@@ -740,23 +226,26 @@ public class SVGParser {
             paint.setAntiAlias(true);
         }
 
-        public void setColorSwap(Integer searchColor, Integer replaceColor) {
-            this.searchColor = searchColor;
-            this.replaceColor = replaceColor;
-        }
-
-        public void setWhiteMode(boolean whiteMode) {
-            this.whiteMode = whiteMode;
-        }
-
         @Override
-        public void startDocument() throws SAXException {
-            // Set up prior to parsing a doc
+        public void characters(char ch[], int start, int length) {
+            // no-op
         }
 
-        @Override
-        public void endDocument() throws SAXException {
-            // Clean up after parsing a doc
+        private void doColor(Properties atts, Integer color, boolean fillMode) {
+            int c = (0xFFFFFF & color) | 0xFF000000;
+            if (searchColor != null && searchColor.intValue() == c) {
+                c = replaceColor;
+            }
+            paint.setColor(c);
+            Float opacity = atts.getFloat("opacity");
+            if (opacity == null) {
+                opacity = atts.getFloat(fillMode ? "fill-opacity" : "stroke-opacity");
+            }
+            if (opacity == null) {
+                paint.setAlpha(255);
+            } else {
+                paint.setAlpha((int) (255 * opacity));
+            }
         }
 
         private boolean doFill(Properties atts, HashMap<String, Shader> gradients) {
@@ -799,6 +288,58 @@ public class SVGParser {
             return false;
         }
 
+        private Gradient doGradient(boolean isLinear, Attributes atts) {
+            Gradient gradient = new Gradient();
+            gradient.id = getStringAttr("id", atts);
+            gradient.isLinear = isLinear;
+            if (isLinear) {
+                gradient.x1 = getFloatAttr("x1", atts, 0f);
+                gradient.x2 = getFloatAttr("x2", atts, 0f);
+                gradient.y1 = getFloatAttr("y1", atts, 0f);
+                gradient.y2 = getFloatAttr("y2", atts, 0f);
+            } else {
+                gradient.x = getFloatAttr("cx", atts, 0f);
+                gradient.y = getFloatAttr("cy", atts, 0f);
+                gradient.radius = getFloatAttr("r", atts, 0f);
+            }
+            String transform = getStringAttr("gradientTransform", atts);
+            if (transform != null) {
+                gradient.matrix = parseTransform(transform);
+            }
+            String xlink = getStringAttr("href", atts);
+            if (xlink != null) {
+                if (xlink.startsWith("#")) {
+                    xlink = xlink.substring(1);
+                }
+                gradient.xlink = xlink;
+            }
+            return gradient;
+        }
+
+        private void doLimits(float x, float y) {
+            if (x < limits.left) {
+                limits.left = x;
+            }
+            if (x > limits.right) {
+                limits.right = x;
+            }
+            if (y < limits.top) {
+                limits.top = y;
+            }
+            if (y > limits.bottom) {
+                limits.bottom = y;
+            }
+        }
+
+        private void doLimits(float x, float y, float width, float height) {
+            doLimits(x, y);
+            doLimits(x + width, y + height);
+        }
+        private void doLimits(Path path) {
+            path.computeBounds(rect, false);
+            doLimits(rect.left, rect.top);
+            doLimits(rect.right, rect.bottom);
+        }
         private boolean doStroke(Properties atts) {
             if (whiteMode) {
                 // Never stroke in white mode
@@ -839,79 +380,86 @@ public class SVGParser {
             return false;
         }
 
-        private Gradient doGradient(boolean isLinear, Attributes atts) {
-            Gradient gradient = new Gradient();
-            gradient.id = getStringAttr("id", atts);
-            gradient.isLinear = isLinear;
-            if (isLinear) {
-                gradient.x1 = getFloatAttr("x1", atts, 0f);
-                gradient.x2 = getFloatAttr("x2", atts, 0f);
-                gradient.y1 = getFloatAttr("y1", atts, 0f);
-                gradient.y2 = getFloatAttr("y2", atts, 0f);
-            } else {
-                gradient.x = getFloatAttr("cx", atts, 0f);
-                gradient.y = getFloatAttr("cy", atts, 0f);
-                gradient.radius = getFloatAttr("r", atts, 0f);
-            }
-            String transform = getStringAttr("gradientTransform", atts);
-            if (transform != null) {
-                gradient.matrix = parseTransform(transform);
-            }
-            String xlink = getStringAttr("href", atts);
-            if (xlink != null) {
-                if (xlink.startsWith("#")) {
-                    xlink = xlink.substring(1);
+        @Override
+        public void endDocument() throws SAXException {
+            // Clean up after parsing a doc
+        }
+
+        @Override
+        public void endElement(String namespaceURI, String localName, String qName)
+                throws SAXException {
+            if (localName.equals("svg")) {
+                picture.endRecording();
+            } else if (localName.equals("linearGradient")) {
+                if (gradient.id != null) {
+                    if (gradient.xlink != null) {
+                        Gradient parent = gradientRefMap.get(gradient.xlink);
+                        if (parent != null) {
+                            gradient = parent.createChild(gradient);
+                        }
+                    }
+                    int[] colors = new int[gradient.colors.size()];
+                    for (int i = 0; i < colors.length; i++) {
+                        colors[i] = gradient.colors.get(i);
+                    }
+                    float[] positions = new float[gradient.positions.size()];
+                    for (int i = 0; i < positions.length; i++) {
+                        positions[i] = gradient.positions.get(i);
+                    }
+                    if (colors.length == 0) {
+                        Log.d("BAD", "BAD");
+                    }
+                    LinearGradient g = new LinearGradient(gradient.x1, gradient.y1, gradient.x2, gradient.y2, colors, positions, Shader.TileMode.CLAMP);
+                    if (gradient.matrix != null) {
+                        g.setLocalMatrix(gradient.matrix);
+                    }
+                    gradientMap.put(gradient.id, g);
+                    gradientRefMap.put(gradient.id, gradient);
                 }
-                gradient.xlink = xlink;
+            } else if (localName.equals("radialGradient")) {
+                if (gradient.id != null) {
+                    int[] colors = new int[gradient.colors.size()];
+                    for (int i = 0; i < colors.length; i++) {
+                        colors[i] = gradient.colors.get(i);
+                    }
+                    float[] positions = new float[gradient.positions.size()];
+                    for (int i = 0; i < positions.length; i++) {
+                        positions[i] = gradient.positions.get(i);
+                    }
+                    if (gradient.xlink != null) {
+                        Gradient parent = gradientRefMap.get(gradient.xlink);
+                        if (parent != null) {
+                            gradient = parent.createChild(gradient);
+                        }
+                    }
+                    RadialGradient g = new RadialGradient(gradient.x, gradient.y, gradient.radius, colors, positions, Shader.TileMode.CLAMP);
+                    if (gradient.matrix != null) {
+                        g.setLocalMatrix(gradient.matrix);
+                    }
+                    gradientMap.put(gradient.id, g);
+                    gradientRefMap.put(gradient.id, gradient);
+                }
+            } else if (localName.equals("g")) {
+                if (boundsMode) {
+                    boundsMode = false;
+                }
+                // Break out of hidden mode
+                if (hidden) {
+                    hiddenLevel--;
+                    //Util.debug("Hidden down: " + hiddenLevel);
+                    if (hiddenLevel == 0) {
+                        hidden = false;
+                    }
+                }
+                // Clear gradient map
+                gradientMap.clear();
             }
-            return gradient;
         }
 
-        private void doColor(Properties atts, Integer color, boolean fillMode) {
-            int c = (0xFFFFFF & color) | 0xFF000000;
-            if (searchColor != null && searchColor.intValue() == c) {
-                c = replaceColor;
+        private void popTransform() {
+            if (pushed) {
+                canvas.restore();
             }
-            paint.setColor(c);
-            Float opacity = atts.getFloat("opacity");
-            if (opacity == null) {
-                opacity = atts.getFloat(fillMode ? "fill-opacity" : "stroke-opacity");
-            }
-            if (opacity == null) {
-                paint.setAlpha(255);
-            } else {
-                paint.setAlpha((int) (255 * opacity));
-            }
-        }
-
-        private boolean hidden = false;
-        private int hiddenLevel = 0;
-        private boolean boundsMode = false;
-
-        private void doLimits(float x, float y) {
-            if (x < limits.left) {
-                limits.left = x;
-            }
-            if (x > limits.right) {
-                limits.right = x;
-            }
-            if (y < limits.top) {
-                limits.top = y;
-            }
-            if (y > limits.bottom) {
-                limits.bottom = y;
-            }
-        }
-
-        private void doLimits(float x, float y, float width, float height) {
-            doLimits(x, y);
-            doLimits(x + width, y + height);
-        }
-
-        private void doLimits(Path path) {
-            path.computeBounds(rect, false);
-            doLimits(rect.left, rect.top);
-            doLimits(rect.right, rect.bottom);
         }
 
         private void pushTransform(Attributes atts) {
@@ -924,10 +472,18 @@ public class SVGParser {
             }
         }
 
-        private void popTransform() {
-            if (pushed) {
-                canvas.restore();
-            }
+        public void setColorSwap(Integer searchColor, Integer replaceColor) {
+            this.searchColor = searchColor;
+            this.replaceColor = replaceColor;
+        }
+
+        public void setWhiteMode(boolean whiteMode) {
+            this.whiteMode = whiteMode;
+        }
+
+        @Override
+        public void startDocument() throws SAXException {
+            // Set up prior to parsing a doc
         }
 
         @Override
@@ -1117,81 +673,525 @@ public class SVGParser {
                 Log.d(TAG, "UNRECOGNIZED SVG COMMAND: " + localName);
             }
         }
+    }
 
-        @Override
-        public void characters(char ch[], int start, int length) {
-            // no-op
+    static final String TAG = "SVGAndroid";
+
+    /**
+     * This is where the hard-to-parse paths are handled.
+     * Uppercase rules are absolute positions, lowercase are relative.
+     * Types of path rules:
+     * <p/>
+     * <ol>
+     * <li>M/m - (x y)+ - Move to (without drawing)
+     * <li>Z/z - (no params) - Close path (back to starting point)
+     * <li>L/l - (x y)+ - Line to
+     * <li>H/h - x+ - Horizontal ine to
+     * <li>V/v - y+ - Vertical line to
+     * <li>C/c - (x1 y1 x2 y2 x y)+ - Cubic bezier to
+     * <li>S/s - (x2 y2 x y)+ - Smooth cubic bezier to (shorthand that assumes the x2, y2 from previous C/S is the x1, y1 of this bezier)
+     * <li>Q/q - (x1 y1 x y)+ - Quadratic bezier to
+     * <li>T/t - (x y)+ - Smooth quadratic bezier to (assumes previous control point is "reflection" of last one w.r.t. to current point)
+     * </ol>
+     * <p/>
+     * Numbers are separate by whitespace, comma or nothing at all (!) if they are self-delimiting, (ie. begin with a - sign)
+     *
+     * @param s the path string from the XML
+     */
+    private static Path doPath(String s) {
+        int n = s.length();
+        SVGParserHelper ph = new SVGParserHelper(s, 0);
+        ph.skipWhitespace();
+        Path p = new Path();
+        float lastX = 0;
+        float lastY = 0;
+        float lastX1 = 0;
+        float lastY1 = 0;
+        while (ph.pos < n) {
+            char cmd = s.charAt(ph.pos);
+            //Util.debug("* Commands remaining: '" + path + "'.");
+            ph.advance();
+            boolean wasCurve = false;
+            switch (cmd) {
+                case 'M':
+                case 'm': {
+                    float x = ph.nextFloat();
+                    float y = ph.nextFloat();
+                    if (cmd == 'm') {
+                        p.rMoveTo(x, y);
+                        lastX += x;
+                        lastY += y;
+                    } else {
+                        p.moveTo(x, y);
+                        lastX = x;
+                        lastY = y;
+                    }
+                    break;
+                }
+                case 'Z':
+                case 'z': {
+                    p.close();
+                    break;
+                }
+                case 'L':
+                case 'l': {
+                    float x = ph.nextFloat();
+                    float y = ph.nextFloat();
+                    if (cmd == 'l') {
+                        p.rLineTo(x, y);
+                        lastX += x;
+                        lastY += y;
+                    } else {
+                        p.lineTo(x, y);
+                        lastX = x;
+                        lastY = y;
+                    }
+                    break;
+                }
+                case 'H':
+                case 'h': {
+                    float x = ph.nextFloat();
+                    if (cmd == 'h') {
+                        p.rLineTo(x, 0);
+                        lastX += x;
+                    } else {
+                        p.lineTo(x, lastY);
+                        lastX = x;
+                    }
+                    break;
+                }
+                case 'V':
+                case 'v': {
+                    float y = ph.nextFloat();
+                    if (cmd == 'v') {
+                        p.rLineTo(0, y);
+                        lastY += y;
+                    } else {
+                        p.lineTo(lastX, y);
+                        lastY = y;
+                    }
+                    break;
+                }
+                case 'C':
+                case 'c': {
+                    wasCurve = true;
+                    float x1 = ph.nextFloat();
+                    float y1 = ph.nextFloat();
+                    float x2 = ph.nextFloat();
+                    float y2 = ph.nextFloat();
+                    float x = ph.nextFloat();
+                    float y = ph.nextFloat();
+                    if (cmd == 'c') {
+                        x1 += lastX;
+                        x2 += lastX;
+                        x += lastX;
+                        y1 += lastY;
+                        y2 += lastY;
+                        y += lastY;
+                    }
+                    p.cubicTo(x1, y1, x2, y2, x, y);
+                    lastX1 = x2;
+                    lastY1 = y2;
+                    lastX = x;
+                    lastY = y;
+                    break;
+                }
+                case 'S':
+                case 's': {
+                    wasCurve = true;
+                    float x2 = ph.nextFloat();
+                    float y2 = ph.nextFloat();
+                    float x = ph.nextFloat();
+                    float y = ph.nextFloat();
+                    if (cmd == 's') {
+                        x2 += lastX;
+                        x += lastX;
+                        y2 += lastY;
+                        y += lastY;
+                    }
+                    float x1 = 2 * lastX - lastX1;
+                    float y1 = 2 * lastY - lastY1;
+                    p.cubicTo(x1, y1, x2, y2, x, y);
+                    lastX1 = x2;
+                    lastY1 = y2;
+                    lastX = x;
+                    lastY = y;
+                    break;
+                }
+                case 'A':
+                case 'a': {
+                    float rx = ph.nextFloat();
+                    float ry = ph.nextFloat();
+                    float theta = ph.nextFloat();
+                    int largeArc = (int) ph.nextFloat();
+                    int sweepArc = (int) ph.nextFloat();
+                    float x = ph.nextFloat();
+                    float y = ph.nextFloat();
+                    drawArc(p, lastX, lastY, x, y, rx, ry, theta, largeArc, sweepArc);
+                    lastX = x;
+                    lastY = y;
+                    break;
+                }
+            }
+            if (!wasCurve) {
+                lastX1 = lastX;
+                lastY1 = lastY;
+            }
+            ph.skipWhitespace();
         }
+        return p;
+    }
 
-        @Override
-        public void endElement(String namespaceURI, String localName, String qName)
-                throws SAXException {
-            if (localName.equals("svg")) {
-                picture.endRecording();
-            } else if (localName.equals("linearGradient")) {
-                if (gradient.id != null) {
-                    if (gradient.xlink != null) {
-                        Gradient parent = gradientRefMap.get(gradient.xlink);
-                        if (parent != null) {
-                            gradient = parent.createChild(gradient);
-                        }
-                    }
-                    int[] colors = new int[gradient.colors.size()];
-                    for (int i = 0; i < colors.length; i++) {
-                        colors[i] = gradient.colors.get(i);
-                    }
-                    float[] positions = new float[gradient.positions.size()];
-                    for (int i = 0; i < positions.length; i++) {
-                        positions[i] = gradient.positions.get(i);
-                    }
-                    if (colors.length == 0) {
-                        Log.d("BAD", "BAD");
-                    }
-                    LinearGradient g = new LinearGradient(gradient.x1, gradient.y1, gradient.x2, gradient.y2, colors, positions, Shader.TileMode.CLAMP);
-                    if (gradient.matrix != null) {
-                        g.setLocalMatrix(gradient.matrix);
-                    }
-                    gradientMap.put(gradient.id, g);
-                    gradientRefMap.put(gradient.id, gradient);
-                }
-            } else if (localName.equals("radialGradient")) {
-                if (gradient.id != null) {
-                    int[] colors = new int[gradient.colors.size()];
-                    for (int i = 0; i < colors.length; i++) {
-                        colors[i] = gradient.colors.get(i);
-                    }
-                    float[] positions = new float[gradient.positions.size()];
-                    for (int i = 0; i < positions.length; i++) {
-                        positions[i] = gradient.positions.get(i);
-                    }
-                    if (gradient.xlink != null) {
-                        Gradient parent = gradientRefMap.get(gradient.xlink);
-                        if (parent != null) {
-                            gradient = parent.createChild(gradient);
-                        }
-                    }
-                    RadialGradient g = new RadialGradient(gradient.x, gradient.y, gradient.radius, colors, positions, Shader.TileMode.CLAMP);
-                    if (gradient.matrix != null) {
-                        g.setLocalMatrix(gradient.matrix);
-                    }
-                    gradientMap.put(gradient.id, g);
-                    gradientRefMap.put(gradient.id, gradient);
-                }
-            } else if (localName.equals("g")) {
-                if (boundsMode) {
-                    boundsMode = false;
-                }
-                // Break out of hidden mode
-                if (hidden) {
-                    hiddenLevel--;
-                    //Util.debug("Hidden down: " + hiddenLevel);
-                    if (hiddenLevel == 0) {
-                        hidden = false;
-                    }
-                }
-                // Clear gradient map
-                gradientMap.clear();
+    private static void drawArc(Path p, float lastX, float lastY, float x, float y, float rx, float ry, float theta, int largeArc, int sweepArc) {
+        // todo - not implemented yet, may be very hard to do using Android drawing facilities.
+    }
+
+    private static Float getFloatAttr(String name, Attributes attributes) {
+        return getFloatAttr(name, attributes, null);
+    }
+
+    private static Float getFloatAttr(String name, Attributes attributes, Float defaultValue) {
+        String v = getStringAttr(name, attributes);
+        if (v == null) {
+            return defaultValue;
+        } else {
+            if (v.endsWith("px")) {
+                v = v.substring(0, v.length() - 2);
+            }
+//            Log.d(TAG, "Float parsing '" + name + "=" + v + "'");
+            return Float.parseFloat(v);
+        }
+    }
+
+    private static Integer getHexAttr(String name, Attributes attributes) {
+        String v = getStringAttr(name, attributes);
+        //Util.debug("Hex parsing '" + name + "=" + v + "'");
+        if (v == null) {
+            return null;
+        } else {
+            try {
+                return Integer.parseInt(v.substring(1), 16);
+            } catch (NumberFormatException nfe) {
+                // todo - parse word-based color here
+                return null;
             }
         }
+    }
+
+    private static NumberParse getNumberParseAttr(String name, Attributes attributes) {
+        int n = attributes.getLength();
+        for (int i = 0; i < n; i++) {
+            if (attributes.getLocalName(i).equals(name)) {
+                return parseNumbers(attributes.getValue(i));
+            }
+        }
+        return null;
+    }
+
+    private static String getStringAttr(String name, Attributes attributes) {
+        int n = attributes.getLength();
+        for (int i = 0; i < n; i++) {
+            if (attributes.getLocalName(i).equals(name)) {
+                return attributes.getValue(i);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Parse SVG data from an Android application asset.
+     * @param assetMngr the Android asset manager.
+     * @param svgPath the path to the SVG file in the application's assets.
+     * @return the parsed SVG.
+     * @throws SVGParseException if there is an error while parsing.
+     * @throws IOException if there was a problem reading the file.
+     */
+    public static SVG getSVGFromAsset(AssetManager assetMngr, String svgPath) throws SVGParseException, IOException {
+        InputStream inputStream = assetMngr.open(svgPath);
+        SVG svg = getSVGFromInputStream(inputStream);
+        inputStream.close();
+        return svg;
+    }
+
+    /**
+     * Parse SVG data from an Android application asset.
+     * @param assetMngr the Android asset manager.
+     * @param svgPath the path to the SVG file in the application's assets.
+     * @param searchColor the color in the SVG to replace.
+     * @param replaceColor the color with which to replace the search color.
+     * @return the parsed SVG.
+     * @throws SVGParseException if there is an error while parsing.
+     * @throws IOException if there was a problem reading the file.
+     */
+    public static SVG getSVGFromAsset(AssetManager assetMngr, String svgPath, int searchColor, int replaceColor) throws SVGParseException, IOException {
+        InputStream inputStream = assetMngr.open(svgPath);
+        SVG svg = getSVGFromInputStream(inputStream, searchColor, replaceColor);
+        inputStream.close();
+        return svg;
+    }
+
+    /**
+     * Parse SVG data from an input stream.
+     * @param svgData the input stream, with SVG XML data in UTF-8 character encoding.
+     * @return the parsed SVG.
+     * @throws SVGParseException if there is an error while parsing.
+     */
+    public static SVG getSVGFromInputStream(InputStream svgData) throws SVGParseException {
+        return SVGParser.parse(svgData, 0, 0, false);
+    }
+
+    /**
+     * Parse SVG data from an input stream, replacing a single color with another color.
+     * @param svgData the input stream, with SVG XML data in UTF-8 character encoding.
+     * @param searchColor the color in the SVG to replace.
+     * @param replaceColor the color with which to replace the search color.
+     * @return the parsed SVG.
+     * @throws SVGParseException if there is an error while parsing.
+     */
+    public static SVG getSVGFromInputStream(InputStream svgData, int searchColor, int replaceColor) throws SVGParseException {
+        return SVGParser.parse(svgData, searchColor, replaceColor, false);
+    }
+
+    /**
+     * Parse SVG data from an Android application resource.
+     * @param resources the Android context resources.
+     * @param resId the ID of the raw resource SVG.
+     * @return the parsed SVG.
+     * @throws SVGParseException if there is an error while parsing.
+     */
+    public static SVG getSVGFromResource(Resources resources, int resId) throws SVGParseException {
+        return SVGParser.parse(resources.openRawResource(resId), 0, 0, false);
+    }
+
+    /**
+     * Parse SVG data from an Android application resource.
+     * @param resources the Android context
+     * @param resId the ID of the raw resource SVG.
+     * @param searchColor the color in the SVG to replace.
+     * @param replaceColor the color with which to replace the search color.
+     * @return the parsed SVG.
+     * @throws SVGParseException if there is an error while parsing.
+     */
+    public static SVG getSVGFromResource(Resources resources, int resId, int searchColor, int replaceColor) throws SVGParseException {
+        return SVGParser.parse(resources.openRawResource(resId), searchColor, replaceColor, false);
+    }
+
+    /**
+     * Parse SVG data from a string.
+     * @param svgData the string containing SVG XML data.
+     * @return the parsed SVG.
+     * @throws SVGParseException if there is an error while parsing.
+     */
+    public static SVG getSVGFromString(String svgData) throws SVGParseException {
+        return SVGParser.parse(new ByteArrayInputStream(svgData.getBytes()), 0, 0, false);
+    }
+
+    /**
+     * Parse SVG data from a string.
+     * @param svgData the string containing SVG XML data.
+     * @param searchColor the color in the SVG to replace.
+     * @param replaceColor the color with which to replace the search color.
+     * @return the parsed SVG.
+     * @throws SVGParseException if there is an error while parsing.
+     */
+    public static SVG getSVGFromString(String svgData, int searchColor, int replaceColor) throws SVGParseException {
+        return SVGParser.parse(new ByteArrayInputStream(svgData.getBytes()), searchColor, replaceColor, false);
+    }
+
+    private static SVG parse(InputStream in, Integer searchColor, Integer replaceColor, boolean whiteMode) throws SVGParseException {
+//        Util.debug("Parsing SVG...");
+        try {
+            long start = System.currentTimeMillis();
+            SAXParserFactory spf = SAXParserFactory.newInstance();
+            SAXParser sp = spf.newSAXParser();
+            XMLReader xr = sp.getXMLReader();
+            final Picture picture = new Picture();
+            SVGHandler handler = new SVGHandler(picture);
+            handler.setColorSwap(searchColor, replaceColor);
+            handler.setWhiteMode(whiteMode);
+            xr.setContentHandler(handler);
+            xr.parse(new InputSource(in));
+//        Util.debug("Parsing complete in " + (System.currentTimeMillis() - start) + " millis.");
+            SVG result = new SVG(picture, handler.bounds);
+            // Skip bounds if it was an empty pic
+            if (!Float.isInfinite(handler.limits.top)) {
+                result.setLimits(handler.limits);
+            }
+            return result;
+        } catch (Exception e) {
+            throw new SVGParseException(e);
+        }
+    }
+
+    private static NumberParse parseNumbers(String s) {
+        //Util.debug("Parsing numbers from: '" + s + "'");
+        int n = s.length();
+        int p = 0;
+        ArrayList<Float> numbers = new ArrayList<Float>();
+        boolean skipChar = false;
+        for (int i = 1; i < n; i++) {
+            if (skipChar) {
+                skipChar = false;
+                continue;
+            }
+            char c = s.charAt(i);
+            switch (c) {
+                // This ends the parsing, as we are on the next element
+                case 'M':
+                case 'm':
+                case 'Z':
+                case 'z':
+                case 'L':
+                case 'l':
+                case 'H':
+                case 'h':
+                case 'V':
+                case 'v':
+                case 'C':
+                case 'c':
+                case 'S':
+                case 's':
+                case 'Q':
+                case 'q':
+                case 'T':
+                case 't':
+                case 'a':
+                case 'A':
+                case ')': {
+                    String str = s.substring(p, i);
+                    if (str.trim().length() > 0) {
+                        //Util.debug("  Last: " + str);
+                        Float f = Float.parseFloat(str);
+                        numbers.add(f);
+                    }
+                    p = i;
+                    return new NumberParse(numbers, p);
+                }
+                case '\n':
+                case '\t':
+                case ' ':
+                case ',':
+                case '-': {
+                    String str = s.substring(p, i);
+                    // Just keep moving if multiple whitespace
+                    if (str.trim().length() > 0) {
+                        //Util.debug("  Next: " + str);
+                        Float f = Float.parseFloat(str);
+                        numbers.add(f);
+                        if (c == '-') {
+                            p = i;
+                        } else {
+                            p = i + 1;
+                            skipChar = true;
+                        }
+                    } else {
+                        p++;
+                    }
+                    break;
+                }
+            }
+        }
+        String last = s.substring(p);
+        if (last.length() > 0) {
+            //Util.debug("  Last: " + last);
+            try {
+                numbers.add(Float.parseFloat(last));
+            } catch (NumberFormatException nfe) {
+                // Just white-space, forget it
+            }
+            p = s.length();
+        }
+        return new NumberParse(numbers, p);
+    }
+
+    /**
+     * Parses a single SVG path and returns it as a <code>android.graphics.Path</code> object.
+     * An example path is <code>M250,150L150,350L350,350Z</code>, which draws a triangle.
+     *
+     * @param pathString the SVG path, see the specification <a href="http://www.w3.org/TR/SVG/paths.html">here</a>.
+     */
+    public static Path parsePath(String pathString) {
+        return doPath(pathString);
+    }
+
+    private static Matrix parseTransform(String s) {
+        if (s.startsWith("matrix(")) {
+            NumberParse np = parseNumbers(s.substring("matrix(".length()));
+            if (np.numbers.size() == 6) {
+                Matrix matrix = new Matrix();
+                matrix.setValues(new float[]{
+                        // Row 1
+                        np.numbers.get(0),
+                        np.numbers.get(2),
+                        np.numbers.get(4),
+                        // Row 2
+                        np.numbers.get(1),
+                        np.numbers.get(3),
+                        np.numbers.get(5),
+                        // Row 3
+                        0,
+                        0,
+                        1,
+                });
+                return matrix;
+            }
+        } else if (s.startsWith("translate(")) {
+            NumberParse np = parseNumbers(s.substring("translate(".length()));
+            if (np.numbers.size() > 0) {
+                float tx = np.numbers.get(0);
+                float ty = 0;
+                if (np.numbers.size() > 1) {
+                    ty = np.numbers.get(1);
+                }
+                Matrix matrix = new Matrix();
+                matrix.postTranslate(tx, ty);
+                return matrix;
+            }
+        } else if (s.startsWith("scale(")) {
+            NumberParse np = parseNumbers(s.substring("scale(".length()));
+            if (np.numbers.size() > 0) {
+                float sx = np.numbers.get(0);
+                float sy = 0;
+                if (np.numbers.size() > 1) {
+                    sy = np.numbers.get(1);
+                }
+                Matrix matrix = new Matrix();
+                matrix.postScale(sx, sy);
+                return matrix;
+            }
+        } else if (s.startsWith("skewX(")) {
+            NumberParse np = parseNumbers(s.substring("skewX(".length()));
+            if (np.numbers.size() > 0) {
+                float angle = np.numbers.get(0);
+                Matrix matrix = new Matrix();
+                matrix.postSkew((float) Math.tan(angle), 0);
+                return matrix;
+            }
+        } else if (s.startsWith("skewY(")) {
+            NumberParse np = parseNumbers(s.substring("skewY(".length()));
+            if (np.numbers.size() > 0) {
+                float angle = np.numbers.get(0);
+                Matrix matrix = new Matrix();
+                matrix.postSkew(0, (float) Math.tan(angle));
+                return matrix;
+            }
+        } else if (s.startsWith("rotate(")) {
+            NumberParse np = parseNumbers(s.substring("rotate(".length()));
+            if (np.numbers.size() > 0) {
+                float angle = np.numbers.get(0);
+                float cx = 0;
+                float cy = 0;
+                if (np.numbers.size() > 2) {
+                    cx = np.numbers.get(1);
+                    cy = np.numbers.get(2);
+                }
+                Matrix matrix = new Matrix();
+                matrix.postTranslate(cx, cy);
+                matrix.postRotate(angle);
+                matrix.postTranslate(-cx, -cy);
+                return matrix;
+            }
+        }
+        return null;
     }
 }

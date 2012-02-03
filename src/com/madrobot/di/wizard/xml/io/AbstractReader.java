@@ -44,11 +44,15 @@ public abstract class AbstractReader implements ExtendedHierarchicalStreamReader
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Decode an attribute name from the target format.
+	 * 
+	 * @param name
+	 *            the name in the target format
+	 * @return the original name
+	 * @since 1.4
 	 */
-	@Override
-	public HierarchicalStreamReader underlyingReader() {
-		return this;
+	public String decodeAttribute(String name) {
+		return nameCoder.decodeAttribute(name);
 	}
 
 	/**
@@ -64,15 +68,15 @@ public abstract class AbstractReader implements ExtendedHierarchicalStreamReader
 	}
 
 	/**
-	 * Decode an attribute name from the target format.
+	 * Encode the attribute name again into the name of the target format. Internally used.
 	 * 
 	 * @param name
-	 *            the name in the target format
-	 * @return the original name
+	 *            the original name
+	 * @return the name in the target format
 	 * @since 1.4
 	 */
-	public String decodeAttribute(String name) {
-		return nameCoder.decodeAttribute(name);
+	protected String encodeAttribute(String name) {
+		return nameCoder.encodeAttribute(name);
 	}
 
 	/**
@@ -87,20 +91,16 @@ public abstract class AbstractReader implements ExtendedHierarchicalStreamReader
 		return nameCoder.encodeNode(name);
 	}
 
-	/**
-	 * Encode the attribute name again into the name of the target format. Internally used.
-	 * 
-	 * @param name
-	 *            the original name
-	 * @return the name in the target format
-	 * @since 1.4
-	 */
-	protected String encodeAttribute(String name) {
-		return nameCoder.encodeAttribute(name);
-	}
-
 	@Override
 	public String peekNextChild() {
 		throw new UnsupportedOperationException("peekNextChild");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public HierarchicalStreamReader underlyingReader() {
+		return this;
 	}
 }

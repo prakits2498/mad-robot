@@ -24,7 +24,10 @@ import java.util.Set;
 
 public class OrderRetainingMap extends HashMap {
 
+    private static class ArraySet extends ArrayList implements Set {
+    }
     private ArraySet keyOrder = new ArraySet();
+
     private List valueOrder = new ArrayList();
 
     public OrderRetainingMap() {
@@ -37,6 +40,23 @@ public class OrderRetainingMap extends HashMap {
             final Map.Entry entry = (Map.Entry)iter.next();
             put(entry.getKey(), entry.getValue());
         }
+    }
+
+    @Override
+	public Set entrySet() {
+        Map.Entry[] entries = new Map.Entry[size()];
+        for (Iterator iter = super.entrySet().iterator(); iter.hasNext();) {
+            Map.Entry entry = (Map.Entry)iter.next();
+            entries[keyOrder.indexOf(entry.getKey())] = entry;
+        }
+        Set set = new ArraySet();
+        set.addAll(Arrays.asList(entries));
+        return Collections.unmodifiableSet(set);
+    }
+
+    @Override
+	public Set keySet() {
+        return Collections.unmodifiableSet(keyOrder);
     }
 
     @Override
@@ -64,25 +84,5 @@ public class OrderRetainingMap extends HashMap {
     @Override
 	public Collection values() {
         return Collections.unmodifiableList(valueOrder);
-    }
-
-    @Override
-	public Set keySet() {
-        return Collections.unmodifiableSet(keyOrder);
-    }
-
-    @Override
-	public Set entrySet() {
-        Map.Entry[] entries = new Map.Entry[size()];
-        for (Iterator iter = super.entrySet().iterator(); iter.hasNext();) {
-            Map.Entry entry = (Map.Entry)iter.next();
-            entries[keyOrder.indexOf(entry.getKey())] = entry;
-        }
-        Set set = new ArraySet();
-        set.addAll(Arrays.asList(entries));
-        return Collections.unmodifiableSet(set);
-    }
-
-    private static class ArraySet extends ArrayList implements Set {
     }
 }

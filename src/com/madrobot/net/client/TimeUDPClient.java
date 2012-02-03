@@ -49,6 +49,36 @@ public final class TimeUDPClient extends DatagramSocketClient
     private final byte[] __dummyData = new byte[1];
     private final byte[] __timeData = new byte[4];
 
+    /*** Same as <code> getTime(host, DEFAULT_PORT); </code> ***/
+    public Date getDate(InetAddress host) throws IOException
+    {
+        return new Date((getTime(host, DEFAULT_PORT) -
+                         SECONDS_1900_TO_1970)*1000L);
+    }
+
+    /***
+     * Retrieves the time from the server and returns a Java Date
+     * containing the time converted to the local timezone.
+     * <p>
+     * @param host The address of the server.
+     * @param port The port of the service.
+     * @return A Date value containing the time retrieved from the server
+     *     converted to the local timezone.
+     * @exception IOException  If an error occurs while fetching the time.
+     ***/
+    public Date getDate(InetAddress host, int port) throws IOException
+    {
+        return new Date((getTime(host, port) - SECONDS_1900_TO_1970)*1000L);
+    }
+
+
+    /*** Same as <code> getTime(host, DEFAULT_PORT); </code> ***/
+    public long getTime(InetAddress host) throws IOException
+    {
+        return getTime(host, DEFAULT_PORT);
+    }
+
+
     /***
      * Retrieves the time from the specified server and port and
      * returns it. The time is the number of seconds since
@@ -81,36 +111,6 @@ public final class TimeUDPClient extends DatagramSocketClient
         time |= ((__timeData[3] & 0xff) & 0xffffffffL);
 
         return time;
-    }
-
-    /*** Same as <code> getTime(host, DEFAULT_PORT); </code> ***/
-    public long getTime(InetAddress host) throws IOException
-    {
-        return getTime(host, DEFAULT_PORT);
-    }
-
-
-    /***
-     * Retrieves the time from the server and returns a Java Date
-     * containing the time converted to the local timezone.
-     * <p>
-     * @param host The address of the server.
-     * @param port The port of the service.
-     * @return A Date value containing the time retrieved from the server
-     *     converted to the local timezone.
-     * @exception IOException  If an error occurs while fetching the time.
-     ***/
-    public Date getDate(InetAddress host, int port) throws IOException
-    {
-        return new Date((getTime(host, port) - SECONDS_1900_TO_1970)*1000L);
-    }
-
-
-    /*** Same as <code> getTime(host, DEFAULT_PORT); </code> ***/
-    public Date getDate(InetAddress host) throws IOException
-    {
-        return new Date((getTime(host, DEFAULT_PORT) -
-                         SECONDS_1900_TO_1970)*1000L);
     }
 
 }

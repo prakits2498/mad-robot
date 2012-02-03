@@ -24,11 +24,20 @@ import javax.microedition.khronos.opengles.GL10;
  * @see OBJFileLoader
  */
 public class Model {
-	ArrayList<Float> v;
-	ArrayList<Float> vn;
-	ArrayList<Float> vt;
+	private static float[] toPrimitiveArrayF(ArrayList<Float> vector) {
+		float[] f;
+		f = new float[vector.size()];
+		for (int i = 0; i < vector.size(); i++) {
+			f[i] = vector.get(i);
+		}
+		return f;
+	}
 	ArrayList<ModelPart> parts;
+	ArrayList<Float> v;
 	FloatBuffer vertexBuffer;
+	ArrayList<Float> vn;
+
+	ArrayList<Float> vt;
 
 	public Model(ArrayList<Float> v, ArrayList<Float> vn, ArrayList<Float> vt,
 			ArrayList<ModelPart> parts) {
@@ -39,20 +48,12 @@ public class Model {
 		this.parts = parts;
 	}
 
-	@Override
-	public String toString() {
-		String str = new String();
-		str += "Number of parts: " + parts.size();
-		str += "\nNumber of vertexes: " + v.size();
-		str += "\nNumber of vns: " + vn.size();
-		str += "\nNumber of vts: " + vt.size();
-		str += "\n/////////////////////////\n";
-		for (int i = 0; i < parts.size(); i++) {
-			str += "Part " + i + '\n';
-			str += parts.get(i).toString();
-			str += "\n/////////////////////////";
-		}
-		return str;
+	public void buildVertexBuffer() {
+		ByteBuffer vBuf = ByteBuffer.allocateDirect(v.size() * 4);
+		vBuf.order(ByteOrder.nativeOrder());
+		vertexBuffer = vBuf.asFloatBuffer();
+		vertexBuffer.put(toPrimitiveArrayF(v));
+		vertexBuffer.position(0);
 	}
 
 	/**
@@ -85,20 +86,19 @@ public class Model {
 		}
 	}
 
-	public void buildVertexBuffer() {
-		ByteBuffer vBuf = ByteBuffer.allocateDirect(v.size() * 4);
-		vBuf.order(ByteOrder.nativeOrder());
-		vertexBuffer = vBuf.asFloatBuffer();
-		vertexBuffer.put(toPrimitiveArrayF(v));
-		vertexBuffer.position(0);
-	}
-
-	private static float[] toPrimitiveArrayF(ArrayList<Float> vector) {
-		float[] f;
-		f = new float[vector.size()];
-		for (int i = 0; i < vector.size(); i++) {
-			f[i] = vector.get(i);
+	@Override
+	public String toString() {
+		String str = new String();
+		str += "Number of parts: " + parts.size();
+		str += "\nNumber of vertexes: " + v.size();
+		str += "\nNumber of vns: " + vn.size();
+		str += "\nNumber of vts: " + vt.size();
+		str += "\n/////////////////////////\n";
+		for (int i = 0; i < parts.size(); i++) {
+			str += "Part " + i + '\n';
+			str += parts.get(i).toString();
+			str += "\n/////////////////////////";
 		}
-		return f;
+		return str;
 	}
 }

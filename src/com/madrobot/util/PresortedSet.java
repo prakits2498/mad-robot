@@ -17,8 +17,8 @@ import java.util.SortedSet;
  * @author J&ouml;rg Schaible
  */
 public class PresortedSet implements SortedSet {
-    private final List list = new ArrayList();
     private final Comparator comparator;
+    private final List list = new ArrayList();
 
     public PresortedSet() {
         this(null);
@@ -51,6 +51,11 @@ public class PresortedSet implements SortedSet {
     }
 
     @Override
+	public Comparator comparator() {
+        return comparator;
+    }
+
+    @Override
 	public boolean contains(Object o) {
         return this.list.contains(o);
     }
@@ -66,8 +71,18 @@ public class PresortedSet implements SortedSet {
     }
 
     @Override
+	public Object first() {
+        return list.isEmpty() ? null : list.get(0);
+    }
+
+    @Override
 	public int hashCode() {
         return this.list.hashCode();
+    }
+
+    @Override
+	public SortedSet headSet(Object toElement) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -78,6 +93,11 @@ public class PresortedSet implements SortedSet {
     @Override
 	public Iterator iterator() {
         return this.list.iterator();
+    }
+
+    @Override
+	public Object last() {
+        return list.isEmpty() ? null : list.get(list.size() - 1);
     }
 
     @Override
@@ -105,36 +125,6 @@ public class PresortedSet implements SortedSet {
     }
 
     @Override
-	public Object[] toArray() {
-        return this.list.toArray();
-    }
-
-    @Override
-	public Object[] toArray(Object[] a) {
-        return this.list.toArray(a);
-    }
-
-    @Override
-	public Comparator comparator() {
-        return comparator;
-    }
-
-    @Override
-	public Object first() {
-        return list.isEmpty() ? null : list.get(0);
-    }
-
-    @Override
-	public SortedSet headSet(Object toElement) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-	public Object last() {
-        return list.isEmpty() ? null : list.get(list.size() - 1);
-    }
-
-    @Override
 	public SortedSet subSet(Object fromElement, Object toElement) {
         throw new UnsupportedOperationException();
     }
@@ -142,5 +132,15 @@ public class PresortedSet implements SortedSet {
     @Override
 	public SortedSet tailSet(Object fromElement) {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+	public Object[] toArray() {
+        return this.list.toArray();
+    }
+
+    @Override
+	public Object[] toArray(Object[] a) {
+        return this.list.toArray(a);
     }
 }

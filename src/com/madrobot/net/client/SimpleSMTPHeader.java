@@ -42,8 +42,8 @@ package com.madrobot.net.client;
  ***/
 
 public class SimpleSMTPHeader {
-	private String __subject, __from, __to;
 	private StringBuffer __headerFields, __cc;
+	private String __subject, __from, __to;
 
 	/***
 	 * Creates a new SimpleSMTPHeader instance initialized with the given
@@ -69,6 +69,23 @@ public class SimpleSMTPHeader {
 	}
 
 	/***
+	 * Add an email address to the CC (carbon copy or courtesy copy) list.
+	 * <p>
+	 * 
+	 * @param address
+	 *            The email address to add to the CC list.
+	 ***/
+	public void addCC(String address) {
+		if(__cc == null){
+			__cc = new StringBuffer();
+		} else{
+			__cc.append(", ");
+		}
+
+		__cc.append(address);
+	}
+
+	/***
 	 * Adds an arbitrary header field with the given value to the article
 	 * header. These headers will be written before the From, To, Subject, and
 	 * Cc fields when the SimpleSMTPHeader is convertered to a string.
@@ -89,23 +106,6 @@ public class SimpleSMTPHeader {
 		__headerFields.append(": ");
 		__headerFields.append(value);
 		__headerFields.append('\n');
-	}
-
-	/***
-	 * Add an email address to the CC (carbon copy or courtesy copy) list.
-	 * <p>
-	 * 
-	 * @param address
-	 *            The email address to add to the CC list.
-	 ***/
-	public void addCC(String address) {
-		if(__cc == null){
-			__cc = new StringBuffer();
-		} else{
-			__cc.append(", ");
-		}
-
-		__cc.append(address);
 	}
 
 	/***

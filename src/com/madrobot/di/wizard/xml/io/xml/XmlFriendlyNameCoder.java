@@ -40,16 +40,26 @@ import com.madrobot.util.WeakCache;
  * @since 1.4
  */
 public class XmlFriendlyNameCoder implements NameCoder, Cloneable {
-	private static final IntPair[] XML_NAME_START_CHAR_BOUNDS;
+	private static class IntPair {
+		int max;
+		int min;
+
+		public IntPair(int min, int max) {
+			this.min = min;
+			this.max = max;
+		}
+	}
 	private static final IntPair[] XML_NAME_CHAR_EXTRA_BOUNDS;
+	private static final IntPair[] XML_NAME_START_CHAR_BOUNDS;
+
 	static {
 		class IntPairList extends ArrayList {
-			void add(int min, int max) {
-				super.add(new IntPair(min, max));
-			}
-
 			void add(char cp) {
 				super.add(new IntPair(cp, cp));
+			}
+
+			void add(int min, int max) {
+				super.add(new IntPair(min, max));
 			}
 		}
 
@@ -86,12 +96,33 @@ public class XmlFriendlyNameCoder implements NameCoder, Cloneable {
 		list.add(0x203F, 0x2040);
 		XML_NAME_CHAR_EXTRA_BOUNDS = (IntPair[]) list.toArray(new IntPair[list.size()]);
 	}
-
+	private static boolean isInNameCharBounds(int cp, IntPair[] nameCharBounds) {
+		for (int i = 0; i < nameCharBounds.length; ++i) {
+			IntPair p = nameCharBounds[i];
+			if (cp >= p.min && cp <= p.max) {
+				return true;
+			}
+		}
+		return false;
+	}
+	private static boolean isXmlNameChar(int cp) {
+		if (isXmlNameStartChar(cp)) {
+			return true;
+		}
+		return isInNameCharBounds(cp, XML_NAME_CHAR_EXTRA_BOUNDS);
+	}
+	private static boolean isXmlNameStartChar(int cp) {
+		return isInNameCharBounds(cp, XML_NAME_START_CHAR_BOUNDS);
+	}
 	private final String dollarReplacement;
-	private final String escapeCharReplacement;
+
 	private transient Map escapeCache;
-	private transient Map unescapeCache;
+
+	private final String escapeCharReplacement;
+
 	private final String hexPrefix;
+
+	private transient Map unescapeCache;
 
 	/**
 	 * Construct a new XmlFriendlyNameCoder.
@@ -128,88 +159,24 @@ public class XmlFriendlyNameCoder implements NameCoder, Cloneable {
 		readResolve();
 	}
 
+	@Override
+	public Object clone() {
+		try {
+			XmlFriendlyNameCoder coder = (XmlFriendlyNameCoder) super.clone();
+			coder.readResolve();
+			return coder;
+
+		} catch (CloneNotSupportedException e) {
+			throw new ObjectAccessException("Cannot clone XmlFriendlyNameCoder", e);
+		}
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public String decodeAttribute(String attributeName) {
 		return decodeName(attributeName);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String decodeNode(String elementName) {
-		return decodeName(elementName);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String encodeAttribute(String name) {
-		return encodeName(name);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String encodeNode(String name) {
-		return encodeName(name);
-	}
-
-	private String encodeName(String name) {
-		String s = (String) escapeCache.get(name);
-		if (s == null) {
-			final int length = name.length();
-
-			// First, fast (common) case: nothing to escape
-			int i = 0;
-
-			for (; i < length; i++) {
-				char c = name.charAt(i);
-				if (c == '$' || c == '_' || c <= 27 || c >= 127) {
-					break;
-				}
-			}
-
-			if (i == length) {
-				return name;
-			}
-
-			// Otherwise full processing
-			final StringBuffer result = new StringBuffer(length + 8);
-
-			// We know first N chars are safe
-			if (i > 0) {
-				result.append(name.substring(0, i));
-			}
-
-			for (; i < length; i++) {
-				char c = name.charAt(i);
-				if (c == '$') {
-					result.append(dollarReplacement);
-				} else if (c == '_') {
-					result.append(escapeCharReplacement);
-				} else if ((i == 0 && !isXmlNameStartChar(c)) || (i > 0 && !isXmlNameChar(c))) {
-					result.append(hexPrefix);
-					if (c < 16)
-						result.append("000");
-					else if (c < 256)
-						result.append("00");
-					else if (c < 4096)
-						result.append("0");
-					result.append(Integer.toHexString(c));
-				} else {
-					result.append(c);
-				}
-			}
-			s = result.toString();
-			escapeCache.put(name, s);
-		}
-		return s;
 	}
 
 	private String decodeName(String name) {
@@ -268,52 +235,85 @@ public class XmlFriendlyNameCoder implements NameCoder, Cloneable {
 		return s;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public Object clone() {
-		try {
-			XmlFriendlyNameCoder coder = (XmlFriendlyNameCoder) super.clone();
-			coder.readResolve();
-			return coder;
+	public String decodeNode(String elementName) {
+		return decodeName(elementName);
+	}
 
-		} catch (CloneNotSupportedException e) {
-			throw new ObjectAccessException("Cannot clone XmlFriendlyNameCoder", e);
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String encodeAttribute(String name) {
+		return encodeName(name);
+	}
+
+	private String encodeName(String name) {
+		String s = (String) escapeCache.get(name);
+		if (s == null) {
+			final int length = name.length();
+
+			// First, fast (common) case: nothing to escape
+			int i = 0;
+
+			for (; i < length; i++) {
+				char c = name.charAt(i);
+				if (c == '$' || c == '_' || c <= 27 || c >= 127) {
+					break;
+				}
+			}
+
+			if (i == length) {
+				return name;
+			}
+
+			// Otherwise full processing
+			final StringBuffer result = new StringBuffer(length + 8);
+
+			// We know first N chars are safe
+			if (i > 0) {
+				result.append(name.substring(0, i));
+			}
+
+			for (; i < length; i++) {
+				char c = name.charAt(i);
+				if (c == '$') {
+					result.append(dollarReplacement);
+				} else if (c == '_') {
+					result.append(escapeCharReplacement);
+				} else if ((i == 0 && !isXmlNameStartChar(c)) || (i > 0 && !isXmlNameChar(c))) {
+					result.append(hexPrefix);
+					if (c < 16)
+						result.append("000");
+					else if (c < 256)
+						result.append("00");
+					else if (c < 4096)
+						result.append("0");
+					result.append(Integer.toHexString(c));
+				} else {
+					result.append(c);
+				}
+			}
+			s = result.toString();
+			escapeCache.put(name, s);
 		}
+		return s;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String encodeNode(String name) {
+		return encodeName(name);
 	}
 
 	private Object readResolve() {
 		escapeCache = new WeakCache();
 		unescapeCache = new WeakCache();
 		return this;
-	}
-
-	private static class IntPair {
-		int min;
-		int max;
-
-		public IntPair(int min, int max) {
-			this.min = min;
-			this.max = max;
-		}
-	}
-
-	private static boolean isXmlNameStartChar(int cp) {
-		return isInNameCharBounds(cp, XML_NAME_START_CHAR_BOUNDS);
-	}
-
-	private static boolean isXmlNameChar(int cp) {
-		if (isXmlNameStartChar(cp)) {
-			return true;
-		}
-		return isInNameCharBounds(cp, XML_NAME_CHAR_EXTRA_BOUNDS);
-	}
-
-	private static boolean isInNameCharBounds(int cp, IntPair[] nameCharBounds) {
-		for (int i = 0; i < nameCharBounds.length; ++i) {
-			IntPair p = nameCharBounds[i];
-			if (cp >= p.min && cp <= p.max) {
-				return true;
-			}
-		}
-		return false;
 	}
 }

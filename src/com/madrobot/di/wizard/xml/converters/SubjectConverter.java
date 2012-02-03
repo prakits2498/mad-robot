@@ -58,44 +58,16 @@ public class SubjectConverter extends AbstractCollectionConverter {
 		writer.endNode();
 	};
 
-	protected void marshalPublicCredentials(Set pubCredentials, HierarchicalStreamWriter writer, MarshallingContext context) {
+	protected void marshalPrivateCredentials(Set privCredentials, HierarchicalStreamWriter writer, MarshallingContext context) {
 	};
 
-	protected void marshalPrivateCredentials(Set privCredentials, HierarchicalStreamWriter writer, MarshallingContext context) {
+	protected void marshalPublicCredentials(Set pubCredentials, HierarchicalStreamWriter writer, MarshallingContext context) {
 	};
 
 	protected void marshalReadOnly(boolean readOnly, HierarchicalStreamWriter writer) {
 		writer.startNode("readOnly");
 		writer.setValue(String.valueOf(readOnly));
 		writer.endNode();
-	};
-
-	@Override
-	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
-		Set principals = unmarshalPrincipals(reader, context);
-		Set publicCredentials = unmarshalPublicCredentials(reader, context);
-		Set privateCredentials = unmarshalPrivateCredentials(reader, context);
-		boolean readOnly = unmarshalReadOnly(reader);
-		return new Subject(readOnly, principals, publicCredentials, privateCredentials);
-	}
-
-	protected Set unmarshalPrincipals(HierarchicalStreamReader reader, UnmarshallingContext context) {
-		return populateSet(reader, context);
-	};
-
-	protected Set unmarshalPublicCredentials(HierarchicalStreamReader reader, UnmarshallingContext context) {
-		return Collections.EMPTY_SET;
-	};
-
-	protected Set unmarshalPrivateCredentials(HierarchicalStreamReader reader, UnmarshallingContext context) {
-		return Collections.EMPTY_SET;
-	};
-
-	protected boolean unmarshalReadOnly(HierarchicalStreamReader reader) {
-		reader.moveDown();
-		boolean readOnly = Boolean.getBoolean(reader.getValue());
-		reader.moveUp();
-		return readOnly;
 	};
 
 	protected Set populateSet(HierarchicalStreamReader reader, UnmarshallingContext context) {
@@ -109,5 +81,33 @@ public class SubjectConverter extends AbstractCollectionConverter {
 		}
 		reader.moveUp();
 		return set;
+	}
+
+	@Override
+	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+		Set principals = unmarshalPrincipals(reader, context);
+		Set publicCredentials = unmarshalPublicCredentials(reader, context);
+		Set privateCredentials = unmarshalPrivateCredentials(reader, context);
+		boolean readOnly = unmarshalReadOnly(reader);
+		return new Subject(readOnly, principals, publicCredentials, privateCredentials);
+	};
+
+	protected Set unmarshalPrincipals(HierarchicalStreamReader reader, UnmarshallingContext context) {
+		return populateSet(reader, context);
+	};
+
+	protected Set unmarshalPrivateCredentials(HierarchicalStreamReader reader, UnmarshallingContext context) {
+		return Collections.EMPTY_SET;
+	};
+
+	protected Set unmarshalPublicCredentials(HierarchicalStreamReader reader, UnmarshallingContext context) {
+		return Collections.EMPTY_SET;
+	};
+
+	protected boolean unmarshalReadOnly(HierarchicalStreamReader reader) {
+		reader.moveDown();
+		boolean readOnly = Boolean.getBoolean(reader.getValue());
+		reader.moveUp();
+		return readOnly;
 	}
 }

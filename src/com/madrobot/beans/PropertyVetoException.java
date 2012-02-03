@@ -27,6 +27,13 @@ public class PropertyVetoException extends Exception {
 	private static final long serialVersionUID = -2206020012556077235L;
 
 	/**
+	 * A PropertyChangeEvent describing the vetoed change.
+	 * 
+	 * @serial
+	 */
+	private PropertyChangeEvent evt;
+
+	/**
 	 * Constructs a <code>PropertyVetoException</code> with a
 	 * detailed message.
 	 * 
@@ -48,11 +55,4 @@ public class PropertyVetoException extends Exception {
 	public PropertyChangeEvent getPropertyChangeEvent() {
 		return evt;
 	}
-
-	/**
-	 * A PropertyChangeEvent describing the vetoed change.
-	 * 
-	 * @serial
-	 */
-	private PropertyChangeEvent evt;
 }

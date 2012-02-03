@@ -22,9 +22,43 @@ public class PresortedMap implements SortedMap {
     private static class ArraySet extends ArrayList implements Set {
     }
 
-    private final PresortedMap.ArraySet set;
+    private static class ArraySetComparator implements Comparator {
+
+        private Map.Entry[] array;
+        private final ArrayList list;
+
+        ArraySetComparator(ArrayList list) {
+            this.list = list;
+        }
+        
+        @Override
+		public int compare(Object object1, Object object2) {
+            if (array == null || list.size() != array.length) {
+                Map.Entry[] a = new Map.Entry[list.size()];
+                if (array != null) {
+                    System.arraycopy(array, 0, a, 0, array.length);
+                }
+                for (int i = array == null ? 0 : array.length; i < list.size(); ++i) {
+                    a[i] = (Map.Entry)list.get(i);
+                }
+                array = a;
+            }
+            int idx1 = Integer.MAX_VALUE, idx2 = Integer.MAX_VALUE;
+            for(int i = 0; i < array.length && !(idx1 < Integer.MAX_VALUE && idx2 < Integer.MAX_VALUE); ++i) {
+                if (idx1 == Integer.MAX_VALUE && object1 == array[i].getKey()) {
+                    idx1 = i;
+                }
+                if (idx2 == Integer.MAX_VALUE && object2 == array[i].getKey()) {
+                    idx2 = i;
+                }
+            }
+            return idx1 - idx2;
+        }
+    }
     private final Comparator comparator;
     
+    private final PresortedMap.ArraySet set;
+
     public PresortedMap() {
         this(null, new ArraySet());
     }
@@ -39,8 +73,23 @@ public class PresortedMap implements SortedMap {
     }
 
     @Override
+	public void clear() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
 	public Comparator comparator() {
         return comparator;
+    }
+
+    @Override
+	public boolean containsKey(Object key) {
+        return false;
+    }
+
+    @Override
+	public boolean containsValue(Object value) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -54,8 +103,18 @@ public class PresortedMap implements SortedMap {
     }
 
     @Override
+	public Object get(Object key) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
 	public SortedMap headMap(Object toKey) {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+	public boolean isEmpty() {
+        return set.isEmpty();
     }
 
     @Override
@@ -71,51 +130,6 @@ public class PresortedMap implements SortedMap {
     @Override
 	public Object lastKey() {
         throw new UnsupportedOperationException();
-    }
-
-    @Override
-	public SortedMap subMap(Object fromKey, Object toKey) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-	public SortedMap tailMap(Object fromKey) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-	public Collection values() {
-        Set values = new ArraySet();
-        for (final Iterator iterator = set.iterator(); iterator.hasNext();) {
-            final Entry entry = (Entry)iterator.next();
-            values.add(entry.getValue());
-        }
-        return values;
-    }
-
-    @Override
-	public void clear() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-	public boolean containsKey(Object key) {
-        return false;
-    }
-
-    @Override
-	public boolean containsValue(Object value) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-	public Object get(Object key) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-	public boolean isEmpty() {
-        return set.isEmpty();
     }
 
     @Override
@@ -155,38 +169,24 @@ public class PresortedMap implements SortedMap {
 	public int size() {
         return set.size();
     }
+
+    @Override
+	public SortedMap subMap(Object fromKey, Object toKey) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+	public SortedMap tailMap(Object fromKey) {
+        throw new UnsupportedOperationException();
+    }
     
-    private static class ArraySetComparator implements Comparator {
-
-        private final ArrayList list;
-        private Map.Entry[] array;
-
-        ArraySetComparator(ArrayList list) {
-            this.list = list;
+    @Override
+	public Collection values() {
+        Set values = new ArraySet();
+        for (final Iterator iterator = set.iterator(); iterator.hasNext();) {
+            final Entry entry = (Entry)iterator.next();
+            values.add(entry.getValue());
         }
-        
-        @Override
-		public int compare(Object object1, Object object2) {
-            if (array == null || list.size() != array.length) {
-                Map.Entry[] a = new Map.Entry[list.size()];
-                if (array != null) {
-                    System.arraycopy(array, 0, a, 0, array.length);
-                }
-                for (int i = array == null ? 0 : array.length; i < list.size(); ++i) {
-                    a[i] = (Map.Entry)list.get(i);
-                }
-                array = a;
-            }
-            int idx1 = Integer.MAX_VALUE, idx2 = Integer.MAX_VALUE;
-            for(int i = 0; i < array.length && !(idx1 < Integer.MAX_VALUE && idx2 < Integer.MAX_VALUE); ++i) {
-                if (idx1 == Integer.MAX_VALUE && object1 == array[i].getKey()) {
-                    idx1 = i;
-                }
-                if (idx2 == Integer.MAX_VALUE && object2 == array[i].getKey()) {
-                    idx2 = i;
-                }
-            }
-            return idx1 - idx2;
-        }
+        return values;
     }
 }

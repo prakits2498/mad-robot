@@ -26,17 +26,40 @@ import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
  */
 public class JavaBeanConverter implements Converter {
 
-	/*
-	 * TODO: - support indexed properties - support attributes (XSTR-620) - support local converters (XSTR-601) Problem:
-	 * Mappers take definitions based on reflection, they don't know about bean info
+	/**
+	 * @deprecated As of 1.3
 	 */
-	protected final Mapper mapper;
+	@Deprecated
+	public static class DuplicateFieldException extends ConversionException {
+		public DuplicateFieldException(String msg) {
+			super(msg);
+		}
+	}
+	/**
+	 * Exception to indicate double processing of a property to avoid silent clobbering.
+	 * 
+	 * @author J&ouml;rg Schaible
+	 * @since 1.4.2
+	 */
+	public static class DuplicatePropertyException extends ConversionException {
+		public DuplicatePropertyException(String msg) {
+			super("Duplicate property " + msg);
+			add("property", msg);
+		}
+	}
 	protected final JavaBeanProvider beanProvider;
+
 	/**
 	 * @deprecated As of 1.3, no necessity for field anymore.
 	 */
 	@Deprecated
 	private String classAttributeIdentifier;
+
+	/*
+	 * TODO: - support indexed properties - support attributes (XSTR-620) - support local converters (XSTR-601) Problem:
+	 * Mappers take definitions based on reflection, they don't know about bean info
+	 */
+	protected final Mapper mapper;
 
 	public JavaBeanConverter(Mapper mapper) {
 		this(mapper, new BeanProvider());
@@ -64,6 +87,25 @@ public class JavaBeanConverter implements Converter {
 	@Override
 	public boolean canConvert(Class type) {
 		return beanProvider.canInstantiate(type);
+	}
+
+	private Class determineType(HierarchicalStreamReader reader, Object result, String fieldName) {
+		final String classAttributeName = classAttributeIdentifier != null ? classAttributeIdentifier : mapper
+				.aliasForSystemAttribute("class");
+		String classAttribute = classAttributeName == null ? null : reader.getAttribute(classAttributeName);
+		if (classAttribute != null) {
+			return mapper.realClass(classAttribute);
+		} else {
+			return mapper.defaultImplementationOf(beanProvider.getPropertyType(result, fieldName));
+		}
+	}
+
+	private Object instantiateNewInstance(UnmarshallingContext context) {
+		Object result = context.currentObject();
+		if (result == null) {
+			result = beanProvider.newInstance(context.getRequiredType());
+		}
+		return result;
 	}
 
 	@Override
@@ -133,47 +175,5 @@ public class JavaBeanConverter implements Converter {
 		}
 
 		return result;
-	}
-
-	private Object instantiateNewInstance(UnmarshallingContext context) {
-		Object result = context.currentObject();
-		if (result == null) {
-			result = beanProvider.newInstance(context.getRequiredType());
-		}
-		return result;
-	}
-
-	private Class determineType(HierarchicalStreamReader reader, Object result, String fieldName) {
-		final String classAttributeName = classAttributeIdentifier != null ? classAttributeIdentifier : mapper
-				.aliasForSystemAttribute("class");
-		String classAttribute = classAttributeName == null ? null : reader.getAttribute(classAttributeName);
-		if (classAttribute != null) {
-			return mapper.realClass(classAttribute);
-		} else {
-			return mapper.defaultImplementationOf(beanProvider.getPropertyType(result, fieldName));
-		}
-	}
-
-	/**
-	 * @deprecated As of 1.3
-	 */
-	@Deprecated
-	public static class DuplicateFieldException extends ConversionException {
-		public DuplicateFieldException(String msg) {
-			super(msg);
-		}
-	}
-
-	/**
-	 * Exception to indicate double processing of a property to avoid silent clobbering.
-	 * 
-	 * @author J&ouml;rg Schaible
-	 * @since 1.4.2
-	 */
-	public static class DuplicatePropertyException extends ConversionException {
-		public DuplicatePropertyException(String msg) {
-			super("Duplicate property " + msg);
-			add("property", msg);
-		}
 	}
 }

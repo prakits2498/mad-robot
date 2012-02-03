@@ -22,12 +22,12 @@ public class Pool {
         public Object newInstance();
     }
 
+    private final Factory factory;
     private final int initialPoolSize;
     private final int maxPoolSize;
-    private final Factory factory;
-    private transient Object[] pool;
-    private transient int nextAvailable;
     private transient Object mutex = new Object();
+    private transient int nextAvailable;
+    private transient Object[] pool;
 
     public Pool(int initialPoolSize, int maxPoolSize, Factory factory) {
         this.initialPoolSize = initialPoolSize;

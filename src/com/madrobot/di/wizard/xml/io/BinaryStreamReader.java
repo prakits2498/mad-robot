@@ -31,11 +31,29 @@ import com.madrobot.di.wizard.xml.converters.ErrorWriter;
  */
 public class BinaryStreamReader implements ExtendedHierarchicalStreamReader {
 
-	private final DataInputStream in;
+	private static class IdRegistry {
+
+		private Map map = new HashMap();
+
+		public String get(long id) {
+			String result = (String) map.get(new Long(id));
+			if (result == null) {
+				throw new StreamException("Unknown ID : " + id);
+			} else {
+				return result;
+			}
+		}
+
+		public void put(long id, String value) {
+			map.put(new Long(id), value);
+		}
+	}
 	private final ReaderDepthState depthState = new ReaderDepthState();
 	private final IdRegistry idRegistry = new IdRegistry();
 
+	private final DataInputStream in;
 	private Token pushback;
+
 	private final Token.Formatter tokenFormatter = new Token.Formatter();
 
 	public BinaryStreamReader(InputStream inputStream) {
@@ -44,28 +62,27 @@ public class BinaryStreamReader implements ExtendedHierarchicalStreamReader {
 	}
 
 	@Override
-	public boolean hasMoreChildren() {
-		return depthState.hasMoreChildren();
+	public void appendErrors(ErrorWriter errorWriter) {
+		// TODO: When things go bad, it would be good to know where!
 	}
 
 	@Override
-	public String getNodeName() {
-		return depthState.getName();
-	}
-
-	@Override
-	public String getValue() {
-		return depthState.getValue();
-	}
-
-	@Override
-	public String getAttribute(String name) {
-		return depthState.getAttribute(name);
+	public void close() {
+		try {
+			in.close();
+		} catch (IOException e) {
+			throw new StreamException(e);
+		}
 	}
 
 	@Override
 	public String getAttribute(int index) {
 		return depthState.getAttribute(index);
+	}
+
+	@Override
+	public String getAttribute(String name) {
+		return depthState.getAttribute(name);
 	}
 
 	@Override
@@ -81,6 +98,21 @@ public class BinaryStreamReader implements ExtendedHierarchicalStreamReader {
 	@Override
 	public Iterator getAttributeNames() {
 		return depthState.getAttributeNames();
+	}
+
+	@Override
+	public String getNodeName() {
+		return depthState.getName();
+	}
+
+	@Override
+	public String getValue() {
+		return depthState.getValue();
+	}
+
+	@Override
+	public boolean hasMoreChildren() {
+		return depthState.hasMoreChildren();
 	}
 
 	@Override
@@ -154,6 +186,23 @@ public class BinaryStreamReader implements ExtendedHierarchicalStreamReader {
 		pushBack(nextToken);
 	}
 
+	@Override
+	public String peekNextChild() {
+		if (depthState.hasMoreChildren()) {
+			return idRegistry.get(pushback.getId());
+		}
+		return null;
+	}
+
+	public void pushBack(Token token) {
+		if (pushback == null) {
+			pushback = token;
+		} else {
+			// If this happens, I've messed up :( -joe.
+			throw new Error("Cannot push more than one token back");
+		}
+	}
+
 	private Token readToken() {
 		if (pushback == null) {
 			try {
@@ -175,58 +224,9 @@ public class BinaryStreamReader implements ExtendedHierarchicalStreamReader {
 		}
 	}
 
-	public void pushBack(Token token) {
-		if (pushback == null) {
-			pushback = token;
-		} else {
-			// If this happens, I've messed up :( -joe.
-			throw new Error("Cannot push more than one token back");
-		}
-	}
-
-	@Override
-	public void close() {
-		try {
-			in.close();
-		} catch (IOException e) {
-			throw new StreamException(e);
-		}
-	}
-
-	@Override
-	public String peekNextChild() {
-		if (depthState.hasMoreChildren()) {
-			return idRegistry.get(pushback.getId());
-		}
-		return null;
-	}
-
 	@Override
 	public HierarchicalStreamReader underlyingReader() {
 		return this;
-	}
-
-	@Override
-	public void appendErrors(ErrorWriter errorWriter) {
-		// TODO: When things go bad, it would be good to know where!
-	}
-
-	private static class IdRegistry {
-
-		private Map map = new HashMap();
-
-		public void put(long id, String value) {
-			map.put(new Long(id), value);
-		}
-
-		public String get(long id) {
-			String result = (String) map.get(new Long(id));
-			if (result == null) {
-				throw new StreamException("Unknown ID : " + id);
-			} else {
-				return result;
-			}
-		}
 	}
 
 }

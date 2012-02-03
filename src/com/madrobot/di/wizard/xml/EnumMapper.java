@@ -45,34 +45,24 @@ class EnumMapper extends MapperWrapper implements Caching {
 	}
 
 	@Override
-	public String serializedClass(Class type) {
-		if (type == null) {
-			return super.serializedClass(type);
+	public void flushCache() {
+		if (enumConverterMap.size() > 0) {
+			synchronized (enumConverterMap) {
+				enumConverterMap.clear();
+			}
 		}
-		if (Enum.class.isAssignableFrom(type) && type.getSuperclass() != Enum.class) {
-			return super.serializedClass(type.getSuperclass());
-		} else if (EnumSet.class.isAssignableFrom(type)) {
-			return super.serializedClass(EnumSet.class);
-		} else {
-			return super.serializedClass(type);
-		}
-	}
-
-	@Override
-	public boolean isImmutableValueType(Class type) {
-		return (Enum.class.isAssignableFrom(type)) || super.isImmutableValueType(type);
-	}
-
-	@Override
-	public SingleValueConverter getConverterFromItemType(String fieldName, Class type, Class definedIn) {
-		SingleValueConverter converter = getLocalConverter(fieldName, type, definedIn);
-		return converter == null ? super.getConverterFromItemType(fieldName, type, definedIn) : converter;
 	}
 
 	@Override
 	public SingleValueConverter getConverterFromAttribute(Class definedIn, String attribute, Class type) {
 		SingleValueConverter converter = getLocalConverter(attribute, type, definedIn);
 		return converter == null ? super.getConverterFromAttribute(definedIn, attribute, type) : converter;
+	}
+
+	@Override
+	public SingleValueConverter getConverterFromItemType(String fieldName, Class type, Class definedIn) {
+		SingleValueConverter converter = getLocalConverter(fieldName, type, definedIn);
+		return converter == null ? super.getConverterFromItemType(fieldName, type, definedIn) : converter;
 	}
 
 	private SingleValueConverter getLocalConverter(String fieldName, Class type, Class definedIn) {
@@ -96,17 +86,27 @@ class EnumMapper extends MapperWrapper implements Caching {
 	}
 
 	@Override
-	public void flushCache() {
-		if (enumConverterMap.size() > 0) {
-			synchronized (enumConverterMap) {
-				enumConverterMap.clear();
-			}
-		}
+	public boolean isImmutableValueType(Class type) {
+		return (Enum.class.isAssignableFrom(type)) || super.isImmutableValueType(type);
 	}
 
 	private Object readResolve() {
 		this.enumConverterMap = new HashMap<Class, SingleValueConverter>();
 		this.attributeMapper = (AttributeMapper) lookupMapperOfType(AttributeMapper.class);
 		return this;
+	}
+
+	@Override
+	public String serializedClass(Class type) {
+		if (type == null) {
+			return super.serializedClass(type);
+		}
+		if (Enum.class.isAssignableFrom(type) && type.getSuperclass() != Enum.class) {
+			return super.serializedClass(type.getSuperclass());
+		} else if (EnumSet.class.isAssignableFrom(type)) {
+			return super.serializedClass(EnumSet.class);
+		} else {
+			return super.serializedClass(type);
+		}
 	}
 }

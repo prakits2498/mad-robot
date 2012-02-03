@@ -37,30 +37,10 @@ public final class EchoUDPClient extends DiscardUDPClient
 
     private final DatagramPacket __receivePacket = new DatagramPacket(new byte[0], 0);
 
-    /***
-     * Sends the specified data to the specified server at the default echo
-     * port.
-     * <p>
-     * @param data  The echo data to send.
-     * @param length  The length of the data to send.  Should be less than
-     *    or equal to the length of the data byte array.
-     * @param host  The address of the server.
-     * @exception IOException If an error occurs during the datagram send
-     *     operation.
-     ***/
-    @Override
-    public void send(byte[] data, int length, InetAddress host)
-    throws IOException
+    /*** Same as <code> receive(data, data.length)</code> ***/
+    public int receive(byte[] data) throws IOException
     {
-        send(data, length, host, DEFAULT_PORT);
-    }
-
-
-    /*** Same as <code> send(data, data.length, host) </code> ***/
-    @Override
-    public void send(byte[] data, InetAddress host) throws IOException
-    {
-        send(data, data.length, host, DEFAULT_PORT);
+        return receive(data, data.length);
     }
 
 
@@ -81,10 +61,30 @@ public final class EchoUDPClient extends DiscardUDPClient
         return __receivePacket.getLength();
     }
 
-    /*** Same as <code> receive(data, data.length)</code> ***/
-    public int receive(byte[] data) throws IOException
+
+    /*** Same as <code> send(data, data.length, host) </code> ***/
+    @Override
+    public void send(byte[] data, InetAddress host) throws IOException
     {
-        return receive(data, data.length);
+        send(data, data.length, host, DEFAULT_PORT);
+    }
+
+    /***
+     * Sends the specified data to the specified server at the default echo
+     * port.
+     * <p>
+     * @param data  The echo data to send.
+     * @param length  The length of the data to send.  Should be less than
+     *    or equal to the length of the data byte array.
+     * @param host  The address of the server.
+     * @exception IOException If an error occurs during the datagram send
+     *     operation.
+     ***/
+    @Override
+    public void send(byte[] data, int length, InetAddress host)
+    throws IOException
+    {
+        send(data, length, host, DEFAULT_PORT);
     }
 
 }

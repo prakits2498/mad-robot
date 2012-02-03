@@ -42,56 +42,29 @@ import java.beans.PropertyChangeListener;
 public interface PropertyEditor {
 
 	/**
-	 * Set (or change) the object that is to be edited. Primitive types such
-	 * as "int" must be wrapped as the corresponding object type such as
-	 * "java.lang.Integer".
+	 * Register a listener for the PropertyChange event. When a
+	 * PropertyEditor changes its value it should fire a PropertyChange
+	 * event on all registered PropertyChangeListeners, specifying the
+	 * null value for the property name and itself as the source.
 	 * 
-	 * @param value
-	 *            The new target object to be edited. Note that this
-	 *            object should not be modified by the PropertyEditor, rather
-	 *            the PropertyEditor should create a new object to hold any
-	 *            modified value.
+	 * @param listener
+	 *            An object to be invoked when a PropertyChange
+	 *            event is fired.
 	 */
-	void setValue(Object value);
+	void addPropertyChangeListener(PropertyChangeListener listener);
 
 	/**
-	 * Gets the property value.
+	 * Gets the property value as text.
 	 * 
-	 * @return The value of the property. Primitive types such as "int" will
-	 *         be wrapped as the corresponding object type such as
-	 *         "java.lang.Integer".
+	 * @return The property value as a human editable string.
+	 *         <p>
+	 *         Returns null if the value can't be expressed as an editable
+	 *         string.
+	 *         <p>
+	 *         If a non-null value is returned, then the PropertyEditor should
+	 *         be prepared to parse that string back in setAsText().
 	 */
-
-	Object getValue();
-
-	// ----------------------------------------------------------------------
-
-	/**
-	 * Determines whether this property editor is paintable.
-	 * 
-	 * @return True if the class will honor the paintValue method.
-	 */
-
-	boolean isPaintable();
-
-	/**
-	 * Paint a representation of the value into a given area of screen
-	 * real estate. Note that the propertyEditor is responsible for doing
-	 * its own clipping so that it fits into the given rectangle.
-	 * <p>
-	 * If the PropertyEditor doesn't honor paint requests (see isPaintable) this
-	 * method should be a silent noop.
-	 * <p>
-	 * The given Graphics object will have the default font, color, etc of the
-	 * parent container. The PropertyEditor may change graphics attributes such
-	 * as font and color and doesn't need to restore the old values.
-	 * 
-	 * @param gfx
-	 *            Graphics object to paint into.
-	 * @param box
-	 *            Rectangle within graphics object into which we should paint.
-	 */
-	// void paintValue(java.awt.Graphics gfx, java.awt.Rectangle box);
+	String getAsText();
 
 	// ----------------------------------------------------------------------
 
@@ -128,31 +101,24 @@ public interface PropertyEditor {
 	 */
 	String getJavaInitializationString();
 
-	// ----------------------------------------------------------------------
-
 	/**
-	 * Gets the property value as text.
+	 * Paint a representation of the value into a given area of screen
+	 * real estate. Note that the propertyEditor is responsible for doing
+	 * its own clipping so that it fits into the given rectangle.
+	 * <p>
+	 * If the PropertyEditor doesn't honor paint requests (see isPaintable) this
+	 * method should be a silent noop.
+	 * <p>
+	 * The given Graphics object will have the default font, color, etc of the
+	 * parent container. The PropertyEditor may change graphics attributes such
+	 * as font and color and doesn't need to restore the old values.
 	 * 
-	 * @return The property value as a human editable string.
-	 *         <p>
-	 *         Returns null if the value can't be expressed as an editable
-	 *         string.
-	 *         <p>
-	 *         If a non-null value is returned, then the PropertyEditor should
-	 *         be prepared to parse that string back in setAsText().
+	 * @param gfx
+	 *            Graphics object to paint into.
+	 * @param box
+	 *            Rectangle within graphics object into which we should paint.
 	 */
-	String getAsText();
-
-	/**
-	 * Set the property value by parsing a given String. May raise
-	 * java.lang.IllegalArgumentException if either the String is
-	 * badly formatted or if this kind of property can't be expressed
-	 * as text.
-	 * 
-	 * @param text
-	 *            The string to be parsed.
-	 */
-	void setAsText(String text) throws java.lang.IllegalArgumentException;
+	// void paintValue(java.awt.Graphics gfx, java.awt.Rectangle box);
 
 	// ----------------------------------------------------------------------
 
@@ -169,6 +135,36 @@ public interface PropertyEditor {
 	 * 
 	 */
 	String[] getTags();
+
+	// ----------------------------------------------------------------------
+
+	/**
+	 * Gets the property value.
+	 * 
+	 * @return The value of the property. Primitive types such as "int" will
+	 *         be wrapped as the corresponding object type such as
+	 *         "java.lang.Integer".
+	 */
+
+	Object getValue();
+
+	/**
+	 * Determines whether this property editor is paintable.
+	 * 
+	 * @return True if the class will honor the paintValue method.
+	 */
+
+	boolean isPaintable();
+
+	// ----------------------------------------------------------------------
+
+	/**
+	 * Remove a listener for the PropertyChange event.
+	 * 
+	 * @param listener
+	 *            The PropertyChange listener to be removed.
+	 */
+	void removePropertyChangeListener(PropertyChangeListener listener);
 
 	// ----------------------------------------------------------------------
 
@@ -190,32 +186,36 @@ public interface PropertyEditor {
 	// java.awt.Component getCustomEditor();
 
 	/**
+	 * Set the property value by parsing a given String. May raise
+	 * java.lang.IllegalArgumentException if either the String is
+	 * badly formatted or if this kind of property can't be expressed
+	 * as text.
+	 * 
+	 * @param text
+	 *            The string to be parsed.
+	 */
+	void setAsText(String text) throws java.lang.IllegalArgumentException;
+
+	// ----------------------------------------------------------------------
+
+	/**
+	 * Set (or change) the object that is to be edited. Primitive types such
+	 * as "int" must be wrapped as the corresponding object type such as
+	 * "java.lang.Integer".
+	 * 
+	 * @param value
+	 *            The new target object to be edited. Note that this
+	 *            object should not be modified by the PropertyEditor, rather
+	 *            the PropertyEditor should create a new object to hold any
+	 *            modified value.
+	 */
+	void setValue(Object value);
+
+	/**
 	 * Determines whether this property editor supports a custom editor.
 	 * 
 	 * @return True if the propertyEditor can provide a custom editor.
 	 */
 	boolean supportsCustomEditor();
-
-	// ----------------------------------------------------------------------
-
-	/**
-	 * Register a listener for the PropertyChange event. When a
-	 * PropertyEditor changes its value it should fire a PropertyChange
-	 * event on all registered PropertyChangeListeners, specifying the
-	 * null value for the property name and itself as the source.
-	 * 
-	 * @param listener
-	 *            An object to be invoked when a PropertyChange
-	 *            event is fired.
-	 */
-	void addPropertyChangeListener(PropertyChangeListener listener);
-
-	/**
-	 * Remove a listener for the PropertyChange event.
-	 * 
-	 * @param listener
-	 *            The PropertyChange listener to be removed.
-	 */
-	void removePropertyChangeListener(PropertyChangeListener listener);
 
 }

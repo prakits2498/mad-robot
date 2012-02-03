@@ -13,9 +13,9 @@ import org.apache.http.client.methods.HttpUriRequest;
 
 public class HttpRequestAdapter implements HttpRequest {
 
-    private HttpUriRequest request;
-
     private HttpEntity entity;
+
+    private HttpUriRequest request;
 
     public HttpRequestAdapter(HttpUriRequest request) {
         this.request = request;
@@ -24,31 +24,8 @@ public class HttpRequestAdapter implements HttpRequest {
         }
     }
 
-    public String getMethod() {
-        return request.getRequestLine().getMethod();
-    }
-
-    public String getRequestUrl() {
-        return request.getURI().toString();
-    }
-
-    public void setRequestUrl(String url) {
-        throw new RuntimeException(new UnsupportedOperationException());
-    }
-
-    public String getHeader(String name) {
-        Header header = request.getFirstHeader(name);
-        if (header == null) {
-            return null;
-        }
-        return header.getValue();
-    }
-
-    public void setHeader(String name, String value) {
-        request.setHeader(name, value);
-    }
-
-    public Map<String, String> getAllHeaders() {
+    @Override
+	public Map<String, String> getAllHeaders() {
         Header[] origHeaders = request.getAllHeaders();
         HashMap<String, String> headers = new HashMap<String, String>();
         for (Header h : origHeaders) {
@@ -57,7 +34,8 @@ public class HttpRequestAdapter implements HttpRequest {
         return headers;
     }
 
-    public String getContentType() {
+    @Override
+	public String getContentType() {
         if (entity == null) {
             return null;
         }
@@ -68,14 +46,45 @@ public class HttpRequestAdapter implements HttpRequest {
         return header.getValue();
     }
 
-    public InputStream getMessagePayload() throws IOException {
+    @Override
+	public String getHeader(String name) {
+        Header header = request.getFirstHeader(name);
+        if (header == null) {
+            return null;
+        }
+        return header.getValue();
+    }
+
+    @Override
+	public InputStream getMessagePayload() throws IOException {
         if (entity == null) {
             return null;
         }
         return entity.getContent();
     }
 
-    public Object unwrap() {
+    @Override
+	public String getMethod() {
+        return request.getRequestLine().getMethod();
+    }
+
+    @Override
+	public String getRequestUrl() {
+        return request.getURI().toString();
+    }
+
+    @Override
+	public void setHeader(String name, String value) {
+        request.setHeader(name, value);
+    }
+
+    @Override
+	public void setRequestUrl(String url) {
+        throw new RuntimeException(new UnsupportedOperationException());
+    }
+
+    @Override
+	public Object unwrap() {
         return request;
     }
 }

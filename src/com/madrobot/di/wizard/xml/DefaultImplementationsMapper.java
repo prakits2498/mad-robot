@@ -22,12 +22,21 @@ import java.util.Map;
  */
 class DefaultImplementationsMapper extends MapperWrapper {
 
-	private final Map typeToImpl = new HashMap();
 	private transient Map implToType = new HashMap();
+	private final Map typeToImpl = new HashMap();
 
 	DefaultImplementationsMapper(Mapper wrapped) {
 		super(wrapped);
 		addDefaults();
+	}
+
+	public void addDefaultImplementation(Class defaultImplementation, Class ofType) {
+		if (defaultImplementation != null && defaultImplementation.isInterface()) {
+			throw new InitializationException("Default implementation is not a concrete class: "
+					+ defaultImplementation.getName());
+		}
+		typeToImpl.put(ofType, defaultImplementation);
+		implToType.put(defaultImplementation, ofType);
 	}
 
 	protected void addDefaults() {
@@ -42,21 +51,6 @@ class DefaultImplementationsMapper extends MapperWrapper {
 		addDefaultImplementation(Short.class, short.class);
 		addDefaultImplementation(Byte.class, byte.class);
 		addDefaultImplementation(Long.class, long.class);
-	}
-
-	public void addDefaultImplementation(Class defaultImplementation, Class ofType) {
-		if (defaultImplementation != null && defaultImplementation.isInterface()) {
-			throw new InitializationException("Default implementation is not a concrete class: "
-					+ defaultImplementation.getName());
-		}
-		typeToImpl.put(ofType, defaultImplementation);
-		implToType.put(defaultImplementation, ofType);
-	}
-
-	@Override
-	public String serializedClass(Class type) {
-		Class baseType = (Class) implToType.get(type);
-		return baseType == null ? super.serializedClass(type) : super.serializedClass(baseType);
 	}
 
 	@Override
@@ -75,5 +69,11 @@ class DefaultImplementationsMapper extends MapperWrapper {
 			implToType.put(typeToImpl.get(type), type);
 		}
 		return this;
+	}
+
+	@Override
+	public String serializedClass(Class type) {
+		Class baseType = (Class) implToType.get(type);
+		return baseType == null ? super.serializedClass(type) : super.serializedClass(baseType);
 	}
 }

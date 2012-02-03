@@ -36,10 +36,10 @@ import com.madrobot.reflect.PrimitiveUtils;
  * 
  */
 public class ToAttributedValueConverter implements Converter {
-	private final Class type;
+	private final ConverterLookup lookup;
 	private final Mapper mapper;
 	private final ReflectionProvider reflectionProvider;
-	private final ConverterLookup lookup;
+	private final Class type;
 	private final Field valueField;
 
 	/**
@@ -108,6 +108,11 @@ public class ToAttributedValueConverter implements Converter {
 	@Override
 	public boolean canConvert(final Class type) {
 		return this.type == type;
+	}
+
+	private boolean fieldIsEqual(FastField field) {
+		return valueField.getName().equals(field.getName())
+				&& valueField.getDeclaringClass().getName().equals(field.getDeclaringClass());
 	}
 
 	@Override
@@ -285,10 +290,5 @@ public class ToAttributedValueConverter implements Converter {
 			}
 		}
 		return result;
-	}
-
-	private boolean fieldIsEqual(FastField field) {
-		return valueField.getName().equals(field.getName())
-				&& valueField.getDeclaringClass().getName().equals(field.getDeclaringClass());
 	}
 }

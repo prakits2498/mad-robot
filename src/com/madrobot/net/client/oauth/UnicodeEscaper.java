@@ -38,6 +38,252 @@ abstract class UnicodeEscaper implements Escaper {
   private static final int DEST_PAD = 32;
 
   /**
+   * A thread-local destination buffer to keep us from creating new buffers.
+   * The starting size is 1024 characters.  If we grow past this we don't
+   * put it back in the threadlocal, we just keep going and grow as needed.
+   */
+  private static final ThreadLocal<char[]> DEST_TL = new ThreadLocal<char[]>() {
+    @Override
+    protected char[] initialValue() {
+      return new char[1024];
+    }
+  };
+
+  /**
+   * Returns the Unicode code point of the character at the given index.
+   *
+   * <p>Unlike {@link Character#codePointAt(CharSequence, int)} or
+   * {@link String#codePointAt(int)} this method will never fail silently when
+   * encountering an invalid surrogate pair.
+   *
+   * <p>The behaviour of this method is as follows:
+   * <ol>
+   * <li>If {@code index >= end}, {@link IndexOutOfBoundsException} is thrown.
+   * <li><b>If the character at the specified index is not a surrogate, it is
+   *     returned.</b>
+   * <li>If the first character was a high surrogate value, then an attempt is
+   *     made to read the next character.
+   *     <ol>
+   *     <li><b>If the end of the sequence was reached, the negated value of
+   *         the trailing high surrogate is returned.</b>
+   *     <li><b>If the next character was a valid low surrogate, the code point
+   *         value of the high/low surrogate pair is returned.</b>
+   *     <li>If the next character was not a low surrogate value, then
+   *         {@link IllegalArgumentException} is thrown.
+   *     </ol>
+   * <li>If the first character was a low surrogate value,
+   *     {@link IllegalArgumentException} is thrown.
+   * </ol>
+   *
+   * @param seq the sequence of characters from which to decode the code point
+   * @param index the index of the first character to decode
+   * @param end the index beyond the last valid character to decode
+   * @return the Unicode code point for the given index or the negated value of
+   *         the trailing high surrogate character at the end of the sequence
+   */
+  protected static final int codePointAt(CharSequence seq, int index, int end) {
+    if (index < end) {
+      char c1 = seq.charAt(index++);
+      if (c1 < Character.MIN_HIGH_SURROGATE ||
+          c1 > Character.MAX_LOW_SURROGATE) {
+        // Fast path (first test is probably all we need to do)
+        return c1;
+      } else if (c1 <= Character.MAX_HIGH_SURROGATE) {
+        // If the high surrogate was the last character, return its inverse
+        if (index == end) {
+          return -c1;
+        }
+        // Otherwise look for the low surrogate following it
+        char c2 = seq.charAt(index);
+        if (Character.isLowSurrogate(c2)) {
+          return Character.toCodePoint(c1, c2);
+        }
+        throw new IllegalArgumentException(
+            "Expected low surrogate but got char '" + c2 +
+            "' with value " + (int) c2 + " at index " + index);
+      } else {
+        throw new IllegalArgumentException(
+            "Unexpected low surrogate character '" + c1 +
+            "' with value " + (int) c1 + " at index " + (index - 1));
+      }
+    }
+    throw new IndexOutOfBoundsException("Index exceeds specified range");
+  }
+
+  /**
+   * Helper method to grow the character buffer as needed, this only happens
+   * once in a while so it's ok if it's in a method call.  If the index passed
+   * in is 0 then no copying will be done.
+   */
+  private static final char[] growBuffer(char[] dest, int index, int size) {
+    char[] copy = new char[size];
+    if (index > 0) {
+      System.arraycopy(dest, 0, copy, 0, index);
+    }
+    return copy;
+  }
+
+  /**
+   * Returns an {@code Appendable} instance which automatically escapes all
+   * text appended to it before passing the resulting text to an underlying
+   * {@code Appendable}.
+   *
+   * <p>Unlike {@link #escape(String)} it is permitted to append arbitrarily
+   * split input to this Appendable, including input that is split over a
+   * surrogate pair. In this case the pending high surrogate character will not
+   * be processed until the corresponding low surrogate is appended. This means
+   * that a trailing high surrogate character at the end of the input cannot be
+   * detected and will be silently ignored. This is unavoidable since the
+   * Appendable interface has no {@code close()} method, and it is impossible to
+   * determine when the last characters have been appended.
+   *
+   * <p>The methods of the returned object will propagate any exceptions thrown
+   * by the underlying {@code Appendable}.
+   *
+   * <p>For well formed <a href="http://en.wikipedia.org/wiki/UTF-16">UTF-16</a>
+   * the escaping behavior is identical to that of {@link #escape(String)} and
+   * the following code is equivalent to (but much slower than)
+   * {@code escaper.escape(string)}: <pre>{@code
+   *
+   *   StringBuilder sb = new StringBuilder();
+   *   escaper.escape(sb).append(string);
+   *   return sb.toString();}</pre>
+   *
+   * @param out the underlying {@code Appendable} to append escaped output to
+   * @return an {@code Appendable} which passes text to {@code out} after
+   *     escaping it
+   * @throws NullPointerException if {@code out} is null
+   * @throws IllegalArgumentException if invalid surrogate characters are
+   *         encountered
+   *
+   */
+  @Override
+public Appendable escape(final Appendable out) {
+    checkNotNull(out);
+
+    return new Appendable() {
+      char[] decodedChars = new char[2];
+      int pendingHighSurrogate = -1;
+
+      @Override
+	public Appendable append(char c) throws IOException {
+        if (pendingHighSurrogate != -1) {
+          // Our last append operation ended halfway through a surrogate pair
+          // so we have to do some extra work first.
+          if (!Character.isLowSurrogate(c)) {
+            throw new IllegalArgumentException(
+                "Expected low surrogate character but got '" + c +
+                "' with value " + (int) c);
+          }
+          char[] escaped =
+              escape(Character.toCodePoint((char) pendingHighSurrogate, c));
+          if (escaped != null) {
+            outputChars(escaped, escaped.length);
+          } else {
+            out.append((char) pendingHighSurrogate);
+            out.append(c);
+          }
+          pendingHighSurrogate = -1;
+        } else if (Character.isHighSurrogate(c)) {
+          // This is the start of a (split) surrogate pair.
+          pendingHighSurrogate = c;
+        } else {
+          if (Character.isLowSurrogate(c)) {
+            throw new IllegalArgumentException(
+                "Unexpected low surrogate character '" + c +
+                "' with value " + (int) c);
+          }
+          // This is a normal (non surrogate) char.
+          char[] escaped = escape(c);
+          if (escaped != null) {
+            outputChars(escaped, escaped.length);
+          } else {
+            out.append(c);
+          }
+        }
+        return this;
+      }
+
+      @Override
+	public Appendable append(CharSequence csq) throws IOException {
+        return append(csq, 0, csq.length());
+      }
+
+      @Override
+	public Appendable append(CharSequence csq, int start, int end)
+          throws IOException {
+        int index = start;
+        if (index < end) {
+          // This is a little subtle: index must never reference the middle of a
+          // surrogate pair but unescapedChunkStart can. The first time we enter
+          // the loop below it is possible that index != unescapedChunkStart.
+          int unescapedChunkStart = index;
+          if (pendingHighSurrogate != -1) {
+            // Our last append operation ended halfway through a surrogate pair
+            // so we have to do some extra work first.
+            char c = csq.charAt(index++);
+            if (!Character.isLowSurrogate(c)) {
+              throw new IllegalArgumentException(
+                  "Expected low surrogate character but got " + c);
+            }
+            char[] escaped =
+                escape(Character.toCodePoint((char) pendingHighSurrogate, c));
+            if (escaped != null) {
+              // Emit the escaped character and adjust unescapedChunkStart to
+              // skip the low surrogate we have consumed.
+              outputChars(escaped, escaped.length);
+              unescapedChunkStart += 1;
+            } else {
+              // Emit pending high surrogate (unescaped) but do not modify
+              // unescapedChunkStart as we must still emit the low surrogate.
+              out.append((char) pendingHighSurrogate);
+            }
+            pendingHighSurrogate = -1;
+          }
+          while (true) {
+            // Find and append the next subsequence of unescaped characters.
+            index = nextEscapeIndex(csq, index, end);
+            if (index > unescapedChunkStart) {
+              out.append(csq, unescapedChunkStart, index);
+            }
+            if (index == end) {
+              break;
+            }
+            // If we are not finished, calculate the next code point.
+            int cp = codePointAt(csq, index, end);
+            if (cp < 0) {
+              // Our sequence ended half way through a surrogate pair so just
+              // record the state and exit.
+              pendingHighSurrogate = -cp;
+              break;
+            }
+            // Escape the code point and output the characters.
+            char[] escaped = escape(cp);
+            if (escaped != null) {
+              outputChars(escaped, escaped.length);
+            } else {
+              // This shouldn't really happen if nextEscapeIndex is correct but
+              // we should cope with false positives.
+              int len = Character.toChars(cp, decodedChars, 0);
+              outputChars(decodedChars, len);
+            }
+            // Update our index past the escaped character and continue.
+            index += (Character.isSupplementaryCodePoint(cp) ? 2 : 1);
+            unescapedChunkStart = index;
+          }
+        }
+        return this;
+      }
+
+      private void outputChars(char[] chars, int len) throws IOException {
+        for (int n = 0; n < len; n++) {
+          out.append(chars[n]);
+        }
+      }
+    };
+  }
+
+  /**
    * Returns the escaped form of the given Unicode code point, or {@code null}
    * if this code point does not need to be escaped. When called as part of an
    * escaping operation, the given code point is guaranteed to be in the range
@@ -63,42 +309,6 @@ abstract class UnicodeEscaper implements Escaper {
   protected abstract char[] escape(int cp);
 
   /**
-   * Scans a sub-sequence of characters from a given {@link CharSequence},
-   * returning the index of the next character that requires escaping.
-   *
-   * <p><b>Note:</b> When implementing an escaper, it is a good idea to override
-   * this method for efficiency. The base class implementation determines
-   * successive Unicode code points and invokes {@link #escape(int)} for each of
-   * them. If the semantics of your escaper are such that code points in the
-   * supplementary range are either all escaped or all unescaped, this method
-   * can be implemented more efficiently using {@link CharSequence#charAt(int)}.
-   *
-   * <p>Note however that if your escaper does not escape characters in the
-   * supplementary range, you should either continue to validate the correctness
-   * of any surrogate characters encountered or provide a clear warning to users
-   * that your escaper does not validate its input.
-   *
-   * <p>See {@link PercentEscaper} for an example.
-   *
-   * @param csq a sequence of characters
-   * @param start the index of the first character to be scanned
-   * @param end the index immediately after the last character to be scanned
-   * @throws IllegalArgumentException if the scanned sub-sequence of {@code csq}
-   *     contains invalid surrogate pairs
-   */
-  protected int nextEscapeIndex(CharSequence csq, int start, int end) {
-    int index = start;
-    while (index < end) {
-      int cp = codePointAt(csq, index, end);
-      if (cp < 0 || escape(cp) != null) {
-        break;
-      }
-      index += Character.isSupplementaryCodePoint(cp) ? 2 : 1;
-    }
-    return index;
-  }
-
-  /**
    * Returns the escaped form of a given literal string.
    *
    * <p>If you are escaping input in arbitrary successive chunks, then it is not
@@ -121,7 +331,8 @@ abstract class UnicodeEscaper implements Escaper {
    * @throws IllegalArgumentException if invalid surrogate characters are
    *         encountered
    */
-  public String escape(String string) {
+  @Override
+public String escape(String string) {
     int end = string.length();
     int index = nextEscapeIndex(string, 0, end);
     return index == end ? string : escapeSlow(string, index);
@@ -199,244 +410,38 @@ abstract class UnicodeEscaper implements Escaper {
   }
 
   /**
-   * Returns an {@code Appendable} instance which automatically escapes all
-   * text appended to it before passing the resulting text to an underlying
-   * {@code Appendable}.
+   * Scans a sub-sequence of characters from a given {@link CharSequence},
+   * returning the index of the next character that requires escaping.
    *
-   * <p>Unlike {@link #escape(String)} it is permitted to append arbitrarily
-   * split input to this Appendable, including input that is split over a
-   * surrogate pair. In this case the pending high surrogate character will not
-   * be processed until the corresponding low surrogate is appended. This means
-   * that a trailing high surrogate character at the end of the input cannot be
-   * detected and will be silently ignored. This is unavoidable since the
-   * Appendable interface has no {@code close()} method, and it is impossible to
-   * determine when the last characters have been appended.
+   * <p><b>Note:</b> When implementing an escaper, it is a good idea to override
+   * this method for efficiency. The base class implementation determines
+   * successive Unicode code points and invokes {@link #escape(int)} for each of
+   * them. If the semantics of your escaper are such that code points in the
+   * supplementary range are either all escaped or all unescaped, this method
+   * can be implemented more efficiently using {@link CharSequence#charAt(int)}.
    *
-   * <p>The methods of the returned object will propagate any exceptions thrown
-   * by the underlying {@code Appendable}.
+   * <p>Note however that if your escaper does not escape characters in the
+   * supplementary range, you should either continue to validate the correctness
+   * of any surrogate characters encountered or provide a clear warning to users
+   * that your escaper does not validate its input.
    *
-   * <p>For well formed <a href="http://en.wikipedia.org/wiki/UTF-16">UTF-16</a>
-   * the escaping behavior is identical to that of {@link #escape(String)} and
-   * the following code is equivalent to (but much slower than)
-   * {@code escaper.escape(string)}: <pre>{@code
+   * <p>See {@link PercentEscaper} for an example.
    *
-   *   StringBuilder sb = new StringBuilder();
-   *   escaper.escape(sb).append(string);
-   *   return sb.toString();}</pre>
-   *
-   * @param out the underlying {@code Appendable} to append escaped output to
-   * @return an {@code Appendable} which passes text to {@code out} after
-   *     escaping it
-   * @throws NullPointerException if {@code out} is null
-   * @throws IllegalArgumentException if invalid surrogate characters are
-   *         encountered
-   *
+   * @param csq a sequence of characters
+   * @param start the index of the first character to be scanned
+   * @param end the index immediately after the last character to be scanned
+   * @throws IllegalArgumentException if the scanned sub-sequence of {@code csq}
+   *     contains invalid surrogate pairs
    */
-  public Appendable escape(final Appendable out) {
-    checkNotNull(out);
-
-    return new Appendable() {
-      int pendingHighSurrogate = -1;
-      char[] decodedChars = new char[2];
-
-      public Appendable append(CharSequence csq) throws IOException {
-        return append(csq, 0, csq.length());
+  protected int nextEscapeIndex(CharSequence csq, int start, int end) {
+    int index = start;
+    while (index < end) {
+      int cp = codePointAt(csq, index, end);
+      if (cp < 0 || escape(cp) != null) {
+        break;
       }
-
-      public Appendable append(CharSequence csq, int start, int end)
-          throws IOException {
-        int index = start;
-        if (index < end) {
-          // This is a little subtle: index must never reference the middle of a
-          // surrogate pair but unescapedChunkStart can. The first time we enter
-          // the loop below it is possible that index != unescapedChunkStart.
-          int unescapedChunkStart = index;
-          if (pendingHighSurrogate != -1) {
-            // Our last append operation ended halfway through a surrogate pair
-            // so we have to do some extra work first.
-            char c = csq.charAt(index++);
-            if (!Character.isLowSurrogate(c)) {
-              throw new IllegalArgumentException(
-                  "Expected low surrogate character but got " + c);
-            }
-            char[] escaped =
-                escape(Character.toCodePoint((char) pendingHighSurrogate, c));
-            if (escaped != null) {
-              // Emit the escaped character and adjust unescapedChunkStart to
-              // skip the low surrogate we have consumed.
-              outputChars(escaped, escaped.length);
-              unescapedChunkStart += 1;
-            } else {
-              // Emit pending high surrogate (unescaped) but do not modify
-              // unescapedChunkStart as we must still emit the low surrogate.
-              out.append((char) pendingHighSurrogate);
-            }
-            pendingHighSurrogate = -1;
-          }
-          while (true) {
-            // Find and append the next subsequence of unescaped characters.
-            index = nextEscapeIndex(csq, index, end);
-            if (index > unescapedChunkStart) {
-              out.append(csq, unescapedChunkStart, index);
-            }
-            if (index == end) {
-              break;
-            }
-            // If we are not finished, calculate the next code point.
-            int cp = codePointAt(csq, index, end);
-            if (cp < 0) {
-              // Our sequence ended half way through a surrogate pair so just
-              // record the state and exit.
-              pendingHighSurrogate = -cp;
-              break;
-            }
-            // Escape the code point and output the characters.
-            char[] escaped = escape(cp);
-            if (escaped != null) {
-              outputChars(escaped, escaped.length);
-            } else {
-              // This shouldn't really happen if nextEscapeIndex is correct but
-              // we should cope with false positives.
-              int len = Character.toChars(cp, decodedChars, 0);
-              outputChars(decodedChars, len);
-            }
-            // Update our index past the escaped character and continue.
-            index += (Character.isSupplementaryCodePoint(cp) ? 2 : 1);
-            unescapedChunkStart = index;
-          }
-        }
-        return this;
-      }
-
-      public Appendable append(char c) throws IOException {
-        if (pendingHighSurrogate != -1) {
-          // Our last append operation ended halfway through a surrogate pair
-          // so we have to do some extra work first.
-          if (!Character.isLowSurrogate(c)) {
-            throw new IllegalArgumentException(
-                "Expected low surrogate character but got '" + c +
-                "' with value " + (int) c);
-          }
-          char[] escaped =
-              escape(Character.toCodePoint((char) pendingHighSurrogate, c));
-          if (escaped != null) {
-            outputChars(escaped, escaped.length);
-          } else {
-            out.append((char) pendingHighSurrogate);
-            out.append(c);
-          }
-          pendingHighSurrogate = -1;
-        } else if (Character.isHighSurrogate(c)) {
-          // This is the start of a (split) surrogate pair.
-          pendingHighSurrogate = c;
-        } else {
-          if (Character.isLowSurrogate(c)) {
-            throw new IllegalArgumentException(
-                "Unexpected low surrogate character '" + c +
-                "' with value " + (int) c);
-          }
-          // This is a normal (non surrogate) char.
-          char[] escaped = escape(c);
-          if (escaped != null) {
-            outputChars(escaped, escaped.length);
-          } else {
-            out.append(c);
-          }
-        }
-        return this;
-      }
-
-      private void outputChars(char[] chars, int len) throws IOException {
-        for (int n = 0; n < len; n++) {
-          out.append(chars[n]);
-        }
-      }
-    };
-  }
-
-  /**
-   * Returns the Unicode code point of the character at the given index.
-   *
-   * <p>Unlike {@link Character#codePointAt(CharSequence, int)} or
-   * {@link String#codePointAt(int)} this method will never fail silently when
-   * encountering an invalid surrogate pair.
-   *
-   * <p>The behaviour of this method is as follows:
-   * <ol>
-   * <li>If {@code index >= end}, {@link IndexOutOfBoundsException} is thrown.
-   * <li><b>If the character at the specified index is not a surrogate, it is
-   *     returned.</b>
-   * <li>If the first character was a high surrogate value, then an attempt is
-   *     made to read the next character.
-   *     <ol>
-   *     <li><b>If the end of the sequence was reached, the negated value of
-   *         the trailing high surrogate is returned.</b>
-   *     <li><b>If the next character was a valid low surrogate, the code point
-   *         value of the high/low surrogate pair is returned.</b>
-   *     <li>If the next character was not a low surrogate value, then
-   *         {@link IllegalArgumentException} is thrown.
-   *     </ol>
-   * <li>If the first character was a low surrogate value,
-   *     {@link IllegalArgumentException} is thrown.
-   * </ol>
-   *
-   * @param seq the sequence of characters from which to decode the code point
-   * @param index the index of the first character to decode
-   * @param end the index beyond the last valid character to decode
-   * @return the Unicode code point for the given index or the negated value of
-   *         the trailing high surrogate character at the end of the sequence
-   */
-  protected static final int codePointAt(CharSequence seq, int index, int end) {
-    if (index < end) {
-      char c1 = seq.charAt(index++);
-      if (c1 < Character.MIN_HIGH_SURROGATE ||
-          c1 > Character.MAX_LOW_SURROGATE) {
-        // Fast path (first test is probably all we need to do)
-        return c1;
-      } else if (c1 <= Character.MAX_HIGH_SURROGATE) {
-        // If the high surrogate was the last character, return its inverse
-        if (index == end) {
-          return -c1;
-        }
-        // Otherwise look for the low surrogate following it
-        char c2 = seq.charAt(index);
-        if (Character.isLowSurrogate(c2)) {
-          return Character.toCodePoint(c1, c2);
-        }
-        throw new IllegalArgumentException(
-            "Expected low surrogate but got char '" + c2 +
-            "' with value " + (int) c2 + " at index " + index);
-      } else {
-        throw new IllegalArgumentException(
-            "Unexpected low surrogate character '" + c1 +
-            "' with value " + (int) c1 + " at index " + (index - 1));
-      }
+      index += Character.isSupplementaryCodePoint(cp) ? 2 : 1;
     }
-    throw new IndexOutOfBoundsException("Index exceeds specified range");
+    return index;
   }
-
-  /**
-   * Helper method to grow the character buffer as needed, this only happens
-   * once in a while so it's ok if it's in a method call.  If the index passed
-   * in is 0 then no copying will be done.
-   */
-  private static final char[] growBuffer(char[] dest, int index, int size) {
-    char[] copy = new char[size];
-    if (index > 0) {
-      System.arraycopy(dest, 0, copy, 0, index);
-    }
-    return copy;
-  }
-
-  /**
-   * A thread-local destination buffer to keep us from creating new buffers.
-   * The starting size is 1024 characters.  If we grow past this we don't
-   * put it back in the threadlocal, we just keep going and grow as needed.
-   */
-  private static final ThreadLocal<char[]> DEST_TL = new ThreadLocal<char[]>() {
-    @Override
-    protected char[] initialValue() {
-      return new char[1024];
-    }
-  };
 }

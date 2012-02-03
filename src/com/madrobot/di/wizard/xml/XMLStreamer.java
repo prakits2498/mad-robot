@@ -35,6 +35,96 @@ import com.madrobot.di.wizard.xml.io.xml.XppDriver;
 class XMLStreamer {
 
 	/**
+	 * Deserialize a self-contained XStream with object from an XML Reader.
+	 * 
+	 * @throws IOException
+	 *             if an error occurs reading from the Reader.
+	 * @throws ClassNotFoundException
+	 *             if a class in the XML stream cannot be found
+	 * @throws com.madrobot.di.wizard.xml.XMLWizardException
+	 *             if the object cannot be deserialized
+	 * @since 1.2
+	 */
+	Object fromXML(HierarchicalStreamDriver driver, Reader xml) throws IOException, ClassNotFoundException {
+		XMLWizard outer = new XMLWizard(driver);
+		HierarchicalStreamReader reader = driver.createReader(xml);
+		ObjectInputStream configIn = outer.createObjectInputStream(reader);
+		try {
+			XMLWizard configured = (XMLWizard) configIn.readObject();
+			ObjectInputStream in = configured.createObjectInputStream(reader);
+			try {
+				return in.readObject();
+			} finally {
+				in.close();
+			}
+		} finally {
+			configIn.close();
+		}
+	}
+
+	/**
+	 * Deserialize a self-contained XStream with object from a String.
+	 * 
+	 * @throws ClassNotFoundException
+	 *             if a class in the XML stream cannot be found
+	 * @throws ObjectStreamException
+	 *             if the XML contains non-deserializable elements
+	 * @throws com.madrobot.di.wizard.xml.XMLWizardException
+	 *             if the object cannot be deserialized
+	 * @since 1.2
+	 * @see #toXML(XMLWizard, Object, Writer)
+	 */
+	Object fromXML(HierarchicalStreamDriver driver, String xml) throws ClassNotFoundException, ObjectStreamException {
+		try {
+			return fromXML(driver, new StringReader(xml));
+		} catch (ObjectStreamException e) {
+			throw e;
+		} catch (IOException e) {
+			throw new ConversionException("Unexpeced IO error from a StringReader", e);
+		}
+	}
+
+	/**
+	 * Deserialize a self-contained XStream with object from an XML Reader. The method will use internally an XppDriver
+	 * to load the contained XStream instance.
+	 * 
+	 * @throws IOException
+	 *             if an error occurs reading from the Reader.
+	 * @throws ClassNotFoundException
+	 *             if a class in the XML stream cannot be found
+	 * @throws com.madrobot.di.wizard.xml.XMLWizardException
+	 *             if the object cannot be deserialized
+	 * @since 1.2
+	 * @see #toXML(XMLWizard, Object, Writer)
+	 */
+	Object fromXML(Reader xml) throws IOException, ClassNotFoundException {
+		return fromXML(new XppDriver(), xml);
+	}
+
+	/**
+	 * Deserialize a self-contained XStream with object from a String. The method will use internally an XppDriver to
+	 * load the contained XStream instance.
+	 * 
+	 * @throws ClassNotFoundException
+	 *             if a class in the XML stream cannot be found
+	 * @throws ObjectStreamException
+	 *             if the XML contains non-deserializable elements
+	 * @throws com.madrobot.di.wizard.xml.XMLWizardException
+	 *             if the object cannot be deserialized
+	 * @since 1.2
+	 * @see #toXML(XMLWizard, Object, Writer)
+	 */
+	Object fromXML(String xml) throws ClassNotFoundException, ObjectStreamException {
+		try {
+			return fromXML(new StringReader(xml));
+		} catch (ObjectStreamException e) {
+			throw e;
+		} catch (IOException e) {
+			throw new ConversionException("Unexpeced IO error from a StringReader", e);
+		}
+	}
+
+	/**
 	 * Serialize an object including the XStream to a pretty-printed XML String.
 	 * 
 	 * @throws ObjectStreamException
@@ -81,96 +171,6 @@ class XMLStreamer {
 			xstream.toXML(obj, out);
 		} finally {
 			oos.close();
-		}
-	}
-
-	/**
-	 * Deserialize a self-contained XStream with object from a String. The method will use internally an XppDriver to
-	 * load the contained XStream instance.
-	 * 
-	 * @throws ClassNotFoundException
-	 *             if a class in the XML stream cannot be found
-	 * @throws ObjectStreamException
-	 *             if the XML contains non-deserializable elements
-	 * @throws com.madrobot.di.wizard.xml.XMLWizardException
-	 *             if the object cannot be deserialized
-	 * @since 1.2
-	 * @see #toXML(XMLWizard, Object, Writer)
-	 */
-	Object fromXML(String xml) throws ClassNotFoundException, ObjectStreamException {
-		try {
-			return fromXML(new StringReader(xml));
-		} catch (ObjectStreamException e) {
-			throw e;
-		} catch (IOException e) {
-			throw new ConversionException("Unexpeced IO error from a StringReader", e);
-		}
-	}
-
-	/**
-	 * Deserialize a self-contained XStream with object from a String.
-	 * 
-	 * @throws ClassNotFoundException
-	 *             if a class in the XML stream cannot be found
-	 * @throws ObjectStreamException
-	 *             if the XML contains non-deserializable elements
-	 * @throws com.madrobot.di.wizard.xml.XMLWizardException
-	 *             if the object cannot be deserialized
-	 * @since 1.2
-	 * @see #toXML(XMLWizard, Object, Writer)
-	 */
-	Object fromXML(HierarchicalStreamDriver driver, String xml) throws ClassNotFoundException, ObjectStreamException {
-		try {
-			return fromXML(driver, new StringReader(xml));
-		} catch (ObjectStreamException e) {
-			throw e;
-		} catch (IOException e) {
-			throw new ConversionException("Unexpeced IO error from a StringReader", e);
-		}
-	}
-
-	/**
-	 * Deserialize a self-contained XStream with object from an XML Reader. The method will use internally an XppDriver
-	 * to load the contained XStream instance.
-	 * 
-	 * @throws IOException
-	 *             if an error occurs reading from the Reader.
-	 * @throws ClassNotFoundException
-	 *             if a class in the XML stream cannot be found
-	 * @throws com.madrobot.di.wizard.xml.XMLWizardException
-	 *             if the object cannot be deserialized
-	 * @since 1.2
-	 * @see #toXML(XMLWizard, Object, Writer)
-	 */
-	Object fromXML(Reader xml) throws IOException, ClassNotFoundException {
-		return fromXML(new XppDriver(), xml);
-	}
-
-	/**
-	 * Deserialize a self-contained XStream with object from an XML Reader.
-	 * 
-	 * @throws IOException
-	 *             if an error occurs reading from the Reader.
-	 * @throws ClassNotFoundException
-	 *             if a class in the XML stream cannot be found
-	 * @throws com.madrobot.di.wizard.xml.XMLWizardException
-	 *             if the object cannot be deserialized
-	 * @since 1.2
-	 */
-	Object fromXML(HierarchicalStreamDriver driver, Reader xml) throws IOException, ClassNotFoundException {
-		XMLWizard outer = new XMLWizard(driver);
-		HierarchicalStreamReader reader = driver.createReader(xml);
-		ObjectInputStream configIn = outer.createObjectInputStream(reader);
-		try {
-			XMLWizard configured = (XMLWizard) configIn.readObject();
-			ObjectInputStream in = configured.createObjectInputStream(reader);
-			try {
-				return in.readObject();
-			} finally {
-				in.close();
-			}
-		} finally {
-			configIn.close();
 		}
 	}
 

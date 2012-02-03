@@ -26,199 +26,6 @@ import com.madrobot.util.FastStack;
 
 public class CustomObjectInputStream extends ObjectInputStream {
 
-	private FastStack callbacks = new FastStack(1);
-	private final ClassLoader classLoader;
-
-	private static final String DATA_HOLDER_KEY = CustomObjectInputStream.class.getName();
-
-	public static interface StreamCallback {
-		Object readFromStream() throws IOException;
-
-		Map readFieldsFromStream() throws IOException;
-
-		void defaultReadObject() throws IOException;
-
-		void registerValidation(ObjectInputValidation validation, int priority) throws NotActiveException,
-				InvalidObjectException;
-
-		void close() throws IOException;
-	}
-
-	/**
-	 * @deprecated As of 1.4 use {@link #getInstance(DataHolder, StreamCallback, ClassLoader)}
-	 */
-	@Deprecated
-	public static CustomObjectInputStream getInstance(DataHolder whereFrom, CustomObjectInputStream.StreamCallback callback) {
-		return getInstance(whereFrom, callback, null);
-	}
-
-	public static synchronized CustomObjectInputStream getInstance(DataHolder whereFrom, CustomObjectInputStream.StreamCallback callback, ClassLoader classLoaderReference) {
-		try {
-			CustomObjectInputStream result = (CustomObjectInputStream) whereFrom.get(DATA_HOLDER_KEY);
-			if (result == null) {
-				result = new CustomObjectInputStream(callback, classLoaderReference);
-				whereFrom.put(DATA_HOLDER_KEY, result);
-			} else {
-				result.pushCallback(callback);
-			}
-			return result;
-		} catch (IOException e) {
-			throw new ConversionException("Cannot create CustomObjectStream", e);
-		}
-	}
-
-	/**
-	 * Warning, this object is expensive to create (due to functionality inherited from superclass). Use the static
-	 * fetch() method instead, wherever possible.
-	 * 
-	 * @see #getInstance(DataHolder, StreamCallback, ClassLoader)
-	 */
-	public CustomObjectInputStream(StreamCallback callback, ClassLoader classLoader)
-			throws IOException,
-			SecurityException {
-		super();
-		this.callbacks.push(callback);
-		this.classLoader = classLoader;
-	}
-
-	/**
-	 * Allows the CustomObjectInputStream (which is expensive to create) to be reused.
-	 */
-	public void pushCallback(StreamCallback callback) {
-		this.callbacks.push(callback);
-	}
-
-	public StreamCallback popCallback() {
-		return (StreamCallback) this.callbacks.pop();
-	}
-
-	public StreamCallback peekCallback() {
-		return (StreamCallback) this.callbacks.peek();
-	}
-
-	@Override
-	protected Class resolveClass(ObjectStreamClass desc) throws IOException, ClassNotFoundException {
-		if (classLoader == null) {
-			return super.resolveClass(desc);
-		} else {
-			return Class.forName(desc.getName(), false, classLoader);
-		}
-	}
-
-	@Override
-	public void defaultReadObject() throws IOException {
-		peekCallback().defaultReadObject();
-	}
-
-	@Override
-	protected Object readObjectOverride() throws IOException {
-		return peekCallback().readFromStream();
-	}
-
-	@Override
-	public Object readUnshared() throws IOException, ClassNotFoundException {
-		return readObject();
-	}
-
-	@Override
-	public boolean readBoolean() throws IOException {
-		return ((Boolean) peekCallback().readFromStream()).booleanValue();
-	}
-
-	@Override
-	public byte readByte() throws IOException {
-		return ((Byte) peekCallback().readFromStream()).byteValue();
-	}
-
-	@Override
-	public int readUnsignedByte() throws IOException {
-		int b = ((Byte) peekCallback().readFromStream()).byteValue();
-		if (b < 0) {
-			b += Byte.MAX_VALUE;
-		}
-		return b;
-	}
-
-	@Override
-	public int readInt() throws IOException {
-		return ((Integer) peekCallback().readFromStream()).intValue();
-	}
-
-	@Override
-	public char readChar() throws IOException {
-		return ((Character) peekCallback().readFromStream()).charValue();
-	}
-
-	@Override
-	public float readFloat() throws IOException {
-		return ((Float) peekCallback().readFromStream()).floatValue();
-	}
-
-	@Override
-	public double readDouble() throws IOException {
-		return ((Double) peekCallback().readFromStream()).doubleValue();
-	}
-
-	@Override
-	public long readLong() throws IOException {
-		return ((Long) peekCallback().readFromStream()).longValue();
-	}
-
-	@Override
-	public short readShort() throws IOException {
-		return ((Short) peekCallback().readFromStream()).shortValue();
-	}
-
-	@Override
-	public int readUnsignedShort() throws IOException {
-		int b = ((Short) peekCallback().readFromStream()).shortValue();
-		if (b < 0) {
-			b += Short.MAX_VALUE;
-		}
-		return b;
-	}
-
-	@Override
-	public String readUTF() throws IOException {
-		return (String) peekCallback().readFromStream();
-	}
-
-	@Override
-	public void readFully(byte[] buf) throws IOException {
-		readFully(buf, 0, buf.length);
-	}
-
-	@Override
-	public void readFully(byte[] buf, int off, int len) throws IOException {
-		byte[] b = (byte[]) peekCallback().readFromStream();
-		System.arraycopy(b, 0, buf, off, len);
-	}
-
-	@Override
-	public int read() throws IOException {
-		return readUnsignedByte();
-	}
-
-	@Override
-	public int read(byte[] buf, int off, int len) throws IOException {
-		byte[] b = (byte[]) peekCallback().readFromStream();
-		if (b.length != len) {
-			throw new StreamCorruptedException("Expected " + len + " bytes from stream, got " + b.length);
-		}
-		System.arraycopy(b, 0, buf, off, len);
-		return len;
-	}
-
-	@Override
-	public int read(byte b[]) throws IOException {
-		return read(b, 0, b.length);
-	}
-
-	@Override
-	public GetField readFields() throws IOException {
-		return new CustomGetField(peekCallback().readFieldsFromStream());
-	}
-
 	private class CustomGetField extends GetField {
 
 		private Map fields;
@@ -228,8 +35,8 @@ public class CustomObjectInputStream extends ObjectInputStream {
 		}
 
 		@Override
-		public ObjectStreamClass getObjectStreamClass() {
-			throw new UnsupportedOperationException();
+		public boolean defaulted(String name) {
+			return !fields.containsKey(name);
 		}
 
 		private Object get(String name) {
@@ -237,8 +44,8 @@ public class CustomObjectInputStream extends ObjectInputStream {
 		}
 
 		@Override
-		public boolean defaulted(String name) {
-			return !fields.containsKey(name);
+		public boolean get(String name, boolean val) {
+			return defaulted(name) ? val : ((Boolean) get(name)).booleanValue();
 		}
 
 		@Override
@@ -272,31 +79,75 @@ public class CustomObjectInputStream extends ObjectInputStream {
 		}
 
 		@Override
+		public Object get(String name, Object val) {
+			return defaulted(name) ? val : get(name);
+		}
+
+		@Override
 		public short get(String name, short val) {
 			return defaulted(name) ? val : ((Short) get(name)).shortValue();
 		}
 
 		@Override
-		public boolean get(String name, boolean val) {
-			return defaulted(name) ? val : ((Boolean) get(name)).booleanValue();
-		}
-
-		@Override
-		public Object get(String name, Object val) {
-			return defaulted(name) ? val : get(name);
+		public ObjectStreamClass getObjectStreamClass() {
+			throw new UnsupportedOperationException();
 		}
 
 	}
+	public static interface StreamCallback {
+		void close() throws IOException;
 
-	@Override
-	public void registerValidation(ObjectInputValidation validation, int priority) throws NotActiveException,
-			InvalidObjectException {
-		peekCallback().registerValidation(validation, priority);
+		void defaultReadObject() throws IOException;
+
+		Map readFieldsFromStream() throws IOException;
+
+		Object readFromStream() throws IOException;
+
+		void registerValidation(ObjectInputValidation validation, int priority) throws NotActiveException,
+				InvalidObjectException;
 	}
 
-	@Override
-	public void close() throws IOException {
-		peekCallback().close();
+	private static final String DATA_HOLDER_KEY = CustomObjectInputStream.class.getName();
+
+	/**
+	 * @deprecated As of 1.4 use {@link #getInstance(DataHolder, StreamCallback, ClassLoader)}
+	 */
+	@Deprecated
+	public static CustomObjectInputStream getInstance(DataHolder whereFrom, CustomObjectInputStream.StreamCallback callback) {
+		return getInstance(whereFrom, callback, null);
+	}
+
+	public static synchronized CustomObjectInputStream getInstance(DataHolder whereFrom, CustomObjectInputStream.StreamCallback callback, ClassLoader classLoaderReference) {
+		try {
+			CustomObjectInputStream result = (CustomObjectInputStream) whereFrom.get(DATA_HOLDER_KEY);
+			if (result == null) {
+				result = new CustomObjectInputStream(callback, classLoaderReference);
+				whereFrom.put(DATA_HOLDER_KEY, result);
+			} else {
+				result.pushCallback(callback);
+			}
+			return result;
+		} catch (IOException e) {
+			throw new ConversionException("Cannot create CustomObjectStream", e);
+		}
+	}
+
+	private FastStack callbacks = new FastStack(1);
+
+	private final ClassLoader classLoader;
+
+	/**
+	 * Warning, this object is expensive to create (due to functionality inherited from superclass). Use the static
+	 * fetch() method instead, wherever possible.
+	 * 
+	 * @see #getInstance(DataHolder, StreamCallback, ClassLoader)
+	 */
+	public CustomObjectInputStream(StreamCallback callback, ClassLoader classLoader)
+			throws IOException,
+			SecurityException {
+		super();
+		this.callbacks.push(callback);
+		this.classLoader = classLoader;
 	}
 
 	/****** Unsupported methods ******/
@@ -307,18 +158,13 @@ public class CustomObjectInputStream extends ObjectInputStream {
 	}
 
 	@Override
-	public String readLine() {
-		throw new UnsupportedOperationException();
+	public void close() throws IOException {
+		peekCallback().close();
 	}
 
 	@Override
-	public int skipBytes(int len) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public long skip(long n) {
-		throw new UnsupportedOperationException();
+	public void defaultReadObject() throws IOException {
+		peekCallback().defaultReadObject();
 	}
 
 	@Override
@@ -327,13 +173,167 @@ public class CustomObjectInputStream extends ObjectInputStream {
 	}
 
 	@Override
+	public boolean markSupported() {
+		return false;
+	}
+
+	public StreamCallback peekCallback() {
+		return (StreamCallback) this.callbacks.peek();
+	}
+
+	public StreamCallback popCallback() {
+		return (StreamCallback) this.callbacks.pop();
+	}
+
+	/**
+	 * Allows the CustomObjectInputStream (which is expensive to create) to be reused.
+	 */
+	public void pushCallback(StreamCallback callback) {
+		this.callbacks.push(callback);
+	}
+
+	@Override
+	public int read() throws IOException {
+		return readUnsignedByte();
+	}
+
+	@Override
+	public int read(byte b[]) throws IOException {
+		return read(b, 0, b.length);
+	}
+
+	@Override
+	public int read(byte[] buf, int off, int len) throws IOException {
+		byte[] b = (byte[]) peekCallback().readFromStream();
+		if (b.length != len) {
+			throw new StreamCorruptedException("Expected " + len + " bytes from stream, got " + b.length);
+		}
+		System.arraycopy(b, 0, buf, off, len);
+		return len;
+	}
+
+	@Override
+	public boolean readBoolean() throws IOException {
+		return ((Boolean) peekCallback().readFromStream()).booleanValue();
+	}
+
+	@Override
+	public byte readByte() throws IOException {
+		return ((Byte) peekCallback().readFromStream()).byteValue();
+	}
+
+	@Override
+	public char readChar() throws IOException {
+		return ((Character) peekCallback().readFromStream()).charValue();
+	}
+
+	@Override
+	public double readDouble() throws IOException {
+		return ((Double) peekCallback().readFromStream()).doubleValue();
+	}
+
+	@Override
+	public GetField readFields() throws IOException {
+		return new CustomGetField(peekCallback().readFieldsFromStream());
+	}
+
+	@Override
+	public float readFloat() throws IOException {
+		return ((Float) peekCallback().readFromStream()).floatValue();
+	}
+
+	@Override
+	public void readFully(byte[] buf) throws IOException {
+		readFully(buf, 0, buf.length);
+	}
+
+	@Override
+	public void readFully(byte[] buf, int off, int len) throws IOException {
+		byte[] b = (byte[]) peekCallback().readFromStream();
+		System.arraycopy(b, 0, buf, off, len);
+	}
+
+	@Override
+	public int readInt() throws IOException {
+		return ((Integer) peekCallback().readFromStream()).intValue();
+	}
+
+	@Override
+	public String readLine() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public long readLong() throws IOException {
+		return ((Long) peekCallback().readFromStream()).longValue();
+	}
+
+	@Override
+	protected Object readObjectOverride() throws IOException {
+		return peekCallback().readFromStream();
+	}
+
+	@Override
+	public short readShort() throws IOException {
+		return ((Short) peekCallback().readFromStream()).shortValue();
+	}
+
+	@Override
+	public Object readUnshared() throws IOException, ClassNotFoundException {
+		return readObject();
+	}
+
+	@Override
+	public int readUnsignedByte() throws IOException {
+		int b = ((Byte) peekCallback().readFromStream()).byteValue();
+		if (b < 0) {
+			b += Byte.MAX_VALUE;
+		}
+		return b;
+	}
+
+	@Override
+	public int readUnsignedShort() throws IOException {
+		int b = ((Short) peekCallback().readFromStream()).shortValue();
+		if (b < 0) {
+			b += Short.MAX_VALUE;
+		}
+		return b;
+	}
+
+	@Override
+	public String readUTF() throws IOException {
+		return (String) peekCallback().readFromStream();
+	}
+
+	@Override
+	public void registerValidation(ObjectInputValidation validation, int priority) throws NotActiveException,
+			InvalidObjectException {
+		peekCallback().registerValidation(validation, priority);
+	}
+
+	@Override
 	public void reset() {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public boolean markSupported() {
-		return false;
+	protected Class resolveClass(ObjectStreamClass desc) throws IOException, ClassNotFoundException {
+		if (classLoader == null) {
+			return super.resolveClass(desc);
+		} else {
+			return Class.forName(desc.getName(), false, classLoader);
+		}
+	}
+
+	@Override
+	public long skip(long n) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int skipBytes(int len) {
+		throw new UnsupportedOperationException();
 	}
 
 }

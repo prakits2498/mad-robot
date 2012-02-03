@@ -10,18 +10,6 @@ package com.madrobot.util.pdf;
 		clear();
 	}
 	
-	 void setObjectNumberStart(int Value) {
-		mObjectNumberStart = Value;
-	}
-	
-	 int getObjectNumberStart() {
-		return mObjectNumberStart;
-	}
-	
-	private String getObjectsXRefInfo() {
-		return renderList();
-	}
-	
 	 void addObjectXRefInfo(int ByteOffset, int Generation, boolean InUse) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(String.format("%010d", ByteOffset));
@@ -34,6 +22,21 @@ package com.madrobot.util.pdf;
 		}
 		sb.append("\n");
 		mList.add(sb.toString());
+	}
+	
+	 @Override
+	public void clear() {
+		super.clear();
+		addObjectXRefInfo(0, 65536, false); // free objects linked list head
+		mObjectNumberStart = 0;
+	}
+	
+	int getObjectNumberStart() {
+		return mObjectNumberStart;
+	}
+	
+	 private String getObjectsXRefInfo() {
+		return renderList();
 	}
 
 	private String render() {
@@ -48,16 +51,13 @@ package com.madrobot.util.pdf;
 		return sb.toString(); 
 	}	
 	
-	@Override
-	public String toPDFString() {
-		return render();
+	void setObjectNumberStart(int Value) {
+		mObjectNumberStart = Value;
 	}
 
 	@Override
-	public void clear() {
-		super.clear();
-		addObjectXRefInfo(0, 65536, false); // free objects linked list head
-		mObjectNumberStart = 0;
+	public String toPDFString() {
+		return render();
 	}
 
 }

@@ -14,19 +14,23 @@ public class HttpURLConnectionResponseAdapter implements HttpResponse {
         this.connection = connection;
     }
 
-    public InputStream getContent() throws IOException {
+    @Override
+	public InputStream getContent() throws IOException {
         return connection.getInputStream();
     }
 
-    public int getStatusCode() throws IOException {
-        return connection.getResponseCode();
-    }
-
-    public String getReasonPhrase() throws Exception {
+    @Override
+	public String getReasonPhrase() throws Exception {
         return connection.getResponseMessage();
     }
 
-    public Object unwrap() {
+    @Override
+	public int getStatusCode() throws IOException {
+        return connection.getResponseCode();
+    }
+
+    @Override
+	public Object unwrap() {
         return connection;
     }
 }

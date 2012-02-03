@@ -40,9 +40,9 @@ import org.apache.http.protocol.HttpContext;
 import android.os.SystemClock;
 
 class RetryHandler implements HttpRequestRetryHandler {
-    private static final int RETRY_SLEEP_TIME_MILLIS = 1500;
-    private static HashSet<Class<?>> exceptionWhitelist = new HashSet<Class<?>>();
     private static HashSet<Class<?>> exceptionBlacklist = new HashSet<Class<?>>();
+    private static HashSet<Class<?>> exceptionWhitelist = new HashSet<Class<?>>();
+    private static final int RETRY_SLEEP_TIME_MILLIS = 1500;
 
     static {
         // Retry if the server dropped connection on us
@@ -64,7 +64,8 @@ class RetryHandler implements HttpRequestRetryHandler {
         this.maxRetries = maxRetries;
     }
 
-    public boolean retryRequest(IOException exception, int executionCount, HttpContext context) {
+    @Override
+	public boolean retryRequest(IOException exception, int executionCount, HttpContext context) {
         boolean retry;
 
         Boolean b = (Boolean) context.getAttribute(ExecutionContext.HTTP_REQ_SENT);

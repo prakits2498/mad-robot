@@ -36,6 +36,11 @@ public class CollectionConverter extends AbstractCollectionConverter {
 		super(mapper);
 	}
 
+	protected void addCurrentElementToCollection(HierarchicalStreamReader reader, UnmarshallingContext context, Collection collection, Collection target) {
+		Object item = readItem(reader, context, collection);
+		target.add(item);
+	}
+
 	@Override
 	public boolean canConvert(Class type) {
 		return type.equals(ArrayList.class) || type.equals(HashSet.class) || type.equals(LinkedList.class)
@@ -51,13 +56,6 @@ public class CollectionConverter extends AbstractCollectionConverter {
 		}
 	}
 
-	@Override
-	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
-		Collection collection = (Collection) createCollection(context.getRequiredType());
-		populateCollection(reader, context, collection);
-		return collection;
-	}
-
 	protected void populateCollection(HierarchicalStreamReader reader, UnmarshallingContext context, Collection collection) {
 		populateCollection(reader, context, collection, collection);
 	}
@@ -70,8 +68,10 @@ public class CollectionConverter extends AbstractCollectionConverter {
 		}
 	}
 
-	protected void addCurrentElementToCollection(HierarchicalStreamReader reader, UnmarshallingContext context, Collection collection, Collection target) {
-		Object item = readItem(reader, context, collection);
-		target.add(item);
+	@Override
+	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+		Collection collection = (Collection) createCollection(context.getRequiredType());
+		populateCollection(reader, context, collection);
+		return collection;
 	}
 }

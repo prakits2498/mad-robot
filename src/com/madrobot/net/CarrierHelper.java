@@ -50,8 +50,8 @@ public final class CarrierHelper {
 	 * Represents the Current Carrier
 	 */
 	public enum Carrier {
-		BEARER_WIFI,
-		BEARER_3G;
+		BEARER_3G,
+		BEARER_WIFI;
 	}
 
 	/**
@@ -91,18 +91,18 @@ public final class CarrierHelper {
 	 */
 	private Set<Carrier> availableBearer;
 	/**
-	 * Holds the current bearer
-	 */
-	private Carrier currentBearer;
-	/**
 	 * Represents the connection manager for context
 	 */
 	private ConnectivityManager connectivityManager;
-
 	/**
 	 * Represents the application context
 	 */
 	private Context context;
+
+	/**
+	 * Holds the current bearer
+	 */
+	private Carrier currentBearer;
 
 	/**
 	 * The BroadcastReceiver is registered by BearerHandler as a broadcast

@@ -35,16 +35,16 @@ public class ColorPanelView extends View{
 	
 	private static float mDensity = 1f;
 	
+	private AlphaPatternDrawable mAlphaPattern;
 	private int 		mBorderColor = 0xff6E6E6E;
-	private int 		mColor = 0xff000000;
 	
 	private Paint		mBorderPaint;
-	private Paint		mColorPaint;
+	private int 		mColor = 0xff000000;
 	
-	private RectF		mDrawingRect;
+	private Paint		mColorPaint;
 	private RectF		mColorRect;
 
-	private AlphaPatternDrawable mAlphaPattern;
+	private RectF		mDrawingRect;
 	
 	
 	public ColorPanelView(Context context){

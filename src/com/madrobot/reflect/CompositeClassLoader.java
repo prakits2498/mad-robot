@@ -35,8 +35,8 @@ import java.util.List;
  */
 public class CompositeClassLoader extends ClassLoader {
 
-    private final ReferenceQueue queue = new ReferenceQueue();
     private final List<WeakReference<Object>> classLoaders = new ArrayList<WeakReference<Object>>();
+    private final ReferenceQueue queue = new ReferenceQueue();
 
     public CompositeClassLoader() {
         addInternal(Object.class.getClassLoader()); // bootstrap loader.
@@ -69,18 +69,17 @@ public class CompositeClassLoader extends ClassLoader {
         classLoaders.add(0, refClassLoader != null ? refClassLoader : new WeakReference(classLoader, queue));
     }
 
+    private void cleanup() {
+        WeakReference ref;
+        while ((ref = (WeakReference)queue.poll()) != null)
+        {
+            classLoaders.remove(ref);
+        }
+    }
+
     @Override
 	public Class loadClass(String name) throws ClassNotFoundException {
         List copy = new ArrayList(classLoaders.size()) {
-
-            @Override
-			public boolean addAll(Collection c) {
-                boolean result = false;
-                for(Iterator iter = c.iterator(); iter.hasNext(); ) {
-                    result |= add(iter.next());
-                }
-                return result;
-            }
 
             @Override
 			public boolean add(Object ref) {
@@ -89,6 +88,15 @@ public class CompositeClassLoader extends ClassLoader {
                     return super.add(classLoader);
                 }
                 return false;
+            }
+
+            @Override
+			public boolean addAll(Collection c) {
+                boolean result = false;
+                for(Iterator iter = c.iterator(); iter.hasNext(); ) {
+                    result |= add(iter.next());
+                }
+                return result;
             }
             
         };
@@ -117,14 +125,6 @@ public class CompositeClassLoader extends ClassLoader {
             return contextClassLoader.loadClass(name);
         } else {
             throw new ClassNotFoundException(name);
-        }
-    }
-
-    private void cleanup() {
-        WeakReference ref;
-        while ((ref = (WeakReference)queue.poll()) != null)
-        {
-            classLoaders.remove(ref);
         }
     }
 }

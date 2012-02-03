@@ -86,6 +86,45 @@ import java.util.List;
 class ReflectionToStringBuilder extends ToStringBuilder {
 
 	/**
+	 * Converts the given Collection into an array of Strings. The returned
+	 * array does not contain <code>null</code> entries. Note that
+	 * {@link Arrays#sort(Object[])} will throw an {@link NullPointerException}
+	 * if an array element
+	 * is <code>null</code>.
+	 * 
+	 * @param collection
+	 *            The collection to convert
+	 * @return A new array of Strings.
+	 */
+	static String[] toNoNullStringArray(Collection<String> collection) {
+		if(collection == null){
+			return ArrayUtils.EMPTY_STRING_ARRAY;
+		}
+		return toNoNullStringArray(collection.toArray());
+	}
+
+	/**
+	 * Returns a new array of Strings without null elements. Internal method
+	 * used to normalize exclude lists
+	 * (arrays and collections). Note that {@link Arrays#sort(Object[])} will
+	 * throw an {@link NullPointerException} if an array element is
+	 * <code>null</code>.
+	 * 
+	 * @param array
+	 *            The array to check
+	 * @return The given array or a new array without null.
+	 */
+	static String[] toNoNullStringArray(Object[] array) {
+		List<String> list = new ArrayList<String>(array.length);
+		for(Object e : array){
+			if(e != null){
+				list.add(e.toString());
+			}
+		}
+		return list.toArray(ArrayUtils.EMPTY_STRING_ARRAY);
+	}
+
+	/**
 	 * <p>
 	 * Builds a <code>toString</code> value using the default
 	 * <code>ToStringStyle</code> through reflection.
@@ -300,19 +339,6 @@ class ReflectionToStringBuilder extends ToStringBuilder {
 	}
 
 	/**
-	 * Builds a String for a toString method excluding the given field name.
-	 * 
-	 * @param object
-	 *            The object to "toString".
-	 * @param excludeFieldName
-	 *            The field name to exclude
-	 * @return The toString value.
-	 */
-	public static String toStringExclude(Object object, final String excludeFieldName) {
-		return toStringExclude(object, new String[] { excludeFieldName });
-	}
-
-	/**
 	 * Builds a String for a toString method excluding the given field names.
 	 * 
 	 * @param object
@@ -326,42 +352,16 @@ class ReflectionToStringBuilder extends ToStringBuilder {
 	}
 
 	/**
-	 * Converts the given Collection into an array of Strings. The returned
-	 * array does not contain <code>null</code> entries. Note that
-	 * {@link Arrays#sort(Object[])} will throw an {@link NullPointerException}
-	 * if an array element
-	 * is <code>null</code>.
+	 * Builds a String for a toString method excluding the given field name.
 	 * 
-	 * @param collection
-	 *            The collection to convert
-	 * @return A new array of Strings.
+	 * @param object
+	 *            The object to "toString".
+	 * @param excludeFieldName
+	 *            The field name to exclude
+	 * @return The toString value.
 	 */
-	static String[] toNoNullStringArray(Collection<String> collection) {
-		if(collection == null){
-			return ArrayUtils.EMPTY_STRING_ARRAY;
-		}
-		return toNoNullStringArray(collection.toArray());
-	}
-
-	/**
-	 * Returns a new array of Strings without null elements. Internal method
-	 * used to normalize exclude lists
-	 * (arrays and collections). Note that {@link Arrays#sort(Object[])} will
-	 * throw an {@link NullPointerException} if an array element is
-	 * <code>null</code>.
-	 * 
-	 * @param array
-	 *            The array to check
-	 * @return The given array or a new array without null.
-	 */
-	static String[] toNoNullStringArray(Object[] array) {
-		List<String> list = new ArrayList<String>(array.length);
-		for(Object e : array){
-			if(e != null){
-				list.add(e.toString());
-			}
-		}
-		return list.toArray(ArrayUtils.EMPTY_STRING_ARRAY);
+	public static String toStringExclude(Object object, final String excludeFieldName) {
+		return toStringExclude(object, new String[] { excludeFieldName });
 	}
 
 	/**

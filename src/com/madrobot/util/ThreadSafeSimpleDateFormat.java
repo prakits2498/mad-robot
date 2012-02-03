@@ -43,6 +43,15 @@ public class ThreadSafeSimpleDateFormat {
         });
     }
 
+    private DateFormat fetchFromPool() {
+        DateFormat format = (DateFormat)pool.fetchFromPool();
+        TimeZone tz = timeZone != null ? timeZone : TimeZone.getDefault();
+        if (!tz.equals(format.getTimeZone())) {
+            format.setTimeZone(tz);
+        }
+        return format;
+    }
+
     public String format(Date date) {
         DateFormat format = fetchFromPool();
         try {
@@ -59,15 +68,6 @@ public class ThreadSafeSimpleDateFormat {
         } finally {
             pool.putInPool(format);
         }
-    }
-
-    private DateFormat fetchFromPool() {
-        DateFormat format = (DateFormat)pool.fetchFromPool();
-        TimeZone tz = timeZone != null ? timeZone : TimeZone.getDefault();
-        if (!tz.equals(format.getTimeZone())) {
-            format.setTimeZone(tz);
-        }
-        return format;
     }
 
     @Override

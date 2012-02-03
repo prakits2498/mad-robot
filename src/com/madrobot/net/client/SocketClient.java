@@ -43,24 +43,21 @@ import javax.net.SocketFactory;
  * 
  */
 public abstract class SocketClient {
+	/** The default {@link ServerSocketFactory} */
+	private static final ServerSocketFactory __DEFAULT_SERVER_SOCKET_FACTORY = ServerSocketFactory
+			.getDefault();
+
+	/** The default SocketFactory shared by all SocketClient instances. */
+	private static final SocketFactory __DEFAULT_SOCKET_FACTORY = SocketFactory.getDefault();
+
+	/** The socket's connect timeout (0 = infinite timeout) */
+	private static final int DEFAULT_CONNECT_TIMEOUT = 0;
+
 	/**
 	 * The end of line character sequence used by most IETF protocols. That
 	 * is a carriage return followed by a newline: "\r\n"
 	 */
 	public static final String NETASCII_EOL = "\r\n";
-
-	/** The default SocketFactory shared by all SocketClient instances. */
-	private static final SocketFactory __DEFAULT_SOCKET_FACTORY = SocketFactory.getDefault();
-
-	/** The default {@link ServerSocketFactory} */
-	private static final ServerSocketFactory __DEFAULT_SERVER_SOCKET_FACTORY = ServerSocketFactory
-			.getDefault();
-
-	/** The timeout to use after opening a socket. */
-	protected int _timeout_;
-
-	/** The socket used for the connection. */
-	protected Socket _socket_;
 
 	/** The default port the client should connect to. */
 	protected int _defaultPort_;
@@ -71,14 +68,17 @@ public abstract class SocketClient {
 	/** The socket's OutputStream. */
 	protected OutputStream _output_;
 
-	/** The socket's SocketFactory. */
-	protected SocketFactory _socketFactory_;
-
 	/** The socket's ServerSocket Factory. */
 	protected ServerSocketFactory _serverSocketFactory_;
 
-	/** The socket's connect timeout (0 = infinite timeout) */
-	private static final int DEFAULT_CONNECT_TIMEOUT = 0;
+	/** The socket used for the connection. */
+	protected Socket _socket_;
+
+	/** The socket's SocketFactory. */
+	protected SocketFactory _socketFactory_;
+
+	/** The timeout to use after opening a socket. */
+	protected int _timeout_;
 	protected int connectTimeout = DEFAULT_CONNECT_TIMEOUT;
 
 	/** Hint for SO_RCVBUF size */
@@ -125,6 +125,45 @@ public abstract class SocketClient {
 		_output_ = _socket_.getOutputStream();
 	}
 
+	private void closeQuietly(Closeable close) {
+		if(close != null){
+			try{
+				close.close();
+			} catch(IOException e){
+			}
+		}
+	}
+
+	private void closeQuietly(Socket socket) {
+		if(socket != null){
+			try{
+				socket.close();
+			} catch(IOException e){
+			}
+		}
+	}
+
+	/**
+	 * Opens a Socket connected to a remote host at the current default port
+	 * and originating from the current host at a system assigned port.
+	 * Before returning, {@link #_connectAction_ _connectAction_() } is called
+	 * to perform connection initialization actions.
+	 * <p>
+	 * 
+	 * @param host
+	 *            The remote host.
+	 * @exception SocketException
+	 *                If the socket timeout could not be set.
+	 * @exception IOException
+	 *                If the socket could not be opened. In most
+	 *                cases you will only want to catch IOException since
+	 *                SocketException is
+	 *                derived from it.
+	 */
+	public void connect(InetAddress host) throws SocketException, IOException {
+		connect(host, _defaultPort_);
+	}
+
 	/**
 	 * Opens a Socket connected to a remote host at the specified port and
 	 * originating from the current host at a system assigned port.
@@ -154,31 +193,6 @@ public abstract class SocketClient {
 		}
 		_socket_.connect(new InetSocketAddress(host, port), connectTimeout);
 		_connectAction_();
-	}
-
-	/**
-	 * Opens a Socket connected to a remote host at the specified port and
-	 * originating from the current host at a system assigned port.
-	 * Before returning, {@link #_connectAction_ _connectAction_() } is called
-	 * to perform connection initialization actions.
-	 * <p>
-	 * 
-	 * @param hostname
-	 *            The name of the remote host.
-	 * @param port
-	 *            The port to connect to on the remote host.
-	 * @exception SocketException
-	 *                If the socket timeout could not be set.
-	 * @exception IOException
-	 *                If the socket could not be opened. In most
-	 *                cases you will only want to catch IOException since
-	 *                SocketException is
-	 *                derived from it.
-	 * @exception UnknownHostException
-	 *                If the hostname cannot be resolved.
-	 */
-	public void connect(String hostname, int port) throws SocketException, IOException {
-		connect(InetAddress.getByName(hostname), port);
 	}
 
 	/**
@@ -219,6 +233,54 @@ public abstract class SocketClient {
 	}
 
 	/**
+	 * Opens a Socket connected to a remote host at the current default
+	 * port and originating from the current host at a system assigned port.
+	 * Before returning, {@link #_connectAction_ _connectAction_() } is called
+	 * to perform connection initialization actions.
+	 * <p>
+	 * 
+	 * @param hostname
+	 *            The name of the remote host.
+	 * @exception SocketException
+	 *                If the socket timeout could not be set.
+	 * @exception IOException
+	 *                If the socket could not be opened. In most
+	 *                cases you will only want to catch IOException since
+	 *                SocketException is
+	 *                derived from it.
+	 * @exception UnknownHostException
+	 *                If the hostname cannot be resolved.
+	 */
+	public void connect(String hostname) throws SocketException, IOException {
+		connect(hostname, _defaultPort_);
+	}
+
+	/**
+	 * Opens a Socket connected to a remote host at the specified port and
+	 * originating from the current host at a system assigned port.
+	 * Before returning, {@link #_connectAction_ _connectAction_() } is called
+	 * to perform connection initialization actions.
+	 * <p>
+	 * 
+	 * @param hostname
+	 *            The name of the remote host.
+	 * @param port
+	 *            The port to connect to on the remote host.
+	 * @exception SocketException
+	 *                If the socket timeout could not be set.
+	 * @exception IOException
+	 *                If the socket could not be opened. In most
+	 *                cases you will only want to catch IOException since
+	 *                SocketException is
+	 *                derived from it.
+	 * @exception UnknownHostException
+	 *                If the hostname cannot be resolved.
+	 */
+	public void connect(String hostname, int port) throws SocketException, IOException {
+		connect(InetAddress.getByName(hostname), port);
+	}
+
+	/**
 	 * Opens a Socket connected to a remote host at the specified port and
 	 * originating from the specified local address and port.
 	 * Before returning, {@link #_connectAction_ _connectAction_() } is called
@@ -249,50 +311,6 @@ public abstract class SocketClient {
 	}
 
 	/**
-	 * Opens a Socket connected to a remote host at the current default port
-	 * and originating from the current host at a system assigned port.
-	 * Before returning, {@link #_connectAction_ _connectAction_() } is called
-	 * to perform connection initialization actions.
-	 * <p>
-	 * 
-	 * @param host
-	 *            The remote host.
-	 * @exception SocketException
-	 *                If the socket timeout could not be set.
-	 * @exception IOException
-	 *                If the socket could not be opened. In most
-	 *                cases you will only want to catch IOException since
-	 *                SocketException is
-	 *                derived from it.
-	 */
-	public void connect(InetAddress host) throws SocketException, IOException {
-		connect(host, _defaultPort_);
-	}
-
-	/**
-	 * Opens a Socket connected to a remote host at the current default
-	 * port and originating from the current host at a system assigned port.
-	 * Before returning, {@link #_connectAction_ _connectAction_() } is called
-	 * to perform connection initialization actions.
-	 * <p>
-	 * 
-	 * @param hostname
-	 *            The name of the remote host.
-	 * @exception SocketException
-	 *                If the socket timeout could not be set.
-	 * @exception IOException
-	 *                If the socket could not be opened. In most
-	 *                cases you will only want to catch IOException since
-	 *                SocketException is
-	 *                derived from it.
-	 * @exception UnknownHostException
-	 *                If the hostname cannot be resolved.
-	 */
-	public void connect(String hostname) throws SocketException, IOException {
-		connect(hostname, _defaultPort_);
-	}
-
-	/**
 	 * Disconnects the socket connection.
 	 * You should call this method after you've finished using the class
 	 * instance and also before you call {@link #connect connect() } again.
@@ -312,22 +330,139 @@ public abstract class SocketClient {
 		_output_ = null;
 	}
 
-	private void closeQuietly(Socket socket) {
-		if(socket != null){
-			try{
-				socket.close();
-			} catch(IOException e){
-			}
-		}
+	/**
+	 * Get the underlying socket connection timeout.
+	 * 
+	 * @return timeout (in ms)
+	 * @since 2.0
+	 */
+	public int getConnectTimeout() {
+		return connectTimeout;
 	}
 
-	private void closeQuietly(Closeable close) {
-		if(close != null){
-			try{
-				close.close();
-			} catch(IOException e){
-			}
-		}
+	/**
+	 * Returns the current value of the default port (stored in
+	 * {@link #_defaultPort_ _defaultPort_ }).
+	 * <p>
+	 * 
+	 * @return The current value of the default port.
+	 */
+	public int getDefaultPort() {
+		return _defaultPort_;
+	}
+
+	/**
+	 * Returns the default timeout in milliseconds that is used when
+	 * opening a socket.
+	 * <p>
+	 * 
+	 * @return The default timeout in milliseconds that is used when
+	 *         opening a socket.
+	 */
+	public int getDefaultTimeout() {
+		return _timeout_;
+	}
+
+	/**
+	 * Returns the current value of the SO_KEEPALIVE flag on the currently
+	 * opened socket.
+	 * 
+	 * @return True if SO_KEEPALIVE is enabled.
+	 * @throws SocketException
+	 * @since 2.2
+	 */
+	public boolean getKeepAlive() throws SocketException {
+		return _socket_.getKeepAlive();
+	}
+
+	/**
+	 * Returns the local address to which the client's socket is bound.
+	 * <p>
+	 * 
+	 * @return The local address to which the client's socket is bound.
+	 */
+	public InetAddress getLocalAddress() {
+		return _socket_.getLocalAddress();
+	}
+
+	/**
+	 * Returns the port number of the open socket on the local host used
+	 * for the connection.
+	 * <p>
+	 * 
+	 * @return The port number of the open socket on the local host used
+	 *         for the connection.
+	 */
+	public int getLocalPort() {
+		return _socket_.getLocalPort();
+	}
+
+	/**
+	 * @return The remote address to which the client is connected.
+	 */
+	public InetAddress getRemoteAddress() {
+		return _socket_.getInetAddress();
+	}
+
+	/**
+	 * Returns the port number of the remote host to which the client is
+	 * connected.
+	 * <p>
+	 * 
+	 * @return The port number of the remote host to which the client is
+	 *         connected.
+	 */
+	public int getRemotePort() {
+		return _socket_.getPort();
+	}
+
+	/**
+	 * Get the underlying {@link ServerSocketFactory}
+	 * 
+	 * @return The server socket factory
+	 * @since 2.2
+	 */
+	public ServerSocketFactory getServerSocketFactory() {
+		return _serverSocketFactory_;
+	}
+
+	/**
+	 * Returns the current SO_LINGER timeout of the currently opened socket.
+	 * <p>
+	 * 
+	 * @return The current SO_LINGER timeout. If SO_LINGER is disabled returns
+	 *         -1.
+	 * @exception SocketException
+	 *                If the operation fails.
+	 */
+	public int getSoLinger() throws SocketException {
+		return _socket_.getSoLinger();
+	}
+
+	/**
+	 * Returns the timeout in milliseconds of the currently opened socket.
+	 * <p>
+	 * 
+	 * @return The timeout in milliseconds of the currently opened socket.
+	 * @exception SocketException
+	 *                If the operation fails.
+	 */
+	public int getSoTimeout() throws SocketException {
+		return _socket_.getSoTimeout();
+	}
+
+	/**
+	 * Returns true if Nagle's algorithm is enabled on the currently opened
+	 * socket.
+	 * <p>
+	 * 
+	 * @return True if Nagle's algorithm is enabled on the currently opened
+	 *         socket, false otherwise.
+	 * @exception SocketException
+	 *                If the operation fails.
+	 */
+	public boolean getTcpNoDelay() throws SocketException {
+		return _socket_.getTcpNoDelay();
 	}
 
 	/**
@@ -346,6 +481,19 @@ public abstract class SocketClient {
 	}
 
 	/**
+	 * Sets the connection timeout in milliseconds, which will be passed to the
+	 * {@link Socket} object's
+	 * connect() method.
+	 * 
+	 * @param connectTimeout
+	 *            The connection timeout to use (in ms)
+	 * @since 2.0
+	 */
+	public void setConnectTimeout(int connectTimeout) {
+		this.connectTimeout = connectTimeout;
+	}
+
+	/**
 	 * Sets the default port the SocketClient should connect to when a port
 	 * is not specified. The {@link #_defaultPort_ _defaultPort_ } variable
 	 * stores this value. If never set, the default port is equal
@@ -357,17 +505,6 @@ public abstract class SocketClient {
 	 */
 	public void setDefaultPort(int port) {
 		_defaultPort_ = port;
-	}
-
-	/**
-	 * Returns the current value of the default port (stored in
-	 * {@link #_defaultPort_ _defaultPort_ }).
-	 * <p>
-	 * 
-	 * @return The current value of the default port.
-	 */
-	public int getDefaultPort() {
-		return _defaultPort_;
 	}
 
 	/**
@@ -384,100 +521,6 @@ public abstract class SocketClient {
 	 */
 	public void setDefaultTimeout(int timeout) {
 		_timeout_ = timeout;
-	}
-
-	/**
-	 * Returns the default timeout in milliseconds that is used when
-	 * opening a socket.
-	 * <p>
-	 * 
-	 * @return The default timeout in milliseconds that is used when
-	 *         opening a socket.
-	 */
-	public int getDefaultTimeout() {
-		return _timeout_;
-	}
-
-	/**
-	 * Set the timeout in milliseconds of a currently open connection.
-	 * Only call this method after a connection has been opened
-	 * by {@link #connect connect()}.
-	 * <p>
-	 * 
-	 * @param timeout
-	 *            The timeout in milliseconds to use for the currently
-	 *            open socket connection.
-	 * @exception SocketException
-	 *                If the operation fails.
-	 */
-	public void setSoTimeout(int timeout) throws SocketException {
-		_socket_.setSoTimeout(timeout);
-	}
-
-	/**
-	 * Set the underlying socket send buffer size.
-	 * <p>
-	 * 
-	 * @param size
-	 *            The size of the buffer in bytes.
-	 * @throws SocketException
-	 * @since 2.0
-	 */
-	public void setSendBufferSize(int size) throws SocketException {
-		sendBufferSize = size;
-	}
-
-	/**
-	 * Sets the underlying socket receive buffer size.
-	 * <p>
-	 * 
-	 * @param size
-	 *            The size of the buffer in bytes.
-	 * @throws SocketException
-	 * @since 2.0
-	 */
-	public void setReceiveBufferSize(int size) throws SocketException {
-		receiveBufferSize = size;
-	}
-
-	/**
-	 * Returns the timeout in milliseconds of the currently opened socket.
-	 * <p>
-	 * 
-	 * @return The timeout in milliseconds of the currently opened socket.
-	 * @exception SocketException
-	 *                If the operation fails.
-	 */
-	public int getSoTimeout() throws SocketException {
-		return _socket_.getSoTimeout();
-	}
-
-	/**
-	 * Enables or disables the Nagle's algorithm (TCP_NODELAY) on the
-	 * currently opened socket.
-	 * <p>
-	 * 
-	 * @param on
-	 *            True if Nagle's algorithm is to be enabled, false if not.
-	 * @exception SocketException
-	 *                If the operation fails.
-	 */
-	public void setTcpNoDelay(boolean on) throws SocketException {
-		_socket_.setTcpNoDelay(on);
-	}
-
-	/**
-	 * Returns true if Nagle's algorithm is enabled on the currently opened
-	 * socket.
-	 * <p>
-	 * 
-	 * @return True if Nagle's algorithm is enabled on the currently opened
-	 *         socket, false otherwise.
-	 * @exception SocketException
-	 *                If the operation fails.
-	 */
-	public boolean getTcpNoDelay() throws SocketException {
-		return _socket_.getTcpNoDelay();
 	}
 
 	/**
@@ -501,121 +544,29 @@ public abstract class SocketClient {
 	}
 
 	/**
-	 * Returns the current value of the SO_KEEPALIVE flag on the currently
-	 * opened socket.
+	 * Sets the underlying socket receive buffer size.
+	 * <p>
 	 * 
-	 * @return True if SO_KEEPALIVE is enabled.
+	 * @param size
+	 *            The size of the buffer in bytes.
 	 * @throws SocketException
-	 * @since 2.2
+	 * @since 2.0
 	 */
-	public boolean getKeepAlive() throws SocketException {
-		return _socket_.getKeepAlive();
+	public void setReceiveBufferSize(int size) throws SocketException {
+		receiveBufferSize = size;
 	}
 
 	/**
-	 * Sets the SO_LINGER timeout on the currently opened socket.
+	 * Set the underlying socket send buffer size.
 	 * <p>
 	 * 
-	 * @param on
-	 *            True if linger is to be enabled, false if not.
-	 * @param val
-	 *            The linger timeout (in hundredths of a second?)
-	 * @exception SocketException
-	 *                If the operation fails.
+	 * @param size
+	 *            The size of the buffer in bytes.
+	 * @throws SocketException
+	 * @since 2.0
 	 */
-	public void setSoLinger(boolean on, int val) throws SocketException {
-		_socket_.setSoLinger(on, val);
-	}
-
-	/**
-	 * Returns the current SO_LINGER timeout of the currently opened socket.
-	 * <p>
-	 * 
-	 * @return The current SO_LINGER timeout. If SO_LINGER is disabled returns
-	 *         -1.
-	 * @exception SocketException
-	 *                If the operation fails.
-	 */
-	public int getSoLinger() throws SocketException {
-		return _socket_.getSoLinger();
-	}
-
-	/**
-	 * Returns the port number of the open socket on the local host used
-	 * for the connection.
-	 * <p>
-	 * 
-	 * @return The port number of the open socket on the local host used
-	 *         for the connection.
-	 */
-	public int getLocalPort() {
-		return _socket_.getLocalPort();
-	}
-
-	/**
-	 * Returns the local address to which the client's socket is bound.
-	 * <p>
-	 * 
-	 * @return The local address to which the client's socket is bound.
-	 */
-	public InetAddress getLocalAddress() {
-		return _socket_.getLocalAddress();
-	}
-
-	/**
-	 * Returns the port number of the remote host to which the client is
-	 * connected.
-	 * <p>
-	 * 
-	 * @return The port number of the remote host to which the client is
-	 *         connected.
-	 */
-	public int getRemotePort() {
-		return _socket_.getPort();
-	}
-
-	/**
-	 * @return The remote address to which the client is connected.
-	 */
-	public InetAddress getRemoteAddress() {
-		return _socket_.getInetAddress();
-	}
-
-	/**
-	 * Verifies that the remote end of the given socket is connected to the
-	 * the same host that the SocketClient is currently connected to. This
-	 * is useful for doing a quick security check when a client needs to
-	 * accept a connection from a server, such as an FTP data connection or
-	 * a BSD R command standard error stream.
-	 * <p>
-	 * 
-	 * @return True if the remote hosts are the same, false if not.
-	 */
-	public boolean verifyRemote(Socket socket) {
-		InetAddress host1, host2;
-
-		host1 = socket.getInetAddress();
-		host2 = getRemoteAddress();
-
-		return host1.equals(host2);
-	}
-
-	/**
-	 * Sets the SocketFactory used by the SocketClient to open socket
-	 * connections. If the factory value is null, then a default
-	 * factory is used (only do this to reset the factory after having
-	 * previously altered it).
-	 * <p>
-	 * 
-	 * @param factory
-	 *            The new SocketFactory the SocketClient should use.
-	 */
-	public void setSocketFactory(SocketFactory factory) {
-		if(factory == null){
-			_socketFactory_ = __DEFAULT_SOCKET_FACTORY;
-		} else{
-			_socketFactory_ = factory;
-		}
+	public void setSendBufferSize(int size) throws SocketException {
+		sendBufferSize = size;
 	}
 
 	/**
@@ -639,36 +590,85 @@ public abstract class SocketClient {
 	}
 
 	/**
-	 * Sets the connection timeout in milliseconds, which will be passed to the
-	 * {@link Socket} object's
-	 * connect() method.
+	 * Sets the SocketFactory used by the SocketClient to open socket
+	 * connections. If the factory value is null, then a default
+	 * factory is used (only do this to reset the factory after having
+	 * previously altered it).
+	 * <p>
 	 * 
-	 * @param connectTimeout
-	 *            The connection timeout to use (in ms)
-	 * @since 2.0
+	 * @param factory
+	 *            The new SocketFactory the SocketClient should use.
 	 */
-	public void setConnectTimeout(int connectTimeout) {
-		this.connectTimeout = connectTimeout;
+	public void setSocketFactory(SocketFactory factory) {
+		if(factory == null){
+			_socketFactory_ = __DEFAULT_SOCKET_FACTORY;
+		} else{
+			_socketFactory_ = factory;
+		}
 	}
 
 	/**
-	 * Get the underlying socket connection timeout.
+	 * Sets the SO_LINGER timeout on the currently opened socket.
+	 * <p>
 	 * 
-	 * @return timeout (in ms)
-	 * @since 2.0
+	 * @param on
+	 *            True if linger is to be enabled, false if not.
+	 * @param val
+	 *            The linger timeout (in hundredths of a second?)
+	 * @exception SocketException
+	 *                If the operation fails.
 	 */
-	public int getConnectTimeout() {
-		return connectTimeout;
+	public void setSoLinger(boolean on, int val) throws SocketException {
+		_socket_.setSoLinger(on, val);
 	}
 
 	/**
-	 * Get the underlying {@link ServerSocketFactory}
+	 * Set the timeout in milliseconds of a currently open connection.
+	 * Only call this method after a connection has been opened
+	 * by {@link #connect connect()}.
+	 * <p>
 	 * 
-	 * @return The server socket factory
-	 * @since 2.2
+	 * @param timeout
+	 *            The timeout in milliseconds to use for the currently
+	 *            open socket connection.
+	 * @exception SocketException
+	 *                If the operation fails.
 	 */
-	public ServerSocketFactory getServerSocketFactory() {
-		return _serverSocketFactory_;
+	public void setSoTimeout(int timeout) throws SocketException {
+		_socket_.setSoTimeout(timeout);
+	}
+
+	/**
+	 * Enables or disables the Nagle's algorithm (TCP_NODELAY) on the
+	 * currently opened socket.
+	 * <p>
+	 * 
+	 * @param on
+	 *            True if Nagle's algorithm is to be enabled, false if not.
+	 * @exception SocketException
+	 *                If the operation fails.
+	 */
+	public void setTcpNoDelay(boolean on) throws SocketException {
+		_socket_.setTcpNoDelay(on);
+	}
+
+	/**
+	 * Verifies that the remote end of the given socket is connected to the
+	 * the same host that the SocketClient is currently connected to. This
+	 * is useful for doing a quick security check when a client needs to
+	 * accept a connection from a server, such as an FTP data connection or
+	 * a BSD R command standard error stream.
+	 * <p>
+	 * 
+	 * @return True if the remote hosts are the same, false if not.
+	 */
+	public boolean verifyRemote(Socket socket) {
+		InetAddress host1, host2;
+
+		host1 = socket.getInetAddress();
+		host2 = getRemoteAddress();
+
+		return host1.equals(host2);
 	}
 
 }

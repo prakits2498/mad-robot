@@ -19,32 +19,10 @@ import android.util.Log;
  */
 public class ServiceBinder<T extends IInterface> {
 
-	private Class<? extends Service> mServiceClass;
-	private Class<? extends IInterface> mInterfaceClass;
-	private T mServiceInterface;
 	private Context mContext;
+	private Class<? extends IInterface> mInterfaceClass;
 	private Runnable mOnServiceReady;
-	
-	public ServiceBinder(Context context, 
-			Class<? extends Service> serviceClass, 
-			Class<? extends IInterface> interfaceClass,
-			Runnable onServiceReady) {
-		mContext = context;
-		mServiceClass = serviceClass;
-		mInterfaceClass = interfaceClass;
-		mOnServiceReady = onServiceReady;
-		Intent serviceIntent = new Intent(context, mServiceClass);
-		context.bindService(serviceIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
-	}
-	
-	public void unBind(){
-		mContext.unbindService(mServiceConnection);
-	}
-	
-	public T getServiceInterface() {
-		return mServiceInterface;
-	}
-	
+	private Class<? extends Service> mServiceClass;
 	private ServiceConnection mServiceConnection = new ServiceConnection() {
 
 		@Override
@@ -77,4 +55,26 @@ public class ServiceBinder<T extends IInterface> {
 		}
 		
 	};
+	
+	private T mServiceInterface;
+	
+	public ServiceBinder(Context context, 
+			Class<? extends Service> serviceClass, 
+			Class<? extends IInterface> interfaceClass,
+			Runnable onServiceReady) {
+		mContext = context;
+		mServiceClass = serviceClass;
+		mInterfaceClass = interfaceClass;
+		mOnServiceReady = onServiceReady;
+		Intent serviceIntent = new Intent(context, mServiceClass);
+		context.bindService(serviceIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
+	}
+	
+	public T getServiceInterface() {
+		return mServiceInterface;
+	}
+	
+	public void unBind(){
+		mContext.unbindService(mServiceConnection);
+	}
 }

@@ -36,22 +36,6 @@ public class CommonsHttpOAuthProvider extends AbstractOAuthProvider {
         this.httpClient = httpClient;
     }
 
-    public void setHttpClient(HttpClient httpClient) {
-        this.httpClient = httpClient;
-    }
-
-    @Override
-    protected HttpRequest createRequest(String endpointUrl) throws Exception {
-        HttpPost request = new HttpPost(endpointUrl);
-        return new HttpRequestAdapter(request);
-    }
-
-    @Override
-    protected com.madrobot.net.client.oauth.HttpResponse sendRequest(HttpRequest request) throws Exception {
-        HttpResponse response = httpClient.execute((HttpUriRequest) request.unwrap());
-        return new HttpResponseAdapter(response);
-    }
-
     @Override
     protected void closeConnection(HttpRequest request, com.madrobot.net.client.oauth.HttpResponse response)
             throws Exception {
@@ -67,5 +51,21 @@ public class CommonsHttpOAuthProvider extends AbstractOAuthProvider {
                 }
             }
         }
+    }
+
+    @Override
+    protected HttpRequest createRequest(String endpointUrl) throws Exception {
+        HttpPost request = new HttpPost(endpointUrl);
+        return new HttpRequestAdapter(request);
+    }
+
+    @Override
+    protected com.madrobot.net.client.oauth.HttpResponse sendRequest(HttpRequest request) throws Exception {
+        HttpResponse response = httpClient.execute((HttpUriRequest) request.unwrap());
+        return new HttpResponseAdapter(response);
+    }
+
+    public void setHttpClient(HttpClient httpClient) {
+        this.httpClient = httpClient;
     }
 }

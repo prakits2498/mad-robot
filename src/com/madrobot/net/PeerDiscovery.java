@@ -36,41 +36,92 @@ import java.util.List;
  * *
  */
 public class PeerDiscovery {
+	/**
+	 * Record of a peer
+	 * 
+	 * @author ryanm
+	 */
+	public class Peer {
+		/**
+		 * The data of the peer
+		 */
+		public final int data;
+
+		/**
+		 * The ip of the peer
+		 */
+		public final InetAddress ip;
+
+		private Peer(InetAddress ip, int data) {
+			this.ip = ip;
+			this.data = data;
+		}
+
+		@Override
+		public String toString() {
+			return ip.getHostAddress() + " " + data;
+		}
+	}
+
 	private static final byte QUERY_PACKET = 80;
 
 	private static final byte RESPONSE_PACKET = 81;
 
-	/**
-	 * The group identifier. Determines the set of peers that are able
-	 * to discover each other
-	 */
-	public final int group;
+	private static int decode(byte[] b, int index) {
+		int i = 0;
+
+		i |= b[index] << 24;
+		i |= b[index + 1] << 16;
+		i |= b[index + 2] << 8;
+		i |= b[index + 3];
+
+		return i;
+	}
+
+	private static void encode(int i, byte[] b, int index) {
+		b[index] = (byte) (i >> 24 & 0xff);
+		b[index + 1] = (byte) (i >> 16 & 0xff);
+		b[index + 2] = (byte) (i >> 8 & 0xff);
+		b[index + 3] = (byte) (i & 0xff);
+	}
 
 	/**
-	 * The port number that we operate on
+	 * @param args
 	 */
-	public final int port;
+	public static void main(String[] args) {
+		try{
+			int group = 6969;
 
-	/**
-	 * Data returned with discovery
-	 */
-	public int peerData;
+			PeerDiscovery mp = new PeerDiscovery(group, 6969);
 
-	private final DatagramSocket bcastSocket;
+			boolean stop = false;
 
-	private final InetSocketAddress broadcastAddress;
+			BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-	private boolean shouldStop = false;
+			while(!stop){
+				System.out.println("enter \"q\" to quit, or anything else to query peers");
+				String s = br.readLine();
 
-	private List<Peer> responseList = null;
+				if(s.equals("q")){
+					System.out.print("Closing down...");
+					mp.disconnect();
+					System.out.println(" done");
+					stop = true;
+				} else{
+					System.out.println("Querying");
 
-	/**
-	 * Used to detect and ignore this peers response to it's own query.
-	 * When we send a response packet, we set this to the destination.
-	 * When we receive a response, if this matches the source, we know
-	 * that we're talking to ourselves and we can ignore the response.
-	 */
-	private InetAddress lastResponseDestination = null;
+					Peer[] peers = mp.getPeers(100, (byte) 0);
+
+					System.out.println(peers.length + " peers found");
+					for(Peer p : peers){
+						System.out.println("\t" + p);
+					}
+				}
+			}
+		} catch(Exception e){
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * Redefine this to be notified of exceptions on the listen thread.
@@ -124,6 +175,38 @@ public class PeerDiscovery {
 			}
 		};
 	};
+
+	private final DatagramSocket bcastSocket;
+
+	private final InetSocketAddress broadcastAddress;
+
+	/**
+	 * The group identifier. Determines the set of peers that are able
+	 * to discover each other
+	 */
+	public final int group;
+
+	/**
+	 * Used to detect and ignore this peers response to it's own query.
+	 * When we send a response packet, we set this to the destination.
+	 * When we receive a response, if this matches the source, we know
+	 * that we're talking to ourselves and we can ignore the response.
+	 */
+	private InetAddress lastResponseDestination = null;
+
+	/**
+	 * Data returned with discovery
+	 */
+	public int peerData;
+
+	/**
+	 * The port number that we operate on
+	 */
+	public final int port;
+
+	private List<Peer> responseList = null;
+
+	private boolean shouldStop = false;
 
 	/**
 	 * Constructs a UDP broadcast-based peer
@@ -204,88 +287,5 @@ public class PeerDiscovery {
 		responseList = null;
 
 		return peers;
-	}
-
-	/**
-	 * Record of a peer
-	 * 
-	 * @author ryanm
-	 */
-	public class Peer {
-		/**
-		 * The ip of the peer
-		 */
-		public final InetAddress ip;
-
-		/**
-		 * The data of the peer
-		 */
-		public final int data;
-
-		private Peer(InetAddress ip, int data) {
-			this.ip = ip;
-			this.data = data;
-		}
-
-		@Override
-		public String toString() {
-			return ip.getHostAddress() + " " + data;
-		}
-	}
-
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		try{
-			int group = 6969;
-
-			PeerDiscovery mp = new PeerDiscovery(group, 6969);
-
-			boolean stop = false;
-
-			BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
-			while(!stop){
-				System.out.println("enter \"q\" to quit, or anything else to query peers");
-				String s = br.readLine();
-
-				if(s.equals("q")){
-					System.out.print("Closing down...");
-					mp.disconnect();
-					System.out.println(" done");
-					stop = true;
-				} else{
-					System.out.println("Querying");
-
-					Peer[] peers = mp.getPeers(100, (byte) 0);
-
-					System.out.println(peers.length + " peers found");
-					for(Peer p : peers){
-						System.out.println("\t" + p);
-					}
-				}
-			}
-		} catch(Exception e){
-			e.printStackTrace();
-		}
-	}
-
-	private static int decode(byte[] b, int index) {
-		int i = 0;
-
-		i |= b[index] << 24;
-		i |= b[index + 1] << 16;
-		i |= b[index + 2] << 8;
-		i |= b[index + 3];
-
-		return i;
-	}
-
-	private static void encode(int i, byte[] b, int index) {
-		b[index] = (byte) (i >> 24 & 0xff);
-		b[index + 1] = (byte) (i >> 16 & 0xff);
-		b[index + 2] = (byte) (i >> 8 & 0xff);
-		b[index + 3] = (byte) (i & 0xff);
 	}
 }

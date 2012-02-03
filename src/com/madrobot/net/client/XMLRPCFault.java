@@ -15,8 +15,8 @@ public class XMLRPCFault extends XMLRPCException {
 	 * 
 	 */
 	private static final long serialVersionUID = 5676562456612956519L;
-	private String faultString;
 	private int faultCode;
+	private String faultString;
 
 	public XMLRPCFault(String faultString, int faultCode) {
 		super("XMLRPC Fault: " + faultString + " [code " + faultCode + "]");
@@ -24,11 +24,11 @@ public class XMLRPCFault extends XMLRPCException {
 		this.faultCode = faultCode;
 	}
 	
-	public String getFaultString() {
-		return faultString;
-	}
-	
 	public int getFaultCode() {
 		return faultCode;
+	}
+	
+	public String getFaultString() {
+		return faultString;
 	}
 }

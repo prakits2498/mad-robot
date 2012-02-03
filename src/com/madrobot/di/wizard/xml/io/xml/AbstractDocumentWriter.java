@@ -28,8 +28,8 @@ import com.madrobot.util.FastStack;
  */
 public abstract class AbstractDocumentWriter extends AbstractWriter implements DocumentWriter {
 
-	private final List result = new ArrayList();
 	private final FastStack nodeStack = new FastStack(16);
+	private final List result = new ArrayList();
 
 	/**
 	 * Constructs an AbstractDocumentWriter.
@@ -64,9 +64,8 @@ public abstract class AbstractDocumentWriter extends AbstractWriter implements D
 	}
 
 	@Override
-	public final void startNode(final String name) {
-		final Object node = createNode(name);
-		nodeStack.push(node);
+	public void close() {
+		// don't need to do anything
 	}
 
 	/**
@@ -97,6 +96,11 @@ public abstract class AbstractDocumentWriter extends AbstractWriter implements D
 	public void endNodeInternally() {
 	}
 
+	@Override
+	public void flush() {
+		// don't need to do anything
+	}
+
 	/**
 	 * @since 1.2.1
 	 */
@@ -110,12 +114,8 @@ public abstract class AbstractDocumentWriter extends AbstractWriter implements D
 	}
 
 	@Override
-	public void flush() {
-		// don't need to do anything
-	}
-
-	@Override
-	public void close() {
-		// don't need to do anything
+	public final void startNode(final String name) {
+		final Object node = createNode(name);
+		nodeStack.push(node);
 	}
 }

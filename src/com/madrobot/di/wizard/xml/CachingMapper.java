@@ -32,6 +32,16 @@ class CachingMapper extends MapperWrapper implements Caching {
 	}
 
 	@Override
+	public void flushCache() {
+		realClassCache.clear();
+	}
+
+	private Object readResolve() {
+		realClassCache = Collections.synchronizedMap(new HashMap(128));
+		return this;
+	}
+
+	@Override
 	public Class realClass(String elementName) {
 		WeakReference reference = (WeakReference) realClassCache.get(elementName);
 		if (reference != null) {
@@ -44,15 +54,5 @@ class CachingMapper extends MapperWrapper implements Caching {
 		Class result = super.realClass(elementName);
 		realClassCache.put(elementName, new WeakReference(result));
 		return result;
-	}
-
-	@Override
-	public void flushCache() {
-		realClassCache.clear();
-	}
-
-	private Object readResolve() {
-		realClassCache = Collections.synchronizedMap(new HashMap(128));
-		return this;
 	}
 }

@@ -44,19 +44,15 @@ public abstract class AbstractWriter implements ExtendedHierarchicalStreamWriter
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Encode the attribute name into the name of the target format.
+	 * 
+	 * @param name
+	 *            the original name
+	 * @return the name in the target format
+	 * @since 1.4
 	 */
-	@Override
-	public void startNode(String name, Class clazz) {
-		startNode(name);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public HierarchicalStreamWriter underlyingWriter() {
-		return this;
+	public String encodeAttribute(String name) {
+		return nameCoder.encodeAttribute(name);
 	}
 
 	/**
@@ -72,14 +68,18 @@ public abstract class AbstractWriter implements ExtendedHierarchicalStreamWriter
 	}
 
 	/**
-	 * Encode the attribute name into the name of the target format.
-	 * 
-	 * @param name
-	 *            the original name
-	 * @return the name in the target format
-	 * @since 1.4
+	 * {@inheritDoc}
 	 */
-	public String encodeAttribute(String name) {
-		return nameCoder.encodeAttribute(name);
+	@Override
+	public void startNode(String name, Class clazz) {
+		startNode(name);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public HierarchicalStreamWriter underlyingWriter() {
+		return this;
 	}
 }

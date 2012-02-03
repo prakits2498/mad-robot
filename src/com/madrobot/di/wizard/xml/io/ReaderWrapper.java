@@ -29,38 +29,23 @@ public abstract class ReaderWrapper implements ExtendedHierarchicalStreamReader 
 	}
 
 	@Override
-	public boolean hasMoreChildren() {
-		return wrapped.hasMoreChildren();
+	public void appendErrors(ErrorWriter errorWriter) {
+		wrapped.appendErrors(errorWriter);
 	}
 
 	@Override
-	public void moveDown() {
-		wrapped.moveDown();
-	}
-
-	@Override
-	public void moveUp() {
-		wrapped.moveUp();
-	}
-
-	@Override
-	public String getNodeName() {
-		return wrapped.getNodeName();
-	}
-
-	@Override
-	public String getValue() {
-		return wrapped.getValue();
-	}
-
-	@Override
-	public String getAttribute(String name) {
-		return wrapped.getAttribute(name);
+	public void close() {
+		wrapped.close();
 	}
 
 	@Override
 	public String getAttribute(int index) {
 		return wrapped.getAttribute(index);
+	}
+
+	@Override
+	public String getAttribute(String name) {
+		return wrapped.getAttribute(name);
 	}
 
 	@Override
@@ -79,13 +64,28 @@ public abstract class ReaderWrapper implements ExtendedHierarchicalStreamReader 
 	}
 
 	@Override
-	public void appendErrors(ErrorWriter errorWriter) {
-		wrapped.appendErrors(errorWriter);
+	public String getNodeName() {
+		return wrapped.getNodeName();
 	}
 
 	@Override
-	public void close() {
-		wrapped.close();
+	public String getValue() {
+		return wrapped.getValue();
+	}
+
+	@Override
+	public boolean hasMoreChildren() {
+		return wrapped.hasMoreChildren();
+	}
+
+	@Override
+	public void moveDown() {
+		wrapped.moveDown();
+	}
+
+	@Override
+	public void moveUp() {
+		wrapped.moveUp();
 	}
 
 	@Override

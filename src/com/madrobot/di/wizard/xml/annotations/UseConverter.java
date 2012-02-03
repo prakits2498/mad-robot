@@ -46,27 +46,27 @@ import com.madrobot.di.wizard.xml.converters.ConverterMatcher;
 @Target({ ElementType.TYPE, ElementType.FIELD })
 @Documented
 public @interface UseConverter {
-	Class<? extends ConverterMatcher> value();
-
-	int priority() default XMLWizard.PRIORITY_NORMAL;
-
-	Class<?>[] types() default {};
-
-	String[] strings() default {};
+	boolean[] booleans() default {};
 
 	byte[] bytes() default {};
 
 	char[] chars() default {};
 
-	short[] shorts() default {};
+	double[] doubles() default {};
+
+	float[] floats() default {};
 
 	int[] ints() default {};
 
 	long[] longs() default {};
 
-	float[] floats() default {};
+	int priority() default XMLWizard.PRIORITY_NORMAL;
 
-	double[] doubles() default {};
+	short[] shorts() default {};
 
-	boolean[] booleans() default {};
+	String[] strings() default {};
+
+	Class<?>[] types() default {};
+
+	Class<? extends ConverterMatcher> value();
 }

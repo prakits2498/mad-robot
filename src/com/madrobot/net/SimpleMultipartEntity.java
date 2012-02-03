@@ -19,9 +19,9 @@ class SimpleMultipartEntity implements HttpEntity {
 
     private String boundary = null;
 
-    ByteArrayOutputStream out = new ByteArrayOutputStream();
-    boolean isSetLast = false;
     boolean isSetFirst = false;
+    boolean isSetLast = false;
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
 
     public SimpleMultipartEntity() {
         final StringBuffer buf = new StringBuffer();
@@ -33,30 +33,12 @@ class SimpleMultipartEntity implements HttpEntity {
 
     }
 
-    public void writeFirstBoundaryIfNeeds(){
-        if(!isSetFirst){
-            try {
-                out.write(("--" + boundary + "\r\n").getBytes());
-            } catch (final IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        isSetFirst = true;
-    }
-
-    public void writeLastBoundaryIfNeeds() {
-        if(isSetLast){
-            return;
-        }
-
+    public void addPart(final String key, final File value, final boolean isLast) {
         try {
-            out.write(("\r\n--" + boundary + "--\r\n").getBytes());
-        } catch (final IOException e) {
+            addPart(key, value.getName(), new FileInputStream(value), isLast);
+        } catch (final FileNotFoundException e) {
             e.printStackTrace();
         }
-
-        isSetLast = true;
     }
 
     public void addPart(final String key, final String value) {
@@ -101,12 +83,24 @@ class SimpleMultipartEntity implements HttpEntity {
         }
     }
 
-    public void addPart(final String key, final File value, final boolean isLast) {
-        try {
-            addPart(key, value.getName(), new FileInputStream(value), isLast);
-        } catch (final FileNotFoundException e) {
-            e.printStackTrace();
+    @Override
+    public void consumeContent() throws IOException,
+    UnsupportedOperationException {
+        if (isStreaming()) {
+            throw new UnsupportedOperationException(
+            "Streaming entity does not implement #consumeContent()");
         }
+    }
+
+    @Override
+    public InputStream getContent() throws IOException,
+    UnsupportedOperationException {
+        return new ByteArrayInputStream(out.toByteArray());
+    }
+
+    @Override
+    public Header getContentEncoding() {
+        return null;
     }
 
     @Override
@@ -135,28 +129,34 @@ class SimpleMultipartEntity implements HttpEntity {
         return false;
     }
 
+    public void writeFirstBoundaryIfNeeds(){
+        if(!isSetFirst){
+            try {
+                out.write(("--" + boundary + "\r\n").getBytes());
+            } catch (final IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        isSetFirst = true;
+    }
+
+    public void writeLastBoundaryIfNeeds() {
+        if(isSetLast){
+            return;
+        }
+
+        try {
+            out.write(("\r\n--" + boundary + "--\r\n").getBytes());
+        } catch (final IOException e) {
+            e.printStackTrace();
+        }
+
+        isSetLast = true;
+    }
+
     @Override
     public void writeTo(final OutputStream outstream) throws IOException {
         outstream.write(out.toByteArray());
-    }
-
-    @Override
-    public Header getContentEncoding() {
-        return null;
-    }
-
-    @Override
-    public void consumeContent() throws IOException,
-    UnsupportedOperationException {
-        if (isStreaming()) {
-            throw new UnsupportedOperationException(
-            "Streaming entity does not implement #consumeContent()");
-        }
-    }
-
-    @Override
-    public InputStream getContent() throws IOException,
-    UnsupportedOperationException {
-        return new ByteArrayInputStream(out.toByteArray());
     }
 }

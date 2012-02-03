@@ -2,15 +2,21 @@ package com.madrobot.util.pdf;
 
 class IndirectIdentifier extends Base {
 
-	private int mNumber;
 	private int mGeneration;
+	private int mNumber;
 
 	IndirectIdentifier() {
 		clear();
 	}
 
-	void setNumber(int Number) {
-		this.mNumber = Number;
+	@Override
+	void clear() {
+		mNumber = 0;
+		mGeneration = 0;
+	}
+
+	int getGeneration() {
+		return mGeneration;
 	}
 
 	int getNumber() {
@@ -21,14 +27,8 @@ class IndirectIdentifier extends Base {
 		this.mGeneration = Generation;
 	}
 
-	int getGeneration() {
-		return mGeneration;
-	}
-
-	@Override
-	void clear() {
-		mNumber = 0;
-		mGeneration = 0;
+	void setNumber(int Number) {
+		this.mNumber = Number;
 	}
 
 	@Override

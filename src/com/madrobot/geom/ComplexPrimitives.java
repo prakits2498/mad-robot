@@ -12,54 +12,6 @@ package com.madrobot.geom;
 
 public class ComplexPrimitives {
 	/**
-	 * Create the geometry of a sector of an ellipse.
-	 * 
-	 * @param x0
-	 *            X coordinate of center of ellipse.
-	 * @param y0
-	 *            Y coordinate of center of ellipse.
-	 * @param dx
-	 *            X radius of ellipse.
-	 * @param dy
-	 *            Y radius of ellipse.
-	 * @param angle0
-	 *            First angle of sector (in radians).
-	 * @param angle1
-	 *            Second angle of sector (in radians).
-	 * @return Geometry of secor [x,y,...]
-	 */
-	public static int[] createSector(int x0, int y0, int dx, int dy, double angle0, double angle1) {
-		// Determine a sensible number of points for arc
-		double angleSpan = Math.abs(angle1 - angle0);
-		double arcDistance = Math.max(dx, dy) * angleSpan;
-		int nPoints = (int) Math.round(arcDistance / 15);
-		double angleStep = angleSpan / (nPoints - 1);
-
-		int[] xy = new int[nPoints * 2 + 4];
-
-		int index = 0;
-		for(int i = 0; i < nPoints; i++){
-			double angle = angle0 + angleStep * i;
-			double x = dx * Math.cos(angle);
-			double y = dy * Math.sin(angle);
-
-			xy[index + 0] = x0 + (int) Math.round(x);
-			xy[index + 1] = y0 - (int) Math.round(y);
-
-			index += 2;
-		}
-
-		// Start and end geometry at center of ellipse to make it a closed
-		// polygon
-		xy[nPoints * 2 + 0] = x0;
-		xy[nPoints * 2 + 1] = y0;
-		xy[nPoints * 2 + 2] = xy[0];
-		xy[nPoints * 2 + 3] = xy[1];
-
-		return xy;
-	}
-
-	/**
 	 * Create the geometry of an arrow. The arrow is positioned at the
 	 * end (last point) of the specified polyline, as follows:
 	 * 
@@ -137,6 +89,54 @@ public class ComplexPrimitives {
 		arrow[9] = arrow[1];
 
 		return arrow;
+	}
+
+	/**
+	 * Create the geometry of a sector of an ellipse.
+	 * 
+	 * @param x0
+	 *            X coordinate of center of ellipse.
+	 * @param y0
+	 *            Y coordinate of center of ellipse.
+	 * @param dx
+	 *            X radius of ellipse.
+	 * @param dy
+	 *            Y radius of ellipse.
+	 * @param angle0
+	 *            First angle of sector (in radians).
+	 * @param angle1
+	 *            Second angle of sector (in radians).
+	 * @return Geometry of secor [x,y,...]
+	 */
+	public static int[] createSector(int x0, int y0, int dx, int dy, double angle0, double angle1) {
+		// Determine a sensible number of points for arc
+		double angleSpan = Math.abs(angle1 - angle0);
+		double arcDistance = Math.max(dx, dy) * angleSpan;
+		int nPoints = (int) Math.round(arcDistance / 15);
+		double angleStep = angleSpan / (nPoints - 1);
+
+		int[] xy = new int[nPoints * 2 + 4];
+
+		int index = 0;
+		for(int i = 0; i < nPoints; i++){
+			double angle = angle0 + angleStep * i;
+			double x = dx * Math.cos(angle);
+			double y = dy * Math.sin(angle);
+
+			xy[index + 0] = x0 + (int) Math.round(x);
+			xy[index + 1] = y0 - (int) Math.round(y);
+
+			index += 2;
+		}
+
+		// Start and end geometry at center of ellipse to make it a closed
+		// polygon
+		xy[nPoints * 2 + 0] = x0;
+		xy[nPoints * 2 + 1] = y0;
+		xy[nPoints * 2 + 2] = xy[0];
+		xy[nPoints * 2 + 3] = xy[1];
+
+		return xy;
 	}
 
 	/**

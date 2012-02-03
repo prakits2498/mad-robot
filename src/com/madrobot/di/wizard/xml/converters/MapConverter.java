@@ -65,13 +65,6 @@ public class MapConverter extends AbstractCollectionConverter {
 		}
 	}
 
-	@Override
-	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
-		Map map = (Map) createCollection(context.getRequiredType());
-		populateMap(reader, context, map);
-		return map;
-	}
-
 	protected void populateMap(HierarchicalStreamReader reader, UnmarshallingContext context, Map map) {
 		populateMap(reader, context, map, map);
 	}
@@ -94,6 +87,13 @@ public class MapConverter extends AbstractCollectionConverter {
 		reader.moveUp();
 
 		target.put(key, value);
+	}
+
+	@Override
+	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+		Map map = (Map) createCollection(context.getRequiredType());
+		populateMap(reader, context, map);
+		return map;
 	}
 
 }

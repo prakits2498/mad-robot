@@ -59,30 +59,22 @@ import android.util.Log;
  */
 public class HttpTaskHelper {
 
-	private HttpSettings httpSettings=new HttpSettings();
-
-	
-
-	
-
-	public HttpSettings getHttpSettings() {
-		return httpSettings;
-	}
-
-	public void setHttpSettings(HttpSettings httpSettings) {
-		this.httpSettings = httpSettings;
-	}
-
 	private static final String TAG = "MadRobot";
 
-	private URI requestUrl;
-	private List<NameValuePair> requestParameter;
-	private Map<String, String> requestHeader;
-	private Map<String, String> responseHeader;
+	
+
+	
+
 	private HttpClient httpClient;
 
 	public HttpResponse httpResponse;
 
+	private HttpSettings httpSettings=new HttpSettings();
+
+	private Map<String, String> requestHeader;
+	private List<NameValuePair> requestParameter;
+	private URI requestUrl;
+	private Map<String, String> responseHeader;
 	/**
 	 * 
 	 * Parameterized constructor to initialize the request details.
@@ -172,10 +164,9 @@ public class HttpTaskHelper {
 		return httpClient;
 	}
 
-	// ////////////////////////////////////////////////////////////////////
-	// Private Method's
-
-	
+	public HttpSettings getHttpSettings() {
+		return httpSettings;
+	}
 
 	/**
 	 * Private access point to get th http request headers
@@ -185,6 +176,11 @@ public class HttpTaskHelper {
 	private Map<String, String> getRequestHeader() {
 		return requestHeader;
 	}
+
+	// ////////////////////////////////////////////////////////////////////
+	// Private Method's
+
+	
 
 	/**
 	 * 
@@ -331,6 +327,10 @@ public class HttpTaskHelper {
 	private void setDefaultRequestHeaders(HttpRequestBase httpRequestBase) {
 		// httpRequestBase.setHeader("Accept", "*/*");
 				
+	}
+
+	public void setHttpSettings(HttpSettings httpSettings) {
+		this.httpSettings = httpSettings;
 	}
 
 	/**

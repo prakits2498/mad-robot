@@ -18,13 +18,21 @@ import java.util.ArrayList;
 
 
 public class ModelPart {
+	private static short[] toPrimitiveArrayS(ArrayList<Short> vector){
+		short[] s;
+		s=new short[vector.size()];
+		for (int i=0; i<vector.size(); i++){
+			s[i]=vector.get(i);
+		}
+		return s;
+	}
+	ShortBuffer faceBuffer;
 	ArrayList<Short> faces;
-	ArrayList<Short> vtPointer;
-	ArrayList<Short> vnPointer;
 	Material material;
 	private FloatBuffer normalBuffer;
-	ShortBuffer faceBuffer;
+	ArrayList<Short> vnPointer;
 	
+	ArrayList<Short> vtPointer;
 	public ModelPart(ArrayList<Short> faces, ArrayList<Short> vtPointer,
 			ArrayList<Short> vnPointer, Material material, ArrayList<Float> vn) {
 		super();
@@ -53,6 +61,18 @@ public class ModelPart {
 		faceBuffer.put(toPrimitiveArrayS(faces));
 		faceBuffer.position(0);
 	}
+	public ShortBuffer getFaceBuffer(){
+		return faceBuffer;
+	}
+	public int getFacesCount(){
+		return faces.size();
+	}
+	public Material getMaterial(){
+		return material;
+	}
+	public FloatBuffer getNormalBuffer(){
+		return normalBuffer;
+	}
 	@Override
 	public String toString(){
 		String str=new String();
@@ -64,26 +84,6 @@ public class ModelPart {
 		str+="\nNumber of vnPointers:"+vnPointer.size();
 		str+="\nNumber of vtPointers:"+vtPointer.size();
 		return str;
-	}
-	public ShortBuffer getFaceBuffer(){
-		return faceBuffer;
-	}
-	public FloatBuffer getNormalBuffer(){
-		return normalBuffer;
-	}
-	private static short[] toPrimitiveArrayS(ArrayList<Short> vector){
-		short[] s;
-		s=new short[vector.size()];
-		for (int i=0; i<vector.size(); i++){
-			s[i]=vector.get(i);
-		}
-		return s;
-	}
-	public int getFacesCount(){
-		return faces.size();
-	}
-	public Material getMaterial(){
-		return material;
 	}
 	
 	

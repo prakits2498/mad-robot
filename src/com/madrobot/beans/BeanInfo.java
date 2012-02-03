@@ -37,6 +37,20 @@ package com.madrobot.beans;
 public interface BeanInfo {
 
 	/**
+	 * This method allows a BeanInfo object to return an arbitrary collection
+	 * of other BeanInfo objects that provide additional information on the
+	 * current bean.
+	 * <P>
+	 * If there are conflicts or overlaps between the information provided by
+	 * different BeanInfo objects, then the current BeanInfo takes precedence
+	 * over the getAdditionalBeanInfo objects, and later elements in the array
+	 * take precedence over earlier ones.
+	 * 
+	 * @return an array of BeanInfo objects. May return null.
+	 */
+	BeanInfo[] getAdditionalBeanInfo();
+
+	/**
 	 * Gets the beans <code>BeanDescriptor</code>.
 	 * 
 	 * @return A BeanDescriptor providing overall information about
@@ -45,15 +59,6 @@ public interface BeanInfo {
 	 *         analysis.
 	 */
 	BeanDescriptor getBeanDescriptor();
-
-	/**
-	 * Gets the beans <code>EventSetDescriptor</code>s.
-	 * 
-	 * @return An array of EventSetDescriptors describing the kinds of
-	 *         events fired by this bean. May return null if the information
-	 *         should be obtained by automatic analysis.
-	 */
-	EventSetDescriptor[] getEventSetDescriptors();
 
 	/**
 	 * A bean may have a "default" event that is the event that will
@@ -65,6 +70,36 @@ public interface BeanInfo {
 	 *         Returns -1 if there is no default event.
 	 */
 	int getDefaultEventIndex();
+
+	/**
+	 * A bean may have a "default" property that is the property that will
+	 * mostly commonly be initially chosen for update by human's who are
+	 * customizing the bean.
+	 * 
+	 * @return Index of default property in the PropertyDescriptor array
+	 *         returned by getPropertyDescriptors.
+	 *         <P>
+	 *         Returns -1 if there is no default property.
+	 */
+	int getDefaultPropertyIndex();
+
+	/**
+	 * Gets the beans <code>EventSetDescriptor</code>s.
+	 * 
+	 * @return An array of EventSetDescriptors describing the kinds of
+	 *         events fired by this bean. May return null if the information
+	 *         should be obtained by automatic analysis.
+	 */
+	EventSetDescriptor[] getEventSetDescriptors();
+
+	/**
+	 * Gets the beans <code>MethodDescriptor</code>s.
+	 * 
+	 * @return An array of MethodDescriptors describing the externally
+	 *         visible methods supported by this bean. May return null if
+	 *         the information should be obtained by automatic analysis.
+	 */
+	MethodDescriptor[] getMethodDescriptors();
 
 	/**
 	 * Gets the beans <code>PropertyDescriptor</code>s.
@@ -80,41 +115,6 @@ public interface BeanInfo {
 	 *         IndexedPropertyDescriptor.
 	 */
 	PropertyDescriptor[] getPropertyDescriptors();
-
-	/**
-	 * A bean may have a "default" property that is the property that will
-	 * mostly commonly be initially chosen for update by human's who are
-	 * customizing the bean.
-	 * 
-	 * @return Index of default property in the PropertyDescriptor array
-	 *         returned by getPropertyDescriptors.
-	 *         <P>
-	 *         Returns -1 if there is no default property.
-	 */
-	int getDefaultPropertyIndex();
-
-	/**
-	 * Gets the beans <code>MethodDescriptor</code>s.
-	 * 
-	 * @return An array of MethodDescriptors describing the externally
-	 *         visible methods supported by this bean. May return null if
-	 *         the information should be obtained by automatic analysis.
-	 */
-	MethodDescriptor[] getMethodDescriptors();
-
-	/**
-	 * This method allows a BeanInfo object to return an arbitrary collection
-	 * of other BeanInfo objects that provide additional information on the
-	 * current bean.
-	 * <P>
-	 * If there are conflicts or overlaps between the information provided by
-	 * different BeanInfo objects, then the current BeanInfo takes precedence
-	 * over the getAdditionalBeanInfo objects, and later elements in the array
-	 * take precedence over earlier ones.
-	 * 
-	 * @return an array of BeanInfo objects. May return null.
-	 */
-	BeanInfo[] getAdditionalBeanInfo();
 
 	// /**
 	// * This method returns an image object that can be used to

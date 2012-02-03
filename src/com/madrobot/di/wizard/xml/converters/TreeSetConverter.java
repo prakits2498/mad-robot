@@ -32,7 +32,6 @@ import com.madrobot.util.PresortedSet;
  * 
  */
 public class TreeSetConverter extends CollectionConverter {
-	private transient TreeMapConverter treeMapConverter;
 	private final static Field sortedMapField;
 	static {
 		Field smField = null;
@@ -57,6 +56,7 @@ public class TreeSetConverter extends CollectionConverter {
 		}
 		sortedMapField = smField;
 	}
+	private transient TreeMapConverter treeMapConverter;
 
 	public TreeSetConverter(Mapper mapper) {
 		super(mapper);
@@ -73,6 +73,38 @@ public class TreeSetConverter extends CollectionConverter {
 		SortedSet sortedSet = (SortedSet) source;
 		treeMapConverter.marshalComparator(sortedSet.comparator(), writer, context);
 		super.marshal(source, writer, context);
+	}
+
+	private Object readResolve() {
+		treeMapConverter = new TreeMapConverter(mapper()) {
+
+			@Override
+			protected void populateMap(HierarchicalStreamReader reader, UnmarshallingContext context, Map map, final Map target) {
+				populateCollection(reader, context, new AbstractList() {
+					@Override
+					public boolean add(Object object) {
+						return target.put(object, object) != null;
+					}
+
+					@Override
+					public Object get(int location) {
+						return null;
+					}
+
+					@Override
+					public int size() {
+						return target.size();
+					}
+				});
+			}
+
+			@Override
+			protected void putCurrentEntryIntoMap(HierarchicalStreamReader reader, UnmarshallingContext context, Map map, Map target) {
+				Object key = readItem(reader, context, map);
+				target.put(key, key);
+			}
+		};
+		return this;
 	}
 
 	@Override
@@ -115,37 +147,5 @@ public class TreeSetConverter extends CollectionConverter {
 			treeMapConverter.populateTreeMap(reader, context, treeMap, unmarshalledComparator);
 		}
 		return result;
-	}
-
-	private Object readResolve() {
-		treeMapConverter = new TreeMapConverter(mapper()) {
-
-			@Override
-			protected void populateMap(HierarchicalStreamReader reader, UnmarshallingContext context, Map map, final Map target) {
-				populateCollection(reader, context, new AbstractList() {
-					@Override
-					public boolean add(Object object) {
-						return target.put(object, object) != null;
-					}
-
-					@Override
-					public Object get(int location) {
-						return null;
-					}
-
-					@Override
-					public int size() {
-						return target.size();
-					}
-				});
-			}
-
-			@Override
-			protected void putCurrentEntryIntoMap(HierarchicalStreamReader reader, UnmarshallingContext context, Map map, Map target) {
-				Object key = readItem(reader, context, map);
-				target.put(key, key);
-			}
-		};
-		return this;
 	}
 }

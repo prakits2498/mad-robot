@@ -25,6 +25,16 @@ public class BeanDescriptor extends FeatureDescriptor {
 	private Reference beanClassRef;
 	private Reference customizerClassRef;
 
+	/*
+	 * Package-private dup constructor
+	 * This must isolate the new object from any changes to the old object.
+	 */
+	BeanDescriptor(BeanDescriptor old) {
+		super(old);
+		beanClassRef = old.beanClassRef;
+		customizerClassRef = old.customizerClassRef;
+	}
+
 	/**
 	 * Create a BeanDescriptor for a bean that doesn't have a customizer.
 	 * 
@@ -75,15 +85,5 @@ public class BeanDescriptor extends FeatureDescriptor {
 	 */
 	public Class<?> getCustomizerClass() {
 		return (Class) getObject(customizerClassRef);
-	}
-
-	/*
-	 * Package-private dup constructor
-	 * This must isolate the new object from any changes to the old object.
-	 */
-	BeanDescriptor(BeanDescriptor old) {
-		super(old);
-		beanClassRef = old.beanClassRef;
-		customizerClassRef = old.customizerClassRef;
 	}
 }

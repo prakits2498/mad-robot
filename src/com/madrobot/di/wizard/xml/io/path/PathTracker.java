@@ -47,12 +47,12 @@ import java.util.Map;
  */
 public class PathTracker {
 
-	private int pointer;
 	private int capacity;
-	private String[] pathStack;
-	private Map[] indexMapStack;
-
 	private Path currentPath;
+	private Map[] indexMapStack;
+	private String[] pathStack;
+
+	private int pointer;
 
 	public PathTracker() {
 		this(16);
@@ -71,38 +71,29 @@ public class PathTracker {
 	}
 
 	/**
-	 * Notify the tracker that the stream has moved into a new element.
+	 * Get the depth of the stack.
 	 * 
-	 * @param name
-	 *            Name of the element
+	 * @return the stack depth
+	 * @since 1.4.2
 	 */
-	public void pushElement(String name) {
-		if (pointer + 1 >= capacity) {
-			resizeStacks(capacity * 2);
-		}
-		pathStack[pointer] = name;
-		Map indexMap = indexMapStack[pointer];
-		if (indexMap == null) {
-			indexMap = new HashMap();
-			indexMapStack[pointer] = indexMap;
-		}
-		if (indexMap.containsKey(name)) {
-			indexMap.put(name, new Integer(((Integer) indexMap.get(name)).intValue() + 1));
-		} else {
-			indexMap.put(name, new Integer(1));
-		}
-		pointer++;
-		currentPath = null;
+	public int depth() {
+		return pointer;
 	}
 
 	/**
-	 * Notify the tracker that the stream has moved out of an element.
+	 * Current Path in stream.
 	 */
-	public void popElement() {
-		indexMapStack[pointer] = null;
-		pathStack[pointer] = null;
-		currentPath = null;
-		pointer--;
+	public Path getPath() {
+		if (currentPath == null) {
+			String[] chunks = new String[pointer + 1];
+			chunks[0] = "";
+			for (int i = -pointer; ++i <= 0;) {
+				final String name = peekElement(i);
+				chunks[i + pointer] = name;
+			}
+			currentPath = new Path(chunks);
+		}
+		return currentPath;
 	}
 
 	/**
@@ -144,13 +135,38 @@ public class PathTracker {
 	}
 
 	/**
-	 * Get the depth of the stack.
-	 * 
-	 * @return the stack depth
-	 * @since 1.4.2
+	 * Notify the tracker that the stream has moved out of an element.
 	 */
-	public int depth() {
-		return pointer;
+	public void popElement() {
+		indexMapStack[pointer] = null;
+		pathStack[pointer] = null;
+		currentPath = null;
+		pointer--;
+	}
+
+	/**
+	 * Notify the tracker that the stream has moved into a new element.
+	 * 
+	 * @param name
+	 *            Name of the element
+	 */
+	public void pushElement(String name) {
+		if (pointer + 1 >= capacity) {
+			resizeStacks(capacity * 2);
+		}
+		pathStack[pointer] = name;
+		Map indexMap = indexMapStack[pointer];
+		if (indexMap == null) {
+			indexMap = new HashMap();
+			indexMapStack[pointer] = indexMap;
+		}
+		if (indexMap.containsKey(name)) {
+			indexMap.put(name, new Integer(((Integer) indexMap.get(name)).intValue() + 1));
+		} else {
+			indexMap.put(name, new Integer(1));
+		}
+		pointer++;
+		currentPath = null;
 	}
 
 	private void resizeStacks(int newCapacity) {
@@ -162,21 +178,5 @@ public class PathTracker {
 		pathStack = newPathStack;
 		indexMapStack = newIndexMapStack;
 		capacity = newCapacity;
-	}
-
-	/**
-	 * Current Path in stream.
-	 */
-	public Path getPath() {
-		if (currentPath == null) {
-			String[] chunks = new String[pointer + 1];
-			chunks[0] = "";
-			for (int i = -pointer; ++i <= 0;) {
-				final String name = peekElement(i);
-				chunks[i + pointer] = name;
-			}
-			currentPath = new Path(chunks);
-		}
-		return currentPath;
 	}
 }

@@ -17,27 +17,8 @@ public class HttpURLConnectionRequestAdapter implements HttpRequest {
         this.connection = connection;
     }
 
-    public String getMethod() {
-        return connection.getRequestMethod();
-    }
-
-    public String getRequestUrl() {
-        return connection.getURL().toExternalForm();
-    }
-
-    public void setRequestUrl(String url) {
-        // can't do
-    }
-
-    public void setHeader(String name, String value) {
-        connection.setRequestProperty(name, value);
-    }
-
-    public String getHeader(String name) {
-        return connection.getRequestProperty(name);
-    }
-
-    public Map<String, String> getAllHeaders() {
+    @Override
+	public Map<String, String> getAllHeaders() {
         Map<String, List<String>> origHeaders = connection.getRequestProperties();
         Map<String, String> headers = new HashMap<String, String>(origHeaders.size());
         for (String name : origHeaders.keySet()) {
@@ -49,15 +30,43 @@ public class HttpURLConnectionRequestAdapter implements HttpRequest {
         return headers;
     }
 
-    public InputStream getMessagePayload() throws IOException {
-        return null;
-    }
-
-    public String getContentType() {
+    @Override
+	public String getContentType() {
         return connection.getRequestProperty("Content-Type");
     }
 
-    public HttpURLConnection unwrap() {
+    @Override
+	public String getHeader(String name) {
+        return connection.getRequestProperty(name);
+    }
+
+    @Override
+	public InputStream getMessagePayload() throws IOException {
+        return null;
+    }
+
+    @Override
+	public String getMethod() {
+        return connection.getRequestMethod();
+    }
+
+    @Override
+	public String getRequestUrl() {
+        return connection.getURL().toExternalForm();
+    }
+
+    @Override
+	public void setHeader(String name, String value) {
+        connection.setRequestProperty(name, value);
+    }
+
+    @Override
+	public void setRequestUrl(String url) {
+        // can't do
+    }
+
+    @Override
+	public HttpURLConnection unwrap() {
         return connection;
     }
 }

@@ -20,24 +20,6 @@ import java.lang.reflect.Field;
 public interface ReflectionProvider {
 
 	/**
-	 * Creates a new instance of the specified type. It is in the responsibility of the implementation how such an
-	 * instance is created.
-	 * 
-	 * @param type
-	 *            the type to instantiate
-	 * @return a new instance of this type
-	 */
-	Object newInstance(Class type);
-
-	void visitSerializableFields(Object object, Visitor visitor);
-
-	void writeField(Object object, String fieldName, Object value, Class definedIn);
-
-	Class getFieldType(Object object, String fieldName, Class definedIn);
-
-	boolean fieldDefinedInClass(String fieldName, Class type);
-
-	/**
 	 * A visitor interface for serializable fields defined in a class.
 	 * 
 	 */
@@ -58,6 +40,8 @@ public interface ReflectionProvider {
 		void visit(String name, Class type, Class definedIn, Object value);
 	}
 
+	boolean fieldDefinedInClass(String fieldName, Class type);
+
 	/**
 	 * Returns a field defined in some class.
 	 * 
@@ -68,5 +52,21 @@ public interface ReflectionProvider {
 	 * @return the field itself
 	 */
 	Field getField(Class definedIn, String fieldName);
+
+	Class getFieldType(Object object, String fieldName, Class definedIn);
+
+	/**
+	 * Creates a new instance of the specified type. It is in the responsibility of the implementation how such an
+	 * instance is created.
+	 * 
+	 * @param type
+	 *            the type to instantiate
+	 * @return a new instance of this type
+	 */
+	Object newInstance(Class type);
+
+	void visitSerializableFields(Object object, Visitor visitor);
+
+	void writeField(Object object, String fieldName, Object value, Class definedIn);
 
 }

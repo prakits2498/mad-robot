@@ -14,6 +14,37 @@ public class LocationService extends Service {
 
 	private Location mBestLocation;
 
+	private LocationListener mLocationListener = new LocationListener() {
+
+		@Override
+		public void onLocationChanged(Location location) {
+			if(LocationUtils.isBetterLocation(location, mBestLocation)){
+				mBestLocation = location;
+			}
+
+		}
+
+		@Override
+		public void onProviderDisabled(String provider) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void onProviderEnabled(String provider) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void onStatusChanged(String provider, int status, Bundle extras) {
+			// TODO Auto-generated method stub
+
+		}
+	};
+	private LocationManager mLocationManager;
+
+
 	ILocationService.Stub mService = new ILocationService.Stub() {
 
 		@Override
@@ -22,8 +53,6 @@ public class LocationService extends Service {
 		}
 
 	};
-	private LocationManager mLocationManager;
-
 
 	@Override
 	public IBinder onBind(Intent arg0) {
@@ -45,35 +74,6 @@ public class LocationService extends Service {
 		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocationListener);
 		//mLocationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 0, 0, mLocationListener);
 	}
-
-	private LocationListener mLocationListener = new LocationListener() {
-
-		@Override
-		public void onStatusChanged(String provider, int status, Bundle extras) {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void onProviderEnabled(String provider) {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void onProviderDisabled(String provider) {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void onLocationChanged(Location location) {
-			if(LocationUtils.isBetterLocation(location, mBestLocation)){
-				mBestLocation = location;
-			}
-
-		}
-	};
 
 	@Override
 	public void onDestroy() {

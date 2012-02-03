@@ -10,11 +10,11 @@ import android.widget.LinearLayout;
  * Recycle stores wheel items to reuse.
  */
  class WheelViewRecycler {
-	// Cached items
-	private List<View> items;
-
 	// Cached empty items
 	private List<View> emptyItems;
+
+	// Cached items
+	private List<View> items;
 
 	// Wheel view
 	private WheelView wheel;

@@ -18,24 +18,24 @@ package com.madrobot.device;
  */
 public final class DisplayInfo {
 
+	public static final int SCREENTYPE_FULL_WIDTH = 30;
+	public static final int SCREENTYPE_NORMAL = 10;
+	public static final int SCREENTYPE_WIDE = 20;
 	private double diagonalSizeInInch;
-	private int widthInPixels;
 	private int heightInPixels;
-	private float logicalDensity;
-	private float logicalDPI;
-	private float scaledDensity;
 	private float horizontalDensity;
 	private boolean isTouchEnabled;
+	private float logicalDensity;
+	private float logicalDPI;
 	private float refreshRate;
-	private float verticalDensity;
+
+	private float scaledDensity;
 
 	private int screenType;
 
-	public static final int SCREENTYPE_NORMAL = 10;
+	private float verticalDensity;
 
-	public static final int SCREENTYPE_WIDE = 20;
-
-	public static final int SCREENTYPE_FULL_WIDTH = 30;
+	private int widthInPixels;
 	DisplayInfo() {
 	}
 	public double getDiagonalSizeInInch() {

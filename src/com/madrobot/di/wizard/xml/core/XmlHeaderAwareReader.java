@@ -30,19 +30,19 @@ import java.util.Map;
  */
 public final class XmlHeaderAwareReader extends Reader {
 
-	private final InputStreamReader reader;
-	private final double version;
-
 	private static final String KEY_ENCODING = "encoding";
 	private static final String KEY_VERSION = "version";
 
-	private static final String XML_TOKEN = "?xml";
+	private static final int STATE_ATTR_NAME = 3;
+	private static final int STATE_ATTR_VALUE = 4;
+
+	private static final int STATE_AWAIT_XML_HEADER = 2;
 
 	private static final int STATE_BOM = 0;
 	private static final int STATE_START = 1;
-	private static final int STATE_AWAIT_XML_HEADER = 2;
-	private static final int STATE_ATTR_NAME = 3;
-	private static final int STATE_ATTR_VALUE = 4;
+	private static final String XML_TOKEN = "?xml";
+	private final InputStreamReader reader;
+	private final double version;
 
 	/**
 	 * Constructs an XmlHeaderAwareReader.
@@ -61,6 +61,30 @@ public final class XmlHeaderAwareReader extends Reader {
 		final Map header = getHeader(pin);
 		version = Double.parseDouble((String) header.get(KEY_VERSION));
 		reader = new InputStreamReader(pin[0], (String) header.get(KEY_ENCODING));
+	}
+
+	/**
+	 * @see java.io.Reader#close()
+	 */
+	@Override
+	public void close() throws IOException {
+		reader.close();
+	}
+
+	/**
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(final Object obj) {
+		return reader.equals(obj);
+	}
+
+	/**
+	 * @see InputStreamReader#getEncoding()
+	 * @since 1.3
+	 */
+	public String getEncoding() {
+		return reader.getEncoding();
 	}
 
 	private Map getHeader(final PushbackInputStream[] in) throws IOException {
@@ -182,16 +206,16 @@ public final class XmlHeaderAwareReader extends Reader {
 	 * @see InputStreamReader#getEncoding()
 	 * @since 1.3
 	 */
-	public String getEncoding() {
-		return reader.getEncoding();
+	public double getVersion() {
+		return version;
 	}
 
 	/**
-	 * @see InputStreamReader#getEncoding()
-	 * @since 1.3
+	 * @see java.lang.Object#hashCode()
 	 */
-	public double getVersion() {
-		return version;
+	@Override
+	public int hashCode() {
+		return reader.hashCode();
 	}
 
 	/**
@@ -210,20 +234,17 @@ public final class XmlHeaderAwareReader extends Reader {
 		return reader.markSupported();
 	}
 
+	// TODO: This is JDK 1.5
+	// public int read(final CharBuffer target) throws IOException {
+	// return reader.read(target);
+	// }
+
 	/**
 	 * @see java.io.Reader#read()
 	 */
 	@Override
 	public int read() throws IOException {
 		return reader.read();
-	}
-
-	/**
-	 * @see java.io.Reader#read(char[], int, int)
-	 */
-	@Override
-	public int read(final char[] cbuf, final int offset, final int length) throws IOException {
-		return reader.read(cbuf, offset, length);
 	}
 
 	/**
@@ -234,10 +255,13 @@ public final class XmlHeaderAwareReader extends Reader {
 		return reader.read(cbuf);
 	}
 
-	// TODO: This is JDK 1.5
-	// public int read(final CharBuffer target) throws IOException {
-	// return reader.read(target);
-	// }
+	/**
+	 * @see java.io.Reader#read(char[], int, int)
+	 */
+	@Override
+	public int read(final char[] cbuf, final int offset, final int length) throws IOException {
+		return reader.read(cbuf, offset, length);
+	}
 
 	/**
 	 * @see java.io.Reader#ready()
@@ -261,30 +285,6 @@ public final class XmlHeaderAwareReader extends Reader {
 	@Override
 	public long skip(final long n) throws IOException {
 		return reader.skip(n);
-	}
-
-	/**
-	 * @see java.io.Reader#close()
-	 */
-	@Override
-	public void close() throws IOException {
-		reader.close();
-	}
-
-	/**
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(final Object obj) {
-		return reader.equals(obj);
-	}
-
-	/**
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		return reader.hashCode();
 	}
 
 	/**

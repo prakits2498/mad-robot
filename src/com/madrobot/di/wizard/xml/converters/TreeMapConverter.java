@@ -39,9 +39,9 @@ public class TreeMapConverter extends MapConverter {
 		}
 	}
 
-	private final static Comparator NULL_MARKER = new NullComparator();
-
 	private final static Field comparatorField;
+
+	private final static Comparator NULL_MARKER = new NullComparator();
 	static {
 		Field cmpField = null;
 		try {
@@ -90,37 +90,6 @@ public class TreeMapConverter extends MapConverter {
 		}
 	}
 
-	@Override
-	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
-		TreeMap result = comparatorField != null ? new TreeMap() : null;
-		final Comparator comparator = unmarshalComparator(reader, context, result);
-		if (result == null) {
-			result = comparator == null ? new TreeMap() : new TreeMap(comparator);
-		}
-		populateTreeMap(reader, context, result, comparator);
-		return result;
-	}
-
-	protected Comparator unmarshalComparator(HierarchicalStreamReader reader, UnmarshallingContext context, TreeMap result) {
-		final Comparator comparator;
-		if (reader.hasMoreChildren()) {
-			reader.moveDown();
-			if (reader.getNodeName().equals("comparator")) {
-				Class comparatorClass = HierarchicalStreams.readClassType(reader, mapper());
-				comparator = (Comparator) context.convertAnother(result, comparatorClass);
-			} else if (reader.getNodeName().equals("no-comparator")) { // pre 1.4 format
-				comparator = null;
-			} else {
-				// we are already within the first entry
-				return NULL_MARKER;
-			}
-			reader.moveUp();
-		} else {
-			comparator = null;
-		}
-		return comparator;
-	}
-
 	protected void populateTreeMap(HierarchicalStreamReader reader, UnmarshallingContext context, TreeMap result, Comparator comparator) {
 		boolean inFirstElement = comparator == NULL_MARKER;
 		if (inFirstElement) {
@@ -150,5 +119,36 @@ public class TreeMapConverter extends MapConverter {
 		} catch (final IllegalAccessException e) {
 			throw new ConversionException("Cannot set comparator of TreeMap", e);
 		}
+	}
+
+	@Override
+	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+		TreeMap result = comparatorField != null ? new TreeMap() : null;
+		final Comparator comparator = unmarshalComparator(reader, context, result);
+		if (result == null) {
+			result = comparator == null ? new TreeMap() : new TreeMap(comparator);
+		}
+		populateTreeMap(reader, context, result, comparator);
+		return result;
+	}
+
+	protected Comparator unmarshalComparator(HierarchicalStreamReader reader, UnmarshallingContext context, TreeMap result) {
+		final Comparator comparator;
+		if (reader.hasMoreChildren()) {
+			reader.moveDown();
+			if (reader.getNodeName().equals("comparator")) {
+				Class comparatorClass = HierarchicalStreams.readClassType(reader, mapper());
+				comparator = (Comparator) context.convertAnother(result, comparatorClass);
+			} else if (reader.getNodeName().equals("no-comparator")) { // pre 1.4 format
+				comparator = null;
+			} else {
+				// we are already within the first entry
+				return NULL_MARKER;
+			}
+			reader.moveUp();
+		} else {
+			comparator = null;
+		}
+		return comparator;
 	}
 }

@@ -25,15 +25,6 @@ import java.io.Writer;
  */
 public class BinaryStreamDriver extends AbstractDriver {
 
-	/**
-	 * @throws UnsupportedOperationException
-	 *             if called
-	 */
-	@Override
-	public HierarchicalStreamReader createReader(Reader in) {
-		throw new UnsupportedOperationException("The BinaryDriver cannot use character-oriented input streams.");
-	}
-
 	@Override
 	public HierarchicalStreamReader createReader(InputStream in) {
 		return new BinaryStreamReader(in);
@@ -44,12 +35,21 @@ public class BinaryStreamDriver extends AbstractDriver {
 	 *             if called
 	 */
 	@Override
-	public HierarchicalStreamWriter createWriter(Writer out) {
-		throw new UnsupportedOperationException("The BinaryDriver cannot use character-oriented output streams.");
+	public HierarchicalStreamReader createReader(Reader in) {
+		throw new UnsupportedOperationException("The BinaryDriver cannot use character-oriented input streams.");
 	}
 
 	@Override
 	public HierarchicalStreamWriter createWriter(OutputStream out) {
 		return new BinaryStreamWriter(out);
+	}
+
+	/**
+	 * @throws UnsupportedOperationException
+	 *             if called
+	 */
+	@Override
+	public HierarchicalStreamWriter createWriter(Writer out) {
+		throw new UnsupportedOperationException("The BinaryDriver cannot use character-oriented output streams.");
 	}
 }

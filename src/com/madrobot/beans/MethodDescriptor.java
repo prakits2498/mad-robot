@@ -27,11 +27,11 @@ public class MethodDescriptor extends FeatureDescriptor {
 
 	private Reference methodRef;
 
+	private ParameterDescriptor parameterDescriptors[];
+
 	private String[] paramNames;
 
 	private List params;
-
-	private ParameterDescriptor parameterDescriptors[];
 
 	/**
 	 * Constructs a <code>MethodDescriptor</code> from a <code>Method</code>.
@@ -58,6 +58,48 @@ public class MethodDescriptor extends FeatureDescriptor {
 		setName(method.getName());
 		setMethod(method);
 		this.parameterDescriptors = parameterDescriptors;
+	}
+
+	/*
+	 * Package-private dup constructor
+	 * This must isolate the new object from any changes to the old object.
+	 */
+	MethodDescriptor(MethodDescriptor old) {
+		super(old);
+
+		methodRef = old.methodRef;
+		params = old.params;
+		paramNames = old.paramNames;
+
+		if(old.parameterDescriptors != null){
+			int len = old.parameterDescriptors.length;
+			parameterDescriptors = new ParameterDescriptor[len];
+			for(int i = 0; i < len; i++){
+				parameterDescriptors[i] = new ParameterDescriptor(old.parameterDescriptors[i]);
+			}
+		}
+	}
+
+	MethodDescriptor(MethodDescriptor x, MethodDescriptor y) {
+		super(x, y);
+
+		methodRef = x.methodRef;
+		if(y.methodRef != null){
+			methodRef = y.methodRef;
+		}
+		params = x.params;
+		if(y.params != null){
+			params = y.params;
+		}
+		paramNames = x.paramNames;
+		if(y.paramNames != null){
+			paramNames = y.paramNames;
+		}
+
+		parameterDescriptors = x.parameterDescriptors;
+		if(y.parameterDescriptors != null){
+			parameterDescriptors = y.parameterDescriptors;
+		}
 	}
 
 	/**
@@ -92,31 +134,19 @@ public class MethodDescriptor extends FeatureDescriptor {
 		return method;
 	}
 
-	private synchronized void setMethod(Method method) {
-		if(method == null){
-			return;
-		}
-		if(getClass0() == null){
-			setClass0(method.getDeclaringClass());
-		}
-		setParams(method.getParameterTypes());
-		methodRef = createReference(method, true);
-	}
-
 	private Method getMethod0() {
 		return (Method) getObject(methodRef);
 	}
 
-	private synchronized void setParams(Class[] param) {
-		if(param == null){
-			return;
-		}
-		paramNames = new String[param.length];
-		params = new ArrayList(param.length);
-		for(int i = 0; i < param.length; i++){
-			paramNames[i] = param[i].getName();
-			params.add(new WeakReference(param[i]));
-		}
+	/**
+	 * Gets the ParameterDescriptor for each of this MethodDescriptor's
+	 * method's parameters.
+	 * 
+	 * @return The locale-independent names of the parameters. May return
+	 *         a null array if the parameter names aren't known.
+	 */
+	public ParameterDescriptor[] getParameterDescriptors() {
+		return parameterDescriptors;
 	}
 
 	// pp getParamNames used as an optimization to avoid
@@ -138,17 +168,6 @@ public class MethodDescriptor extends FeatureDescriptor {
 			}
 		}
 		return clss;
-	}
-
-	/**
-	 * Gets the ParameterDescriptor for each of this MethodDescriptor's
-	 * method's parameters.
-	 * 
-	 * @return The locale-independent names of the parameters. May return
-	 *         a null array if the parameter names aren't known.
-	 */
-	public ParameterDescriptor[] getParameterDescriptors() {
-		return parameterDescriptors;
 	}
 
 	/*
@@ -179,45 +198,26 @@ public class MethodDescriptor extends FeatureDescriptor {
 	 * @param y The second (higher priority) MethodDescriptor
 	 */
 
-	MethodDescriptor(MethodDescriptor x, MethodDescriptor y) {
-		super(x, y);
-
-		methodRef = x.methodRef;
-		if(y.methodRef != null){
-			methodRef = y.methodRef;
+	private synchronized void setMethod(Method method) {
+		if(method == null){
+			return;
 		}
-		params = x.params;
-		if(y.params != null){
-			params = y.params;
+		if(getClass0() == null){
+			setClass0(method.getDeclaringClass());
 		}
-		paramNames = x.paramNames;
-		if(y.paramNames != null){
-			paramNames = y.paramNames;
-		}
-
-		parameterDescriptors = x.parameterDescriptors;
-		if(y.parameterDescriptors != null){
-			parameterDescriptors = y.parameterDescriptors;
-		}
+		setParams(method.getParameterTypes());
+		methodRef = createReference(method, true);
 	}
 
-	/*
-	 * Package-private dup constructor
-	 * This must isolate the new object from any changes to the old object.
-	 */
-	MethodDescriptor(MethodDescriptor old) {
-		super(old);
-
-		methodRef = old.methodRef;
-		params = old.params;
-		paramNames = old.paramNames;
-
-		if(old.parameterDescriptors != null){
-			int len = old.parameterDescriptors.length;
-			parameterDescriptors = new ParameterDescriptor[len];
-			for(int i = 0; i < len; i++){
-				parameterDescriptors[i] = new ParameterDescriptor(old.parameterDescriptors[i]);
-			}
+	private synchronized void setParams(Class[] param) {
+		if(param == null){
+			return;
+		}
+		paramNames = new String[param.length];
+		params = new ArrayList(param.length);
+		for(int i = 0; i < param.length; i++){
+			paramNames[i] = param[i].getName();
+			params.add(new WeakReference(param[i]));
 		}
 	}
 

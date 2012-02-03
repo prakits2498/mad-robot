@@ -16,8 +16,10 @@ package com.madrobot.util;
  *
  */
 public class SimpleCircularList {
-	Object[] list;
 	int currentIndex;
+	Object[] list;
+	private int pollIndex = -1;
+
 	int size;
 
 	public SimpleCircularList(int size) {
@@ -30,7 +32,9 @@ public class SimpleCircularList {
 		currentIndex++;
 	}
 
-	private int pollIndex = -1;
+	public Object getObjectAt(int index) throws ArrayIndexOutOfBoundsException {
+		return list[index];
+	}
 
 	public Object poll() {
 		int temp = pollIndex + 1;
@@ -40,9 +44,5 @@ public class SimpleCircularList {
 			pollIndex++;
 		}
 		return list[pollIndex];
-	}
-
-	public Object getObjectAt(int index) throws ArrayIndexOutOfBoundsException {
-		return list[index];
 	}
 }

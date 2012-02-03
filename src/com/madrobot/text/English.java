@@ -12,8 +12,15 @@ package com.madrobot.text;
 
 public final class English {
 
-	private English() {
-	} // no instance
+	public static String intToEnglish(int i) {
+		StringBuilder result = new StringBuilder();
+		longToEnglish(i, result);
+		return result.toString();
+	}
+
+	public static void intToEnglish(int i, StringBuilder result) {
+		longToEnglish(i, result);
+	}
 
 	public static String longToEnglish(long i) {
 		StringBuilder result = new StringBuilder();
@@ -163,16 +170,6 @@ public final class English {
 		}
 	}
 
-	public static String intToEnglish(int i) {
-		StringBuilder result = new StringBuilder();
-		longToEnglish(i, result);
-		return result.toString();
-	}
-
-	public static void intToEnglish(int i, StringBuilder result) {
-		longToEnglish(i, result);
-	}
-
 	public static String timeToString(long time) {
 		if(time == 0)
 			return "0s";
@@ -193,5 +190,8 @@ public final class English {
 			str += time + "s ";
 		return str.substring(0, str.length() - 1);
 	}
+
+	private English() {
+	} // no instance
 
 }

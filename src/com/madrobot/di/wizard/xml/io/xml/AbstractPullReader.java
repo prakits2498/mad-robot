@@ -25,23 +25,23 @@ import com.madrobot.util.FastStack;
  */
 public abstract class AbstractPullReader extends AbstractReader {
 
-	protected static final int START_NODE = 1;
-	protected static final int END_NODE = 2;
-	protected static final int TEXT = 3;
+	private static class Event {
+		int type;
+		String value;
+	}
 	protected static final int COMMENT = 4;
+	protected static final int END_NODE = 2;
 	protected static final int OTHER = 0;
+	protected static final int START_NODE = 1;
 
+	protected static final int TEXT = 3;
 	private final FastStack elementStack = new FastStack(16);
-	private final FastStack pool = new FastStack(16);
 
 	private final FastStack lookahead = new FastStack(4);
 	private final FastStack lookback = new FastStack(4);
 	private boolean marked;
 
-	private static class Event {
-		int type;
-		String value;
-	}
+	private final FastStack pool = new FastStack(16);
 
 	/**
 	 * @since 1.4
@@ -59,118 +59,14 @@ public abstract class AbstractPullReader extends AbstractReader {
 		this((NameCoder) replacer);
 	}
 
-	/**
-	 * Pull the next event from the stream.
-	 * 
-	 * <p>
-	 * This MUST return {@link #START_NODE}, {@link #END_NODE}, {@link #TEXT}, {@link #COMMENT}, {@link #OTHER} or throw
-	 * {@link com.madrobot.di.wizard.xml.io.StreamException}.
-	 * </p>
-	 * 
-	 * <p>
-	 * The underlying pull parser will most likely return its own event types. These must be mapped to the appropriate
-	 * events.
-	 * </p>
-	 */
-	protected abstract int pullNextEvent();
-
-	/**
-	 * Pull the name of the current element from the stream.
-	 */
-	protected abstract String pullElementName();
-
-	/**
-	 * Pull the contents of the current text node from the stream.
-	 */
-	protected abstract String pullText();
-
 	@Override
-	public boolean hasMoreChildren() {
-		mark();
-		while (true) {
-			switch (readEvent().type) {
-			case START_NODE:
-				reset();
-				return true;
-			case END_NODE:
-				reset();
-				return false;
-			default:
-				continue;
-			}
-		}
+	public Iterator getAttributeNames() {
+		return new AttributeNameIterator(this);
 	}
 
 	@Override
-	public void moveDown() {
-		int currentDepth = elementStack.size();
-		while (elementStack.size() <= currentDepth) {
-			move();
-			if (elementStack.size() < currentDepth) {
-				throw new RuntimeException(); // sanity check
-			}
-		}
-	}
-
-	@Override
-	public void moveUp() {
-		int currentDepth = elementStack.size();
-		while (elementStack.size() >= currentDepth) {
-			move();
-		}
-	}
-
-	private void move() {
-		final Event event = readEvent();
-		pool.push(event);
-		switch (event.type) {
-		case START_NODE:
-			elementStack.push(pullElementName());
-			break;
-		case END_NODE:
-			elementStack.pop();
-			break;
-		}
-	}
-
-	private Event readEvent() {
-		if (marked) {
-			if (lookback.hasStuff()) {
-				return (Event) lookahead.push(lookback.pop());
-			} else {
-				return (Event) lookahead.push(readRealEvent());
-			}
-		} else {
-			if (lookback.hasStuff()) {
-				return (Event) lookback.pop();
-			} else {
-				return readRealEvent();
-			}
-		}
-	}
-
-	private Event readRealEvent() {
-		Event event = pool.hasStuff() ? (Event) pool.pop() : new Event();
-		event.type = pullNextEvent();
-		if (event.type == TEXT) {
-			event.value = pullText();
-		} else if (event.type == START_NODE) {
-			event.value = pullElementName();
-		} else {
-			event.value = null;
-		}
-		return event;
-	}
-
-	public void mark() {
-		marked = true;
-	}
-
-	public void reset() {
-		while (lookahead.hasStuff()) {
-			lookback.push(lookahead.pop());
-		}
-		marked = false;
+	public String getNodeName() {
+		return decodeNode((String) elementStack.peek());
 	}
 
 	@Override
@@ -212,13 +108,56 @@ public abstract class AbstractPullReader extends AbstractReader {
 	}
 
 	@Override
-	public Iterator getAttributeNames() {
-		return new AttributeNameIterator(this);
+	public boolean hasMoreChildren() {
+		mark();
+		while (true) {
+			switch (readEvent().type) {
+			case START_NODE:
+				reset();
+				return true;
+			case END_NODE:
+				reset();
+				return false;
+			default:
+				continue;
+			}
+		}
+	}
+
+	public void mark() {
+		marked = true;
+	}
+
+	private void move() {
+		final Event event = readEvent();
+		pool.push(event);
+		switch (event.type) {
+		case START_NODE:
+			elementStack.push(pullElementName());
+			break;
+		case END_NODE:
+			elementStack.pop();
+			break;
+		}
 	}
 
 	@Override
-	public String getNodeName() {
-		return decodeNode((String) elementStack.peek());
+	public void moveDown() {
+		int currentDepth = elementStack.size();
+		while (elementStack.size() <= currentDepth) {
+			move();
+			if (elementStack.size() < currentDepth) {
+				throw new RuntimeException(); // sanity check
+			}
+		}
+	}
+
+	@Override
+	public void moveUp() {
+		int currentDepth = elementStack.size();
+		while (elementStack.size() >= currentDepth) {
+			move();
+		}
 	}
 
 	@Override
@@ -237,5 +176,66 @@ public abstract class AbstractPullReader extends AbstractReader {
 				continue;
 			}
 		}
+	}
+
+	/**
+	 * Pull the name of the current element from the stream.
+	 */
+	protected abstract String pullElementName();
+
+	/**
+	 * Pull the next event from the stream.
+	 * 
+	 * <p>
+	 * This MUST return {@link #START_NODE}, {@link #END_NODE}, {@link #TEXT}, {@link #COMMENT}, {@link #OTHER} or throw
+	 * {@link com.madrobot.di.wizard.xml.io.StreamException}.
+	 * </p>
+	 * 
+	 * <p>
+	 * The underlying pull parser will most likely return its own event types. These must be mapped to the appropriate
+	 * events.
+	 * </p>
+	 */
+	protected abstract int pullNextEvent();
+
+	/**
+	 * Pull the contents of the current text node from the stream.
+	 */
+	protected abstract String pullText();
+
+	private Event readEvent() {
+		if (marked) {
+			if (lookback.hasStuff()) {
+				return (Event) lookahead.push(lookback.pop());
+			} else {
+				return (Event) lookahead.push(readRealEvent());
+			}
+		} else {
+			if (lookback.hasStuff()) {
+				return (Event) lookback.pop();
+			} else {
+				return readRealEvent();
+			}
+		}
+	}
+
+	private Event readRealEvent() {
+		Event event = pool.hasStuff() ? (Event) pool.pop() : new Event();
+		event.type = pullNextEvent();
+		if (event.type == TEXT) {
+			event.value = pullText();
+		} else if (event.type == START_NODE) {
+			event.value = pullElementName();
+		} else {
+			event.value = null;
+		}
+		return event;
+	}
+
+	public void reset() {
+		while (lookahead.hasStuff()) {
+			lookback.push(lookahead.pop());
+		}
+		marked = false;
 	}
 }

@@ -35,11 +35,6 @@ public class JavaClassConverter extends AbstractSingleValueConverter {
 	}
 
 	@Override
-	public String toString(Object obj) {
-		return ((Class) obj).getName();
-	}
-
-	@Override
 	public Object fromString(String str) {
 		try {
 			return loadClass(str);
@@ -67,5 +62,10 @@ public class JavaClassConverter extends AbstractSingleValueConverter {
 			return Class.forName(className, false, classLoaderToUse);
 		}
 		return classLoader.loadClass(className);
+	}
+
+	@Override
+	public String toString(Object obj) {
+		return ((Class) obj).getName();
 	}
 }

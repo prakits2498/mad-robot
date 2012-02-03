@@ -11,53 +11,53 @@
 package com.madrobot.device;
 
 public final class DeviceInfo {
-	DeviceInfo() {
-	}
+	private String deviceBrand;
 
+	private String deviceModel;
 	private String firmwareVersion;
 	private String kernelVersion;
 	private String manufacturer;
-	private String deviceModel;
-	private String deviceBrand;
+	DeviceInfo() {
+	}
 
 	public String getDeviceBrand() {
 		return deviceBrand;
-	}
-
-	void setDeviceBrand(String deviceBrand) {
-		this.deviceBrand = deviceBrand;
 	}
 
 	public String getDeviceModel() {
 		return deviceModel;
 	}
 
-	void setDeviceModel(String deviceModel) {
-		this.deviceModel = deviceModel;
-	}
-
-	public String getManufacturer() {
-		return manufacturer;
-	}
-
-	void setManufacturer(String manufacturer) {
-		this.manufacturer = manufacturer;
+	public String getFirmwareVersion() {
+		return firmwareVersion;
 	}
 
 	public String getKernelVersion() {
 		return kernelVersion;
 	}
 
-	void setKernelVersion(String kernelVersion) {
-		this.kernelVersion = kernelVersion;
+	public String getManufacturer() {
+		return manufacturer;
 	}
 
-	public String getFirmwareVersion() {
-		return firmwareVersion;
+	void setDeviceBrand(String deviceBrand) {
+		this.deviceBrand = deviceBrand;
+	}
+
+	void setDeviceModel(String deviceModel) {
+		this.deviceModel = deviceModel;
 	}
 
 	void setFirmwareVersion(String firmwareVersion) {
 		this.firmwareVersion = firmwareVersion;
+	}
+
+	void setKernelVersion(String kernelVersion) {
+		this.kernelVersion = kernelVersion;
+	}
+
+	void setManufacturer(String manufacturer) {
+		this.manufacturer = manufacturer;
 	}
 
 }

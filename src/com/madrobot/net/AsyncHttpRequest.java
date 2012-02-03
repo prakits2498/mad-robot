@@ -12,9 +12,9 @@ import org.apache.http.protocol.HttpContext;
 class AsyncHttpRequest implements Runnable {
     private final AbstractHttpClient client;
     private final HttpContext context;
+    private int executionCount;
     private final HttpUriRequest request;
     private final AsyncHttpResponseHandler responseHandler;
-    private int executionCount;
 
     public AsyncHttpRequest(AbstractHttpClient client, HttpContext context, HttpUriRequest request, AsyncHttpResponseHandler responseHandler) {
         this.client = client;
@@ -23,25 +23,6 @@ class AsyncHttpRequest implements Runnable {
         this.responseHandler = responseHandler;
     }
 
-    public void run() {
-        try {
-            if(responseHandler != null){
-                responseHandler.sendStartMessage();
-            }
-
-            makeRequestWithRetries();
-
-            if(responseHandler != null) {
-                responseHandler.sendFinishMessage();
-            }
-        } catch (IOException e) {
-            if(responseHandler != null) {
-                responseHandler.sendFinishMessage();
-                responseHandler.sendFailureMessage(e, null);
-            }
-        }
-    }
-    
     private void makeRequest() throws IOException {
     	if(!Thread.currentThread().isInterrupted()) {
     		HttpResponse response = client.execute(request, context);
@@ -54,7 +35,7 @@ class AsyncHttpRequest implements Runnable {
     		}
     	}
     }
-
+    
     private void makeRequestWithRetries() throws ConnectException {
         // This is an additional layer of retry logic lifted from droid-fu
         // See: https://github.com/kaeppler/droid-fu/blob/master/src/main/java/com/github/droidfu/http/BetterHttpRequestBase.java
@@ -81,5 +62,25 @@ class AsyncHttpRequest implements Runnable {
         ConnectException ex = new ConnectException();
         ex.initCause(cause);
         throw ex;
+    }
+
+    @Override
+	public void run() {
+        try {
+            if(responseHandler != null){
+                responseHandler.sendStartMessage();
+            }
+
+            makeRequestWithRetries();
+
+            if(responseHandler != null) {
+                responseHandler.sendFinishMessage();
+            }
+        } catch (IOException e) {
+            if(responseHandler != null) {
+                responseHandler.sendFinishMessage();
+                responseHandler.sendFailureMessage(e, null);
+            }
+        }
     }
 }

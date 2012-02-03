@@ -21,6 +21,10 @@ import java.util.WeakHashMap;
  */
 public class WeakCache extends AbstractMap {
 
+    private interface Visitor {
+        Object visit(Object element);
+    }
+
     private final Map map;
 
     /**
@@ -44,25 +48,13 @@ public class WeakCache extends AbstractMap {
     }
 
     @Override
-	public Object get(Object key) {
-        Reference reference = (Reference)map.get(key);
-        return reference != null ? reference.get() : null;
+	public void clear() {
+        map.clear();
     }
 
     @Override
-	public Object put(Object key, Object value) {
-        Reference ref = (Reference)map.put(key, createReference(value));
-        return ref == null ? null : ref.get();
-    }
-
-    @Override
-	public Object remove(Object key) {
-        Reference ref = (Reference)map.remove(key);
-        return ref == null ? null : ref.get();
-    }
-
-    protected Reference createReference(Object value) {
-        return new WeakReference(value);
+	public boolean containsKey(Object key) {
+        return map.containsKey(key);
     }
 
     @Override
@@ -78,40 +70,8 @@ public class WeakCache extends AbstractMap {
         return result == Boolean.TRUE;
     }
 
-    @Override
-	public int size() {
-        if (map.size() == 0) {
-            return 0;
-        }
-        final int i[] = new int[1];
-        i[0] = 0;
-        iterate(new Visitor() {
-
-            @Override
-			public Object visit(Object element) {
-                ++i[0];
-                return null;
-            }
-
-        }, 0);
-        return i[0];
-    }
-
-    @Override
-	public Collection values() {
-        final Collection collection = new ArrayList();
-        if (map.size() != 0) {
-            iterate(new Visitor() {
-
-                @Override
-				public Object visit(Object element) {
-                    collection.add(element);
-                    return null;
-                }
-
-            }, 0);
-        }
-        return collection;
+    protected Reference createReference(Object value) {
+        return new WeakReference(value);
     }
 
     @Override
@@ -149,6 +109,22 @@ public class WeakCache extends AbstractMap {
         return set;
     }
 
+    @Override
+	public boolean equals(Object o) {
+        return map.equals(o);
+    }
+
+    @Override
+	public Object get(Object key) {
+        Reference reference = (Reference)map.get(key);
+        return reference != null ? reference.get() : null;
+    }
+
+    @Override
+	public int hashCode() {
+        return map.hashCode();
+    }
+
     private Object iterate(Visitor visitor, int type) {
         Object result = null;
         for (Iterator iter = map.entrySet().iterator(); result == null && iter.hasNext();) {
@@ -175,37 +151,61 @@ public class WeakCache extends AbstractMap {
         return result;
     }
 
-    private interface Visitor {
-        Object visit(Object element);
-    }
-
-    @Override
-	public boolean containsKey(Object key) {
-        return map.containsKey(key);
-    }
-
-    @Override
-	public void clear() {
-        map.clear();
-    }
-
     @Override
 	public Set keySet() {
         return map.keySet();
     }
 
     @Override
-	public boolean equals(Object o) {
-        return map.equals(o);
+	public Object put(Object key, Object value) {
+        Reference ref = (Reference)map.put(key, createReference(value));
+        return ref == null ? null : ref.get();
     }
 
     @Override
-	public int hashCode() {
-        return map.hashCode();
+	public Object remove(Object key) {
+        Reference ref = (Reference)map.remove(key);
+        return ref == null ? null : ref.get();
+    }
+
+    @Override
+	public int size() {
+        if (map.size() == 0) {
+            return 0;
+        }
+        final int i[] = new int[1];
+        i[0] = 0;
+        iterate(new Visitor() {
+
+            @Override
+			public Object visit(Object element) {
+                ++i[0];
+                return null;
+            }
+
+        }, 0);
+        return i[0];
     }
 
     @Override
 	public String toString() {
         return map.toString();
+    }
+
+    @Override
+	public Collection values() {
+        final Collection collection = new ArrayList();
+        if (map.size() != 0) {
+            iterate(new Visitor() {
+
+                @Override
+				public Object visit(Object element) {
+                    collection.add(element);
+                    return null;
+                }
+
+            }, 0);
+        }
+        return collection;
     }
 }

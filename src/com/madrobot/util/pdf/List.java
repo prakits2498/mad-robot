@@ -11,7 +11,12 @@ import java.util.ArrayList;
 		mList = new ArrayList<String>();
 	}
 	
-	 String renderList() {
+	 @Override
+	 void clear() {
+		mList.clear();
+	}
+	
+	String renderList() {
 		StringBuilder sb = new StringBuilder();
 		int x = 0;
 		while (x < mList.size()) {
@@ -19,10 +24,5 @@ import java.util.ArrayList;
 			x++;
 		}
 		return sb.toString();
-	}
-	
-	@Override
-	 void clear() {
-		mList.clear();
 	}
 }

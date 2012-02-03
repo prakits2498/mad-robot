@@ -30,13 +30,16 @@ public class SingleValueConverterWrapper implements Converter, SingleValueConver
 	}
 
 	@Override
-	public boolean canConvert(Class type) {
-		return wrapped.canConvert(type);
+	public void appendErrors(ErrorWriter errorWriter) {
+		errorWriter.add("wrapped-converter", wrapped.getClass().getName());
+		if (wrapped instanceof ErrorReporter) {
+			((ErrorReporter) wrapped).appendErrors(errorWriter);
+		}
 	}
 
 	@Override
-	public String toString(Object obj) {
-		return wrapped.toString(obj);
+	public boolean canConvert(Class type) {
+		return wrapped.canConvert(type);
 	}
 
 	@Override
@@ -50,15 +53,12 @@ public class SingleValueConverterWrapper implements Converter, SingleValueConver
 	}
 
 	@Override
-	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
-		return fromString(reader.getValue());
+	public String toString(Object obj) {
+		return wrapped.toString(obj);
 	}
 
 	@Override
-	public void appendErrors(ErrorWriter errorWriter) {
-		errorWriter.add("wrapped-converter", wrapped.getClass().getName());
-		if (wrapped instanceof ErrorReporter) {
-			((ErrorReporter) wrapped).appendErrors(errorWriter);
-		}
+	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+		return fromString(reader.getValue());
 	}
 }

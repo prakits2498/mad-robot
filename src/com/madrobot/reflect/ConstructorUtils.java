@@ -45,15 +45,81 @@ import java.lang.reflect.Modifier;
 public class ConstructorUtils {
 
     /**
-     * <p>ConstructorUtils instances should NOT be constructed in standard programming.
-     * Instead, the class should be used as
-     * <code>ConstructorUtils.invokeConstructor(cls, args)</code>.</p>
-     *
-     * <p>This constructor is public to permit tools that require a JavaBean
-     * instance to operate.</p>
+     * Returns a constructor given a class and signature.
+     * @param cls the class to be constructed
+     * @param parameterTypes the parameter array
+     * @return null if matching accessible constructor can not be found
+     * @see Class#getConstructor
+     * @see #getAccessibleConstructor(java.lang.reflect.Constructor)
      */
-    public ConstructorUtils() {
-        super();
+    public static <T> Constructor<T> getAccessibleConstructor(Class<T> cls,
+            Class<?>... parameterTypes) {
+        try {
+            return getAccessibleConstructor(cls.getConstructor(parameterTypes));
+        } catch (NoSuchMethodException e) {
+            return (null);
+        }
+    }
+
+    /**
+     * Returns accessible version of the given constructor.
+     * @param ctor prototype constructor object.
+     * @return <code>null</code> if accessible constructor can not be found.
+     * @see java.lang.SecurityManager
+     */
+    public static <T> Constructor<T> getAccessibleConstructor(Constructor<T> ctor) {
+        return MemberUtils.isAccessible(ctor)
+                && Modifier.isPublic(ctor.getDeclaringClass().getModifiers()) ? ctor
+                : null;
+    }
+
+    /**
+     * <p>Find an accessible constructor with compatible parameters.
+     * Compatible parameters mean that every method parameter is assignable from
+     * the given parameters. In other words, it finds constructor that will take
+     * the parameters given.</p>
+     *
+     * <p>First it checks if there is constructor matching the exact signature.
+     * If no such, all the constructors of the class are tested if their signatures
+     * are assignment compatible with the parameter types.
+     * The first matching constructor is returned.</p>
+     *
+     * @param cls find constructor for this class
+     * @param parameterTypes find method with compatible parameters
+     * @return a valid Constructor object. If there's no matching constructor, returns <code>null</code>.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> Constructor<T> getMatchingAccessibleConstructor(Class<T> cls,
+            Class<?>... parameterTypes) {
+        // see if we can find the constructor directly
+        // most of the time this works and it's much faster
+        try {
+            Constructor<T> ctor = cls.getConstructor(parameterTypes);
+            MemberUtils.setAccessibleWorkaround(ctor);
+            return ctor;
+        } catch (NoSuchMethodException e) { /* SWALLOW */
+        }
+        Constructor<T> result = null;
+        // search through all constructors
+        Constructor<?>[] ctors = cls.getConstructors();
+        for (int i = 0; i < ctors.length; i++) {
+            // compare parameters
+            if (ClassUtils.isAssignable(parameterTypes, ctors[i]
+                    .getParameterTypes(), true)) {
+                // get accessible version of method
+                Constructor<T> ctor = getAccessibleConstructor((Constructor<T>) ctors[i]);
+                if (ctor != null) {
+                    MemberUtils.setAccessibleWorkaround(ctor);
+                    if (result == null
+                            || MemberUtils.compareParameterTypes(ctor
+                                    .getParameterTypes(), result
+                                    .getParameterTypes(), parameterTypes) < 0) {
+                        result = ctor;
+                    }
+                }
+            }
+        }
+        return result;
     }
 
     /**
@@ -193,81 +259,15 @@ public class ConstructorUtils {
     }
 
     /**
-     * Returns a constructor given a class and signature.
-     * @param cls the class to be constructed
-     * @param parameterTypes the parameter array
-     * @return null if matching accessible constructor can not be found
-     * @see Class#getConstructor
-     * @see #getAccessibleConstructor(java.lang.reflect.Constructor)
-     */
-    public static <T> Constructor<T> getAccessibleConstructor(Class<T> cls,
-            Class<?>... parameterTypes) {
-        try {
-            return getAccessibleConstructor(cls.getConstructor(parameterTypes));
-        } catch (NoSuchMethodException e) {
-            return (null);
-        }
-    }
-
-    /**
-     * Returns accessible version of the given constructor.
-     * @param ctor prototype constructor object.
-     * @return <code>null</code> if accessible constructor can not be found.
-     * @see java.lang.SecurityManager
-     */
-    public static <T> Constructor<T> getAccessibleConstructor(Constructor<T> ctor) {
-        return MemberUtils.isAccessible(ctor)
-                && Modifier.isPublic(ctor.getDeclaringClass().getModifiers()) ? ctor
-                : null;
-    }
-
-    /**
-     * <p>Find an accessible constructor with compatible parameters.
-     * Compatible parameters mean that every method parameter is assignable from
-     * the given parameters. In other words, it finds constructor that will take
-     * the parameters given.</p>
+     * <p>ConstructorUtils instances should NOT be constructed in standard programming.
+     * Instead, the class should be used as
+     * <code>ConstructorUtils.invokeConstructor(cls, args)</code>.</p>
      *
-     * <p>First it checks if there is constructor matching the exact signature.
-     * If no such, all the constructors of the class are tested if their signatures
-     * are assignment compatible with the parameter types.
-     * The first matching constructor is returned.</p>
-     *
-     * @param cls find constructor for this class
-     * @param parameterTypes find method with compatible parameters
-     * @return a valid Constructor object. If there's no matching constructor, returns <code>null</code>.
+     * <p>This constructor is public to permit tools that require a JavaBean
+     * instance to operate.</p>
      */
-    @SuppressWarnings("unchecked")
-    public static <T> Constructor<T> getMatchingAccessibleConstructor(Class<T> cls,
-            Class<?>... parameterTypes) {
-        // see if we can find the constructor directly
-        // most of the time this works and it's much faster
-        try {
-            Constructor<T> ctor = cls.getConstructor(parameterTypes);
-            MemberUtils.setAccessibleWorkaround(ctor);
-            return ctor;
-        } catch (NoSuchMethodException e) { /* SWALLOW */
-        }
-        Constructor<T> result = null;
-        // search through all constructors
-        Constructor<?>[] ctors = cls.getConstructors();
-        for (int i = 0; i < ctors.length; i++) {
-            // compare parameters
-            if (ClassUtils.isAssignable(parameterTypes, ctors[i]
-                    .getParameterTypes(), true)) {
-                // get accessible version of method
-                Constructor<T> ctor = getAccessibleConstructor((Constructor<T>) ctors[i]);
-                if (ctor != null) {
-                    MemberUtils.setAccessibleWorkaround(ctor);
-                    if (result == null
-                            || MemberUtils.compareParameterTypes(ctor
-                                    .getParameterTypes(), result
-                                    .getParameterTypes(), parameterTypes) < 0) {
-                        result = ctor;
-                    }
-                }
-            }
-        }
-        return result;
+    public ConstructorUtils() {
+        super();
     }
 
 }

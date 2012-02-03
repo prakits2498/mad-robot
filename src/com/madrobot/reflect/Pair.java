@@ -28,6 +28,19 @@ final class Pair<L, R> implements Serializable {
 	/** Serialization version */
 	private static final long serialVersionUID = 4954918890077093841L;
 
+	/**
+	 * Static creation method for a Pair<L, R>.
+	 * 
+	 * @param <L>
+	 * @param <R>
+	 * @param left
+	 * @param right
+	 * @return Pair<L, R>(left, right)
+	 */
+	public static <L, R> Pair<L, R> of(L left, R right) {
+		return new Pair<L, R>(left, right);
+	}
+
 	/** Left object */
 	public final L left;
 
@@ -80,18 +93,5 @@ final class Pair<L, R> implements Serializable {
 		builder.append(right);
 		builder.append(")");
 		return builder.toString();
-	}
-
-	/**
-	 * Static creation method for a Pair<L, R>.
-	 * 
-	 * @param <L>
-	 * @param <R>
-	 * @param left
-	 * @param right
-	 * @return Pair<L, R>(left, right)
-	 */
-	public static <L, R> Pair<L, R> of(L left, R right) {
-		return new Pair<L, R>(left, right);
 	}
 }

@@ -168,104 +168,28 @@ public class WheelView extends View {
 		void onScrollingStarted(WheelView wheel);
 	}
 
-	/** Top and bottom shadows colors */
-	private static final int[] SHADOWS_COLORS = new int[] { 0xFF111111, 0x00AAAAAA, 0x00AAAAAA };
+	/** Default count of visible items */
+	private static final int DEF_VISIBLE_ITEMS = 5;
 
 	/** Top and bottom items offset (to hide that) */
 	private static final int ITEM_OFFSET_PERCENT = 10;
 
 	/** Left and right padding value */
 	private static final int PADDING = 10;
-	/** Default count of visible items */
-	private static final int DEF_VISIBLE_ITEMS = 5;
+	/** Top and bottom shadows colors */
+	private static final int[] SHADOWS_COLORS = new int[] { 0xFF111111, 0x00AAAAAA, 0x00AAAAAA };
+
+	private Drawable bottomDrawable;
+	private boolean canDrawBottomDrawable = true;
+	private boolean canDrawSelector = true;
+
+	private boolean canDrawTopDrawable = true;
+	// Listeners
+	private List<OnWheelChangedListener> changingListeners = new LinkedList<OnWheelChangedListener>();
+	private List<OnWheelClickedListener> clickingListeners = new LinkedList<OnWheelClickedListener>();
 
 	// Wheel Values
 	private int currentItem = 0;
-	// Count of visible items
-	private int visibleItems = DEF_VISIBLE_ITEMS;
-	// Item height
-	private int itemHeight = 0;
-
-	// Center Line
-	private Drawable selectorDrawable;
-	// Shadows drawables
-	private Drawable topDrawable;
-	private Drawable bottomDrawable;
-
-	// Scrolling
-	private WheelViewScroller scroller;
-
-	private boolean isScrollingPerformed;
-
-	private int scrollingOffset;
-
-	// Cyclic
-	private boolean isCyclic = false;
-	private boolean canDrawTopDrawable = true;
-	private boolean canDrawSelector = true;
-	// Items layout
-	private LinearLayout itemsLayout;
-
-	// The number of first item in layout
-	private int firstItem;
-
-	// View adapter
-	private WheelViewAdapter viewAdapter;
-
-	/**
-	 * Constructor
-	 */
-	// public WheelView(Context context) {
-	// super(context);
-	// initData(context);
-	// }
-
-	// Recycle
-	private WheelViewRecycler recycle = new WheelViewRecycler(this);
-
-	// Listeners
-	private List<OnWheelChangedListener> changingListeners = new LinkedList<OnWheelChangedListener>();
-
-	private List<OnWheelScrollListener> scrollingListeners = new LinkedList<OnWheelScrollListener>();
-
-	private List<OnWheelClickedListener> clickingListeners = new LinkedList<OnWheelClickedListener>();
-
-	// Scrolling listener
-	WheelViewScroller.ScrollingListener scrollingListener = new WheelViewScroller.ScrollingListener() {
-		public void onFinished() {
-			if (isScrollingPerformed) {
-				notifyScrollingListenersAboutEnd();
-				isScrollingPerformed = false;
-			}
-
-			scrollingOffset = 0;
-			invalidate();
-		}
-
-		public void onJustify() {
-			if (Math.abs(scrollingOffset) > WheelViewScroller.MIN_DELTA_FOR_SCROLLING) {
-				scroller.scroll(scrollingOffset, 0);
-			}
-		}
-
-		public void onScroll(int distance) {
-			doScroll(distance);
-
-			int height = getHeight();
-			if (scrollingOffset > height) {
-				scrollingOffset = height;
-				scroller.stopScrolling();
-			} else if (scrollingOffset < -height) {
-				scrollingOffset = -height;
-				scroller.stopScrolling();
-			}
-		}
-
-		public void onStarted() {
-			isScrollingPerformed = true;
-			notifyScrollingListenersAboutStart();
-		}
-	};
 
 	// Adapter listener
 	private DataSetObserver dataObserver = new DataSetObserver() {
@@ -280,7 +204,87 @@ public class WheelView extends View {
 		}
 	};
 
-	private boolean canDrawBottomDrawable = true;
+	// The number of first item in layout
+	private int firstItem;
+
+	// Cyclic
+	private boolean isCyclic = false;
+	private boolean isScrollingPerformed;
+	// Item height
+	private int itemHeight = 0;
+	// Items layout
+	private LinearLayout itemsLayout;
+
+	/**
+	 * Constructor
+	 */
+	// public WheelView(Context context) {
+	// super(context);
+	// initData(context);
+	// }
+
+	// Recycle
+	private WheelViewRecycler recycle = new WheelViewRecycler(this);
+
+	// Scrolling
+	private WheelViewScroller scroller;
+
+	// Scrolling listener
+	WheelViewScroller.ScrollingListener scrollingListener = new WheelViewScroller.ScrollingListener() {
+		@Override
+		public void onFinished() {
+			if (isScrollingPerformed) {
+				notifyScrollingListenersAboutEnd();
+				isScrollingPerformed = false;
+			}
+
+			scrollingOffset = 0;
+			invalidate();
+		}
+
+		@Override
+		public void onJustify() {
+			if (Math.abs(scrollingOffset) > WheelViewScroller.MIN_DELTA_FOR_SCROLLING) {
+				scroller.scroll(scrollingOffset, 0);
+			}
+		}
+
+		@Override
+		public void onScroll(int distance) {
+			doScroll(distance);
+
+			int height = getHeight();
+			if (scrollingOffset > height) {
+				scrollingOffset = height;
+				scroller.stopScrolling();
+			} else if (scrollingOffset < -height) {
+				scrollingOffset = -height;
+				scroller.stopScrolling();
+			}
+		}
+
+		@Override
+		public void onStarted() {
+			isScrollingPerformed = true;
+			notifyScrollingListenersAboutStart();
+		}
+	};
+
+	private List<OnWheelScrollListener> scrollingListeners = new LinkedList<OnWheelScrollListener>();
+
+	private int scrollingOffset;
+
+	// Center Line
+	private Drawable selectorDrawable;
+
+	// Shadows drawables
+	private Drawable topDrawable;
+
+	// View adapter
+	private WheelViewAdapter viewAdapter;
+
+	// Count of visible items
+	private int visibleItems = DEF_VISIBLE_ITEMS;
 
 	/**
 	 * Constructor

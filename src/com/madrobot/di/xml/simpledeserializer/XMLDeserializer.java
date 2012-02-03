@@ -139,21 +139,6 @@ import android.util.Xml;
  */
 public final class XMLDeserializer {
 	/**
-	 * Cached names of the getter methods
-	 */
-	private Map<String, String> getMethodNameMap = new HashMap<String, String>();
-
-	/**
-	 * Cached names of the setter methods
-	 */
-	private Map<String, String> setMethodNameMap = new HashMap<String, String>();
-
-	/**
-	 * Cached names of the add-methods
-	 */
-	private Map<String, String> addMethodNameMap = new HashMap<String, String>();
-
-	/**
 	 * The single instance of the deserializer
 	 */
 	private static final XMLDeserializer instance = new XMLDeserializer();
@@ -164,70 +149,55 @@ public final class XMLDeserializer {
 	private static final Pattern validFieldNamePattern = Pattern.compile("^[a-zA-Z][a-zA-Z0-9]*$");
 
 	/**
+	 * Returns the one and only instance of {@see BeanReader}
+	 * 
+	 * @return The BeanReader instance
+	 */
+	public static XMLDeserializer getInstance() {
+		return instance;
+	}
+
+	/**
+	 * Cached names of the add-methods
+	 */
+	private Map<String, String> addMethodNameMap = new HashMap<String, String>();
+
+	/**
+	 * Cached names of the getter methods
+	 */
+	private Map<String, String> getMethodNameMap = new HashMap<String, String>();
+
+	/**
+	 * Cached names of the setter methods
+	 */
+	private Map<String, String> setMethodNameMap = new HashMap<String, String>();
+
+	/**
 	 * Private constructor to disallow any public instantiation
 	 */
 	private XMLDeserializer() {
 	}
 
 	/**
-	 * Deserializes the XML data from the input to the corresponding entity type <br/>
-	 * If there is an error while parsing, if possible it will try to ignore it, otherwise returns a null value.
+	 * Adds a value to specified collection field
 	 * 
-	 * @param input
-	 *            Input stream to read data from
-	 * @param bean
-	 *            Type of the entity to deserialize data to
-	 * @return Deserialized object, if successful, null otherwise
-	 * @see #readToBean(XmlPullParser, Class)
+	 * @param obj
+	 *            Object whose field is to be deserialized
+	 * @param info
+	 *            The field details
+	 * @param value
+	 *            Value to add to collection
+	 * @throws IllegalArgumentException
+	 *             {@see Method#invoke(Object, Object...)}
+	 * @throws IllegalAccessException
+	 *             {@see Method#invoke(Object, Object...)}
+	 * @throws InvocationTargetException
+	 *             {@see Method#invoke(Object, Object...)}
 	 */
-	public <T> T readToBean(InputStream input, Class<T> bean) {
-		XmlPullParser parser = Xml.newPullParser();
-		try {
-			parser.setInput(input, null);
-			return readToBean(parser, bean);
-		} catch (Throwable e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	/**
-	 * Deserializes the XML data from the input to the corresponding entity type <br/>
-	 * If there is an error while parsing, if possible it will try to ignore it, otherwise returns a null value.
-	 * 
-	 * @param parser
-	 *            Parser to read XML from
-	 * @param bean
-	 *            Type of the entity to deserialize data to
-	 * @return Deserialized object, if successful, null otherwise
-	 * @see #readToBean(InputStream, Class)
-	 */
-	public <T> T readToBean(XmlPullParser parser, Class<T> bean) {
-		T rv = null;
-		Stack<ClassInfo> stack = new Stack<ClassInfo>();
-
-		try {
-			int evtType = -1;
-			evtType = parser.next();
-
-			while (evtType != XmlPullParser.END_DOCUMENT) {
-				if (evtType == XmlPullParser.START_TAG) {
-					String name = parser.getName();
-					if (bean != null) {
-						ClassInfo rootCI = new ClassInfo(bean, name);
-						stack.push(rootCI);
-						rv = bean.newInstance();
-						deserialize(rv, parser, stack);
-						break;
-					}
-				}
-				evtType = parser.next();
-			}
-		} catch (Throwable t) {
-			t.printStackTrace();
-		}
-		return rv;
+	private void addFieldValue(Object obj, FieldInfo info, Object value) throws IllegalArgumentException,
+			IllegalAccessException, InvocationTargetException {
+		Method addMethod = info.getAddMethod();
+		addMethod.invoke(obj, value);
 	}
 
 	/**
@@ -330,78 +300,19 @@ public final class XMLDeserializer {
 	}
 
 	/**
-	 * Skips the current element.
+	 * Returns the name of the add-method for a field.
 	 * 
-	 * @param parser
-	 *            Parser for reading data
-	 * @param elementName
-	 *            Element to be skipped
-	 * @throws XmlPullParserException
-	 *             If an exception occurs during parsing
-	 * @throws IOException
-	 *             If an exception occurs while reading
+	 * @param fieldName
+	 *            Field name under consideration
+	 * @return Name of the add-method for the field
 	 */
-	private void skipElement(XmlPullParser parser, String elementName) throws XmlPullParserException, IOException {
-		int indent = 0;
-		int evtType = parser.next();
-
-		boolean finished = (indent == 0) && (evtType == XmlPullParser.END_TAG) && parser.getName().equals(elementName);
-
-		while (!finished) {
-			evtType = parser.next();
-			if ((evtType == XmlPullParser.START_TAG) && parser.getName().equals(elementName)) {
-				indent++;
-			} else if ((evtType == XmlPullParser.START_TAG) && parser.getName().equals(elementName)) {
-				indent--;
-			}
-			finished = (indent == 0) && (evtType == XmlPullParser.END_TAG) && parser.getName().equals(elementName);
+	public String getAddMethodName(String fieldName) {
+		if (addMethodNameMap.containsKey(fieldName)) {
+			return addMethodNameMap.get(fieldName);
 		}
-	}
-
-	/**
-	 * Adds a value to specified collection field
-	 * 
-	 * @param obj
-	 *            Object whose field is to be deserialized
-	 * @param info
-	 *            The field details
-	 * @param value
-	 *            Value to add to collection
-	 * @throws IllegalArgumentException
-	 *             {@see Method#invoke(Object, Object...)}
-	 * @throws IllegalAccessException
-	 *             {@see Method#invoke(Object, Object...)}
-	 * @throws InvocationTargetException
-	 *             {@see Method#invoke(Object, Object...)}
-	 */
-	private void addFieldValue(Object obj, FieldInfo info, Object value) throws IllegalArgumentException,
-			IllegalAccessException, InvocationTargetException {
-		Method addMethod = info.getAddMethod();
-		addMethod.invoke(obj, value);
-	}
-
-	/**
-	 * Set the value to a specified non-collection field
-	 * 
-	 * @param obj
-	 *            Object whose field is to be deserialized
-	 * @param info
-	 *            The field details
-	 * @param value
-	 *            Value to add to collection
-	 * @throws IllegalArgumentException
-	 *             {@see Method#invoke(Object, Object...)}
-	 * @throws IllegalAccessException
-	 *             {@see Method#invoke(Object, Object...)}
-	 * @throws InvocationTargetException
-	 *             {@see Method#invoke(Object, Object...)}
-	 */
-	private void setFieldValue(Object obj, FieldInfo info, Object value) throws IllegalArgumentException,
-			IllegalAccessException, InvocationTargetException {
-		if (value != null) {
-			Method setMethod = info.getSetMethod();
-			setMethod.invoke(obj, value);
-		}
+		String method = "add" + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
+		addMethodNameMap.put(fieldName, method);
+		return method;
 	}
 
 	/**
@@ -521,27 +432,116 @@ public final class XMLDeserializer {
 	}
 
 	/**
-	 * Returns the name of the add-method for a field.
+	 * Deserializes the XML data from the input to the corresponding entity type <br/>
+	 * If there is an error while parsing, if possible it will try to ignore it, otherwise returns a null value.
 	 * 
-	 * @param fieldName
-	 *            Field name under consideration
-	 * @return Name of the add-method for the field
+	 * @param input
+	 *            Input stream to read data from
+	 * @param bean
+	 *            Type of the entity to deserialize data to
+	 * @return Deserialized object, if successful, null otherwise
+	 * @see #readToBean(XmlPullParser, Class)
 	 */
-	public String getAddMethodName(String fieldName) {
-		if (addMethodNameMap.containsKey(fieldName)) {
-			return addMethodNameMap.get(fieldName);
+	public <T> T readToBean(InputStream input, Class<T> bean) {
+		XmlPullParser parser = Xml.newPullParser();
+		try {
+			parser.setInput(input, null);
+			return readToBean(parser, bean);
+		} catch (Throwable e) {
+			e.printStackTrace();
 		}
-		String method = "add" + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
-		addMethodNameMap.put(fieldName, method);
-		return method;
+
+		return null;
 	}
 
 	/**
-	 * Returns the one and only instance of {@see BeanReader}
+	 * Deserializes the XML data from the input to the corresponding entity type <br/>
+	 * If there is an error while parsing, if possible it will try to ignore it, otherwise returns a null value.
 	 * 
-	 * @return The BeanReader instance
+	 * @param parser
+	 *            Parser to read XML from
+	 * @param bean
+	 *            Type of the entity to deserialize data to
+	 * @return Deserialized object, if successful, null otherwise
+	 * @see #readToBean(InputStream, Class)
 	 */
-	public static XMLDeserializer getInstance() {
-		return instance;
+	public <T> T readToBean(XmlPullParser parser, Class<T> bean) {
+		T rv = null;
+		Stack<ClassInfo> stack = new Stack<ClassInfo>();
+
+		try {
+			int evtType = -1;
+			evtType = parser.next();
+
+			while (evtType != XmlPullParser.END_DOCUMENT) {
+				if (evtType == XmlPullParser.START_TAG) {
+					String name = parser.getName();
+					if (bean != null) {
+						ClassInfo rootCI = new ClassInfo(bean, name);
+						stack.push(rootCI);
+						rv = bean.newInstance();
+						deserialize(rv, parser, stack);
+						break;
+					}
+				}
+				evtType = parser.next();
+			}
+		} catch (Throwable t) {
+			t.printStackTrace();
+		}
+		return rv;
+	}
+
+	/**
+	 * Set the value to a specified non-collection field
+	 * 
+	 * @param obj
+	 *            Object whose field is to be deserialized
+	 * @param info
+	 *            The field details
+	 * @param value
+	 *            Value to add to collection
+	 * @throws IllegalArgumentException
+	 *             {@see Method#invoke(Object, Object...)}
+	 * @throws IllegalAccessException
+	 *             {@see Method#invoke(Object, Object...)}
+	 * @throws InvocationTargetException
+	 *             {@see Method#invoke(Object, Object...)}
+	 */
+	private void setFieldValue(Object obj, FieldInfo info, Object value) throws IllegalArgumentException,
+			IllegalAccessException, InvocationTargetException {
+		if (value != null) {
+			Method setMethod = info.getSetMethod();
+			setMethod.invoke(obj, value);
+		}
+	}
+
+	/**
+	 * Skips the current element.
+	 * 
+	 * @param parser
+	 *            Parser for reading data
+	 * @param elementName
+	 *            Element to be skipped
+	 * @throws XmlPullParserException
+	 *             If an exception occurs during parsing
+	 * @throws IOException
+	 *             If an exception occurs while reading
+	 */
+	private void skipElement(XmlPullParser parser, String elementName) throws XmlPullParserException, IOException {
+		int indent = 0;
+		int evtType = parser.next();
+
+		boolean finished = (indent == 0) && (evtType == XmlPullParser.END_TAG) && parser.getName().equals(elementName);
+
+		while (!finished) {
+			evtType = parser.next();
+			if ((evtType == XmlPullParser.START_TAG) && parser.getName().equals(elementName)) {
+				indent++;
+			} else if ((evtType == XmlPullParser.START_TAG) && parser.getName().equals(elementName)) {
+				indent--;
+			}
+			finished = (indent == 0) && (evtType == XmlPullParser.END_TAG) && parser.getName().equals(elementName);
+		}
 	}
 }

@@ -14,10 +14,6 @@ package com.madrobot.di.wizard.xml.io;
 import com.madrobot.di.wizard.xml.XMLWizardException;
 
 public class StreamException extends XMLWizardException {
-	public StreamException(Throwable e) {
-		super(e);
-	}
-
 	public StreamException(String message) {
 		super(message);
 	}
@@ -27,5 +23,9 @@ public class StreamException extends XMLWizardException {
 	 */
 	public StreamException(String message, Throwable cause) {
 		super(message, cause);
+	}
+
+	public StreamException(Throwable e) {
+		super(e);
 	}
 }

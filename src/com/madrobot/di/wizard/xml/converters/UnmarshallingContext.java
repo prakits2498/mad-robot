@@ -13,6 +13,8 @@ package com.madrobot.di.wizard.xml.converters;
 
 public interface UnmarshallingContext extends DataHolder {
 
+	void addCompletionCallback(Runnable work, int priority);
+
 	Object convertAnother(Object current, Class type);
 
 	/**
@@ -23,7 +25,5 @@ public interface UnmarshallingContext extends DataHolder {
 	Object currentObject();
 
 	Class getRequiredType();
-
-	void addCompletionCallback(Runnable work, int priority);
 
 }

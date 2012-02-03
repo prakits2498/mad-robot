@@ -16,28 +16,24 @@ package com.madrobot.di.wizard.xml.converters;
  */
 public class BooleanConverter extends AbstractSingleValueConverter {
 
+	public static final BooleanConverter BINARY = new BooleanConverter("1", "0", true);
+
 	public static final BooleanConverter TRUE_FALSE = new BooleanConverter("true", "false", false);
 
 	public static final BooleanConverter YES_NO = new BooleanConverter("yes", "no", false);
 
-	public static final BooleanConverter BINARY = new BooleanConverter("1", "0", true);
-
-	private final String positive;
-	private final String negative;
 	private final boolean caseSensitive;
-
-	public BooleanConverter(final String positive, final String negative, final boolean caseSensitive) {
-		this.positive = positive;
-		this.negative = negative;
-		this.caseSensitive = caseSensitive;
-	}
+	private final String negative;
+	private final String positive;
 
 	public BooleanConverter() {
 		this("true", "false", false);
 	}
 
-	public boolean shouldConvert(final Class type, final Object value) {
-		return true;
+	public BooleanConverter(final String positive, final String negative, final boolean caseSensitive) {
+		this.positive = positive;
+		this.negative = negative;
+		this.caseSensitive = caseSensitive;
 	}
 
 	@Override
@@ -52,6 +48,10 @@ public class BooleanConverter extends AbstractSingleValueConverter {
 		} else {
 			return positive.equalsIgnoreCase(str) ? Boolean.TRUE : Boolean.FALSE;
 		}
+	}
+
+	public boolean shouldConvert(final Class type, final Object value) {
+		return true;
 	}
 
 	@Override

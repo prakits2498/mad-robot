@@ -38,8 +38,8 @@ import com.madrobot.di.wizard.xml.io.StreamException;
 
 public class DomDriver extends AbstractDriver {
 
-	private final String encoding;
 	private final DocumentBuilderFactory documentBuilderFactory;
+	private final String encoding;
 
 	/**
 	 * Construct a DomDriver.
@@ -75,21 +75,6 @@ public class DomDriver extends AbstractDriver {
 	}
 
 	@Override
-	public HierarchicalStreamReader createReader(Reader in) {
-		return createReader(new InputSource(in));
-	}
-
-	@Override
-	public HierarchicalStreamReader createReader(InputStream in) {
-		return createReader(new InputSource(in));
-	}
-
-	@Override
-	public HierarchicalStreamReader createReader(URL in) {
-		return createReader(new InputSource(in.toExternalForm()));
-	}
-
-	@Override
 	public HierarchicalStreamReader createReader(File in) {
 		return createReader(new InputSource(in.toURI().toASCIIString()));
 	}
@@ -114,8 +99,18 @@ public class DomDriver extends AbstractDriver {
 	}
 
 	@Override
-	public HierarchicalStreamWriter createWriter(Writer out) {
-		return new PrettyPrintWriter(out, getNameCoder());
+	public HierarchicalStreamReader createReader(InputStream in) {
+		return createReader(new InputSource(in));
+	}
+
+	@Override
+	public HierarchicalStreamReader createReader(Reader in) {
+		return createReader(new InputSource(in));
+	}
+
+	@Override
+	public HierarchicalStreamReader createReader(URL in) {
+		return createReader(new InputSource(in.toExternalForm()));
 	}
 
 	@Override
@@ -125,5 +120,10 @@ public class DomDriver extends AbstractDriver {
 		} catch (UnsupportedEncodingException e) {
 			throw new StreamException(e);
 		}
+	}
+
+	@Override
+	public HierarchicalStreamWriter createWriter(Writer out) {
+		return new PrettyPrintWriter(out, getNameCoder());
 	}
 }

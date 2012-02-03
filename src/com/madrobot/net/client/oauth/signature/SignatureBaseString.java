@@ -52,28 +52,7 @@ import com.madrobot.net.client.oauth.OAuthMessageSignerException;
         }
     }
 
-     String normalizeRequestUrl() throws URISyntaxException {
-        URI uri = new URI(request.getRequestUrl());
-        String scheme = uri.getScheme().toLowerCase();
-        String authority = uri.getAuthority().toLowerCase();
-        boolean dropPort = (scheme.equals("http") && uri.getPort() == 80)
-                || (scheme.equals("https") && uri.getPort() == 443);
-        if (dropPort) {
-            // find the last : in the authority
-            int index = authority.lastIndexOf(":");
-            if (index >= 0) {
-                authority = authority.substring(0, index);
-            }
-        }
-        String path = uri.getRawPath();
-        if (path == null || path.length() <= 0) {
-            path = "/"; // conforms to RFC 2616 section 3.2.2
-        }
-        // we know that there is no query and no fragment here.
-        return scheme + "://" + authority + path;
-    }
-
-    /**
+     /**
      * Normalizes the set of request parameters this instance was configured
      * with, as per OAuth spec section 9.1.1.
      * 
@@ -104,5 +83,26 @@ import com.madrobot.net.client.oauth.OAuthMessageSignerException;
             sb.append(requestParameters.getAsQueryString(param));
         }
         return sb.toString();
+    }
+
+    String normalizeRequestUrl() throws URISyntaxException {
+        URI uri = new URI(request.getRequestUrl());
+        String scheme = uri.getScheme().toLowerCase();
+        String authority = uri.getAuthority().toLowerCase();
+        boolean dropPort = (scheme.equals("http") && uri.getPort() == 80)
+                || (scheme.equals("https") && uri.getPort() == 443);
+        if (dropPort) {
+            // find the last : in the authority
+            int index = authority.lastIndexOf(":");
+            if (index >= 0) {
+                authority = authority.substring(0, index);
+            }
+        }
+        String path = uri.getRawPath();
+        if (path == null || path.length() <= 0) {
+            path = "/"; // conforms to RFC 2616 section 3.2.2
+        }
+        // we know that there is no query and no fragment here.
+        return scheme + "://" + authority + path;
     }
 }

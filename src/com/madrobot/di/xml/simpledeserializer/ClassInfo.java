@@ -12,14 +12,14 @@ package com.madrobot.di.xml.simpledeserializer;
 
 class ClassInfo {
 	/**
-	 * Class being mapped to
-	 */
-	private Class<?> type;
-
-	/**
 	 * Name of the element to be deserialized
 	 */
 	private String elementName;
+
+	/**
+	 * Class being mapped to
+	 */
+	private Class<?> type;
 
 	/**
 	 * Creates an intance of {@link ClassInfo} with unitialized element name and type.
@@ -41,12 +41,30 @@ class ClassInfo {
 	}
 
 	/**
+	 * Gets the element name under consideration.
+	 * 
+	 * @return Name of the element
+	 */
+	String getElementName() {
+		return elementName;
+	}
+
+	/**
 	 * Gets the class being mapped.
 	 * 
 	 * @return Class being mapped
 	 */
 	Class<?> getType() {
 		return type;
+	}
+
+	/**
+	 * Sets the element name under consideration.
+	 * 
+	 * @return Name of the element
+	 */
+	void setElementName(String elementName) {
+		this.elementName = elementName;
 	}
 
 	/**
@@ -57,23 +75,5 @@ class ClassInfo {
 	 */
 	void setType(Class<?> type) {
 		this.type = type;
-	}
-
-	/**
-	 * Gets the element name under consideration.
-	 * 
-	 * @return Name of the element
-	 */
-	String getElementName() {
-		return elementName;
-	}
-
-	/**
-	 * Sets the element name under consideration.
-	 * 
-	 * @return Name of the element
-	 */
-	void setElementName(String elementName) {
-		this.elementName = elementName;
 	}
 }

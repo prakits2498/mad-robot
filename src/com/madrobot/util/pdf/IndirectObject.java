@@ -2,27 +2,51 @@ package com.madrobot.util.pdf;
 
 class IndirectObject extends Base {
 
+	private int mByteOffset;
 	private EnclosedContent mContent;
 	private Dictionary mDictionaryContent;
-	private Stream mStreamContent;
 	private IndirectIdentifier mID;
-	private int mByteOffset;
 	private boolean mInUse;
+	private Stream mStreamContent;
 
 	IndirectObject() {
 		clear();
 	}
 
-	void setNumberID(int Value) {
-		mID.setNumber(Value);
+	void addContent(String Value) {
+		mContent.addContent(Value);
 	}
 
-	int getNumberID() {
-		return mID.getNumber();
+	void addDictionaryContent(String Value) {
+		mDictionaryContent.addContent(Value);
 	}
 
-	void setGeneration(int Value) {
-		mID.setGeneration(Value);
+	void addStreamContent(String Value) {
+		mStreamContent.addContent(Value);
+	}
+
+	@Override
+	public void clear() {
+		mID = new IndirectIdentifier();
+		mByteOffset = 0;
+		mInUse = false;
+		mContent = new EnclosedContent();
+		mContent.setBeginKeyword("obj", false, true);
+		mContent.setEndKeyword("endobj", false, true);
+		mDictionaryContent = new Dictionary();
+		mStreamContent = new Stream();
+	}
+
+	int getByteOffset() {
+		return mByteOffset;
+	}
+
+	String getContent() {
+		return mContent.getContent();
+	}
+
+	String getDictionaryContent() {
+		return mDictionaryContent.getContent();
 	}
 
 	int getGeneration() {
@@ -33,52 +57,12 @@ class IndirectObject extends Base {
 		return mID.toPDFString() + " R";
 	}
 
-	void setByteOffset(int Value) {
-		mByteOffset = Value;
-	}
-
-	int getByteOffset() {
-		return mByteOffset;
-	}
-
-	void setInUse(boolean Value) {
-		mInUse = Value;
-	}
-
 	boolean getInUse() {
 		return mInUse;
 	}
 
-	void addContent(String Value) {
-		mContent.addContent(Value);
-	}
-
-	void setContent(String Value) {
-		mContent.setContent(Value);
-	}
-
-	String getContent() {
-		return mContent.getContent();
-	}
-
-	void addDictionaryContent(String Value) {
-		mDictionaryContent.addContent(Value);
-	}
-
-	void setDictionaryContent(String Value) {
-		mDictionaryContent.setContent(Value);
-	}
-
-	String getDictionaryContent() {
-		return mDictionaryContent.getContent();
-	}
-
-	void addStreamContent(String Value) {
-		mStreamContent.addContent(Value);
-	}
-
-	void setStreamContent(String Value) {
-		mStreamContent.setContent(Value);
+	int getNumberID() {
+		return mID.getNumber();
 	}
 
 	public String getStreamContent() {
@@ -100,16 +84,32 @@ class IndirectObject extends Base {
 		return sb.toString();
 	}
 
-	@Override
-	public void clear() {
-		mID = new IndirectIdentifier();
-		mByteOffset = 0;
-		mInUse = false;
-		mContent = new EnclosedContent();
-		mContent.setBeginKeyword("obj", false, true);
-		mContent.setEndKeyword("endobj", false, true);
-		mDictionaryContent = new Dictionary();
-		mStreamContent = new Stream();
+	void setByteOffset(int Value) {
+		mByteOffset = Value;
+	}
+
+	void setContent(String Value) {
+		mContent.setContent(Value);
+	}
+
+	void setDictionaryContent(String Value) {
+		mDictionaryContent.setContent(Value);
+	}
+
+	void setGeneration(int Value) {
+		mID.setGeneration(Value);
+	}
+
+	void setInUse(boolean Value) {
+		mInUse = Value;
+	}
+
+	void setNumberID(int Value) {
+		mID.setNumber(Value);
+	}
+
+	void setStreamContent(String Value) {
+		mStreamContent.setContent(Value);
 	}
 
 	@Override

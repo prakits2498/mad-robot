@@ -18,25 +18,25 @@ package com.madrobot.di.wizard.xml.converters;
  */
 public interface JavaBeanProvider {
 
-	Object newInstance(Class type);
+	public interface Visitor {
+		boolean shouldVisit(String name, Class definedIn);
 
-	void visitSerializableProperties(Object object, Visitor visitor);
-
-	void writeProperty(Object object, String propertyName, Object value);
-
-	Class getPropertyType(Object object, String name);
-
-	boolean propertyDefinedInClass(String name, Class type);
+		void visit(String name, Class type, Class definedIn, Object value);
+	}
 
 	/**
 	 * Returns true if the Bean provider can instantiate the specified class
 	 */
 	boolean canInstantiate(Class type);
 
-	public interface Visitor {
-		boolean shouldVisit(String name, Class definedIn);
+	Class getPropertyType(Object object, String name);
 
-		void visit(String name, Class type, Class definedIn, Object value);
-	}
+	Object newInstance(Class type);
+
+	boolean propertyDefinedInClass(String name, Class type);
+
+	void visitSerializableProperties(Object object, Visitor visitor);
+
+	void writeProperty(Object object, String propertyName, Object value);
 
 }

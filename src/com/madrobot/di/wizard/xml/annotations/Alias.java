@@ -23,10 +23,10 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.FIELD })
 public @interface Alias {
+	public Class<?> impl() default Void.class; // Use Void to denote as Null
+
 	/**
 	 * The value of the class or field value
 	 */
 	public String value();
-
-	public Class<?> impl() default Void.class; // Use Void to denote as Null
 }

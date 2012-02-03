@@ -12,24 +12,16 @@
 package com.madrobot.di.wizard.xml.core;
 
 public final class FastField {
-	private final String name;
 	private final String declaringClass;
-
-	public FastField(String definedIn, String name) {
-		this.name = name;
-		this.declaringClass = definedIn;
-	}
+	private final String name;
 
 	public FastField(Class definedIn, String name) {
 		this(definedIn == null ? null : definedIn.getName(), name);
 	}
 
-	public String getName() {
-		return this.name;
-	}
-
-	public String getDeclaringClass() {
-		return this.declaringClass;
+	public FastField(String definedIn, String name) {
+		this.name = name;
+		this.declaringClass = definedIn;
 	}
 
 	@Override
@@ -50,6 +42,14 @@ public final class FastField {
 					&& (declaringClass == null || declaringClass.equals(field.getDeclaringClass()));
 		}
 		return false;
+	}
+
+	public String getDeclaringClass() {
+		return this.declaringClass;
+	}
+
+	public String getName() {
+		return this.name;
 	}
 
 	@Override

@@ -19,14 +19,14 @@ import java.util.Iterator;
  */
 public interface PersistenceStrategy {
 
-	Iterator iterator();
-
-	int size();
-
 	Object get(Object key);
+
+	Iterator iterator();
 
 	Object put(Object key, Object value);
 
 	Object remove(Object key);
+
+	int size();
 
 }

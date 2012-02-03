@@ -68,6 +68,21 @@ public class EnumSetConverter implements Converter {
 		return typeField != null && EnumSet.class.isAssignableFrom(type);
 	}
 
+	private String joinEnumValues(EnumSet set) {
+		boolean seenFirst = false;
+		StringBuffer result = new StringBuffer();
+		for (Iterator iterator = set.iterator(); iterator.hasNext();) {
+			Enum value = (Enum) iterator.next();
+			if (seenFirst) {
+				result.append(',');
+			} else {
+				seenFirst = true;
+			}
+			result.append(value.name());
+		}
+		return result.toString();
+	}
+
 	@Override
 	public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
 		EnumSet set = (EnumSet) source;
@@ -83,21 +98,6 @@ public class EnumSetConverter implements Converter {
 			writer.addAttribute(attributeName, mapper.serializedClass(enumTypeForSet));
 		}
 		writer.setValue(joinEnumValues(set));
-	}
-
-	private String joinEnumValues(EnumSet set) {
-		boolean seenFirst = false;
-		StringBuffer result = new StringBuffer();
-		for (Iterator iterator = set.iterator(); iterator.hasNext();) {
-			Enum value = (Enum) iterator.next();
-			if (seenFirst) {
-				result.append(',');
-			} else {
-				seenFirst = true;
-			}
-			result.append(value.name());
-		}
-		return result.toString();
 	}
 
 	@Override

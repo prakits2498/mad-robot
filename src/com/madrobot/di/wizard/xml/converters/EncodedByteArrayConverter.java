@@ -37,8 +37,18 @@ public class EncodedByteArrayConverter implements Converter, SingleValueConverte
 	}
 
 	@Override
+	public Object fromString(String str) {
+		return Base64.decode(str,Base64.DEFAULT);
+	}
+
+	@Override
 	public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
 		writer.setValue(toString(source));
+	}
+
+	@Override
+	public String toString(Object obj) {
+		return new String(Base64.encode(((byte[]) obj),Base64.DEFAULT));
 	}
 
 	@Override
@@ -70,15 +80,5 @@ public class EncodedByteArrayConverter implements Converter, SingleValueConverte
 			i++;
 		}
 		return result;
-	}
-
-	@Override
-	public String toString(Object obj) {
-		return new String(Base64.encode(((byte[]) obj),Base64.DEFAULT));
-	}
-
-	@Override
-	public Object fromString(String str) {
-		return Base64.decode(str,Base64.DEFAULT);
 	}
 }

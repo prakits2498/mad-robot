@@ -40,75 +40,39 @@ public class ColorPickerView extends CustomWidget {
 		public void onColorChanged(int color);
 	}
 
-	private final static int PANEL_SAT_VAL = 0;
-	private final static int PANEL_HUE = 1;
-	private final static int PANEL_ALPHA = 2;
-
 	/**
 	 * The width in pixels of the border
 	 * surrounding all color panels.
 	 */
 	private final static float BORDER_WIDTH_PX = 1;
+	private static float mDensity = 1f;
+	private final static int PANEL_ALPHA = 2;
 
-	/**
-	 * The width in dp of the hue panel.
-	 */
-	private float HUE_PANEL_WIDTH = 30f;
+	private final static int PANEL_HUE = 1;
+
+	private final static int PANEL_SAT_VAL = 0;
 	/**
 	 * The height in dp of the alpha panel
 	 */
 	private float ALPHA_PANEL_HEIGHT = 20f;
 	/**
-	 * The distance in dp between the different
-	 * color panels.
+	 * The width in dp of the hue panel.
 	 */
-	private float PANEL_SPACING = 10f;
-	/**
-	 * The radius in dp of the color palette tracker circle.
-	 */
-	private float PALETTE_CIRCLE_TRACKER_RADIUS = 5f;
-	/**
-	 * The dp which the tracker of the hue or alpha panel
-	 * will extend outside of its bounds.
-	 */
-	private float RECTANGLE_TRACKER_OFFSET = 2f;
-
-	private static float mDensity = 1f;
-
-	private OnColorChangedListener mListener;
-
-	private Paint mSatValPaint;
-	private Paint mSatValTrackerPaint;
-
-	private Paint mHuePaint;
-	private Paint mHueTrackerPaint;
-
+	private float HUE_PANEL_WIDTH = 30f;
+	private int mAlpha = 0xff;
 	private Paint mAlphaPaint;
+
+	private AlphaPatternDrawable mAlphaPattern;
+
+	private RectF mAlphaRect;
+
+	private Shader mAlphaShader;
+	private String mAlphaSliderText = "Alpha";
+
 	private Paint mAlphaTextPaint;
+	private int mBorderColor = 0xff6E6E6E;
 
 	private Paint mBorderPaint;
-
-	private Shader mValShader;
-	private Shader mSatShader;
-	private Shader mHueShader;
-	private Shader mAlphaShader;
-
-	private int mAlpha = 0xff;
-	private float mHue = 360f;
-	private float mSat = 0f;
-	private float mVal = 0f;
-
-	private String mAlphaSliderText = "Alpha";
-	private int mSliderTrackerColor = 0xff1c1c1c;
-	private int mBorderColor = 0xff6E6E6E;
-	private boolean mShowAlphaPanel = false;
-
-	/*
-	 * To remember which panel that has the "focus" when
-	 * processing hardware button data.
-	 */
-	private int mLastTouchedPanel = PANEL_SAT_VAL;
-
 	/**
 	 * Offset from the edge we must have or else
 	 * the finger tracker will get clipped when
@@ -122,13 +86,49 @@ public class ColorPickerView extends CustomWidget {
 	 */
 	private RectF mDrawingRect;
 
-	private RectF mSatValRect;
+	private float mHue = 360f;
+	private Paint mHuePaint;
 	private RectF mHueRect;
-	private RectF mAlphaRect;
+	private Shader mHueShader;
 
-	private AlphaPatternDrawable mAlphaPattern;
+	private Paint mHueTrackerPaint;
+	/*
+	 * To remember which panel that has the "focus" when
+	 * processing hardware button data.
+	 */
+	private int mLastTouchedPanel = PANEL_SAT_VAL;
+	private OnColorChangedListener mListener;
+	private float mSat = 0f;
+
+	private Shader mSatShader;
+	private Paint mSatValPaint;
+	private RectF mSatValRect;
+	private Paint mSatValTrackerPaint;
+
+	private boolean mShowAlphaPanel = false;
+
+	private int mSliderTrackerColor = 0xff1c1c1c;
 
 	private Point mStartTouchPoint = null;
+
+	private float mVal = 0f;
+	private Shader mValShader;
+	/**
+	 * The radius in dp of the color palette tracker circle.
+	 */
+	private float PALETTE_CIRCLE_TRACKER_RADIUS = 5f;
+
+	/**
+	 * The distance in dp between the different
+	 * color panels.
+	 */
+	private float PANEL_SPACING = 10f;
+
+	/**
+	 * The dp which the tracker of the hue or alpha panel
+	 * will extend outside of its bounds.
+	 */
+	private float RECTANGLE_TRACKER_OFFSET = 2f;
 
 	public ColorPickerView(Context context) {
 		super(context, null);

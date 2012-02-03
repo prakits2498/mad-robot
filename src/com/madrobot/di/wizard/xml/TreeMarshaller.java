@@ -25,16 +25,35 @@ import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
 
 class TreeMarshaller implements MarshallingContext {
 
-	protected HierarchicalStreamWriter writer;
+	public static class CircularReferenceException extends ConversionException {
+
+		public CircularReferenceException(String msg) {
+			super(msg);
+		}
+	}
 	protected ConverterLookup converterLookup;
+	private DataHolder dataHolder;
 	private Mapper mapper;
 	private ObjectIdDictionary parentObjects = new ObjectIdDictionary();
-	private DataHolder dataHolder;
+
+	protected HierarchicalStreamWriter writer;
 
 	TreeMarshaller(HierarchicalStreamWriter writer, ConverterLookup converterLookup, Mapper mapper) {
 		this.writer = writer;
 		this.converterLookup = converterLookup;
 		this.mapper = mapper;
+	}
+
+	protected void convert(Object item, Converter converter) {
+		if (parentObjects.containsId(item)) {
+			ConversionException e = new CircularReferenceException("Recursive reference to parent object");
+			e.add("item-type", item.getClass().getName());
+			e.add("converter-type", converter.getClass().getName());
+			throw e;
+		}
+		parentObjects.associateId(item, "");
+		converter.marshal(item, writer, this);
+		parentObjects.removeId(item);
 	}
 
 	@Override
@@ -57,41 +76,14 @@ class TreeMarshaller implements MarshallingContext {
 		convert(item, converter);
 	}
 
-	protected void convert(Object item, Converter converter) {
-		if (parentObjects.containsId(item)) {
-			ConversionException e = new CircularReferenceException("Recursive reference to parent object");
-			e.add("item-type", item.getClass().getName());
-			e.add("converter-type", converter.getClass().getName());
-			throw e;
-		}
-		parentObjects.associateId(item, "");
-		converter.marshal(item, writer, this);
-		parentObjects.removeId(item);
-	}
-
-	public void start(Object item, DataHolder dataHolder) {
-		this.dataHolder = dataHolder;
-		if (item == null) {
-			writer.startNode(mapper.serializedClass(null));
-			writer.endNode();
-		} else {
-			ExtendedHierarchicalStreamWriterHelper.startNode(writer, mapper.serializedClass(item.getClass()),
-					item.getClass());
-			convertAnother(item);
-			writer.endNode();
-		}
-	}
-
 	@Override
 	public Object get(Object key) {
 		lazilyCreateDataHolder();
 		return dataHolder.get(key);
 	}
 
-	@Override
-	public void put(Object key, Object value) {
-		lazilyCreateDataHolder();
-		dataHolder.put(key, value);
+	protected Mapper getMapper() {
+		return this.mapper;
 	}
 
 	@Override
@@ -106,14 +98,22 @@ class TreeMarshaller implements MarshallingContext {
 		}
 	}
 
-	protected Mapper getMapper() {
-		return this.mapper;
+	@Override
+	public void put(Object key, Object value) {
+		lazilyCreateDataHolder();
+		dataHolder.put(key, value);
 	}
 
-	public static class CircularReferenceException extends ConversionException {
-
-		public CircularReferenceException(String msg) {
-			super(msg);
+	public void start(Object item, DataHolder dataHolder) {
+		this.dataHolder = dataHolder;
+		if (item == null) {
+			writer.startNode(mapper.serializedClass(null));
+			writer.endNode();
+		} else {
+			ExtendedHierarchicalStreamWriterHelper.startNode(writer, mapper.serializedClass(item.getClass()),
+					item.getClass());
+			convertAnother(item);
+			writer.endNode();
 		}
 	}
 }

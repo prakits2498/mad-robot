@@ -63,6 +63,11 @@ public class TraxSource extends SAXSource {
 	public final static String XSTREAM_FEATURE = "http://com.thoughtworks.xstream/XStreamSource/feature";
 
 	/**
+	 * The list of Java objects to be serialized.
+	 */
+	private List source = null;
+
+	/**
 	 * The XMLReader object associated to this source or <code>null</code> if no XMLReader has yet been requested.
 	 * 
 	 * @see #getXMLReader
@@ -74,11 +79,6 @@ public class TraxSource extends SAXSource {
 	 */
 	private XMLWizard xstream = null;
 
-	/**
-	 * The list of Java objects to be serialized.
-	 */
-	private List source = null;
-
 	// -------------------------------------------------------------------------
 	// Constructors
 	// -------------------------------------------------------------------------
@@ -88,40 +88,6 @@ public class TraxSource extends SAXSource {
 	 */
 	public TraxSource() {
 		super(new InputSource());
-	}
-
-	/**
-	 * Creates a XStream TrAX source, specifying the object to marshal.
-	 * 
-	 * @param source
-	 *            the object to marshal.
-	 * @throws IllegalArgumentException
-	 *             if <code>source</code> is <code>null</code>.
-	 * @see #setSource(java.lang.Object)
-	 */
-	public TraxSource(Object source) {
-		super(new InputSource());
-
-		this.setSource(source);
-	}
-
-	/**
-	 * Creates a XStream TrAX source, specifying the object to marshal and a configured (with aliases) XStream facade.
-	 * 
-	 * @param source
-	 *            the object to marshal.
-	 * @param xstream
-	 *            a configured XStream facade.
-	 * @throws IllegalArgumentException
-	 *             if <code>source</code> or <code>xstream</code> is <code>null</code>.
-	 * @see #setSource(java.lang.Object)
-	 * @see #setXStream(com.madrobot.di.wizard.xml.XMLWizard)
-	 */
-	public TraxSource(Object source, XMLWizard xstream) {
-		super(new InputSource());
-
-		this.setSource(source);
-		this.setXStream(xstream);
 	}
 
 	/**
@@ -158,44 +124,80 @@ public class TraxSource extends SAXSource {
 		this.setXStream(xstream);
 	}
 
+	/**
+	 * Creates a XStream TrAX source, specifying the object to marshal.
+	 * 
+	 * @param source
+	 *            the object to marshal.
+	 * @throws IllegalArgumentException
+	 *             if <code>source</code> is <code>null</code>.
+	 * @see #setSource(java.lang.Object)
+	 */
+	public TraxSource(Object source) {
+		super(new InputSource());
+
+		this.setSource(source);
+	}
+
+	/**
+	 * Creates a XStream TrAX source, specifying the object to marshal and a configured (with aliases) XStream facade.
+	 * 
+	 * @param source
+	 *            the object to marshal.
+	 * @param xstream
+	 *            a configured XStream facade.
+	 * @throws IllegalArgumentException
+	 *             if <code>source</code> or <code>xstream</code> is <code>null</code>.
+	 * @see #setSource(java.lang.Object)
+	 * @see #setXStream(com.madrobot.di.wizard.xml.XMLWizard)
+	 */
+	public TraxSource(Object source, XMLWizard xstream) {
+		super(new InputSource());
+
+		this.setSource(source);
+		this.setXStream(xstream);
+	}
+
 	// -------------------------------------------------------------------------
 	// SAXSource overwritten methods
 	// -------------------------------------------------------------------------
 
-	/**
-	 * Sets the SAX InputSource to be used for the Source.
-	 * <p/>
-	 * As this implementation only supports object lists as data source, this method always throws an
-	 * {@link UnsupportedOperationException}.
-	 * </p>
-	 * 
-	 * @param inputSource
-	 *            a valid InputSource reference.
-	 * @throws UnsupportedOperationException
-	 *             always!
-	 */
-	@Override
-	public void setInputSource(InputSource inputSource) {
-		throw new UnsupportedOperationException();
+	private void configureXMLReader() {
+		if (this.xmlReader != null) {
+			try {
+				if (this.xstream != null) {
+					this.xmlReader.setProperty(SaxWriter.CONFIGURED_XSTREAM_PROPERTY, this.xstream);
+				}
+				if (this.source != null) {
+					this.xmlReader.setProperty(SaxWriter.SOURCE_OBJECT_LIST_PROPERTY, this.source);
+				}
+			} catch (SAXException e) {
+				throw new IllegalArgumentException(e.getMessage());
+			}
+		}
 	}
 
-	/**
-	 * Set the XMLReader to be used for the Source.
-	 * <p/>
-	 * As this implementation only supports object lists as data source, this method throws an
-	 * {@link UnsupportedOperationException} if the provided reader object does not implement the SAX {@link XMLFilter}
-	 * interface. Otherwise, a {@link SaxWriter} instance will be attached as parent of the filter chain.
-	 * </p>
-	 * 
-	 * @param reader
-	 *            a valid XMLReader or XMLFilter reference.
-	 * @throws UnsupportedOperationException
-	 *             if <code>reader</code> is not a SAX {@link XMLFilter}.
-	 * @see #getXMLReader
-	 */
-	@Override
-	public void setXMLReader(XMLReader reader) {
-		this.createXMLReader(reader);
+	private void createXMLReader(XMLReader filterChain) {
+		if (filterChain == null) {
+			this.xmlReader = new SaxWriter();
+		} else {
+			if (filterChain instanceof XMLFilter) {
+				// Connect the filter chain to a document reader.
+				XMLFilter filter = (XMLFilter) filterChain;
+				while (filter.getParent() instanceof XMLFilter) {
+					filter = (XMLFilter) (filter.getParent());
+				}
+				if (!(filter.getParent() instanceof SaxWriter)) {
+					filter.setParent(new SaxWriter());
+				}
+
+				// Read XML data from filter chain.
+				this.xmlReader = filterChain;
+			} else {
+				throw new UnsupportedOperationException();
+			}
+		}
+		this.configureXMLReader();
 	}
 
 	/**
@@ -220,20 +222,20 @@ public class TraxSource extends SAXSource {
 	// -------------------------------------------------------------------------
 
 	/**
-	 * Sets the XStream facade to use when marshalling objects.
+	 * Sets the SAX InputSource to be used for the Source.
+	 * <p/>
+	 * As this implementation only supports object lists as data source, this method always throws an
+	 * {@link UnsupportedOperationException}.
+	 * </p>
 	 * 
-	 * @param xstream
-	 *            a configured XStream facade.
-	 * @throws IllegalArgumentException
-	 *             if <code>xstream</code> is <code>null</code>.
+	 * @param inputSource
+	 *            a valid InputSource reference.
+	 * @throws UnsupportedOperationException
+	 *             always!
 	 */
-	public void setXStream(XMLWizard xstream) {
-		if (xstream == null) {
-			throw new IllegalArgumentException("xstream");
-		}
-		this.xstream = xstream;
-
-		this.configureXMLReader();
+	@Override
+	public void setInputSource(InputSource inputSource) {
+		throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -276,41 +278,39 @@ public class TraxSource extends SAXSource {
 		this.configureXMLReader();
 	}
 
-	private void createXMLReader(XMLReader filterChain) {
-		if (filterChain == null) {
-			this.xmlReader = new SaxWriter();
-		} else {
-			if (filterChain instanceof XMLFilter) {
-				// Connect the filter chain to a document reader.
-				XMLFilter filter = (XMLFilter) filterChain;
-				while (filter.getParent() instanceof XMLFilter) {
-					filter = (XMLFilter) (filter.getParent());
-				}
-				if (!(filter.getParent() instanceof SaxWriter)) {
-					filter.setParent(new SaxWriter());
-				}
-
-				// Read XML data from filter chain.
-				this.xmlReader = filterChain;
-			} else {
-				throw new UnsupportedOperationException();
-			}
-		}
-		this.configureXMLReader();
+	/**
+	 * Set the XMLReader to be used for the Source.
+	 * <p/>
+	 * As this implementation only supports object lists as data source, this method throws an
+	 * {@link UnsupportedOperationException} if the provided reader object does not implement the SAX {@link XMLFilter}
+	 * interface. Otherwise, a {@link SaxWriter} instance will be attached as parent of the filter chain.
+	 * </p>
+	 * 
+	 * @param reader
+	 *            a valid XMLReader or XMLFilter reference.
+	 * @throws UnsupportedOperationException
+	 *             if <code>reader</code> is not a SAX {@link XMLFilter}.
+	 * @see #getXMLReader
+	 */
+	@Override
+	public void setXMLReader(XMLReader reader) {
+		this.createXMLReader(reader);
 	}
 
-	private void configureXMLReader() {
-		if (this.xmlReader != null) {
-			try {
-				if (this.xstream != null) {
-					this.xmlReader.setProperty(SaxWriter.CONFIGURED_XSTREAM_PROPERTY, this.xstream);
-				}
-				if (this.source != null) {
-					this.xmlReader.setProperty(SaxWriter.SOURCE_OBJECT_LIST_PROPERTY, this.source);
-				}
-			} catch (SAXException e) {
-				throw new IllegalArgumentException(e.getMessage());
-			}
+	/**
+	 * Sets the XStream facade to use when marshalling objects.
+	 * 
+	 * @param xstream
+	 *            a configured XStream facade.
+	 * @throws IllegalArgumentException
+	 *             if <code>xstream</code> is <code>null</code>.
+	 */
+	public void setXStream(XMLWizard xstream) {
+		if (xstream == null) {
+			throw new IllegalArgumentException("xstream");
 		}
+		this.xstream = xstream;
+
+		this.configureXMLReader();
 	}
 }

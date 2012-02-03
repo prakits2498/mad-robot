@@ -16,9 +16,9 @@ package com.madrobot.di.wizard.xml.converters;
  * 
  */
 public class FieldKey {
-	final private String fieldName;
 	final private Class declaringClass;
 	final private int depth;
+	final private String fieldName;
 	final private int order;
 
 	public FieldKey(String fieldName, Class declaringClass, int order) {
@@ -37,22 +37,6 @@ public class FieldKey {
 		depth = i;
 	}
 
-	public String getFieldName() {
-		return this.fieldName;
-	}
-
-	public Class getDeclaringClass() {
-		return this.declaringClass;
-	}
-
-	public int getDepth() {
-		return this.depth;
-	}
-
-	public int getOrder() {
-		return this.order;
-	}
-
 	@Override
 	public boolean equals(Object o) {
 		if (this == o)
@@ -68,6 +52,22 @@ public class FieldKey {
 			return false;
 
 		return true;
+	}
+
+	public Class getDeclaringClass() {
+		return this.declaringClass;
+	}
+
+	public int getDepth() {
+		return this.depth;
+	}
+
+	public String getFieldName() {
+		return this.fieldName;
+	}
+
+	public int getOrder() {
+		return this.order;
 	}
 
 	@Override

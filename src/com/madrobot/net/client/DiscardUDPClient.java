@@ -40,6 +40,23 @@ public class DiscardUDPClient extends DatagramSocketClient {
 	}
 
 	/***
+	 * Same as
+	 * <code>send(data, data.length, host. DiscardUDPClient.DEFAULT_PORT)</code>
+	 * .
+	 ***/
+	public void send(byte[] data, InetAddress host) throws IOException {
+		send(data, data.length, host, DEFAULT_PORT);
+	}
+
+	/***
+	 * Same as
+	 * <code>send(data, length, host. DiscardUDPClient.DEFAULT_PORT)</code>.
+	 ***/
+	public void send(byte[] data, int length, InetAddress host) throws IOException {
+		send(data, length, host, DEFAULT_PORT);
+	}
+
+	/***
 	 * Sends the specified data to the specified server at the specified port.
 	 * <p>
 	 * 
@@ -62,23 +79,6 @@ public class DiscardUDPClient extends DatagramSocketClient {
 		_sendPacket.setAddress(host);
 		_sendPacket.setPort(port);
 		_socket_.send(_sendPacket);
-	}
-
-	/***
-	 * Same as
-	 * <code>send(data, length, host. DiscardUDPClient.DEFAULT_PORT)</code>.
-	 ***/
-	public void send(byte[] data, int length, InetAddress host) throws IOException {
-		send(data, length, host, DEFAULT_PORT);
-	}
-
-	/***
-	 * Same as
-	 * <code>send(data, data.length, host. DiscardUDPClient.DEFAULT_PORT)</code>
-	 * .
-	 ***/
-	public void send(byte[] data, InetAddress host) throws IOException {
-		send(data, data.length, host, DEFAULT_PORT);
 	}
 
 }

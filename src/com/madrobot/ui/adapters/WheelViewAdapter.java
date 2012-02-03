@@ -10,10 +10,14 @@ import android.view.ViewGroup;
  */
 public interface WheelViewAdapter {
 	/**
-	 * Gets items count
-	 * @return the count of wheel items
+	 * Get a View that displays an empty wheel item placed before the first or after
+	 * the last wheel item.
+	 * 
+	 * @param convertView the old view to reuse if possible
+     * @param parent the parent that this view will eventually be attached to
+	 * @return the empty item View
 	 */
-	public int getItemsCount();
+	public View getEmptyItem(View convertView, ViewGroup parent);
 	
 	/**
 	 * Get a View that displays the data at the specified position in the data set
@@ -26,14 +30,10 @@ public interface WheelViewAdapter {
 	public View getItem(int index, View convertView, ViewGroup parent);
 
 	/**
-	 * Get a View that displays an empty wheel item placed before the first or after
-	 * the last wheel item.
-	 * 
-	 * @param convertView the old view to reuse if possible
-     * @param parent the parent that this view will eventually be attached to
-	 * @return the empty item View
+	 * Gets items count
+	 * @return the count of wheel items
 	 */
-	public View getEmptyItem(View convertView, ViewGroup parent);
+	public int getItemsCount();
 	
 	/**
 	 * Register an observer that is called when changes happen to the data used by this adapter.

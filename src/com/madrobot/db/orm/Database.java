@@ -28,15 +28,115 @@ import com.madrobot.db.DBException;
  * 
  */
 public class Database {
-	static final String CNAME = Database.class.getSimpleName();
-
 	static Map<String, DatabaseBuilder> _builders = new HashMap<String, DatabaseBuilder>();
 
-	private SQLiteDatabase _database;
-	private DatabaseOpenHelper _dbHelper;
-	private String _path;
+	static final String CNAME = Database.class.getSimpleName();
+
+	/**
+	 * Creates new DB instance. Returned DB instances is not initially opened.
+	 * Calling application must explicitly open it by calling open() method
+	 * 
+	 * @param ctx
+	 * @param dbName
+	 * @param dbVersion
+	 * @return
+	 * @throws DBException
+	 */
+	public static Database createInstance(Context ctx, String dbName,
+			int dbVersion) throws DBException {
+		DatabaseBuilder builder = getBuilder(dbName);
+		if (null == builder)
+			throw new DBException(
+					"Schema wasn't initialized. Call Database.setBuilder() first");
+		return new Database(ctx, dbName, dbVersion, builder);
+	}
+	public static Database createInstance(Context ctx, String dbName,
+			int dbVersion, DatabaseBuilder builder) {
+		return new Database(ctx, dbName, dbVersion, builder);
+	}
+	/**
+	 * Returns DatabaseBuilder object assosicted with Database
+	 * 
+	 * @param dbName
+	 *            database name
+	 * @return DatabaseBuilder object assosicted with Database
+	 */
+	public static DatabaseBuilder getBuilder(String dbName) {
+		return _builders.get(dbName);
+	}
+	/**
+	 * Get the SQLite type for an input class.
+	 * 
+	 * @param c
+	 *            The class to convert.
+	 * @return A string representing the SQLite type that would be used to store
+	 *         that class.
+	 */
+	protected static String getSQLiteTypeString(Class<?> c) {
+		String name = c.getName();
+		if (name.equals("java.lang.String"))
+			return "text";
+		if (name.equals("short"))
+			return "int";
+		if (name.equals("int"))
+			return "int";
+		if (name.equals("long"))
+			return "int";
+		if (name.equals("long"))
+			return "int";
+		if (name.equals("java.sql.Timestamp"))
+			return "int";
+		if (name.equals("double"))
+			return "real";
+		if (name.equals("float"))
+			return "real";
+		if (name.equals("[B"))
+			return "blob";
+		if (name.equals("boolean"))
+			return "bool";
+		if (c.getSuperclass() == DatabaseClient.class)
+			return "int";
+		throw new IllegalArgumentException(
+				"Class cannot be stored in Sqlite3 database.");
+	}
+
+	/**
+	 * Creates and opens new DB instances. DB instance returned to calling
+	 * application already opened.
+	 * 
+	 * @param ctx
+	 * @param dbName
+	 * @param dbVersion
+	 * @return
+	 * @throws DBException
+	 */
+	public static Database open(Context ctx, String dbName, int dbVersion)
+			throws DBException {
+		Database db = Database.createInstance(ctx, dbName, dbVersion);
+		db.open();
+		return db;
+	}
+
+	/**
+	 * Initializes Database framework. This method must be called for each used
+	 * database only once before using database. This is required for proper
+	 * setup static attributes of the Database
+	 * 
+	 * @param builder
+	 * @return
+	 */
+	static public void setBuilder(DatabaseBuilder builder) {
+		_builders.put(builder.getDatabaseName(), builder);
+	}
+
 	@SuppressWarnings("unused")
 	private Context _context;
+
+	private SQLiteDatabase _database;
+
+	private DatabaseOpenHelper _dbHelper;
+
+	private String _path;
 
 	/**
 	 * Creates a new DatabaseWrapper object
@@ -67,81 +167,8 @@ public class Database {
 		_context = context;
 	}
 
-	/**
-	 * Creates new DB instance. Returned DB instances is not initially opened.
-	 * Calling application must explicitly open it by calling open() method
-	 * 
-	 * @param ctx
-	 * @param dbName
-	 * @param dbVersion
-	 * @return
-	 * @throws DBException
-	 */
-	public static Database createInstance(Context ctx, String dbName,
-			int dbVersion) throws DBException {
-		DatabaseBuilder builder = getBuilder(dbName);
-		if (null == builder)
-			throw new DBException(
-					"Schema wasn't initialized. Call Database.setBuilder() first");
-		return new Database(ctx, dbName, dbVersion, builder);
-	}
-
-	/**
-	 * Creates and opens new DB instances. DB instance returned to calling
-	 * application already opened.
-	 * 
-	 * @param ctx
-	 * @param dbName
-	 * @param dbVersion
-	 * @return
-	 * @throws DBException
-	 */
-	public static Database open(Context ctx, String dbName, int dbVersion)
-			throws DBException {
-		Database db = Database.createInstance(ctx, dbName, dbVersion);
-		db.open();
-		return db;
-	}
-
-	/**
-	 * Returns DatabaseBuilder object assosicted with Database
-	 * 
-	 * @param dbName
-	 *            database name
-	 * @return DatabaseBuilder object assosicted with Database
-	 */
-	public static DatabaseBuilder getBuilder(String dbName) {
-		return _builders.get(dbName);
-	}
-
-	/**
-	 * Initializes Database framework. This method must be called for each used
-	 * database only once before using database. This is required for proper
-	 * setup static attributes of the Database
-	 * 
-	 * @param builder
-	 * @return
-	 */
-	static public void setBuilder(DatabaseBuilder builder) {
-		_builders.put(builder.getDatabaseName(), builder);
-	}
-
-	public static Database createInstance(Context ctx, String dbName,
-			int dbVersion, DatabaseBuilder builder) {
-		return new Database(ctx, dbName, dbVersion, builder);
-	}
-
-	/**
-	 * Opens or creates the database file. Uses external storage if present,
-	 * otherwise uses local storage.
-	 */
-	public void open() {
-		if (_database != null && _database.isOpen()) {
-			_database.close();
-			_database = null;
-		}
-		_database = _dbHelper.getReadableDatabase();
-		Log.e("MadRobot", CNAME+ " .open(): new db obj  "+_database.toString());
+	public void beginTransaction() {
+		_database.beginTransaction();
 	}
 
 	public void close() {
@@ -150,54 +177,6 @@ public class Database {
 			_database.close();
 		_database = null;
 		Log.e("MadRobot", CNAME+" .close(): db obj "+d+" set to null");
-	}
-
-	public boolean isOpen() {
-		if (null != _database && _database.isOpen())
-			return true;
-		else
-			return false;
-	}
-
-	/**
-	 * Execute some raw SQL.
-	 * 
-	 * @param sql
-	 *            Standard SQLite compatible SQL.
-	 */
-	public void execute(String sql) {
-		_database.execSQL(sql);
-	}
-
-	/**
-	 * Insert into a table in the database.
-	 * 
-	 * @param table
-	 *            The table to insert into.
-	 * @param parameters
-	 *            The data.
-	 * @return the row ID of the newly inserted row, or -1 if an error occurred.
-	 */
-	public long insert(String table, ContentValues parameters) {
-		return _database.insert(table, null, parameters);
-	}
-
-	/**
-	 * Update a table in the database.
-	 * 
-	 * @param table
-	 *            The table to update.
-	 * @param values
-	 *            The new values.
-	 * @param whereClause
-	 *            The condition to match (Don't include "where").
-	 * @param whereArgs
-	 *            The arguments to replace "?" with.
-	 * @return The number of rows affected.
-	 */
-	public int update(String table, ContentValues values, String whereClause,
-			String[] whereArgs) {
-		return _database.update(table, values, whereClause, whereArgs);
 	}
 
 	/**
@@ -215,49 +194,101 @@ public class Database {
 		return _database.delete(table, whereClause, whereArgs);
 	}
 
-	/**
-	 * Execute a raw SQL query.
-	 * 
-	 * @param sql
-	 *            Standard SQLite compatible SQL.
-	 * @return A cursor over the data returned.
-	 */
-	public Cursor rawQuery(String sql) {
-		return rawQuery(sql, null);
+	public void endTransaction() {
+		_database.endTransaction();
 	}
 
 	/**
-	 * Execute a raw SQL query.
+	 * Execute some raw SQL.
 	 * 
 	 * @param sql
 	 *            Standard SQLite compatible SQL.
-	 * @param params
-	 *            The values to replace "?" with.
-	 * @return A cursor over the data returned.
 	 */
-	public Cursor rawQuery(String sql, String[] params) {
-		return _database.rawQuery(sql, params);
+	public void execute(String sql) {
+		_database.execSQL(sql);
+	}
+
+	public String[] getColumnsForTable(String table) {
+		Cursor c = rawQuery(String.format("PRAGMA table_info(%s)", table));
+		List<String> columns = new ArrayList<String>();
+		try {
+			while (c.moveToNext()) {
+				columns.add(c.getString(c.getColumnIndex("name")));
+			}
+		} finally {
+			c.close();
+		}
+		return columns.toArray(new String[0]);
 	}
 
 	/**
-	 * Execute a query.
+	 * Returns array of database tables names
+	 * 
+	 * @throws DBException
+	 */
+	public String[] getTables() throws DBException {
+		if (null == _database || !_database.isOpen()) {
+			Log.e("MadRobot", CNAME
+					+ " .getTables(): ERROR - db object is null or closed");
+			throw new DBException(
+					"Database is closed. Did you forget to open database?");
+		}
+
+		Cursor c = query("sqlite_master", new String[] { "name" }, "type = ?",
+				new String[] { "table" });
+		List<String> tables = new ArrayList<String>();
+		try {
+			while (c.moveToNext()) {
+				tables.add(c.getString(0));
+			}
+		} finally {
+			c.close();
+		}
+		return tables.toArray(new String[0]);
+	}
+
+	public int getVersion() throws DBException {
+		if (null == _database || !_database.isOpen()) {
+			Log.e("MadRobot", CNAME
+					+ ".getVersion(): ERROR - db object is null or closed");
+			throw new DBException(
+					"Database is closed. Did you forget to open database?");
+		}
+
+		return _database.getVersion();
+	}
+
+	/**
+	 * Insert into a table in the database.
 	 * 
 	 * @param table
-	 *            The table to query.
-	 * @param selectColumns
-	 *            The columns to select.
-	 * @param where
-	 *            The condition to match (Don't include "where").
-	 * @param whereArgs
-	 *            The arguments to replace "?" with.
-	 * @return A cursor over the data returned.
-	 * @throws DBException
-	 *             is database is null or closed
+	 *            The table to insert into.
+	 * @param parameters
+	 *            The data.
+	 * @return the row ID of the newly inserted row, or -1 if an error occurred.
 	 */
-	public Cursor query(String table, String[] selectColumns, String where,
-			String[] whereArgs) throws DBException {
-		return query(false, table, selectColumns, where, whereArgs, null, null,
-				null, null);
+	public long insert(String table, ContentValues parameters) {
+		return _database.insert(table, null, parameters);
+	}
+
+	public boolean isOpen() {
+		if (null != _database && _database.isOpen())
+			return true;
+		else
+			return false;
+	}
+
+	/**
+	 * Opens or creates the database file. Uses external storage if present,
+	 * otherwise uses local storage.
+	 */
+	public void open() {
+		if (_database != null && _database.isOpen()) {
+			_database.close();
+			_database = null;
+		}
+		_database = _dbHelper.getReadableDatabase();
+		Log.e("MadRobot", CNAME+ " .open(): new db obj  "+_database.toString());
 	}
 
 	/**
@@ -295,53 +326,48 @@ public class Database {
 	}
 
 	/**
-	 * Returns array of database tables names
+	 * Execute a query.
 	 * 
+	 * @param table
+	 *            The table to query.
+	 * @param selectColumns
+	 *            The columns to select.
+	 * @param where
+	 *            The condition to match (Don't include "where").
+	 * @param whereArgs
+	 *            The arguments to replace "?" with.
+	 * @return A cursor over the data returned.
 	 * @throws DBException
+	 *             is database is null or closed
 	 */
-	public String[] getTables() throws DBException {
-		if (null == _database || !_database.isOpen()) {
-			Log.e("MadRobot", CNAME
-					+ " .getTables(): ERROR - db object is null or closed");
-			throw new DBException(
-					"Database is closed. Did you forget to open database?");
-		}
-
-		Cursor c = query("sqlite_master", new String[] { "name" }, "type = ?",
-				new String[] { "table" });
-		List<String> tables = new ArrayList<String>();
-		try {
-			while (c.moveToNext()) {
-				tables.add(c.getString(0));
-			}
-		} finally {
-			c.close();
-		}
-		return tables.toArray(new String[0]);
+	public Cursor query(String table, String[] selectColumns, String where,
+			String[] whereArgs) throws DBException {
+		return query(false, table, selectColumns, where, whereArgs, null, null,
+				null, null);
 	}
 
-	public String[] getColumnsForTable(String table) {
-		Cursor c = rawQuery(String.format("PRAGMA table_info(%s)", table));
-		List<String> columns = new ArrayList<String>();
-		try {
-			while (c.moveToNext()) {
-				columns.add(c.getString(c.getColumnIndex("name")));
-			}
-		} finally {
-			c.close();
-		}
-		return columns.toArray(new String[0]);
+	/**
+	 * Execute a raw SQL query.
+	 * 
+	 * @param sql
+	 *            Standard SQLite compatible SQL.
+	 * @return A cursor over the data returned.
+	 */
+	public Cursor rawQuery(String sql) {
+		return rawQuery(sql, null);
 	}
 
-	public int getVersion() throws DBException {
-		if (null == _database || !_database.isOpen()) {
-			Log.e("MadRobot", CNAME
-					+ ".getVersion(): ERROR - db object is null or closed");
-			throw new DBException(
-					"Database is closed. Did you forget to open database?");
-		}
-
-		return _database.getVersion();
+	/**
+	 * Execute a raw SQL query.
+	 * 
+	 * @param sql
+	 *            Standard SQLite compatible SQL.
+	 * @param params
+	 *            The values to replace "?" with.
+	 * @return A cursor over the data returned.
+	 */
+	public Cursor rawQuery(String sql, String[] params) {
+		return _database.rawQuery(sql, params);
 	}
 
 	public void setVersion(int version) throws DBException {
@@ -355,48 +381,22 @@ public class Database {
 		_database.setVersion(version);
 	}
 
-	public void beginTransaction() {
-		_database.beginTransaction();
-	}
-
-	public void endTransaction() {
-		_database.endTransaction();
-	}
-
 	/**
-	 * Get the SQLite type for an input class.
+	 * Update a table in the database.
 	 * 
-	 * @param c
-	 *            The class to convert.
-	 * @return A string representing the SQLite type that would be used to store
-	 *         that class.
+	 * @param table
+	 *            The table to update.
+	 * @param values
+	 *            The new values.
+	 * @param whereClause
+	 *            The condition to match (Don't include "where").
+	 * @param whereArgs
+	 *            The arguments to replace "?" with.
+	 * @return The number of rows affected.
 	 */
-	protected static String getSQLiteTypeString(Class<?> c) {
-		String name = c.getName();
-		if (name.equals("java.lang.String"))
-			return "text";
-		if (name.equals("short"))
-			return "int";
-		if (name.equals("int"))
-			return "int";
-		if (name.equals("long"))
-			return "int";
-		if (name.equals("long"))
-			return "int";
-		if (name.equals("java.sql.Timestamp"))
-			return "int";
-		if (name.equals("double"))
-			return "real";
-		if (name.equals("float"))
-			return "real";
-		if (name.equals("[B"))
-			return "blob";
-		if (name.equals("boolean"))
-			return "bool";
-		if (c.getSuperclass() == DatabaseClient.class)
-			return "int";
-		throw new IllegalArgumentException(
-				"Class cannot be stored in Sqlite3 database.");
+	public int update(String table, ContentValues values, String whereClause,
+			String[] whereArgs) {
+		return _database.update(table, values, whereClause, whereArgs);
 	}
 
 	// /**

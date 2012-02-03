@@ -18,8 +18,8 @@ import java.util.Iterator;
  */
 public class AttributeNameIterator implements Iterator {
 
-	private int current;
 	private final int count;
+	private int current;
 	private final HierarchicalStreamReader reader;
 
 	public AttributeNameIterator(HierarchicalStreamReader reader) {

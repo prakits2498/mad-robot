@@ -23,17 +23,17 @@ import java.io.InputStream;
 public abstract class LimitedInputStream
         extends FilterInputStream implements Closeable {
     /**
-     * The maximum size of an item, in bytes.
+     * Whether this stream is already closed.
      */
-    private long sizeMax;
+    private boolean closed;
     /**
      * The current number of bytes.
      */
     private long count;
     /**
-     * Whether this stream is already closed.
+     * The maximum size of an item, in bytes.
      */
-    private boolean closed;
+    private long sizeMax;
 
     /**
      * Creates a new instance.
@@ -46,6 +46,40 @@ public abstract class LimitedInputStream
         sizeMax = pSizeMax;
     }
 
+    /** Called to check, whether the input streams
+     * limit is reached.
+     * @throws IOException The given limit is exceeded.
+     */
+    private void checkLimit() throws IOException {
+        if (count > sizeMax) {
+            raiseError(sizeMax, count);
+        }
+    }
+
+    /**
+     * Closes this input stream and releases any system resources
+     * associated with the stream.
+     * This
+     * method simply performs <code>in.close()</code>.
+     *
+     * @exception  IOException  if an I/O error occurs.
+     * @see        java.io.FilterInputStream#in
+     */
+    @Override
+	public void close() throws IOException {
+        closed = true;
+        super.close();
+    }
+
+    /**
+     * Returns, whether this stream is already closed.
+     * @return True, if the stream is closed, otherwise false.
+     * @throws IOException An I/O error occurred.
+     */
+    public boolean isClosed() throws IOException {
+        return closed;
+    }
+
     /**
      * Called to indicate, that the input streams limit has
      * been exceeded.
@@ -56,16 +90,6 @@ public abstract class LimitedInputStream
      */
     protected abstract void raiseError(long pSizeMax, long pCount)
             throws IOException;
-
-    /** Called to check, whether the input streams
-     * limit is reached.
-     * @throws IOException The given limit is exceeded.
-     */
-    private void checkLimit() throws IOException {
-        if (count > sizeMax) {
-            raiseError(sizeMax, count);
-        }
-    }
 
     /**
      * Reads the next byte of data from this input stream. The value
@@ -125,29 +149,5 @@ public abstract class LimitedInputStream
             checkLimit();
         }
         return res;
-    }
-
-    /**
-     * Returns, whether this stream is already closed.
-     * @return True, if the stream is closed, otherwise false.
-     * @throws IOException An I/O error occurred.
-     */
-    public boolean isClosed() throws IOException {
-        return closed;
-    }
-
-    /**
-     * Closes this input stream and releases any system resources
-     * associated with the stream.
-     * This
-     * method simply performs <code>in.close()</code>.
-     *
-     * @exception  IOException  if an I/O error occurs.
-     * @see        java.io.FilterInputStream#in
-     */
-    @Override
-	public void close() throws IOException {
-        closed = true;
-        super.close();
     }
 }

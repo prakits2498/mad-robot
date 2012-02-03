@@ -35,27 +35,77 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.X509TrustManager;
 
 public class NetUtils {
-	/**
-	 * Finds a local, non-loopback, IPv4 address
-	 * 
-	 * @return The first non-loopback IPv4 address found, or <code>null</code> if no such addresses found
-	 * @throws SocketException
-	 *             If there was a problem querying the network interfaces
-	 */
-	public static InetAddress getLocalAddress() throws SocketException {
-		Enumeration<NetworkInterface> ifaces = NetworkInterface.getNetworkInterfaces();
-		while (ifaces.hasMoreElements()) {
-			NetworkInterface iface = ifaces.nextElement();
-			Enumeration<InetAddress> addresses = iface.getInetAddresses();
+	private final static String emailPattern = "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
-			while (addresses.hasMoreElements()) {
-				InetAddress addr = addresses.nextElement();
-				if ((addr instanceof Inet4Address) && !addr.isLoopbackAddress()) {
-					return addr;
-				}
-			}
+	/**
+	 * Decode the IP Address represented as an integer
+	 * @param ip String representation of the IP address.
+	 * @return
+	 */
+	public static String decodeIPAddress(int ip) {
+		int[] num = new int[4];
+
+		num[0] = (ip & 0xff000000) >> 24;
+		num[1] = (ip & 0x00ff0000) >> 16;
+		num[2] = (ip & 0x0000ff00) >> 8;
+		num[3] = ip & 0x000000ff;
+
+		StringBuilder builder=new StringBuilder();
+		builder.append(num[0]).append('.').append(num[1]).append('.').append(num[2]).append('.').append(num[3]);
+
+		return builder.toString();
+	}
+
+	/**
+	 * Enable Http Response cache. Works only on Ice-cream sandwich.
+	 * 
+	 * @param cacheDir
+	 *            Directory to be used as a response cache
+	 * @param cacheSize
+	 *            Size of the cache
+	 */
+	public static void enableHttpResponseCache(String cacheDir, long cacheSize) {
+		try {
+			File httpCacheDir = new File(cacheDir, "http");
+			Class.forName("android.net.http.HttpResponseCache").getMethod("install", File.class, long.class)
+					.invoke(null, httpCacheDir, cacheSize);
+		} catch (Exception e) {
 		}
-		return null;
+	}
+
+	/**
+	 * Encodes an IP as an int
+	 * 
+	 * @param ip
+	 * @return the encoded IP
+	 */
+	public static int encode(Inet4Address ip) {
+		int i = 0;
+		byte[] b = ip.getAddress();
+		i |= b[0] << 24;
+		i |= b[1] << 16;
+		i |= b[2] << 8;
+		i |= b[3] << 0;
+
+		return i;
+	}
+
+	/**
+	 * Encode the given IP address segments
+	 * 
+	 * @param a
+	 * @param b
+	 * @param c
+	 * @param d
+	 * @return the encoded ip
+	 */
+	public static int encodeIPAddress(int a, int b, int c, int d) {
+		int ip = 0;
+		ip |= a << 24;
+		ip |= b << 16;
+		ip |= c << 8;
+		ip |= d;
+		return ip;
 	}
 
 	/**
@@ -80,57 +130,42 @@ public class NetUtils {
 	}
 
 	/**
-	 * Encode the given IP address segments
+	 * Finds a local, non-loopback, IPv4 address
 	 * 
-	 * @param a
-	 * @param b
-	 * @param c
-	 * @param d
-	 * @return the encoded ip
+	 * @return The first non-loopback IPv4 address found, or <code>null</code> if no such addresses found
+	 * @throws SocketException
+	 *             If there was a problem querying the network interfaces
 	 */
-	public static int encodeIPAddress(int a, int b, int c, int d) {
-		int ip = 0;
-		ip |= a << 24;
-		ip |= b << 16;
-		ip |= c << 8;
-		ip |= d;
-		return ip;
+	public static InetAddress getLocalAddress() throws SocketException {
+		Enumeration<NetworkInterface> ifaces = NetworkInterface.getNetworkInterfaces();
+		while (ifaces.hasMoreElements()) {
+			NetworkInterface iface = ifaces.nextElement();
+			Enumeration<InetAddress> addresses = iface.getInetAddresses();
+
+			while (addresses.hasMoreElements()) {
+				InetAddress addr = addresses.nextElement();
+				if ((addr instanceof Inet4Address) && !addr.isLoopbackAddress()) {
+					return addr;
+				}
+			}
+		}
+		return null;
 	}
 
-	/**
-	 * Decode the IP Address represented as an integer
-	 * @param ip String representation of the IP address.
-	 * @return
-	 */
-	public static String decodeIPAddress(int ip) {
-		int[] num = new int[4];
+	private static boolean isMaskValue(String component, int size) {
+		try {
+			int value = Integer.parseInt(component);
 
-		num[0] = (ip & 0xff000000) >> 24;
-		num[1] = (ip & 0x00ff0000) >> 16;
-		num[2] = (ip & 0x0000ff00) >> 8;
-		num[3] = ip & 0x000000ff;
-
-		StringBuilder builder=new StringBuilder();
-		builder.append(num[0]).append('.').append(num[1]).append('.').append(num[2]).append('.').append(num[3]);
-
-		return builder.toString();
+			return value >= 0 && value <= size;
+		} catch (NumberFormatException e) {
+			return false;
+		}
 	}
 
-	/**
-	 * Encodes an IP as an int
-	 * 
-	 * @param ip
-	 * @return the encoded IP
-	 */
-	public static int encode(Inet4Address ip) {
-		int i = 0;
-		byte[] b = ip.getAddress();
-		i |= b[0] << 24;
-		i |= b[1] << 16;
-		i |= b[2] << 8;
-		i |= b[3] << 0;
-
-		return i;
+	public static boolean isValidEmailAddress(String address) {
+		Pattern pattern = Pattern.compile(emailPattern);
+		Matcher matcher = pattern.matcher(address);
+		return matcher.matches();
 	}
 
 	/**
@@ -177,22 +212,6 @@ public class NetUtils {
 		String mask = address.substring(index + 1);
 
 		return (index > 0) && isValidIPv4(address.substring(0, index)) && (isValidIPv4(mask) || isMaskValue(mask, 32));
-	}
-
-	public static boolean isValidIPv6WithNetmask(String address) {
-		int index = address.indexOf("/");
-		String mask = address.substring(index + 1);
-
-		return (index > 0)
-				&& (isValidIPv6(address.substring(0, index)) && (isValidIPv6(mask) || isMaskValue(mask, 128)));
-	}
-
-	private final static String emailPattern = "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-
-	public static boolean isValidEmailAddress(String address) {
-		Pattern pattern = Pattern.compile(emailPattern);
-		Matcher matcher = pattern.matcher(address);
-		return matcher.matches();
 	}
 
 	/**
@@ -252,14 +271,12 @@ public class NetUtils {
 		return octets == 8 || doubleColonFound;
 	}
 
-	private static boolean isMaskValue(String component, int size) {
-		try {
-			int value = Integer.parseInt(component);
+	public static boolean isValidIPv6WithNetmask(String address) {
+		int index = address.indexOf("/");
+		String mask = address.substring(index + 1);
 
-			return value >= 0 && value <= size;
-		} catch (NumberFormatException e) {
-			return false;
-		}
+		return (index > 0)
+				&& (isValidIPv6(address.substring(0, index)) && (isValidIPv6(mask) || isMaskValue(mask, 128)));
 	}
 
 	/**
@@ -294,23 +311,6 @@ public class NetUtils {
 			HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
 		} catch (Exception e) { // should never happen
 			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Enable Http Response cache. Works only on Ice-cream sandwich.
-	 * 
-	 * @param cacheDir
-	 *            Directory to be used as a response cache
-	 * @param cacheSize
-	 *            Size of the cache
-	 */
-	public static void enableHttpResponseCache(String cacheDir, long cacheSize) {
-		try {
-			File httpCacheDir = new File(cacheDir, "http");
-			Class.forName("android.net.http.HttpResponseCache").getMethod("install", File.class, long.class)
-					.invoke(null, httpCacheDir, cacheSize);
-		} catch (Exception e) {
 		}
 	}
 }

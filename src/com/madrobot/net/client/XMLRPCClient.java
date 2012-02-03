@@ -129,12 +129,64 @@ import org.xmlpull.v1.XmlPullParserFactory;
  */
 public class XMLRPCClient extends XMLRPCCommon {
 	private HttpClient client;
-	private HttpPost postMethod;
 	private HttpParams httpParams;
 	// These variables used in the code inspired by erickok in issue #6
 	private boolean httpPreAuth = false;
-	private String username = "";
 	private String password = "";
+	private HttpPost postMethod;
+	private String username = "";
+
+	/**
+	 * Convenience constructor. Creates new instance based on server String address
+	 * 
+	 * @param XMLRPC
+	 *            server address
+	 */
+	public XMLRPCClient(String url) {
+		this(URI.create(url));
+	}
+
+	/**
+	 * Convenience constructor. Creates new instance based on server String address
+	 * 
+	 * @param XMLRPC
+	 *            server address
+	 * @param HttpClient
+	 *            to use
+	 */
+	public XMLRPCClient(String url, HttpClient client) {
+		this(URI.create(url), client);
+	}
+
+	/**
+	 * Convenience constructor. Creates new instance based on server String address
+	 * 
+	 * @param XMLRPC
+	 *            server address
+	 * @param HTTP
+	 *            Server - Basic Authentication - Username
+	 * @param HTTP
+	 *            Server - Basic Authentication - Password
+	 */
+	public XMLRPCClient(String url, String username, String password) {
+		this(URI.create(url), username, password);
+	}
+
+	/**
+	 * Convenience constructor. Creates new instance based on server String address
+	 * 
+	 * @param XMLRPC
+	 *            server address
+	 * @param HTTP
+	 *            Server - Basic Authentication - Username
+	 * @param HTTP
+	 *            Server - Basic Authentication - Password
+	 * @param HttpClient
+	 *            to use
+	 */
+	public XMLRPCClient(String url, String username, String password, HttpClient client) {
+		this(URI.create(url), username, password, client);
+	}
 
 	/**
 	 * XMLRPCClient constructor. Creates new instance based on server URI (Code contributed by sgayda2 from issue #17,
@@ -181,61 +233,6 @@ public class XMLRPCClient extends XMLRPCCommon {
 	}
 
 	/**
-	 * Amends user agent (Code contributed by mortenholdflod from issue #28)
-	 * 
-	 * @param userAgent
-	 *            defining the new User Agent string
-	 */
-	public void setUserAgent(String userAgent) {
-		postMethod.removeHeaders("User-Agent");
-		postMethod.addHeader("User-Agent", userAgent);
-	}
-
-	/**
-	 * Convenience constructor. Creates new instance based on server String address
-	 * 
-	 * @param XMLRPC
-	 *            server address
-	 */
-	public XMLRPCClient(String url) {
-		this(URI.create(url));
-	}
-
-	/**
-	 * Convenience constructor. Creates new instance based on server String address
-	 * 
-	 * @param XMLRPC
-	 *            server address
-	 * @param HttpClient
-	 *            to use
-	 */
-	public XMLRPCClient(String url, HttpClient client) {
-		this(URI.create(url), client);
-	}
-
-	/**
-	 * Convenience XMLRPCClient constructor. Creates new instance based on server URL
-	 * 
-	 * @param XMLRPC
-	 *            server URL
-	 */
-	public XMLRPCClient(URL url) {
-		this(URI.create(url.toExternalForm()));
-	}
-
-	/**
-	 * Convenience XMLRPCClient constructor. Creates new instance based on server URL
-	 * 
-	 * @param XMLRPC
-	 *            server URL
-	 * @param HttpClient
-	 *            to use
-	 */
-	public XMLRPCClient(URL url, HttpClient client) {
-		this(URI.create(url.toExternalForm()), client);
-	}
-
-	/**
 	 * Convenience constructor. Creates new instance based on server String address
 	 * 
 	 * @param XMLRPC
@@ -274,33 +271,25 @@ public class XMLRPCClient extends XMLRPCCommon {
 	}
 
 	/**
-	 * Convenience constructor. Creates new instance based on server String address
+	 * Convenience XMLRPCClient constructor. Creates new instance based on server URL
 	 * 
 	 * @param XMLRPC
-	 *            server address
-	 * @param HTTP
-	 *            Server - Basic Authentication - Username
-	 * @param HTTP
-	 *            Server - Basic Authentication - Password
+	 *            server URL
 	 */
-	public XMLRPCClient(String url, String username, String password) {
-		this(URI.create(url), username, password);
+	public XMLRPCClient(URL url) {
+		this(URI.create(url.toExternalForm()));
 	}
 
 	/**
-	 * Convenience constructor. Creates new instance based on server String address
+	 * Convenience XMLRPCClient constructor. Creates new instance based on server URL
 	 * 
 	 * @param XMLRPC
-	 *            server address
-	 * @param HTTP
-	 *            Server - Basic Authentication - Username
-	 * @param HTTP
-	 *            Server - Basic Authentication - Password
+	 *            server URL
 	 * @param HttpClient
 	 *            to use
 	 */
-	public XMLRPCClient(String url, String username, String password, HttpClient client) {
-		this(URI.create(url), username, password, client);
+	public XMLRPCClient(URL url, HttpClient client) {
+		this(URI.create(url.toExternalForm()), client);
 	}
 
 	/**
@@ -334,154 +323,6 @@ public class XMLRPCClient extends XMLRPCCommon {
 	}
 
 	/**
-	 * Sets basic authentication on web request using plain credentials
-	 * 
-	 * @param username
-	 *            The plain text username
-	 * @param password
-	 *            The plain text password
-	 * @param doPreemptiveAuth
-	 *            Select here whether to authenticate without it being requested first by the server.
-	 */
-	public void setBasicAuthentication(String username, String password, boolean doPreemptiveAuth) {
-		// This code required to trigger the patch created by erickok in issue #6
-		if (doPreemptiveAuth = true) {
-			this.httpPreAuth = doPreemptiveAuth;
-			this.username = username;
-			this.password = password;
-		} else {
-			((DefaultHttpClient) client).getCredentialsProvider().setCredentials(
-					new AuthScope(postMethod.getURI().getHost(), postMethod.getURI().getPort(), AuthScope.ANY_REALM),
-					new UsernamePasswordCredentials(username, password));
-		}
-	}
-
-	/**
-	 * Convenience Constructor: Sets basic authentication on web request using plain credentials
-	 * 
-	 * @param username
-	 *            The plain text username
-	 * @param password
-	 *            The plain text password
-	 */
-	public void setBasicAuthentication(String username, String password) {
-		setBasicAuthentication(username, password, false);
-	}
-
-	/**
-	 * Call method with optional parameters. This is general method. If you want to call your method with 0-8
-	 * parameters, you can use more convenience call() methods
-	 * 
-	 * @param method
-	 *            name of method to call
-	 * @param params
-	 *            parameters to pass to method (may be null if method has no parameters)
-	 * @return deserialized method return value
-	 * @throws XMLRPCException
-	 */
-	@SuppressWarnings("unchecked")
-	public Object callEx(String method, Object[] params) throws XMLRPCException {
-		try {
-			// prepare POST body
-			String body = methodCall(method, params);
-
-			// set POST body
-			HttpEntity entity = new StringEntity(body);
-			postMethod.setEntity(entity);
-
-			// This code slightly tweaked from the code by erickok in issue #6
-			// Force preemptive authentication
-			// This makes sure there is an 'Authentication: ' header being send before trying and failing and retrying
-			// by the basic authentication mechanism of DefaultHttpClient
-			if (this.httpPreAuth == true) {
-				String auth = this.username + ":" + this.password;
-				postMethod.addHeader("Authorization", "Basic "
-						+ Base64.encode(auth.getBytes(), Base64.DEFAULT).toString());
-			}
-
-			// Log.d(Tag.LOG, "ros HTTP POST");
-			// execute HTTP POST request
-			HttpResponse response = client.execute(postMethod);
-			// Log.d(Tag.LOG, "ros HTTP POSTed");
-
-			// check status code
-			int statusCode = response.getStatusLine().getStatusCode();
-			// Log.d(Tag.LOG, "ros status code:" + statusCode);
-			if (statusCode != HttpStatus.SC_OK) {
-				throw new XMLRPCException("HTTP status code: " + statusCode + " != " + HttpStatus.SC_OK);
-			}
-
-			// parse response stuff
-			//
-			// setup pull parser
-			XmlPullParser pullParser = XmlPullParserFactory.newInstance().newPullParser();
-			entity = response.getEntity();
-			Reader reader = new InputStreamReader(new BufferedInputStream(entity.getContent()));
-			// for testing purposes only
-			// reader = new
-			// StringReader("<?xml version='1.0'?><methodResponse><params><param><value>\n\n\n</value></param></params></methodResponse>");
-			pullParser.setInput(reader);
-
-			// lets start pulling...
-			pullParser.nextTag();
-			pullParser.require(XmlPullParser.START_TAG, null, Tag.METHOD_RESPONSE);
-
-			pullParser.nextTag(); // either Tag.PARAMS (<params>) or Tag.FAULT (<fault>)
-			String tag = pullParser.getName();
-			if (tag.equals(Tag.PARAMS)) {
-				// normal response
-				pullParser.nextTag(); // Tag.PARAM (<param>)
-				pullParser.require(XmlPullParser.START_TAG, null, Tag.PARAM);
-				pullParser.nextTag(); // Tag.VALUE (<value>)
-				// no parser.require() here since its called in XMLRPCSerializer.deserialize() below
-
-				// deserialize result
-				Object obj = iXMLRPCSerializer.deserialize(pullParser);
-				entity.consumeContent();
-				return obj;
-			} else if (tag.equals(Tag.FAULT)) {
-				// fault response
-				pullParser.nextTag(); // Tag.VALUE (<value>)
-				// no parser.require() here since its called in XMLRPCSerializer.deserialize() below
-
-				// deserialize fault result
-				Map<String, Object> map = (Map<String, Object>) iXMLRPCSerializer.deserialize(pullParser);
-				String faultString = (String) map.get(Tag.FAULT_STRING);
-				int faultCode = (Integer) map.get(Tag.FAULT_CODE);
-				entity.consumeContent();
-				throw new XMLRPCFault(faultString, faultCode);
-			} else {
-				entity.consumeContent();
-				throw new XMLRPCException("Bad tag <" + tag + "> in XMLRPC response - neither <params> nor <fault>");
-			}
-		} catch (XMLRPCException e) {
-			// catch & propagate XMLRPCException/XMLRPCFault
-			throw e;
-		} catch (Exception e) {
-			e.printStackTrace();
-			// wrap any other Exception(s) around XMLRPCException
-			throw new XMLRPCException(e);
-		}
-	}
-
-	private String methodCall(String method, Object[] params) throws IllegalArgumentException, IllegalStateException,
-			IOException {
-		StringWriter bodyWriter = new StringWriter();
-		serializer.setOutput(bodyWriter);
-		serializer.startDocument(null, null);
-		serializer.startTag(null, Tag.METHOD_CALL);
-		// set method name
-		serializer.startTag(null, Tag.METHOD_NAME).text(method).endTag(null, Tag.METHOD_NAME);
-
-		serializeParams(params);
-
-		serializer.endTag(null, Tag.METHOD_CALL);
-		serializer.endDocument();
-
-		return bodyWriter.toString();
-	}
-
-	/**
 	 * Convenience method call with no parameters
 	 * 
 	 * @param method
@@ -491,25 +332,6 @@ public class XMLRPCClient extends XMLRPCCommon {
 	 */
 	public Object call(String method) throws XMLRPCException {
 		return callEx(method, null);
-	}
-
-	/**
-	 * Convenience method call with a vectorized parameter (Code contributed by jahbromo from issue #14)
-	 * 
-	 * @param method
-	 *            name of method to call
-	 * @param paramsv
-	 *            vector of method's parameter
-	 * @return deserialized method return value
-	 * @throws XMLRPCException
-	 */
-
-	public Object call(String method, Vector paramsv) throws XMLRPCException {
-		Object[] params = new Object[paramsv.size()];
-		for (int i = 0; i < paramsv.size(); i++) {
-			params[i] = paramsv.elementAt(i);
-		}
-		return callEx(method, params);
 	}
 
 	/**
@@ -689,5 +511,183 @@ public class XMLRPCClient extends XMLRPCCommon {
 			throws XMLRPCException {
 		Object[] params = { p0, p1, p2, p3, p4, p5, p6, p7, };
 		return callEx(method, params);
+	}
+
+	/**
+	 * Convenience method call with a vectorized parameter (Code contributed by jahbromo from issue #14)
+	 * 
+	 * @param method
+	 *            name of method to call
+	 * @param paramsv
+	 *            vector of method's parameter
+	 * @return deserialized method return value
+	 * @throws XMLRPCException
+	 */
+
+	public Object call(String method, Vector paramsv) throws XMLRPCException {
+		Object[] params = new Object[paramsv.size()];
+		for (int i = 0; i < paramsv.size(); i++) {
+			params[i] = paramsv.elementAt(i);
+		}
+		return callEx(method, params);
+	}
+
+	/**
+	 * Call method with optional parameters. This is general method. If you want to call your method with 0-8
+	 * parameters, you can use more convenience call() methods
+	 * 
+	 * @param method
+	 *            name of method to call
+	 * @param params
+	 *            parameters to pass to method (may be null if method has no parameters)
+	 * @return deserialized method return value
+	 * @throws XMLRPCException
+	 */
+	@SuppressWarnings("unchecked")
+	public Object callEx(String method, Object[] params) throws XMLRPCException {
+		try {
+			// prepare POST body
+			String body = methodCall(method, params);
+
+			// set POST body
+			HttpEntity entity = new StringEntity(body);
+			postMethod.setEntity(entity);
+
+			// This code slightly tweaked from the code by erickok in issue #6
+			// Force preemptive authentication
+			// This makes sure there is an 'Authentication: ' header being send before trying and failing and retrying
+			// by the basic authentication mechanism of DefaultHttpClient
+			if (this.httpPreAuth == true) {
+				String auth = this.username + ":" + this.password;
+				postMethod.addHeader("Authorization", "Basic "
+						+ Base64.encode(auth.getBytes(), Base64.DEFAULT).toString());
+			}
+
+			// Log.d(Tag.LOG, "ros HTTP POST");
+			// execute HTTP POST request
+			HttpResponse response = client.execute(postMethod);
+			// Log.d(Tag.LOG, "ros HTTP POSTed");
+
+			// check status code
+			int statusCode = response.getStatusLine().getStatusCode();
+			// Log.d(Tag.LOG, "ros status code:" + statusCode);
+			if (statusCode != HttpStatus.SC_OK) {
+				throw new XMLRPCException("HTTP status code: " + statusCode + " != " + HttpStatus.SC_OK);
+			}
+
+			// parse response stuff
+			//
+			// setup pull parser
+			XmlPullParser pullParser = XmlPullParserFactory.newInstance().newPullParser();
+			entity = response.getEntity();
+			Reader reader = new InputStreamReader(new BufferedInputStream(entity.getContent()));
+			// for testing purposes only
+			// reader = new
+			// StringReader("<?xml version='1.0'?><methodResponse><params><param><value>\n\n\n</value></param></params></methodResponse>");
+			pullParser.setInput(reader);
+
+			// lets start pulling...
+			pullParser.nextTag();
+			pullParser.require(XmlPullParser.START_TAG, null, Tag.METHOD_RESPONSE);
+
+			pullParser.nextTag(); // either Tag.PARAMS (<params>) or Tag.FAULT (<fault>)
+			String tag = pullParser.getName();
+			if (tag.equals(Tag.PARAMS)) {
+				// normal response
+				pullParser.nextTag(); // Tag.PARAM (<param>)
+				pullParser.require(XmlPullParser.START_TAG, null, Tag.PARAM);
+				pullParser.nextTag(); // Tag.VALUE (<value>)
+				// no parser.require() here since its called in XMLRPCSerializer.deserialize() below
+
+				// deserialize result
+				Object obj = iXMLRPCSerializer.deserialize(pullParser);
+				entity.consumeContent();
+				return obj;
+			} else if (tag.equals(Tag.FAULT)) {
+				// fault response
+				pullParser.nextTag(); // Tag.VALUE (<value>)
+				// no parser.require() here since its called in XMLRPCSerializer.deserialize() below
+
+				// deserialize fault result
+				Map<String, Object> map = (Map<String, Object>) iXMLRPCSerializer.deserialize(pullParser);
+				String faultString = (String) map.get(Tag.FAULT_STRING);
+				int faultCode = (Integer) map.get(Tag.FAULT_CODE);
+				entity.consumeContent();
+				throw new XMLRPCFault(faultString, faultCode);
+			} else {
+				entity.consumeContent();
+				throw new XMLRPCException("Bad tag <" + tag + "> in XMLRPC response - neither <params> nor <fault>");
+			}
+		} catch (XMLRPCException e) {
+			// catch & propagate XMLRPCException/XMLRPCFault
+			throw e;
+		} catch (Exception e) {
+			e.printStackTrace();
+			// wrap any other Exception(s) around XMLRPCException
+			throw new XMLRPCException(e);
+		}
+	}
+
+	private String methodCall(String method, Object[] params) throws IllegalArgumentException, IllegalStateException,
+			IOException {
+		StringWriter bodyWriter = new StringWriter();
+		serializer.setOutput(bodyWriter);
+		serializer.startDocument(null, null);
+		serializer.startTag(null, Tag.METHOD_CALL);
+		// set method name
+		serializer.startTag(null, Tag.METHOD_NAME).text(method).endTag(null, Tag.METHOD_NAME);
+
+		serializeParams(params);
+
+		serializer.endTag(null, Tag.METHOD_CALL);
+		serializer.endDocument();
+
+		return bodyWriter.toString();
+	}
+
+	/**
+	 * Convenience Constructor: Sets basic authentication on web request using plain credentials
+	 * 
+	 * @param username
+	 *            The plain text username
+	 * @param password
+	 *            The plain text password
+	 */
+	public void setBasicAuthentication(String username, String password) {
+		setBasicAuthentication(username, password, false);
+	}
+
+	/**
+	 * Sets basic authentication on web request using plain credentials
+	 * 
+	 * @param username
+	 *            The plain text username
+	 * @param password
+	 *            The plain text password
+	 * @param doPreemptiveAuth
+	 *            Select here whether to authenticate without it being requested first by the server.
+	 */
+	public void setBasicAuthentication(String username, String password, boolean doPreemptiveAuth) {
+		// This code required to trigger the patch created by erickok in issue #6
+		if (doPreemptiveAuth = true) {
+			this.httpPreAuth = doPreemptiveAuth;
+			this.username = username;
+			this.password = password;
+		} else {
+			((DefaultHttpClient) client).getCredentialsProvider().setCredentials(
+					new AuthScope(postMethod.getURI().getHost(), postMethod.getURI().getPort(), AuthScope.ANY_REALM),
+					new UsernamePasswordCredentials(username, password));
+		}
+	}
+
+	/**
+	 * Amends user agent (Code contributed by mortenholdflod from issue #28)
+	 * 
+	 * @param userAgent
+	 *            defining the new User Agent string
+	 */
+	public void setUserAgent(String userAgent) {
+		postMethod.removeHeaders("User-Agent");
+		postMethod.addHeader("User-Agent", userAgent);
 	}
 }

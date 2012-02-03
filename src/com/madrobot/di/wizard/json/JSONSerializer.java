@@ -36,43 +36,42 @@ import android.util.Log;
  */
 public class JSONSerializer {
 
-	/**
-	 * Logger tag for json serializer
-	 */
-	private final String TAG = "JSONUtils -> JSONSerializer";
-
 	private static JSONSerializer jsonSerializer = new JSONSerializer();
-
-	private JSONSerializer() {
-
-	}
 
 	public static JSONSerializer getInstance() {
 		return jsonSerializer;
 	}
 
 	/**
-	 * Serializes the objType into valid JSON format <br/>
-	 * 
-	 * If there is an error while serializes, if possible it will try to ignore it, otherwise returns a null value.
-	 * 
-	 * @param objType
-	 *            Java Object to write JSON to
-	 * 
-	 * @return String valid json string
-	 * 
-	 * @see #serializer(JSONObject, Stack)
+	 * Logger tag for json serializer
 	 */
-	public String serializer(final Object objType) throws JSONException {
+	private final String TAG = "JSONUtils -> JSONSerializer";
 
-		Stack<Object> stack = new Stack<Object>();
-		stack.push(objType);
+	private JSONSerializer() {
 
-		JSONObject jsonObject = new JSONObject();
+	}
 
-		serializer(jsonObject, stack);
+	private String getGetMethodName(String fieldName, final Class<?> classType) {
+		String methodName = "";
+		if (Converter.isBoolean(classType)) {
+			if (fieldName.startsWith("is")) {
+				methodName = fieldName;
+			} else {
+				methodName = "is" + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
+			}
+		} else {
+			methodName = "get" + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
+		}
+		return methodName;
+	}
 
-		return jsonObject.toString();
+	private String getKeyName(final Field field) {
+		if (field.isAnnotationPresent(SerializedName.class)) {
+			SerializedName serializedName = field.getAnnotation(SerializedName.class);
+			return serializedName.value();
+		} else {
+			return field.getName();
+		}
 	}
 
 	/**
@@ -156,26 +155,27 @@ public class JSONSerializer {
 		}
 	}
 
-	private String getKeyName(final Field field) {
-		if (field.isAnnotationPresent(SerializedName.class)) {
-			SerializedName serializedName = field.getAnnotation(SerializedName.class);
-			return serializedName.value();
-		} else {
-			return field.getName();
-		}
-	}
+	/**
+	 * Serializes the objType into valid JSON format <br/>
+	 * 
+	 * If there is an error while serializes, if possible it will try to ignore it, otherwise returns a null value.
+	 * 
+	 * @param objType
+	 *            Java Object to write JSON to
+	 * 
+	 * @return String valid json string
+	 * 
+	 * @see #serializer(JSONObject, Stack)
+	 */
+	public String serializer(final Object objType) throws JSONException {
 
-	private String getGetMethodName(String fieldName, final Class<?> classType) {
-		String methodName = "";
-		if (Converter.isBoolean(classType)) {
-			if (fieldName.startsWith("is")) {
-				methodName = fieldName;
-			} else {
-				methodName = "is" + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
-			}
-		} else {
-			methodName = "get" + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
-		}
-		return methodName;
+		Stack<Object> stack = new Stack<Object>();
+		stack.push(objType);
+
+		JSONObject jsonObject = new JSONObject();
+
+		serializer(jsonObject, stack);
+
+		return jsonObject.toString();
 	}
 }

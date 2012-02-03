@@ -1,13 +1,8 @@
 package com.madrobot.reflect;
 
 public class PackageUtils {
-	public static boolean isPackageAccessible(Class clazz) {
-		try {
-			checkPackageAccess(clazz);
-		} catch (SecurityException e) {
-			return false;
-		}
-		return true;
+	public static void checkPackageAccess(Class clazz) {
+		checkPackageAccess(clazz.getName());
 	}
 
 	public static void checkPackageAccess(String name) {
@@ -27,7 +22,12 @@ public class PackageUtils {
 		}
 	}
 
-	public static void checkPackageAccess(Class clazz) {
-		checkPackageAccess(clazz.getName());
+	public static boolean isPackageAccessible(Class clazz) {
+		try {
+			checkPackageAccess(clazz);
+		} catch (SecurityException e) {
+			return false;
+		}
+		return true;
 	}
 }

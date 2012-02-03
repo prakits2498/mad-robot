@@ -29,71 +29,94 @@ import java.util.List;
 import android.util.Log;
 
 public class IOUtils {
+	public interface ProgressCallback {
+		public void onComplete();
+
+		public void onError(Throwable t);
+
+		public void onProgress(int bytesWritten);
+	}
+
 	public static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
 
 	/**
-	 * Read input from reader and write it to writer until there is no more input from reader.
+	 * This convenience method allows to read a InputStream into a string. The platform's default character encoding is
+	 * used for converting bytes into characters.
 	 * 
-	 * @param reader
-	 *            the reader to read from.
-	 * @param writer
-	 *            the writer to write to.
-	 * @param buf
-	 *            the char array to use as a buffer
+	 * @param pStream
+	 *            The input stream to read.
+	 * @see #asString(InputStream, String)
+	 * @return The streams contents, as a string.
+	 * @throws IOException
+	 *             An I/O error occurred.
 	 */
-	public static void flow(Reader reader, Writer writer, char[] buf) throws IOException {
-		int numRead;
-		while ((numRead = reader.read(buf)) >= 0) {
-			writer.write(buf, 0, numRead);
-		}
+	public static String asString(InputStream pStream) throws IOException {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		copy(pStream, baos, true);
+		return baos.toString();
 	}
 
 	/**
-	 * Compare two inputstreams
+	 * This convenience method allows to read a InputStream into a string, using the given character encoding.
 	 * 
-	 * @param stream1
-	 * @param stream2
-	 * @return
+	 * @param pStream
+	 *            The input stream to read.
+	 * @param pEncoding
+	 *            The character encoding, typically "UTF-8".
+	 * @see #asString(InputStream)
+	 * @return The streams contents, as a string.
 	 * @throws IOException
+	 *             An I/O error occurred.
 	 */
-	public static boolean isStreamsEqual(InputStream stream1, InputStream stream2) throws IOException {
-		byte[] buf1 = new byte[4096];
-		byte[] buf2 = new byte[4096];
-		boolean done1 = false;
-		boolean done2 = false;
-		try {
-			while (!done1) {
-				int off1 = 0;
-				int off2 = 0;
+	public static String asString(InputStream pStream, String pEncoding) throws IOException {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		copy(pStream, baos, true);
+		return baos.toString(pEncoding);
+	}
 
-				while (off1 < buf1.length) {
-					int count = stream1.read(buf1, off1, buf1.length - off1);
-					if (count < 0) {
-						done1 = true;
-						break;
-					}
-					off1 += count;
-				}
-				while (off2 < buf2.length) {
-					int count = stream2.read(buf2, off2, buf2.length - off2);
-					if (count < 0) {
-						done2 = true;
-						break;
-					}
-					off2 += count;
-				}
-				if (off1 != off2 || done1 != done2)
-					return false;
-				for (int i = 0; i < off1; i++) {
-					if (buf1[i] != buf2[i])
-						return false;
-				}
-			}
-			return true;
-		} finally {
-			stream1.close();
-			stream2.close();
+	/**
+	 * Compare the contents of two Streams to determine if they are equal or not.
+	 * <p>
+	 * This method buffers the input internally using <code>BufferedInputStream</code> if they are not already buffered.
+	 * 
+	 * @param input1
+	 *            the first stream
+	 * @param input2
+	 *            the second stream
+	 * @return true if the content of the streams are equal or they both don't exist, false otherwise
+	 * @throws NullPointerException
+	 *             if either input is null
+	 * @throws IOException
+	 *             if an I/O error occurs
+	 */
+	public static boolean contentEquals(InputStream input1, InputStream input2) throws IOException {
+		if (!(input1 instanceof BufferedInputStream)) {
+			input1 = new BufferedInputStream(input1);
 		}
+		if (!(input2 instanceof BufferedInputStream)) {
+			input2 = new BufferedInputStream(input2);
+		}
+
+		int ch = input1.read();
+		while (-1 != ch) {
+			int ch2 = input2.read();
+			if (ch != ch2) {
+				return false;
+			}
+			ch = input1.read();
+		}
+
+		int ch2 = input2.read();
+		return (ch2 == -1);
+	}
+
+	public static byte[] copy(byte[] source, byte[] target) {
+		int len = source.length;
+		if (len > target.length) {
+			target = new byte[len];
+		}
+		System.arraycopy(source, 0, target, 0, len);
+		return target;
 	}
 
 	/**
@@ -120,75 +143,6 @@ public class IOUtils {
 			return -1;
 		}
 		return (int) count;
-	}
-
-	public interface ProgressCallback {
-		public void onProgress(int bytesWritten);
-
-		public void onComplete();
-
-		public void onError(Throwable t);
-	}
-
-	public static void copy(InputStream in, OutputStream out, ProgressCallback callback) {
-		try {
-			byte[] buff = new byte[1024];
-			int bytesRead = 0;
-			while ((bytesRead = in.read(buff, 0, buff.length)) != -1) {
-				out.write(buff, 0, bytesRead);
-				if (callback != null) {
-					callback.onProgress(bytesRead);
-				}
-			}
-			out.close();
-			in.close();
-
-			callback.onComplete();
-		} catch (IOException e) {
-			callback.onError(e);
-		}
-	}
-
-	public static byte[] copy(byte[] source, byte[] target) {
-		int len = source.length;
-		if (len > target.length) {
-			target = new byte[len];
-		}
-		System.arraycopy(source, 0, target, 0, len);
-		return target;
-	}
-
-	/**
-	 * Serialize the object to a byte array.
-	 * 
-	 * @param obj
-	 *            the object to serialize
-	 * @return the byte array
-	 * @throws IOException
-	 */
-	public static byte[] serialize(Object obj) throws IOException {
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		ObjectOutputStream os = new ObjectOutputStream(out);
-		os.writeObject(obj);
-		return out.toByteArray();
-	}
-
-	/**
-	 * De-serialize the byte array to an object.
-	 * 
-	 * @param data
-	 *            the byte array
-	 * @return the object
-	 * @throws IOException
-	 * @throws StreamCorruptedException
-	 * @throws ClassNotFoundException
-	 * @throws DbException
-	 *             if serialization fails
-	 */
-	public static Object deserialize(byte[] data) throws StreamCorruptedException, IOException, ClassNotFoundException {
-		ByteArrayInputStream in = new ByteArrayInputStream(data);
-		ObjectInputStream is = new ObjectInputStream(in);
-		return is.readObject();
 	}
 
 	/**
@@ -280,71 +234,23 @@ public class IOUtils {
 		}
 	}
 
-	/**
-	 * Connects the given inputstream to the outputstream
-	 * <p>
-	 * The streams are closed after the operation is complete
-	 * </p>
-	 * 
-	 * @param is
-	 * @param os
-	 * @throws IOException
-	 */
-	public static void performStreamPiping(InputStream is, OutputStream os) throws IOException {
-		byte[] buf = new byte[2048];
-		while (is.read(buf) != -1) {
-			os.write(buf);
-		}
-		os.close();
-		is.close();
-	}
-
-	public static void writeToStream(InputStream is) {
-		byte[] buf = new byte[2048];
-		StringBuilder builder = new StringBuilder();
+	public static void copy(InputStream in, OutputStream out, ProgressCallback callback) {
 		try {
-			while (is.read(buf) != -1) {
-				builder.append(new String(buf));
+			byte[] buff = new byte[1024];
+			int bytesRead = 0;
+			while ((bytesRead = in.read(buff, 0, buff.length)) != -1) {
+				out.write(buff, 0, bytesRead);
+				if (callback != null) {
+					callback.onProgress(bytesRead);
+				}
 			}
-			Log.e("Blog/DM", "::: Stream Response " + builder);
+			out.close();
+			in.close();
+
+			callback.onComplete();
 		} catch (IOException e) {
-			e.printStackTrace();
+			callback.onError(e);
 		}
-	}
-
-	/**
-	 * This convenience method allows to read a InputStream into a string. The platform's default character encoding is
-	 * used for converting bytes into characters.
-	 * 
-	 * @param pStream
-	 *            The input stream to read.
-	 * @see #asString(InputStream, String)
-	 * @return The streams contents, as a string.
-	 * @throws IOException
-	 *             An I/O error occurred.
-	 */
-	public static String asString(InputStream pStream) throws IOException {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		copy(pStream, baos, true);
-		return baos.toString();
-	}
-
-	/**
-	 * This convenience method allows to read a InputStream into a string, using the given character encoding.
-	 * 
-	 * @param pStream
-	 *            The input stream to read.
-	 * @param pEncoding
-	 *            The character encoding, typically "UTF-8".
-	 * @see #asString(InputStream)
-	 * @return The streams contents, as a string.
-	 * @throws IOException
-	 *             An I/O error occurred.
-	 */
-	public static String asString(InputStream pStream, String pEncoding) throws IOException {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		copy(pStream, baos, true);
-		return baos.toString(pEncoding);
 	}
 
 	/**
@@ -372,58 +278,105 @@ public class IOUtils {
 	}
 
 	/**
-	 * Get the contents of an <code>InputStream</code> as a <code>byte[]</code>.
-	 * <p>
-	 * This method buffers the input internally, so there is no need to use a <code>BufferedInputStream</code>.
+	 * De-serialize the byte array to an object.
 	 * 
-	 * @param input
-	 *            the <code>InputStream</code> to read from
-	 * @return the requested byte array
-	 * @throws NullPointerException
-	 *             if the input is null
+	 * @param data
+	 *            the byte array
+	 * @return the object
 	 * @throws IOException
-	 *             if an I/O error occurs
+	 * @throws StreamCorruptedException
+	 * @throws ClassNotFoundException
+	 * @throws DbException
+	 *             if serialization fails
 	 */
-	public static byte[] toByteArray(InputStream input) throws IOException {
-		ByteArrayOutputStream output = new ByteArrayOutputStream();
-		copy(input, output);
-		return output.toByteArray();
+	public static Object deserialize(byte[] data) throws StreamCorruptedException, IOException, ClassNotFoundException {
+		ByteArrayInputStream in = new ByteArrayInputStream(data);
+		ObjectInputStream is = new ObjectInputStream(in);
+		return is.readObject();
 	}
 
 	/**
-	 * Compare the contents of two Streams to determine if they are equal or not.
-	 * <p>
-	 * This method buffers the input internally using <code>BufferedInputStream</code> if they are not already buffered.
+	 * Read input from reader and write it to writer until there is no more input from reader.
 	 * 
-	 * @param input1
-	 *            the first stream
-	 * @param input2
-	 *            the second stream
-	 * @return true if the content of the streams are equal or they both don't exist, false otherwise
-	 * @throws NullPointerException
-	 *             if either input is null
-	 * @throws IOException
-	 *             if an I/O error occurs
+	 * @param reader
+	 *            the reader to read from.
+	 * @param writer
+	 *            the writer to write to.
+	 * @param buf
+	 *            the char array to use as a buffer
 	 */
-	public static boolean contentEquals(InputStream input1, InputStream input2) throws IOException {
-		if (!(input1 instanceof BufferedInputStream)) {
-			input1 = new BufferedInputStream(input1);
+	public static void flow(Reader reader, Writer writer, char[] buf) throws IOException {
+		int numRead;
+		while ((numRead = reader.read(buf)) >= 0) {
+			writer.write(buf, 0, numRead);
 		}
-		if (!(input2 instanceof BufferedInputStream)) {
-			input2 = new BufferedInputStream(input2);
-		}
+	}
 
-		int ch = input1.read();
-		while (-1 != ch) {
-			int ch2 = input2.read();
-			if (ch != ch2) {
-				return false;
+	/**
+	 * Compare two inputstreams
+	 * 
+	 * @param stream1
+	 * @param stream2
+	 * @return
+	 * @throws IOException
+	 */
+	public static boolean isStreamsEqual(InputStream stream1, InputStream stream2) throws IOException {
+		byte[] buf1 = new byte[4096];
+		byte[] buf2 = new byte[4096];
+		boolean done1 = false;
+		boolean done2 = false;
+		try {
+			while (!done1) {
+				int off1 = 0;
+				int off2 = 0;
+
+				while (off1 < buf1.length) {
+					int count = stream1.read(buf1, off1, buf1.length - off1);
+					if (count < 0) {
+						done1 = true;
+						break;
+					}
+					off1 += count;
+				}
+				while (off2 < buf2.length) {
+					int count = stream2.read(buf2, off2, buf2.length - off2);
+					if (count < 0) {
+						done2 = true;
+						break;
+					}
+					off2 += count;
+				}
+				if (off1 != off2 || done1 != done2)
+					return false;
+				for (int i = 0; i < off1; i++) {
+					if (buf1[i] != buf2[i])
+						return false;
+				}
 			}
-			ch = input1.read();
+			return true;
+		} finally {
+			stream1.close();
+			stream2.close();
 		}
+	}
 
-		int ch2 = input2.read();
-		return (ch2 == -1);
+	/**
+	 * Connects the given inputstream to the outputstream
+	 * <p>
+	 * The streams are closed after the operation is complete
+	 * </p>
+	 * 
+	 * @param is
+	 * @param os
+	 * @throws IOException
+	 */
+	public static void performStreamPiping(InputStream is, OutputStream os) throws IOException {
+		byte[] buf = new byte[2048];
+		while (is.read(buf) != -1) {
+			os.write(buf);
+		}
+		os.close();
+		is.close();
 	}
 
 	/**
@@ -497,6 +450,53 @@ public class IOUtils {
 			line = reader.readLine();
 		}
 		return list;
+	}
+
+	/**
+	 * Serialize the object to a byte array.
+	 * 
+	 * @param obj
+	 *            the object to serialize
+	 * @return the byte array
+	 * @throws IOException
+	 */
+	public static byte[] serialize(Object obj) throws IOException {
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		ObjectOutputStream os = new ObjectOutputStream(out);
+		os.writeObject(obj);
+		return out.toByteArray();
+	}
+
+	/**
+	 * Get the contents of an <code>InputStream</code> as a <code>byte[]</code>.
+	 * <p>
+	 * This method buffers the input internally, so there is no need to use a <code>BufferedInputStream</code>.
+	 * 
+	 * @param input
+	 *            the <code>InputStream</code> to read from
+	 * @return the requested byte array
+	 * @throws NullPointerException
+	 *             if the input is null
+	 * @throws IOException
+	 *             if an I/O error occurs
+	 */
+	public static byte[] toByteArray(InputStream input) throws IOException {
+		ByteArrayOutputStream output = new ByteArrayOutputStream();
+		copy(input, output);
+		return output.toByteArray();
+	}
+
+	public static void writeToStream(InputStream is) {
+		byte[] buf = new byte[2048];
+		StringBuilder builder = new StringBuilder();
+		try {
+			while (is.read(buf) != -1) {
+				builder.append(new String(buf));
+			}
+			Log.e("Blog/DM", "::: Stream Response " + builder);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

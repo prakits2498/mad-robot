@@ -34,14 +34,130 @@ import java.util.TimeZone;
 public class DurationFormatUtils {
 
     /**
-     * <p>DurationFormatUtils instances should NOT be constructed in standard programming.</p>
-     *
-     * <p>This constructor is public to permit tools that require a JavaBean instance
-     * to operate.</p>
+     * Element that is parsed from the format pattern.
      */
-    public DurationFormatUtils() {
-        super();
+    static class Token {
+
+        /**
+         * Helper method to determine if a set of tokens contain a value
+         *
+         * @param tokens set to look in
+         * @param value to look for
+         * @return boolean <code>true</code> if contained
+         */
+        static boolean containsTokenWithValue(Token[] tokens, Object value) {
+            int sz = tokens.length;
+            for (int i = 0; i < sz; i++) {
+                if (tokens[i].getValue() == value) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private int count;
+        private Object value;
+
+        /**
+         * Wraps a token around a value. A value would be something like a 'Y'.
+         *
+         * @param value to wrap
+         */
+        Token(Object value) {
+            this.value = value;
+            this.count = 1;
+        }
+
+        /**
+         * Wraps a token around a repeated number of a value, for example it would 
+         * store 'yyyy' as a value for y and a count of 4.
+         *
+         * @param value to wrap
+         * @param count to wrap
+         */
+        Token(Object value, int count) {
+            this.value = value;
+            this.count = count;
+        }
+
+        /**
+         * Supports equality of this Token to another Token.
+         *
+         * @param obj2 Object to consider equality of
+         * @return boolean <code>true</code> if equal
+         */
+        @Override
+        public boolean equals(Object obj2) {
+            if (obj2 instanceof Token) {
+                Token tok2 = (Token) obj2;
+                if (this.value.getClass() != tok2.value.getClass()) {
+                    return false;
+                }
+                if (this.count != tok2.count) {
+                    return false;
+                }
+                if (this.value instanceof StringBuffer) {
+                    return this.value.toString().equals(tok2.value.toString());
+                } else if (this.value instanceof Number) {
+                    return this.value.equals(tok2.value);
+                } else {
+                    return this.value == tok2.value;
+                }
+            }
+            return false;
+        }
+
+        /**
+         * Gets the current number of values represented
+         *
+         * @return int number of values represented
+         */
+        int getCount() {
+            return count;
+        }
+
+        /**
+         * Gets the particular value this token represents.
+         * 
+         * @return Object value
+         */
+        Object getValue() {
+            return value;
+        }
+
+        /**
+         * Returns a hashcode for the token equal to the 
+         * hashcode for the token's value. Thus 'TT' and 'TTTT' 
+         * will have the same hashcode. 
+         *
+         * @return The hashcode for the token
+         */
+        @Override
+        public int hashCode() {
+            return this.value.hashCode();
+        }
+
+        /**
+         * Adds another one of the value
+         */
+        void increment() { 
+            count++;
+        }
+
+        /**
+         * Represents this token as a String.
+         *
+         * @return String representation of the token
+         */
+        @Override
+        public String toString() {
+            return StringUtils.repeat(this.value.toString(), this.count);
+        }
     }
+
+    static final Object d = "d";
+
+    static final Object H = "H";
 
     /**
      * <p>Pattern used with <code>FastDateFormat</code> and <code>SimpleDateFormat</code>
@@ -52,33 +168,84 @@ public class DurationFormatUtils {
      */
     public static final String ISO_EXTENDED_FORMAT_PATTERN = "'P'yyyy'Y'M'M'd'DT'H'H'm'M's.S'S'";
 
+    static final Object m = "m";
+
+    static final Object M = "M";
+
+    static final Object s = "s";
+
+    static final Object S = "S";
+
+    static final Object y = "y";
+
     //-----------------------------------------------------------------------
     /**
-     * <p>Formats the time gap as a string.</p>
+     * <p>The internal method to do the formatting.</p>
      * 
-     * <p>The format used is ISO8601-like:
-     * <i>H</i>:<i>m</i>:<i>s</i>.<i>S</i>.</p>
-     * 
-     * @param durationMillis  the duration to format
-     * @return the time as a String
+     * @param tokens  the tokens
+     * @param years  the number of years
+     * @param months  the number of months
+     * @param days  the number of days
+     * @param hours  the number of hours
+     * @param minutes  the number of minutes
+     * @param seconds  the number of seconds
+     * @param milliseconds  the number of millis
+     * @param padWithZeros  whether to pad
+     * @return the formatted string
      */
-    public static String formatDurationHMS(long durationMillis) {
-        return formatDuration(durationMillis, "H:mm:ss.SSS");
-    }
-
-    /**
-     * <p>Formats the time gap as a string.</p>
-     * 
-     * <p>The format used is the ISO8601 period format.</p>
-     * 
-     * <p>This method formats durations using the days and lower fields of the
-     * ISO format pattern, such as P7D6TH5M4.321S.</p>
-     * 
-     * @param durationMillis  the duration to format
-     * @return the time as a String
-     */
-    public static String formatDurationISO(long durationMillis) {
-        return formatDuration(durationMillis, ISO_EXTENDED_FORMAT_PATTERN, false);
+    static String format(Token[] tokens, int years, int months, int days, int hours, int minutes, int seconds,
+            int milliseconds, boolean padWithZeros) {
+        StringBuffer buffer = new StringBuffer();
+        boolean lastOutputSeconds = false;
+        int sz = tokens.length;
+        for (int i = 0; i < sz; i++) {
+            Token token = tokens[i];
+            Object value = token.getValue();
+            int count = token.getCount();
+            if (value instanceof StringBuffer) {
+                buffer.append(value.toString());
+            } else {
+                if (value == y) {
+                    buffer.append(padWithZeros ? StringUtils.leftPad(Integer.toString(years), count, '0') : Integer
+                            .toString(years));
+                    lastOutputSeconds = false;
+                } else if (value == M) {
+                    buffer.append(padWithZeros ? StringUtils.leftPad(Integer.toString(months), count, '0') : Integer
+                            .toString(months));
+                    lastOutputSeconds = false;
+                } else if (value == d) {
+                    buffer.append(padWithZeros ? StringUtils.leftPad(Integer.toString(days), count, '0') : Integer
+                            .toString(days));
+                    lastOutputSeconds = false;
+                } else if (value == H) {
+                    buffer.append(padWithZeros ? StringUtils.leftPad(Integer.toString(hours), count, '0') : Integer
+                            .toString(hours));
+                    lastOutputSeconds = false;
+                } else if (value == m) {
+                    buffer.append(padWithZeros ? StringUtils.leftPad(Integer.toString(minutes), count, '0') : Integer
+                            .toString(minutes));
+                    lastOutputSeconds = false;
+                } else if (value == s) {
+                    buffer.append(padWithZeros ? StringUtils.leftPad(Integer.toString(seconds), count, '0') : Integer
+                            .toString(seconds));
+                    lastOutputSeconds = true;
+                } else if (value == S) {
+                    if (lastOutputSeconds) {
+                        milliseconds += 1000;
+                        String str = padWithZeros
+                                ? StringUtils.leftPad(Integer.toString(milliseconds), count, '0')
+                                : Integer.toString(milliseconds);
+                        buffer.append(str.substring(1));
+                    } else {
+                        buffer.append(padWithZeros
+                                ? StringUtils.leftPad(Integer.toString(milliseconds), count, '0')
+                                : Integer.toString(milliseconds));
+                    }
+                    lastOutputSeconds = false;
+                }
+            }
+        }
+        return buffer.toString();
     }
 
     /**
@@ -141,7 +308,33 @@ public class DurationFormatUtils {
 
         return format(tokens, 0, 0, days, hours, minutes, seconds, milliseconds, padWithZeros);
     }
-
+    //-----------------------------------------------------------------------
+    /**
+     * <p>Formats the time gap as a string.</p>
+     * 
+     * <p>The format used is ISO8601-like:
+     * <i>H</i>:<i>m</i>:<i>s</i>.<i>S</i>.</p>
+     * 
+     * @param durationMillis  the duration to format
+     * @return the time as a String
+     */
+    public static String formatDurationHMS(long durationMillis) {
+        return formatDuration(durationMillis, "H:mm:ss.SSS");
+    }
+    /**
+     * <p>Formats the time gap as a string.</p>
+     * 
+     * <p>The format used is the ISO8601 period format.</p>
+     * 
+     * <p>This method formats durations using the days and lower fields of the
+     * ISO format pattern, such as P7D6TH5M4.321S.</p>
+     * 
+     * @param durationMillis  the duration to format
+     * @return the time as a String
+     */
+    public static String formatDurationISO(long durationMillis) {
+        return formatDuration(durationMillis, ISO_EXTENDED_FORMAT_PATTERN, false);
+    }
     /**
      * <p>Formats an elapsed time into a plurialization correct string.</p>
      * 
@@ -205,21 +398,6 @@ public class DurationFormatUtils {
         duration = StringUtils.replaceOnce(duration, " 1 days", " 1 day");
         return duration.trim();
     }
-
-    //-----------------------------------------------------------------------
-    /**
-     * <p>Formats the time gap as a string.</p>
-     * 
-     * <p>The format used is the ISO8601 period format.</p>
-     * 
-     * @param startMillis  the start of the duration to format
-     * @param endMillis  the end of the duration to format
-     * @return the time as a String
-     */
-    public static String formatPeriodISO(long startMillis, long endMillis) {
-        return formatPeriod(startMillis, endMillis, ISO_EXTENDED_FORMAT_PATTERN, false, TimeZone.getDefault());
-    }
-
     /**
      * <p>Formats the time gap as a string, using the specified format.
      * Padding the left hand side of numbers with zeroes is optional.
@@ -232,7 +410,6 @@ public class DurationFormatUtils {
     public static String formatPeriod(long startMillis, long endMillis, String format) {
         return formatPeriod(startMillis, endMillis, format, true, TimeZone.getDefault());
     }
-
     /**
      * <p>Formats the time gap as a string, using the specified format.
      * Padding the left hand side of numbers with zeroes is optional and 
@@ -387,84 +564,19 @@ public class DurationFormatUtils {
 
         return format(tokens, years, months, days, hours, minutes, seconds, milliseconds, padWithZeros);
     }
-
     //-----------------------------------------------------------------------
     /**
-     * <p>The internal method to do the formatting.</p>
+     * <p>Formats the time gap as a string.</p>
      * 
-     * @param tokens  the tokens
-     * @param years  the number of years
-     * @param months  the number of months
-     * @param days  the number of days
-     * @param hours  the number of hours
-     * @param minutes  the number of minutes
-     * @param seconds  the number of seconds
-     * @param milliseconds  the number of millis
-     * @param padWithZeros  whether to pad
-     * @return the formatted string
+     * <p>The format used is the ISO8601 period format.</p>
+     * 
+     * @param startMillis  the start of the duration to format
+     * @param endMillis  the end of the duration to format
+     * @return the time as a String
      */
-    static String format(Token[] tokens, int years, int months, int days, int hours, int minutes, int seconds,
-            int milliseconds, boolean padWithZeros) {
-        StringBuffer buffer = new StringBuffer();
-        boolean lastOutputSeconds = false;
-        int sz = tokens.length;
-        for (int i = 0; i < sz; i++) {
-            Token token = tokens[i];
-            Object value = token.getValue();
-            int count = token.getCount();
-            if (value instanceof StringBuffer) {
-                buffer.append(value.toString());
-            } else {
-                if (value == y) {
-                    buffer.append(padWithZeros ? StringUtils.leftPad(Integer.toString(years), count, '0') : Integer
-                            .toString(years));
-                    lastOutputSeconds = false;
-                } else if (value == M) {
-                    buffer.append(padWithZeros ? StringUtils.leftPad(Integer.toString(months), count, '0') : Integer
-                            .toString(months));
-                    lastOutputSeconds = false;
-                } else if (value == d) {
-                    buffer.append(padWithZeros ? StringUtils.leftPad(Integer.toString(days), count, '0') : Integer
-                            .toString(days));
-                    lastOutputSeconds = false;
-                } else if (value == H) {
-                    buffer.append(padWithZeros ? StringUtils.leftPad(Integer.toString(hours), count, '0') : Integer
-                            .toString(hours));
-                    lastOutputSeconds = false;
-                } else if (value == m) {
-                    buffer.append(padWithZeros ? StringUtils.leftPad(Integer.toString(minutes), count, '0') : Integer
-                            .toString(minutes));
-                    lastOutputSeconds = false;
-                } else if (value == s) {
-                    buffer.append(padWithZeros ? StringUtils.leftPad(Integer.toString(seconds), count, '0') : Integer
-                            .toString(seconds));
-                    lastOutputSeconds = true;
-                } else if (value == S) {
-                    if (lastOutputSeconds) {
-                        milliseconds += 1000;
-                        String str = padWithZeros
-                                ? StringUtils.leftPad(Integer.toString(milliseconds), count, '0')
-                                : Integer.toString(milliseconds);
-                        buffer.append(str.substring(1));
-                    } else {
-                        buffer.append(padWithZeros
-                                ? StringUtils.leftPad(Integer.toString(milliseconds), count, '0')
-                                : Integer.toString(milliseconds));
-                    }
-                    lastOutputSeconds = false;
-                }
-            }
-        }
-        return buffer.toString();
+    public static String formatPeriodISO(long startMillis, long endMillis) {
+        return formatPeriod(startMillis, endMillis, ISO_EXTENDED_FORMAT_PATTERN, false, TimeZone.getDefault());
     }
-
-    static final Object y = "y";
-    static final Object M = "M";
-    static final Object d = "d";
-    static final Object H = "H";
-    static final Object m = "m";
-    static final Object s = "s";
-    static final Object S = "S";
     
     /**
      * Parses a classic date format string into Tokens
@@ -529,125 +641,13 @@ public class DurationFormatUtils {
     }
 
     /**
-     * Element that is parsed from the format pattern.
+     * <p>DurationFormatUtils instances should NOT be constructed in standard programming.</p>
+     *
+     * <p>This constructor is public to permit tools that require a JavaBean instance
+     * to operate.</p>
      */
-    static class Token {
-
-        /**
-         * Helper method to determine if a set of tokens contain a value
-         *
-         * @param tokens set to look in
-         * @param value to look for
-         * @return boolean <code>true</code> if contained
-         */
-        static boolean containsTokenWithValue(Token[] tokens, Object value) {
-            int sz = tokens.length;
-            for (int i = 0; i < sz; i++) {
-                if (tokens[i].getValue() == value) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        private Object value;
-        private int count;
-
-        /**
-         * Wraps a token around a value. A value would be something like a 'Y'.
-         *
-         * @param value to wrap
-         */
-        Token(Object value) {
-            this.value = value;
-            this.count = 1;
-        }
-
-        /**
-         * Wraps a token around a repeated number of a value, for example it would 
-         * store 'yyyy' as a value for y and a count of 4.
-         *
-         * @param value to wrap
-         * @param count to wrap
-         */
-        Token(Object value, int count) {
-            this.value = value;
-            this.count = count;
-        }
-
-        /**
-         * Adds another one of the value
-         */
-        void increment() { 
-            count++;
-        }
-
-        /**
-         * Gets the current number of values represented
-         *
-         * @return int number of values represented
-         */
-        int getCount() {
-            return count;
-        }
-
-        /**
-         * Gets the particular value this token represents.
-         * 
-         * @return Object value
-         */
-        Object getValue() {
-            return value;
-        }
-
-        /**
-         * Supports equality of this Token to another Token.
-         *
-         * @param obj2 Object to consider equality of
-         * @return boolean <code>true</code> if equal
-         */
-        @Override
-        public boolean equals(Object obj2) {
-            if (obj2 instanceof Token) {
-                Token tok2 = (Token) obj2;
-                if (this.value.getClass() != tok2.value.getClass()) {
-                    return false;
-                }
-                if (this.count != tok2.count) {
-                    return false;
-                }
-                if (this.value instanceof StringBuffer) {
-                    return this.value.toString().equals(tok2.value.toString());
-                } else if (this.value instanceof Number) {
-                    return this.value.equals(tok2.value);
-                } else {
-                    return this.value == tok2.value;
-                }
-            }
-            return false;
-        }
-
-        /**
-         * Returns a hashcode for the token equal to the 
-         * hashcode for the token's value. Thus 'TT' and 'TTTT' 
-         * will have the same hashcode. 
-         *
-         * @return The hashcode for the token
-         */
-        @Override
-        public int hashCode() {
-            return this.value.hashCode();
-        }
-
-        /**
-         * Represents this token as a String.
-         *
-         * @return String representation of the token
-         */
-        @Override
-        public String toString() {
-            return StringUtils.repeat(this.value.toString(), this.count);
-        }
+    public DurationFormatUtils() {
+        super();
     }
 
 }
