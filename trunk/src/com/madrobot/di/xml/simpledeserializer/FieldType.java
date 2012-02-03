@@ -18,19 +18,19 @@ package com.madrobot.di.xml.simpledeserializer;
  */
 enum FieldType {
 	/**
+	 * Used to indicate that the type of the field is a collection
+	 */
+	COLLECTION,
+	/**
+	 * Used to indicate that the type of the field is composite
+	 */
+	COMPOSITE,
+	/**
 	 * Used to indicate that the type of the field is not defined
 	 */
 	NOT_DEFINED,
 	/**
 	 * Used to indicate that the type of the field is pseudo-primitive
 	 */
-	PSEUDO_PRIMITIVE,
-	/**
-	 * Used to indicate that the type of the field is composite
-	 */
-	COMPOSITE,
-	/**
-	 * Used to indicate that the type of the field is a collection
-	 */
-	COLLECTION
+	PSEUDO_PRIMITIVE
 }

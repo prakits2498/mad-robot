@@ -14,17 +14,9 @@ import java.text.NumberFormat;
 
 public class RationalNumber extends Number
 {
+	private static final NumberFormat nf = NumberFormat.getInstance();
+
 	private static final long serialVersionUID = -1;
-
-	public final int numerator;
-	public final int divisor;
-
-	public RationalNumber(int numerator, int divisor)
-	{
-		this.numerator = numerator;
-		this.divisor = divisor;
-	}
-
 	public static final RationalNumber factoryMethod(long n, long d)
 	{
 		// safer than constructor - handles values outside min/max range.
@@ -69,9 +61,14 @@ public class RationalNumber extends Number
 		}
 	}
 
-	public RationalNumber negate()
+	public final int divisor;
+
+	public final int numerator;
+
+	public RationalNumber(int numerator, int divisor)
 	{
-		return new RationalNumber(-numerator, divisor);
+		this.numerator = numerator;
+		this.divisor = divisor;
 	}
 
 	@Override
@@ -92,18 +89,31 @@ public class RationalNumber extends Number
 		return numerator / divisor;
 	}
 
+	public boolean isValid()
+	{
+		return divisor != 0;
+	}
+
 	@Override
 	public long longValue()
 	{
 		return (long) numerator / (long) divisor;
 	}
 
-	public boolean isValid()
+	public RationalNumber negate()
 	{
-		return divisor != 0;
+		return new RationalNumber(-numerator, divisor);
 	}
 
-	private static final NumberFormat nf = NumberFormat.getInstance();
+	public String toDisplayString()
+	{
+		if ((numerator % divisor) == 0){
+			return "" + (numerator / divisor);
+		}
+		NumberFormat nf = NumberFormat.getInstance();
+		nf.setMaximumFractionDigits(3);
+		return nf.format((double) numerator / (double) divisor);
+	}
 
 	@Override
 	public String toString()
@@ -116,15 +126,5 @@ public class RationalNumber extends Number
 		}
 		return numerator + "/" + divisor + " ("
 				+ nf.format((double) numerator / divisor) + ")";
-	}
-
-	public String toDisplayString()
-	{
-		if ((numerator % divisor) == 0){
-			return "" + (numerator / divisor);
-		}
-		NumberFormat nf = NumberFormat.getInstance();
-		nf.setMaximumFractionDigits(3);
-		return nf.format((double) numerator / (double) divisor);
 	}
 }

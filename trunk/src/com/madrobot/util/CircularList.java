@@ -14,13 +14,10 @@ public class CircularList extends ArrayList {
 
 	/**
 	 * Constructor. Arguments are just passed on to the superclass.
-	 * 
-	 * @param initialCapacity
-	 * @param capacityIncrement
 	 */
 
-	public CircularList(int initialCapacity, int capacityIncrement) {
-		super(initialCapacity);
+	public CircularList() {
+		super();
 		iCurrentIndex = -1;
 		iMaxIndex = -1;
 	}
@@ -43,10 +40,13 @@ public class CircularList extends ArrayList {
 
 	/**
 	 * Constructor. Arguments are just passed on to the superclass.
+	 * 
+	 * @param initialCapacity
+	 * @param capacityIncrement
 	 */
 
-	public CircularList() {
-		super();
+	public CircularList(int initialCapacity, int capacityIncrement) {
+		super(initialCapacity);
 		iCurrentIndex = -1;
 		iMaxIndex = -1;
 	}
@@ -82,27 +82,6 @@ public class CircularList extends ArrayList {
 	// ////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 * Return previous element. If no element exists, return null. If at
-	 * beginning of the list, return the last element.
-	 */
-
-	public final synchronized Object prevElem() {
-		try {
-			if (iMaxIndex == -1)
-				return null;
-			else if (iCurrentIndex > 0)
-				iCurrentIndex--;
-			else
-				iCurrentIndex = iMaxIndex;
-			return get(iCurrentIndex);
-		} catch (Exception e) { // ArrayIndexOutOfBoundsException impossible
-			return null;
-		}
-	}
-
-	// ////////////////////////////////////////////////////////////////////////////
-
-	/**
 	 * Return next element. If no element exists, return null. If at end of the
 	 * list, return the first element.
 	 */
@@ -115,6 +94,27 @@ public class CircularList extends ArrayList {
 				iCurrentIndex++;
 			else
 				iCurrentIndex = 0;
+			return get(iCurrentIndex);
+		} catch (Exception e) { // ArrayIndexOutOfBoundsException impossible
+			return null;
+		}
+	}
+
+	// ////////////////////////////////////////////////////////////////////////////
+
+	/**
+	 * Return previous element. If no element exists, return null. If at
+	 * beginning of the list, return the last element.
+	 */
+
+	public final synchronized Object prevElem() {
+		try {
+			if (iMaxIndex == -1)
+				return null;
+			else if (iCurrentIndex > 0)
+				iCurrentIndex--;
+			else
+				iCurrentIndex = iMaxIndex;
 			return get(iCurrentIndex);
 		} catch (Exception e) { // ArrayIndexOutOfBoundsException impossible
 			return null;

@@ -48,549 +48,7 @@ import java.util.WeakHashMap;
  */
 public class MethodUtils {
 
-	/**
-	 * <p>
-	 * MethodUtils instances should NOT be constructed in standard programming.
-	 * Instead, the class should be used as
-	 * <code>MethodUtils.getAccessibleMethod(method)</code>.
-	 * </p>
-	 * 
-	 * <p>
-	 * This constructor is public to permit tools that require a JavaBean
-	 * instance to operate.
-	 * </p>
-	 */
-	private MethodUtils() {
-		super();
-	}
-
-	/**
-	 * <p>
-	 * Invoke a named method whose parameter type matches the object type.
-	 * </p>
-	 * 
-	 * <p>
-	 * This method delegates the method search to
-	 * {@link #findAccessibleMethod(Class, String, Class[])}.
-	 * </p>
-	 * 
-	 * <p>
-	 * This method supports calls to methods taking primitive parameters via
-	 * passing in wrapping classes. So, for example, a <code>Boolean</code>
-	 * object would match a <code>boolean</code> primitive.
-	 * </p>
-	 * 
-	 * <p>
-	 * This is a convenient wrapper for
-	 * {@link #invokeMethod(Object object,String methodName, Object[] args, Class[] parameterTypes)}
-	 * .
-	 * </p>
-	 * 
-	 * @param object
-	 *            invoke method on this object
-	 * @param methodName
-	 *            get method with this name
-	 * @param args
-	 *            use these arguments - treat null as empty array
-	 * @return The value returned by the invoked method
-	 * 
-	 * @throws NoSuchMethodException
-	 *             if there is no such accessible method
-	 * @throws InvocationTargetException
-	 *             wraps an exception thrown by the method invoked
-	 * @throws IllegalAccessException
-	 *             if the requested method is not accessible via reflection
-	 */
-	public static Object invokeMethod(Object object, String methodName, Object... args)
-			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-		if(args == null){
-			args = ArrayUtils.EMPTY_OBJECT_ARRAY;
-		}
-		int arguments = args.length;
-		Class<?>[] parameterTypes = new Class[arguments];
-		for(int i = 0; i < arguments; i++){
-			parameterTypes[i] = args[i].getClass();
-		}
-		return invokeMethod(object, methodName, args, parameterTypes);
-	}
-
-	/**
-	 * <p>
-	 * Invoke a named method whose parameter type matches the object type.
-	 * </p>
-	 * 
-	 * <p>
-	 * This method delegates the method search to
-	 * {@link #findAccessibleMethod(Class, String, Class[])}.
-	 * </p>
-	 * 
-	 * <p>
-	 * This method supports calls to methods taking primitive parameters via
-	 * passing in wrapping classes. So, for example, a <code>Boolean</code>
-	 * object would match a <code>boolean</code> primitive.
-	 * </p>
-	 * 
-	 * @param object
-	 *            invoke method on this object
-	 * @param methodName
-	 *            get method with this name
-	 * @param args
-	 *            use these arguments - treat null as empty array
-	 * @param parameterTypes
-	 *            match these parameters - treat null as empty array
-	 * @return The value returned by the invoked method
-	 * 
-	 * @throws NoSuchMethodException
-	 *             if there is no such accessible method
-	 * @throws InvocationTargetException
-	 *             wraps an exception thrown by the method invoked
-	 * @throws IllegalAccessException
-	 *             if the requested method is not accessible via reflection
-	 */
-	public static Object invokeMethod(Object object, String methodName, Object[] args,
-			Class<?>[] parameterTypes) throws NoSuchMethodException, IllegalAccessException,
-			InvocationTargetException {
-		if(parameterTypes == null){
-			parameterTypes = ArrayUtils.EMPTY_CLASS_ARRAY;
-		}
-		if(args == null){
-			args = ArrayUtils.EMPTY_OBJECT_ARRAY;
-		}
-		Method method = findAccessibleMethod(object.getClass(), methodName, parameterTypes);
-		if(method == null){
-			throw new NoSuchMethodException("No such accessible method: " + methodName + "() on object: "
-					+ object.getClass().getName());
-		}
-		return method.invoke(object, args);
-	}
-
-	/**
-	 * <p>
-	 * Invoke a method whose parameter types match exactly the object types.
-	 * </p>
-	 * 
-	 * <p>
-	 * This uses reflection to invoke the method obtained from a call to
-	 * <code>getAccessibleMethod()</code>.
-	 * </p>
-	 * 
-	 * @param object
-	 *            invoke method on this object
-	 * @param methodName
-	 *            get method with this name
-	 * @param args
-	 *            use these arguments - treat null as empty array
-	 * @return The value returned by the invoked method
-	 * 
-	 * @throws NoSuchMethodException
-	 *             if there is no such accessible method
-	 * @throws InvocationTargetException
-	 *             wraps an exception thrown by the
-	 *             method invoked
-	 * @throws IllegalAccessException
-	 *             if the requested method is not accessible
-	 *             via reflection
-	 */
-	public static Object invokeExactMethod(Object object, String methodName, Object... args)
-			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-		if(args == null){
-			args = ArrayUtils.EMPTY_OBJECT_ARRAY;
-		}
-		int arguments = args.length;
-		Class<?>[] parameterTypes = new Class[arguments];
-		for(int i = 0; i < arguments; i++){
-			parameterTypes[i] = args[i].getClass();
-		}
-		return invokeExactMethod(object, methodName, args, parameterTypes);
-	}
-
-	/**
-	 * <p>
-	 * Invoke a method whose parameter types match exactly the parameter types
-	 * given.
-	 * </p>
-	 * 
-	 * <p>
-	 * This uses reflection to invoke the method obtained from a call to
-	 * <code>getAccessibleMethod()</code>.
-	 * </p>
-	 * 
-	 * @param object
-	 *            invoke method on this object
-	 * @param methodName
-	 *            get method with this name
-	 * @param args
-	 *            use these arguments - treat null as empty array
-	 * @param parameterTypes
-	 *            match these parameters - treat null as empty array
-	 * @return The value returned by the invoked method
-	 * 
-	 * @throws NoSuchMethodException
-	 *             if there is no such accessible method
-	 * @throws InvocationTargetException
-	 *             wraps an exception thrown by the
-	 *             method invoked
-	 * @throws IllegalAccessException
-	 *             if the requested method is not accessible
-	 *             via reflection
-	 */
-	public static Object invokeExactMethod(Object object, String methodName, Object[] args,
-			Class<?>[] parameterTypes) throws NoSuchMethodException, IllegalAccessException,
-			InvocationTargetException {
-		if(args == null){
-			args = ArrayUtils.EMPTY_OBJECT_ARRAY;
-		}
-		if(parameterTypes == null){
-			parameterTypes = ArrayUtils.EMPTY_CLASS_ARRAY;
-		}
-		Method method = getAccessibleMethod(object.getClass(), methodName, parameterTypes);
-		if(method == null){
-			throw new NoSuchMethodException("No such accessible method: " + methodName + "() on object: "
-					+ object.getClass().getName());
-		}
-		return method.invoke(object, args);
-	}
-
-	/**
-	 * <p>
-	 * Invoke a static method whose parameter types match exactly the parameter
-	 * types given.
-	 * </p>
-	 * 
-	 * <p>
-	 * This uses reflection to invoke the method obtained from a call to
-	 * {@link #getAccessibleMethod(Class, String, Class[])}.
-	 * </p>
-	 * 
-	 * @param cls
-	 *            invoke static method on this class
-	 * @param methodName
-	 *            get method with this name
-	 * @param args
-	 *            use these arguments - treat null as empty array
-	 * @param parameterTypes
-	 *            match these parameters - treat null as empty array
-	 * @return The value returned by the invoked method
-	 * 
-	 * @throws NoSuchMethodException
-	 *             if there is no such accessible method
-	 * @throws InvocationTargetException
-	 *             wraps an exception thrown by the
-	 *             method invoked
-	 * @throws IllegalAccessException
-	 *             if the requested method is not accessible
-	 *             via reflection
-	 */
-	public static Object invokeExactStaticMethod(Class<?> cls, String methodName, Object[] args,
-			Class<?>[] parameterTypes) throws NoSuchMethodException, IllegalAccessException,
-			InvocationTargetException {
-		if(args == null){
-			args = ArrayUtils.EMPTY_OBJECT_ARRAY;
-		}
-		if(parameterTypes == null){
-			parameterTypes = ArrayUtils.EMPTY_CLASS_ARRAY;
-		}
-		Method method = getAccessibleMethod(cls, methodName, parameterTypes);
-		if(method == null){
-			throw new NoSuchMethodException("No such accessible method: " + methodName + "() on class: "
-					+ cls.getName());
-		}
-		return method.invoke(null, args);
-	}
-
-	/**
-	 * <p>
-	 * Invoke a named static method whose parameter type matches the object
-	 * type.
-	 * </p>
-	 * 
-	 * <p>
-	 * This method delegates the method search to
-	 * {@link #findAccessibleMethod(Class, String, Class[])}.
-	 * </p>
-	 * 
-	 * <p>
-	 * This method supports calls to methods taking primitive parameters via
-	 * passing in wrapping classes. So, for example, a <code>Boolean</code>
-	 * class would match a <code>boolean</code> primitive.
-	 * </p>
-	 * 
-	 * <p>
-	 * This is a convenient wrapper for
-	 * {@link #invokeStaticMethod(Class objectClass,String methodName,Object [] args,Class[] parameterTypes)}
-	 * .
-	 * </p>
-	 * 
-	 * @param cls
-	 *            invoke static method on this class
-	 * @param methodName
-	 *            get method with this name, Case sensitive.
-	 * @param args
-	 *            use these arguments - treat null as empty array
-	 * @return The value returned by the invoked method
-	 * 
-	 * @throws NoSuchMethodException
-	 *             if there is no such accessible method
-	 * @throws InvocationTargetException
-	 *             wraps an exception thrown by the
-	 *             method invoked
-	 * @throws IllegalAccessException
-	 *             if the requested method is not accessible
-	 *             via reflection
-	 */
-	public static Object invokeStaticMethod(Class<?> cls, String methodName, Object... args)
-			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-		if(args == null){
-			args = ArrayUtils.EMPTY_OBJECT_ARRAY;
-		}
-		int arguments = args.length;
-		Class<?>[] parameterTypes = new Class[arguments];
-		for(int i = 0; i < arguments; i++){
-			parameterTypes[i] = args[i].getClass();
-		}
-		return invokeStaticMethod(cls, methodName, args, parameterTypes);
-	}
-
-	/**
-	 * <p>
-	 * Invoke a named static method whose parameter type matches the object
-	 * type.
-	 * </p>
-	 * 
-	 * <p>
-	 * This method delegates the method search to
-	 * {@link #findAccessibleMethod(Class, String, Class[])}.
-	 * </p>
-	 * 
-	 * <p>
-	 * This method supports calls to methods taking primitive parameters via
-	 * passing in wrapping classes. So, for example, a <code>Boolean</code>
-	 * class would match a <code>boolean</code> primitive.
-	 * </p>
-	 * 
-	 * 
-	 * @param cls
-	 *            invoke static method on this class
-	 * @param methodName
-	 *            get method with this name, Case sensitive.
-	 * @param args
-	 *            use these arguments - treat null as empty array
-	 * @param parameterTypes
-	 *            match these parameters - treat null as empty array
-	 * @return The value returned by the invoked method
-	 * 
-	 * @throws NoSuchMethodException
-	 *             if there is no such accessible method
-	 * @throws InvocationTargetException
-	 *             wraps an exception thrown by the
-	 *             method invoked
-	 * @throws IllegalAccessException
-	 *             if the requested method is not accessible
-	 *             via reflection
-	 */
-	public static Object invokeStaticMethod(Class<?> cls, String methodName, Object[] args,
-			Class<?>[] parameterTypes) throws NoSuchMethodException, IllegalAccessException,
-			InvocationTargetException {
-		if(parameterTypes == null){
-			parameterTypes = ArrayUtils.EMPTY_CLASS_ARRAY;
-		}
-		if(args == null){
-			args = ArrayUtils.EMPTY_OBJECT_ARRAY;
-		}
-		Method method = findAccessibleMethod(cls, methodName, parameterTypes);
-		if(method == null){
-			throw new NoSuchMethodException("No such accessible method: " + methodName + "() on class: "
-					+ cls.getName());
-		}
-		return method.invoke(null, args);
-	}
-
-	/**
-	 * <p>
-	 * Invoke a static method whose parameter types match exactly the object
-	 * types.
-	 * </p>
-	 * 
-	 * <p>
-	 * This uses reflection to invoke the method obtained from a call to
-	 * {@link #getAccessibleMethod(Class, String, Class[])}.
-	 * </p>
-	 * 
-	 * @param cls
-	 *            invoke static method on this class
-	 * @param methodName
-	 *            get method with this name, Case sensitive.
-	 * @param args
-	 *            use these arguments - treat null as empty array
-	 * @return The value returned by the invoked method
-	 * 
-	 * @throws NoSuchMethodException
-	 *             if there is no such accessible method
-	 * @throws InvocationTargetException
-	 *             wraps an exception thrown by the
-	 *             method invoked
-	 * @throws IllegalAccessException
-	 *             if the requested method is not accessible
-	 *             via reflection
-	 */
-	public static Object invokeExactStaticMethod(Class<?> cls, String methodName, Object... args)
-			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-		if(args == null){
-			args = ArrayUtils.EMPTY_OBJECT_ARRAY;
-		}
-		int arguments = args.length;
-		Class<?>[] parameterTypes = new Class[arguments];
-		for(int i = 0; i < arguments; i++){
-			parameterTypes[i] = args[i].getClass();
-		}
-		return invokeExactStaticMethod(cls, methodName, args, parameterTypes);
-	}
-
-	/**
-	 * <p>
-	 * Return an accessible method (that is, one that can be invoked via
-	 * reflection) with given name and parameters. If no such method can be
-	 * found, return <code>null</code>. This is just a convenient wrapper for
-	 * {@link #getAccessibleMethod(Method method)}.
-	 * </p>
-	 * 
-	 * @param cls
-	 *            get method from this class
-	 * @param methodName
-	 *            get method with this name
-	 * @param parameterTypes
-	 *            with these parameters types
-	 * @return The accessible method
-	 */
-	public static Method getAccessibleMethod(Class<?> cls, String methodName, Class<?>... parameterTypes) {
-		try{
-			return getAccessibleMethod(cls.getMethod(methodName, parameterTypes));
-		} catch(NoSuchMethodException e){
-			return (null);
-		}
-	}
-
-	/**
-	 * <p>
-	 * Return an accessible method (that is, one that can be invoked via
-	 * reflection) that implements the specified Method. If no such method can
-	 * be found, return <code>null</code>.
-	 * </p>
-	 * 
-	 * @param method
-	 *            The method that we wish to call
-	 * @return The accessible method
-	 */
-	public static Method getAccessibleMethod(Method method) {
-		if(!MemberUtils.isAccessible(method)){
-			return null;
-		}
-		// If the declaring class is public, we are done
-		Class<?> cls = method.getDeclaringClass();
-		if(Modifier.isPublic(cls.getModifiers())){
-			return method;
-		}
-		String methodName = method.getName();
-		Class<?>[] parameterTypes = method.getParameterTypes();
-
-		// Check the implemented interfaces and subinterfaces
-		method = getAccessibleMethodFromInterfaceNest(cls, methodName, parameterTypes);
-
-		// Check the superclass chain
-		if(method == null){
-			method = getAccessibleMethodFromSuperclass(cls, methodName, parameterTypes);
-		}
-		return method;
-	}
-
-	/**
-	 * <p>
-	 * Return an accessible method (that is, one that can be invoked via
-	 * reflection) by scanning through the superclasses. If no such method can
-	 * be found, return <code>null</code>.
-	 * </p>
-	 * 
-	 * @param cls
-	 *            Class to be checked
-	 * @param methodName
-	 *            Method name of the method we wish to call
-	 * @param parameterTypes
-	 *            The parameter type signatures
-	 * @return the accessible method or <code>null</code> if not found
-	 */
-	private static Method getAccessibleMethodFromSuperclass(Class<?> cls, String methodName,
-			Class<?>... parameterTypes) {
-		Class<?> parentClass = cls.getSuperclass();
-		while(parentClass != null){
-			if(Modifier.isPublic(parentClass.getModifiers())){
-				try{
-					return parentClass.getMethod(methodName, parameterTypes);
-				} catch(NoSuchMethodException e){
-					return null;
-				}
-			}
-			parentClass = parentClass.getSuperclass();
-		}
-		return null;
-	}
-
-	/**
-	 * <p>
-	 * Return an accessible method (that is, one that can be invoked via
-	 * reflection) that implements the specified method, by scanning through all
-	 * implemented interfaces and subinterfaces. If no such method can be found,
-	 * return <code>null</code>.
-	 * </p>
-	 * 
-	 * <p>
-	 * There isn't any good reason why this method must be private. It is
-	 * because there doesn't seem any reason why other classes should call this
-	 * rather than the higher level methods.
-	 * </p>
-	 * 
-	 * @param cls
-	 *            Parent class for the interfaces to be checked
-	 * @param methodName
-	 *            Method name of the method we wish to call
-	 * @param parameterTypes
-	 *            The parameter type signatures
-	 * @return the accessible method or <code>null</code> if not found
-	 */
-	private static Method getAccessibleMethodFromInterfaceNest(Class<?> cls, String methodName,
-			Class<?>... parameterTypes) {
-		Method method = null;
-
-		// Search up the superclass chain
-		for(; cls != null; cls = cls.getSuperclass()){
-
-			// Check the implemented interfaces of the parent class
-			Class<?>[] interfaces = cls.getInterfaces();
-			for(int i = 0; i < interfaces.length; i++){
-				// Is this interface public?
-				if(!Modifier.isPublic(interfaces[i].getModifiers())){
-					continue;
-				}
-				// Does the method exist on this interface?
-				try{
-					method = interfaces[i].getDeclaredMethod(methodName, parameterTypes);
-				} catch(NoSuchMethodException e){
-					/*
-					 * Swallow, if no method is found after the loop then this
-					 * method returns null.
-					 */
-				}
-				if(method != null){
-					break;
-				}
-				// Recursively check our parent interfaces
-				method = getAccessibleMethodFromInterfaceNest(interfaces[i], methodName, parameterTypes);
-				if(method != null){
-					break;
-				}
-			}
-		}
-		return method;
-	}
+	private static Map declaredMethodCache = Collections.synchronizedMap(new WeakHashMap());
 
 	/**
 	 * <p>
@@ -724,7 +182,159 @@ public class MethodUtils {
 		return method;
 	}
 
-	private static Map declaredMethodCache = Collections.synchronizedMap(new WeakHashMap());
+	/**
+	 * Flush Method caches
+	 */
+	public static void flushCaches() {
+		declaredMethodCache.clear();
+
+	}
+
+	/**
+	 * <p>
+	 * Return an accessible method (that is, one that can be invoked via
+	 * reflection) with given name and parameters. If no such method can be
+	 * found, return <code>null</code>. This is just a convenient wrapper for
+	 * {@link #getAccessibleMethod(Method method)}.
+	 * </p>
+	 * 
+	 * @param cls
+	 *            get method from this class
+	 * @param methodName
+	 *            get method with this name
+	 * @param parameterTypes
+	 *            with these parameters types
+	 * @return The accessible method
+	 */
+	public static Method getAccessibleMethod(Class<?> cls, String methodName, Class<?>... parameterTypes) {
+		try{
+			return getAccessibleMethod(cls.getMethod(methodName, parameterTypes));
+		} catch(NoSuchMethodException e){
+			return (null);
+		}
+	}
+
+	/**
+	 * <p>
+	 * Return an accessible method (that is, one that can be invoked via
+	 * reflection) that implements the specified Method. If no such method can
+	 * be found, return <code>null</code>.
+	 * </p>
+	 * 
+	 * @param method
+	 *            The method that we wish to call
+	 * @return The accessible method
+	 */
+	public static Method getAccessibleMethod(Method method) {
+		if(!MemberUtils.isAccessible(method)){
+			return null;
+		}
+		// If the declaring class is public, we are done
+		Class<?> cls = method.getDeclaringClass();
+		if(Modifier.isPublic(cls.getModifiers())){
+			return method;
+		}
+		String methodName = method.getName();
+		Class<?>[] parameterTypes = method.getParameterTypes();
+
+		// Check the implemented interfaces and subinterfaces
+		method = getAccessibleMethodFromInterfaceNest(cls, methodName, parameterTypes);
+
+		// Check the superclass chain
+		if(method == null){
+			method = getAccessibleMethodFromSuperclass(cls, methodName, parameterTypes);
+		}
+		return method;
+	}
+
+	/**
+	 * <p>
+	 * Return an accessible method (that is, one that can be invoked via
+	 * reflection) that implements the specified method, by scanning through all
+	 * implemented interfaces and subinterfaces. If no such method can be found,
+	 * return <code>null</code>.
+	 * </p>
+	 * 
+	 * <p>
+	 * There isn't any good reason why this method must be private. It is
+	 * because there doesn't seem any reason why other classes should call this
+	 * rather than the higher level methods.
+	 * </p>
+	 * 
+	 * @param cls
+	 *            Parent class for the interfaces to be checked
+	 * @param methodName
+	 *            Method name of the method we wish to call
+	 * @param parameterTypes
+	 *            The parameter type signatures
+	 * @return the accessible method or <code>null</code> if not found
+	 */
+	private static Method getAccessibleMethodFromInterfaceNest(Class<?> cls, String methodName,
+			Class<?>... parameterTypes) {
+		Method method = null;
+
+		// Search up the superclass chain
+		for(; cls != null; cls = cls.getSuperclass()){
+
+			// Check the implemented interfaces of the parent class
+			Class<?>[] interfaces = cls.getInterfaces();
+			for(int i = 0; i < interfaces.length; i++){
+				// Is this interface public?
+				if(!Modifier.isPublic(interfaces[i].getModifiers())){
+					continue;
+				}
+				// Does the method exist on this interface?
+				try{
+					method = interfaces[i].getDeclaredMethod(methodName, parameterTypes);
+				} catch(NoSuchMethodException e){
+					/*
+					 * Swallow, if no method is found after the loop then this
+					 * method returns null.
+					 */
+				}
+				if(method != null){
+					break;
+				}
+				// Recursively check our parent interfaces
+				method = getAccessibleMethodFromInterfaceNest(interfaces[i], methodName, parameterTypes);
+				if(method != null){
+					break;
+				}
+			}
+		}
+		return method;
+	}
+
+	/**
+	 * <p>
+	 * Return an accessible method (that is, one that can be invoked via
+	 * reflection) by scanning through the superclasses. If no such method can
+	 * be found, return <code>null</code>.
+	 * </p>
+	 * 
+	 * @param cls
+	 *            Class to be checked
+	 * @param methodName
+	 *            Method name of the method we wish to call
+	 * @param parameterTypes
+	 *            The parameter type signatures
+	 * @return the accessible method or <code>null</code> if not found
+	 */
+	private static Method getAccessibleMethodFromSuperclass(Class<?> cls, String methodName,
+			Class<?>... parameterTypes) {
+		Class<?> parentClass = cls.getSuperclass();
+		while(parentClass != null){
+			if(Modifier.isPublic(parentClass.getModifiers())){
+				try{
+					return parentClass.getMethod(methodName, parameterTypes);
+				} catch(NoSuchMethodException e){
+					return null;
+				}
+			}
+			parentClass = parentClass.getSuperclass();
+		}
+		return null;
+	}
 
 	/**
 	 * Get the methods declared as public within the class
@@ -771,6 +381,388 @@ public class MethodUtils {
 	}
 
 	/**
+	 * <p>
+	 * Invoke a method whose parameter types match exactly the object types.
+	 * </p>
+	 * 
+	 * <p>
+	 * This uses reflection to invoke the method obtained from a call to
+	 * <code>getAccessibleMethod()</code>.
+	 * </p>
+	 * 
+	 * @param object
+	 *            invoke method on this object
+	 * @param methodName
+	 *            get method with this name
+	 * @param args
+	 *            use these arguments - treat null as empty array
+	 * @return The value returned by the invoked method
+	 * 
+	 * @throws NoSuchMethodException
+	 *             if there is no such accessible method
+	 * @throws InvocationTargetException
+	 *             wraps an exception thrown by the
+	 *             method invoked
+	 * @throws IllegalAccessException
+	 *             if the requested method is not accessible
+	 *             via reflection
+	 */
+	public static Object invokeExactMethod(Object object, String methodName, Object... args)
+			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+		if(args == null){
+			args = ArrayUtils.EMPTY_OBJECT_ARRAY;
+		}
+		int arguments = args.length;
+		Class<?>[] parameterTypes = new Class[arguments];
+		for(int i = 0; i < arguments; i++){
+			parameterTypes[i] = args[i].getClass();
+		}
+		return invokeExactMethod(object, methodName, args, parameterTypes);
+	}
+
+	/**
+	 * <p>
+	 * Invoke a method whose parameter types match exactly the parameter types
+	 * given.
+	 * </p>
+	 * 
+	 * <p>
+	 * This uses reflection to invoke the method obtained from a call to
+	 * <code>getAccessibleMethod()</code>.
+	 * </p>
+	 * 
+	 * @param object
+	 *            invoke method on this object
+	 * @param methodName
+	 *            get method with this name
+	 * @param args
+	 *            use these arguments - treat null as empty array
+	 * @param parameterTypes
+	 *            match these parameters - treat null as empty array
+	 * @return The value returned by the invoked method
+	 * 
+	 * @throws NoSuchMethodException
+	 *             if there is no such accessible method
+	 * @throws InvocationTargetException
+	 *             wraps an exception thrown by the
+	 *             method invoked
+	 * @throws IllegalAccessException
+	 *             if the requested method is not accessible
+	 *             via reflection
+	 */
+	public static Object invokeExactMethod(Object object, String methodName, Object[] args,
+			Class<?>[] parameterTypes) throws NoSuchMethodException, IllegalAccessException,
+			InvocationTargetException {
+		if(args == null){
+			args = ArrayUtils.EMPTY_OBJECT_ARRAY;
+		}
+		if(parameterTypes == null){
+			parameterTypes = ArrayUtils.EMPTY_CLASS_ARRAY;
+		}
+		Method method = getAccessibleMethod(object.getClass(), methodName, parameterTypes);
+		if(method == null){
+			throw new NoSuchMethodException("No such accessible method: " + methodName + "() on object: "
+					+ object.getClass().getName());
+		}
+		return method.invoke(object, args);
+	}
+
+	/**
+	 * <p>
+	 * Invoke a static method whose parameter types match exactly the object
+	 * types.
+	 * </p>
+	 * 
+	 * <p>
+	 * This uses reflection to invoke the method obtained from a call to
+	 * {@link #getAccessibleMethod(Class, String, Class[])}.
+	 * </p>
+	 * 
+	 * @param cls
+	 *            invoke static method on this class
+	 * @param methodName
+	 *            get method with this name, Case sensitive.
+	 * @param args
+	 *            use these arguments - treat null as empty array
+	 * @return The value returned by the invoked method
+	 * 
+	 * @throws NoSuchMethodException
+	 *             if there is no such accessible method
+	 * @throws InvocationTargetException
+	 *             wraps an exception thrown by the
+	 *             method invoked
+	 * @throws IllegalAccessException
+	 *             if the requested method is not accessible
+	 *             via reflection
+	 */
+	public static Object invokeExactStaticMethod(Class<?> cls, String methodName, Object... args)
+			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+		if(args == null){
+			args = ArrayUtils.EMPTY_OBJECT_ARRAY;
+		}
+		int arguments = args.length;
+		Class<?>[] parameterTypes = new Class[arguments];
+		for(int i = 0; i < arguments; i++){
+			parameterTypes[i] = args[i].getClass();
+		}
+		return invokeExactStaticMethod(cls, methodName, args, parameterTypes);
+	}
+
+	/**
+	 * <p>
+	 * Invoke a static method whose parameter types match exactly the parameter
+	 * types given.
+	 * </p>
+	 * 
+	 * <p>
+	 * This uses reflection to invoke the method obtained from a call to
+	 * {@link #getAccessibleMethod(Class, String, Class[])}.
+	 * </p>
+	 * 
+	 * @param cls
+	 *            invoke static method on this class
+	 * @param methodName
+	 *            get method with this name
+	 * @param args
+	 *            use these arguments - treat null as empty array
+	 * @param parameterTypes
+	 *            match these parameters - treat null as empty array
+	 * @return The value returned by the invoked method
+	 * 
+	 * @throws NoSuchMethodException
+	 *             if there is no such accessible method
+	 * @throws InvocationTargetException
+	 *             wraps an exception thrown by the
+	 *             method invoked
+	 * @throws IllegalAccessException
+	 *             if the requested method is not accessible
+	 *             via reflection
+	 */
+	public static Object invokeExactStaticMethod(Class<?> cls, String methodName, Object[] args,
+			Class<?>[] parameterTypes) throws NoSuchMethodException, IllegalAccessException,
+			InvocationTargetException {
+		if(args == null){
+			args = ArrayUtils.EMPTY_OBJECT_ARRAY;
+		}
+		if(parameterTypes == null){
+			parameterTypes = ArrayUtils.EMPTY_CLASS_ARRAY;
+		}
+		Method method = getAccessibleMethod(cls, methodName, parameterTypes);
+		if(method == null){
+			throw new NoSuchMethodException("No such accessible method: " + methodName + "() on class: "
+					+ cls.getName());
+		}
+		return method.invoke(null, args);
+	}
+
+	/**
+	 * <p>
+	 * Invoke a named method whose parameter type matches the object type.
+	 * </p>
+	 * 
+	 * <p>
+	 * This method delegates the method search to
+	 * {@link #findAccessibleMethod(Class, String, Class[])}.
+	 * </p>
+	 * 
+	 * <p>
+	 * This method supports calls to methods taking primitive parameters via
+	 * passing in wrapping classes. So, for example, a <code>Boolean</code>
+	 * object would match a <code>boolean</code> primitive.
+	 * </p>
+	 * 
+	 * <p>
+	 * This is a convenient wrapper for
+	 * {@link #invokeMethod(Object object,String methodName, Object[] args, Class[] parameterTypes)}
+	 * .
+	 * </p>
+	 * 
+	 * @param object
+	 *            invoke method on this object
+	 * @param methodName
+	 *            get method with this name
+	 * @param args
+	 *            use these arguments - treat null as empty array
+	 * @return The value returned by the invoked method
+	 * 
+	 * @throws NoSuchMethodException
+	 *             if there is no such accessible method
+	 * @throws InvocationTargetException
+	 *             wraps an exception thrown by the method invoked
+	 * @throws IllegalAccessException
+	 *             if the requested method is not accessible via reflection
+	 */
+	public static Object invokeMethod(Object object, String methodName, Object... args)
+			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+		if(args == null){
+			args = ArrayUtils.EMPTY_OBJECT_ARRAY;
+		}
+		int arguments = args.length;
+		Class<?>[] parameterTypes = new Class[arguments];
+		for(int i = 0; i < arguments; i++){
+			parameterTypes[i] = args[i].getClass();
+		}
+		return invokeMethod(object, methodName, args, parameterTypes);
+	}
+
+	/**
+	 * <p>
+	 * Invoke a named method whose parameter type matches the object type.
+	 * </p>
+	 * 
+	 * <p>
+	 * This method delegates the method search to
+	 * {@link #findAccessibleMethod(Class, String, Class[])}.
+	 * </p>
+	 * 
+	 * <p>
+	 * This method supports calls to methods taking primitive parameters via
+	 * passing in wrapping classes. So, for example, a <code>Boolean</code>
+	 * object would match a <code>boolean</code> primitive.
+	 * </p>
+	 * 
+	 * @param object
+	 *            invoke method on this object
+	 * @param methodName
+	 *            get method with this name
+	 * @param args
+	 *            use these arguments - treat null as empty array
+	 * @param parameterTypes
+	 *            match these parameters - treat null as empty array
+	 * @return The value returned by the invoked method
+	 * 
+	 * @throws NoSuchMethodException
+	 *             if there is no such accessible method
+	 * @throws InvocationTargetException
+	 *             wraps an exception thrown by the method invoked
+	 * @throws IllegalAccessException
+	 *             if the requested method is not accessible via reflection
+	 */
+	public static Object invokeMethod(Object object, String methodName, Object[] args,
+			Class<?>[] parameterTypes) throws NoSuchMethodException, IllegalAccessException,
+			InvocationTargetException {
+		if(parameterTypes == null){
+			parameterTypes = ArrayUtils.EMPTY_CLASS_ARRAY;
+		}
+		if(args == null){
+			args = ArrayUtils.EMPTY_OBJECT_ARRAY;
+		}
+		Method method = findAccessibleMethod(object.getClass(), methodName, parameterTypes);
+		if(method == null){
+			throw new NoSuchMethodException("No such accessible method: " + methodName + "() on object: "
+					+ object.getClass().getName());
+		}
+		return method.invoke(object, args);
+	}
+
+	/**
+	 * <p>
+	 * Invoke a named static method whose parameter type matches the object
+	 * type.
+	 * </p>
+	 * 
+	 * <p>
+	 * This method delegates the method search to
+	 * {@link #findAccessibleMethod(Class, String, Class[])}.
+	 * </p>
+	 * 
+	 * <p>
+	 * This method supports calls to methods taking primitive parameters via
+	 * passing in wrapping classes. So, for example, a <code>Boolean</code>
+	 * class would match a <code>boolean</code> primitive.
+	 * </p>
+	 * 
+	 * <p>
+	 * This is a convenient wrapper for
+	 * {@link #invokeStaticMethod(Class objectClass,String methodName,Object [] args,Class[] parameterTypes)}
+	 * .
+	 * </p>
+	 * 
+	 * @param cls
+	 *            invoke static method on this class
+	 * @param methodName
+	 *            get method with this name, Case sensitive.
+	 * @param args
+	 *            use these arguments - treat null as empty array
+	 * @return The value returned by the invoked method
+	 * 
+	 * @throws NoSuchMethodException
+	 *             if there is no such accessible method
+	 * @throws InvocationTargetException
+	 *             wraps an exception thrown by the
+	 *             method invoked
+	 * @throws IllegalAccessException
+	 *             if the requested method is not accessible
+	 *             via reflection
+	 */
+	public static Object invokeStaticMethod(Class<?> cls, String methodName, Object... args)
+			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+		if(args == null){
+			args = ArrayUtils.EMPTY_OBJECT_ARRAY;
+		}
+		int arguments = args.length;
+		Class<?>[] parameterTypes = new Class[arguments];
+		for(int i = 0; i < arguments; i++){
+			parameterTypes[i] = args[i].getClass();
+		}
+		return invokeStaticMethod(cls, methodName, args, parameterTypes);
+	}
+
+	/**
+	 * <p>
+	 * Invoke a named static method whose parameter type matches the object
+	 * type.
+	 * </p>
+	 * 
+	 * <p>
+	 * This method delegates the method search to
+	 * {@link #findAccessibleMethod(Class, String, Class[])}.
+	 * </p>
+	 * 
+	 * <p>
+	 * This method supports calls to methods taking primitive parameters via
+	 * passing in wrapping classes. So, for example, a <code>Boolean</code>
+	 * class would match a <code>boolean</code> primitive.
+	 * </p>
+	 * 
+	 * 
+	 * @param cls
+	 *            invoke static method on this class
+	 * @param methodName
+	 *            get method with this name, Case sensitive.
+	 * @param args
+	 *            use these arguments - treat null as empty array
+	 * @param parameterTypes
+	 *            match these parameters - treat null as empty array
+	 * @return The value returned by the invoked method
+	 * 
+	 * @throws NoSuchMethodException
+	 *             if there is no such accessible method
+	 * @throws InvocationTargetException
+	 *             wraps an exception thrown by the
+	 *             method invoked
+	 * @throws IllegalAccessException
+	 *             if the requested method is not accessible
+	 *             via reflection
+	 */
+	public static Object invokeStaticMethod(Class<?> cls, String methodName, Object[] args,
+			Class<?>[] parameterTypes) throws NoSuchMethodException, IllegalAccessException,
+			InvocationTargetException {
+		if(parameterTypes == null){
+			parameterTypes = ArrayUtils.EMPTY_CLASS_ARRAY;
+		}
+		if(args == null){
+			args = ArrayUtils.EMPTY_OBJECT_ARRAY;
+		}
+		Method method = findAccessibleMethod(cls, methodName, parameterTypes);
+		if(method == null){
+			throw new NoSuchMethodException("No such accessible method: " + methodName + "() on class: "
+					+ cls.getName());
+		}
+		return method.invoke(null, args);
+	}
+
+	/**
 	 * Return true iff the given method throws the given exception
 	 * 
 	 * @param method The method that throws the exception
@@ -788,10 +780,18 @@ public class MethodUtils {
 	}
 
 	/**
-	 * Flush Method caches
+	 * <p>
+	 * MethodUtils instances should NOT be constructed in standard programming.
+	 * Instead, the class should be used as
+	 * <code>MethodUtils.getAccessibleMethod(method)</code>.
+	 * </p>
+	 * 
+	 * <p>
+	 * This constructor is public to permit tools that require a JavaBean
+	 * instance to operate.
+	 * </p>
 	 */
-	public static void flushCaches() {
-		declaredMethodCache.clear();
-
+	private MethodUtils() {
+		super();
 	}
 }

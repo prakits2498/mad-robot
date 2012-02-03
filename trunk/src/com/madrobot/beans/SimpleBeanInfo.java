@@ -24,6 +24,16 @@ package com.madrobot.beans;
 public class SimpleBeanInfo implements BeanInfo  {
 
    /**
+    * Claim there are no other relevant BeanInfo objects. You
+    * may override this if you want to (for example) return a
+    * BeanInfo for a base class.
+    */
+   @Override
+public BeanInfo [] getAdditionalBeanInfo() {
+   return null;
+   }
+
+   /**
     * Deny knowledge about the class and customizer of the bean.
     * You can override this if you wish to provide explicit info.
     */
@@ -33,12 +43,12 @@ public BeanDescriptor  getBeanDescriptor() {
    }
 
    /**
-    * Deny knowledge of properties. You can override this
-    * if you wish to provide explicit property info.
+    * Deny knowledge of a default event. You can override this
+    * if you wish to define a default event for the bean.
     */
    @Override
-public PropertyDescriptor [] getPropertyDescriptors() {
-   return null;
+public int getDefaultEventIndex() {
+   return -1;
    }
 
    /**
@@ -60,15 +70,6 @@ public EventSetDescriptor [] getEventSetDescriptors() {
    }
 
    /**
-    * Deny knowledge of a default event. You can override this
-    * if you wish to define a default event for the bean.
-    */
-   @Override
-public int getDefaultEventIndex() {
-   return -1;
-   }
-
-   /**
     * Deny knowledge of methods. You can override this
     * if you wish to provide explicit method info.
     */
@@ -78,12 +79,11 @@ public MethodDescriptor [] getMethodDescriptors() {
    }
 
    /**
-    * Claim there are no other relevant BeanInfo objects. You
-    * may override this if you want to (for example) return a
-    * BeanInfo for a base class.
+    * Deny knowledge of properties. You can override this
+    * if you wish to provide explicit property info.
     */
    @Override
-public BeanInfo [] getAdditionalBeanInfo() {
+public PropertyDescriptor [] getPropertyDescriptors() {
    return null;
    }
 

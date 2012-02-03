@@ -30,11 +30,11 @@ import com.madrobot.di.wizard.xml.converters.SingleValueConverter;
  */
 class AttributeMapper extends MapperWrapper {
 
-	private final Map fieldNameToTypeMap = new HashMap();
-	private final Set typeSet = new HashSet();
 	private ConverterLookup converterLookup;
-	private ReflectionProvider reflectionProvider;
+	private final Map fieldNameToTypeMap = new HashMap();
 	private final Set fieldToUseAsAttribute = new HashSet();
+	private ReflectionProvider reflectionProvider;
+	private final Set typeSet = new HashSet();
 
 	/**
 	 * @deprecated As of 1.3
@@ -50,26 +50,83 @@ class AttributeMapper extends MapperWrapper {
 		this.reflectionProvider = refProvider;
 	}
 
+	public void addAttributeFor(final Class type) {
+		typeSet.add(type);
+	}
+
 	/**
-	 * @deprecated As of 1.3
+	 * Tells this mapper to use an attribute for this field.
+	 * 
+	 * @param definedIn
+	 *            the declaring class of the field
+	 * @param fieldName
+	 *            the name of the field
+	 * @throws IllegalArgumentException
+	 *             if the field does not exist
+	 * @since 1.3
 	 */
-	@Deprecated
-	void setConverterLookup(ConverterLookup converterLookup) {
-		this.converterLookup = converterLookup;
+	public void addAttributeFor(Class definedIn, String fieldName) {
+		fieldToUseAsAttribute.add(reflectionProvider.getField(definedIn, fieldName));
+	}
+
+	/**
+	 * Tells this mapper to use an attribute for this field.
+	 * 
+	 * @param field
+	 *            the field itself
+	 * @since 1.2.2
+	 */
+	public void addAttributeFor(Field field) {
+		fieldToUseAsAttribute.add(field);
 	}
 
 	void addAttributeFor(final String fieldName, final Class type) {
 		fieldNameToTypeMap.put(fieldName, type);
 	}
 
-	public void addAttributeFor(final Class type) {
-		typeSet.add(type);
+	/**
+	 * @deprecated As of 1.3.1, use {@link #getConverterFromAttribute(Class, String, Class)}
+	 */
+	@Deprecated
+	@Override
+	public SingleValueConverter getConverterFromAttribute(Class definedIn, String attribute) {
+		Field field = reflectionProvider.getField(definedIn, attribute);
+		return getConverterFromAttribute(definedIn, attribute, field.getType());
 	}
 
-	private SingleValueConverter getLocalConverterFromItemType(Class type) {
-		Converter converter = converterLookup.lookupConverterForType(type);
-		if (converter != null && converter instanceof SingleValueConverter) {
-			return (SingleValueConverter) converter;
+	@Override
+	public SingleValueConverter getConverterFromAttribute(Class definedIn, String attribute, Class type) {
+		if (shouldLookForSingleValueConverter(attribute, type, definedIn)) {
+			SingleValueConverter converter = getLocalConverterFromItemType(type);
+			if (converter != null) {
+				return converter;
+			}
+		}
+		return super.getConverterFromAttribute(definedIn, attribute, type);
+	}
+
+	/**
+	 * @deprecated As of 1.3, use {@link #getConverterFromAttribute(Class, String, Class)}
+	 */
+	@Deprecated
+	@Override
+	public SingleValueConverter getConverterFromAttribute(String attributeName) {
+		SingleValueConverter converter = null;
+		Class type = (Class) fieldNameToTypeMap.get(attributeName);
+		if (type != null) {
+			converter = getLocalConverterFromItemType(type);
+		}
+		return converter;
+	}
+
+	/**
+	 * @deprecated As of 1.3, use {@link #getConverterFromItemType(String, Class, Class)}
+	 */
+	@Deprecated
+	@Override
+	public SingleValueConverter getConverterFromItemType(Class type) {
+		if (typeSet.contains(type)) {
+			return getLocalConverterFromItemType(type);
 		} else {
 			return null;
 		}
@@ -99,83 +156,26 @@ class AttributeMapper extends MapperWrapper {
 		return super.getConverterFromItemType(fieldName, type, definedIn);
 	}
 
-	public boolean shouldLookForSingleValueConverter(String fieldName, Class type, Class definedIn) {
-		Field field = reflectionProvider.getField(definedIn, fieldName);
-		return fieldToUseAsAttribute.contains(field) || fieldNameToTypeMap.get(fieldName) == type
-				|| typeSet.contains(type);
-	}
-
-	/**
-	 * @deprecated As of 1.3, use {@link #getConverterFromItemType(String, Class, Class)}
-	 */
-	@Deprecated
-	@Override
-	public SingleValueConverter getConverterFromItemType(Class type) {
-		if (typeSet.contains(type)) {
-			return getLocalConverterFromItemType(type);
+	private SingleValueConverter getLocalConverterFromItemType(Class type) {
+		Converter converter = converterLookup.lookupConverterForType(type);
+		if (converter != null && converter instanceof SingleValueConverter) {
+			return (SingleValueConverter) converter;
 		} else {
 			return null;
 		}
 	}
 
 	/**
-	 * @deprecated As of 1.3, use {@link #getConverterFromAttribute(Class, String, Class)}
+	 * @deprecated As of 1.3
 	 */
 	@Deprecated
-	@Override
-	public SingleValueConverter getConverterFromAttribute(String attributeName) {
-		SingleValueConverter converter = null;
-		Class type = (Class) fieldNameToTypeMap.get(attributeName);
-		if (type != null) {
-			converter = getLocalConverterFromItemType(type);
-		}
-		return converter;
+	void setConverterLookup(ConverterLookup converterLookup) {
+		this.converterLookup = converterLookup;
 	}
 
-	/**
-	 * @deprecated As of 1.3.1, use {@link #getConverterFromAttribute(Class, String, Class)}
-	 */
-	@Deprecated
-	@Override
-	public SingleValueConverter getConverterFromAttribute(Class definedIn, String attribute) {
-		Field field = reflectionProvider.getField(definedIn, attribute);
-		return getConverterFromAttribute(definedIn, attribute, field.getType());
-	}
-
-	@Override
-	public SingleValueConverter getConverterFromAttribute(Class definedIn, String attribute, Class type) {
-		if (shouldLookForSingleValueConverter(attribute, type, definedIn)) {
-			SingleValueConverter converter = getLocalConverterFromItemType(type);
-			if (converter != null) {
-				return converter;
-			}
-		}
-		return super.getConverterFromAttribute(definedIn, attribute, type);
-	}
-
-	/**
-	 * Tells this mapper to use an attribute for this field.
-	 * 
-	 * @param field
-	 *            the field itself
-	 * @since 1.2.2
-	 */
-	public void addAttributeFor(Field field) {
-		fieldToUseAsAttribute.add(field);
-	}
-
-	/**
-	 * Tells this mapper to use an attribute for this field.
-	 * 
-	 * @param definedIn
-	 *            the declaring class of the field
-	 * @param fieldName
-	 *            the name of the field
-	 * @throws IllegalArgumentException
-	 *             if the field does not exist
-	 * @since 1.3
-	 */
-	public void addAttributeFor(Class definedIn, String fieldName) {
-		fieldToUseAsAttribute.add(reflectionProvider.getField(definedIn, fieldName));
+	public boolean shouldLookForSingleValueConverter(String fieldName, Class type, Class definedIn) {
+		Field field = reflectionProvider.getField(definedIn, fieldName);
+		return fieldToUseAsAttribute.contains(field) || fieldNameToTypeMap.get(fieldName) == type
+				|| typeSet.contains(type);
 	}
 }

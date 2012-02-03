@@ -45,8 +45,16 @@ public abstract class AbstractDriver implements HierarchicalStreamDriver {
 		this.replacer = nameCoder;
 	}
 
-	protected NameCoder getNameCoder() {
-		return replacer;
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public HierarchicalStreamReader createReader(File in) {
+		try {
+			return createReader(new FileInputStream(in));
+		} catch (FileNotFoundException e) {
+			throw new StreamException(e);
+		}
 	}
 
 	/**
@@ -63,15 +71,7 @@ public abstract class AbstractDriver implements HierarchicalStreamDriver {
 		return createReader(stream);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public HierarchicalStreamReader createReader(File in) {
-		try {
-			return createReader(new FileInputStream(in));
-		} catch (FileNotFoundException e) {
-			throw new StreamException(e);
-		}
+	protected NameCoder getNameCoder() {
+		return replacer;
 	}
 }

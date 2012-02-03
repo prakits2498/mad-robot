@@ -17,29 +17,35 @@ import com.madrobot.math.BinaryConstants;
 
 public class BitInputStream extends InputStream implements BinaryConstants
 {
-	private final InputStream is;
+	private int bitCache = 0;
+	private int bitsInCache = 0;
 	private final int byteOrder;
-	private boolean tiffLZWMode = false;
 
+	private long bytesRead = 0;
+
+	private final InputStream is;
+
+	private boolean tiffLZWMode = false;
 	public BitInputStream(InputStream is, int byteOrder)
 	{
 		this.byteOrder = byteOrder;
 		this.is = is;
+	}
+	public void flushCache()
+	{
+		bitsInCache = 0;
+		bitCache = 0;
+	}
+
+	public long getBytesRead()
+	{
+		return bytesRead;
 	}
 
 	@Override
 	public int read() throws IOException
 	{
 		return readBits(8);
-	}
-
-	private long bytesRead = 0;
-	private int bitsInCache = 0;
-	private int bitCache = 0;
-
-	public void setTiffLZWMode()
-	{
-		tiffLZWMode = true;
 	}
 
 	public int readBits(int SampleBits) throws IOException
@@ -96,15 +102,9 @@ public class BitInputStream extends InputStream implements BinaryConstants
 		return result;
 	}
 
-	public void flushCache()
+	public void setTiffLZWMode()
 	{
-		bitsInCache = 0;
-		bitCache = 0;
-	}
-
-	public long getBytesRead()
-	{
-		return bytesRead;
+		tiffLZWMode = true;
 	}
 
 }

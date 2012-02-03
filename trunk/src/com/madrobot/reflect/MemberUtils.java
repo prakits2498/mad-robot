@@ -30,51 +30,6 @@ abstract class MemberUtils {
             Character.TYPE, Integer.TYPE, Long.TYPE, Float.TYPE, Double.TYPE };
 
     /**
-     * XXX Default access superclass workaround
-     *
-     * When a public class has a default access superclass with public members,
-     * these members are accessible. Calling them from compiled code works fine.
-     * Unfortunately, on some JVMs, using reflection to invoke these members
-     * seems to (wrongly) to prevent access even when the modifer is public.
-     * Calling setAccessible(true) solves the problem but will only work from
-     * sufficiently privileged code. Better workarounds would be gratefully
-     * accepted.
-     * @param o the AccessibleObject to set as accessible
-     */
-    static void setAccessibleWorkaround(AccessibleObject o) {
-        if (o == null || o.isAccessible()) {
-            return;
-        }
-        Member m = (Member) o;
-        if (Modifier.isPublic(m.getModifiers())
-                && isPackageAccess(m.getDeclaringClass().getModifiers())) {
-            try {
-                o.setAccessible(true);
-            } catch (SecurityException e) {
-                // ignore in favor of subsequent IllegalAccessException
-            }
-        }
-    }
-
-    /**
-     * Learn whether a given set of modifiers implies package access.
-     * @param modifiers to test
-     * @return true unless package/protected/private modifier detected
-     */
-    static boolean isPackageAccess(int modifiers) {
-        return (modifiers & ACCESS_TEST) == 0;
-    }
-
-    /**
-     * Check a Member for basic accessibility.
-     * @param m Member to check
-     * @return true if <code>m</code> is accessible
-     */
-    static boolean isAccessible(Member m) {
-        return m != null && Modifier.isPublic(m.getModifiers()) && !m.isSynthetic();
-    }
-
-    /**
      * Compare the relative fitness of two sets of parameter types in terms of
      * matching a third set of runtime parameter types, such that a list ordered
      * by the results of the comparison would return the best match first
@@ -90,24 +45,6 @@ abstract class MemberUtils {
         float leftCost = getTotalTransformationCost(actual, left);
         float rightCost = getTotalTransformationCost(actual, right);
         return leftCost < rightCost ? -1 : rightCost < leftCost ? 1 : 0;
-    }
-
-    /**
-     * Returns the sum of the object transformation cost for each class in the
-     * source argument list.
-     * @param srcArgs The source arguments
-     * @param destArgs The destination arguments
-     * @return The total transformation cost
-     */
-    private static float getTotalTransformationCost(Class<?>[] srcArgs, Class<?>[] destArgs) {
-        float totalCost = 0.0f;
-        for (int i = 0; i < srcArgs.length; i++) {
-            Class<?> srcClass, destClass;
-            srcClass = srcArgs[i];
-            destClass = destArgs[i];
-            totalCost += getObjectTransformationCost(srcClass, destClass);
-        }
-        return totalCost;
     }
 
     /**
@@ -170,6 +107,69 @@ abstract class MemberUtils {
             }
         }
         return cost;
+    }
+
+    /**
+     * Returns the sum of the object transformation cost for each class in the
+     * source argument list.
+     * @param srcArgs The source arguments
+     * @param destArgs The destination arguments
+     * @return The total transformation cost
+     */
+    private static float getTotalTransformationCost(Class<?>[] srcArgs, Class<?>[] destArgs) {
+        float totalCost = 0.0f;
+        for (int i = 0; i < srcArgs.length; i++) {
+            Class<?> srcClass, destClass;
+            srcClass = srcArgs[i];
+            destClass = destArgs[i];
+            totalCost += getObjectTransformationCost(srcClass, destClass);
+        }
+        return totalCost;
+    }
+
+    /**
+     * Check a Member for basic accessibility.
+     * @param m Member to check
+     * @return true if <code>m</code> is accessible
+     */
+    static boolean isAccessible(Member m) {
+        return m != null && Modifier.isPublic(m.getModifiers()) && !m.isSynthetic();
+    }
+
+    /**
+     * Learn whether a given set of modifiers implies package access.
+     * @param modifiers to test
+     * @return true unless package/protected/private modifier detected
+     */
+    static boolean isPackageAccess(int modifiers) {
+        return (modifiers & ACCESS_TEST) == 0;
+    }
+
+    /**
+     * XXX Default access superclass workaround
+     *
+     * When a public class has a default access superclass with public members,
+     * these members are accessible. Calling them from compiled code works fine.
+     * Unfortunately, on some JVMs, using reflection to invoke these members
+     * seems to (wrongly) to prevent access even when the modifer is public.
+     * Calling setAccessible(true) solves the problem but will only work from
+     * sufficiently privileged code. Better workarounds would be gratefully
+     * accepted.
+     * @param o the AccessibleObject to set as accessible
+     */
+    static void setAccessibleWorkaround(AccessibleObject o) {
+        if (o == null || o.isAccessible()) {
+            return;
+        }
+        Member m = (Member) o;
+        if (Modifier.isPublic(m.getModifiers())
+                && isPackageAccess(m.getDeclaringClass().getModifiers())) {
+            try {
+                o.setAccessible(true);
+            } catch (SecurityException e) {
+                // ignore in favor of subsequent IllegalAccessException
+            }
+        }
     }
 
 }

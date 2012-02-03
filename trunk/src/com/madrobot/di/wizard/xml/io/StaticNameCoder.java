@@ -27,11 +27,11 @@ import java.util.Map;
  */
 public class StaticNameCoder implements NameCoder {
 
-	private final Map java2Node;
+	private transient Map attribute2Java;
 	private final Map java2Attribute;
 
+	private final Map java2Node;
 	private transient Map node2Java;
-	private transient Map attribute2Java;
 
 	/**
 	 * Construct a StaticNameCoder.
@@ -88,6 +88,15 @@ public class StaticNameCoder implements NameCoder {
 		return friendlyName == null ? name : friendlyName;
 	}
 
+	private Map invertMap(Map map) {
+		Map inverseMap = new HashMap(map.size());
+		for (final Iterator iter = map.entrySet().iterator(); iter.hasNext();) {
+			final Map.Entry entry = (Map.Entry) iter.next();
+			inverseMap.put(entry.getValue(), entry.getKey());
+		}
+		return inverseMap;
+	}
+
 	private Object readResolve() {
 		node2Java = invertMap(java2Node);
 		if (java2Node == java2Attribute) {
@@ -96,14 +105,5 @@ public class StaticNameCoder implements NameCoder {
 			attribute2Java = invertMap(java2Attribute);
 		}
 		return this;
-	}
-
-	private Map invertMap(Map map) {
-		Map inverseMap = new HashMap(map.size());
-		for (final Iterator iter = map.entrySet().iterator(); iter.hasNext();) {
-			final Map.Entry entry = (Map.Entry) iter.next();
-			inverseMap.put(entry.getValue(), entry.getKey());
-		}
-		return inverseMap;
 	}
 }

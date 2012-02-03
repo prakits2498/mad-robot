@@ -25,56 +25,22 @@ import java.util.List;
  */
 class ReaderDepthState {
 
-	private static final String EMPTY_STRING = "";
-
-	private static class State {
-		String name;
-		String value;
-		List attributes;
-		boolean hasMoreChildren;
-		State parent;
-	}
-
 	private static class Attribute {
 		String name;
 		String value;
 	}
 
+	private static class State {
+		List attributes;
+		boolean hasMoreChildren;
+		String name;
+		State parent;
+		String value;
+	}
+
+	private static final String EMPTY_STRING = "";
+
 	private State current;
-
-	public void push() {
-		State newState = new State();
-		newState.parent = current;
-		current = newState;
-	}
-
-	public void pop() {
-		current = current.parent;
-	}
-
-	public String getName() {
-		return current.name;
-	}
-
-	public void setName(String name) {
-		current.name = name;
-	}
-
-	public String getValue() {
-		return current.value == null ? EMPTY_STRING : current.value;
-	}
-
-	public void setValue(String value) {
-		current.value = value;
-	}
-
-	public boolean hasMoreChildren() {
-		return current.hasMoreChildren;
-	}
-
-	public void setHasMoreChildren(boolean hasMoreChildren) {
-		current.hasMoreChildren = hasMoreChildren;
-	}
 
 	public void addAttribute(String name, String value) {
 		Attribute attribute = new Attribute();
@@ -84,6 +50,15 @@ class ReaderDepthState {
 			current.attributes = new ArrayList();
 		}
 		current.attributes.add(attribute);
+	}
+
+	public String getAttribute(int index) {
+		if (current.attributes == null) {
+			return null;
+		} else {
+			Attribute attribute = (Attribute) current.attributes.get(index);
+			return attribute.value;
+		}
 	}
 
 	public String getAttribute(String name) {
@@ -101,13 +76,8 @@ class ReaderDepthState {
 		}
 	}
 
-	public String getAttribute(int index) {
-		if (current.attributes == null) {
-			return null;
-		} else {
-			Attribute attribute = (Attribute) current.attributes.get(index);
-			return attribute.value;
-		}
+	public int getAttributeCount() {
+		return current.attributes == null ? 0 : current.attributes.size();
 	}
 
 	public String getAttributeName(int index) {
@@ -117,10 +87,6 @@ class ReaderDepthState {
 			Attribute attribute = (Attribute) current.attributes.get(index);
 			return attribute.name;
 		}
-	}
-
-	public int getAttributeCount() {
-		return current.attributes == null ? 0 : current.attributes.size();
 	}
 
 	public Iterator getAttributeNames() {
@@ -146,6 +112,40 @@ class ReaderDepthState {
 				}
 			};
 		}
+	}
+
+	public String getName() {
+		return current.name;
+	}
+
+	public String getValue() {
+		return current.value == null ? EMPTY_STRING : current.value;
+	}
+
+	public boolean hasMoreChildren() {
+		return current.hasMoreChildren;
+	}
+
+	public void pop() {
+		current = current.parent;
+	}
+
+	public void push() {
+		State newState = new State();
+		newState.parent = current;
+		current = newState;
+	}
+
+	public void setHasMoreChildren(boolean hasMoreChildren) {
+		current.hasMoreChildren = hasMoreChildren;
+	}
+
+	public void setName(String name) {
+		current.name = name;
+	}
+
+	public void setValue(String value) {
+		current.value = value;
 	}
 
 }

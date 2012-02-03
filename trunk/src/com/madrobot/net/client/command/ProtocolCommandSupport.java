@@ -34,8 +34,8 @@ public class ProtocolCommandSupport implements Serializable
 	 *
 	 */
 	private static final long serialVersionUID = 8980780843518514989L;
-	private final Object __source;
-    private final com.madrobot.net.client.util.ListenerList __listeners;
+	private final com.madrobot.net.client.util.ListenerList __listeners;
+    private final Object __source;
 
     /***
      * Creates a ProtocolCommandSupport instant using the indicated source
@@ -49,6 +49,16 @@ public class ProtocolCommandSupport implements Serializable
         __source = source;
     }
 
+
+    /***
+     * Adds a ProtocolCommandListener.
+     * <p>
+     * @param listener  The ProtocolCommandListener to add.
+     ***/
+    public void addProtocolCommandListener(ProtocolCommandListener listener)
+    {
+        __listeners.addListener(listener);
+    }
 
     /***
      * Fires a ProtocolCommandEvent signalling the sending of a command to all
@@ -98,14 +108,15 @@ public class ProtocolCommandSupport implements Serializable
     }
 
     /***
-     * Adds a ProtocolCommandListener.
+     * Returns the number of ProtocolCommandListeners currently registered.
      * <p>
-     * @param listener  The ProtocolCommandListener to add.
+     * @return The number of ProtocolCommandListeners currently registered.
      ***/
-    public void addProtocolCommandListener(ProtocolCommandListener listener)
+    public int getListenerCount()
     {
-        __listeners.addListener(listener);
+        return __listeners.getListenerCount();
     }
+
 
     /***
      * Removes a ProtocolCommandListener.
@@ -115,17 +126,6 @@ public class ProtocolCommandSupport implements Serializable
     public void removeProtocolCommandListener(ProtocolCommandListener listener)
     {
         __listeners.removeListener(listener);
-    }
-
-
-    /***
-     * Returns the number of ProtocolCommandListeners currently registered.
-     * <p>
-     * @return The number of ProtocolCommandListeners currently registered.
-     ***/
-    public int getListenerCount()
-    {
-        return __listeners.getListenerCount();
     }
 
 }

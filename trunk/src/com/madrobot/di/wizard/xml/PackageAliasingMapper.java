@@ -27,11 +27,6 @@ import java.util.TreeMap;
  */
 class PackageAliasingMapper extends MapperWrapper implements Serializable {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 2304459264591819842L;
-
 	private static final Comparator REVERSE = new Comparator() {
 
 		@Override
@@ -40,8 +35,13 @@ class PackageAliasingMapper extends MapperWrapper implements Serializable {
 		}
 	};
 
-	private Map packageToName = new TreeMap(REVERSE);
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2304459264591819842L;
+
 	protected transient Map nameToPackage = new HashMap();
+	private Map packageToName = new TreeMap(REVERSE);
 
 	PackageAliasingMapper(final Mapper wrapped) {
 		super(wrapped);
@@ -58,21 +58,14 @@ class PackageAliasingMapper extends MapperWrapper implements Serializable {
 		packageToName.put(pkg, name);
 	}
 
-	@Override
-	public String serializedClass(final Class type) {
-		final String className = type.getName();
-		int length = className.length();
-		int dot = -1;
-		do {
-			dot = className.lastIndexOf('.', length);
-			final String pkg = dot < 0 ? "" : className.substring(0, dot + 1);
-			final String alias = (String) packageToName.get(pkg);
-			if (alias != null) {
-				return alias + (dot < 0 ? className : className.substring(dot + 1));
-			}
-			length = dot - 1;
-		} while (dot >= 0);
-		return super.serializedClass(type);
+	private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
+		packageToName = new TreeMap(REVERSE);
+		packageToName.putAll((Map) in.readObject());
+		nameToPackage = new HashMap();
+		for (final Iterator iter = packageToName.keySet().iterator(); iter.hasNext();) {
+			final Object type = iter.next();
+			nameToPackage.put(packageToName.get(type), type);
+		}
 	}
 
 	@Override
@@ -94,17 +87,24 @@ class PackageAliasingMapper extends MapperWrapper implements Serializable {
 		return super.realClass(elementName);
 	}
 
-	private void writeObject(final ObjectOutputStream out) throws IOException {
-		out.writeObject(new HashMap(packageToName));
+	@Override
+	public String serializedClass(final Class type) {
+		final String className = type.getName();
+		int length = className.length();
+		int dot = -1;
+		do {
+			dot = className.lastIndexOf('.', length);
+			final String pkg = dot < 0 ? "" : className.substring(0, dot + 1);
+			final String alias = (String) packageToName.get(pkg);
+			if (alias != null) {
+				return alias + (dot < 0 ? className : className.substring(dot + 1));
+			}
+			length = dot - 1;
+		} while (dot >= 0);
+		return super.serializedClass(type);
 	}
 
-	private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
-		packageToName = new TreeMap(REVERSE);
-		packageToName.putAll((Map) in.readObject());
-		nameToPackage = new HashMap();
-		for (final Iterator iter = packageToName.keySet().iterator(); iter.hasNext();) {
-			final Object type = iter.next();
-			nameToPackage.put(packageToName.get(type), type);
-		}
+	private void writeObject(final ObjectOutputStream out) throws IOException {
+		out.writeObject(new HashMap(packageToName));
 	}
 }

@@ -39,23 +39,34 @@ import android.util.Log;
 public final class JSONDeserializer {
 
 	/**
-	 * Logger tag for json deserializer
-	 */
-	public final static String TAG = "JSONUtils -> JSONDeserializer";
-
-	/**
 	 * default collection size , meaning user need whole json array
 	 */
 	public final static int DEFAULT_ITEM_COLLECTION_SIZE = -100;
 
 	private static JSONDeserializer jsonDeserializer = new JSONDeserializer();
 
+	/**
+	 * Logger tag for json deserializer
+	 */
+	public final static String TAG = "JSONUtils -> JSONDeserializer";
+
+	public static JSONDeserializer getInstance() {
+		return jsonDeserializer;
+	}
+
 	private JSONDeserializer() {
 
 	}
 
-	public static JSONDeserializer getInstance() {
-		return jsonDeserializer;
+	private String convertStreamToString(final InputStream is) throws IOException {
+		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+		StringBuilder sb = new StringBuilder();
+		String line = null;
+		while ((line = reader.readLine()) != null) {
+			sb.append(line + "\n");
+		}
+		is.close();
+		return sb.toString();
 	}
 
 	/**
@@ -80,26 +91,6 @@ public final class JSONDeserializer {
 	public <T> T deserialize(final Class<T> objType, final InputStream jsonContentStream) throws JSONException,
 			IOException {
 		return deserialize(objType, new JSONObject(convertStreamToString(jsonContentStream)));
-	}
-
-	/**
-	 * Deserialize the json data from the input to the corresponding entity type <br/>
-	 * If there is an error while parsing, if possible it will try to ignore it, otherwise returns a null value.
-	 * 
-	 * @param jsonContent
-	 *            String to read data from
-	 * @param objType
-	 *            Type of the entity to deserialize data to
-	 * 
-	 * @return {@link #deserialize(Class, JSONObject)}
-	 * 
-	 * @see #deserialize(Class, JSONObject)
-	 * 
-	 * @throws JSONException
-	 *             If an exception occurs during parsing
-	 */
-	public <T> T deserialize(final Class<T> objType, final String jsonContent) throws JSONException {
-		return deserialize(objType, new JSONObject(jsonContent));
 	}
 
 	/**
@@ -133,6 +124,26 @@ public final class JSONDeserializer {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Deserialize the json data from the input to the corresponding entity type <br/>
+	 * If there is an error while parsing, if possible it will try to ignore it, otherwise returns a null value.
+	 * 
+	 * @param jsonContent
+	 *            String to read data from
+	 * @param objType
+	 *            Type of the entity to deserialize data to
+	 * 
+	 * @return {@link #deserialize(Class, JSONObject)}
+	 * 
+	 * @see #deserialize(Class, JSONObject)
+	 * 
+	 * @throws JSONException
+	 *             If an exception occurs during parsing
+	 */
+	public <T> T deserialize(final Class<T> objType, final String jsonContent) throws JSONException {
+		return deserialize(objType, new JSONObject(jsonContent));
 	}
 
 	/**
@@ -237,6 +248,10 @@ public final class JSONDeserializer {
 		}
 	}
 
+	private String getAddMethodName(String fieldName) {
+		return "add" + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
+	}
+
 	private Field getField(final Class<?> userClass, final String jsonKey) throws NoSuchFieldException {
 
 		Field targetField = null;
@@ -267,20 +282,5 @@ public final class JSONDeserializer {
 			methodName = "set" + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
 		}
 		return methodName;
-	}
-
-	private String getAddMethodName(String fieldName) {
-		return "add" + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
-	}
-
-	private String convertStreamToString(final InputStream is) throws IOException {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-		StringBuilder sb = new StringBuilder();
-		String line = null;
-		while ((line = reader.readLine()) != null) {
-			sb.append(line + "\n");
-		}
-		is.close();
-		return sb.toString();
 	}
 }

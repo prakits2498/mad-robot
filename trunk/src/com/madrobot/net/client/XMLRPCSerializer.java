@@ -36,88 +36,6 @@ class XMLRPCSerializer implements IXMLRPCSerializer {
 	static SimpleDateFormat dateFormat = new SimpleDateFormat(DATETIME_FORMAT);
 
 	@Override
-	@SuppressWarnings("unchecked")
-	public void serialize(XmlSerializer serializer, Object object) throws IOException {
-		// This code supplied by mattias.ellback as part of issue #19
-		if (object == null){
-		     serializer.startTag(null, TYPE_NULL).endTag(null, TYPE_NULL);
-		} else
-		// check for scalar types:
-		if (object instanceof Integer || object instanceof Short || object instanceof Byte) {
-			serializer.startTag(null, TYPE_I4).text(object.toString()).endTag(null, TYPE_I4);
-		} else
-		if (object instanceof Long) {
-			serializer.startTag(null, TYPE_I8).text(object.toString()).endTag(null, TYPE_I8);
-		} else
-		if (object instanceof Double || object instanceof Float) {
-			serializer.startTag(null, TYPE_DOUBLE).text(object.toString()).endTag(null, TYPE_DOUBLE);
-		} else
-		if (object instanceof Boolean) {
-			Boolean bool = (Boolean) object;
-			String boolStr = bool.booleanValue() ? "1" : "0";
-			serializer.startTag(null, TYPE_BOOLEAN).text(boolStr).endTag(null, TYPE_BOOLEAN);
-		} else
-		if (object instanceof String) {
-			serializer.startTag(null, TYPE_STRING).text(object.toString()).endTag(null, TYPE_STRING);
-		} else
-		if (object instanceof Date || object instanceof Calendar) {
-			String dateStr = dateFormat.format(object);
-			serializer.startTag(null, TYPE_DATE_TIME_ISO8601).text(dateStr).endTag(null, TYPE_DATE_TIME_ISO8601);
-		} else
-		if (object instanceof byte[] ){
-			String value = new String(Base64.encode(((byte[])object),Base64.DEFAULT));
-			serializer.startTag(null, TYPE_BASE64).text(value).endTag(null, TYPE_BASE64);
-		} else
-		if (object instanceof List) {
-			serializer.startTag(null, TYPE_ARRAY).startTag(null, TAG_DATA);
-			List<Object> list = (List<Object>) object;
-			Iterator<Object> iter = list.iterator();
-			while (iter.hasNext()) {
-				Object o = iter.next();
-				serializer.startTag(null, TAG_VALUE);
-				serialize(serializer, o);
-				serializer.endTag(null, TAG_VALUE);
-			}
-			serializer.endTag(null, TAG_DATA).endTag(null, TYPE_ARRAY);
-		} else
-		if (object instanceof Object[]) {
-			serializer.startTag(null, TYPE_ARRAY).startTag(null, TAG_DATA);
-			Object[] objects = (Object[]) object;
-			for (int i=0; i<objects.length; i++) {
-				Object o = objects[i];
-				serializer.startTag(null, TAG_VALUE);
-				serialize(serializer, o);
-				serializer.endTag(null, TAG_VALUE);
-			}
-			serializer.endTag(null, TAG_DATA).endTag(null, TYPE_ARRAY);
-		} else
-		if (object instanceof Map) {
-			serializer.startTag(null, TYPE_STRUCT);
-			Map<String, Object> map = (Map<String, Object>) object;
-			Iterator<Entry<String, Object>> iter = map.entrySet().iterator();
-			while (iter.hasNext()) {
-				Entry<String, Object> entry = iter.next();
-				String key = entry.getKey();
-				Object value = entry.getValue();
-
-				serializer.startTag(null, TAG_MEMBER);
-				serializer.startTag(null, TAG_NAME).text(key).endTag(null, TAG_NAME);
-				serializer.startTag(null, TAG_VALUE);
-				serialize(serializer, value);
-				serializer.endTag(null, TAG_VALUE);
-				serializer.endTag(null, TAG_MEMBER);
-			}
-			serializer.endTag(null, TYPE_STRUCT);
-		} else
-		if (object instanceof XMLRPCSerializable) {
-			XMLRPCSerializable serializable = (XMLRPCSerializable) object;
-			serialize(serializer, serializable.getSerializable());
-		} else {
-			throw new IOException("Cannot serialize " + object);
-		}
-	}
-	
-	@Override
 	public Object deserialize(XmlPullParser parser) throws XmlPullParserException, IOException {
 		parser.require(XmlPullParser.START_TAG, null, TAG_VALUE);
 
@@ -236,5 +154,87 @@ class XMLRPCSerializer implements IXMLRPCSerializer {
 		parser.nextTag(); // TAG_VALUE (</value>)
 		parser.require(XmlPullParser.END_TAG, null, TAG_VALUE);
 		return obj;
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public void serialize(XmlSerializer serializer, Object object) throws IOException {
+		// This code supplied by mattias.ellback as part of issue #19
+		if (object == null){
+		     serializer.startTag(null, TYPE_NULL).endTag(null, TYPE_NULL);
+		} else
+		// check for scalar types:
+		if (object instanceof Integer || object instanceof Short || object instanceof Byte) {
+			serializer.startTag(null, TYPE_I4).text(object.toString()).endTag(null, TYPE_I4);
+		} else
+		if (object instanceof Long) {
+			serializer.startTag(null, TYPE_I8).text(object.toString()).endTag(null, TYPE_I8);
+		} else
+		if (object instanceof Double || object instanceof Float) {
+			serializer.startTag(null, TYPE_DOUBLE).text(object.toString()).endTag(null, TYPE_DOUBLE);
+		} else
+		if (object instanceof Boolean) {
+			Boolean bool = (Boolean) object;
+			String boolStr = bool.booleanValue() ? "1" : "0";
+			serializer.startTag(null, TYPE_BOOLEAN).text(boolStr).endTag(null, TYPE_BOOLEAN);
+		} else
+		if (object instanceof String) {
+			serializer.startTag(null, TYPE_STRING).text(object.toString()).endTag(null, TYPE_STRING);
+		} else
+		if (object instanceof Date || object instanceof Calendar) {
+			String dateStr = dateFormat.format(object);
+			serializer.startTag(null, TYPE_DATE_TIME_ISO8601).text(dateStr).endTag(null, TYPE_DATE_TIME_ISO8601);
+		} else
+		if (object instanceof byte[] ){
+			String value = new String(Base64.encode(((byte[])object),Base64.DEFAULT));
+			serializer.startTag(null, TYPE_BASE64).text(value).endTag(null, TYPE_BASE64);
+		} else
+		if (object instanceof List) {
+			serializer.startTag(null, TYPE_ARRAY).startTag(null, TAG_DATA);
+			List<Object> list = (List<Object>) object;
+			Iterator<Object> iter = list.iterator();
+			while (iter.hasNext()) {
+				Object o = iter.next();
+				serializer.startTag(null, TAG_VALUE);
+				serialize(serializer, o);
+				serializer.endTag(null, TAG_VALUE);
+			}
+			serializer.endTag(null, TAG_DATA).endTag(null, TYPE_ARRAY);
+		} else
+		if (object instanceof Object[]) {
+			serializer.startTag(null, TYPE_ARRAY).startTag(null, TAG_DATA);
+			Object[] objects = (Object[]) object;
+			for (int i=0; i<objects.length; i++) {
+				Object o = objects[i];
+				serializer.startTag(null, TAG_VALUE);
+				serialize(serializer, o);
+				serializer.endTag(null, TAG_VALUE);
+			}
+			serializer.endTag(null, TAG_DATA).endTag(null, TYPE_ARRAY);
+		} else
+		if (object instanceof Map) {
+			serializer.startTag(null, TYPE_STRUCT);
+			Map<String, Object> map = (Map<String, Object>) object;
+			Iterator<Entry<String, Object>> iter = map.entrySet().iterator();
+			while (iter.hasNext()) {
+				Entry<String, Object> entry = iter.next();
+				String key = entry.getKey();
+				Object value = entry.getValue();
+
+				serializer.startTag(null, TAG_MEMBER);
+				serializer.startTag(null, TAG_NAME).text(key).endTag(null, TAG_NAME);
+				serializer.startTag(null, TAG_VALUE);
+				serialize(serializer, value);
+				serializer.endTag(null, TAG_VALUE);
+				serializer.endTag(null, TAG_MEMBER);
+			}
+			serializer.endTag(null, TYPE_STRUCT);
+		} else
+		if (object instanceof XMLRPCSerializable) {
+			XMLRPCSerializable serializable = (XMLRPCSerializable) object;
+			serialize(serializer, serializable.getSerializable());
+		} else {
+			throw new IOException("Cannot serialize " + object);
+		}
 	}
 }

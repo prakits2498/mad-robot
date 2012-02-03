@@ -27,28 +27,11 @@ import java.util.TreeSet;
  */
 public class PrioritizedList {
 
-    private final Set set = new TreeSet();
-
-    private int lowestPriority = Integer.MAX_VALUE;
-
-    private int lastId = 0;
-
-    public void add(Object item, int priority) {
-        if (this.lowestPriority > priority) {
-            this.lowestPriority = priority;
-        }
-        this.set.add(new PrioritizedItem(item, priority, ++lastId));
-    }
-
-    public Iterator iterator() {
-        return new PrioritizedItemIterator(this.set.iterator());
-    }
-
     private static class PrioritizedItem implements Comparable {
 
-        final Object value;
-        final int priority;
         final int id;
+        final int priority;
+        final Object value;
 
         public PrioritizedItem(Object value, int priority, int id) {
             this.value = value;
@@ -83,12 +66,6 @@ public class PrioritizedList {
         }
 
         @Override
-		public void remove() {
-            // call iterator.remove()?
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
 		public boolean hasNext() {
             return iterator.hasNext();
         }
@@ -98,6 +75,29 @@ public class PrioritizedList {
             return ((PrioritizedItem)iterator.next()).value;
         }
 
+        @Override
+		public void remove() {
+            // call iterator.remove()?
+            throw new UnsupportedOperationException();
+        }
+
+    }
+
+    private int lastId = 0;
+
+    private int lowestPriority = Integer.MAX_VALUE;
+
+    private final Set set = new TreeSet();
+
+    public void add(Object item, int priority) {
+        if (this.lowestPriority > priority) {
+            this.lowestPriority = priority;
+        }
+        this.set.add(new PrioritizedItem(item, priority, ++lastId));
+    }
+
+    public Iterator iterator() {
+        return new PrioritizedItemIterator(this.set.iterator());
     }
 
 }

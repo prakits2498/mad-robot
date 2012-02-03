@@ -32,7 +32,19 @@ import android.util.Xml;
  * @author Elton Kent
  */
 public final class XMLUtils {
-	private XMLUtils() {
+	/**
+	 * Get the xml as a AttributeSet
+	 *
+	 * @param is XML InputStream
+	 * @return AttributeSet representation of the xml stream 
+	 * @throws XmlPullParserException
+	 */
+	public static AttributeSet getAttributeSet(InputStream is) throws XmlPullParserException {
+		XmlPullParser parser = Xml.newPullParser();
+		parser.setInput(is, null);
+		AttributeSet set = Xml.asAttributeSet(parser);
+		return set;
+
 	}
 
 	/**
@@ -51,18 +63,6 @@ public final class XMLUtils {
 		return builder.parse(is);
 	}
 
-	/**
-	 * Get the xml as a AttributeSet
-	 *
-	 * @param is XML InputStream
-	 * @return AttributeSet representation of the xml stream 
-	 * @throws XmlPullParserException
-	 */
-	public static AttributeSet getAttributeSet(InputStream is) throws XmlPullParserException {
-		XmlPullParser parser = Xml.newPullParser();
-		parser.setInput(is, null);
-		AttributeSet set = Xml.asAttributeSet(parser);
-		return set;
-
+	private XMLUtils() {
 	}
 }

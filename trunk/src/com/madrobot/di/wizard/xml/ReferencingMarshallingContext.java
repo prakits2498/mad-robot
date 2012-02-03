@@ -43,6 +43,16 @@ public interface ReferencingMarshallingContext extends MarshallingContext {
 	Object lookupReference(Object item);
 
 	/**
+	 * Register an implicit element. This is typically some kind of collection. Note, that this object may not be
+	 * referenced anywhere else in the object stream.
+	 * 
+	 * @param item
+	 *            the object that is implicit
+	 * @since 1.4
+	 */
+	void registerImplicit(Object item);
+
+	/**
 	 * Replace the currently marshalled item.
 	 * 
 	 * <p>
@@ -57,14 +67,4 @@ public interface ReferencingMarshallingContext extends MarshallingContext {
 	 * @since 1.4
 	 */
 	void replace(Object original, Object replacement);
-
-	/**
-	 * Register an implicit element. This is typically some kind of collection. Note, that this object may not be
-	 * referenced anywhere else in the object stream.
-	 * 
-	 * @param item
-	 *            the object that is implicit
-	 * @since 1.4
-	 */
-	void registerImplicit(Object item);
 }

@@ -28,15 +28,24 @@ public class DomWriter extends AbstractDocumentWriter {
 		this(document, new XmlFriendlyNameCoder());
 	}
 
-	public DomWriter(final Element rootElement) {
-		this(rootElement, new XmlFriendlyNameCoder());
-	}
-
 	/**
 	 * @since 1.4
 	 */
 	public DomWriter(final Document document, final NameCoder nameCoder) {
 		this(document.getDocumentElement(), document, nameCoder);
+	}
+
+	/**
+	 * @since 1.2
+	 * @deprecated As of 1.4 use {@link DomWriter#DomWriter(Document, NameCoder)} instead.
+	 */
+	@Deprecated
+	public DomWriter(final Document document, final XmlFriendlyNameCoder replacer) {
+		this(document.getDocumentElement(), document, (NameCoder) replacer);
+	}
+
+	public DomWriter(final Element rootElement) {
+		this(rootElement, new XmlFriendlyNameCoder());
 	}
 
 	/**
@@ -49,22 +58,6 @@ public class DomWriter extends AbstractDocumentWriter {
 	}
 
 	/**
-	 * @since 1.4
-	 */
-	public DomWriter(final Element rootElement, final NameCoder nameCoder) {
-		this(rootElement, rootElement.getOwnerDocument(), nameCoder);
-	}
-
-	/**
-	 * @since 1.2
-	 * @deprecated As of 1.4 use {@link DomWriter#DomWriter(Document, NameCoder)} instead.
-	 */
-	@Deprecated
-	public DomWriter(final Document document, final XmlFriendlyNameCoder replacer) {
-		this(document.getDocumentElement(), document, (NameCoder) replacer);
-	}
-
-	/**
 	 * @since 1.2.1
 	 * @deprecated As of 1.4 use {@link DomWriter#DomWriter(Element, Document, NameCoder)} instead.
 	 */
@@ -74,12 +67,24 @@ public class DomWriter extends AbstractDocumentWriter {
 	}
 
 	/**
+	 * @since 1.4
+	 */
+	public DomWriter(final Element rootElement, final NameCoder nameCoder) {
+		this(rootElement, rootElement.getOwnerDocument(), nameCoder);
+	}
+
+	/**
 	 * @since 1.2
 	 * @deprecated As of 1.4 use {@link DomWriter#DomWriter(Element, NameCoder)} instead.
 	 */
 	@Deprecated
 	public DomWriter(final Element rootElement, final XmlFriendlyNameCoder replacer) {
 		this(rootElement, rootElement.getOwnerDocument(), (NameCoder) replacer);
+	}
+
+	@Override
+	public void addAttribute(final String name, final String value) {
+		top().setAttribute(encodeAttribute(name), value);
 	}
 
 	@Override
@@ -93,11 +98,6 @@ public class DomWriter extends AbstractDocumentWriter {
 			hasRootElement = true;
 		}
 		return child;
-	}
-
-	@Override
-	public void addAttribute(final String name, final String value) {
-		top().setAttribute(encodeAttribute(name), value);
 	}
 
 	@Override

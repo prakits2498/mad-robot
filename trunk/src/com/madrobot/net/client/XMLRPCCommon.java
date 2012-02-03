@@ -18,24 +18,14 @@ import android.util.Xml;
 
 class XMLRPCCommon {
 
-	protected XmlSerializer serializer;
 	protected IXMLRPCSerializer iXMLRPCSerializer;
+	protected XmlSerializer serializer;
 	
 	XMLRPCCommon() {
 		serializer = Xml.newSerializer();
 		iXMLRPCSerializer = new XMLRPCSerializer();
 	}
 
-	/**
-	 * Sets custom IXMLRPCSerializer serializer (in case when server doesn't support
-	 * standard XMLRPC protocol)
-	 * 
-	 * @param serializer custom serializer
-	 */
-	public void setSerializer(IXMLRPCSerializer serializer) {
-		iXMLRPCSerializer = serializer;
-	}
-			
 	protected void serializeParams(Object[] params) throws IllegalArgumentException, IllegalStateException, IOException {
 		if (params != null && params.length != 0)
 		{
@@ -48,6 +38,16 @@ class XMLRPCCommon {
 			}
 			serializer.endTag(null, Tag.PARAMS);
 		}
+	}
+			
+	/**
+	 * Sets custom IXMLRPCSerializer serializer (in case when server doesn't support
+	 * standard XMLRPC protocol)
+	 * 
+	 * @param serializer custom serializer
+	 */
+	public void setSerializer(IXMLRPCSerializer serializer) {
+		iXMLRPCSerializer = serializer;
 	}
 
 }

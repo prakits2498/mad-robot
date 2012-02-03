@@ -24,16 +24,16 @@ public class ColorPickerDialog {
 		void onOk(ColorPickerDialog dialog, int color);
 	}
 
+	final float[] currentColorHsv = new float[3];
 	final AlertDialog dialog;
 	final OnAmbilWarnaListener listener;
-	final View viewHue;
-	final ColorPickerView viewSatVal;
-	final ImageView viewCursor;
-	final View viewOldColor;
-	final View viewNewColor;
-	final ImageView viewTarget;
 	final ViewGroup viewContainer;
-	final float[] currentColorHsv = new float[3];
+	final ImageView viewCursor;
+	final View viewHue;
+	final View viewNewColor;
+	final View viewOldColor;
+	final ColorPickerView viewSatVal;
+	final ImageView viewTarget;
 
 	/**
 	 * create an AmbilWarnaDialog. call this only from OnCreateDialog() or from a background thread.
@@ -151,6 +151,26 @@ public class ColorPickerDialog {
 		});
 	}
 
+	private int getColor() {
+		return Color.HSVToColor(currentColorHsv);
+	}
+
+	public AlertDialog getDialog() {
+		return dialog;
+	}
+
+	private float getHue() {
+		return currentColorHsv[0];
+	}
+
+	private float getSat() {
+		return currentColorHsv[1];
+	}
+
+	private float getVal() {
+		return currentColorHsv[2];
+	}
+
 	protected void moveCursor() {
 		float y = viewHue.getMeasuredHeight() - (getHue() * viewHue.getMeasuredHeight() / 360.f);
 		if (y == viewHue.getMeasuredHeight()) y = 0.f;
@@ -171,22 +191,6 @@ public class ColorPickerDialog {
 		viewTarget.setLayoutParams(layoutParams);
 	}
 
-	private int getColor() {
-		return Color.HSVToColor(currentColorHsv);
-	}
-
-	private float getHue() {
-		return currentColorHsv[0];
-	}
-
-	private float getSat() {
-		return currentColorHsv[1];
-	}
-
-	private float getVal() {
-		return currentColorHsv[2];
-	}
-
 	private void setHue(float hue) {
 		currentColorHsv[0] = hue;
 	}
@@ -201,9 +205,5 @@ public class ColorPickerDialog {
 
 	public void show() {
 		dialog.show();
-	}
-
-	public AlertDialog getDialog() {
-		return dialog;
 	}
 }

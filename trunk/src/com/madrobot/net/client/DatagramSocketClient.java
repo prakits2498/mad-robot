@@ -46,19 +46,19 @@ public abstract class DatagramSocketClient {
 	 ***/
 	private static final IDatagramSocketFactory __DEFAULT_SOCKET_FACTORY = new DefaultDatagramSocketFactory();
 
-	/*** The timeout to use after opening a socket. ***/
-	protected int _timeout_;
-
-	/*** The datagram socket used for the connection. ***/
-	protected DatagramSocket _socket_;
-
 	/***
 	 * A status variable indicating if the client's socket is currently open.
 	 ***/
 	protected boolean _isOpen_;
 
+	/*** The datagram socket used for the connection. ***/
+	protected DatagramSocket _socket_;
+
 	/*** The datagram socket's DatagramSocketFactory. ***/
 	protected IDatagramSocketFactory _socketFactory_;
+
+	/*** The timeout to use after opening a socket. ***/
+	protected int _timeout_;
 
 	/***
 	 * Default constructor for DatagramSocketClient. Initializes
@@ -69,6 +69,79 @@ public abstract class DatagramSocketClient {
 		_timeout_ = 0;
 		_isOpen_ = false;
 		_socketFactory_ = __DEFAULT_SOCKET_FACTORY;
+	}
+
+	/***
+	 * Closes the DatagramSocket used for the connection.
+	 * You should call this method after you've finished using the class
+	 * instance and also before you call {@link #open open() } again. _isOpen_
+	 * is set to false and _socket_ is set to null.
+	 * If you call this method when the client socket is not open,
+	 * a NullPointerException is thrown.
+	 ***/
+	public void close() {
+		_socket_.close();
+		_socket_ = null;
+		_isOpen_ = false;
+	}
+
+	/***
+	 * Returns the default timeout in milliseconds that is used when
+	 * opening a socket.
+	 * <p>
+	 * 
+	 * @return The default timeout in milliseconds that is used when
+	 *         opening a socket.
+	 ***/
+	public int getDefaultTimeout() {
+		return _timeout_;
+	}
+
+	/***
+	 * Returns the local address to which the client's socket is bound.
+	 * If you call this method when the client socket is not open, a
+	 * NullPointerException is thrown.
+	 * <p>
+	 * 
+	 * @return The local address to which the client's socket is bound.
+	 ***/
+	public InetAddress getLocalAddress() {
+		return _socket_.getLocalAddress();
+	}
+
+	/***
+	 * Returns the port number of the open socket on the local host used
+	 * for the connection. If you call this method when the client socket
+	 * is not open, a NullPointerException is thrown.
+	 * <p>
+	 * 
+	 * @return The port number of the open socket on the local host used
+	 *         for the connection.
+	 ***/
+	public int getLocalPort() {
+		return _socket_.getLocalPort();
+	}
+
+	/***
+	 * Returns the timeout in milliseconds of the currently opened socket.
+	 * If you call this method when the client socket is not open,
+	 * a NullPointerException is thrown.
+	 * <p>
+	 * 
+	 * @return The timeout in milliseconds of the currently opened socket.
+	 ***/
+	public int getSoTimeout() throws SocketException {
+		return _socket_.getSoTimeout();
+	}
+
+	/***
+	 * Returns true if the client has a currently open socket.
+	 * <p>
+	 * 
+	 * @return True if the client has a curerntly open socket, false otherwise.
+	 ***/
+	public boolean isOpen() {
+		return _isOpen_;
 	}
 
 	/***
@@ -136,27 +209,22 @@ public abstract class DatagramSocketClient {
 	}
 
 	/***
-	 * Closes the DatagramSocket used for the connection.
-	 * You should call this method after you've finished using the class
-	 * instance and also before you call {@link #open open() } again. _isOpen_
-	 * is set to false and _socket_ is set to null.
-	 * If you call this method when the client socket is not open,
-	 * a NullPointerException is thrown.
-	 ***/
-	public void close() {
-		_socket_.close();
-		_socket_ = null;
-		_isOpen_ = false;
-	}
-
-	/***
-	 * Returns true if the client has a currently open socket.
+	 * Sets the DatagramSocketFactory used by the DatagramSocketClient
+	 * to open DatagramSockets. If the factory value is null, then a default
+	 * factory is used (only do this to reset the factory after having
+	 * previously altered it).
 	 * <p>
 	 * 
-	 * @return True if the client has a curerntly open socket, false otherwise.
+	 * @param factory
+	 *            The new DatagramSocketFactory the DatagramSocketClient
+	 *            should use.
 	 ***/
-	public boolean isOpen() {
-		return _isOpen_;
+	public void setDatagramSocketFactory(IDatagramSocketFactory factory) {
+		if(factory == null){
+			_socketFactory_ = __DEFAULT_SOCKET_FACTORY;
+		} else{
+			_socketFactory_ = factory;
+		}
 	}
 
 	/***
@@ -177,18 +245,6 @@ public abstract class DatagramSocketClient {
 	}
 
 	/***
-	 * Returns the default timeout in milliseconds that is used when
-	 * opening a socket.
-	 * <p>
-	 * 
-	 * @return The default timeout in milliseconds that is used when
-	 *         opening a socket.
-	 ***/
-	public int getDefaultTimeout() {
-		return _timeout_;
-	}
-
-	/***
 	 * Set the timeout in milliseconds of a currently open connection.
 	 * Only call this method after a connection has been opened
 	 * by {@link #open open()}.
@@ -200,61 +256,5 @@ public abstract class DatagramSocketClient {
 	 ***/
 	public void setSoTimeout(int timeout) throws SocketException {
 		_socket_.setSoTimeout(timeout);
-	}
-
-	/***
-	 * Returns the timeout in milliseconds of the currently opened socket.
-	 * If you call this method when the client socket is not open,
-	 * a NullPointerException is thrown.
-	 * <p>
-	 * 
-	 * @return The timeout in milliseconds of the currently opened socket.
-	 ***/
-	public int getSoTimeout() throws SocketException {
-		return _socket_.getSoTimeout();
-	}
-
-	/***
-	 * Returns the port number of the open socket on the local host used
-	 * for the connection. If you call this method when the client socket
-	 * is not open, a NullPointerException is thrown.
-	 * <p>
-	 * 
-	 * @return The port number of the open socket on the local host used
-	 *         for the connection.
-	 ***/
-	public int getLocalPort() {
-		return _socket_.getLocalPort();
-	}
-
-	/***
-	 * Returns the local address to which the client's socket is bound.
-	 * If you call this method when the client socket is not open, a
-	 * NullPointerException is thrown.
-	 * <p>
-	 * 
-	 * @return The local address to which the client's socket is bound.
-	 ***/
-	public InetAddress getLocalAddress() {
-		return _socket_.getLocalAddress();
-	}
-
-	/***
-	 * Sets the DatagramSocketFactory used by the DatagramSocketClient
-	 * to open DatagramSockets. If the factory value is null, then a default
-	 * factory is used (only do this to reset the factory after having
-	 * previously altered it).
-	 * <p>
-	 * 
-	 * @param factory
-	 *            The new DatagramSocketFactory the DatagramSocketClient
-	 *            should use.
-	 ***/
-	public void setDatagramSocketFactory(IDatagramSocketFactory factory) {
-		if(factory == null){
-			_socketFactory_ = __DEFAULT_SOCKET_FACTORY;
-		} else{
-			_socketFactory_ = factory;
-		}
 	}
 }

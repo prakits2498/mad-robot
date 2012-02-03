@@ -18,12 +18,12 @@ import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
 class ReferenceByIdMarshallingStrategy extends AbstractTreeMarshallingStrategy {
 
 	@Override
-	protected TreeUnmarshaller createUnmarshallingContext(Object root, HierarchicalStreamReader reader, ConverterLookup converterLookup, Mapper mapper) {
-		return new ReferenceByIdUnmarshaller(root, reader, converterLookup, mapper);
+	protected TreeMarshaller createMarshallingContext(HierarchicalStreamWriter writer, ConverterLookup converterLookup, Mapper mapper) {
+		return new ReferenceByIdMarshaller(writer, converterLookup, mapper);
 	}
 
 	@Override
-	protected TreeMarshaller createMarshallingContext(HierarchicalStreamWriter writer, ConverterLookup converterLookup, Mapper mapper) {
-		return new ReferenceByIdMarshaller(writer, converterLookup, mapper);
+	protected TreeUnmarshaller createUnmarshallingContext(Object root, HierarchicalStreamReader reader, ConverterLookup converterLookup, Mapper mapper) {
+		return new ReferenceByIdUnmarshaller(root, reader, converterLookup, mapper);
 	}
 }

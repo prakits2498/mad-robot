@@ -106,162 +106,6 @@ public class POP3Client extends POP3 {
 	}
 
 	/***
-	 * Login to the POP3 server with the given username and password. You
-	 * must first connect to the server with
-	 * {@link org.apache.commons.net.SocketClient#connect connect } before
-	 * attempting to login. A login attempt is only valid if
-	 * the client is in the
-	 * {@link com.madrobot.net.client.POP3#AUTHORIZATION_STATE
-	 * AUTHORIZATION_STATE } . After logging in, the client enters the
-	 * {@link com.madrobot.net.client.POP3#TRANSACTION_STATE
-	 * TRANSACTION_STATE } .
-	 * <p>
-	 * 
-	 * @param username
-	 *            The account name being logged in to.
-	 * @param password
-	 *            The plain text password of the account.
-	 * @return True if the login attempt was successful, false if not.
-	 * @exception IOException
-	 *                If a network I/O error occurs in the process of
-	 *                logging in.
-	 ***/
-	public boolean login(String username, String password) throws IOException {
-		if(getState() != AUTHORIZATION_STATE){
-			return false;
-		}
-
-		if(sendCommand(POP3Command.USER, username) != POP3Reply.OK){
-			return false;
-		}
-
-		if(sendCommand(POP3Command.PASS, password) != POP3Reply.OK){
-			return false;
-		}
-
-		setState(TRANSACTION_STATE);
-
-		return true;
-	}
-
-	/***
-	 * Login to the POP3 server with the given username and authentication
-	 * information. Use this method when connecting to a server requiring
-	 * authentication using the APOP command. Because the timestamp
-	 * produced in the greeting banner varies from server to server, it is
-	 * not possible to consistently extract the information. Therefore,
-	 * after connecting to the server, you must call
-	 * {@link com.madrobot.net.client.POP3#getReplyString getReplyString }
-	 * and parse out the timestamp information yourself.
-	 * <p>
-	 * You must first connect to the server with
-	 * {@link org.apache.commons.net.SocketClient#connect connect } before
-	 * attempting to login. A login attempt is only valid if the client is in
-	 * the {@link com.madrobot.net.client.POP3#AUTHORIZATION_STATE
-	 * AUTHORIZATION_STATE } . After logging in, the client enters the
-	 * {@link com.madrobot.net.client.POP3#TRANSACTION_STATE
-	 * TRANSACTION_STATE } . After connecting, you must parse out the server
-	 * specific information to use as a timestamp, and pass that information to
-	 * this method. The secret is a shared secret known to you and the server.
-	 * See RFC 1939 for more details regarding the APOP command.
-	 * <p>
-	 * 
-	 * @param username
-	 *            The account name being logged in to.
-	 * @param timestamp
-	 *            The timestamp string to combine with the secret.
-	 * @param secret
-	 *            The shared secret which produces the MD5 digest when
-	 *            combined with the timestamp.
-	 * @return True if the login attempt was successful, false if not.
-	 * @exception IOException
-	 *                If a network I/O error occurs in the process of
-	 *                logging in.
-	 * @exception NoSuchAlgorithmException
-	 *                If the MD5 encryption algorithm
-	 *                cannot be instantiated by the Java runtime system.
-	 ***/
-	public boolean login(String username, String timestamp, String secret) throws IOException,
-			NoSuchAlgorithmException {
-		int i;
-		byte[] digest;
-		StringBuilder buffer, digestBuffer;
-		MessageDigest md5;
-
-		if(getState() != AUTHORIZATION_STATE){
-			return false;
-		}
-
-		md5 = MessageDigest.getInstance("MD5");
-		timestamp += secret;
-		digest = md5.digest(timestamp.getBytes());
-		digestBuffer = new StringBuilder(128);
-
-		for(i = 0; i < digest.length; i++){
-			digestBuffer.append(Integer.toHexString(digest[i] & 0xff));
-		}
-
-		buffer = new StringBuilder(256);
-		buffer.append(username);
-		buffer.append(' ');
-		buffer.append(digestBuffer.toString());
-
-		if(sendCommand(POP3Command.APOP, buffer.toString()) != POP3Reply.OK){
-			return false;
-		}
-
-		setState(TRANSACTION_STATE);
-
-		return true;
-	}
-
-	/***
-	 * Logout of the POP3 server. To fully disconnect from the server
-	 * you must call {@link com.madrobot.net.client.POP3#disconnect
-	 * disconnect }.
-	 * A logout attempt is valid in any state. If
-	 * the client is in the
-	 * {@link com.madrobot.net.client.POP3#TRANSACTION_STATE
-	 * TRANSACTION_STATE } , it enters the
-	 * {@link com.madrobot.net.client.POP3#UPDATE_STATE UPDATE_STATE } on a
-	 * successful logout.
-	 * <p>
-	 * 
-	 * @return True if the logout attempt was successful, false if not.
-	 * @exception IOException
-	 *                If a network I/O error occurs in the process
-	 *                of logging out.
-	 ***/
-	public boolean logout() throws IOException {
-		if(getState() == TRANSACTION_STATE){
-			setState(UPDATE_STATE);
-		}
-		sendCommand(POP3Command.QUIT);
-		return (_replyCode == POP3Reply.OK);
-	}
-
-	/***
-	 * Send a NOOP command to the POP3 server. This is useful for keeping
-	 * a connection alive since most POP3 servers will timeout after 10
-	 * minutes of inactivity. A noop attempt will only succeed if
-	 * the client is in the
-	 * {@link com.madrobot.net.client.POP3#TRANSACTION_STATE
-	 * TRANSACTION_STATE } .
-	 * <p>
-	 * 
-	 * @return True if the noop attempt was successful, false if not.
-	 * @exception IOException
-	 *                If a network I/O error occurs in the process of
-	 *                sending the NOOP command.
-	 ***/
-	public boolean noop() throws IOException {
-		if(getState() == TRANSACTION_STATE){
-			return (sendCommand(POP3Command.NOOP) == POP3Reply.OK);
-		}
-		return false;
-	}
-
-	/***
 	 * Delete a message from the POP3 server. The message is only marked
 	 * for deletion by the server. If you decide to unmark the message, you
 	 * must issuse a {@link #reset reset } command. Messages marked
@@ -283,53 +127,6 @@ public class POP3Client extends POP3 {
 			return (sendCommand(POP3Command.DELE, Integer.toString(messageId)) == POP3Reply.OK);
 		}
 		return false;
-	}
-
-	/***
-	 * Reset the POP3 session. This is useful for undoing any message
-	 * deletions that may have been performed. A reset attempt can only
-	 * succeed if the client is in the
-	 * {@link com.madrobot.net.client.POP3#TRANSACTION_STATE
-	 * TRANSACTION_STATE } .
-	 * <p>
-	 * 
-	 * @return True if the reset attempt was successful, false if not.
-	 * @exception IOException
-	 *                If a network I/O error occurs in the process of
-	 *                sending the reset command.
-	 ***/
-	public boolean reset() throws IOException {
-		if(getState() == TRANSACTION_STATE){
-			return (sendCommand(POP3Command.RSET) == POP3Reply.OK);
-		}
-		return false;
-	}
-
-	/***
-	 * Get the mailbox status. A status attempt can only
-	 * succeed if the client is in the
-	 * {@link com.madrobot.net.client.POP3#TRANSACTION_STATE
-	 * TRANSACTION_STATE } . Returns a POP3MessageInfo instance
-	 * containing the number of messages in the mailbox and the total
-	 * size of the messages in bytes. Returns null if the status the
-	 * attempt fails.
-	 * <p>
-	 * 
-	 * @return A POP3MessageInfo instance containing the number of
-	 *         messages in the mailbox and the total size of the messages
-	 *         in bytes. Returns null if the status the attempt fails.
-	 * @exception IOException
-	 *                If a network I/O error occurs in the process of
-	 *                sending the status command.
-	 ***/
-	public POP3MessageInfo status() throws IOException {
-		if(getState() != TRANSACTION_STATE){
-			return null;
-		}
-		if(sendCommand(POP3Command.STAT) != POP3Reply.OK){
-			return null;
-		}
-		return __parseStatus(_lastReplyLine.substring(3));
 	}
 
 	/***
@@ -489,6 +286,182 @@ public class POP3Client extends POP3 {
 	}
 
 	/***
+	 * Login to the POP3 server with the given username and password. You
+	 * must first connect to the server with
+	 * {@link org.apache.commons.net.SocketClient#connect connect } before
+	 * attempting to login. A login attempt is only valid if
+	 * the client is in the
+	 * {@link com.madrobot.net.client.POP3#AUTHORIZATION_STATE
+	 * AUTHORIZATION_STATE } . After logging in, the client enters the
+	 * {@link com.madrobot.net.client.POP3#TRANSACTION_STATE
+	 * TRANSACTION_STATE } .
+	 * <p>
+	 * 
+	 * @param username
+	 *            The account name being logged in to.
+	 * @param password
+	 *            The plain text password of the account.
+	 * @return True if the login attempt was successful, false if not.
+	 * @exception IOException
+	 *                If a network I/O error occurs in the process of
+	 *                logging in.
+	 ***/
+	public boolean login(String username, String password) throws IOException {
+		if(getState() != AUTHORIZATION_STATE){
+			return false;
+		}
+
+		if(sendCommand(POP3Command.USER, username) != POP3Reply.OK){
+			return false;
+		}
+
+		if(sendCommand(POP3Command.PASS, password) != POP3Reply.OK){
+			return false;
+		}
+
+		setState(TRANSACTION_STATE);
+
+		return true;
+	}
+
+	/***
+	 * Login to the POP3 server with the given username and authentication
+	 * information. Use this method when connecting to a server requiring
+	 * authentication using the APOP command. Because the timestamp
+	 * produced in the greeting banner varies from server to server, it is
+	 * not possible to consistently extract the information. Therefore,
+	 * after connecting to the server, you must call
+	 * {@link com.madrobot.net.client.POP3#getReplyString getReplyString }
+	 * and parse out the timestamp information yourself.
+	 * <p>
+	 * You must first connect to the server with
+	 * {@link org.apache.commons.net.SocketClient#connect connect } before
+	 * attempting to login. A login attempt is only valid if the client is in
+	 * the {@link com.madrobot.net.client.POP3#AUTHORIZATION_STATE
+	 * AUTHORIZATION_STATE } . After logging in, the client enters the
+	 * {@link com.madrobot.net.client.POP3#TRANSACTION_STATE
+	 * TRANSACTION_STATE } . After connecting, you must parse out the server
+	 * specific information to use as a timestamp, and pass that information to
+	 * this method. The secret is a shared secret known to you and the server.
+	 * See RFC 1939 for more details regarding the APOP command.
+	 * <p>
+	 * 
+	 * @param username
+	 *            The account name being logged in to.
+	 * @param timestamp
+	 *            The timestamp string to combine with the secret.
+	 * @param secret
+	 *            The shared secret which produces the MD5 digest when
+	 *            combined with the timestamp.
+	 * @return True if the login attempt was successful, false if not.
+	 * @exception IOException
+	 *                If a network I/O error occurs in the process of
+	 *                logging in.
+	 * @exception NoSuchAlgorithmException
+	 *                If the MD5 encryption algorithm
+	 *                cannot be instantiated by the Java runtime system.
+	 ***/
+	public boolean login(String username, String timestamp, String secret) throws IOException,
+			NoSuchAlgorithmException {
+		int i;
+		byte[] digest;
+		StringBuilder buffer, digestBuffer;
+		MessageDigest md5;
+
+		if(getState() != AUTHORIZATION_STATE){
+			return false;
+		}
+
+		md5 = MessageDigest.getInstance("MD5");
+		timestamp += secret;
+		digest = md5.digest(timestamp.getBytes());
+		digestBuffer = new StringBuilder(128);
+
+		for(i = 0; i < digest.length; i++){
+			digestBuffer.append(Integer.toHexString(digest[i] & 0xff));
+		}
+
+		buffer = new StringBuilder(256);
+		buffer.append(username);
+		buffer.append(' ');
+		buffer.append(digestBuffer.toString());
+
+		if(sendCommand(POP3Command.APOP, buffer.toString()) != POP3Reply.OK){
+			return false;
+		}
+
+		setState(TRANSACTION_STATE);
+
+		return true;
+	}
+
+	/***
+	 * Logout of the POP3 server. To fully disconnect from the server
+	 * you must call {@link com.madrobot.net.client.POP3#disconnect
+	 * disconnect }.
+	 * A logout attempt is valid in any state. If
+	 * the client is in the
+	 * {@link com.madrobot.net.client.POP3#TRANSACTION_STATE
+	 * TRANSACTION_STATE } , it enters the
+	 * {@link com.madrobot.net.client.POP3#UPDATE_STATE UPDATE_STATE } on a
+	 * successful logout.
+	 * <p>
+	 * 
+	 * @return True if the logout attempt was successful, false if not.
+	 * @exception IOException
+	 *                If a network I/O error occurs in the process
+	 *                of logging out.
+	 ***/
+	public boolean logout() throws IOException {
+		if(getState() == TRANSACTION_STATE){
+			setState(UPDATE_STATE);
+		}
+		sendCommand(POP3Command.QUIT);
+		return (_replyCode == POP3Reply.OK);
+	}
+
+	/***
+	 * Send a NOOP command to the POP3 server. This is useful for keeping
+	 * a connection alive since most POP3 servers will timeout after 10
+	 * minutes of inactivity. A noop attempt will only succeed if
+	 * the client is in the
+	 * {@link com.madrobot.net.client.POP3#TRANSACTION_STATE
+	 * TRANSACTION_STATE } .
+	 * <p>
+	 * 
+	 * @return True if the noop attempt was successful, false if not.
+	 * @exception IOException
+	 *                If a network I/O error occurs in the process of
+	 *                sending the NOOP command.
+	 ***/
+	public boolean noop() throws IOException {
+		if(getState() == TRANSACTION_STATE){
+			return (sendCommand(POP3Command.NOOP) == POP3Reply.OK);
+		}
+		return false;
+	}
+
+	/***
+	 * Reset the POP3 session. This is useful for undoing any message
+	 * deletions that may have been performed. A reset attempt can only
+	 * succeed if the client is in the
+	 * {@link com.madrobot.net.client.POP3#TRANSACTION_STATE
+	 * TRANSACTION_STATE } .
+	 * <p>
+	 * 
+	 * @return True if the reset attempt was successful, false if not.
+	 * @exception IOException
+	 *                If a network I/O error occurs in the process of
+	 *                sending the reset command.
+	 ***/
+	public boolean reset() throws IOException {
+		if(getState() == TRANSACTION_STATE){
+			return (sendCommand(POP3Command.RSET) == POP3Reply.OK);
+		}
+		return false;
+	}
+
+	/***
 	 * Retrieve a message from the POP3 server. A retrieve message attempt
 	 * can only succeed if the client is in the
 	 * {@link com.madrobot.net.client.POP3#TRANSACTION_STATE
@@ -572,6 +545,33 @@ public class POP3Client extends POP3 {
 		}
 
 		return new DotTerminatedMessageReader(_reader);
+	}
+
+	/***
+	 * Get the mailbox status. A status attempt can only
+	 * succeed if the client is in the
+	 * {@link com.madrobot.net.client.POP3#TRANSACTION_STATE
+	 * TRANSACTION_STATE } . Returns a POP3MessageInfo instance
+	 * containing the number of messages in the mailbox and the total
+	 * size of the messages in bytes. Returns null if the status the
+	 * attempt fails.
+	 * <p>
+	 * 
+	 * @return A POP3MessageInfo instance containing the number of
+	 *         messages in the mailbox and the total size of the messages
+	 *         in bytes. Returns null if the status the attempt fails.
+	 * @exception IOException
+	 *                If a network I/O error occurs in the process of
+	 *                sending the status command.
+	 ***/
+	public POP3MessageInfo status() throws IOException {
+		if(getState() != TRANSACTION_STATE){
+			return null;
+		}
+		if(sendCommand(POP3Command.STAT) != POP3Reply.OK){
+			return null;
+		}
+		return __parseStatus(_lastReplyLine.substring(3));
 	}
 
 }

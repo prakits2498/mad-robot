@@ -15,14 +15,12 @@ package com.madrobot.di.wizard.xml.io;
  */
 public interface HierarchicalStreamWriter {
 
-	void startNode(String name);
-
 	void addAttribute(String name, String value);
 
 	/**
-	 * Write the value (text content) of the current node.
+	 * Close the writer, if necessary.
 	 */
-	void setValue(String text);
+	void close();
 
 	void endNode();
 
@@ -32,9 +30,11 @@ public interface HierarchicalStreamWriter {
 	void flush();
 
 	/**
-	 * Close the writer, if necessary.
+	 * Write the value (text content) of the current node.
 	 */
-	void close();
+	void setValue(String text);
+
+	void startNode(String name);
 
 	/**
 	 * Return the underlying HierarchicalStreamWriter implementation.

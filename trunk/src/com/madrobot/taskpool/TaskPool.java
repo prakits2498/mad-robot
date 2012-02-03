@@ -28,8 +28,8 @@ class TaskPool extends ThreadPoolExecutor {
 //	public static final int QUEUE_SIZE = 250;
 //	public static final int MAX_THREADS_COUNT = 2;
 
-	private static final long serialVersionUID = 1L;
 	private static LinkedBlockingQueue<Runnable> blockingQueue = new LinkedBlockingQueue<Runnable>(250);
+	private static final long serialVersionUID = 1L;
 
 	private static ThreadFactory threadFactory = new ThreadFactory() {
 

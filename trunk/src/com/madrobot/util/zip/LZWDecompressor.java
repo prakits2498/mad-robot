@@ -19,17 +19,6 @@ import com.madrobot.io.BitInputStream;
 
 public final class LZWDecompressor
 {
-	private static final int MAX_TABLE_SIZE = 1 << 12;
-
-	private final byte[][] table;
-	private int codeSize;
-	private final int initialCodeSize;
-	private int codes = -1;
-
-	private final int byteOrder;
-
-	private final Listener listener;
-
 	public static interface Listener
 	{
 		public void code(int code);
@@ -37,11 +26,29 @@ public final class LZWDecompressor
 		public void init(int clearCode, int eoiCode);
 	}
 
+	private static final int MAX_TABLE_SIZE = 1 << 12;
+	private final int byteOrder;
+	private final int clearCode;
+	private int codes = -1;
+
+	private int codeSize;
+
+	private final int eoiCode;
+
+	private final int initialCodeSize;
+
+	private final Listener listener;
+
+	private final byte[][] table;
+
+	private boolean tiffLZWMode = false;
+
+	private int written = 0;
+
 	public LZWDecompressor(int initialCodeSize, int byteOrder)
 	{
 		this(initialCodeSize, byteOrder, null);
 	}
-
 	public LZWDecompressor(int initialCodeSize, int byteOrder,
 			Listener listener)
 	{
@@ -59,57 +66,6 @@ public final class LZWDecompressor
 		}
 
 		InitializeTable();
-	}
-
-	private final void InitializeTable()
-	{
-		codeSize = initialCodeSize;
-
-		int intial_entries_count = 1 << codeSize + 2;
-
-		for (int i = 0; i < intial_entries_count; i++){
-			table[i] = new byte[] { (byte) i, };
-		}
-	}
-
-	private final void clearTable()
-	{
-		codes = (1 << initialCodeSize) + 2;
-		codeSize = initialCodeSize;
-		incrementCodeSize();
-	}
-
-	private final int clearCode;
-	private final int eoiCode;
-
-	private final int getNextCode(BitInputStream is) throws IOException
-	{
-		int code = is.readBits(codeSize);
-
-		if (null != listener){
-			listener.code(code);
-		}
-		return code;
-	}
-
-	private final byte[] stringFromCode(int code) throws IOException
-	{
-		if ((code >= codes) || (code < 0)){
-			throw new IOException("Bad Code: " + code + " codes: " + codes
-					+ " code_size: " + codeSize + ", table: " + table.length);
-		}
-
-		return table[code];
-	}
-
-	private final boolean isInTable(int Code)
-	{
-		return Code < codes;
-	}
-
-	private final byte firstChar(byte bytes[])
-	{
-		return bytes[0];
 	}
 
 	private final void addStringToTable(byte bytes[]) throws IOException
@@ -135,20 +91,23 @@ public final class LZWDecompressor
 		return result;
 	}
 
-	private int written = 0;
-
-	private final void writeToResult(OutputStream os, byte bytes[])
-			throws IOException
+	private final void checkCodeSize() // throws IOException
 	{
-		os.write(bytes);
-		written += bytes.length;
+		int limit = (1 << codeSize);
+		if (tiffLZWMode){
+			limit--;
+		}
+
+		if (codes == limit){
+			incrementCodeSize();
+		}
 	}
 
-	private boolean tiffLZWMode = false;
-
-	public void setTiffLZWMode()
+	private final void clearTable()
 	{
-		tiffLZWMode = true;
+		codes = (1 << initialCodeSize) + 2;
+		codeSize = initialCodeSize;
+		incrementCodeSize();
 	}
 
 	public byte[] decompress(InputStream is, int expectedLength)
@@ -212,16 +171,19 @@ public final class LZWDecompressor
 		return result;
 	}
 
-	private final void checkCodeSize() // throws IOException
+	private final byte firstChar(byte bytes[])
 	{
-		int limit = (1 << codeSize);
-		if (tiffLZWMode){
-			limit--;
-		}
+		return bytes[0];
+	}
 
-		if (codes == limit){
-			incrementCodeSize();
+	private final int getNextCode(BitInputStream is) throws IOException
+	{
+		int code = is.readBits(codeSize);
+
+		if (null != listener){
+			listener.code(code);
 		}
+		return code;
 	}
 
 	private final void incrementCodeSize() // throws IOException
@@ -229,5 +191,43 @@ public final class LZWDecompressor
 		if (codeSize != 12){
 			codeSize++;
 		}
+	}
+
+	private final void InitializeTable()
+	{
+		codeSize = initialCodeSize;
+
+		int intial_entries_count = 1 << codeSize + 2;
+
+		for (int i = 0; i < intial_entries_count; i++){
+			table[i] = new byte[] { (byte) i, };
+		}
+	}
+
+	private final boolean isInTable(int Code)
+	{
+		return Code < codes;
+	}
+
+	public void setTiffLZWMode()
+	{
+		tiffLZWMode = true;
+	}
+
+	private final byte[] stringFromCode(int code) throws IOException
+	{
+		if ((code >= codes) || (code < 0)){
+			throw new IOException("Bad Code: " + code + " codes: " + codes
+					+ " code_size: " + codeSize + ", table: " + table.length);
+		}
+
+		return table[code];
+	}
+
+	private final void writeToResult(OutputStream os, byte bytes[])
+			throws IOException
+	{
+		os.write(bytes);
+		written += bytes.length;
 	}
 }

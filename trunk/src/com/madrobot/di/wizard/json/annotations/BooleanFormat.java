@@ -31,16 +31,16 @@ import com.madrobot.di.wizard.json.JSONSerializer;
 public @interface BooleanFormat {
 
 	/**
-	 * Represent the true format
-	 * 
-	 * @return true format
-	 */
-	String trueFormat();
-
-	/**
 	 * Represent the false format
 	 * 
 	 * @return false format , default false
 	 */
 	String falseFormat() default "false";
+
+	/**
+	 * Represent the true format
+	 * 
+	 * @return true format
+	 */
+	String trueFormat();
 }

@@ -44,6 +44,13 @@ public class BeanGenerator {
 	 */
 	private static final Map<Class<?>, Object> primitiveDefaults = new HashMap<Class<?>, Object>();
 
+	/**
+	 * Special array value used by <code>mapColumnsToProperties</code> that
+	 * indicates there is no bean property that matches a column from a
+	 * <code>ResultSet</code>.
+	 */
+	private static final int PROPERTY_NOT_FOUND = -1;
+
 	static {
 		primitiveDefaults.put(Integer.TYPE, 0);
 		primitiveDefaults.put(Short.TYPE, ((short) 0));
@@ -56,11 +63,351 @@ public class BeanGenerator {
 	}
 
 	/**
-	 * Special array value used by <code>mapColumnsToProperties</code> that
-	 * indicates there is no bean property that matches a column from a
-	 * <code>ResultSet</code>.
+	 * Calls the setter method on the target object for the given property. If
+	 * no setter method exists for the property, this method does nothing.
+	 * 
+	 * @param target
+	 *            The object to set the property on.
+	 * @param prop
+	 *            The property to set.
+	 * @param value
+	 *            The value to pass into the setter.
+	 * @throws SQLException
+	 *             if an error occurs setting the property.
 	 */
-	private static final int PROPERTY_NOT_FOUND = -1;
+	private static void callSetter(Object target, PropertyDescriptor prop,
+			Object value) throws SQLException {
+
+		Method setter = prop.getWriteMethod();
+
+		if (setter == null) {
+			return;
+		}
+
+		Class<?>[] params = setter.getParameterTypes();
+		try {
+			// convert types for some popular ones
+			if (value != null) {
+				if (value instanceof java.util.Date) {
+					if (params[0].getName().equals("java.sql.Date")) {
+						value = new java.sql.Date(
+								((java.util.Date) value).getTime());
+					} else if (params[0].getName().equals("java.sql.Time")) {
+						value = new java.sql.Time(
+								((java.util.Date) value).getTime());
+					} else if (params[0].getName().equals("java.sql.Timestamp")) {
+						value = new java.sql.Timestamp(
+								((java.util.Date) value).getTime());
+					}
+				}
+			}
+
+			// Don't call setter if the value object isn't the right type
+			if (isCompatibleType(value, params[0])) {
+				setter.invoke(target, new Object[] { value });
+			} else {
+				throw new SQLException("Cannot set " + prop.getName()
+						+ ": incompatible types.");
+			}
+
+		} catch (IllegalArgumentException e) {
+			throw new SQLException("Cannot set " + prop.getName() + ": "
+					+ e.getMessage());
+
+		} catch (IllegalAccessException e) {
+			throw new SQLException("Cannot set " + prop.getName() + ": "
+					+ e.getMessage());
+
+		} catch (InvocationTargetException e) {
+			throw new SQLException("Cannot set " + prop.getName() + ": "
+					+ e.getMessage());
+		}
+	}
+
+	/**
+	 * Creates a new object and initializes its fields from the ResultSet.
+	 * 
+	 * @param <T>
+	 *            The type of bean to create
+	 * @param rs
+	 *            The result set.
+	 * @param type
+	 *            The bean type (the return type of the object).
+	 * @param props
+	 *            The property descriptors.
+	 * @param columnToProperty
+	 *            The column indices in the result set.
+	 * @return An initialized object.
+	 * @throws SQLException
+	 *             if a database error occurs.
+	 * @throws InstantiationException
+	 *             If the bean's constructor is not visible
+	 * @throws IllegalAccessException
+	 *             if the bean class is not public
+	 */
+	private static <T> T createBean(ResultSet rs, Class<T> type,
+			PropertyDescriptor[] props, int[] columnToProperty)
+			throws SQLException, IllegalAccessException, InstantiationException {
+
+		T bean = ClassUtils.newInstance(type);
+
+		for (int i = 1; i < columnToProperty.length; i++) {
+
+			if (columnToProperty[i] == PROPERTY_NOT_FOUND) {
+				continue;
+			}
+			PropertyDescriptor prop = props[columnToProperty[i]];
+			Class<?> propType = prop.getPropertyType();
+
+			Object value = processColumn(rs, i, propType);
+
+			if (propType != null && value == null && propType.isPrimitive()) {
+				value = primitiveDefaults.get(propType);
+			}
+			callSetter(bean, prop, value);
+		}
+		return bean;
+	}
+
+	private static Object[] getMethodParamter(Method method, Cursor cursor,
+			int columnIndex) {
+		// method.get
+		Class[] paramTypes = method.getParameterTypes();
+		if (paramTypes != null) {
+			if (paramTypes.length > 0) {
+				Class type = paramTypes[0];
+				if (type.equals(int.class)) {
+					// if(cursor.getType(columnIndex) ==
+					// Cursor.FIELD_TYPE_INTEGER)
+					return new Object[] { cursor.getInt(columnIndex) };
+				} else if (type.equals(String.class)) {
+					return new Object[] { cursor.getString(columnIndex) };
+				} else if (type.equals(float.class)) {
+					return new Object[] { cursor.getFloat(columnIndex) };
+				} else if (type.equals(long.class)) {
+					return new Object[] { cursor.getLong(columnIndex) };
+				} else if (type.equals(double.class)) {
+					return new Object[] { cursor.getDouble(columnIndex) };
+				} else if (type.equals(byte[].class)) {
+					return new Object[] { cursor.getBlob(columnIndex) };
+				} else if (type.equals(short.class)) {
+					return new Object[] { cursor.getShort(columnIndex) };
+				}
+
+			}
+
+		}
+		return null;
+	}
+
+	/**
+	 * ResultSet.getObject() returns an Integer object for an INT column. The
+	 * setter method for the property might take an Integer or a primitive int.
+	 * This method returns true if the value can be successfully passed into the
+	 * setter method. Remember, Method.invoke() handles the unwrapping of
+	 * Integer into an int.
+	 * 
+	 * @param value
+	 *            The value to be passed into the setter method.
+	 * @param type
+	 *            The setter's parameter type.
+	 * @return boolean True if the value is compatible.
+	 */
+	private static boolean isCompatibleType(Object value, Class<?> type) {
+		// Do object check first, then primitives
+		if (value == null || type.isInstance(value)) {
+			return true;
+
+		} else if (type.equals(Integer.TYPE) && Integer.class.isInstance(value)) {
+			return true;
+
+		} else if (type.equals(Long.TYPE) && Long.class.isInstance(value)) {
+			return true;
+
+		} else if (type.equals(Double.TYPE) && Double.class.isInstance(value)) {
+			return true;
+
+		} else if (type.equals(Float.TYPE) && Float.class.isInstance(value)) {
+			return true;
+
+		} else if (type.equals(Short.TYPE) && Short.class.isInstance(value)) {
+			return true;
+
+		} else if (type.equals(Byte.TYPE) && Byte.class.isInstance(value)) {
+			return true;
+
+		} else if (type.equals(Character.TYPE)
+				&& Character.class.isInstance(value)) {
+			return true;
+
+		} else if (type.equals(Boolean.TYPE) && Boolean.class.isInstance(value)) {
+			return true;
+
+		} else {
+			return false;
+		}
+
+	}
+
+	/**
+	 * The positions in the returned array represent column numbers. The values
+	 * stored at each position represent the index in the
+	 * <code>PropertyDescriptor[]</code> for the bean property that matches the
+	 * column name. If no bean property was found for a column, the position is
+	 * set to <code>PROPERTY_NOT_FOUND</code>.
+	 * 
+	 * @param rsmd
+	 *            The <code>ResultSetMetaData</code> containing column
+	 *            information.
+	 * 
+	 * @param props
+	 *            The bean property descriptors.
+	 * 
+	 * @throws SQLException
+	 *             if a database access error occurs
+	 * 
+	 * @return An int[] with column index to property index mappings. The 0th
+	 *         element is meaningless because JDBC column indexing starts at 1.
+	 */
+	private static int[] mapColumnsToProperties(ResultSetMetaData rsmd,
+			PropertyDescriptor[] props) throws SQLException {
+
+		int cols = rsmd.getColumnCount();
+		int columnToProperty[] = new int[cols + 1];
+		Arrays.fill(columnToProperty, PROPERTY_NOT_FOUND);
+
+		for (int col = 1; col <= cols; col++) {
+			String columnName = rsmd.getColumnLabel(col);
+			if (null == columnName || 0 == columnName.length()) {
+				columnName = rsmd.getColumnName(col);
+			}
+			for (int i = 0; i < props.length; i++) {
+
+				if (columnName.equalsIgnoreCase(props[i].getName())) {
+					columnToProperty[col] = i;
+					break;
+				}
+			}
+		}
+		return columnToProperty;
+	}
+
+	private static void populateBean(Object bean, Cursor cursor,
+			String[] columns, PropertyDescriptor[] propDesc)
+			throws IllegalArgumentException, IllegalAccessException,
+			InvocationTargetException {
+		for (int i = 0; i < columns.length; i++) {
+			for (int j = 0; j < propDesc.length; j++) {
+				if (columns[i].equalsIgnoreCase(propDesc[j].getName())) {
+					Method method = propDesc[j].getWriteMethod();
+					if (method != null) {
+						int columnIndex = cursor.getColumnIndex(columns[i]);
+						Object[] params = getMethodParamter(method, cursor,
+								columnIndex);
+						if (params != null)
+							method.invoke(bean, params);
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Convert a <code>ResultSet</code> column into an object. Simple
+	 * implementations could just call <code>rs.getObject(index)</code> while
+	 * more complex implementations could perform type manipulation to match the
+	 * column's type to the bean property type.
+	 * 
+	 * <p>
+	 * This implementation calls the appropriate <code>ResultSet</code> getter
+	 * method for the given property type to perform the type conversion. If the
+	 * property type doesn't match one of the supported <code>ResultSet</code>
+	 * types, <code>getObject</code> is called.
+	 * </p>
+	 * 
+	 * @param rs
+	 *            The <code>ResultSet</code> currently being processed. It is
+	 *            positioned on a valid row before being passed into this
+	 *            method.
+	 * 
+	 * @param index
+	 *            The current column index being processed.
+	 * 
+	 * @param propType
+	 *            The bean property type that this column needs to be converted
+	 *            into.
+	 * 
+	 * @throws SQLException
+	 *             if a database access error occurs
+	 * 
+	 * @return The object from the <code>ResultSet</code> at the given column
+	 *         index after optional type processing or <code>null</code> if the
+	 *         column value was SQL NULL.
+	 */
+	private static Object processColumn(ResultSet rs, int index,
+			Class<?> propType) throws SQLException {
+
+		if (!propType.isPrimitive() && rs.getObject(index) == null) {
+			return null;
+		}
+
+		if (!propType.isPrimitive() && rs.getObject(index) == null) {
+			return null;
+		}
+
+		if (propType.equals(String.class)) {
+			return rs.getString(index);
+
+		} else if (propType.equals(Integer.TYPE)
+				|| propType.equals(Integer.class)) {
+			return (rs.getInt(index));
+
+		} else if (propType.equals(Boolean.TYPE)
+				|| propType.equals(Boolean.class)) {
+			return (rs.getBoolean(index));
+
+		} else if (propType.equals(Long.TYPE) || propType.equals(Long.class)) {
+			return (rs.getLong(index));
+
+		} else if (propType.equals(Double.TYPE)
+				|| propType.equals(Double.class)) {
+			return (rs.getDouble(index));
+
+		} else if (propType.equals(Float.TYPE) || propType.equals(Float.class)) {
+			return (rs.getFloat(index));
+
+		} else if (propType.equals(Short.TYPE) || propType.equals(Short.class)) {
+			return (rs.getShort(index));
+
+		} else if (propType.equals(Byte.TYPE) || propType.equals(Byte.class)) {
+			return (rs.getByte(index));
+
+		} else if (propType.equals(Timestamp.class)) {
+			return rs.getTimestamp(index);
+
+		} else {
+			return rs.getObject(index);
+		}
+
+	}
+
+	/**
+	 * Returns a PropertyDescriptor[] for the given Class.
+	 * 
+	 * @param c
+	 *            The Class to retrieve PropertyDescriptors for.
+	 * @return A PropertyDescriptor[] describing the Class.
+	 * @throws SQLException
+	 *             if introspection failed.
+	 * @throws IntrospectionException
+	 */
+	private static PropertyDescriptor[] propertyDescriptors(Class<?> c)
+			throws IntrospectionException {
+		// Introspector caches BeanInfo classes for better performance
+		BeanInfo beanInfo = null;
+		beanInfo = Introspector.getBeanInfo(c);
+		return beanInfo.getPropertyDescriptors();
+	}
 
 	/**
 	 * Convert a <code>ResultSet</code> row into a JavaBean. This implementation
@@ -215,75 +562,6 @@ public class BeanGenerator {
 	}
 
 	/**
-	 * Returns a PropertyDescriptor[] for the given Class.
-	 * 
-	 * @param c
-	 *            The Class to retrieve PropertyDescriptors for.
-	 * @return A PropertyDescriptor[] describing the Class.
-	 * @throws SQLException
-	 *             if introspection failed.
-	 * @throws IntrospectionException
-	 */
-	private static PropertyDescriptor[] propertyDescriptors(Class<?> c)
-			throws IntrospectionException {
-		// Introspector caches BeanInfo classes for better performance
-		BeanInfo beanInfo = null;
-		beanInfo = Introspector.getBeanInfo(c);
-		return beanInfo.getPropertyDescriptors();
-	}
-
-	private static void populateBean(Object bean, Cursor cursor,
-			String[] columns, PropertyDescriptor[] propDesc)
-			throws IllegalArgumentException, IllegalAccessException,
-			InvocationTargetException {
-		for (int i = 0; i < columns.length; i++) {
-			for (int j = 0; j < propDesc.length; j++) {
-				if (columns[i].equalsIgnoreCase(propDesc[j].getName())) {
-					Method method = propDesc[j].getWriteMethod();
-					if (method != null) {
-						int columnIndex = cursor.getColumnIndex(columns[i]);
-						Object[] params = getMethodParamter(method, cursor,
-								columnIndex);
-						if (params != null)
-							method.invoke(bean, params);
-					}
-				}
-			}
-		}
-	}
-
-	private static Object[] getMethodParamter(Method method, Cursor cursor,
-			int columnIndex) {
-		// method.get
-		Class[] paramTypes = method.getParameterTypes();
-		if (paramTypes != null) {
-			if (paramTypes.length > 0) {
-				Class type = paramTypes[0];
-				if (type.equals(int.class)) {
-					// if(cursor.getType(columnIndex) ==
-					// Cursor.FIELD_TYPE_INTEGER)
-					return new Object[] { cursor.getInt(columnIndex) };
-				} else if (type.equals(String.class)) {
-					return new Object[] { cursor.getString(columnIndex) };
-				} else if (type.equals(float.class)) {
-					return new Object[] { cursor.getFloat(columnIndex) };
-				} else if (type.equals(long.class)) {
-					return new Object[] { cursor.getLong(columnIndex) };
-				} else if (type.equals(double.class)) {
-					return new Object[] { cursor.getDouble(columnIndex) };
-				} else if (type.equals(byte[].class)) {
-					return new Object[] { cursor.getBlob(columnIndex) };
-				} else if (type.equals(short.class)) {
-					return new Object[] { cursor.getShort(columnIndex) };
-				}
-
-			}
-
-		}
-		return null;
-	}
-
-	/**
 	 * Convert a <code>ResultSet</code> into a <code>List</code> of JavaBeans.
 	 * This implementation uses reflection and <code>BeanInfo</code> classes to
 	 * match column names to bean property names. Properties are matched to
@@ -340,283 +618,5 @@ public class BeanGenerator {
 		} while (rs.next());
 
 		return results;
-	}
-
-	/**
-	 * Creates a new object and initializes its fields from the ResultSet.
-	 * 
-	 * @param <T>
-	 *            The type of bean to create
-	 * @param rs
-	 *            The result set.
-	 * @param type
-	 *            The bean type (the return type of the object).
-	 * @param props
-	 *            The property descriptors.
-	 * @param columnToProperty
-	 *            The column indices in the result set.
-	 * @return An initialized object.
-	 * @throws SQLException
-	 *             if a database error occurs.
-	 * @throws InstantiationException
-	 *             If the bean's constructor is not visible
-	 * @throws IllegalAccessException
-	 *             if the bean class is not public
-	 */
-	private static <T> T createBean(ResultSet rs, Class<T> type,
-			PropertyDescriptor[] props, int[] columnToProperty)
-			throws SQLException, IllegalAccessException, InstantiationException {
-
-		T bean = ClassUtils.newInstance(type);
-
-		for (int i = 1; i < columnToProperty.length; i++) {
-
-			if (columnToProperty[i] == PROPERTY_NOT_FOUND) {
-				continue;
-			}
-			PropertyDescriptor prop = props[columnToProperty[i]];
-			Class<?> propType = prop.getPropertyType();
-
-			Object value = processColumn(rs, i, propType);
-
-			if (propType != null && value == null && propType.isPrimitive()) {
-				value = primitiveDefaults.get(propType);
-			}
-			callSetter(bean, prop, value);
-		}
-		return bean;
-	}
-
-	/**
-	 * Calls the setter method on the target object for the given property. If
-	 * no setter method exists for the property, this method does nothing.
-	 * 
-	 * @param target
-	 *            The object to set the property on.
-	 * @param prop
-	 *            The property to set.
-	 * @param value
-	 *            The value to pass into the setter.
-	 * @throws SQLException
-	 *             if an error occurs setting the property.
-	 */
-	private static void callSetter(Object target, PropertyDescriptor prop,
-			Object value) throws SQLException {
-
-		Method setter = prop.getWriteMethod();
-
-		if (setter == null) {
-			return;
-		}
-
-		Class<?>[] params = setter.getParameterTypes();
-		try {
-			// convert types for some popular ones
-			if (value != null) {
-				if (value instanceof java.util.Date) {
-					if (params[0].getName().equals("java.sql.Date")) {
-						value = new java.sql.Date(
-								((java.util.Date) value).getTime());
-					} else if (params[0].getName().equals("java.sql.Time")) {
-						value = new java.sql.Time(
-								((java.util.Date) value).getTime());
-					} else if (params[0].getName().equals("java.sql.Timestamp")) {
-						value = new java.sql.Timestamp(
-								((java.util.Date) value).getTime());
-					}
-				}
-			}
-
-			// Don't call setter if the value object isn't the right type
-			if (isCompatibleType(value, params[0])) {
-				setter.invoke(target, new Object[] { value });
-			} else {
-				throw new SQLException("Cannot set " + prop.getName()
-						+ ": incompatible types.");
-			}
-
-		} catch (IllegalArgumentException e) {
-			throw new SQLException("Cannot set " + prop.getName() + ": "
-					+ e.getMessage());
-
-		} catch (IllegalAccessException e) {
-			throw new SQLException("Cannot set " + prop.getName() + ": "
-					+ e.getMessage());
-
-		} catch (InvocationTargetException e) {
-			throw new SQLException("Cannot set " + prop.getName() + ": "
-					+ e.getMessage());
-		}
-	}
-
-	/**
-	 * ResultSet.getObject() returns an Integer object for an INT column. The
-	 * setter method for the property might take an Integer or a primitive int.
-	 * This method returns true if the value can be successfully passed into the
-	 * setter method. Remember, Method.invoke() handles the unwrapping of
-	 * Integer into an int.
-	 * 
-	 * @param value
-	 *            The value to be passed into the setter method.
-	 * @param type
-	 *            The setter's parameter type.
-	 * @return boolean True if the value is compatible.
-	 */
-	private static boolean isCompatibleType(Object value, Class<?> type) {
-		// Do object check first, then primitives
-		if (value == null || type.isInstance(value)) {
-			return true;
-
-		} else if (type.equals(Integer.TYPE) && Integer.class.isInstance(value)) {
-			return true;
-
-		} else if (type.equals(Long.TYPE) && Long.class.isInstance(value)) {
-			return true;
-
-		} else if (type.equals(Double.TYPE) && Double.class.isInstance(value)) {
-			return true;
-
-		} else if (type.equals(Float.TYPE) && Float.class.isInstance(value)) {
-			return true;
-
-		} else if (type.equals(Short.TYPE) && Short.class.isInstance(value)) {
-			return true;
-
-		} else if (type.equals(Byte.TYPE) && Byte.class.isInstance(value)) {
-			return true;
-
-		} else if (type.equals(Character.TYPE)
-				&& Character.class.isInstance(value)) {
-			return true;
-
-		} else if (type.equals(Boolean.TYPE) && Boolean.class.isInstance(value)) {
-			return true;
-
-		} else {
-			return false;
-		}
-
-	}
-
-	/**
-	 * Convert a <code>ResultSet</code> column into an object. Simple
-	 * implementations could just call <code>rs.getObject(index)</code> while
-	 * more complex implementations could perform type manipulation to match the
-	 * column's type to the bean property type.
-	 * 
-	 * <p>
-	 * This implementation calls the appropriate <code>ResultSet</code> getter
-	 * method for the given property type to perform the type conversion. If the
-	 * property type doesn't match one of the supported <code>ResultSet</code>
-	 * types, <code>getObject</code> is called.
-	 * </p>
-	 * 
-	 * @param rs
-	 *            The <code>ResultSet</code> currently being processed. It is
-	 *            positioned on a valid row before being passed into this
-	 *            method.
-	 * 
-	 * @param index
-	 *            The current column index being processed.
-	 * 
-	 * @param propType
-	 *            The bean property type that this column needs to be converted
-	 *            into.
-	 * 
-	 * @throws SQLException
-	 *             if a database access error occurs
-	 * 
-	 * @return The object from the <code>ResultSet</code> at the given column
-	 *         index after optional type processing or <code>null</code> if the
-	 *         column value was SQL NULL.
-	 */
-	private static Object processColumn(ResultSet rs, int index,
-			Class<?> propType) throws SQLException {
-
-		if (!propType.isPrimitive() && rs.getObject(index) == null) {
-			return null;
-		}
-
-		if (!propType.isPrimitive() && rs.getObject(index) == null) {
-			return null;
-		}
-
-		if (propType.equals(String.class)) {
-			return rs.getString(index);
-
-		} else if (propType.equals(Integer.TYPE)
-				|| propType.equals(Integer.class)) {
-			return (rs.getInt(index));
-
-		} else if (propType.equals(Boolean.TYPE)
-				|| propType.equals(Boolean.class)) {
-			return (rs.getBoolean(index));
-
-		} else if (propType.equals(Long.TYPE) || propType.equals(Long.class)) {
-			return (rs.getLong(index));
-
-		} else if (propType.equals(Double.TYPE)
-				|| propType.equals(Double.class)) {
-			return (rs.getDouble(index));
-
-		} else if (propType.equals(Float.TYPE) || propType.equals(Float.class)) {
-			return (rs.getFloat(index));
-
-		} else if (propType.equals(Short.TYPE) || propType.equals(Short.class)) {
-			return (rs.getShort(index));
-
-		} else if (propType.equals(Byte.TYPE) || propType.equals(Byte.class)) {
-			return (rs.getByte(index));
-
-		} else if (propType.equals(Timestamp.class)) {
-			return rs.getTimestamp(index);
-
-		} else {
-			return rs.getObject(index);
-		}
-
-	}
-
-	/**
-	 * The positions in the returned array represent column numbers. The values
-	 * stored at each position represent the index in the
-	 * <code>PropertyDescriptor[]</code> for the bean property that matches the
-	 * column name. If no bean property was found for a column, the position is
-	 * set to <code>PROPERTY_NOT_FOUND</code>.
-	 * 
-	 * @param rsmd
-	 *            The <code>ResultSetMetaData</code> containing column
-	 *            information.
-	 * 
-	 * @param props
-	 *            The bean property descriptors.
-	 * 
-	 * @throws SQLException
-	 *             if a database access error occurs
-	 * 
-	 * @return An int[] with column index to property index mappings. The 0th
-	 *         element is meaningless because JDBC column indexing starts at 1.
-	 */
-	private static int[] mapColumnsToProperties(ResultSetMetaData rsmd,
-			PropertyDescriptor[] props) throws SQLException {
-
-		int cols = rsmd.getColumnCount();
-		int columnToProperty[] = new int[cols + 1];
-		Arrays.fill(columnToProperty, PROPERTY_NOT_FOUND);
-
-		for (int col = 1; col <= cols; col++) {
-			String columnName = rsmd.getColumnLabel(col);
-			if (null == columnName || 0 == columnName.length()) {
-				columnName = rsmd.getColumnName(col);
-			}
-			for (int i = 0; i < props.length; i++) {
-
-				if (columnName.equalsIgnoreCase(props[i].getName())) {
-					columnToProperty[col] = i;
-					break;
-				}
-			}
-		}
-		return columnToProperty;
 	}
 }

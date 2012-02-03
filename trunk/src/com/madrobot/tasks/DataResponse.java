@@ -18,42 +18,42 @@ import java.io.Serializable;
 @SuppressWarnings("serial")
 public class DataResponse implements Serializable {
 
+	private Object data;
 	private int responseid;
 	private int responseStatus;
+
 	private Throwable t;
 
-	Throwable getT() {
-		return t;
+	public Object getData() {
+		return data;
 	}
 
-	void setT(Throwable t) {
-		this.t = t;
+	public int getResponseId() {
+		return responseid;
 	}
 
 	public int getResponseStatus() {
 		return responseStatus;
 	}
 
-	void setResponseStatus(int responseStatus) {
-		this.responseStatus = responseStatus;
+	Throwable getT() {
+		return t;
 	}
 
-	private Object data;
-
-	public int getResponseId() {
-		return responseid;
+	void setData(Object data) {
+		this.data = data;
 	}
 
 	void setResponseId(int response) {
 		this.responseid = response;
 	}
 
-	public Object getData() {
-		return data;
+	void setResponseStatus(int responseStatus) {
+		this.responseStatus = responseStatus;
 	}
 
-	void setData(Object data) {
-		this.data = data;
+	void setT(Throwable t) {
+		this.t = t;
 	}
 
 }

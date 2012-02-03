@@ -35,10 +35,30 @@ import org.apache.http.message.BasicNameValuePair;
  * </pre>
  */
 public class RequestParams {
+    private static class FileWrapper {
+        public String contentType;
+        public String fileName;
+        public InputStream inputStream;
+
+        public FileWrapper(InputStream inputStream, String fileName, String contentType) {
+            this.inputStream = inputStream;
+            this.fileName = fileName;
+            this.contentType = contentType;
+        }
+
+        public String getFileName() {
+            if(fileName != null) {
+                return fileName;
+            } else {
+                return "nofilename";
+            }
+        }
+    }
+
     private static String ENCODING = "UTF-8";
+    protected ConcurrentHashMap<String, FileWrapper> fileParams;
 
     protected ConcurrentHashMap<String, String> urlParams;
-    protected ConcurrentHashMap<String, FileWrapper> fileParams;
 
     /**
      * Constructs a new empty <code>RequestParams</code> instance.
@@ -72,15 +92,62 @@ public class RequestParams {
         put(key, value);
     }
 
-    /**
-     * Adds a key/value string pair to the request.
-     * @param key the key name for the new param.
-     * @param value the value string for the new param.
-     */
-    public void put(String key, String value){
-        if(key != null && value != null) {
-            urlParams.put(key, value);
+    HttpEntity getEntity() {
+        HttpEntity entity = null;
+
+        if(!fileParams.isEmpty()) {
+            SimpleMultipartEntity multipartEntity = new SimpleMultipartEntity();
+
+            // Add string params
+            for(ConcurrentHashMap.Entry<String, String> entry : urlParams.entrySet()) {
+                multipartEntity.addPart(entry.getKey(), entry.getValue());
+            }
+
+            // Add file params
+            int currentIndex = 0;
+            int lastIndex = fileParams.entrySet().size() - 1;
+            for(ConcurrentHashMap.Entry<String, FileWrapper> entry : fileParams.entrySet()) {
+                FileWrapper file = entry.getValue();
+                if(file.inputStream != null) {
+                	boolean isLast = currentIndex == lastIndex;
+                    if(file.contentType != null) {
+                        multipartEntity.addPart(entry.getKey(), file.getFileName(), file.inputStream, file.contentType, isLast);
+                    } else {
+                        multipartEntity.addPart(entry.getKey(), file.getFileName(), file.inputStream, isLast);
+                    }
+                }
+                currentIndex++;
+            }
+
+            entity = multipartEntity;
+        } else {
+            try {
+                entity = new UrlEncodedFormEntity(getParamsList(), ENCODING);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
         }
+
+        return entity;
+    }
+
+    protected List<BasicNameValuePair> getParamsList() {
+        List<BasicNameValuePair> lparams = new LinkedList<BasicNameValuePair>();
+
+        for(ConcurrentHashMap.Entry<String, String> entry : urlParams.entrySet()) {
+            lparams.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
+        }
+
+        return lparams;
+    }
+
+    protected String getParamString() {
+        return URLEncodedUtils.format(getParamsList(), ENCODING);
+    }
+
+    private void init(){
+        urlParams = new ConcurrentHashMap<String, String>();
+        fileParams = new ConcurrentHashMap<String, FileWrapper>();
     }
 
     /**
@@ -125,6 +192,17 @@ public class RequestParams {
     }
 
     /**
+     * Adds a key/value string pair to the request.
+     * @param key the key name for the new param.
+     * @param value the value string for the new param.
+     */
+    public void put(String key, String value){
+        if(key != null && value != null) {
+            urlParams.put(key, value);
+        }
+    }
+
+    /**
      * Removes a parameter from the request.
      * @param key the key name for the parameter to remove.
      */
@@ -155,83 +233,5 @@ public class RequestParams {
         }
 
         return result.toString();
-    }
-
-    HttpEntity getEntity() {
-        HttpEntity entity = null;
-
-        if(!fileParams.isEmpty()) {
-            SimpleMultipartEntity multipartEntity = new SimpleMultipartEntity();
-
-            // Add string params
-            for(ConcurrentHashMap.Entry<String, String> entry : urlParams.entrySet()) {
-                multipartEntity.addPart(entry.getKey(), entry.getValue());
-            }
-
-            // Add file params
-            int currentIndex = 0;
-            int lastIndex = fileParams.entrySet().size() - 1;
-            for(ConcurrentHashMap.Entry<String, FileWrapper> entry : fileParams.entrySet()) {
-                FileWrapper file = entry.getValue();
-                if(file.inputStream != null) {
-                	boolean isLast = currentIndex == lastIndex;
-                    if(file.contentType != null) {
-                        multipartEntity.addPart(entry.getKey(), file.getFileName(), file.inputStream, file.contentType, isLast);
-                    } else {
-                        multipartEntity.addPart(entry.getKey(), file.getFileName(), file.inputStream, isLast);
-                    }
-                }
-                currentIndex++;
-            }
-
-            entity = multipartEntity;
-        } else {
-            try {
-                entity = new UrlEncodedFormEntity(getParamsList(), ENCODING);
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return entity;
-    }
-
-    private void init(){
-        urlParams = new ConcurrentHashMap<String, String>();
-        fileParams = new ConcurrentHashMap<String, FileWrapper>();
-    }
-
-    protected List<BasicNameValuePair> getParamsList() {
-        List<BasicNameValuePair> lparams = new LinkedList<BasicNameValuePair>();
-
-        for(ConcurrentHashMap.Entry<String, String> entry : urlParams.entrySet()) {
-            lparams.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
-        }
-
-        return lparams;
-    }
-
-    protected String getParamString() {
-        return URLEncodedUtils.format(getParamsList(), ENCODING);
-    }
-
-    private static class FileWrapper {
-        public InputStream inputStream;
-        public String fileName;
-        public String contentType;
-
-        public FileWrapper(InputStream inputStream, String fileName, String contentType) {
-            this.inputStream = inputStream;
-            this.fileName = fileName;
-            this.contentType = contentType;
-        }
-
-        public String getFileName() {
-            if(fileName != null) {
-                return fileName;
-            } else {
-                return "nofilename";
-            }
-        }
     }
 }

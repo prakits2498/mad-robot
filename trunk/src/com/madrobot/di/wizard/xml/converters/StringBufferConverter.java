@@ -18,12 +18,12 @@ package com.madrobot.di.wizard.xml.converters;
 public class StringBufferConverter extends AbstractSingleValueConverter {
 
 	@Override
-	public Object fromString(String str) {
-		return new StringBuffer(str);
+	public boolean canConvert(Class type) {
+		return type.equals(StringBuffer.class);
 	}
 
 	@Override
-	public boolean canConvert(Class type) {
-		return type.equals(StringBuffer.class);
+	public Object fromString(String str) {
+		return new StringBuffer(str);
 	}
 }

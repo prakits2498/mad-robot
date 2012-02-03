@@ -34,6 +34,12 @@ public class PathTrackingReader extends ReaderWrapper {
 	}
 
 	@Override
+	public void appendErrors(ErrorWriter errorWriter) {
+		errorWriter.add("path", pathTracker.getPath().toString());
+		super.appendErrors(errorWriter);
+	}
+
+	@Override
 	public void moveDown() {
 		super.moveDown();
 		pathTracker.pushElement(getNodeName());
@@ -43,12 +49,6 @@ public class PathTrackingReader extends ReaderWrapper {
 	public void moveUp() {
 		super.moveUp();
 		pathTracker.popElement();
-	}
-
-	@Override
-	public void appendErrors(ErrorWriter errorWriter) {
-		errorWriter.add("path", pathTracker.getPath().toString());
-		super.appendErrors(errorWriter);
 	}
 
 }

@@ -25,8 +25,23 @@ public class CharConverter implements Converter, SingleValueConverter {
 	}
 
 	@Override
+	public Object fromString(String str) {
+		if (str.length() == 0) {
+			return new Character('\0');
+		} else {
+			return new Character(str.charAt(0));
+		}
+	}
+
+	@Override
 	public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
 		writer.setValue(toString(source));
+	}
+
+	@Override
+	public String toString(Object obj) {
+		char ch = ((Character) obj).charValue();
+		return ch == '\0' ? "" : obj.toString();
 	}
 
 	@Override
@@ -37,21 +52,6 @@ public class CharConverter implements Converter, SingleValueConverter {
 		} else {
 			return fromString(reader.getValue());
 		}
-	}
-
-	@Override
-	public Object fromString(String str) {
-		if (str.length() == 0) {
-			return new Character('\0');
-		} else {
-			return new Character(str.charAt(0));
-		}
-	}
-
-	@Override
-	public String toString(Object obj) {
-		char ch = ((Character) obj).charValue();
-		return ch == '\0' ? "" : obj.toString();
 	}
 
 }

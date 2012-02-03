@@ -21,6 +21,77 @@ import java.util.TreeMap;
  */
 class FileCacheRequest extends CacheRequest {
 
+    /**
+     * A {@link FilterOutputStream} that moves a temporary file to a destination
+     * file when it is closed.
+     */
+    private static class TempFileOutputStream extends FilterOutputStream {
+
+        private final File mFile;
+        
+        private final FileDescriptor mFileDescriptor;
+
+        private final File mTempFile;
+
+        /**
+         * Constructor.
+         *
+         * @param out the {@link FileOutputStream} to decorate.
+         * @param temp the temporary file.
+         * @param file the destination file.
+         */
+        public TempFileOutputStream(OutputStream out, FileDescriptor fd, File temp, File file) {
+            super(out);
+            if (fd == null) {
+                throw new NullPointerException("File descriptor is null");
+            }
+            if (temp == null) {
+              throw new NullPointerException("Temporary file is null");
+            }
+            if (file == null) {
+              throw new NullPointerException("Destination file is null");
+            }
+            mFileDescriptor = fd;
+            mTempFile = temp;
+            mFile = file;
+        }
+
+        public void abort() {
+            try {
+                super.close();
+            } catch (IOException e) {
+                // Ignore
+            } finally {
+              mTempFile.delete();
+            }
+        }
+
+        @Override
+        public void close() throws IOException {
+            try {
+                flush();
+                fsync();
+                super.close();
+                moveTempFile();
+            } finally {
+                mTempFile.delete();
+            }
+        }
+
+        private void fsync() throws SyncFailedException {
+            mFileDescriptor.sync();
+        }
+
+        private void moveTempFile() {
+        	// Don't throw exceptions because caching
+        	// is not critical.
+        	//
+        	// TODO: Add logging
+            mFile.delete();
+            mTempFile.renameTo(mFile);
+        }
+    }
+
     private static final int BUFFER_SIZE = 8 * 1024;
 
     private static File createTempFile(File file) throws IOException {
@@ -38,13 +109,13 @@ class FileCacheRequest extends CacheRequest {
 
     private final File mFile;
 
-    private final int mResponseCode;
-
-    private final String mResponseMessage;
-
     private final Map<String, List<String>> mHeaders;
 
     private TempFileOutputStream mOutputStream;
+
+    private final int mResponseCode;
+
+    private final String mResponseMessage;
 
     public FileCacheRequest(File file, int responseCode, String responseMessage,
             Map<String, List<String>> headers) {
@@ -72,6 +143,47 @@ class FileCacheRequest extends CacheRequest {
         String status = getStatus();
         if (status != null) {
             mHeaders.put("status", Collections.singletonList(status));
+        }
+    }
+
+    @Override
+    public void abort() {
+        if (mOutputStream != null) {
+            mOutputStream.abort();
+        }
+    }
+
+    @Override
+    public OutputStream getBody() throws IOException {
+        if (mOutputStream != null) {
+            return mOutputStream;
+        }
+        // Create a file Output stream
+        File temp = createTempFile(mFile);
+        try {
+            FileOutputStream fileOutput = new FileOutputStream(temp);
+            FileDescriptor fd = fileOutput.getFD();
+            OutputStream output = fileOutput;
+            try {
+                output = new BufferedOutputStream(output, BUFFER_SIZE);
+
+                // Write the HTTP headers
+                DataOutputStream dout = new DataOutputStream(output);
+                writeHeaders(dout);
+
+                mOutputStream = new TempFileOutputStream(dout, fd, temp, mFile);
+                return mOutputStream;
+            } finally {
+                if (mOutputStream == null) {
+                    // The return-statement was not reached
+                    output.close();
+                }
+            }
+        } finally {
+            if (mOutputStream == null) {
+                // The return-statement was not reached
+                temp.delete();
+            }
         }
     }
 
@@ -117,118 +229,6 @@ class FileCacheRequest extends CacheRequest {
             dout.writeInt(values.size());
             for (String value : values) {
                 dout.writeUTF(value);
-            }
-        }
-    }
-
-    @Override
-    public OutputStream getBody() throws IOException {
-        if (mOutputStream != null) {
-            return mOutputStream;
-        }
-        // Create a file Output stream
-        File temp = createTempFile(mFile);
-        try {
-            FileOutputStream fileOutput = new FileOutputStream(temp);
-            FileDescriptor fd = fileOutput.getFD();
-            OutputStream output = fileOutput;
-            try {
-                output = new BufferedOutputStream(output, BUFFER_SIZE);
-
-                // Write the HTTP headers
-                DataOutputStream dout = new DataOutputStream(output);
-                writeHeaders(dout);
-
-                mOutputStream = new TempFileOutputStream(dout, fd, temp, mFile);
-                return mOutputStream;
-            } finally {
-                if (mOutputStream == null) {
-                    // The return-statement was not reached
-                    output.close();
-                }
-            }
-        } finally {
-            if (mOutputStream == null) {
-                // The return-statement was not reached
-                temp.delete();
-            }
-        }
-    }
-
-    @Override
-    public void abort() {
-        if (mOutputStream != null) {
-            mOutputStream.abort();
-        }
-    }
-
-    /**
-     * A {@link FilterOutputStream} that moves a temporary file to a destination
-     * file when it is closed.
-     */
-    private static class TempFileOutputStream extends FilterOutputStream {
-
-        private final FileDescriptor mFileDescriptor;
-        
-        private final File mTempFile;
-
-        private final File mFile;
-
-        /**
-         * Constructor.
-         *
-         * @param out the {@link FileOutputStream} to decorate.
-         * @param temp the temporary file.
-         * @param file the destination file.
-         */
-        public TempFileOutputStream(OutputStream out, FileDescriptor fd, File temp, File file) {
-            super(out);
-            if (fd == null) {
-                throw new NullPointerException("File descriptor is null");
-            }
-            if (temp == null) {
-              throw new NullPointerException("Temporary file is null");
-            }
-            if (file == null) {
-              throw new NullPointerException("Destination file is null");
-            }
-            mFileDescriptor = fd;
-            mTempFile = temp;
-            mFile = file;
-        }
-
-        private void moveTempFile() {
-        	// Don't throw exceptions because caching
-        	// is not critical.
-        	//
-        	// TODO: Add logging
-            mFile.delete();
-            mTempFile.renameTo(mFile);
-        }
-
-        @Override
-        public void close() throws IOException {
-            try {
-                flush();
-                fsync();
-                super.close();
-                moveTempFile();
-            } finally {
-                mTempFile.delete();
-            }
-        }
-
-        private void fsync() throws SyncFailedException {
-            mFileDescriptor.sync();
-        }
-
-        public void abort() {
-            try {
-                super.close();
-            } catch (IOException e) {
-                // Ignore
-            } finally {
-              mTempFile.delete();
             }
         }
     }

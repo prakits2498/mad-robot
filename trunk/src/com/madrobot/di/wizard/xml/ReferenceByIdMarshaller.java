@@ -17,10 +17,14 @@ import com.madrobot.di.wizard.xml.io.path.Path;
 
 class ReferenceByIdMarshaller extends AbstractReferenceMarshaller {
 
-	private final IDGenerator idGenerator;
-
 	public static interface IDGenerator {
 		String next(Object item);
+	}
+
+	private final IDGenerator idGenerator;
+
+	ReferenceByIdMarshaller(HierarchicalStreamWriter writer, ConverterLookup converterLookup, Mapper mapper) {
+		this(writer, converterLookup, mapper, new SequenceGenerator(1));
 	}
 
 	ReferenceByIdMarshaller(
@@ -30,10 +34,6 @@ class ReferenceByIdMarshaller extends AbstractReferenceMarshaller {
 			IDGenerator idGenerator) {
 		super(writer, converterLookup, mapper);
 		this.idGenerator = idGenerator;
-	}
-
-	ReferenceByIdMarshaller(HierarchicalStreamWriter writer, ConverterLookup converterLookup, Mapper mapper) {
-		this(writer, converterLookup, mapper, new SequenceGenerator(1));
 	}
 
 	@Override

@@ -34,14 +34,14 @@ public class EnumSingleValueConverter extends AbstractSingleValueConverter {
 	}
 
 	@Override
-	public String toString(Object obj) {
-		return Enum.class.cast(obj).name();
-	}
-
-	@Override
 	public Object fromString(String str) {
 		@SuppressWarnings("unchecked")
 		Enum result = Enum.valueOf(enumType, str);
 		return result;
+	}
+
+	@Override
+	public String toString(Object obj) {
+		return Enum.class.cast(obj).name();
 	}
 }

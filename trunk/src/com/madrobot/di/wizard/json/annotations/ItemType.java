@@ -31,11 +31,13 @@ import com.madrobot.di.wizard.json.JSONSerializer;
 public @interface ItemType {
 
 	/**
-	 * Represent the item type
+	 * Decision to json should hold empty array or not
 	 * 
-	 * @return item type
+	 * @see JSONSerializer
+	 * 
+	 * @return decision
 	 */
-	Class<?> value();
+	boolean canEmpty() default true;
 
 	/**
 	 * 
@@ -46,11 +48,9 @@ public @interface ItemType {
 	int size() default JSONDeserializer.DEFAULT_ITEM_COLLECTION_SIZE;
 
 	/**
-	 * Decision to json should hold empty array or not
+	 * Represent the item type
 	 * 
-	 * @see JSONSerializer
-	 * 
-	 * @return decision
+	 * @return item type
 	 */
-	boolean canEmpty() default true;
+	Class<?> value();
 }

@@ -21,19 +21,27 @@ import com.madrobot.reflect.CompositeClassLoader;
  */
 public class ClassLoaderReference extends ClassLoader {
 
+	static class Replacement {
+
+		private Object readResolve() {
+			return new ClassLoaderReference(new CompositeClassLoader());
+		}
+
+	}
+
 	private transient ClassLoader reference;
 
 	public ClassLoaderReference(ClassLoader reference) {
 		this.reference = reference;
 	}
 
+	public ClassLoader getReference() {
+		return reference;
+	}
+
 	@Override
 	public Class loadClass(String name) throws ClassNotFoundException {
 		return reference.loadClass(name);
-	}
-
-	public ClassLoader getReference() {
-		return reference;
 	}
 
 	public void setReference(ClassLoader reference) {
@@ -42,13 +50,5 @@ public class ClassLoaderReference extends ClassLoader {
 
 	private Object writeReplace() {
 		return new Replacement();
-	}
-
-	static class Replacement {
-
-		private Object readResolve() {
-			return new ClassLoaderReference(new CompositeClassLoader());
-		}
-
 	};
 }

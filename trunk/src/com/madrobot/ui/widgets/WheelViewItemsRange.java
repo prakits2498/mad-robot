@@ -4,11 +4,11 @@ package com.madrobot.ui.widgets;
  * Range for visible items.
  */
 class WheelViewItemsRange {
-	// First item number
-	private int first;
-
 	// Items count
 	private int count;
+
+	// First item number
+	private int first;
 
 	/**
 	 * Default constructor. Creates an empty range

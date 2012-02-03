@@ -28,338 +28,74 @@ import android.graphics.Paint;
  */
 public class WordUtils {
 
+	// -----------------------------------------------------------------------
 	/**
-	 * <p>
-	 * <code>WordUtils</code> instances should NOT be constructed in standard
-	 * programming. Instead, the class should be used as
-	 * <code>WordUtils.wrap("foo bar", 20);</code>.
-	 * </p>
+	 * Abbreviates a string nicely.
 	 * 
-	 * <p>
-	 * This constructor is public to permit tools that require a JavaBean
-	 * instance to operate.
-	 * </p>
-	 */
-	public WordUtils() {
-		super();
-	}
-
-	/**
-	 * Returns a string that fits into the given<code> width</code>
-	 * 
-	 * @param string
-	 *            to fit
-	 * @param width
-	 *            of the area to render the string
-	 * @param font
-	 *            used for rendering
-	 * @param endPadding
-	 *            String to be used for the end padding eg: ellipsis (...) for
-	 *            instance
-	 * @return <code>string</code> if it fits in the string width, else the
-	 *         string content that fits and with trailing dots (...)
-	 */
-	public static String getFittingString(final String string,
-			final float width, final Paint font, final String endPadding) {
-		if (font.measureText(string) < width) {
-			return string;
-		} else {
-			int endPad = (int) font.measureText(endPadding);
-			for (int i = 0; i < string.length(); i++) {
-				if (font.measureText(string.substring(0, i)) + endPad > width) {
-					endPad = i;
-					break;
-				}
-			}
-			/* final check to see if it conforms to the width */
-			if (font.measureText(string.substring(0, endPad) + endPadding) > width) {
-				for (; font.measureText(string.substring(0, endPad)
-						+ endPadding) > width;) {
-					endPad--;
-				}
-			}
-			return new String(string.substring(0, endPad) + endPadding);
-		}
-	}
-
-	/**
-	 * Wraps the given string so it fits on the specified lines. First of all it
-	 * is split at the line-breaks ('\n'), subsequently the substrings are split
-	 * when they do not fit on a single line.
-	 * 
-	 * @param string
-	 *            The string which should be wrapped
-	 * @param font
-	 *            The font which is used to display the font
-	 * @param firstLineWidth
-	 *            The allowed width for the first line
-	 * @param lineWidth
-	 *            The allowed width for all other lines, lineWidth >=
-	 *            firstLineWidth
-	 * @return The array containing the substrings
-	 */
-	public static final String[] doTextWrap(final String string,
-			final Paint font, int firstLineWidth, final int lineWidth) {
-		boolean hasLineBreaks = (string.indexOf('\n') != -1);
-		float completeWidth = font.measureText(string);
-		if (((completeWidth <= firstLineWidth) && !hasLineBreaks)) { // ||
-																		// (value.
-			// length()
-			// <= 1) ) {
-			// the given string fits on the first line:
-			// if (hasLineBreaks) {
-			// return split( "complete/linebreaks:" + completeWidth + "> " +
-			// value, '\n');
-			// } else {
-			return new String[] { string };
-			// }
-		}
-		// the given string does not fit on the first line:
-		ArrayList<String> lines = new ArrayList<String>();
-		if (!hasLineBreaks) {
-			wrap(string, font, completeWidth, firstLineWidth, lineWidth, lines);
-		} else {
-			// now the string will be splitted at the line-breaks and
-			// then each line is processed:
-			char[] valueChars = string.toCharArray();
-			int lastIndex = 0;
-			char c = ' ';
-			int lineBreakCount = 0;
-			for (int i = 0; i < valueChars.length; i++) {
-				c = valueChars[i];
-				boolean isCRLF = ((c == 0x0D) && (i < valueChars.length - 1) && (valueChars[i + 1] == 0x0A));
-				if ((c == '\n') || (i == valueChars.length - 1) || isCRLF) {
-					lineBreakCount++;
-					String line = null;
-					if (i == valueChars.length - 1) {
-						line = new String(valueChars, lastIndex, (i + 1)
-								- lastIndex);
-						// System.out.println("wrap: adding last line " + line
-						// );
-					} else {
-						line = new String(valueChars, lastIndex, i - lastIndex);
-						// System.out.println("wrap: adding " + line );
-					}
-					completeWidth = font.measureText(line);
-					if (completeWidth <= firstLineWidth) {
-						lines.add(line);
-					} else {
-						wrap(line, font, completeWidth, firstLineWidth,
-								lineWidth, lines);
-					}
-					if (isCRLF) {
-						i++;
-					}
-					lastIndex = i + 1;
-					// after the first line all line widths are the same:
-					firstLineWidth = lineWidth;
-				} // for each line
-			} // for all chars
-				// special case for lines that end with \n: add a further line
-			if ((lineBreakCount > 1) && ((c == '\n') || (c == 10))) {
-				lines.add(" ");
-			}
-		}
-		String[] ret = new String[lines.size()];
-		lines.toArray(ret);
-		// new String[lines.size()];
-		// System.out.println("Array Size " + ret.length);
-		return ret;// (String[]) CollectionUtil.toArray(lines);//
-		// ines.toArray(new
-		// String
-		// [lines.size()]);
-	}
-
-	/**
-	 * Wraps the given string so that the substrings fit into the the given
-	 * line-widths. It is expected that the specified lineWidth >=
-	 * firstLineWidth. The resulting substrings will be added to the given
-	 * ArrayList. When the complete string fits into the first line, it will be
-	 * added to the list. When the string needs to be split to fit on the lines,
-	 * it is tried to split the string at a gap between words. When this is not
-	 * possible, the given string will be split in the middle of the
-	 * corresponding word.
-	 * 
-	 * 
-	 * @param value
-	 *            The string which should be wrapped
-	 * @param font
-	 *            The font which is used to display the font
-	 * @param completeWidth
-	 *            The complete width of the given string for the specified font.
-	 * @param firstLineWidth
-	 *            The allowed width for the first line
-	 * @param lineWidth
-	 *            The allowed width for all other lines, lineWidth >=
-	 *            firstLineWidth
-	 * @param list
-	 *            The list to which the substrings will be added.
-	 */
-	private static void wrap(String value, Paint font, float completeWidth,
-			float firstLineWidth, float lineWidth, ArrayList<String> list) {
-		char[] valueChars = value.toCharArray();
-		int startPos = 0;
-		int lastSpacePos = -1;
-		int lastSpacePosLength = 0;
-		int currentLineWidth = 0;
-		for (int i = 0; i < valueChars.length; i++) {
-			char c = valueChars[i];
-			currentLineWidth += font.measureText(String.valueOf(c));// .charWidth(c);
-			if (c == '\n') {
-				list.add(new String(valueChars, startPos, i - startPos));
-				lastSpacePos = -1;
-				startPos = i + 1;
-				currentLineWidth = 0;
-				firstLineWidth = lineWidth;
-				i = startPos;
-			} else if ((currentLineWidth > firstLineWidth) && (i > 0)) {
-				if ((c == ' ') || (c == '\t')) {
-					list.add(new String(valueChars, startPos, i - startPos));
-					startPos = ++i;
-					currentLineWidth = 0;
-					lastSpacePos = -1;
-				} else if (lastSpacePos == -1) {
-					if (i > startPos + 1) {
-						i--;
-					}
-					// System.out.println("value=" + value + ", i=" + i +
-					// ", startPos=" + startPos);
-					list.add(new String(valueChars, startPos, i - startPos));
-					startPos = i;
-					currentLineWidth = 0;
-				} else {
-					currentLineWidth -= lastSpacePosLength;
-					list.add(new String(valueChars, startPos, lastSpacePos
-							- startPos));
-					startPos = lastSpacePos + 1;
-					lastSpacePos = -1;
-				}
-				firstLineWidth = lineWidth;
-			} else if ((c == ' ') || (c == '\t')) {
-				lastSpacePos = i;
-				lastSpacePosLength = currentLineWidth;
-			}
-
-		}
-		// add tail:
-		list.add(new String(valueChars, startPos, valueChars.length - startPos));
-
-	}
-
-	// Wrapping
-	// --------------------------------------------------------------------------
-	/**
-	 * <p>
-	 * Wraps a single line of text, identifying words by <code>' '</code>.
-	 * </p>
-	 * 
-	 * <p>
-	 * New lines will be separated by the system property line separator. Very
-	 * long words, such as URLs will <i>not</i> be wrapped.
-	 * </p>
-	 * 
-	 * <p>
-	 * Leading spaces on a new line are stripped. Trailing spaces are not
-	 * stripped.
-	 * </p>
-	 * 
-	 * <pre>
-	 * WordUtils.wrap(null, *) = null
-	 * WordUtils.wrap("", *) = ""
-	 * </pre>
+	 * This method searches for the first space after the lower limit and
+	 * abbreviates the String there. It will also append any String passed as a
+	 * parameter to the end of the String. The upper limit can be specified to
+	 * forcibly abbreviate a String.
 	 * 
 	 * @param str
-	 *            the String to be word wrapped, may be null
-	 * @param wrapLength
-	 *            the column to wrap the words at, less than 1 is treated as 1
-	 * @return a line with newlines inserted, <code>null</code> if null input
+	 *            the string to be abbreviated. If null is passed, null is
+	 *            returned. If the empty String is passed, the empty string is
+	 *            returned.
+	 * @param lower
+	 *            the lower limit.
+	 * @param upper
+	 *            the upper limit; specify -1 if no limit is desired. If the
+	 *            upper limit is lower than the lower limit, it will be adjusted
+	 *            to be the same as the lower limit.
+	 * @param appendToEnd
+	 *            String to be appended to the end of the abbreviated string.
+	 *            This is appended ONLY if the string was indeed abbreviated.
+	 *            The append does not count towards the lower or upper limits.
+	 * @return the abbreviated String.
+	 * @since 2.4
 	 */
-	public static String wrap(String str, int wrapLength) {
-		return wrap(str, wrapLength, null, false);
-	}
-
-	/**
-	 * <p>
-	 * Wraps a single line of text, identifying words by <code>' '</code>.
-	 * </p>
-	 * 
-	 * <p>
-	 * Leading spaces on a new line are stripped. Trailing spaces are not
-	 * stripped.
-	 * </p>
-	 * 
-	 * <pre>
-	 * WordUtils.wrap(null, *, *, *) = null
-	 * WordUtils.wrap("", *, *, *) = ""
-	 * </pre>
-	 * 
-	 * @param str
-	 *            the String to be word wrapped, may be null
-	 * @param wrapLength
-	 *            the column to wrap the words at, less than 1 is treated as 1
-	 * @param newLineStr
-	 *            the string to insert for a new line, <code>null</code> uses
-	 *            the system property line separator
-	 * @param wrapLongWords
-	 *            true if long words (such as URLs) should be wrapped
-	 * @return a line with newlines inserted, <code>null</code> if null input
-	 */
-	public static String wrap(String str, int wrapLength, String newLineStr,
-			boolean wrapLongWords) {
+	public static String abbreviate(String str, int lower, int upper,
+			String appendToEnd) {
+		// initial parameter checks
 		if (str == null) {
 			return null;
 		}
-		if (newLineStr == null) {
-			newLineStr = "\n";// SystemUtils.LINE_SEPARATOR;
+		if (str.length() == 0) {
+			return StringUtils.EMPTY;
 		}
-		if (wrapLength < 1) {
-			wrapLength = 1;
-		}
-		int inputLineLength = str.length();
-		int offset = 0;
-		StringBuilder wrappedLine = new StringBuilder(inputLineLength + 32);
 
-		while ((inputLineLength - offset) > wrapLength) {
-			if (str.charAt(offset) == ' ') {
-				offset++;
-				continue;
+		// if the lower value is greater than the length of the string,
+		// set to the length of the string
+		if (lower > str.length()) {
+			lower = str.length();
+		}
+		// if the upper value is -1 (i.e. no limit) or is greater
+		// than the length of the string, set to the length of the string
+		if (upper == -1 || upper > str.length()) {
+			upper = str.length();
+		}
+		// if upper is less than lower, raise it to lower
+		if (upper < lower) {
+			upper = lower;
+		}
+
+		StringBuilder result = new StringBuilder();
+		int index = StringUtils.indexOf(str, " ", lower);
+		if (index == -1) {
+			result.append(str.substring(0, upper));
+			// only if abbreviation has occured do we append the appendToEnd
+			// value
+			if (upper != str.length()) {
+				result.append(StringUtils.defaultString(appendToEnd));
 			}
-			int spaceToWrapAt = str.lastIndexOf(' ', wrapLength + offset);
-
-			if (spaceToWrapAt >= offset) {
-				// normal case
-				wrappedLine.append(str.substring(offset, spaceToWrapAt));
-				wrappedLine.append(newLineStr);
-				offset = spaceToWrapAt + 1;
-
-			} else {
-				// really long word or URL
-				if (wrapLongWords) {
-					// wrap really long word one line at a time
-					wrappedLine.append(str.substring(offset, wrapLength
-							+ offset));
-					wrappedLine.append(newLineStr);
-					offset += wrapLength;
-				} else {
-					// do not wrap really long word, just extend beyond limit
-					spaceToWrapAt = str.indexOf(' ', wrapLength + offset);
-					if (spaceToWrapAt >= 0) {
-						wrappedLine
-								.append(str.substring(offset, spaceToWrapAt));
-						wrappedLine.append(newLineStr);
-						offset = spaceToWrapAt + 1;
-					} else {
-						wrappedLine.append(str.substring(offset));
-						offset = inputLineLength;
-					}
-				}
-			}
+		} else if (index > upper) {
+			result.append(str.substring(0, upper));
+			result.append(StringUtils.defaultString(appendToEnd));
+		} else {
+			result.append(str.substring(0, index));
+			result.append(StringUtils.defaultString(appendToEnd));
 		}
-
-		// Whatever is left in line is short enough to just pass through
-		wrappedLine.append(str.substring(offset));
-
-		return wrappedLine.toString();
+		return result.toString();
 	}
 
 	// Capitalizing
@@ -526,150 +262,130 @@ public class WordUtils {
 		return capitalize(str, delimiters);
 	}
 
-	// -----------------------------------------------------------------------
 	/**
-	 * <p>
-	 * Uncapitalizes all the whitespace separated words in a String. Only the
-	 * first letter of each word is changed.
-	 * </p>
+	 * Wraps the given string so it fits on the specified lines. First of all it
+	 * is split at the line-breaks ('\n'), subsequently the substrings are split
+	 * when they do not fit on a single line.
 	 * 
-	 * <p>
-	 * Whitespace is defined by {@link Character#isWhitespace(char)}. A
-	 * <code>null</code> input String returns <code>null</code>.
-	 * </p>
-	 * 
-	 * <pre>
-	 * WordUtils.uncapitalize(null)        = null
-	 * WordUtils.uncapitalize("")          = ""
-	 * WordUtils.uncapitalize("I Am FINE") = "i am fINE"
-	 * </pre>
-	 * 
-	 * @param str
-	 *            the String to uncapitalize, may be null
-	 * @return uncapitalized String, <code>null</code> if null String input
-	 * @see #capitalize(String)
+	 * @param string
+	 *            The string which should be wrapped
+	 * @param font
+	 *            The font which is used to display the font
+	 * @param firstLineWidth
+	 *            The allowed width for the first line
+	 * @param lineWidth
+	 *            The allowed width for all other lines, lineWidth >=
+	 *            firstLineWidth
+	 * @return The array containing the substrings
 	 */
-	public static String uncapitalize(String str) {
-		return uncapitalize(str, null);
-	}
-
-	/**
-	 * <p>
-	 * Uncapitalizes all the whitespace separated words in a String. Only the
-	 * first letter of each word is changed.
-	 * </p>
-	 * 
-	 * <p>
-	 * The delimiters represent a set of characters understood to separate
-	 * words. The first string character and the first non-delimiter character
-	 * after a delimiter will be uncapitalized.
-	 * </p>
-	 * 
-	 * <p>
-	 * Whitespace is defined by {@link Character#isWhitespace(char)}. A
-	 * <code>null</code> input String returns <code>null</code>.
-	 * </p>
-	 * 
-	 * <pre>
-	 * WordUtils.uncapitalize(null, *)            = null
-	 * WordUtils.uncapitalize("", *)              = ""
-	 * WordUtils.uncapitalize(*, null)            = *
-	 * WordUtils.uncapitalize(*, new char[0])     = *
-	 * WordUtils.uncapitalize("I AM.FINE", {'.'}) = "i AM.fINE"
-	 * </pre>
-	 * 
-	 * @param str
-	 *            the String to uncapitalize, may be null
-	 * @param delimiters
-	 *            set of characters to determine uncapitalization, null means
-	 *            whitespace
-	 * @return uncapitalized String, <code>null</code> if null String input
-	 * @see #capitalize(String)
-	 * @since 2.1
-	 */
-	public static String uncapitalize(String str, char... delimiters) {
-		int delimLen = (delimiters == null ? -1 : delimiters.length);
-		if (str == null || str.length() == 0 || delimLen == 0) {
-			return str;
+	public static final String[] doTextWrap(final String string,
+			final Paint font, int firstLineWidth, final int lineWidth) {
+		boolean hasLineBreaks = (string.indexOf('\n') != -1);
+		float completeWidth = font.measureText(string);
+		if (((completeWidth <= firstLineWidth) && !hasLineBreaks)) { // ||
+																		// (value.
+			// length()
+			// <= 1) ) {
+			// the given string fits on the first line:
+			// if (hasLineBreaks) {
+			// return split( "complete/linebreaks:" + completeWidth + "> " +
+			// value, '\n');
+			// } else {
+			return new String[] { string };
+			// }
 		}
-		int strLen = str.length();
-		StringBuilder buffer = new StringBuilder(strLen);
-		boolean uncapitalizeNext = true;
-		for (int i = 0; i < strLen; i++) {
-			char ch = str.charAt(i);
-
-			if (isDelimiter(ch, delimiters)) {
-				buffer.append(ch);
-				uncapitalizeNext = true;
-			} else if (uncapitalizeNext) {
-				buffer.append(Character.toLowerCase(ch));
-				uncapitalizeNext = false;
-			} else {
-				buffer.append(ch);
+		// the given string does not fit on the first line:
+		ArrayList<String> lines = new ArrayList<String>();
+		if (!hasLineBreaks) {
+			wrap(string, font, completeWidth, firstLineWidth, lineWidth, lines);
+		} else {
+			// now the string will be splitted at the line-breaks and
+			// then each line is processed:
+			char[] valueChars = string.toCharArray();
+			int lastIndex = 0;
+			char c = ' ';
+			int lineBreakCount = 0;
+			for (int i = 0; i < valueChars.length; i++) {
+				c = valueChars[i];
+				boolean isCRLF = ((c == 0x0D) && (i < valueChars.length - 1) && (valueChars[i + 1] == 0x0A));
+				if ((c == '\n') || (i == valueChars.length - 1) || isCRLF) {
+					lineBreakCount++;
+					String line = null;
+					if (i == valueChars.length - 1) {
+						line = new String(valueChars, lastIndex, (i + 1)
+								- lastIndex);
+						// System.out.println("wrap: adding last line " + line
+						// );
+					} else {
+						line = new String(valueChars, lastIndex, i - lastIndex);
+						// System.out.println("wrap: adding " + line );
+					}
+					completeWidth = font.measureText(line);
+					if (completeWidth <= firstLineWidth) {
+						lines.add(line);
+					} else {
+						wrap(line, font, completeWidth, firstLineWidth,
+								lineWidth, lines);
+					}
+					if (isCRLF) {
+						i++;
+					}
+					lastIndex = i + 1;
+					// after the first line all line widths are the same:
+					firstLineWidth = lineWidth;
+				} // for each line
+			} // for all chars
+				// special case for lines that end with \n: add a further line
+			if ((lineBreakCount > 1) && ((c == '\n') || (c == 10))) {
+				lines.add(" ");
 			}
 		}
-		return buffer.toString();
+		String[] ret = new String[lines.size()];
+		lines.toArray(ret);
+		// new String[lines.size()];
+		// System.out.println("Array Size " + ret.length);
+		return ret;// (String[]) CollectionUtil.toArray(lines);//
+		// ines.toArray(new
+		// String
+		// [lines.size()]);
 	}
 
-	// -----------------------------------------------------------------------
 	/**
-	 * <p>
-	 * Swaps the case of a String using a word based algorithm.
-	 * </p>
+	 * Returns a string that fits into the given<code> width</code>
 	 * 
-	 * <ul>
-	 * <li>Upper case character converts to Lower case</li>
-	 * <li>Title case character converts to Lower case</li>
-	 * <li>Lower case character after Whitespace or at start converts to Title
-	 * case</li>
-	 * <li>Other Lower case character converts to Upper case</li>
-	 * </ul>
-	 * 
-	 * <p>
-	 * Whitespace is defined by {@link Character#isWhitespace(char)}. A
-	 * <code>null</code> input String returns <code>null</code>.
-	 * </p>
-	 * 
-	 * <pre>
-	 * StringUtils.swapCase(null)                 = null
-	 * StringUtils.swapCase("")                   = ""
-	 * StringUtils.swapCase("The dog has a BONE") = "tHE DOG HAS A bone"
-	 * </pre>
-	 * 
-	 * @param str
-	 *            the String to swap case, may be null
-	 * @return the changed String, <code>null</code> if null String input
+	 * @param string
+	 *            to fit
+	 * @param width
+	 *            of the area to render the string
+	 * @param font
+	 *            used for rendering
+	 * @param endPadding
+	 *            String to be used for the end padding eg: ellipsis (...) for
+	 *            instance
+	 * @return <code>string</code> if it fits in the string width, else the
+	 *         string content that fits and with trailing dots (...)
 	 */
-	public static String swapCase(String str) {
-		int strLen;
-		if (str == null || (strLen = str.length()) == 0) {
-			return str;
-		}
-		StringBuilder buffer = new StringBuilder(strLen);
-
-		boolean whitespace = true;
-		char ch = 0;
-		char tmp = 0;
-
-		for (int i = 0; i < strLen; i++) {
-			ch = str.charAt(i);
-			if (Character.isUpperCase(ch)) {
-				tmp = Character.toLowerCase(ch);
-			} else if (Character.isTitleCase(ch)) {
-				tmp = Character.toLowerCase(ch);
-			} else if (Character.isLowerCase(ch)) {
-				if (whitespace) {
-					tmp = Character.toTitleCase(ch);
-				} else {
-					tmp = Character.toUpperCase(ch);
+	public static String getFittingString(final String string,
+			final float width, final Paint font, final String endPadding) {
+		if (font.measureText(string) < width) {
+			return string;
+		} else {
+			int endPad = (int) font.measureText(endPadding);
+			for (int i = 0; i < string.length(); i++) {
+				if (font.measureText(string.substring(0, i)) + endPad > width) {
+					endPad = i;
+					break;
 				}
-			} else {
-				tmp = ch;
 			}
-			buffer.append(tmp);
-			whitespace = Character.isWhitespace(ch);
+			/* final check to see if it conforms to the width */
+			if (font.measureText(string.substring(0, endPad) + endPadding) > width) {
+				for (; font.measureText(string.substring(0, endPad)
+						+ endPadding) > width;) {
+					endPad--;
+				}
+			}
+			return new String(string.substring(0, endPad) + endPadding);
 		}
-		return buffer.toString();
 	}
 
 	// -----------------------------------------------------------------------
@@ -789,72 +505,122 @@ public class WordUtils {
 
 	// -----------------------------------------------------------------------
 	/**
-	 * Abbreviates a string nicely.
+	 * <p>
+	 * Swaps the case of a String using a word based algorithm.
+	 * </p>
 	 * 
-	 * This method searches for the first space after the lower limit and
-	 * abbreviates the String there. It will also append any String passed as a
-	 * parameter to the end of the String. The upper limit can be specified to
-	 * forcibly abbreviate a String.
+	 * <ul>
+	 * <li>Upper case character converts to Lower case</li>
+	 * <li>Title case character converts to Lower case</li>
+	 * <li>Lower case character after Whitespace or at start converts to Title
+	 * case</li>
+	 * <li>Other Lower case character converts to Upper case</li>
+	 * </ul>
+	 * 
+	 * <p>
+	 * Whitespace is defined by {@link Character#isWhitespace(char)}. A
+	 * <code>null</code> input String returns <code>null</code>.
+	 * </p>
+	 * 
+	 * <pre>
+	 * StringUtils.swapCase(null)                 = null
+	 * StringUtils.swapCase("")                   = ""
+	 * StringUtils.swapCase("The dog has a BONE") = "tHE DOG HAS A bone"
+	 * </pre>
 	 * 
 	 * @param str
-	 *            the string to be abbreviated. If null is passed, null is
-	 *            returned. If the empty String is passed, the empty string is
-	 *            returned.
-	 * @param lower
-	 *            the lower limit.
-	 * @param upper
-	 *            the upper limit; specify -1 if no limit is desired. If the
-	 *            upper limit is lower than the lower limit, it will be adjusted
-	 *            to be the same as the lower limit.
-	 * @param appendToEnd
-	 *            String to be appended to the end of the abbreviated string.
-	 *            This is appended ONLY if the string was indeed abbreviated.
-	 *            The append does not count towards the lower or upper limits.
-	 * @return the abbreviated String.
-	 * @since 2.4
+	 *            the String to swap case, may be null
+	 * @return the changed String, <code>null</code> if null String input
 	 */
-	public static String abbreviate(String str, int lower, int upper,
-			String appendToEnd) {
-		// initial parameter checks
-		if (str == null) {
-			return null;
+	public static String swapCase(String str) {
+		int strLen;
+		if (str == null || (strLen = str.length()) == 0) {
+			return str;
 		}
-		if (str.length() == 0) {
-			return StringUtils.EMPTY;
-		}
+		StringBuilder buffer = new StringBuilder(strLen);
 
-		// if the lower value is greater than the length of the string,
-		// set to the length of the string
-		if (lower > str.length()) {
-			lower = str.length();
-		}
-		// if the upper value is -1 (i.e. no limit) or is greater
-		// than the length of the string, set to the length of the string
-		if (upper == -1 || upper > str.length()) {
-			upper = str.length();
-		}
-		// if upper is less than lower, raise it to lower
-		if (upper < lower) {
-			upper = lower;
-		}
+		boolean whitespace = true;
+		char ch = 0;
+		char tmp = 0;
 
-		StringBuilder result = new StringBuilder();
-		int index = StringUtils.indexOf(str, " ", lower);
-		if (index == -1) {
-			result.append(str.substring(0, upper));
-			// only if abbreviation has occured do we append the appendToEnd
-			// value
-			if (upper != str.length()) {
-				result.append(StringUtils.defaultString(appendToEnd));
+		for (int i = 0; i < strLen; i++) {
+			ch = str.charAt(i);
+			if (Character.isUpperCase(ch)) {
+				tmp = Character.toLowerCase(ch);
+			} else if (Character.isTitleCase(ch)) {
+				tmp = Character.toLowerCase(ch);
+			} else if (Character.isLowerCase(ch)) {
+				if (whitespace) {
+					tmp = Character.toTitleCase(ch);
+				} else {
+					tmp = Character.toUpperCase(ch);
+				}
+			} else {
+				tmp = ch;
 			}
-		} else if (index > upper) {
-			result.append(str.substring(0, upper));
-			result.append(StringUtils.defaultString(appendToEnd));
-		} else {
-			result.append(str.substring(0, index));
-			result.append(StringUtils.defaultString(appendToEnd));
+			buffer.append(tmp);
+			whitespace = Character.isWhitespace(ch);
 		}
-		return result.toString();
+		return buffer.toString();
+	}
+
+	/**
+	 * Convert name of format THIS_IS_A_NAME to ThisIsAName For each letter: if
+	 * not '_' then convert to lower case and add to output string if '_' then
+	 * skip letter and add next letter to output string without converting to
+	 * lower case
+	 * 
+	 * @param sqlNotation
+	 * @return A name complaint with naming convention for Java classes,
+	 *         converted from SQL name
+	 */
+	public static String toJavaClassName(String sqlNotation) {
+		StringBuilder sb = new StringBuilder();
+		char[] buf = sqlNotation.toCharArray();
+		for (int i = 0; i < buf.length; i++) {
+			char c = buf[i];
+			if (i == 0) {
+				sb.append(buf[i]);
+			} else if (c != '_') {
+				sb.append(Character.toLowerCase(c));
+			} else {
+				i++;
+				if (i < buf.length) {
+					sb.append(buf[i]);
+				}
+			}
+		}
+		return sb.toString();
+	}
+
+	/**
+	 * Convert name of format THIS_IS_A_NAME to thisIsAName For each letter: if
+	 * not '_' then convert to lower case and add to output string if '_' then
+	 * skip letter and add next letter to output string without converting to
+	 * lower case
+	 * 
+	 * @param sqlNotation
+	 * @return A name complaint with naming convention for Java methods and
+	 *         fields, converted from SQL name
+	 */
+	public static String toJavaMethodName(String sqlNotation) {
+		StringBuilder dest = new StringBuilder();
+		char[] src = sqlNotation.toCharArray();
+
+		for (int i = 0; i < src.length; i++) {
+			char c = src[i];
+			boolean isFirstChar = (i == 0) ? true : false;
+
+			if (isFirstChar || c != '_') {
+				dest.append(Character.toLowerCase(c));
+			} else {
+				i++;
+				if (i < src.length) {
+					dest.append(src[i]);
+				}
+			}
+		}
+		return dest.toString();
 	}
 
 	/**
@@ -902,63 +668,297 @@ public class WordUtils {
 		return sb.toString();
 	}
 
+	// -----------------------------------------------------------------------
 	/**
-	 * Convert name of format THIS_IS_A_NAME to thisIsAName For each letter: if
-	 * not '_' then convert to lower case and add to output string if '_' then
-	 * skip letter and add next letter to output string without converting to
-	 * lower case
+	 * <p>
+	 * Uncapitalizes all the whitespace separated words in a String. Only the
+	 * first letter of each word is changed.
+	 * </p>
 	 * 
-	 * @param sqlNotation
-	 * @return A name complaint with naming convention for Java methods and
-	 *         fields, converted from SQL name
+	 * <p>
+	 * Whitespace is defined by {@link Character#isWhitespace(char)}. A
+	 * <code>null</code> input String returns <code>null</code>.
+	 * </p>
+	 * 
+	 * <pre>
+	 * WordUtils.uncapitalize(null)        = null
+	 * WordUtils.uncapitalize("")          = ""
+	 * WordUtils.uncapitalize("I Am FINE") = "i am fINE"
+	 * </pre>
+	 * 
+	 * @param str
+	 *            the String to uncapitalize, may be null
+	 * @return uncapitalized String, <code>null</code> if null String input
+	 * @see #capitalize(String)
 	 */
-	public static String toJavaMethodName(String sqlNotation) {
-		StringBuilder dest = new StringBuilder();
-		char[] src = sqlNotation.toCharArray();
-
-		for (int i = 0; i < src.length; i++) {
-			char c = src[i];
-			boolean isFirstChar = (i == 0) ? true : false;
-
-			if (isFirstChar || c != '_') {
-				dest.append(Character.toLowerCase(c));
-			} else {
-				i++;
-				if (i < src.length) {
-					dest.append(src[i]);
-				}
-			}
-		}
-		return dest.toString();
+	public static String uncapitalize(String str) {
+		return uncapitalize(str, null);
 	}
 
 	/**
-	 * Convert name of format THIS_IS_A_NAME to ThisIsAName For each letter: if
-	 * not '_' then convert to lower case and add to output string if '_' then
-	 * skip letter and add next letter to output string without converting to
-	 * lower case
+	 * <p>
+	 * Uncapitalizes all the whitespace separated words in a String. Only the
+	 * first letter of each word is changed.
+	 * </p>
 	 * 
-	 * @param sqlNotation
-	 * @return A name complaint with naming convention for Java classes,
-	 *         converted from SQL name
+	 * <p>
+	 * The delimiters represent a set of characters understood to separate
+	 * words. The first string character and the first non-delimiter character
+	 * after a delimiter will be uncapitalized.
+	 * </p>
+	 * 
+	 * <p>
+	 * Whitespace is defined by {@link Character#isWhitespace(char)}. A
+	 * <code>null</code> input String returns <code>null</code>.
+	 * </p>
+	 * 
+	 * <pre>
+	 * WordUtils.uncapitalize(null, *)            = null
+	 * WordUtils.uncapitalize("", *)              = ""
+	 * WordUtils.uncapitalize(*, null)            = *
+	 * WordUtils.uncapitalize(*, new char[0])     = *
+	 * WordUtils.uncapitalize("I AM.FINE", {'.'}) = "i AM.fINE"
+	 * </pre>
+	 * 
+	 * @param str
+	 *            the String to uncapitalize, may be null
+	 * @param delimiters
+	 *            set of characters to determine uncapitalization, null means
+	 *            whitespace
+	 * @return uncapitalized String, <code>null</code> if null String input
+	 * @see #capitalize(String)
+	 * @since 2.1
 	 */
-	public static String toJavaClassName(String sqlNotation) {
-		StringBuilder sb = new StringBuilder();
-		char[] buf = sqlNotation.toCharArray();
-		for (int i = 0; i < buf.length; i++) {
-			char c = buf[i];
-			if (i == 0) {
-				sb.append(buf[i]);
-			} else if (c != '_') {
-				sb.append(Character.toLowerCase(c));
+	public static String uncapitalize(String str, char... delimiters) {
+		int delimLen = (delimiters == null ? -1 : delimiters.length);
+		if (str == null || str.length() == 0 || delimLen == 0) {
+			return str;
+		}
+		int strLen = str.length();
+		StringBuilder buffer = new StringBuilder(strLen);
+		boolean uncapitalizeNext = true;
+		for (int i = 0; i < strLen; i++) {
+			char ch = str.charAt(i);
+
+			if (isDelimiter(ch, delimiters)) {
+				buffer.append(ch);
+				uncapitalizeNext = true;
+			} else if (uncapitalizeNext) {
+				buffer.append(Character.toLowerCase(ch));
+				uncapitalizeNext = false;
 			} else {
-				i++;
-				if (i < buf.length) {
-					sb.append(buf[i]);
+				buffer.append(ch);
+			}
+		}
+		return buffer.toString();
+	}
+
+	// Wrapping
+	// --------------------------------------------------------------------------
+	/**
+	 * <p>
+	 * Wraps a single line of text, identifying words by <code>' '</code>.
+	 * </p>
+	 * 
+	 * <p>
+	 * New lines will be separated by the system property line separator. Very
+	 * long words, such as URLs will <i>not</i> be wrapped.
+	 * </p>
+	 * 
+	 * <p>
+	 * Leading spaces on a new line are stripped. Trailing spaces are not
+	 * stripped.
+	 * </p>
+	 * 
+	 * <pre>
+	 * WordUtils.wrap(null, *) = null
+	 * WordUtils.wrap("", *) = ""
+	 * </pre>
+	 * 
+	 * @param str
+	 *            the String to be word wrapped, may be null
+	 * @param wrapLength
+	 *            the column to wrap the words at, less than 1 is treated as 1
+	 * @return a line with newlines inserted, <code>null</code> if null input
+	 */
+	public static String wrap(String str, int wrapLength) {
+		return wrap(str, wrapLength, null, false);
+	}
+
+	/**
+	 * <p>
+	 * Wraps a single line of text, identifying words by <code>' '</code>.
+	 * </p>
+	 * 
+	 * <p>
+	 * Leading spaces on a new line are stripped. Trailing spaces are not
+	 * stripped.
+	 * </p>
+	 * 
+	 * <pre>
+	 * WordUtils.wrap(null, *, *, *) = null
+	 * WordUtils.wrap("", *, *, *) = ""
+	 * </pre>
+	 * 
+	 * @param str
+	 *            the String to be word wrapped, may be null
+	 * @param wrapLength
+	 *            the column to wrap the words at, less than 1 is treated as 1
+	 * @param newLineStr
+	 *            the string to insert for a new line, <code>null</code> uses
+	 *            the system property line separator
+	 * @param wrapLongWords
+	 *            true if long words (such as URLs) should be wrapped
+	 * @return a line with newlines inserted, <code>null</code> if null input
+	 */
+	public static String wrap(String str, int wrapLength, String newLineStr,
+			boolean wrapLongWords) {
+		if (str == null) {
+			return null;
+		}
+		if (newLineStr == null) {
+			newLineStr = "\n";// SystemUtils.LINE_SEPARATOR;
+		}
+		if (wrapLength < 1) {
+			wrapLength = 1;
+		}
+		int inputLineLength = str.length();
+		int offset = 0;
+		StringBuilder wrappedLine = new StringBuilder(inputLineLength + 32);
+
+		while ((inputLineLength - offset) > wrapLength) {
+			if (str.charAt(offset) == ' ') {
+				offset++;
+				continue;
+			}
+			int spaceToWrapAt = str.lastIndexOf(' ', wrapLength + offset);
+
+			if (spaceToWrapAt >= offset) {
+				// normal case
+				wrappedLine.append(str.substring(offset, spaceToWrapAt));
+				wrappedLine.append(newLineStr);
+				offset = spaceToWrapAt + 1;
+
+			} else {
+				// really long word or URL
+				if (wrapLongWords) {
+					// wrap really long word one line at a time
+					wrappedLine.append(str.substring(offset, wrapLength
+							+ offset));
+					wrappedLine.append(newLineStr);
+					offset += wrapLength;
+				} else {
+					// do not wrap really long word, just extend beyond limit
+					spaceToWrapAt = str.indexOf(' ', wrapLength + offset);
+					if (spaceToWrapAt >= 0) {
+						wrappedLine
+								.append(str.substring(offset, spaceToWrapAt));
+						wrappedLine.append(newLineStr);
+						offset = spaceToWrapAt + 1;
+					} else {
+						wrappedLine.append(str.substring(offset));
+						offset = inputLineLength;
+					}
 				}
 			}
 		}
-		return sb.toString();
+
+		// Whatever is left in line is short enough to just pass through
+		wrappedLine.append(str.substring(offset));
+
+		return wrappedLine.toString();
+	}
+
+	/**
+	 * Wraps the given string so that the substrings fit into the the given
+	 * line-widths. It is expected that the specified lineWidth >=
+	 * firstLineWidth. The resulting substrings will be added to the given
+	 * ArrayList. When the complete string fits into the first line, it will be
+	 * added to the list. When the string needs to be split to fit on the lines,
+	 * it is tried to split the string at a gap between words. When this is not
+	 * possible, the given string will be split in the middle of the
+	 * corresponding word.
+	 * 
+	 * 
+	 * @param value
+	 *            The string which should be wrapped
+	 * @param font
+	 *            The font which is used to display the font
+	 * @param completeWidth
+	 *            The complete width of the given string for the specified font.
+	 * @param firstLineWidth
+	 *            The allowed width for the first line
+	 * @param lineWidth
+	 *            The allowed width for all other lines, lineWidth >=
+	 *            firstLineWidth
+	 * @param list
+	 *            The list to which the substrings will be added.
+	 */
+	private static void wrap(String value, Paint font, float completeWidth,
+			float firstLineWidth, float lineWidth, ArrayList<String> list) {
+		char[] valueChars = value.toCharArray();
+		int startPos = 0;
+		int lastSpacePos = -1;
+		int lastSpacePosLength = 0;
+		int currentLineWidth = 0;
+		for (int i = 0; i < valueChars.length; i++) {
+			char c = valueChars[i];
+			currentLineWidth += font.measureText(String.valueOf(c));// .charWidth(c);
+			if (c == '\n') {
+				list.add(new String(valueChars, startPos, i - startPos));
+				lastSpacePos = -1;
+				startPos = i + 1;
+				currentLineWidth = 0;
+				firstLineWidth = lineWidth;
+				i = startPos;
+			} else if ((currentLineWidth > firstLineWidth) && (i > 0)) {
+				if ((c == ' ') || (c == '\t')) {
+					list.add(new String(valueChars, startPos, i - startPos));
+					startPos = ++i;
+					currentLineWidth = 0;
+					lastSpacePos = -1;
+				} else if (lastSpacePos == -1) {
+					if (i > startPos + 1) {
+						i--;
+					}
+					// System.out.println("value=" + value + ", i=" + i +
+					// ", startPos=" + startPos);
+					list.add(new String(valueChars, startPos, i - startPos));
+					startPos = i;
+					currentLineWidth = 0;
+				} else {
+					currentLineWidth -= lastSpacePosLength;
+					list.add(new String(valueChars, startPos, lastSpacePos
+							- startPos));
+					startPos = lastSpacePos + 1;
+					lastSpacePos = -1;
+				}
+				firstLineWidth = lineWidth;
+			} else if ((c == ' ') || (c == '\t')) {
+				lastSpacePos = i;
+				lastSpacePosLength = currentLineWidth;
+			}
+
+		}
+		// add tail:
+		list.add(new String(valueChars, startPos, valueChars.length - startPos));
+
+	}
+
+	/**
+	 * <p>
+	 * <code>WordUtils</code> instances should NOT be constructed in standard
+	 * programming. Instead, the class should be used as
+	 * <code>WordUtils.wrap("foo bar", 20);</code>.
+	 * </p>
+	 * 
+	 * <p>
+	 * This constructor is public to permit tools that require a JavaBean
+	 * instance to operate.
+	 * </p>
+	 */
+	public WordUtils() {
+		super();
 	}
 
 }

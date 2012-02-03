@@ -30,6 +30,10 @@ public class ConversionException extends XMLWizardException implements ErrorWrit
 	private static final String SEPARATOR = "\n-------------------------------";
 	private Map stuff = new OrderRetainingMap();
 
+	public ConversionException(String msg) {
+		super(msg);
+	}
+
 	public ConversionException(String msg, Throwable cause) {
 		super(msg, cause);
 		if (msg != null) {
@@ -42,17 +46,8 @@ public class ConversionException extends XMLWizardException implements ErrorWrit
 		}
 	}
 
-	public ConversionException(String msg) {
-		super(msg);
-	}
-
 	public ConversionException(Throwable cause) {
 		this(cause.getMessage(), cause);
-	}
-
-	@Override
-	public String get(String errorKey) {
-		return (String) stuff.get(errorKey);
 	}
 
 	@Override
@@ -69,21 +64,8 @@ public class ConversionException extends XMLWizardException implements ErrorWrit
 	}
 
 	@Override
-	public void set(String name, String information) {
-		String key = name;
-		int i = 0;
-		stuff.put(key, information); // keep order
-		while (stuff.containsKey(key)) {
-			if (i != 0) {
-				stuff.remove(key);
-			}
-			key = name + "[" + ++i + "]";
-		}
-	}
-
-	@Override
-	public Iterator keys() {
-		return stuff.keySet().iterator();
+	public String get(String errorKey) {
+		return (String) stuff.get(errorKey);
 	}
 
 	@Override
@@ -108,5 +90,23 @@ public class ConversionException extends XMLWizardException implements ErrorWrit
 
 	public String getShortMessage() {
 		return super.getMessage();
+	}
+
+	@Override
+	public Iterator keys() {
+		return stuff.keySet().iterator();
+	}
+
+	@Override
+	public void set(String name, String information) {
+		String key = name;
+		int i = 0;
+		stuff.put(key, information); // keep order
+		while (stuff.containsKey(key)) {
+			if (i != 0) {
+				stuff.remove(key);
+			}
+			key = name + "[" + ++i + "]";
+		}
 	}
 }

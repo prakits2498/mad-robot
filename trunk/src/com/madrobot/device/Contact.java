@@ -16,55 +16,55 @@ package com.madrobot.device;
  */
 public class Contact {
 	private String _id;
+	private String custom_ringtone;
 	private String display_name;
 	private int has_phone_number;
 	private String last_time_contacted;
-	private String custom_ringtone;
 	private String lookup;
 	private int times_contacted;
 	
-	public int getTimesContacted() {
-		return times_contacted;
-	}
-	public void setTimesContacted(int timesContacted) {
-		times_contacted = timesContacted;
-	}
-	public String getID() {
-		return _id;
-	}
-	public void setID(String id) {
-		_id = id;
+	public String getCustomRingtone() {
+		return custom_ringtone;
 	}
 	public String getDisplayName() {
 		return display_name;
 	}
-	public void setDisplayName(String displayName) {
-		display_name = displayName;
+	public String getID() {
+		return _id;
+	}
+	public String getLastTimeContacted() {
+		return last_time_contacted;
+	}
+	public String getLookup() {
+		return lookup;
+	}
+	public int getTimesContacted() {
+		return times_contacted;
 	}
 	public int hasPhoneNumber() {
 		return has_phone_number;
 	}
+	public void setCustomRingtone(String customRingtone) {
+		custom_ringtone = customRingtone;
+	}
+	public void setDisplayName(String displayName) {
+		display_name = displayName;
+	}
 	public void setHasPhoneNumber(int hasPhoneNumber) {
 		has_phone_number = hasPhoneNumber;
 	}
-	public String getLastTimeContacted() {
-		return last_time_contacted;
+	public void setID(String id) {
+		_id = id;
 	}
 	public void setLastTimeContacted(String lastTimeContacted) {
 		last_time_contacted = lastTimeContacted;
 		
 	}
-	public String getCustomRingtone() {
-		return custom_ringtone;
-	}
-	public void setCustomRingtone(String customRingtone) {
-		custom_ringtone = customRingtone;
-	}
-	public String getLookup() {
-		return lookup;
-	}
 	public void setLookup(String lookup) {
 		this.lookup = lookup;
+	}
+	public void setTimesContacted(int timesContacted) {
+		times_contacted = timesContacted;
 	}
 	@Override
 	public String toString() {

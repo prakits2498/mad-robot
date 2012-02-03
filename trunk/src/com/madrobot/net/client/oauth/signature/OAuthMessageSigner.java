@@ -20,17 +20,26 @@ public abstract class OAuthMessageSigner implements Serializable {
 	public OAuthMessageSigner() {
 	}
 
-	public abstract String sign(HttpRequest request, HttpParameters requestParameters)
-			throws OAuthMessageSignerException;
+	protected String base64Encode(byte[] b) {
+		return new String(Base64.encode(b,Base64.DEFAULT));
+	}
 
-	public abstract String getSignatureMethod();
+	protected byte[] decodeBase64(String s) {
+		return Base64.decode(s.getBytes(), Base64.DEFAULT);
+	}
 
 	public String getConsumerSecret() {
 		return consumerSecret;
 	}
 
+	public abstract String getSignatureMethod();
+
 	public String getTokenSecret() {
 		return tokenSecret;
+	}
+
+	private void readObject(java.io.ObjectInputStream stream) throws IOException, ClassNotFoundException {
+		stream.defaultReadObject();
 	}
 
 	public void setConsumerSecret(String consumerSecret) {
@@ -41,15 +50,6 @@ public abstract class OAuthMessageSigner implements Serializable {
 		this.tokenSecret = tokenSecret;
 	}
 
-	protected byte[] decodeBase64(String s) {
-		return Base64.decode(s.getBytes(), Base64.DEFAULT);
-	}
-
-	protected String base64Encode(byte[] b) {
-		return new String(Base64.encode(b,Base64.DEFAULT));
-	}
-
-	private void readObject(java.io.ObjectInputStream stream) throws IOException, ClassNotFoundException {
-		stream.defaultReadObject();
-	}
+	public abstract String sign(HttpRequest request, HttpParameters requestParameters)
+			throws OAuthMessageSignerException;
 }

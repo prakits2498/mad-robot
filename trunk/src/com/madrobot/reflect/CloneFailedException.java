@@ -35,21 +35,21 @@ public class CloneFailedException extends RuntimeException {
     /**
      * Constructs a CloneFailedException.
      * 
-     * @param cause cause of the exception
-     * @since upcoming
-     */
-    public CloneFailedException(final Throwable cause) {
-        super(cause);
-    }
-
-    /**
-     * Constructs a CloneFailedException.
-     * 
      * @param message description of the exception
      * @param cause cause of the exception
      * @since upcoming
      */
     public CloneFailedException(final String message, final Throwable cause) {
         super(message, cause);
+    }
+
+    /**
+     * Constructs a CloneFailedException.
+     * 
+     * @param cause cause of the exception
+     * @since upcoming
+     */
+    public CloneFailedException(final Throwable cause) {
+        super(cause);
     }
 }

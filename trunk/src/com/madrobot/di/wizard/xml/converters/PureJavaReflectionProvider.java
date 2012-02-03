@@ -33,8 +33,8 @@ import com.madrobot.reflect.ClassUtils;
  */
 public class PureJavaReflectionProvider implements ReflectionProvider {
 
-	private transient Map serializedDataCache = new WeakHashMap();
 	protected FieldDictionary fieldDictionary;
+	private transient Map serializedDataCache = new WeakHashMap();
 
 	public PureJavaReflectionProvider() {
 		this(new FieldDictionary(new ImmutableFieldKeySorter()));
@@ -42,6 +42,52 @@ public class PureJavaReflectionProvider implements ReflectionProvider {
 
 	public PureJavaReflectionProvider(FieldDictionary fieldDictionary) {
 		this.fieldDictionary = fieldDictionary;
+	}
+
+	@Override
+	public boolean fieldDefinedInClass(String fieldName, Class type) {
+		Field field = fieldDictionary.fieldOrNull(type, fieldName, null);
+		return field != null && (fieldModifiersSupported(field) || Modifier.isTransient(field.getModifiers()));
+	}
+
+	protected boolean fieldModifiersSupported(Field field) {
+		int modifiers = field.getModifiers();
+		return !(Modifier.isStatic(modifiers) || Modifier.isTransient(modifiers));
+	}
+
+	@Override
+	public Field getField(Class definedIn, String fieldName) {
+		return fieldDictionary.field(definedIn, fieldName, null);
+	}
+
+	@Override
+	public Class getFieldType(Object object, String fieldName, Class definedIn) {
+		return fieldDictionary.field(object.getClass(), fieldName, definedIn).getType();
+	}
+
+	@Override
+	public Object newInstance(Class type) {
+		return ClassUtils.newInstance(type);
+	}
+
+	protected Object readResolve() {
+		serializedDataCache = new WeakHashMap();
+		return this;
+	}
+
+	public void setFieldDictionary(FieldDictionary dictionary) {
+		this.fieldDictionary = dictionary;
+	}
+
+	protected void validateFieldAccess(Field field) {
+		if (Modifier.isFinal(field.getModifiers())) {
+			if (JVM.is15()) {
+				field.setAccessible(true);
+			} else {
+				throw new ObjectAccessException("Invalid final field " + field.getDeclaringClass().getName() + "."
+						+ field.getName());
+			}
+		}
 	}
 
 	@Override
@@ -74,52 +120,6 @@ public class PureJavaReflectionProvider implements ReflectionProvider {
 		} catch (IllegalAccessException e) {
 			throw new ObjectAccessException("Could not set field " + object.getClass() + "." + field.getName(), e);
 		}
-	}
-
-	@Override
-	public Class getFieldType(Object object, String fieldName, Class definedIn) {
-		return fieldDictionary.field(object.getClass(), fieldName, definedIn).getType();
-	}
-
-	@Override
-	public boolean fieldDefinedInClass(String fieldName, Class type) {
-		Field field = fieldDictionary.fieldOrNull(type, fieldName, null);
-		return field != null && (fieldModifiersSupported(field) || Modifier.isTransient(field.getModifiers()));
-	}
-
-	protected boolean fieldModifiersSupported(Field field) {
-		int modifiers = field.getModifiers();
-		return !(Modifier.isStatic(modifiers) || Modifier.isTransient(modifiers));
-	}
-
-	protected void validateFieldAccess(Field field) {
-		if (Modifier.isFinal(field.getModifiers())) {
-			if (JVM.is15()) {
-				field.setAccessible(true);
-			} else {
-				throw new ObjectAccessException("Invalid final field " + field.getDeclaringClass().getName() + "."
-						+ field.getName());
-			}
-		}
-	}
-
-	@Override
-	public Field getField(Class definedIn, String fieldName) {
-		return fieldDictionary.field(definedIn, fieldName, null);
-	}
-
-	public void setFieldDictionary(FieldDictionary dictionary) {
-		this.fieldDictionary = dictionary;
-	}
-
-	protected Object readResolve() {
-		serializedDataCache = new WeakHashMap();
-		return this;
-	}
-
-	@Override
-	public Object newInstance(Class type) {
-		return ClassUtils.newInstance(type);
 	}
 
 }

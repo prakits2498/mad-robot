@@ -19,35 +19,12 @@ import android.graphics.PointF;
  * @author Elton Kent
  */
 public class CircleUtils {
+	
 	public static PointF findPointOnCircle(float radius, float angleInDegrees, PointF origin) {
 		// Convert from degrees to radians via multiplication by PI/180
 		float x = (float) (radius * Math.cos(angleInDegrees * Math.PI / 180F)) + origin.x;
 		float y = (float) (radius * Math.sin(angleInDegrees * Math.PI / 180F)) + origin.y;
 		return new PointF(x, y);
-	}
-
-	/**
-	 * Check if the given point is in the cicle
-	 * 
-	 * @param x
-	 *            Point x coordinate
-	 * @param y
-	 *            Point y coordinate
-	 * @param circleX
-	 *            x coordinate of the circle's radius
-	 * @param circleY
-	 *            y coordinate of the circle's radius
-	 * @param circleRadius
-	 *            radius of the circle
-	 * @return
-	 */
-	public static boolean isPointInCircle(float x, float y, float circleX, float circleY, float circleRadius) {
-		double magic = Math.sqrt(Math.pow(circleX - x, 2) + Math.pow(circleY - y, 2));
-		return magic < circleRadius;
-	}
-
-	public static boolean isPointInCircle(PointF point, PointF circleCenter, float circleRadius) {
-		return isPointInCircle(point.x, point.y, circleCenter.x, circleCenter.y, circleRadius);
 	}
 
 	/**
@@ -91,5 +68,29 @@ public class CircleUtils {
 		final double dx = circle1Center.x - circle2Center.x;
 		final double dy = circle1Center.y - circle2Center.y;
 		return a * a > (dx * dx + dy * dy);
+	}
+
+	/**
+	 * Check if the given point is in the cicle
+	 * 
+	 * @param x
+	 *            Point x coordinate
+	 * @param y
+	 *            Point y coordinate
+	 * @param circleX
+	 *            x coordinate of the circle's radius
+	 * @param circleY
+	 *            y coordinate of the circle's radius
+	 * @param circleRadius
+	 *            radius of the circle
+	 * @return
+	 */
+	public static boolean isPointInCircle(float x, float y, float circleX, float circleY, float circleRadius) {
+		double magic = Math.sqrt(Math.pow(circleX - x, 2) + Math.pow(circleY - y, 2));
+		return magic < circleRadius;
+	}
+
+	public static boolean isPointInCircle(PointF point, PointF circleCenter, float circleRadius) {
+		return isPointInCircle(point.x, point.y, circleCenter.x, circleCenter.y, circleRadius);
 	}
 }

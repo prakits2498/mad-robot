@@ -32,25 +32,25 @@ import java.lang.reflect.Method;
  */
 class FieldInfo {
 	/**
+	 * Method to add a item to the collection field
+	 */
+	private Method addMethod;
+	/**
 	 * Name of the element
 	 */
 	private String elementName;
+	/**
+	 * Field reference
+	 */
+	private Field field;
 	/**
 	 * Name of the field
 	 */
 	private String fieldName;
 	/**
-	 * Class information about the field type
-	 */
-	private Class<?> type;
-	/**
 	 * Type of the field
 	 */
 	private FieldType fieldType;
-	/**
-	 * Field reference
-	 */
-	private Field field;
 	/**
 	 * Method to get the value
 	 */
@@ -60,9 +60,18 @@ class FieldInfo {
 	 */
 	private Method setMethod;
 	/**
-	 * Method to add a item to the collection field
+	 * Class information about the field type
 	 */
-	private Method addMethod;
+	private Class<?> type;
+
+	/**
+	 * Gets the method to add an item to the collection field
+	 * 
+	 * @return The method reference
+	 */
+	Method getAddMethod() {
+		return addMethod;
+	}
 
 	/**
 	 * Gets the name of the element
@@ -71,54 +80,6 @@ class FieldInfo {
 	 */
 	String getElementName() {
 		return elementName;
-	}
-
-	/**
-	 * Sets the name of the element
-	 * 
-	 * @param name
-	 *            Name of the element
-	 */
-	void setElementName(String name) {
-		this.elementName = name;
-	}
-
-	/**
-	 * Gets class of the field
-	 * 
-	 * @return Field class
-	 */
-	Class<?> getType() {
-		return type;
-	}
-
-	/**
-	 * Sets the class of the field
-	 * 
-	 * @param type
-	 *            Field class
-	 */
-	void setType(Class<?> type) {
-		this.type = type;
-	}
-
-	/**
-	 * Gets the type of the field
-	 * 
-	 * @return Field type
-	 */
-	FieldType getFieldType() {
-		return fieldType;
-	}
-
-	/**
-	 * Sets the type of the field
-	 * 
-	 * @param fieldType
-	 *            Field type
-	 */
-	void setFieldType(FieldType fieldType) {
-		this.fieldType = fieldType;
 	}
 
 	/**
@@ -131,13 +92,21 @@ class FieldInfo {
 	}
 
 	/**
-	 * Sets the field reference
+	 * Gets the name of the field
 	 * 
-	 * @param field
-	 *            Field reference
+	 * @return Name of the element
 	 */
-	void setField(Field field) {
-		this.field = field;
+	String getFieldName() {
+		return fieldName;
+	}
+
+	/**
+	 * Gets the type of the field
+	 * 
+	 * @return Field type
+	 */
+	FieldType getFieldType() {
+		return fieldType;
 	}
 
 	/**
@@ -150,16 +119,6 @@ class FieldInfo {
 	}
 
 	/**
-	 * Sets the method to get the value of the field
-	 * 
-	 * @param getMethod
-	 *            Method reference
-	 */
-	void setGetMethod(Method getMethod) {
-		this.getMethod = getMethod;
-	}
-
-	/**
 	 * Gets the method to set the value of the field
 	 * 
 	 * @return The method reference
@@ -169,22 +128,12 @@ class FieldInfo {
 	}
 
 	/**
-	 * Sets the method to set the value of the field
+	 * Gets class of the field
 	 * 
-	 * @param setMethod
-	 *            Method reference
+	 * @return Field class
 	 */
-	void setSetMethod(Method setMethod) {
-		this.setMethod = setMethod;
-	}
-
-	/**
-	 * Gets the method to add an item to the collection field
-	 * 
-	 * @return The method reference
-	 */
-	Method getAddMethod() {
-		return addMethod;
+	Class<?> getType() {
+		return type;
 	}
 
 	/**
@@ -198,12 +147,23 @@ class FieldInfo {
 	}
 
 	/**
-	 * Gets the name of the field
+	 * Sets the name of the element
 	 * 
-	 * @return Name of the element
+	 * @param name
+	 *            Name of the element
 	 */
-	String getFieldName() {
-		return fieldName;
+	void setElementName(String name) {
+		this.elementName = name;
+	}
+
+	/**
+	 * Sets the field reference
+	 * 
+	 * @param field
+	 *            Field reference
+	 */
+	void setField(Field field) {
+		this.field = field;
 	}
 
 	/**
@@ -214,5 +174,45 @@ class FieldInfo {
 	 */
 	void setFieldName(String fieldName) {
 		this.fieldName = fieldName;
+	}
+
+	/**
+	 * Sets the type of the field
+	 * 
+	 * @param fieldType
+	 *            Field type
+	 */
+	void setFieldType(FieldType fieldType) {
+		this.fieldType = fieldType;
+	}
+
+	/**
+	 * Sets the method to get the value of the field
+	 * 
+	 * @param getMethod
+	 *            Method reference
+	 */
+	void setGetMethod(Method getMethod) {
+		this.getMethod = getMethod;
+	}
+
+	/**
+	 * Sets the method to set the value of the field
+	 * 
+	 * @param setMethod
+	 *            Method reference
+	 */
+	void setSetMethod(Method setMethod) {
+		this.setMethod = setMethod;
+	}
+
+	/**
+	 * Sets the class of the field
+	 * 
+	 * @param type
+	 *            Field class
+	 */
+	void setType(Class<?> type) {
+		this.type = type;
 	}
 }

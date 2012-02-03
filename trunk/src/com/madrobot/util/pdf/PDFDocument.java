@@ -3,10 +3,10 @@ package com.madrobot.util.pdf;
 
  class PDFDocument extends Base {
 
-	// the four main sections described in the PDF Reference
-	private Header mHeader;
 	private Body mBody;
 	private CrossReferenceTable mCRT;
+	// the four main sections described in the PDF Reference
+	private Header mHeader;
 	private Trailer mTrailer;
 	
 	 PDFDocument() {
@@ -18,14 +18,16 @@ package com.madrobot.util.pdf;
 		mTrailer = new Trailer();
 	}
 
-	 IndirectObject newIndirectObject() {
-		return mBody.getNewIndirectObject();
+	 @Override
+	public void clear() {
+		mHeader.clear();
+		mBody.clear();
+		mCRT.clear();
+		mTrailer.clear();
 	}
 
-	 IndirectObject newRawObject(String content) {
-		IndirectObject iobj = mBody.getNewIndirectObject();
-		iobj.setContent(content);
-		return iobj;
+	 void includeIndirectObject(IndirectObject iobj) {
+		mBody.includeIndirectObject(iobj);
 	}
 
 	 IndirectObject newDictionaryObject(String dictionaryContent) {
@@ -34,17 +36,23 @@ package com.madrobot.util.pdf;
 		return iobj;
 	}
 
-	 IndirectObject newStreamObject(String streamContent) {
+	 IndirectObject newIndirectObject() {
+		return mBody.getNewIndirectObject();
+	}
+	
+	 IndirectObject newRawObject(String content) {
+		IndirectObject iobj = mBody.getNewIndirectObject();
+		iobj.setContent(content);
+		return iobj;
+	}
+
+	IndirectObject newStreamObject(String streamContent) {
 		IndirectObject iobj = mBody.getNewIndirectObject();		
 		iobj.setDictionaryContent("  /Length "+Integer.toString(streamContent.length())+"\n");
 		iobj.setStreamContent(streamContent);
 		return iobj;
 	}
 	
-	 void includeIndirectObject(IndirectObject iobj) {
-		mBody.includeIndirectObject(iobj);
-	}
-
 	@Override
 	public String toPDFString() {
 		StringBuilder sb = new StringBuilder();
@@ -61,14 +69,6 @@ package com.madrobot.util.pdf;
 		sb.append(mCRT.toPDFString());
 		sb.append(mTrailer.toPDFString());
 		return sb.toString();
-	}
-	
-	@Override
-	public void clear() {
-		mHeader.clear();
-		mBody.clear();
-		mCRT.clear();
-		mTrailer.clear();
 	}
 
 }

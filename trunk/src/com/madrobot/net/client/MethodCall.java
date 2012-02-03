@@ -24,12 +24,12 @@ public class MethodCall {
 	ArrayList<Object> params = new ArrayList<Object>();
 	
 	public String getMethodName() { return methodName; }
-	void setMethodName(String methodName) { this.methodName = methodName; }
-
 	public ArrayList<Object> getParams() { return params; }
-	void setParams(ArrayList<Object> params) { this.params = params; }
 
 	public String getTopic() {
 		return (String)params.get(TOPIC);
 	}
+	void setMethodName(String methodName) { this.methodName = methodName; }
+
+	void setParams(ArrayList<Object> params) { this.params = params; }
 }

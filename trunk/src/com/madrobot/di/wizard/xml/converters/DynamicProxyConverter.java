@@ -30,16 +30,13 @@ import com.madrobot.reflect.FieldUtils;
  */
 public class DynamicProxyConverter implements Converter {
 
-	private ClassLoader classLoader;
-	private Mapper mapper;
-	private static final Field HANDLER;
 	private static final InvocationHandler DUMMY = new InvocationHandler() {
 		@Override
 		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 			return null;
 		}
 	};
-
+	private static final Field HANDLER;
 	static {
 		Field field = null;
 		try {
@@ -50,6 +47,9 @@ public class DynamicProxyConverter implements Converter {
 		}
 		HANDLER = field;
 	}
+	private ClassLoader classLoader;
+
+	private Mapper mapper;
 
 	public DynamicProxyConverter(Mapper mapper) {
 		this(mapper, DynamicProxyConverter.class.getClassLoader());
@@ -58,6 +58,16 @@ public class DynamicProxyConverter implements Converter {
 	public DynamicProxyConverter(Mapper mapper, ClassLoader classLoader) {
 		this.classLoader = classLoader;
 		this.mapper = mapper;
+	}
+
+	private void addInterfacesToXml(Object source, HierarchicalStreamWriter writer) {
+		Class[] interfaces = source.getClass().getInterfaces();
+		for (int i = 0; i < interfaces.length; i++) {
+			Class currentInterface = interfaces[i];
+			writer.startNode("interface");
+			writer.setValue(mapper.serializedClass(currentInterface));
+			writer.endNode();
+		}
 	}
 
 	@Override
@@ -76,16 +86,6 @@ public class DynamicProxyConverter implements Converter {
 		}
 		context.convertAnother(invocationHandler);
 		writer.endNode();
-	}
-
-	private void addInterfacesToXml(Object source, HierarchicalStreamWriter writer) {
-		Class[] interfaces = source.getClass().getInterfaces();
-		for (int i = 0; i < interfaces.length; i++) {
-			Class currentInterface = interfaces[i];
-			writer.startNode("interface");
-			writer.setValue(mapper.serializedClass(currentInterface));
-			writer.endNode();
-		}
 	}
 
 	@Override

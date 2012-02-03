@@ -18,15 +18,15 @@ public class Vector {
 
 	private PointF vPoint;
 
-	public Vector(PointF pointF) {
-		vPoint = pointF;
-	}
-
 	public Vector(float mag, Angle theta) {
 		float x = (float) (Math.cos(theta.getRadians()) * mag);
 		float y = (float) (Math.sin(theta.getRadians()) * mag);
 
 		vPoint = new PointF(x, y);
+	}
+
+	public Vector(PointF pointF) {
+		vPoint = pointF;
 	}
 
 	public Vector(PointF source, PointF end) {
@@ -36,21 +36,21 @@ public class Vector {
 		vPoint = new PointF(x, y);
 	}
 
-	public Angle getAngle() {
-		return new Angle((float) Math.atan2(vPoint.y, vPoint.x));
-	}
-
 	public Vector add(Vector v) {
 		return new Vector(PointUtils.add(vPoint, v.vPoint));
 
 	}
 
-	/*
-	 * Subtracts v from this vector
-	 */
-	public Vector subtract(Vector v) {
-		// return new Vector(vPoint.subtract(v.vPoint));
-		return new Vector(PointUtils.subtract(vPoint, v.vPoint));
+	public boolean equals(Vector v) {
+		if((vPoint.x == v.vPoint.x) && (vPoint.y == v.vPoint.y)){
+			return true;
+		} else{
+			return false;
+		}
+	}
+
+	public Angle getAngle() {
+		return new Angle((float) Math.atan2(vPoint.y, vPoint.x));
 	}
 
 	public float getMagnitude() {
@@ -74,12 +74,12 @@ public class Vector {
 		return new Vector(getMagnitude() * scaleFactor, getAngle());
 	}
 
-	public boolean equals(Vector v) {
-		if((vPoint.x == v.vPoint.x) && (vPoint.y == v.vPoint.y)){
-			return true;
-		} else{
-			return false;
-		}
+	/*
+	 * Subtracts v from this vector
+	 */
+	public Vector subtract(Vector v) {
+		// return new Vector(vPoint.subtract(v.vPoint));
+		return new Vector(PointUtils.subtract(vPoint, v.vPoint));
 	}
 
 	@Override

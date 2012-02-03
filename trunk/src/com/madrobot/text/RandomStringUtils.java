@@ -41,22 +41,6 @@ public class RandomStringUtils {
 	 */
 	private static final Random RANDOM = new Random();
 
-	/**
-	 * <p>
-	 * <code>RandomStringUtils</code> instances should NOT be constructed in
-	 * standard programming. Instead, the class should be used as
-	 * <code>RandomStringUtils.random(5);</code>.
-	 * </p>
-	 * 
-	 * <p>
-	 * This constructor is public to permit tools that require a JavaBean
-	 * instance to operate.
-	 * </p>
-	 */
-	public RandomStringUtils() {
-		super();
-	}
-
 	// Random
 	// -----------------------------------------------------------------------
 	/**
@@ -84,79 +68,6 @@ public class RandomStringUtils {
 	 * </p>
 	 * 
 	 * <p>
-	 * Characters will be chosen from the set of characters whose ASCII value is
-	 * between <code>32</code> and <code>126</code> (inclusive).
-	 * </p>
-	 * 
-	 * @param count
-	 *            the length of random string to create
-	 * @return the random string
-	 */
-	public static String randomAscii(int count) {
-		return random(count, 32, 127, false, false);
-	}
-
-	/**
-	 * <p>
-	 * Creates a random string whose length is the number of characters
-	 * specified.
-	 * </p>
-	 * 
-	 * <p>
-	 * Characters will be chosen from the set of alphabetic characters.
-	 * </p>
-	 * 
-	 * @param count
-	 *            the length of random string to create
-	 * @return the random string
-	 */
-	public static String randomAlphabetic(int count) {
-		return random(count, true, false);
-	}
-
-	/**
-	 * <p>
-	 * Creates a random string whose length is the number of characters
-	 * specified.
-	 * </p>
-	 * 
-	 * <p>
-	 * Characters will be chosen from the set of alpha-numeric characters.
-	 * </p>
-	 * 
-	 * @param count
-	 *            the length of random string to create
-	 * @return the random string
-	 */
-	public static String randomAlphanumeric(int count) {
-		return random(count, true, true);
-	}
-
-	/**
-	 * <p>
-	 * Creates a random string whose length is the number of characters
-	 * specified.
-	 * </p>
-	 * 
-	 * <p>
-	 * Characters will be chosen from the set of numeric characters.
-	 * </p>
-	 * 
-	 * @param count
-	 *            the length of random string to create
-	 * @return the random string
-	 */
-	public static String randomNumeric(int count) {
-		return random(count, false, true);
-	}
-
-	/**
-	 * <p>
-	 * Creates a random string whose length is the number of characters
-	 * specified.
-	 * </p>
-	 * 
-	 * <p>
 	 * Characters will be chosen from the set of alpha-numeric characters as
 	 * indicated by the arguments.
 	 * </p>
@@ -173,6 +84,32 @@ public class RandomStringUtils {
 	 */
 	public static String random(int count, boolean letters, boolean numbers) {
 		return random(count, 0, 0, letters, numbers);
+	}
+
+	/**
+	 * <p>
+	 * Creates a random string whose length is the number of characters
+	 * specified.
+	 * </p>
+	 * 
+	 * <p>
+	 * Characters will be chosen from the set of characters specified.
+	 * </p>
+	 * 
+	 * @param count
+	 *            the length of random string to create
+	 * @param chars
+	 *            the character array containing the set of characters to use,
+	 *            may be null
+	 * @return the random string
+	 * @throws IllegalArgumentException
+	 *             if <code>count</code> &lt; 0.
+	 */
+	public static String random(int count, char[] chars) {
+		if(chars == null){
+			return random(count, 0, 0, false, false, null, RANDOM);
+		}
+		return random(count, 0, chars.length, false, false, chars, RANDOM);
 	}
 
 	/**
@@ -383,23 +320,86 @@ public class RandomStringUtils {
 	 * </p>
 	 * 
 	 * <p>
-	 * Characters will be chosen from the set of characters specified.
+	 * Characters will be chosen from the set of alphabetic characters.
 	 * </p>
 	 * 
 	 * @param count
 	 *            the length of random string to create
-	 * @param chars
-	 *            the character array containing the set of characters to use,
-	 *            may be null
 	 * @return the random string
-	 * @throws IllegalArgumentException
-	 *             if <code>count</code> &lt; 0.
 	 */
-	public static String random(int count, char[] chars) {
-		if(chars == null){
-			return random(count, 0, 0, false, false, null, RANDOM);
-		}
-		return random(count, 0, chars.length, false, false, chars, RANDOM);
+	public static String randomAlphabetic(int count) {
+		return random(count, true, false);
+	}
+
+	/**
+	 * <p>
+	 * Creates a random string whose length is the number of characters
+	 * specified.
+	 * </p>
+	 * 
+	 * <p>
+	 * Characters will be chosen from the set of alpha-numeric characters.
+	 * </p>
+	 * 
+	 * @param count
+	 *            the length of random string to create
+	 * @return the random string
+	 */
+	public static String randomAlphanumeric(int count) {
+		return random(count, true, true);
+	}
+
+	/**
+	 * <p>
+	 * Creates a random string whose length is the number of characters
+	 * specified.
+	 * </p>
+	 * 
+	 * <p>
+	 * Characters will be chosen from the set of characters whose ASCII value is
+	 * between <code>32</code> and <code>126</code> (inclusive).
+	 * </p>
+	 * 
+	 * @param count
+	 *            the length of random string to create
+	 * @return the random string
+	 */
+	public static String randomAscii(int count) {
+		return random(count, 32, 127, false, false);
+	}
+
+	/**
+	 * <p>
+	 * Creates a random string whose length is the number of characters
+	 * specified.
+	 * </p>
+	 * 
+	 * <p>
+	 * Characters will be chosen from the set of numeric characters.
+	 * </p>
+	 * 
+	 * @param count
+	 *            the length of random string to create
+	 * @return the random string
+	 */
+	public static String randomNumeric(int count) {
+		return random(count, false, true);
+	}
+
+	/**
+	 * <p>
+	 * <code>RandomStringUtils</code> instances should NOT be constructed in
+	 * standard programming. Instead, the class should be used as
+	 * <code>RandomStringUtils.random(5);</code>.
+	 * </p>
+	 * 
+	 * <p>
+	 * This constructor is public to permit tools that require a JavaBean
+	 * instance to operate.
+	 * </p>
+	 */
+	public RandomStringUtils() {
+		super();
 	}
 
 }

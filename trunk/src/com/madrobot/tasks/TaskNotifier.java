@@ -18,11 +18,11 @@ package com.madrobot.tasks;
  */
 public interface TaskNotifier {
 	/**
-	 * Called when the task completed successfully
+	 * Called when there is a change in the current carrier . WiFi/3G
 	 * 
-	 * @param response
+	 * @param bearerStatus
 	 */
-	public void onSuccess(DataResponse response);
+	public void onCarrierChanged(int bearerStatus);
 
 	/**
 	 * Called if there is an error in
@@ -32,20 +32,20 @@ public interface TaskNotifier {
 	public void onError(Throwable t);
 
 	/**
-	 * Called when there is a change in the current carrier . WiFi/3G
+	 * Called when the task completed successfully
 	 * 
-	 * @param bearerStatus
+	 * @param response
 	 */
-	public void onCarrierChanged(int bearerStatus);
-
-	/**
-	 * Called when the task is started
-	 */
-	public void onTaskStarted();
+	public void onSuccess(DataResponse response);
 
 	/**
 	 * Called when the task is completed
 	 */
 	public void onTaskCompleted();
+
+	/**
+	 * Called when the task is started
+	 */
+	public void onTaskStarted();
 
 }

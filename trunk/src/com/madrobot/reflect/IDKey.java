@@ -22,8 +22,8 @@ package com.madrobot.reflect;
  * @author Apache Software Foundation
  */ 
 final class IDKey {
-        private final Object value;
         private final int id;
+        private final Object value;
 
         /**
          * Constructor for IDKey
@@ -36,15 +36,6 @@ final class IDKey {
             // same identity hash code for different objects.  So 
             // the value is also added to disambiguate these cases.
             value = _value;
-        }
-
-        /**
-         * returns hashcode - i.e. the system identity hashcode.
-         * @return the hashcode
-         */ 
-        @Override
-        public int hashCode() {
-           return id;
         }
 
         /**
@@ -64,4 +55,13 @@ final class IDKey {
             // Note that identity equals is used.
             return value == idKey.value;
          }
+
+        /**
+         * returns hashcode - i.e. the system identity hashcode.
+         * @return the hashcode
+         */ 
+        @Override
+        public int hashCode() {
+           return id;
+        }
 }

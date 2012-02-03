@@ -48,6 +48,11 @@ public class ThreadSafePropertyEditor {
         });
     }
 
+    private PropertyEditor fetchFromPool() {
+        PropertyEditor editor = (PropertyEditor)pool.fetchFromPool();
+        return editor;
+    }
+
     public String getAsText(Object object) {
         PropertyEditor editor = fetchFromPool();
         try {
@@ -66,10 +71,5 @@ public class ThreadSafePropertyEditor {
         } finally {
             pool.putInPool(editor);
         }
-    }
-
-    private PropertyEditor fetchFromPool() {
-        PropertyEditor editor = (PropertyEditor)pool.fetchFromPool();
-        return editor;
     }
 }

@@ -40,10 +40,10 @@ public class MultiKey implements Serializable {
 	/** Serialisation version */
 	private static final long serialVersionUID = 4465448607415788805L;
 
-	/** The individual keys */
-	private final Object[] keys;
 	/** The cached hashCode */
 	private final int hashCode;
+	/** The individual keys */
+	private final Object[] keys;
 
 	/**
 	 * Constructor taking two keys.
@@ -185,45 +185,6 @@ public class MultiKey implements Serializable {
 
 	// -----------------------------------------------------------------------
 	/**
-	 * Gets a clone of the array of keys.
-	 * <p>
-	 * The keys should be immutable If they are not then they must not be
-	 * changed.
-	 * 
-	 * @return the individual keys
-	 */
-	public Object[] getKeys() {
-		return keys.clone();
-	}
-
-	/**
-	 * Gets the key at the specified index.
-	 * <p>
-	 * The key should be immutable. If it is not then it must not be changed.
-	 * 
-	 * @param index
-	 *            the index to retrieve
-	 * @return the key at the index
-	 * @throws IndexOutOfBoundsException
-	 *             if the index is invalid
-	 * @since Commons Collections 3.1
-	 */
-	public Object getKey(int index) {
-		return keys[index];
-	}
-
-	/**
-	 * Gets the size of the list of keys.
-	 * 
-	 * @return the size of the list of keys
-	 * @since Commons Collections 3.1
-	 */
-	public int size() {
-		return keys.length;
-	}
-
-	// -----------------------------------------------------------------------
-	/**
 	 * Compares this object to another.
 	 * <p>
 	 * To be equal, the other object must be a <code>MultiKey</code> with the
@@ -246,6 +207,35 @@ public class MultiKey implements Serializable {
 	}
 
 	/**
+	 * Gets the key at the specified index.
+	 * <p>
+	 * The key should be immutable. If it is not then it must not be changed.
+	 * 
+	 * @param index
+	 *            the index to retrieve
+	 * @return the key at the index
+	 * @throws IndexOutOfBoundsException
+	 *             if the index is invalid
+	 * @since Commons Collections 3.1
+	 */
+	public Object getKey(int index) {
+		return keys[index];
+	}
+
+	// -----------------------------------------------------------------------
+	/**
+	 * Gets a clone of the array of keys.
+	 * <p>
+	 * The keys should be immutable If they are not then they must not be
+	 * changed.
+	 * 
+	 * @return the individual keys
+	 */
+	public Object[] getKeys() {
+		return keys.clone();
+	}
+
+	/**
 	 * Gets the combined hash code that is computed from all the keys.
 	 * <p>
 	 * This value is computed once and then cached, so elements should not
@@ -258,6 +248,16 @@ public class MultiKey implements Serializable {
 	@Override
 	public int hashCode() {
 		return hashCode;
+	}
+
+	/**
+	 * Gets the size of the list of keys.
+	 * 
+	 * @return the size of the list of keys
+	 * @since Commons Collections 3.1
+	 */
+	public int size() {
+		return keys.length;
 	}
 
 	/**

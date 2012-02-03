@@ -21,24 +21,24 @@ import com.madrobot.ui.widgets.EditTexts.DigitsLengthFilter.MaxDigitsGetter;
  *
  */
 public class CreditCardEditText extends com.madrobot.ui.widgets.EditTexts.FormattedEditText<String> {
-	private static final int LENGTH = 16;
-	private static final int LENGTH_AMEX = 15;
-
-	public static final String BANK_ACCOUNT = "BANK_ACCOUNT";
-	public static final String REVOLUTIONCARD = "REVOLUTIONCARD";
 	public static final String AMEX_CREDIT = "AMEX_CREDIT";
 	public static final String AMEX_DEBIT = "AMEX_DEBIT";
-	public static final String VISA_CREDIT = "VISA_CREDIT";
-	public static final String VISA_DEBIT = "VISA_DEBIT";
-	public static final String MASTERCARD_CREDIT = "MASTERCARD_CREDIT";
-	public static final String MASTERCARD_DEBIT = "MASTERCARD_DEBIT";
+
+	public static final String BANK_ACCOUNT = "BANK_ACCOUNT";
+	private static Map<Integer, String> cardTypes = new HashMap<Integer, String>();
+	public static final String CREDIT_CARD = "_CREDIT";
+	public static final String DEBIT_CARD = "_DEBIT";
 	public static final String DISCOVER_CREDIT = "DISCOVER_CREDIT";
 	public static final String DISCOVER_DEBIT = "DISCOVER_DEBIT";
+	private static final int LENGTH = 16;
+	private static final int LENGTH_AMEX = 15;
+	public static final String MASTERCARD_CREDIT = "MASTERCARD_CREDIT";
+	public static final String MASTERCARD_DEBIT = "MASTERCARD_DEBIT";
 	
-	public static final String DEBIT_CARD = "_DEBIT";
-	public static final String CREDIT_CARD = "_CREDIT";
+	public static final String REVOLUTIONCARD = "REVOLUTIONCARD";
+	public static final String VISA_CREDIT = "VISA_CREDIT";
 	
-	private static Map<Integer, String> cardTypes = new HashMap<Integer, String>();
+	public static final String VISA_DEBIT = "VISA_DEBIT";
 	static {
 		cardTypes.put(4, VISA_CREDIT);
 		cardTypes.put(3, AMEX_CREDIT);

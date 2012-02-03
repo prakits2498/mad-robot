@@ -19,19 +19,19 @@ public abstract class AbstractOAuthProvider implements OAuthProvider {
 
     private static final long serialVersionUID = 1L;
 
-    private String requestTokenEndpointUrl;
-
     private String accessTokenEndpointUrl;
 
     private String authorizationWebsiteUrl;
-
-    private HttpParameters responseParameters;
 
     private Map<String, String> defaultHeaders;
 
     private boolean isOAuth10a;
 
     private transient OAuthProviderListener listener;
+
+    private String requestTokenEndpointUrl;
+
+    private HttpParameters responseParameters;
 
     public AbstractOAuthProvider(String requestTokenEndpointUrl, String accessTokenEndpointUrl,
             String authorizationWebsiteUrl) {
@@ -42,7 +42,123 @@ public abstract class AbstractOAuthProvider implements OAuthProvider {
         this.defaultHeaders = new HashMap<String, String>();
     }
 
-    public String retrieveRequestToken(OAuthConsumer consumer, String callbackUrl)
+    /**
+     * Called when the connection is being finalized after receiving the
+     * response. Use this to do any cleanup / resource freeing.
+     * 
+     * @param request
+     *        the request that has been sent
+     * @param response
+     *        the response that has been received
+     * @throws Exception
+     *         if something breaks
+     */
+    protected void closeConnection(HttpRequest request, HttpResponse response) throws Exception {
+        // NOP
+    }
+
+    /**
+     * Overrride this method if you want to customize the logic for building a
+     * request object for the given endpoint URL.
+     * 
+     * @param endpointUrl
+     *        the URL to which the request will go
+     * @return the request object
+     * @throws Exception
+     *         if something breaks
+     */
+    protected abstract HttpRequest createRequest(String endpointUrl) throws Exception;
+
+    @Override
+	public String getAccessTokenEndpointUrl() {
+        return this.accessTokenEndpointUrl;
+    }
+
+    @Override
+	public String getAuthorizationWebsiteUrl() {
+        return this.authorizationWebsiteUrl;
+    }
+
+    @Override
+	public Map<String, String> getRequestHeaders() {
+        return defaultHeaders;
+    }
+
+    @Override
+	public String getRequestTokenEndpointUrl() {
+        return this.requestTokenEndpointUrl;
+    }
+
+    /**
+     * Returns a single query parameter as served by the service provider in a
+     * token reply. You must call {@link #setResponseParameters} with the set of
+     * parameters before using this method.
+     * 
+     * @param key
+     *        the parameter name
+     * @return the parameter value
+     */
+    protected String getResponseParameter(String key) {
+        return responseParameters.getFirst(key);
+    }
+
+    @Override
+	public HttpParameters getResponseParameters() {
+        return responseParameters;
+    }
+
+    protected void handleUnexpectedResponse(int statusCode, HttpResponse response) throws Exception {
+        if (response == null) {
+            return;
+        }
+        BufferedReader reader = new BufferedReader(new InputStreamReader(response.getContent()));
+        StringBuilder responseBody = new StringBuilder();
+
+        String line = reader.readLine();
+        while (line != null) {
+            responseBody.append(line);
+            line = reader.readLine();
+        }
+
+        switch (statusCode) {
+        case 401:
+            throw new OAuthNotAuthorizedException(responseBody.toString());
+        default:
+            throw new OAuthCommunicationException("Service provider responded in error: "
+                    + statusCode + " (" + response.getReasonPhrase() + ")", responseBody.toString());
+        }
+    }
+
+    @Override
+	public boolean isOAuth10a() {
+        return isOAuth10a;
+    }
+
+    @Override
+	public void removeListener(OAuthProviderListener listener) {
+        this.listener = null;
+    }
+
+    @Override
+	public void retrieveAccessToken(OAuthConsumer consumer, String oauthVerifier)
+            throws OAuthMessageSignerException, OAuthNotAuthorizedException,
+            OAuthExpectationFailedException, OAuthCommunicationException {
+
+        if (consumer.getToken() == null || consumer.getTokenSecret() == null) {
+            throw new OAuthExpectationFailedException(
+                    "Authorized request token or token secret not set. "
+                            + "Did you retrieve an authorized request token before?");
+        }
+
+        if (isOAuth10a && oauthVerifier != null) {
+            retrieveToken(consumer, accessTokenEndpointUrl, OAuth.OAUTH_VERIFIER, oauthVerifier);
+        } else {
+            retrieveToken(consumer, accessTokenEndpointUrl);
+        }
+    }
+
+    @Override
+	public String retrieveRequestToken(OAuthConsumer consumer, String callbackUrl)
             throws OAuthMessageSignerException, OAuthNotAuthorizedException,
             OAuthExpectationFailedException, OAuthCommunicationException {
 
@@ -65,23 +181,6 @@ public abstract class AbstractOAuthProvider implements OAuthProvider {
         } else {
             return OAuth.addQueryParameters(authorizationWebsiteUrl, OAuth.OAUTH_TOKEN,
                 consumer.getToken(), OAuth.OAUTH_CALLBACK, callbackUrl);
-        }
-    }
-
-    public void retrieveAccessToken(OAuthConsumer consumer, String oauthVerifier)
-            throws OAuthMessageSignerException, OAuthNotAuthorizedException,
-            OAuthExpectationFailedException, OAuthCommunicationException {
-
-        if (consumer.getToken() == null || consumer.getTokenSecret() == null) {
-            throw new OAuthExpectationFailedException(
-                    "Authorized request token or token secret not set. "
-                            + "Did you retrieve an authorized request token before?");
-        }
-
-        if (isOAuth10a && oauthVerifier != null) {
-            retrieveToken(consumer, accessTokenEndpointUrl, OAuth.OAUTH_VERIFIER, oauthVerifier);
-        } else {
-            retrieveToken(consumer, accessTokenEndpointUrl);
         }
     }
 
@@ -206,40 +305,6 @@ public abstract class AbstractOAuthProvider implements OAuthProvider {
         }
     }
 
-    protected void handleUnexpectedResponse(int statusCode, HttpResponse response) throws Exception {
-        if (response == null) {
-            return;
-        }
-        BufferedReader reader = new BufferedReader(new InputStreamReader(response.getContent()));
-        StringBuilder responseBody = new StringBuilder();
-
-        String line = reader.readLine();
-        while (line != null) {
-            responseBody.append(line);
-            line = reader.readLine();
-        }
-
-        switch (statusCode) {
-        case 401:
-            throw new OAuthNotAuthorizedException(responseBody.toString());
-        default:
-            throw new OAuthCommunicationException("Service provider responded in error: "
-                    + statusCode + " (" + response.getReasonPhrase() + ")", responseBody.toString());
-        }
-    }
-
-    /**
-     * Overrride this method if you want to customize the logic for building a
-     * request object for the given endpoint URL.
-     * 
-     * @param endpointUrl
-     *        the URL to which the request will go
-     * @return the request object
-     * @throws Exception
-     *         if something breaks
-     */
-    protected abstract HttpRequest createRequest(String endpointUrl) throws Exception;
-
     /**
      * Override this method if you want to customize the logic for how the given
      * request is sent to the server.
@@ -252,75 +317,23 @@ public abstract class AbstractOAuthProvider implements OAuthProvider {
      */
     protected abstract HttpResponse sendRequest(HttpRequest request) throws Exception;
 
-    /**
-     * Called when the connection is being finalized after receiving the
-     * response. Use this to do any cleanup / resource freeing.
-     * 
-     * @param request
-     *        the request that has been sent
-     * @param response
-     *        the response that has been received
-     * @throws Exception
-     *         if something breaks
-     */
-    protected void closeConnection(HttpRequest request, HttpResponse response) throws Exception {
-        // NOP
-    }
-
-    public HttpParameters getResponseParameters() {
-        return responseParameters;
-    }
-
-    /**
-     * Returns a single query parameter as served by the service provider in a
-     * token reply. You must call {@link #setResponseParameters} with the set of
-     * parameters before using this method.
-     * 
-     * @param key
-     *        the parameter name
-     * @return the parameter value
-     */
-    protected String getResponseParameter(String key) {
-        return responseParameters.getFirst(key);
-    }
-
-    public void setResponseParameters(HttpParameters parameters) {
-        this.responseParameters = parameters;
-    }
-
-    public void setOAuth10a(boolean isOAuth10aProvider) {
-        this.isOAuth10a = isOAuth10aProvider;
-    }
-
-    public boolean isOAuth10a() {
-        return isOAuth10a;
-    }
-
-    public String getRequestTokenEndpointUrl() {
-        return this.requestTokenEndpointUrl;
-    }
-
-    public String getAccessTokenEndpointUrl() {
-        return this.accessTokenEndpointUrl;
-    }
-
-    public String getAuthorizationWebsiteUrl() {
-        return this.authorizationWebsiteUrl;
-    }
-
-    public void setRequestHeader(String header, String value) {
-        defaultHeaders.put(header, value);
-    }
-
-    public Map<String, String> getRequestHeaders() {
-        return defaultHeaders;
-    }
-
-    public void setListener(OAuthProviderListener listener) {
+    @Override
+	public void setListener(OAuthProviderListener listener) {
         this.listener = listener;
     }
 
-    public void removeListener(OAuthProviderListener listener) {
-        this.listener = null;
+    @Override
+	public void setOAuth10a(boolean isOAuth10aProvider) {
+        this.isOAuth10a = isOAuth10aProvider;
+    }
+
+    @Override
+	public void setRequestHeader(String header, String value) {
+        defaultHeaders.put(header, value);
+    }
+
+    @Override
+	public void setResponseParameters(HttpParameters parameters) {
+        this.responseParameters = parameters;
     }
 }

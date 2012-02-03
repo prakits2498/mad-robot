@@ -968,17 +968,6 @@ class HashCodeBuilder implements Builder<Integer> {
     }
 
     /**
-     * <p>
-     * Return the computed <code>hashCode</code>.
-     * </p>
-     * 
-     * @return <code>hashCode</code> based on the fields appended
-     */
-    public int toHashCode() {
-        return iTotal;
-    }
-    
-    /**
      * Returns the computed <code>hashCode</code>.
      * 
      * @return <code>hashCode</code> based on the fields appended
@@ -989,7 +978,7 @@ class HashCodeBuilder implements Builder<Integer> {
 	public Integer build() {
         return toHashCode();
     }
-
+    
     /**
      * <p>
      * The computed <code>hashCode</code> from toHashCode() is returned due to the likelyhood 
@@ -1002,6 +991,17 @@ class HashCodeBuilder implements Builder<Integer> {
     @Override
     public int hashCode() {
         return toHashCode();
+    }
+
+    /**
+     * <p>
+     * Return the computed <code>hashCode</code>.
+     * </p>
+     * 
+     * @return <code>hashCode</code> based on the fields appended
+     */
+    public int toHashCode() {
+        return iTotal;
     }
 
 }

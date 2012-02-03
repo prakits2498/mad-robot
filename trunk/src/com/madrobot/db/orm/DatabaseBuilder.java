@@ -46,9 +46,9 @@ import com.madrobot.text.WordUtils;
  */
 public class DatabaseBuilder {
 
+	String _dbName;
 	@SuppressWarnings("unchecked")
 	Map<String, Class> classes = new HashMap<String, Class>();
-	String _dbName;
 
 	/**
 	 * Create a new DatabaseBuilder for a database.
@@ -70,21 +70,14 @@ public class DatabaseBuilder {
 		classes.put(c.getSimpleName(), c);
 	}
 
-	/**
-	 * Returns list of DB tables according to classes added to a schema map
-	 * 
-	 * @return
-	 */
 	@SuppressWarnings("unchecked")
-	public String[] getTables() {
-		String[] ret = new String[classes.size()];
-		Class[] arr = new Class[classes.size()];
-		arr = classes.values().toArray(arr);
-		for (int i = 0; i < arr.length; i++) {
-			Class c = arr[i];
-			ret[i] = WordUtils.toSQLName(c.getSimpleName());
-		}
-		return ret;
+	private Class getClassBySqlName(String table) {
+		String jName = WordUtils.toJavaClassName(table);
+		return classes.get(jName);
+	}
+
+	public String getDatabaseName() {
+		return _dbName;
 	}
 
 	/**
@@ -133,13 +126,20 @@ public class DatabaseBuilder {
 		return "DROP TABLE IF EXISTS " + table;
 	}
 
-	public String getDatabaseName() {
-		return _dbName;
-	}
-
+	/**
+	 * Returns list of DB tables according to classes added to a schema map
+	 * 
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
-	private Class getClassBySqlName(String table) {
-		String jName = WordUtils.toJavaClassName(table);
-		return classes.get(jName);
+	public String[] getTables() {
+		String[] ret = new String[classes.size()];
+		Class[] arr = new Class[classes.size()];
+		arr = classes.values().toArray(arr);
+		for (int i = 0; i < arr.length; i++) {
+			Class c = arr[i];
+			ret[i] = WordUtils.toSQLName(c.getSimpleName());
+		}
+		return ret;
 	}
 }

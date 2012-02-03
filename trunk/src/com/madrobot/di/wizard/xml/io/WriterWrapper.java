@@ -25,14 +25,13 @@ public abstract class WriterWrapper implements ExtendedHierarchicalStreamWriter 
 	}
 
 	@Override
-	public void startNode(String name) {
-		wrapped.startNode(name);
+	public void addAttribute(String key, String value) {
+		wrapped.addAttribute(key, value);
 	}
 
 	@Override
-	public void startNode(String name, Class clazz) {
-
-		((ExtendedHierarchicalStreamWriter) wrapped).startNode(name, clazz);
+	public void close() {
+		wrapped.close();
 	}
 
 	@Override
@@ -41,8 +40,8 @@ public abstract class WriterWrapper implements ExtendedHierarchicalStreamWriter 
 	}
 
 	@Override
-	public void addAttribute(String key, String value) {
-		wrapped.addAttribute(key, value);
+	public void flush() {
+		wrapped.flush();
 	}
 
 	@Override
@@ -51,13 +50,14 @@ public abstract class WriterWrapper implements ExtendedHierarchicalStreamWriter 
 	}
 
 	@Override
-	public void flush() {
-		wrapped.flush();
+	public void startNode(String name) {
+		wrapped.startNode(name);
 	}
 
 	@Override
-	public void close() {
-		wrapped.close();
+	public void startNode(String name, Class clazz) {
+
+		((ExtendedHierarchicalStreamWriter) wrapped).startNode(name, clazz);
 	}
 
 	@Override

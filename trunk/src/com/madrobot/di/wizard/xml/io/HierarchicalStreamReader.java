@@ -21,40 +21,26 @@ import com.madrobot.di.wizard.xml.converters.ErrorWriter;
 public interface HierarchicalStreamReader extends ErrorReporter {
 
 	/**
-	 * Does the node have any more children remaining that have not yet been read?
+	 * If any errors are detected, allow the reader to add any additional information that can aid debugging (such as
+	 * line numbers, XPath expressions, etc).
 	 */
-	boolean hasMoreChildren();
+	@Override
+	void appendErrors(ErrorWriter errorWriter);
 
 	/**
-	 * Select the current child as current node. A call to this function must be balanced with a call to
-	 * {@link #moveUp()}.
+	 * Close the reader, if necessary.
 	 */
-	void moveDown();
-
-	/**
-	 * Select the parent node as current node.
-	 */
-	void moveUp();
-
-	/**
-	 * Get the name of the current node.
-	 */
-	String getNodeName();
-
-	/**
-	 * Get the value (text content) of the current node.
-	 */
-	String getValue();
-
-	/**
-	 * Get the value of an attribute of the current node.
-	 */
-	String getAttribute(String name);
+	void close();
 
 	/**
 	 * Get the value of an attribute of the current node, by index.
 	 */
 	String getAttribute(int index);
+
+	/**
+	 * Get the value of an attribute of the current node.
+	 */
+	String getAttribute(String name);
 
 	/**
 	 * Number of attributes in current node.
@@ -72,16 +58,30 @@ public interface HierarchicalStreamReader extends ErrorReporter {
 	Iterator getAttributeNames();
 
 	/**
-	 * If any errors are detected, allow the reader to add any additional information that can aid debugging (such as
-	 * line numbers, XPath expressions, etc).
+	 * Get the name of the current node.
 	 */
-	@Override
-	void appendErrors(ErrorWriter errorWriter);
+	String getNodeName();
 
 	/**
-	 * Close the reader, if necessary.
+	 * Get the value (text content) of the current node.
 	 */
-	void close();
+	String getValue();
+
+	/**
+	 * Does the node have any more children remaining that have not yet been read?
+	 */
+	boolean hasMoreChildren();
+
+	/**
+	 * Select the current child as current node. A call to this function must be balanced with a call to
+	 * {@link #moveUp()}.
+	 */
+	void moveDown();
+
+	/**
+	 * Select the parent node as current node.
+	 */
+	void moveUp();
 
 	/**
 	 * Return the underlying HierarchicalStreamReader implementation.

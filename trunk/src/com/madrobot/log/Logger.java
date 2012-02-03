@@ -57,6 +57,15 @@ public class Logger {
 	}
 
 	/**
+	 *Any class that implements <code>ILoggerStrategy</code> can be used
+	 * 
+	 *@see LoggerStrategy
+	 */
+	public static final void setLoggerStragtegy(LoggerStrategy loggerStrategy) {
+		logger = (ALogMethod) loggerStrategy;
+	}
+
+	/**
 	 * Shuts down the logging framework.
 	 * <p>
 	 * This is primarily done before the application exits. Any logging calls
@@ -81,15 +90,6 @@ public class Logger {
 	}
 
 	private Logger() {
-	}
-
-	/**
-	 *Any class that implements <code>ILoggerStrategy</code> can be used
-	 * 
-	 *@see LoggerStrategy
-	 */
-	public static final void setLoggerStragtegy(LoggerStrategy loggerStrategy) {
-		logger = (ALogMethod) loggerStrategy;
 	}
 
 }

@@ -17,39 +17,12 @@ import android.util.Log;
 
 public class SDCardUtils {
 	/**
-	 * Check if the device has an SDcard.
+	 * Check if the sdcard is writable
 	 * 
-	 * @return
+	 * @return true if the card is writable.
 	 */
-	public static boolean isMounted() {
-		return android.os.Environment.getExternalStorageState().equals(
-				android.os.Environment.MEDIA_MOUNTED);
-	}
-
-	/**
-	 * Get the SDcard directory
-	 * 
-	 * @return
-	 */
-	public static File getDirectory() {
-		return android.os.Environment.getExternalStorageDirectory();
-	}
-
-	public static boolean isReadOnly() {
-		return android.os.Environment.getExternalStorageState().equals(
-				android.os.Environment.MEDIA_MOUNTED_READ_ONLY);
-	}
-
-	/**
-	 * Get the free space on the SDcard
-	 * 
-	 * @return
-	 */
-	public static long getFreeSpaceOnSDCard() {
-		StatFs cardStatistics = new StatFs(getDirectory().toString());
-		long freeSpace = (long) cardStatistics.getBlockSize()
-				* cardStatistics.getFreeBlocks();
-		return freeSpace;
+	public static boolean canWrite() {
+		return canWrite(0);
 	}
 
 	/**
@@ -78,12 +51,39 @@ public class SDCardUtils {
 	}
 
 	/**
-	 * Check if the sdcard is writable
+	 * Get the SDcard directory
 	 * 
-	 * @return true if the card is writable.
+	 * @return
 	 */
-	public static boolean canWrite() {
-		return canWrite(0);
+	public static File getDirectory() {
+		return android.os.Environment.getExternalStorageDirectory();
+	}
+
+	/**
+	 * Get the free space on the SDcard
+	 * 
+	 * @return
+	 */
+	public static long getFreeSpaceOnSDCard() {
+		StatFs cardStatistics = new StatFs(getDirectory().toString());
+		long freeSpace = (long) cardStatistics.getBlockSize()
+				* cardStatistics.getFreeBlocks();
+		return freeSpace;
+	}
+
+	/**
+	 * Check if the device has an SDcard.
+	 * 
+	 * @return
+	 */
+	public static boolean isMounted() {
+		return android.os.Environment.getExternalStorageState().equals(
+				android.os.Environment.MEDIA_MOUNTED);
+	}
+
+	public static boolean isReadOnly() {
+		return android.os.Environment.getExternalStorageState().equals(
+				android.os.Environment.MEDIA_MOUNTED_READ_ONLY);
 	}
 
 }

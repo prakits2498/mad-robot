@@ -75,24 +75,6 @@ public class PropertyDictionary implements Caching {
 	// return beanProperty;
 	// }
 
-	public Iterator propertiesFor(Class type) {
-		return buildMap(type).values().iterator();
-	}
-
-	/**
-	 * Locates a property descriptor.
-	 * 
-	 * @param type
-	 * @param name
-	 */
-	public PropertyDescriptor propertyDescriptor(Class type, String name) {
-		PropertyDescriptor descriptor = (PropertyDescriptor) buildMap(type).get(name);
-		if (descriptor == null) {
-			throw new MissingFieldException(type.getName(), name);
-		}
-		return descriptor;
-	}
-
 	private Map buildMap(Class type) {
 		Map nameMap = (Map) propertyNameCache.get(type);
 		if (nameMap == null) {
@@ -117,5 +99,23 @@ public class PropertyDictionary implements Caching {
 	@Override
 	public void flushCache() {
 		propertyNameCache.clear();
+	}
+
+	public Iterator propertiesFor(Class type) {
+		return buildMap(type).values().iterator();
+	}
+
+	/**
+	 * Locates a property descriptor.
+	 * 
+	 * @param type
+	 * @param name
+	 */
+	public PropertyDescriptor propertyDescriptor(Class type, String name) {
+		PropertyDescriptor descriptor = (PropertyDescriptor) buildMap(type).get(name);
+		if (descriptor == null) {
+			throw new MissingFieldException(type.getName(), name);
+		}
+		return descriptor;
 	}
 }

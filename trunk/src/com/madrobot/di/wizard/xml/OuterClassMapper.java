@@ -29,20 +29,20 @@ class OuterClassMapper extends MapperWrapper {
 	}
 
 	@Override
-	public String serializedMember(Class type, String memberName) {
-		if (memberName.equals("this$0")) {
-			return alias;
-		} else {
-			return super.serializedMember(type, memberName);
-		}
-	}
-
-	@Override
 	public String realMember(Class type, String serialized) {
 		if (serialized.equals(alias)) {
 			return "this$0";
 		} else {
 			return super.realMember(type, serialized);
+		}
+	}
+
+	@Override
+	public String serializedMember(Class type, String memberName) {
+		if (memberName.equals("this$0")) {
+			return alias;
+		} else {
+			return super.serializedMember(type, memberName);
 		}
 	}
 }

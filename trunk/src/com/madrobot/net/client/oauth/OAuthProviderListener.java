@@ -11,6 +11,22 @@ package com.madrobot.net.client.oauth;
 public interface OAuthProviderListener {
 
     /**
+     * Called when the server response has been received. You can implement this
+     * to manually handle the response data.
+     * 
+     * @param request
+     *        the request that was sent
+     * @param response
+     *        the response that was received
+     * @return returning true means you have handled the response, and the
+     *         provider will return immediately. Return false to let the event
+     *         propagate and let the provider execute its default response
+     *         handling.
+     * @throws Exception
+     */
+    boolean onResponseReceived(HttpRequest request, HttpResponse response) throws Exception;
+
+    /**
      * Called after the request has been created and default headers added, but
      * before the request has been signed.
      * 
@@ -28,20 +44,4 @@ public interface OAuthProviderListener {
      * @throws Exception
      */
     void prepareSubmission(HttpRequest request) throws Exception;
-
-    /**
-     * Called when the server response has been received. You can implement this
-     * to manually handle the response data.
-     * 
-     * @param request
-     *        the request that was sent
-     * @param response
-     *        the response that was received
-     * @return returning true means you have handled the response, and the
-     *         provider will return immediately. Return false to let the event
-     *         propagate and let the provider execute its default response
-     *         handling.
-     * @throws Exception
-     */
-    boolean onResponseReceived(HttpRequest request, HttpResponse response) throws Exception;
 }

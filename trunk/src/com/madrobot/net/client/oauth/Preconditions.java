@@ -41,8 +41,6 @@ import java.util.NoSuchElementException;
  * 
  */
 final class Preconditions {
-  private Preconditions() {}
-
   /**
    * Ensures the truth of an expression involving one or more parameters to the
    * calling method.
@@ -96,120 +94,6 @@ final class Preconditions {
       throw new IllegalArgumentException(
           format(errorMessageTemplate, errorMessageArgs));
     }
-  }
-
-  /**
-   * Ensures the truth of an expression involving the state of the calling
-   * instance, but not involving any parameters to the calling method.
-   *
-   * @param expression a boolean expression
-   * @throws IllegalStateException if {@code expression} is false
-   */
-  static void checkState(boolean expression) {
-    if (!expression) {
-      throw new IllegalStateException();
-    }
-  }
-
-  /**
-   * Ensures the truth of an expression involving the state of the calling
-   * instance, but not involving any parameters to the calling method.
-   *
-   * @param expression a boolean expression
-   * @param errorMessage the exception message to use if the check fails; will
-   *     be converted to a string using {@link String#valueOf(Object)}
-   * @throws IllegalStateException if {@code expression} is false
-   */
-  static void checkState(boolean expression, Object errorMessage) {
-    if (!expression) {
-      throw new IllegalStateException(String.valueOf(errorMessage));
-    }
-  }
-
-  /**
-   * Ensures the truth of an expression involving the state of the calling
-   * instance, but not involving any parameters to the calling method.
-   *
-   * @param expression a boolean expression
-   * @param errorMessageTemplate a template for the exception message should the
-   *     check fail. The message is formed by replacing each {@code %s}
-   *     placeholder in the template with an argument. These are matched by
-   *     position - the first {@code %s} gets {@code errorMessageArgs[0]}, etc.
-   *     Unmatched arguments will be appended to the formatted message in square
-   *     braces. Unmatched placeholders will be left as-is.
-   * @param errorMessageArgs the arguments to be substituted into the message
-   *     template. Arguments are converted to strings using
-   *     {@link String#valueOf(Object)}.
-   * @throws IllegalStateException if {@code expression} is false
-   * @throws NullPointerException if the check fails and either {@code
-   *     errorMessageTemplate} or {@code errorMessageArgs} is null (don't let
-   *     this happen)
-   */
-  static void checkState(boolean expression,
-      String errorMessageTemplate, Object... errorMessageArgs) {
-    if (!expression) {
-      throw new IllegalStateException(
-          format(errorMessageTemplate, errorMessageArgs));
-    }
-  }
-
-  /**
-   * Ensures that an object reference passed as a parameter to the calling
-   * method is not null.
-   *
-   * @param reference an object reference
-   * @return the non-null reference that was validated
-   * @throws NullPointerException if {@code reference} is null
-   */
-  static <T> T checkNotNull(T reference) {
-    if (reference == null) {
-      throw new NullPointerException();
-    }
-    return reference;
-  }
-
-  /**
-   * Ensures that an object reference passed as a parameter to the calling
-   * method is not null.
-   *
-   * @param reference an object reference
-   * @param errorMessage the exception message to use if the check fails; will
-   *     be converted to a string using {@link String#valueOf(Object)}
-   * @return the non-null reference that was validated
-   * @throws NullPointerException if {@code reference} is null
-   */
-  static <T> T checkNotNull(T reference, Object errorMessage) {
-    if (reference == null) {
-      throw new NullPointerException(String.valueOf(errorMessage));
-    }
-    return reference;
-  }
-
-  /**
-   * Ensures that an object reference passed as a parameter to the calling
-   * method is not null.
-   *
-   * @param reference an object reference
-   * @param errorMessageTemplate a template for the exception message should the
-   *     check fail. The message is formed by replacing each {@code %s}
-   *     placeholder in the template with an argument. These are matched by
-   *     position - the first {@code %s} gets {@code errorMessageArgs[0]}, etc.
-   *     Unmatched arguments will be appended to the formatted message in square
-   *     braces. Unmatched placeholders will be left as-is.
-   * @param errorMessageArgs the arguments to be substituted into the message
-   *     template. Arguments are converted to strings using
-   *     {@link String#valueOf(Object)}.
-   * @return the non-null reference that was validated
-   * @throws NullPointerException if {@code reference} is null
-   */
-  static <T> T checkNotNull(T reference, String errorMessageTemplate,
-      Object... errorMessageArgs) {
-    if (reference == null) {
-      // If either of these parameters is null, the right thing happens anyway
-      throw new NullPointerException(
-          format(errorMessageTemplate, errorMessageArgs));
-    }
-    return reference;
   }
 
   /**
@@ -273,29 +157,6 @@ final class Preconditions {
     }
     return iterable;
   }
-  
-  private static boolean containsOrIsNull(Iterable<?> iterable) {
-    if (iterable == null) {
-      return true;
-    }
-    
-    if (iterable instanceof Collection) {
-      Collection<?> collection = (Collection<?>) iterable;
-      try {
-        return collection.contains(null);
-      } catch (NullPointerException e) {
-        // A NPE implies that the collection doesn't contain null.
-        return false;
-      }
-    } else {
-      for (Object element : iterable) {
-        if (element == null) {
-          return true;
-        }
-      }
-      return false;
-    }
-  }
 
   /**
    * Ensures that {@code index} specifies a valid <i>element</i> in an array,
@@ -339,6 +200,65 @@ final class Preconditions {
   }
 
   /**
+   * Ensures that an object reference passed as a parameter to the calling
+   * method is not null.
+   *
+   * @param reference an object reference
+   * @return the non-null reference that was validated
+   * @throws NullPointerException if {@code reference} is null
+   */
+  static <T> T checkNotNull(T reference) {
+    if (reference == null) {
+      throw new NullPointerException();
+    }
+    return reference;
+  }
+
+  /**
+   * Ensures that an object reference passed as a parameter to the calling
+   * method is not null.
+   *
+   * @param reference an object reference
+   * @param errorMessage the exception message to use if the check fails; will
+   *     be converted to a string using {@link String#valueOf(Object)}
+   * @return the non-null reference that was validated
+   * @throws NullPointerException if {@code reference} is null
+   */
+  static <T> T checkNotNull(T reference, Object errorMessage) {
+    if (reference == null) {
+      throw new NullPointerException(String.valueOf(errorMessage));
+    }
+    return reference;
+  }
+
+  /**
+   * Ensures that an object reference passed as a parameter to the calling
+   * method is not null.
+   *
+   * @param reference an object reference
+   * @param errorMessageTemplate a template for the exception message should the
+   *     check fail. The message is formed by replacing each {@code %s}
+   *     placeholder in the template with an argument. These are matched by
+   *     position - the first {@code %s} gets {@code errorMessageArgs[0]}, etc.
+   *     Unmatched arguments will be appended to the formatted message in square
+   *     braces. Unmatched placeholders will be left as-is.
+   * @param errorMessageArgs the arguments to be substituted into the message
+   *     template. Arguments are converted to strings using
+   *     {@link String#valueOf(Object)}.
+   * @return the non-null reference that was validated
+   * @throws NullPointerException if {@code reference} is null
+   */
+  static <T> T checkNotNull(T reference, String errorMessageTemplate,
+      Object... errorMessageArgs) {
+    if (reference == null) {
+      // If either of these parameters is null, the right thing happens anyway
+      throw new NullPointerException(
+          format(errorMessageTemplate, errorMessageArgs));
+    }
+    return reference;
+  }
+
+  /**
    * Ensures that {@code index} specifies a valid <i>position</i> in an array,
    * list or string of size {@code size}. A position index may range from zero
    * to {@code size}, inclusive.
@@ -378,7 +298,7 @@ final class Preconditions {
           "%s (%s) must not be greater than size (%s)", desc, index, size));
     }
   }
-
+  
   /**
    * Ensures that {@code start} and {@code end} specify a valid <i>positions</i>
    * in an array, list or string of size {@code size}, and are in order. A
@@ -399,6 +319,84 @@ final class Preconditions {
     if (end < start) {
       throw new IndexOutOfBoundsException(format(
           "end index (%s) must not be less than start index (%s)", end, start));
+    }
+  }
+
+  /**
+   * Ensures the truth of an expression involving the state of the calling
+   * instance, but not involving any parameters to the calling method.
+   *
+   * @param expression a boolean expression
+   * @throws IllegalStateException if {@code expression} is false
+   */
+  static void checkState(boolean expression) {
+    if (!expression) {
+      throw new IllegalStateException();
+    }
+  }
+
+  /**
+   * Ensures the truth of an expression involving the state of the calling
+   * instance, but not involving any parameters to the calling method.
+   *
+   * @param expression a boolean expression
+   * @param errorMessage the exception message to use if the check fails; will
+   *     be converted to a string using {@link String#valueOf(Object)}
+   * @throws IllegalStateException if {@code expression} is false
+   */
+  static void checkState(boolean expression, Object errorMessage) {
+    if (!expression) {
+      throw new IllegalStateException(String.valueOf(errorMessage));
+    }
+  }
+
+  /**
+   * Ensures the truth of an expression involving the state of the calling
+   * instance, but not involving any parameters to the calling method.
+   *
+   * @param expression a boolean expression
+   * @param errorMessageTemplate a template for the exception message should the
+   *     check fail. The message is formed by replacing each {@code %s}
+   *     placeholder in the template with an argument. These are matched by
+   *     position - the first {@code %s} gets {@code errorMessageArgs[0]}, etc.
+   *     Unmatched arguments will be appended to the formatted message in square
+   *     braces. Unmatched placeholders will be left as-is.
+   * @param errorMessageArgs the arguments to be substituted into the message
+   *     template. Arguments are converted to strings using
+   *     {@link String#valueOf(Object)}.
+   * @throws IllegalStateException if {@code expression} is false
+   * @throws NullPointerException if the check fails and either {@code
+   *     errorMessageTemplate} or {@code errorMessageArgs} is null (don't let
+   *     this happen)
+   */
+  static void checkState(boolean expression,
+      String errorMessageTemplate, Object... errorMessageArgs) {
+    if (!expression) {
+      throw new IllegalStateException(
+          format(errorMessageTemplate, errorMessageArgs));
+    }
+  }
+
+  private static boolean containsOrIsNull(Iterable<?> iterable) {
+    if (iterable == null) {
+      return true;
+    }
+    
+    if (iterable instanceof Collection) {
+      Collection<?> collection = (Collection<?>) iterable;
+      try {
+        return collection.contains(null);
+      } catch (NullPointerException e) {
+        // A NPE implies that the collection doesn't contain null.
+        return false;
+      }
+    } else {
+      for (Object element : iterable) {
+        if (element == null) {
+          return true;
+        }
+      }
+      return false;
     }
   }
 
@@ -445,4 +443,6 @@ final class Preconditions {
 
     return builder.toString();
   }
+
+  private Preconditions() {}
 }

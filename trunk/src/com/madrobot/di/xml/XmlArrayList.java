@@ -29,19 +29,6 @@ public class XmlArrayList extends AbstractList {
 	}
 
 	@Override
-	public int size() {
-		return map.size();
-	}
-
-	@Override
-	public Object set(int index, Object element) {
-		rangeCheck(index);
-		Object value = get(index);
-		map.put(new Integer(index), element);
-		return value;
-	}
-
-	@Override
 	public void add(int index, Object element) {
 		int size = size();
 		if (index >= (size + 1) || index < 0) {
@@ -54,17 +41,17 @@ public class XmlArrayList extends AbstractList {
 		map.put(new Integer(index), element);
 	}
 
+	@Override
+	public Object get(int index) {
+		rangeCheck(index);
+		return map.get(new Integer(index));
+	}
+
 	private void rangeCheck(int index) {
 		int size = size();
 		if (index >= size || index < 0) {
 			throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
 		}
-	}
-
-	@Override
-	public Object get(int index) {
-		rangeCheck(index);
-		return map.get(new Integer(index));
 	}
 
 	@Override
@@ -77,6 +64,19 @@ public class XmlArrayList extends AbstractList {
 		}
 		map.remove(new Integer(size - 1));
 		return value;
+	}
+
+	@Override
+	public Object set(int index, Object element) {
+		rangeCheck(index);
+		Object value = get(index);
+		map.put(new Integer(index), element);
+		return value;
+	}
+
+	@Override
+	public int size() {
+		return map.size();
 	}
 
 }

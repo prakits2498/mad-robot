@@ -26,19 +26,12 @@ public class StackTraceElementConverter extends AbstractSingleValueConverter {
 	// |-------1------| |--2--| |----3-----| |4|
 	// (Note group 4 is optional is optional and only present if a colon char exists.)
 
-	private static final Pattern PATTERN = Pattern.compile("^(.+)\\.([^\\(]+)\\(([^:]*)(:(\\d+))?\\)$");
 	private static final StackTraceElementFactory FACTORY = new StackTraceElementFactory();
+	private static final Pattern PATTERN = Pattern.compile("^(.+)\\.([^\\(]+)\\(([^:]*)(:(\\d+))?\\)$");
 
 	@Override
 	public boolean canConvert(Class type) {
 		return StackTraceElement.class.equals(type);
-	}
-
-	@Override
-	public String toString(Object obj) {
-		String s = super.toString(obj);
-		// JRockit adds ":???" for invalid line number
-		return s.replaceFirst(":\\?\\?\\?", "");
 	}
 
 	@Override
@@ -63,6 +56,13 @@ public class StackTraceElementConverter extends AbstractSingleValueConverter {
 		} else {
 			throw new ConversionException("Could not parse StackTraceElement : " + str);
 		}
+	}
+
+	@Override
+	public String toString(Object obj) {
+		String s = super.toString(obj);
+		// JRockit adds ":???" for invalid line number
+		return s.replaceFirst(":\\?\\?\\?", "");
 	}
 
 }

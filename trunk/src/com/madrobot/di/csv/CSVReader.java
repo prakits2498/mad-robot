@@ -25,20 +25,20 @@ import java.util.List;
  */
 public class CSVReader implements Closeable {
 
-	private BufferedReader br;
-
-	private boolean hasNext = true;
-
-	private CSVParser parser;
-
-	private int skipLines;
-
-	private boolean linesSkiped;
-
 	/**
 	 * The default line to start reading.
 	 */
 	public static final int DEFAULT_SKIP_LINES = 0;
+
+	private BufferedReader br;
+
+	private boolean hasNext = true;
+
+	private boolean linesSkiped;
+
+	private CSVParser parser;
+
+	private int skipLines;
 
 	/**
 	 * Constructs CSVReader using a comma for the separator.
@@ -119,22 +119,6 @@ public class CSVReader implements Closeable {
 	 *            the delimiter to use for separating entries
 	 * @param quotechar
 	 *            the character to use for quoted elements
-	 * @param line
-	 *            the line number to skip for start reading
-	 */
-	public CSVReader(Reader reader, char separator, char quotechar, int line) {
-		this(reader, separator, quotechar, CSVParser.DEFAULT_ESCAPE_CHARACTER, line, CSVParser.DEFAULT_STRICT_QUOTES);
-	}
-
-	/**
-	 * Constructs CSVReader with supplied separator and quote char.
-	 * 
-	 * @param reader
-	 *            the reader to an underlying CSV source.
-	 * @param separator
-	 *            the delimiter to use for separating entries
-	 * @param quotechar
-	 *            the character to use for quoted elements
 	 * @param escape
 	 *            the character to use for escaping a separator or quote
 	 * @param line
@@ -196,6 +180,54 @@ public class CSVReader implements Closeable {
 	}
 
 	/**
+	 * Constructs CSVReader with supplied separator and quote char.
+	 * 
+	 * @param reader
+	 *            the reader to an underlying CSV source.
+	 * @param separator
+	 *            the delimiter to use for separating entries
+	 * @param quotechar
+	 *            the character to use for quoted elements
+	 * @param line
+	 *            the line number to skip for start reading
+	 */
+	public CSVReader(Reader reader, char separator, char quotechar, int line) {
+		this(reader, separator, quotechar, CSVParser.DEFAULT_ESCAPE_CHARACTER, line, CSVParser.DEFAULT_STRICT_QUOTES);
+	}
+
+	/**
+	 * Closes the underlying reader.
+	 * 
+	 * @throws IOException
+	 *             if the close fails
+	 */
+	@Override
+	public void close() throws IOException {
+		br.close();
+	}
+
+	/**
+	 * Reads the next line from the file.
+	 * 
+	 * @return the next line from the file without trailing newline
+	 * @throws IOException
+	 *             if bad things happen during the read
+	 */
+	private String getNextLine() throws IOException {
+		if (!this.linesSkiped) {
+			for (int i = 0; i < skipLines; i++) {
+				br.readLine();
+			}
+			this.linesSkiped = true;
+		}
+		String nextLine = br.readLine();
+		if (nextLine == null) {
+			hasNext = false;
+		}
+		return hasNext ? nextLine : null;
+	}
+
+	/**
 	 * Reads the entire file into a List with each element being a String[] of tokens.
 	 * 
 	 * @return a List of String[], with each String[] representing a line of the file.
@@ -244,38 +276,6 @@ public class CSVReader implements Closeable {
 			}
 		} while (parser.isPending());
 		return result;
-	}
-
-	/**
-	 * Reads the next line from the file.
-	 * 
-	 * @return the next line from the file without trailing newline
-	 * @throws IOException
-	 *             if bad things happen during the read
-	 */
-	private String getNextLine() throws IOException {
-		if (!this.linesSkiped) {
-			for (int i = 0; i < skipLines; i++) {
-				br.readLine();
-			}
-			this.linesSkiped = true;
-		}
-		String nextLine = br.readLine();
-		if (nextLine == null) {
-			hasNext = false;
-		}
-		return hasNext ? nextLine : null;
-	}
-
-	/**
-	 * Closes the underlying reader.
-	 * 
-	 * @throws IOException
-	 *             if the close fails
-	 */
-	@Override
-	public void close() throws IOException {
-		br.close();
 	}
 
 }

@@ -42,16 +42,47 @@ import java.io.IOException;
  */
 public class FileDeleteStrategy {
 
+	// -----------------------------------------------------------------------
 	/**
-	 * The singleton instance for normal file deletion, which does not permit
-	 * the deletion of directories that are not empty.
+	 * Force file deletion strategy.
 	 */
-	public static final FileDeleteStrategy NORMAL = new FileDeleteStrategy("Normal");
+	static class ForceFileDeleteStrategy extends FileDeleteStrategy {
+		/** Default Constructor */
+		ForceFileDeleteStrategy() {
+			super("Force");
+		}
+
+		/**
+		 * Deletes the file object.
+		 * <p>
+		 * This implementation uses <code>FileUtils.forceDelete() <code>
+         * if the file exists.
+		 * 
+		 * @param fileToDelete
+		 *            the file to delete, not null
+		 * @return Always returns <code>true</code>
+		 * @throws NullPointerException
+		 *             if the file is null
+		 * @throws IOException
+		 *             if an error occurs during file deletion
+		 */
+		@Override
+		protected boolean doDelete(File fileToDelete) throws IOException {
+			FileUtils.forceDelete(fileToDelete);
+			return true;
+		}
+	}
 	/**
 	 * The singleton instance for forced file deletion, which always deletes,
 	 * even if the file represents a non-empty directory.
 	 */
 	public static final FileDeleteStrategy FORCE = new ForceFileDeleteStrategy();
+
+	/**
+	 * The singleton instance for normal file deletion, which does not permit
+	 * the deletion of directories that are not empty.
+	 */
+	public static final FileDeleteStrategy NORMAL = new FileDeleteStrategy("Normal");
 
 	/** The name of the strategy. */
 	private final String name;
@@ -65,6 +96,26 @@ public class FileDeleteStrategy {
 	 */
 	protected FileDeleteStrategy(String name) {
 		this.name = name;
+	}
+
+	/**
+	 * Deletes the file object, which may be a file or a directory.
+	 * If the file does not exist, the method just returns.
+	 * <p>
+	 * Subclass writers should override {@link #doDelete(File)}, not this
+	 * method.
+	 * 
+	 * @param fileToDelete
+	 *            the file to delete, not null
+	 * @throws NullPointerException
+	 *             if the file is null
+	 * @throws IOException
+	 *             if an error occurs during file deletion
+	 */
+	public void delete(File fileToDelete) throws IOException {
+		if(fileToDelete.exists() && (doDelete(fileToDelete) == false)){
+			throw new IOException("Deletion failed: " + fileToDelete);
+		}
 	}
 
 	// -----------------------------------------------------------------------
@@ -88,26 +139,6 @@ public class FileDeleteStrategy {
 			return doDelete(fileToDelete);
 		} catch(IOException ex){
 			return false;
-		}
-	}
-
-	/**
-	 * Deletes the file object, which may be a file or a directory.
-	 * If the file does not exist, the method just returns.
-	 * <p>
-	 * Subclass writers should override {@link #doDelete(File)}, not this
-	 * method.
-	 * 
-	 * @param fileToDelete
-	 *            the file to delete, not null
-	 * @throws NullPointerException
-	 *             if the file is null
-	 * @throws IOException
-	 *             if an error occurs during file deletion
-	 */
-	public void delete(File fileToDelete) throws IOException {
-		if(fileToDelete.exists() && (doDelete(fileToDelete) == false)){
-			throw new IOException("Deletion failed: " + fileToDelete);
 		}
 	}
 
@@ -143,37 +174,6 @@ public class FileDeleteStrategy {
 	@Override
 	public String toString() {
 		return "FileDeleteStrategy[" + name + "]";
-	}
-
-	// -----------------------------------------------------------------------
-	/**
-	 * Force file deletion strategy.
-	 */
-	static class ForceFileDeleteStrategy extends FileDeleteStrategy {
-		/** Default Constructor */
-		ForceFileDeleteStrategy() {
-			super("Force");
-		}
-
-		/**
-		 * Deletes the file object.
-		 * <p>
-		 * This implementation uses <code>FileUtils.forceDelete() <code>
-         * if the file exists.
-		 * 
-		 * @param fileToDelete
-		 *            the file to delete, not null
-		 * @return Always returns <code>true</code>
-		 * @throws NullPointerException
-		 *             if the file is null
-		 * @throws IOException
-		 *             if an error occurs during file deletion
-		 */
-		@Override
-		protected boolean doDelete(File fileToDelete) throws IOException {
-			FileUtils.forceDelete(fileToDelete);
-			return true;
-		}
 	}
 
 }

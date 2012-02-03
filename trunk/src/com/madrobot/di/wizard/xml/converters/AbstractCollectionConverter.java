@@ -31,11 +31,22 @@ public abstract class AbstractCollectionConverter implements Converter {
 
 	private final Mapper mapper;
 
+	public AbstractCollectionConverter(Mapper mapper) {
+		this.mapper = mapper;
+	}
+
 	@Override
 	public abstract boolean canConvert(Class type);
 
-	public AbstractCollectionConverter(Mapper mapper) {
-		this.mapper = mapper;
+	protected Object createCollection(Class type) {
+		Class defaultType = mapper().defaultImplementationOf(type);
+		try {
+			return defaultType.newInstance();
+		} catch (InstantiationException e) {
+			throw new ConversionException("Cannot instantiate " + defaultType.getName(), e);
+		} catch (IllegalAccessException e) {
+			throw new ConversionException("Cannot instantiate " + defaultType.getName(), e);
+		}
 	}
 
 	protected Mapper mapper() {
@@ -44,6 +55,11 @@ public abstract class AbstractCollectionConverter implements Converter {
 
 	@Override
 	public abstract void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context);
+
+	protected Object readItem(HierarchicalStreamReader reader, UnmarshallingContext context, Object current) {
+		Class type = HierarchicalStreams.readClassType(reader, mapper());
+		return context.convertAnother(current, type);
+	}
 
 	@Override
 	public abstract Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context);
@@ -60,22 +76,6 @@ public abstract class AbstractCollectionConverter implements Converter {
 			ExtendedHierarchicalStreamWriterHelper.startNode(writer, name, item.getClass());
 			context.convertAnother(item);
 			writer.endNode();
-		}
-	}
-
-	protected Object readItem(HierarchicalStreamReader reader, UnmarshallingContext context, Object current) {
-		Class type = HierarchicalStreams.readClassType(reader, mapper());
-		return context.convertAnother(current, type);
-	}
-
-	protected Object createCollection(Class type) {
-		Class defaultType = mapper().defaultImplementationOf(type);
-		try {
-			return defaultType.newInstance();
-		} catch (InstantiationException e) {
-			throw new ConversionException("Cannot instantiate " + defaultType.getName(), e);
-		} catch (IllegalAccessException e) {
-			throw new ConversionException("Cannot instantiate " + defaultType.getName(), e);
 		}
 	}
 }

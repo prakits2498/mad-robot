@@ -38,9 +38,9 @@ public class AbstractAttributedCharacterIteratorAttributeConverter extends Abstr
 		}
 	}
 
-	private final Class type;
 	private transient Map attributeMap;
 	private transient FieldDictionary fieldDictionary;
+	private final Class type;
 
 	public AbstractAttributedCharacterIteratorAttributeConverter(final Class type) {
 		super();
@@ -51,22 +51,6 @@ public class AbstractAttributedCharacterIteratorAttributeConverter extends Abstr
 	@Override
 	public boolean canConvert(final Class type) {
 		return type == this.type;
-	}
-
-	@Override
-	public String toString(final Object source) {
-		AttributedCharacterIterator.Attribute attribute = (AttributedCharacterIterator.Attribute) source;
-		try {
-			if (!getName.isAccessible()) {
-				getName.setAccessible(true);
-			}
-			return (String) getName.invoke(attribute, (Object[]) null);
-		} catch (IllegalAccessException e) {
-			throw new ObjectAccessException("Cannot get name of AttributedCharacterIterator.Attribute", e);
-		} catch (InvocationTargetException e) {
-			throw new ObjectAccessException("Cannot get name of AttributedCharacterIterator.Attribute",
-					e.getTargetException());
-		}
 	}
 
 	@Override
@@ -89,6 +73,22 @@ public class AbstractAttributedCharacterIteratorAttributeConverter extends Abstr
 			}
 		}
 		return this;
+	}
+
+	@Override
+	public String toString(final Object source) {
+		AttributedCharacterIterator.Attribute attribute = (AttributedCharacterIterator.Attribute) source;
+		try {
+			if (!getName.isAccessible()) {
+				getName.setAccessible(true);
+			}
+			return (String) getName.invoke(attribute, (Object[]) null);
+		} catch (IllegalAccessException e) {
+			throw new ObjectAccessException("Cannot get name of AttributedCharacterIterator.Attribute", e);
+		} catch (InvocationTargetException e) {
+			throw new ObjectAccessException("Cannot get name of AttributedCharacterIterator.Attribute",
+					e.getTargetException());
+		}
 	}
 
 }

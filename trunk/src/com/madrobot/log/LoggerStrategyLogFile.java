@@ -29,11 +29,11 @@ import com.madrobot.io.file.SDCardUtils;
  * </p>
  */
 public class LoggerStrategyLogFile extends ALogMethod implements LoggerStrategy {
-	protected FileWriter writer;
-	private File logDirectory;
 	private File currentLogFile;
 	private final String[] LEVELS = { "Verbose", "Debug", "Info", "Warn", "Error" };
+	private File logDirectory;
 	private boolean noSdCard;
+	protected FileWriter writer;
 
 	/**
 	 * Creates a new Log file strategy instance
@@ -92,22 +92,6 @@ public class LoggerStrategyLogFile extends ALogMethod implements LoggerStrategy 
 		return LEVELS[level - 2];
 	}
 
-	@Override
-	void shutdown() {
-		Log.d("Logger", "Shutting down logger");
-		if(!noSdCard){
-			if(writer != null){
-				try{
-					writer.close();
-					writer = null;
-				} catch(IOException e){
-					e.printStackTrace();
-				}
-			}
-
-		}
-	}
-
 	/**
 	 * Removes all other files at the given log directory except the current
 	 * one.
@@ -123,6 +107,22 @@ public class LoggerStrategyLogFile extends ALogMethod implements LoggerStrategy 
 			if(!currentLogFile.equals(allfiles[i])){
 				allfiles[i].delete();
 			}
+		}
+	}
+
+	@Override
+	void shutdown() {
+		Log.d("Logger", "Shutting down logger");
+		if(!noSdCard){
+			if(writer != null){
+				try{
+					writer.close();
+					writer = null;
+				} catch(IOException e){
+					e.printStackTrace();
+				}
+			}
+
 		}
 	}
 

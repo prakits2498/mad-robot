@@ -21,11 +21,6 @@ import android.graphics.drawable.PictureDrawable;
 public class SVG {
 
     /**
-     * The parsed Picture object.
-     */
-    private Picture picture;
-
-    /**
      * These are the bounds for the SVG specified as a hidden "bounds" layer in the SVG.
      */
     private RectF bounds;
@@ -37,6 +32,11 @@ public class SVG {
     private RectF limits = null;
 
     /**
+     * The parsed Picture object.
+     */
+    private Picture picture;
+
+    /**
      * Construct a new SVG.
      * @param picture the parsed picture object.
      * @param bounds the bounds computed from the "bounds" layer in the SVG.
@@ -44,14 +44,6 @@ public class SVG {
     SVG(Picture picture, RectF bounds) {
         this.picture = picture;
         this.bounds = bounds;
-    }
-
-    /**
-     * Set the limits of the SVG, which are the estimated bounds computed by the parser.
-     * @param limits the bounds computed while parsing the SVG, may not be entirely accurate.
-     */
-    void setLimits(RectF limits) {
-        this.limits = limits;
     }
 
     /**
@@ -86,14 +78,6 @@ public class SVG {
     }
 
     /**
-     * Get the parsed SVG picture data.
-     * @return the picture.
-     */
-    public Picture getPicture() {
-        return picture;
-    }
-
-    /**
      * Gets the bounding rectangle for the SVG, if one was specified.
      * @return rectangle representing the bounds.
      */
@@ -107,5 +91,21 @@ public class SVG {
      */
     public RectF getLimits() {
         return limits;
+    }
+
+    /**
+     * Get the parsed SVG picture data.
+     * @return the picture.
+     */
+    public Picture getPicture() {
+        return picture;
+    }
+
+    /**
+     * Set the limits of the SVG, which are the estimated bounds computed by the parser.
+     * @param limits the bounds computed while parsing the SVG, may not be entirely accurate.
+     */
+    void setLimits(RectF limits) {
+        this.limits = limits;
     }
 }

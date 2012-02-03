@@ -42,23 +42,6 @@ import java.io.Serializable;
  */
 public class SerializationUtils {
 
-	/**
-	 * <p>
-	 * SerializationUtils instances should NOT be constructed in standard
-	 * programming. Instead, the class should be used as
-	 * <code>SerializationUtils.clone(object)</code>.
-	 * </p>
-	 * 
-	 * <p>
-	 * This constructor is public to permit tools that require a JavaBean
-	 * instance to operate.
-	 * </p>
-	 * 
-	 */
-	public SerializationUtils() {
-		super();
-	}
-
 	// Clone
 	// -----------------------------------------------------------------------
 	/**
@@ -86,72 +69,27 @@ public class SerializationUtils {
 		return deserialize(serialize(object));
 	}
 
-	// Serialize
-	// -----------------------------------------------------------------------
 	/**
 	 * <p>
-	 * Serializes an <code>Object</code> to the specified stream.
+	 * Deserializes a single <code>Object</code> from an array of bytes.
 	 * </p>
 	 * 
-	 * <p>
-	 * The stream will be closed once the object is written. This avoids the
-	 * need for a finally clause, and maybe also exception handling, in the
-	 * application code.
-	 * </p>
-	 * 
-	 * <p>
-	 * The stream passed in is not buffered internally within this method. This
-	 * is the responsibility of your application if desired.
-	 * </p>
-	 * 
-	 * @param obj
-	 *            the object to serialize to bytes, may be null
-	 * @param outputStream
-	 *            the stream to write to, must not be null
+	 * @param objectData
+	 *            the serialized object, must not be null
+	 * @return the deserialized object
+	 * @throws IOException 
+	 * @throws ClassNotFoundException 
 	 * @throws IllegalArgumentException
-	 *             if <code>outputStream</code> is <code>null</code>
+	 *             if <code>objectData</code> is <code>null</code>
 	 * @throws SerializationException
 	 *             (runtime) if the serialization fails
 	 */
-	public static void serialize(Serializable obj, OutputStream outputStream) {
-		if(outputStream == null){
-			throw new IllegalArgumentException("The OutputStream must not be null");
+	public static Object deserialize(byte[] objectData) throws ClassNotFoundException, IOException {
+		if(objectData == null){
+			throw new IllegalArgumentException("The byte[] must not be null");
 		}
-		ObjectOutputStream out = null;
-		try{
-			// stream closed in the finally
-			out = new ObjectOutputStream(outputStream);
-			out.writeObject(obj);
-
-		} catch(IOException ex){
-			ex.printStackTrace();
-		} finally{
-			try{
-				if(out != null){
-					out.close();
-				}
-			} catch(IOException ex){
-				ex.printStackTrace();
-			}
-		}
-	}
-
-	/**
-	 * <p>
-	 * Serializes an <code>Object</code> to a byte array for
-	 * storage/serialization.
-	 * </p>
-	 * 
-	 * @param obj
-	 *            the object to serialize to bytes
-	 * @return a byte[] with the converted Serializable
-	 * @throws SerializationException
-	 *             (runtime) if the serialization fails
-	 */
-	public static byte[] serialize(Serializable obj) {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream(512);
-		serialize(obj, baos);
-		return baos.toByteArray();
+		ByteArrayInputStream bais = new ByteArrayInputStream(objectData);
+		return deserialize(bais);
 	}
 
 	// Deserialize
@@ -209,25 +147,87 @@ public class SerializationUtils {
 
 	/**
 	 * <p>
-	 * Deserializes a single <code>Object</code> from an array of bytes.
+	 * Serializes an <code>Object</code> to a byte array for
+	 * storage/serialization.
 	 * </p>
 	 * 
-	 * @param objectData
-	 *            the serialized object, must not be null
-	 * @return the deserialized object
-	 * @throws IOException 
-	 * @throws ClassNotFoundException 
-	 * @throws IllegalArgumentException
-	 *             if <code>objectData</code> is <code>null</code>
+	 * @param obj
+	 *            the object to serialize to bytes
+	 * @return a byte[] with the converted Serializable
 	 * @throws SerializationException
 	 *             (runtime) if the serialization fails
 	 */
-	public static Object deserialize(byte[] objectData) throws ClassNotFoundException, IOException {
-		if(objectData == null){
-			throw new IllegalArgumentException("The byte[] must not be null");
+	public static byte[] serialize(Serializable obj) {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream(512);
+		serialize(obj, baos);
+		return baos.toByteArray();
+	}
+
+	// Serialize
+	// -----------------------------------------------------------------------
+	/**
+	 * <p>
+	 * Serializes an <code>Object</code> to the specified stream.
+	 * </p>
+	 * 
+	 * <p>
+	 * The stream will be closed once the object is written. This avoids the
+	 * need for a finally clause, and maybe also exception handling, in the
+	 * application code.
+	 * </p>
+	 * 
+	 * <p>
+	 * The stream passed in is not buffered internally within this method. This
+	 * is the responsibility of your application if desired.
+	 * </p>
+	 * 
+	 * @param obj
+	 *            the object to serialize to bytes, may be null
+	 * @param outputStream
+	 *            the stream to write to, must not be null
+	 * @throws IllegalArgumentException
+	 *             if <code>outputStream</code> is <code>null</code>
+	 * @throws SerializationException
+	 *             (runtime) if the serialization fails
+	 */
+	public static void serialize(Serializable obj, OutputStream outputStream) {
+		if(outputStream == null){
+			throw new IllegalArgumentException("The OutputStream must not be null");
 		}
-		ByteArrayInputStream bais = new ByteArrayInputStream(objectData);
-		return deserialize(bais);
+		ObjectOutputStream out = null;
+		try{
+			// stream closed in the finally
+			out = new ObjectOutputStream(outputStream);
+			out.writeObject(obj);
+
+		} catch(IOException ex){
+			ex.printStackTrace();
+		} finally{
+			try{
+				if(out != null){
+					out.close();
+				}
+			} catch(IOException ex){
+				ex.printStackTrace();
+			}
+		}
+	}
+
+	/**
+	 * <p>
+	 * SerializationUtils instances should NOT be constructed in standard
+	 * programming. Instead, the class should be used as
+	 * <code>SerializationUtils.clone(object)</code>.
+	 * </p>
+	 * 
+	 * <p>
+	 * This constructor is public to permit tools that require a JavaBean
+	 * instance to operate.
+	 * </p>
+	 * 
+	 */
+	public SerializationUtils() {
+		super();
 	}
 
 }

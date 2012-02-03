@@ -21,8 +21,12 @@ import com.madrobot.util.FastStack;
 
 public abstract class AbstractDocumentReader extends AbstractReader implements DocumentReader {
 
-	private FastStack pointers = new FastStack(16);
+	private static class Pointer {
+		public int v;
+	}
 	private Object current;
+
+	private FastStack pointers = new FastStack(16);
 
 	protected AbstractDocumentReader(Object rootElement) {
 		this(rootElement, new XmlFriendlyNameCoder());
@@ -47,17 +51,30 @@ public abstract class AbstractDocumentReader extends AbstractReader implements D
 		this(rootElement, (NameCoder) replacer);
 	}
 
-	protected abstract void reassignCurrentElement(Object current);
+	@Override
+	public void appendErrors(ErrorWriter errorWriter) {
+	}
 
-	protected abstract Object getParent();
+	@Override
+	public void close() {
+		// don't need to do anything
+	}
+
+	@Override
+	public Iterator getAttributeNames() {
+		return new AttributeNameIterator(this);
+	}
 
 	protected abstract Object getChild(int index);
 
 	protected abstract int getChildCount();
 
-	private static class Pointer {
-		public int v;
+	@Override
+	public Object getCurrent() {
+		return this.current;
 	}
+
+	protected abstract Object getParent();
 
 	@Override
 	public boolean hasMoreChildren() {
@@ -68,13 +85,6 @@ public abstract class AbstractDocumentReader extends AbstractReader implements D
 		} else {
 			return false;
 		}
-	}
-
-	@Override
-	public void moveUp() {
-		current = getParent();
-		pointers.popSilently();
-		reassignCurrentElement(current);
 	}
 
 	@Override
@@ -89,21 +99,11 @@ public abstract class AbstractDocumentReader extends AbstractReader implements D
 	}
 
 	@Override
-	public Iterator getAttributeNames() {
-		return new AttributeNameIterator(this);
+	public void moveUp() {
+		current = getParent();
+		pointers.popSilently();
+		reassignCurrentElement(current);
 	}
 
-	@Override
-	public void appendErrors(ErrorWriter errorWriter) {
-	}
-
-	@Override
-	public Object getCurrent() {
-		return this.current;
-	}
-
-	@Override
-	public void close() {
-		// don't need to do anything
-	}
+	protected abstract void reassignCurrentElement(Object current);
 }

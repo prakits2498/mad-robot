@@ -44,16 +44,6 @@ public class XMLWizardException extends RuntimeException {
 	}
 
 	/**
-	 * Constructs an XStreamException as wrapper for a different causing {@link Throwable}.
-	 * 
-	 * @param cause
-	 * @since 1.3
-	 */
-	public XMLWizardException(Throwable cause) {
-		this("", cause);
-	}
-
-	/**
 	 * Constructs an XStreamException with a message as wrapper for a different causing {@link Throwable}.
 	 * 
 	 * @param message
@@ -63,6 +53,16 @@ public class XMLWizardException extends RuntimeException {
 	public XMLWizardException(String message, Throwable cause) {
 		super(message + (cause == null ? "" : " : " + cause.getMessage()));
 		this.cause = cause;
+	}
+
+	/**
+	 * Constructs an XStreamException as wrapper for a different causing {@link Throwable}.
+	 * 
+	 * @param cause
+	 * @since 1.3
+	 */
+	public XMLWizardException(Throwable cause) {
+		this("", cause);
 	}
 
 	@Override

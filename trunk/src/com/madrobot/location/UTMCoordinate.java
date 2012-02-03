@@ -29,17 +29,6 @@ public class UTMCoordinate {
 	}
 
 	/**
-	 * Instantiates by copying the value from the other point
-	 * 
-	 * @param other
-	 *            Point to copy values from
-	 */
-	public UTMCoordinate(UTMCoordinate other) {
-		this.x = other.x;
-		this.y = other.y;
-	}
-
-	/**
 	 * Instantiates using given values of easting and northing
 	 * 
 	 * @param x
@@ -53,22 +42,47 @@ public class UTMCoordinate {
 	}
 
 	/**
+	 * Instantiates by copying the value from the other point
+	 * 
+	 * @param other
+	 *            Point to copy values from
+	 */
+	public UTMCoordinate(UTMCoordinate other) {
+		this.x = other.x;
+		this.y = other.y;
+	}
+
+	/**
+	 * Compares this instance with another instance and returns the comparision
+	 * results.
+	 * <p>
+	 * Two instances of {@link UTMPoint} are considered equal if {@link #getX()
+	 * x} and {@link #getY() y} are equal
+	 * </p>
+	 * 
+	 * @param o
+	 *            The other instance to compare with
+	 * @return true if the current instance is equal to the other, false other
+	 */
+	@Override
+	public boolean equals(Object o) {
+		if(this == o){
+			return true;
+		}
+		if(o instanceof UTMCoordinate){
+			UTMCoordinate that = (UTMCoordinate) o;
+			return (this.x == that.x) && (this.y == that.y);
+		}
+		return false;
+	}
+
+	/**
 	 * Returns the x-coordinate associated
 	 * 
 	 * @return The X-coordinate
 	 */
 	public int getX() {
 		return x;
-	}
-
-	/**
-	 * Sets the x-coordinate associated
-	 * 
-	 * @param x
-	 *            The X-coordinate
-	 */
-	public void setX(int x) {
-		this.x = x;
 	}
 
 	/**
@@ -81,13 +95,22 @@ public class UTMCoordinate {
 	}
 
 	/**
-	 * Sets the y-coordinate associated
+	 * Returns the hashcode to uniquely identify the instance
 	 * 
-	 * @param y
-	 *            The Y-coordinate
+	 * @return The hashcode
 	 */
-	public void setY(int y) {
-		this.y = y;
+	@Override
+	public int hashCode() {
+		return toString().hashCode();
+	}
+
+	/**
+	 * Checks is the current point is absolute zero
+	 * 
+	 * @return true if x and y both are zero, false otherwise
+	 */
+	public boolean isZero() {
+		return (x == 0) && (y == 0);
 	}
 
 	/**
@@ -115,12 +138,23 @@ public class UTMCoordinate {
 	}
 
 	/**
-	 * Checks is the current point is absolute zero
+	 * Sets the x-coordinate associated
 	 * 
-	 * @return true if x and y both are zero, false otherwise
+	 * @param x
+	 *            The X-coordinate
 	 */
-	public boolean isZero() {
-		return (x == 0) && (y == 0);
+	public void setX(int x) {
+		this.x = x;
+	}
+
+	/**
+	 * Sets the y-coordinate associated
+	 * 
+	 * @param y
+	 *            The Y-coordinate
+	 */
+	public void setY(int y) {
+		this.y = y;
 	}
 
 	/**
@@ -131,39 +165,5 @@ public class UTMCoordinate {
 	@Override
 	public String toString() {
 		return "{UTMPoint[x=" + x + ",y=" + y + "]}";
-	}
-
-	/**
-	 * Returns the hashcode to uniquely identify the instance
-	 * 
-	 * @return The hashcode
-	 */
-	@Override
-	public int hashCode() {
-		return toString().hashCode();
-	}
-
-	/**
-	 * Compares this instance with another instance and returns the comparision
-	 * results.
-	 * <p>
-	 * Two instances of {@link UTMPoint} are considered equal if {@link #getX()
-	 * x} and {@link #getY() y} are equal
-	 * </p>
-	 * 
-	 * @param o
-	 *            The other instance to compare with
-	 * @return true if the current instance is equal to the other, false other
-	 */
-	@Override
-	public boolean equals(Object o) {
-		if(this == o){
-			return true;
-		}
-		if(o instanceof UTMCoordinate){
-			UTMCoordinate that = (UTMCoordinate) o;
-			return (this.x == that.x) && (this.y == that.y);
-		}
-		return false;
 	}
 }

@@ -24,31 +24,22 @@ class ArrayMapper extends MapperWrapper {
 		super(wrapped);
 	}
 
-	@Override
-	public String serializedClass(Class type) {
-		StringBuffer arraySuffix = new StringBuffer();
-		String name = null;
-		while (type.isArray()) {
-			name = super.serializedClass(type);
-			if (type.getName().equals(name)) {
-				type = type.getComponentType();
-				arraySuffix.append("-array");
-				name = null;
-			} else {
-				break;
-			}
+	private String arrayType(int dimensions, Class componentType) {
+		StringBuffer className = new StringBuffer();
+		for (int i = 0; i < dimensions; i++) {
+			className.append('[');
 		}
-		if (name == null) {
-			name = boxedTypeName(type);
-		}
-		if (name == null) {
-			name = super.serializedClass(type);
-		}
-		if (arraySuffix.length() > 0) {
-			return name + arraySuffix;
+		if (componentType.isPrimitive()) {
+			className.append(PrimitiveUtils.representingChar(componentType));
+			return className.toString();
 		} else {
-			return name;
+			className.append('L').append(componentType.getName()).append(';');
+			return className.toString();
 		}
+	}
+
+	private String boxedTypeName(Class type) {
+		return PrimitiveUtils.isBoxed(type) ? type.getName() : null;
 	}
 
 	@Override
@@ -78,21 +69,30 @@ class ArrayMapper extends MapperWrapper {
 		}
 	}
 
-	private String arrayType(int dimensions, Class componentType) {
-		StringBuffer className = new StringBuffer();
-		for (int i = 0; i < dimensions; i++) {
-			className.append('[');
+	@Override
+	public String serializedClass(Class type) {
+		StringBuffer arraySuffix = new StringBuffer();
+		String name = null;
+		while (type.isArray()) {
+			name = super.serializedClass(type);
+			if (type.getName().equals(name)) {
+				type = type.getComponentType();
+				arraySuffix.append("-array");
+				name = null;
+			} else {
+				break;
+			}
 		}
-		if (componentType.isPrimitive()) {
-			className.append(PrimitiveUtils.representingChar(componentType));
-			return className.toString();
+		if (name == null) {
+			name = boxedTypeName(type);
+		}
+		if (name == null) {
+			name = super.serializedClass(type);
+		}
+		if (arraySuffix.length() > 0) {
+			return name + arraySuffix;
 		} else {
-			className.append('L').append(componentType.getName()).append(';');
-			return className.toString();
+			return name;
 		}
-	}
-
-	private String boxedTypeName(Class type) {
-		return PrimitiveUtils.isBoxed(type) ? type.getName() : null;
 	}
 }

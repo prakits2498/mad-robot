@@ -22,75 +22,6 @@ import android.graphics.Color;
 public final class ColorUtils {
 
 	/**
-	 * Convert color array to HSV color model
-	 * 
-	 * @param argb
-	 */
-	public static void convertToHSV(int[] argb) {
-		for (int i = 0; i < argb.length; i++) {
-
-			int nR = Color.red(argb[i]);
-			int nG = Color.green(argb[i]);
-			int nB = Color.blue(argb[i]);
-			int nMax, nMid, nMin;
-			int nHueOffset;
-			// determine color order
-			if ((nR > nG) && (nR > nB)) {
-				// red is max
-				nMax = nR;
-				nHueOffset = 0;
-				if (nG > nB) {
-					nMid = nG;
-					nMin = nB;
-				} else {
-					nMid = nB;
-					nMin = nG;
-				}
-			} else if ((nG > nR) && (nG > nB)) {
-				// green is max
-				nMax = nG;
-				nHueOffset = 80;
-				if (nR > nB) {
-					nMid = nR;
-					nMin = nB;
-				} else {
-					nMid = nB;
-					nMin = nR;
-				}
-			} else {
-				// blue is max
-				nMax = nB;
-				nHueOffset = 160;
-				if (nR > nG) {
-					nMid = nR;
-					nMin = nG;
-				} else {
-					nMid = nG;
-					nMin = nR;
-				}
-			}
-			// if the max value is Byte.MIN_VALUE the RGB value
-			// = 0 so the HSV value = 0 and needs no change.
-			if (nMax > Byte.MIN_VALUE) {
-				if (nMax == nMin) {
-					// color is gray. Hue, saturation are 0.
-					argb[i] = Color.rgb(Byte.MIN_VALUE, Byte.MIN_VALUE,
-							(byte) nMax);
-				} else {
-					// compute hue scaled from 0-240.
-					int nHue = Math.min(239, nHueOffset + (40 * (nMid - nMin))
-							/ (nMax - nMin));
-					// compute saturation scaled from 0-255.
-					int nSat = Math.min(255, (256 * (nMax - nMin))
-							/ (nMax - Byte.MIN_VALUE));
-					argb[i] = Color.rgb((byte) (nHue + Byte.MIN_VALUE),
-							(byte) (nSat + Byte.MIN_VALUE), (byte) nMax);
-				}
-			}
-		}
-	}
-
-	/**
 	 * Change the brightness of a color
 	 * 
 	 * @param color
@@ -157,6 +88,16 @@ public final class ColorUtils {
 				| mix(color1 & 0xff, color2 & 0xff, f);
 	}
 
+	/**
+	 * Clear the transparency in a color
+	 * 
+	 * @param color
+	 * @return
+	 */
+	public static int clearTransparency(int color) {
+		return color & 0x00FFFFFF;
+	}
+
 	// /**
 	// * Blend two colors.
 	// *
@@ -187,13 +128,72 @@ public final class ColorUtils {
 	// }
 
 	/**
-	 * Clear the transparency in a color
+	 * Convert color array to HSV color model
 	 * 
-	 * @param color
-	 * @return
+	 * @param argb
 	 */
-	public static int clearTransparency(int color) {
-		return color & 0x00FFFFFF;
+	public static void convertToHSV(int[] argb) {
+		for (int i = 0; i < argb.length; i++) {
+
+			int nR = Color.red(argb[i]);
+			int nG = Color.green(argb[i]);
+			int nB = Color.blue(argb[i]);
+			int nMax, nMid, nMin;
+			int nHueOffset;
+			// determine color order
+			if ((nR > nG) && (nR > nB)) {
+				// red is max
+				nMax = nR;
+				nHueOffset = 0;
+				if (nG > nB) {
+					nMid = nG;
+					nMin = nB;
+				} else {
+					nMid = nB;
+					nMin = nG;
+				}
+			} else if ((nG > nR) && (nG > nB)) {
+				// green is max
+				nMax = nG;
+				nHueOffset = 80;
+				if (nR > nB) {
+					nMid = nR;
+					nMin = nB;
+				} else {
+					nMid = nB;
+					nMin = nR;
+				}
+			} else {
+				// blue is max
+				nMax = nB;
+				nHueOffset = 160;
+				if (nR > nG) {
+					nMid = nR;
+					nMin = nG;
+				} else {
+					nMid = nG;
+					nMin = nR;
+				}
+			}
+			// if the max value is Byte.MIN_VALUE the RGB value
+			// = 0 so the HSV value = 0 and needs no change.
+			if (nMax > Byte.MIN_VALUE) {
+				if (nMax == nMin) {
+					// color is gray. Hue, saturation are 0.
+					argb[i] = Color.rgb(Byte.MIN_VALUE, Byte.MIN_VALUE,
+							(byte) nMax);
+				} else {
+					// compute hue scaled from 0-240.
+					int nHue = Math.min(239, nHueOffset + (40 * (nMid - nMin))
+							/ (nMax - nMin));
+					// compute saturation scaled from 0-255.
+					int nSat = Math.min(255, (256 * (nMax - nMin))
+							/ (nMax - Byte.MIN_VALUE));
+					argb[i] = Color.rgb((byte) (nHue + Byte.MIN_VALUE),
+							(byte) (nSat + Byte.MIN_VALUE), (byte) nMax);
+				}
+			}
+		}
 	}
 
 	/**

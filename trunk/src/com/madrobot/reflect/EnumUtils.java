@@ -27,10 +27,37 @@ import java.util.Map;
 public class EnumUtils {
 
 	/**
-	 * This constructor is public to permit tools that require a JavaBean
-	 * instance to operate.
+	 * Gets the <code>enum</code> for the class, returning <code>null</code> if
+	 * not found.
+	 * <p>
+	 * This method differs from {@link Enum#valueOf} in that it does not throw
+	 * an exception for an invalid enum name.
+	 * 
+	 * @param enumClass
+	 *            the class of the <code>enum</code> to get, not null
+	 * @param enumName
+	 *            the enum name
+	 * @return the enum or null if not found
 	 */
-	public EnumUtils() {
+	public static <E extends Enum<E>> E getEnum(Class<E> enumClass, String enumName) {
+		try{
+			return Enum.valueOf(enumClass, enumName);
+		} catch(IllegalArgumentException ex){
+			return null;
+		}
+	}
+
+	/**
+	 * Gets the <code>List</code> of <code>enums</code>.
+	 * <p>
+	 * This method is useful when you need a list of enums rather than an array.
+	 * 
+	 * @param enumClass
+	 *            the class of the <code>enum</code> to get, not null
+	 * @return the modifiable list of enums, never null
+	 */
+	public static <E extends Enum<E>> List<E> getEnumList(Class<E> enumClass) {
+		return new ArrayList<E>(Arrays.asList(enumClass.getEnumConstants()));
 	}
 
 	/**
@@ -48,19 +75,6 @@ public class EnumUtils {
 			map.put(e.name(), e);
 		}
 		return map;
-	}
-
-	/**
-	 * Gets the <code>List</code> of <code>enums</code>.
-	 * <p>
-	 * This method is useful when you need a list of enums rather than an array.
-	 * 
-	 * @param enumClass
-	 *            the class of the <code>enum</code> to get, not null
-	 * @return the modifiable list of enums, never null
-	 */
-	public static <E extends Enum<E>> List<E> getEnumList(Class<E> enumClass) {
-		return new ArrayList<E>(Arrays.asList(enumClass.getEnumConstants()));
 	}
 
 	/**
@@ -85,24 +99,10 @@ public class EnumUtils {
 	}
 
 	/**
-	 * Gets the <code>enum</code> for the class, returning <code>null</code> if
-	 * not found.
-	 * <p>
-	 * This method differs from {@link Enum#valueOf} in that it does not throw
-	 * an exception for an invalid enum name.
-	 * 
-	 * @param enumClass
-	 *            the class of the <code>enum</code> to get, not null
-	 * @param enumName
-	 *            the enum name
-	 * @return the enum or null if not found
+	 * This constructor is public to permit tools that require a JavaBean
+	 * instance to operate.
 	 */
-	public static <E extends Enum<E>> E getEnum(Class<E> enumClass, String enumName) {
-		try{
-			return Enum.valueOf(enumClass, enumName);
-		} catch(IllegalArgumentException ex){
-			return null;
-		}
+	public EnumUtils() {
 	}
 
 }

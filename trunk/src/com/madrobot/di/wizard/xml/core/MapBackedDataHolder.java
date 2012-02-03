@@ -35,12 +35,12 @@ public class MapBackedDataHolder implements DataHolder {
 	}
 
 	@Override
-	public void put(Object key, Object value) {
-		map.put(key, value);
+	public Iterator keys() {
+		return Collections.unmodifiableCollection(map.keySet()).iterator();
 	}
 
 	@Override
-	public Iterator keys() {
-		return Collections.unmodifiableCollection(map.keySet()).iterator();
+	public void put(Object key, Object value) {
+		map.put(key, value);
 	}
 }

@@ -26,13 +26,19 @@ import com.madrobot.di.wizard.xml.io.WriterWrapper;
  */
 public class PathTrackingWriter extends WriterWrapper {
 
-	private final PathTracker pathTracker;
 	private final boolean isNameEncoding;
+	private final PathTracker pathTracker;
 
 	public PathTrackingWriter(HierarchicalStreamWriter writer, PathTracker pathTracker) {
 		super(writer);
 		this.isNameEncoding = writer.underlyingWriter() instanceof AbstractWriter;
 		this.pathTracker = pathTracker;
+	}
+
+	@Override
+	public void endNode() {
+		super.endNode();
+		pathTracker.popElement();
 	}
 
 	@Override
@@ -45,11 +51,5 @@ public class PathTrackingWriter extends WriterWrapper {
 	public void startNode(String name, Class clazz) {
 		pathTracker.pushElement(isNameEncoding ? ((AbstractWriter) wrapped.underlyingWriter()).encodeNode(name) : name);
 		super.startNode(name, clazz);
-	}
-
-	@Override
-	public void endNode() {
-		super.endNode();
-		pathTracker.popElement();
 	}
 }

@@ -36,19 +36,19 @@ import com.madrobot.tasks.TaskNotifier;
  */
 public class WebImageView extends ViewSwitcher implements TaskNotifier {
 
+	private boolean autoload;
+
 	private String imageUrl;
+
+	private ImageView imageView;
 
 	private boolean isLoaded;
 
 	private ProgressBar loadingSpinner;
 
-	private ImageView imageView;
-
-	private ScaleType scaleType = ScaleType.CENTER_CROP;
-
 	private Drawable progressDrawable, errorDrawable;
 
-	private boolean autoload;
+	private ScaleType scaleType = ScaleType.CENTER_CROP;
 
 	public WebImageView(Context context, AttributeSet attributes) {
 		super(context, attributes);
@@ -127,7 +127,7 @@ public class WebImageView extends ViewSwitcher implements TaskNotifier {
 	private void addImageView(Context context) {
 		imageView = new ImageView(context);
 		imageView.setScaleType(scaleType);
-		LayoutParams lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		LayoutParams lp = new LayoutParams(android.view.ViewGroup.LayoutParams.WRAP_CONTENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
 		lp.gravity = Gravity.CENTER;
 		addView(imageView, 1, lp);
 	}

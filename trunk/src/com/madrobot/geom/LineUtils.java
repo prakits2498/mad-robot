@@ -17,6 +17,33 @@ import android.graphics.PointF;
 public class LineUtils {
 
 	/**
+	 * Defines the distance below which two points are considered to coincide.
+	 */
+	public static final double VERY_SMALL_DISTANCE = 0.000001;
+
+	/**
+	 * Checks if two lines are parallel
+	 * 
+	 * @param line1
+	 *            he first line
+	 * @param line2
+	 *            the second line
+	 * @return returns true if the lines are parallel, false otherwise
+	 */
+	public static boolean areParallel(PointF line1Start, PointF line1End, PointF line2Start, PointF line2End) {
+		// If both lines are vertical, they are parallel
+		if(isVertical(line1Start, line1End) && isVertical(line2Start, line2End)){
+			return true;
+		} else // If one of them is vertical, they are not parallel
+		if(isVertical(line1Start, line1End) || isVertical(line2Start, line2End)){
+			return false;
+		} else // General case. If their slopes are the same, they are parallel
+		{
+			return (Math.abs(getSlope(line1Start, line1End) - getSlope(line2Start, line2End)) < VERY_SMALL_DISTANCE);
+		}
+	}
+
+	/**
 	 * Find the point on the line lineStart,lineEnd a given fraction from p0.
 	 * 
 	 * 
@@ -35,64 +62,11 @@ public class LineUtils {
 		return point;
 	}
 
-	/**
-	 * Extend a given line segment to a given length and holding the first
-	 * point of the line as fixed.
-	 * 
-	 * @param lineStart
-	 * @param lineEnd
-	 *            Line segment to extend. lineStart is fixed during extension
-	 * @param length
-	 *            Length of new line segment.
-	 * @param The
-	 *            new end point of the line.
-	 */
-	public static PointF extendLine(PointF lineStart, PointF lineEnd, float toLength) {
-		return extendLine(lineStart.x, lineStart.y, lineEnd.x, lineEnd.y, toLength);
-	}
-
-	public static PointF extendLine(float ax, float ay, float bx, float by, float toLength) {
-		float oldLength = length(ax, ay, bx, by);
-		float lengthFraction = oldLength != 0.0f ? toLength / oldLength : 0.0f;
-		PointF newEnd = new PointF();
-		newEnd.x = ax + (bx - ax) * lengthFraction;
-		newEnd.y = ay + (by - ay) * lengthFraction;
-		return newEnd;
-	}
-
-	/**
-	 * Return the length of a vector.
-	 * 
-	 * @param v
-	 *            Vector Point
-	 * @return Length of vector.
-	 */
-	public static float length(PointF v) {
-		return length(v.x, v.y);
-	}
-
-	public static float length(float ax, float ay) {
-		return (float) Math.sqrt(ax * ax + ay * ay);
-	}
-
-	/**
-	 * Compute distance between two points.
-	 * 
-	 * @param p0
-	 *            starting point
-	 * @param p1
-	 *            ending point
-	 * 
-	 * @return Distance between points.
-	 */
-	public static float length(PointF p0, PointF p1) {
-		PointF v = createVector(p0, p1);
-		return length(v);
-	}
-
-	public static float length(float ax, float ay, float bx, float by) {
-		PointF v = createVector(ax, ay, bx, by);
-		return length(v);
+	public static PointF createVector(float ax, float ay, float bx, float by) {
+		PointF point = new PointF();
+		point.x = bx - ax;
+		point.y = by - ay;
+		return point;
 	}
 
 	/**
@@ -109,76 +83,98 @@ public class LineUtils {
 		return createVector(lineStart.x, lineStart.y, lineEnd.x, lineEnd.y);
 	}
 
-	public static PointF createVector(float ax, float ay, float bx, float by) {
-		PointF point = new PointF();
-		point.x = bx - ax;
-		point.y = by - ay;
-		return point;
-	}
-
 	/**
-	 * Check if two points are on the same side of a given line.
-	 * Algorithm from Sedgewick page 350.
+	 * Removes unnecessary vertices from a line strip. Uses the
+	 * Ramer–Douglas–Peucker algorithm
 	 * 
-	 * @param x0
-	 *            , y0, x1, y1 The line.
-	 * @param px0
-	 *            , py0 First point.
-	 * @param px1
-	 *            , py1 Second point.
-	 * @return <0 if points on opposite sides.
-	 *         =0 if one of the points is exactly on the line
-	 *         >0 if points on same side.
+	 * @param input
+	 *            in x,y,x,y format
+	 * @param maxD
+	 *            The maximum distance a point from the input set will
+	 *            be from the output shape
+	 * @param loop
+	 *            <code>true</code> for a line loop rather than a strip
+	 * @return a decimated vertex array, in x,y,x,y... format
 	 */
-	private static int sameSide(float x0, float y0, float x1, float y1, float px0, float py0, float px1,
-			float py1) {
-		int sameSide = 0;
+	public static float[] decimate(final float[] input, final float maxD, final boolean loop) {
+		boolean[] marked = new boolean[input.length / 2];
+		Arrays.fill(marked, false);
 
-		float dx = x1 - x0;
-		float dy = y1 - y0;
-		float dx1 = px0 - x0;
-		float dy1 = py0 - y0;
-		float dx2 = px1 - x1;
-		float dy2 = py1 - y1;
+		int end = loop ? marked.length : marked.length - 1;
 
-		// Cross product of the vector from the endpoint of the line to the
-		// point
-		float c1 = dx * dy1 - dy * dx1;
-		float c2 = dx * dy2 - dy * dx2;
+		rdp(input, marked, maxD, 0, end);
 
-		if((c1 != 0) && (c2 != 0)){
-			sameSide = (c1 < 0) != (c2 < 0) ? -1 : 1;
-		} else if((dx == 0) && (dx1 == 0) && (dx2 == 0)){
-			sameSide = !isBetween(y0, y1, py0) && !isBetween(y0, y1, py1) ? 1 : 0;
-		} else if((dy == 0) && (dy1 == 0) && (dy2 == 0)){
-			sameSide = !isBetween(x0, x1, px0) && !isBetween(x0, x1, px1) ? 1 : 0;
+		// build output list
+		int count = 0;
+		for(int i = 0; i < marked.length; i++){
+			if(marked[i]){
+				count++;
+			}
 		}
 
-		return sameSide;
+		float[] output = new float[count * 2];
+		int index = 0;
+		for(int i = 0; i < marked.length; i++){
+			if(marked[i]){
+				output[index++] = input[2 * i];
+				output[index++] = input[2 * i + 1];
+			}
+		}
+		return output;
 	}
 
 	/**
-	 * Check if two line segments intersects. Integer domain.
+	 * @param ax
+	 * @param ay
+	 * @param bx
+	 * @param by
+	 * @param px
+	 * @param py
+	 * @return The distance from p to the line segment a-b
+	 */
+	public static float distanceToSegment(float ax, float ay, float bx, float by, float px, float py) {
+		float vx = bx - ax;
+		float vy = by - ay;
+		float wx = px - ax;
+		float wy = py - ay;
+
+		double c1 = wx * vx + wy * vy;
+		double c2 = vx * vx + vy * vy;
+
+		if(c1 <= 0){
+			return (float) Math.hypot((ax - px), (ay - py));
+		}
+		if(c1 >= c2){
+			return (float) Math.hypot(bx - px, (by - py));
+		}
+
+		double b = c1 / c2;
+		vx *= b;
+		vy *= b;
+
+		vx += ax;
+		vy += ay;
+
+		return (float) Math.hypot((vx - px), (vy - py));
+	}
+
+	public static float distanceToSegment(PointF pointStart, PointF pointEnd, PointF point) {
+		return distanceToSegment(pointStart.x, pointStart.y, pointEnd.x, pointEnd.y, point.x, point.y);
+
+	}
+
+	/**
+	 * Check if two double precision numbers are "equal", i.e. close enough
+	 * to a prespecified limit.
 	 * 
-	 * @param x0
-	 *            , y0, x1, y1 End points of first line to check.
-	 * @param x2
-	 *            , yy, x3, y3 End points of second line to check.
-	 * @return True if the two lines intersects.
+	 * @param a
+	 *            First number to check
+	 * @param b
+	 *            Second number to check
+	 * @return True if the twho numbers are "equal", false otherwise
 	 */
-	public static boolean isLineIntersectingLine(float x0, float y0, float x1, float y1, float x2,
-			float y2, float x3, float y3) {
-		float s1 = sameSide(x0, y0, x1, y1, x2, y2, x3, y3);
-		float s2 = sameSide(x2, y2, x3, y3, x0, y0, x1, y1);
-
-		return (s1 <= 0) && (s2 <= 0);
-	}
-
-	/**
-	 * Return true if c is between a and b.
-	 */
-	private static boolean isBetween(float a, float b, float c) {
-		return b > a ? (c >= a) && (c <= b) : (c >= b) && (c <= a);
+	private static boolean equals(float a, float b) {
+		return equals(a, b, 1.0e-5f);
 	}
 
 	/**
@@ -197,52 +193,29 @@ public class LineUtils {
 		return Math.abs(a - b) < limit;
 	}
 
-	/**
-	 * Return largest of four numbers.
-	 * 
-	 * @param a
-	 *            First number to find largest among.
-	 * @param b
-	 *            Second number to find largest among.
-	 * @param c
-	 *            Third number to find largest among.
-	 * @param d
-	 *            Fourth number to find largest among.
-	 * @return Largest of a, b, c and d.
-	 */
-	private static float max(float a, float b, float c, float d) {
-		return Math.max(Math.max(a, b), Math.max(c, d));
+	public static PointF extendLine(float ax, float ay, float bx, float by, float toLength) {
+		float oldLength = length(ax, ay, bx, by);
+		float lengthFraction = oldLength != 0.0f ? toLength / oldLength : 0.0f;
+		PointF newEnd = new PointF();
+		newEnd.x = ax + (bx - ax) * lengthFraction;
+		newEnd.y = ay + (by - ay) * lengthFraction;
+		return newEnd;
 	}
 
 	/**
-	 * Return smallest of four numbers.
+	 * Extend a given line segment to a given length and holding the first
+	 * point of the line as fixed.
 	 * 
-	 * @param a
-	 *            First number to find smallest among.
-	 * @param b
-	 *            Second number to find smallest among.
-	 * @param c
-	 *            Third number to find smallest among.
-	 * @param d
-	 *            Fourth number to find smallest among.
-	 * @return Smallest of a, b, c and d.
+	 * @param lineStart
+	 * @param lineEnd
+	 *            Line segment to extend. lineStart is fixed during extension
+	 * @param length
+	 *            Length of new line segment.
+	 * @param The
+	 *            new end point of the line.
 	 */
-	private static float min(float a, float b, float c, float d) {
-		return Math.min(Math.min(a, b), Math.min(c, d));
-	}
-
-	/**
-	 * Check if two double precision numbers are "equal", i.e. close enough
-	 * to a prespecified limit.
-	 * 
-	 * @param a
-	 *            First number to check
-	 * @param b
-	 *            Second number to check
-	 * @return True if the twho numbers are "equal", false otherwise
-	 */
-	private static boolean equals(float a, float b) {
-		return equals(a, b, 1.0e-5f);
+	public static PointF extendLine(PointF lineStart, PointF lineEnd, float toLength) {
+		return extendLine(lineStart.x, lineStart.y, lineEnd.x, lineEnd.y, toLength);
 	}
 
 	/**
@@ -378,6 +351,41 @@ public class LineUtils {
 	}
 
 	/**
+	 * Return the slope of a line
+	 * 
+	 * @param lineStart
+	 * @param lineEnd
+	 * @return
+	 */
+	public static double getSlope(PointF lineStart, PointF lineEnd) {
+		return (((lineStart.y) - lineEnd.y) / ((lineStart.x) - lineEnd.x));
+	}
+
+	/**
+	 * Return true if c is between a and b.
+	 */
+	private static boolean isBetween(float a, float b, float c) {
+		return b > a ? (c >= a) && (c <= b) : (c >= b) && (c <= a);
+	}
+
+	/**
+	 * Check if two line segments intersects. Integer domain.
+	 * 
+	 * @param x0
+	 *            , y0, x1, y1 End points of first line to check.
+	 * @param x2
+	 *            , yy, x3, y3 End points of second line to check.
+	 * @return True if the two lines intersects.
+	 */
+	public static boolean isLineIntersectingLine(float x0, float y0, float x1, float y1, float x2,
+			float y2, float x3, float y3) {
+		float s1 = sameSide(x0, y0, x1, y1, x2, y2, x3, y3);
+		float s2 = sameSide(x2, y2, x3, y3, x0, y0, x1, y1);
+
+		return (s1 <= 0) && (s2 <= 0);
+	}
+
+	/**
 	 * Check if a specified line intersects a specified rectangle.
 	 * Integer domain.
 	 * 
@@ -420,43 +428,83 @@ public class LineUtils {
 	}
 
 	/**
-	 * Removes unnecessary vertices from a line strip. Uses the
-	 * Ramer–Douglas–Peucker algorithm
+	 * Checks if a line is vertical.
 	 * 
-	 * @param input
-	 *            in x,y,x,y format
-	 * @param maxD
-	 *            The maximum distance a point from the input set will
-	 *            be from the output shape
-	 * @param loop
-	 *            <code>true</code> for a line loop rather than a strip
-	 * @return a decimated vertex array, in x,y,x,y... format
+	 * @param line
+	 *            the line to check
+	 * @return returns true if the line is vertical, false otherwise.
 	 */
-	public static float[] decimate(final float[] input, final float maxD, final boolean loop) {
-		boolean[] marked = new boolean[input.length / 2];
-		Arrays.fill(marked, false);
+	public static boolean isVertical(PointF lineStart, PointF lineEnd) {
+		return ((Math.abs(lineStart.x - lineEnd.x) < VERY_SMALL_DISTANCE));
+	}
 
-		int end = loop ? marked.length : marked.length - 1;
+	public static float length(float ax, float ay) {
+		return (float) Math.sqrt(ax * ax + ay * ay);
+	}
 
-		rdp(input, marked, maxD, 0, end);
+	public static float length(float ax, float ay, float bx, float by) {
+		PointF v = createVector(ax, ay, bx, by);
+		return length(v);
+	}
 
-		// build output list
-		int count = 0;
-		for(int i = 0; i < marked.length; i++){
-			if(marked[i]){
-				count++;
-			}
-		}
+	/**
+	 * Return the length of a vector.
+	 * 
+	 * @param v
+	 *            Vector Point
+	 * @return Length of vector.
+	 */
+	public static float length(PointF v) {
+		return length(v.x, v.y);
+	}
 
-		float[] output = new float[count * 2];
-		int index = 0;
-		for(int i = 0; i < marked.length; i++){
-			if(marked[i]){
-				output[index++] = input[2 * i];
-				output[index++] = input[2 * i + 1];
-			}
-		}
-		return output;
+	/**
+	 * Compute distance between two points.
+	 * 
+	 * @param p0
+	 *            starting point
+	 * @param p1
+	 *            ending point
+	 * 
+	 * @return Distance between points.
+	 */
+	public static float length(PointF p0, PointF p1) {
+		PointF v = createVector(p0, p1);
+		return length(v);
+	}
+
+	/**
+	 * Return largest of four numbers.
+	 * 
+	 * @param a
+	 *            First number to find largest among.
+	 * @param b
+	 *            Second number to find largest among.
+	 * @param c
+	 *            Third number to find largest among.
+	 * @param d
+	 *            Fourth number to find largest among.
+	 * @return Largest of a, b, c and d.
+	 */
+	private static float max(float a, float b, float c, float d) {
+		return Math.max(Math.max(a, b), Math.max(c, d));
+	}
+
+	/**
+	 * Return smallest of four numbers.
+	 * 
+	 * @param a
+	 *            First number to find smallest among.
+	 * @param b
+	 *            Second number to find smallest among.
+	 * @param c
+	 *            Third number to find smallest among.
+	 * @param d
+	 *            Fourth number to find smallest among.
+	 * @return Smallest of a, b, c and d.
+	 */
+	private static float min(float a, float b, float c, float d) {
+		return Math.min(Math.min(a, b), Math.min(c, d));
 	}
 
 	/**
@@ -504,46 +552,6 @@ public class LineUtils {
 	}
 
 	/**
-	 * @param ax
-	 * @param ay
-	 * @param bx
-	 * @param by
-	 * @param px
-	 * @param py
-	 * @return The distance from p to the line segment a-b
-	 */
-	public static float distanceToSegment(float ax, float ay, float bx, float by, float px, float py) {
-		float vx = bx - ax;
-		float vy = by - ay;
-		float wx = px - ax;
-		float wy = py - ay;
-
-		double c1 = wx * vx + wy * vy;
-		double c2 = vx * vx + vy * vy;
-
-		if(c1 <= 0){
-			return (float) Math.hypot((ax - px), (ay - py));
-		}
-		if(c1 >= c2){
-			return (float) Math.hypot(bx - px, (by - py));
-		}
-
-		double b = c1 / c2;
-		vx *= b;
-		vy *= b;
-
-		vx += ax;
-		vy += ay;
-
-		return (float) Math.hypot((vx - px), (vy - py));
-	}
-
-	public static float distanceToSegment(PointF pointStart, PointF pointEnd, PointF point) {
-		return distanceToSegment(pointStart.x, pointStart.y, pointEnd.x, pointEnd.y, point.x, point.y);
-
-	}
-
-	/**
 	 * return -1 if point is on left, 1 if on right
 	 * 
 	 * @param ax
@@ -579,50 +587,6 @@ public class LineUtils {
 	 */
 	public static int relativeCCW(PointF lineStart, PointF lineEnd, PointF point) {
 		return relativeCCW(lineStart.x, lineStart.y, lineEnd.x, lineEnd.y, point.x, point.y);
-	}
-
-	/**
-	 * Checks if a line is vertical.
-	 * 
-	 * @param line
-	 *            the line to check
-	 * @return returns true if the line is vertical, false otherwise.
-	 */
-	public static boolean isVertical(PointF lineStart, PointF lineEnd) {
-		return ((Math.abs(lineStart.x - lineEnd.x) < VERY_SMALL_DISTANCE));
-	}
-
-	/**
-	 * Checks if two lines are parallel
-	 * 
-	 * @param line1
-	 *            he first line
-	 * @param line2
-	 *            the second line
-	 * @return returns true if the lines are parallel, false otherwise
-	 */
-	public static boolean areParallel(PointF line1Start, PointF line1End, PointF line2Start, PointF line2End) {
-		// If both lines are vertical, they are parallel
-		if(isVertical(line1Start, line1End) && isVertical(line2Start, line2End)){
-			return true;
-		} else // If one of them is vertical, they are not parallel
-		if(isVertical(line1Start, line1End) || isVertical(line2Start, line2End)){
-			return false;
-		} else // General case. If their slopes are the same, they are parallel
-		{
-			return (Math.abs(getSlope(line1Start, line1End) - getSlope(line2Start, line2End)) < VERY_SMALL_DISTANCE);
-		}
-	}
-
-	/**
-	 * Return the slope of a line
-	 * 
-	 * @param lineStart
-	 * @param lineEnd
-	 * @return
-	 */
-	public static double getSlope(PointF lineStart, PointF lineEnd) {
-		return (((lineStart.y) - lineEnd.y) / ((lineStart.x) - lineEnd.x));
 	}
 
 	/**
@@ -663,6 +627,49 @@ public class LineUtils {
 	}
 
 	/**
+	 * Check if two points are on the same side of a given line.
+	 * Algorithm from Sedgewick page 350.
+	 * 
+	 * @param x0
+	 *            , y0, x1, y1 The line.
+	 * @param px0
+	 *            , py0 First point.
+	 * @param px1
+	 *            , py1 Second point.
+	 * @return <0 if points on opposite sides.
+	 *         =0 if one of the points is exactly on the line
+	 *         >0 if points on same side.
+	 */
+	private static int sameSide(float x0, float y0, float x1, float y1, float px0, float py0, float px1,
+			float py1) {
+		int sameSide = 0;
+
+		float dx = x1 - x0;
+		float dy = y1 - y0;
+		float dx1 = px0 - x0;
+		float dy1 = py0 - y0;
+		float dx2 = px1 - x1;
+		float dy2 = py1 - y1;
+
+		// Cross product of the vector from the endpoint of the line to the
+		// point
+		float c1 = dx * dy1 - dy * dx1;
+		float c2 = dx * dy2 - dy * dx2;
+
+		if((c1 != 0) && (c2 != 0)){
+			sameSide = (c1 < 0) != (c2 < 0) ? -1 : 1;
+		} else if((dx == 0) && (dx1 == 0) && (dx2 == 0)){
+			sameSide = !isBetween(y0, y1, py0) && !isBetween(y0, y1, py1) ? 1 : 0;
+		} else if((dy == 0) && (dy1 == 0) && (dy2 == 0)){
+			sameSide = !isBetween(x0, x1, px0) && !isBetween(x0, x1, px1) ? 1 : 0;
+		}
+
+		return sameSide;
+	}
+
+	
+	
+	/**
 	 * Translate (move) a Line2D object on the X and Y axes.
 	 * 
 	 * @param line
@@ -678,12 +685,5 @@ public class LineUtils {
 		lineEnd.x += dx;
 		lineEnd.y += dy;
 	}
-
-	
-	
-	/**
-	 * Defines the distance below which two points are considered to coincide.
-	 */
-	public static final double VERY_SMALL_DISTANCE = 0.000001;
 
 }

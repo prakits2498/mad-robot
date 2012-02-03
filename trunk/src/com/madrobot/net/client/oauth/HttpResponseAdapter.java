@@ -12,19 +12,23 @@ public class HttpResponseAdapter implements HttpResponse {
         this.response = response;
     }
 
-    public InputStream getContent() throws IOException {
+    @Override
+	public InputStream getContent() throws IOException {
         return response.getEntity().getContent();
     }
 
-    public int getStatusCode() throws IOException {
-        return response.getStatusLine().getStatusCode();
-    }
-
-    public String getReasonPhrase() throws Exception {
+    @Override
+	public String getReasonPhrase() throws Exception {
         return response.getStatusLine().getReasonPhrase();
     }
 
-    public Object unwrap() {
+    @Override
+	public int getStatusCode() throws IOException {
+        return response.getStatusLine().getStatusCode();
+    }
+
+    @Override
+	public Object unwrap() {
         return response;
     }
 }

@@ -18,12 +18,12 @@ package com.madrobot.di.wizard.xml.converters;
 public class StringBuilderConverter extends AbstractSingleValueConverter {
 
 	@Override
-	public Object fromString(String str) {
-		return new StringBuilder(str);
+	public boolean canConvert(Class type) {
+		return type.equals(StringBuilder.class);
 	}
 
 	@Override
-	public boolean canConvert(Class type) {
-		return type.equals(StringBuilder.class);
+	public Object fromString(String str) {
+		return new StringBuilder(str);
 	}
 }

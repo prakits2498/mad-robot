@@ -99,53 +99,53 @@ public class ZoomableImageView extends LinearLayout {
 	}
 
 	private class ZoomInfo {
-		public int currentWidth;
 		public int currentHeight;
-		public float scaleWidth;
-		public float scaleHeight;
-		public int zoomDisplayWidth; // how much pixels of bitmap are drawn on screen
-		public int zoomDisplayHeight;
-		public int displayWidth; // for example if current zoom is 100px and layout width is 480px than screenWidth is
-									// 100px and not 480px
+		public int currentWidth;
+		// 100px and not 480px
 		public int displayHeight;
+		public int displayWidth; // for example if current zoom is 100px and layout width is 480px than screenWidth is
+		public float scaleHeight;
+		public float scaleWidth;
 		public int screenStartX = 0;
-		public int screenStartY = 0;
+									public int screenStartY = 0;
+		public int zoomDisplayHeight;
+		public int zoomDisplayWidth; // how much pixels of bitmap are drawn on screen
 	}
 	private static int distanceZoomMultiplier = 10;
-	private float minMaxZoom;
-	private float pinchToZoomMinDistance; // must be greaterequal to 1
+	private int angleTolerant;
 	private boolean doubleTapZooms;
 	private int maxZoomSteps;
-
-	private int angleTolerant;
-	private Rect mSrcRect = new Rect();
-	private Rect mDstRect = new Rect();
-	private boolean mIsInChanging = false;
-	private int mCurrentZoomStep = 1;
+	private Bitmap mBitmap = null;
 
 	private int mCurrentZoomInc = 1;
-	private Paint mPaint;
-	private GestureDetector mGestureDetector;
-
-	private Bitmap mBitmap = null;
-	private int mMinZoomWidth = 0;
-	private int mMaxZoomWidth = 0;
-	private int mScrollRectX = 0; // current left location of scroll rect
-
-	private int mScrollRectY = 0; // current top location of scroll rect
-
-	private ZoomInfo mZoomInfo = new ZoomInfo();
-	private PointF mFirstFingerStartPoint;
-	private PointF mSecondFingerStartPoint;
-
-	private boolean mIsTwoFinger = false;
+	private int mCurrentZoomStep = 1;
+	private Rect mDstRect = new Rect();
 	private Object[] mEmptyObjectArray = new Object[] {};
+	private PointF mFirstFingerStartPoint;
+
+	private GestureDetector mGestureDetector;
+	private float minMaxZoom;
 	private Object[] mInt1ObjectArray = new Object[] { 1 };
+
+	private boolean mIsInChanging = false;
 	private boolean mIsReflectionError = true;
-	private Method mMethodPointerCount;
+	private boolean mIsTwoFinger = false;
+	private int mMaxZoomWidth = 0;
+
 	private Method mMethodGetX;
 
 	private Method mMethodGetY;
+	private Method mMethodPointerCount;
+	private int mMinZoomWidth = 0;
+
+	private Paint mPaint;
+	private int mScrollRectX = 0; // current left location of scroll rect
+	private int mScrollRectY = 0; // current top location of scroll rect
+	private PointF mSecondFingerStartPoint;
+	private Rect mSrcRect = new Rect();
+	private ZoomInfo mZoomInfo = new ZoomInfo();
+
+	private float pinchToZoomMinDistance; // must be greaterequal to 1
 
 	public ZoomableImageView(Context context, AttributeSet attrs) {
 		super(context, attrs);

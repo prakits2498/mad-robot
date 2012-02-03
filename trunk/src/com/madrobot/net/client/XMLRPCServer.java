@@ -28,18 +28,33 @@ import android.util.Log;
 
 public class XMLRPCServer extends XMLRPCCommon {
 
+	private static final String NEWLINES = "\n\n";
 	private static final String RESPONSE =
 		"HTTP/1.1 200 OK\n" +
 		"Connection: close\n" +
 		"Content-Type: text/xml\n" +
 		"Content-Length: ";
-	private static final String NEWLINES = "\n\n";
 	private XMLRPCSerializer iXMLRPCSerializer;
 
 	public XMLRPCServer() {
 		iXMLRPCSerializer = new XMLRPCSerializer();
 	}
 
+	private String methodResponse(Object[] params)
+	throws IllegalArgumentException, IllegalStateException, IOException {
+		StringWriter bodyWriter = new StringWriter();
+		serializer.setOutput(bodyWriter);
+		serializer.startDocument(null, null);
+		serializer.startTag(null, Tag.METHOD_RESPONSE);
+		
+		serializeParams(params);
+
+		serializer.endTag(null, Tag.METHOD_RESPONSE);
+		serializer.endDocument();
+		
+		return bodyWriter.toString();
+	}
+	
 	public MethodCall readMethodCall(Socket socket) throws IOException, XmlPullParserException
 	{
 		MethodCall methodCall = new MethodCall();
@@ -75,6 +90,18 @@ public class XMLRPCServer extends XMLRPCCommon {
 		return methodCall;
 	}
 	
+	public void respond(Socket socket, Object[] params) throws IOException {
+
+		String content = methodResponse(params);
+		String response = RESPONSE + (content.length()) + NEWLINES + content;
+		OutputStream outputStream = socket.getOutputStream();
+		outputStream.write(response.getBytes());
+		outputStream.flush();
+		outputStream.close();
+		socket.close();
+		Log.d(Tag.LOG, "response:" + response);
+	}
+	
 	XmlPullParser xmlPullParserFromSocket(InputStream socketInputStream) throws IOException, XmlPullParserException {
 	
 		String line, xmlRpcText = "";
@@ -89,32 +116,5 @@ public class XMLRPCServer extends XMLRPCCommon {
 		Reader streamReader = new InputStreamReader(inputStream);
 		pullParser.setInput(streamReader);
 		return pullParser;
-	}
-	
-	public void respond(Socket socket, Object[] params) throws IOException {
-
-		String content = methodResponse(params);
-		String response = RESPONSE + (content.length()) + NEWLINES + content;
-		OutputStream outputStream = socket.getOutputStream();
-		outputStream.write(response.getBytes());
-		outputStream.flush();
-		outputStream.close();
-		socket.close();
-		Log.d(Tag.LOG, "response:" + response);
-	}
-	
-	private String methodResponse(Object[] params)
-	throws IllegalArgumentException, IllegalStateException, IOException {
-		StringWriter bodyWriter = new StringWriter();
-		serializer.setOutput(bodyWriter);
-		serializer.startDocument(null, null);
-		serializer.startTag(null, Tag.METHOD_RESPONSE);
-		
-		serializeParams(params);
-
-		serializer.endTag(null, Tag.METHOD_RESPONSE);
-		serializer.endDocument();
-		
-		return bodyWriter.toString();
 	}
 }

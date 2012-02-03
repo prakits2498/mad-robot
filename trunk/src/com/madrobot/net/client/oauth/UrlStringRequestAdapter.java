@@ -14,38 +14,47 @@ class UrlStringRequestAdapter implements HttpRequest {
         this.url = url;
     }
 
-    public String getMethod() {
-        return "GET";
-    }
-
-    public String getRequestUrl() {
-        return url;
-    }
-
-    public void setRequestUrl(String url) {
-        this.url = url;
-    }
-
-    public void setHeader(String name, String value) {
-    }
-
-    public String getHeader(String name) {
-        return null;
-    }
-
-    public Map<String, String> getAllHeaders() {
+    @Override
+	public Map<String, String> getAllHeaders() {
         return Collections.emptyMap();
     }
 
-    public InputStream getMessagePayload() throws IOException {
+    @Override
+	public String getContentType() {
         return null;
     }
 
-    public String getContentType() {
+    @Override
+	public String getHeader(String name) {
         return null;
     }
 
-    public Object unwrap() {
+    @Override
+	public InputStream getMessagePayload() throws IOException {
+        return null;
+    }
+
+    @Override
+	public String getMethod() {
+        return "GET";
+    }
+
+    @Override
+	public String getRequestUrl() {
+        return url;
+    }
+
+    @Override
+	public void setHeader(String name, String value) {
+    }
+
+    @Override
+	public void setRequestUrl(String url) {
+        this.url = url;
+    }
+
+    @Override
+	public Object unwrap() {
         return url;
     }
 }

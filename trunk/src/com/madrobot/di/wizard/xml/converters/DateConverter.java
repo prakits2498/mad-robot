@@ -53,25 +53,14 @@ public class DateConverter extends AbstractSingleValueConverter implements Error
 		acceptablePatterns.add("yyyy-MM-dd HH:mm:ssa");
 		DEFAULT_ACCEPTABLE_FORMATS = (String[]) acceptablePatterns.toArray(new String[acceptablePatterns.size()]);
 	}
-	private final ThreadSafeSimpleDateFormat defaultFormat;
 	private final ThreadSafeSimpleDateFormat[] acceptableFormats;
+	private final ThreadSafeSimpleDateFormat defaultFormat;
 
 	/**
 	 * Construct a DateConverter with standard formats and lenient set off.
 	 */
 	public DateConverter() {
 		this(false);
-	}
-
-	/**
-	 * Construct a DateConverter with standard formats, lenient set off and uses a given TimeZone for serialization.
-	 * 
-	 * @param timeZone
-	 *            the TimeZone used to serialize the Date
-	 * @since 1.4
-	 */
-	public DateConverter(TimeZone timeZone) {
-		this(DEFAULT_PATTERN, DEFAULT_ACCEPTABLE_FORMATS, timeZone);
 	}
 
 	/**
@@ -98,19 +87,6 @@ public class DateConverter extends AbstractSingleValueConverter implements Error
 	}
 
 	/**
-	 * Construct a DateConverter with a given TimeZone and lenient set off.
-	 * 
-	 * @param defaultFormat
-	 *            the default format
-	 * @param acceptableFormats
-	 *            fallback formats
-	 * @since 1.4
-	 */
-	public DateConverter(String defaultFormat, String[] acceptableFormats, TimeZone timeZone) {
-		this(defaultFormat, acceptableFormats, timeZone, false);
-	}
-
-	/**
 	 * Construct a DateConverter.
 	 * 
 	 * @param defaultFormat
@@ -123,6 +99,19 @@ public class DateConverter extends AbstractSingleValueConverter implements Error
 	 */
 	public DateConverter(String defaultFormat, String[] acceptableFormats, boolean lenient) {
 		this(defaultFormat, acceptableFormats, UTC, lenient);
+	}
+
+	/**
+	 * Construct a DateConverter with a given TimeZone and lenient set off.
+	 * 
+	 * @param defaultFormat
+	 *            the default format
+	 * @param acceptableFormats
+	 *            fallback formats
+	 * @since 1.4
+	 */
+	public DateConverter(String defaultFormat, String[] acceptableFormats, TimeZone timeZone) {
+		this(defaultFormat, acceptableFormats, timeZone, false);
 	}
 
 	/**
@@ -144,6 +133,25 @@ public class DateConverter extends AbstractSingleValueConverter implements Error
 				: new ThreadSafeSimpleDateFormat[0];
 		for (int i = 0; i < this.acceptableFormats.length; i++) {
 			this.acceptableFormats[i] = new ThreadSafeSimpleDateFormat(acceptableFormats[i], timeZone, 1, 20, lenient);
+		}
+	}
+
+	/**
+	 * Construct a DateConverter with standard formats, lenient set off and uses a given TimeZone for serialization.
+	 * 
+	 * @param timeZone
+	 *            the TimeZone used to serialize the Date
+	 * @since 1.4
+	 */
+	public DateConverter(TimeZone timeZone) {
+		this(DEFAULT_PATTERN, DEFAULT_ACCEPTABLE_FORMATS, timeZone);
+	}
+
+	@Override
+	public void appendErrors(ErrorWriter errorWriter) {
+		errorWriter.add("Default date pattern", defaultFormat.toString());
+		for (int i = 0; i < acceptableFormats.length; i++) {
+			errorWriter.add("Alternative date pattern", acceptableFormats[i].toString());
 		}
 	}
 
@@ -172,13 +180,5 @@ public class DateConverter extends AbstractSingleValueConverter implements Error
 	@Override
 	public String toString(Object obj) {
 		return defaultFormat.format((Date) obj);
-	}
-
-	@Override
-	public void appendErrors(ErrorWriter errorWriter) {
-		errorWriter.add("Default date pattern", defaultFormat.toString());
-		for (int i = 0; i < acceptableFormats.length; i++) {
-			errorWriter.add("Alternative date pattern", acceptableFormats[i].toString());
-		}
 	}
 }

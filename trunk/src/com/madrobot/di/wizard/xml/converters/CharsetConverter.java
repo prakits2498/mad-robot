@@ -26,12 +26,12 @@ public class CharsetConverter extends AbstractSingleValueConverter {
 	}
 
 	@Override
-	public String toString(Object obj) {
-		return obj == null ? null : ((Charset) obj).name();
+	public Object fromString(String str) {
+		return Charset.forName(str);
 	}
 
 	@Override
-	public Object fromString(String str) {
-		return Charset.forName(str);
+	public String toString(Object obj) {
+		return obj == null ? null : ((Charset) obj).name();
 	}
 }

@@ -18,8 +18,8 @@ package com.madrobot.di.wizard.xml.converters;
  */
 public class MissingFieldException extends ObjectAccessException {
 
-	private final String fieldName;
 	private final String className;
+	private final String fieldName;
 
 	/**
 	 * Construct a MissingFieldException.
@@ -37,16 +37,6 @@ public class MissingFieldException extends ObjectAccessException {
 	}
 
 	/**
-	 * Retrieve the name of the missing field.
-	 * 
-	 * @return the field name
-	 * @since 1.4.2
-	 */
-	public String getFieldName() {
-		return fieldName;
-	}
-
-	/**
 	 * Retrieve the name of the class with the missing field.
 	 * 
 	 * @return the class name
@@ -54,5 +44,15 @@ public class MissingFieldException extends ObjectAccessException {
 	 */
 	protected String getClassName() {
 		return className;
+	}
+
+	/**
+	 * Retrieve the name of the missing field.
+	 * 
+	 * @return the field name
+	 * @since 1.4.2
+	 */
+	public String getFieldName() {
+		return fieldName;
 	}
 }

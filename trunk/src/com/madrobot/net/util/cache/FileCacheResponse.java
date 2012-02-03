@@ -65,6 +65,22 @@ class FileCacheResponse extends CacheResponse {
     }
 
     @Override
+    public InputStream getBody() throws IOException {
+        if (mInputStream != null) {
+            return mInputStream;
+        } else {
+            // Calling getHeaders() has the side-effect of setting mInputStream
+            getHeaders();
+            if (mInputStream == null) {
+                // The method getHeaders() must throw an IOException
+                // if it does not set mInputStream.
+                throw new IllegalStateException();
+            }
+            return mInputStream;
+        }
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public Map<String, List<String>> getHeaders() throws IOException {
         if (mHeaders == null) {
@@ -105,22 +121,6 @@ class FileCacheResponse extends CacheResponse {
             }
         } else {
             return mHeaders;
-        }
-    }
-
-    @Override
-    public InputStream getBody() throws IOException {
-        if (mInputStream != null) {
-            return mInputStream;
-        } else {
-            // Calling getHeaders() has the side-effect of setting mInputStream
-            getHeaders();
-            if (mInputStream == null) {
-                // The method getHeaders() must throw an IOException
-                // if it does not set mInputStream.
-                throw new IllegalStateException();
-            }
-            return mInputStream;
         }
     }
 }

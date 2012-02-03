@@ -13,9 +13,9 @@ import android.util.AttributeSet;
 import android.view.View;
 
 public class ColorPickerView extends View {
-	Paint paint;
-	Shader luar;
 	final float[] color = { 1.f, 1.f, 1.f };
+	Shader luar;
+	Paint paint;
 
 	public ColorPickerView(Context context) {
 		this(context, null);

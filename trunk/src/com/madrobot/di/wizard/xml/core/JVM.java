@@ -29,21 +29,16 @@ import com.madrobot.util.WeakCache;
 
 public class JVM implements Caching {
 
-	private ReflectionProvider reflectionProvider;
-	private transient Map loaderCache = new WeakCache(new HashMap());
-
-	private final boolean supportsSQL = loadClass("java.sql.Date") != null;
-
-	private static final boolean optimizedTreeSetAddAll;
-	private static final boolean optimizedTreeMapPutAll;
 	private static final boolean canParseUTCDateFormat;
-
-	private static final String vendor = System.getProperty("java.vm.vendor");
-	private static final float majorJavaVersion = getMajorJavaVersion();
-	private static final boolean reverseFieldOrder = isHarmony() || (isIBM() && !is15());
-
 	static final float DEFAULT_JAVA_VERSION = 1.3f;
 
+	private static final float majorJavaVersion = getMajorJavaVersion();
+
+	private static final boolean optimizedTreeMapPutAll;
+	private static final boolean optimizedTreeSetAddAll;
+	private static final boolean reverseFieldOrder = isHarmony() || (isIBM() && !is15());
+
+	private static final String vendor = System.getProperty("java.vm.vendor");
 	static {
 		Comparator comparator = new Comparator() {
 			@Override
@@ -78,6 +73,9 @@ public class JVM implements Caching {
 		}
 		canParseUTCDateFormat = test;
 	}
+	public static boolean canParseUTCDateFormat() {
+		return canParseUTCDateFormat;
+	}
 
 	/**
 	 * Parses the java version system property to determine the major java version, i.e. 1.x
@@ -93,6 +91,24 @@ public class JVM implements Caching {
 		}
 	}
 
+	/**
+	 * Checks if TreeMap.putAll is optimized for SortedMap argument.
+	 * 
+	 * @since 1.4
+	 */
+	public static boolean hasOptimizedTreeMapPutAll() {
+		return optimizedTreeMapPutAll;
+	}
+
+	/**
+	 * Checks if TreeSet.addAll is optimized for SortedSet argument.
+	 * 
+	 * @since 1.4
+	 */
+	public static boolean hasOptimizedTreeSetAddAll() {
+		return optimizedTreeSetAddAll;
+	}
+
 	public static boolean is14() {
 		return majorJavaVersion >= 1.4f;
 	}
@@ -101,19 +117,49 @@ public class JVM implements Caching {
 		return majorJavaVersion >= 1.5f;
 	}
 
-	private static boolean isIBM() {
-		return vendor.indexOf("IBM") != -1;
+	/**
+	 * @since 1.4
+	 */
+	private static boolean isAndroid() {
+		return vendor.indexOf("Android") != -1;
 	}
 
 	private static boolean isHarmony() {
 		return vendor.indexOf("Apache Software Foundation") != -1;
 	}
 
-	/**
-	 * @since 1.4
-	 */
-	private static boolean isAndroid() {
-		return vendor.indexOf("Android") != -1;
+	private static boolean isIBM() {
+		return vendor.indexOf("IBM") != -1;
+	}
+
+	public static boolean reverseFieldDefinition() {
+		return reverseFieldOrder;
+	}
+
+	private transient Map loaderCache = new WeakCache(new HashMap());
+
+	private ReflectionProvider reflectionProvider;
+
+	private final boolean supportsSQL = loadClass("java.sql.Date") != null;
+
+	public synchronized ReflectionProvider bestReflectionProvider() {
+		if (reflectionProvider == null) {
+			// try {
+
+			reflectionProvider = new PureJavaReflectionProvider();
+
+			// } catch (AccessControlException e) {
+			// // thrown when trying to access sun.misc package in Applet
+			// // context.
+			// reflectionProvider = new PureJavaReflectionProvider();
+			// }
+		}
+		return reflectionProvider;
+	}
+
+	@Override
+	public void flushCache() {
+		loaderCache.clear();
 	}
 
 	public Class loadClass(String name) {
@@ -131,57 +177,11 @@ public class JVM implements Caching {
 		}
 	}
 
-	public synchronized ReflectionProvider bestReflectionProvider() {
-		if (reflectionProvider == null) {
-			// try {
-
-			reflectionProvider = new PureJavaReflectionProvider();
-
-			// } catch (AccessControlException e) {
-			// // thrown when trying to access sun.misc package in Applet
-			// // context.
-			// reflectionProvider = new PureJavaReflectionProvider();
-			// }
-		}
-		return reflectionProvider;
-	}
-
-	public static boolean reverseFieldDefinition() {
-		return reverseFieldOrder;
-	}
-
 	/**
 	 * Checks if the jvm supports sql.
 	 */
 	public boolean supportsSQL() {
 		return this.supportsSQL;
-	}
-
-	/**
-	 * Checks if TreeSet.addAll is optimized for SortedSet argument.
-	 * 
-	 * @since 1.4
-	 */
-	public static boolean hasOptimizedTreeSetAddAll() {
-		return optimizedTreeSetAddAll;
-	}
-
-	/**
-	 * Checks if TreeMap.putAll is optimized for SortedMap argument.
-	 * 
-	 * @since 1.4
-	 */
-	public static boolean hasOptimizedTreeMapPutAll() {
-		return optimizedTreeMapPutAll;
-	}
-
-	public static boolean canParseUTCDateFormat() {
-		return canParseUTCDateFormat;
-	}
-
-	@Override
-	public void flushCache() {
-		loaderCache.clear();
 	}
 
 }

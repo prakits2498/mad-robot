@@ -42,29 +42,75 @@ import com.madrobot.util.QuickWriter;
  */
 public class PrettyPrintWriter extends AbstractWriter {
 
-	public static int XML_QUIRKS = -1;
+	private static final char[] AMP = "&amp;".toCharArray();
+	private static final char[] APOS = "&apos;".toCharArray();
+	private static final char[] CLOSE = "</".toCharArray();
+
+	private static final char[] CR = "&#xd;".toCharArray();
+	private static final char[] GT = "&gt;".toCharArray();
+	private static final char[] LT = "&lt;".toCharArray();
+	private static final char[] NULL = "&#x0;".toCharArray();
+
+	private static final char[] QUOT = "&quot;".toCharArray();
 	public static int XML_1_0 = 0;
 	public static int XML_1_1 = 1;
+	public static int XML_QUIRKS = -1;
+	protected int depth;
 
-	private final QuickWriter writer;
 	private final FastStack elementStack = new FastStack(16);
 	private final char[] lineIndenter;
 	private final int mode;
-
-	private boolean tagInProgress;
-	protected int depth;
-	private boolean readyForNewLine;
-	private boolean tagIsEmpty;
 	private String newLine;
+	private boolean readyForNewLine;
+	private boolean tagInProgress;
+	private boolean tagIsEmpty;
+	private final QuickWriter writer;
 
-	private static final char[] NULL = "&#x0;".toCharArray();
-	private static final char[] AMP = "&amp;".toCharArray();
-	private static final char[] LT = "&lt;".toCharArray();
-	private static final char[] GT = "&gt;".toCharArray();
-	private static final char[] CR = "&#xd;".toCharArray();
-	private static final char[] QUOT = "&quot;".toCharArray();
-	private static final char[] APOS = "&apos;".toCharArray();
-	private static final char[] CLOSE = "</".toCharArray();
+	public PrettyPrintWriter(Writer writer) {
+		this(writer, new char[] { ' ', ' ' });
+	}
+
+	public PrettyPrintWriter(Writer writer, char[] lineIndenter) {
+		this(writer, XML_QUIRKS, lineIndenter);
+	}
+
+	/**
+	 * @deprecated As of 1.3
+	 */
+	@Deprecated
+	public PrettyPrintWriter(Writer writer, char[] lineIndenter, String newLine) {
+		this(writer, lineIndenter, newLine, new XmlFriendlyNameCoder());
+	}
+
+	/**
+	 * @since 1.2
+	 * @deprecated As of 1.3
+	 */
+	@Deprecated
+	public PrettyPrintWriter(Writer writer, char[] lineIndenter, String newLine, XmlFriendlyNameCoder replacer) {
+		this(writer, XML_QUIRKS, lineIndenter, replacer, newLine);
+	}
+
+	/**
+	 * @since 1.3
+	 */
+	public PrettyPrintWriter(Writer writer, int mode) {
+		this(writer, mode, new char[] { ' ', ' ' });
+	}
+
+	/**
+	 * @since 1.3
+	 */
+	public PrettyPrintWriter(Writer writer, int mode, char[] lineIndenter) {
+		this(writer, mode, lineIndenter, new XmlFriendlyNameCoder());
+	}
+
+	/**
+	 * @since 1.4
+	 */
+	public PrettyPrintWriter(Writer writer, int mode, char[] lineIndenter, NameCoder nameCoder) {
+		this(writer, mode, lineIndenter, nameCoder, "\n");
+	}
 
 	private PrettyPrintWriter(Writer writer, int mode, char[] lineIndenter, NameCoder nameCoder, String newLine) {
 		super(nameCoder);
@@ -78,22 +124,6 @@ public class PrettyPrintWriter extends AbstractWriter {
 	}
 
 	/**
-	 * @since 1.2
-	 * @deprecated As of 1.3
-	 */
-	@Deprecated
-	public PrettyPrintWriter(Writer writer, char[] lineIndenter, String newLine, XmlFriendlyNameCoder replacer) {
-		this(writer, XML_QUIRKS, lineIndenter, replacer, newLine);
-	}
-
-	/**
-	 * @since 1.4
-	 */
-	public PrettyPrintWriter(Writer writer, int mode, char[] lineIndenter, NameCoder nameCoder) {
-		this(writer, mode, lineIndenter, nameCoder, "\n");
-	}
-
-	/**
 	 * @since 1.3
 	 * @deprecated As of 1.4 use {@link PrettyPrintWriter#PrettyPrintWriter(Writer, int, char[], NameCoder)} instead
 	 */
@@ -103,30 +133,10 @@ public class PrettyPrintWriter extends AbstractWriter {
 	}
 
 	/**
-	 * @deprecated As of 1.3
+	 * @since 1.4
 	 */
-	@Deprecated
-	public PrettyPrintWriter(Writer writer, char[] lineIndenter, String newLine) {
-		this(writer, lineIndenter, newLine, new XmlFriendlyNameCoder());
-	}
-
-	/**
-	 * @since 1.3
-	 */
-	public PrettyPrintWriter(Writer writer, int mode, char[] lineIndenter) {
-		this(writer, mode, lineIndenter, new XmlFriendlyNameCoder());
-	}
-
-	public PrettyPrintWriter(Writer writer, char[] lineIndenter) {
-		this(writer, XML_QUIRKS, lineIndenter);
-	}
-
-	/**
-	 * @deprecated As of 1.3
-	 */
-	@Deprecated
-	public PrettyPrintWriter(Writer writer, String lineIndenter, String newLine) {
-		this(writer, lineIndenter.toCharArray(), newLine);
+	public PrettyPrintWriter(Writer writer, int mode, NameCoder nameCoder) {
+		this(writer, mode, new char[] { ' ', ' ' }, nameCoder);
 	}
 
 	/**
@@ -134,17 +144,6 @@ public class PrettyPrintWriter extends AbstractWriter {
 	 */
 	public PrettyPrintWriter(Writer writer, int mode, String lineIndenter) {
 		this(writer, mode, lineIndenter.toCharArray());
-	}
-
-	public PrettyPrintWriter(Writer writer, String lineIndenter) {
-		this(writer, lineIndenter.toCharArray());
-	}
-
-	/**
-	 * @since 1.4
-	 */
-	public PrettyPrintWriter(Writer writer, int mode, NameCoder nameCoder) {
-		this(writer, mode, new char[] { ' ', ' ' }, nameCoder);
 	}
 
 	/**
@@ -163,6 +162,18 @@ public class PrettyPrintWriter extends AbstractWriter {
 		this(writer, XML_QUIRKS, new char[] { ' ', ' ' }, nameCoder, "\n");
 	}
 
+	public PrettyPrintWriter(Writer writer, String lineIndenter) {
+		this(writer, lineIndenter.toCharArray());
+	}
+
+	/**
+	 * @deprecated As of 1.3
+	 */
+	@Deprecated
+	public PrettyPrintWriter(Writer writer, String lineIndenter, String newLine) {
+		this(writer, lineIndenter.toCharArray(), newLine);
+	}
+
 	/**
 	 * @deprecated As of 1.4 use {@link PrettyPrintWriter#PrettyPrintWriter(Writer, NameCoder)} instead.
 	 */
@@ -171,15 +182,76 @@ public class PrettyPrintWriter extends AbstractWriter {
 		this(writer, new char[] { ' ', ' ' }, "\n", replacer);
 	}
 
-	/**
-	 * @since 1.3
-	 */
-	public PrettyPrintWriter(Writer writer, int mode) {
-		this(writer, mode, new char[] { ' ', ' ' });
+	@Override
+	public void addAttribute(String key, String value) {
+		writer.write(' ');
+		writer.write(encodeAttribute(key));
+		writer.write('=');
+		writer.write('\"');
+		writeAttributeValue(writer, value);
+		writer.write('\"');
 	}
 
-	public PrettyPrintWriter(Writer writer) {
-		this(writer, new char[] { ' ', ' ' });
+	@Override
+	public void close() {
+		writer.close();
+	}
+
+	@Override
+	public void endNode() {
+		depth--;
+		if (tagIsEmpty) {
+			writer.write('/');
+			readyForNewLine = false;
+			finishTag();
+			elementStack.popSilently();
+		} else {
+			finishTag();
+			writer.write(CLOSE);
+			writer.write((String) elementStack.pop());
+			writer.write('>');
+		}
+		readyForNewLine = true;
+		if (depth == 0) {
+			writer.flush();
+		}
+	}
+
+	protected void endOfLine() {
+		writer.write(getNewLine());
+		for (int i = 0; i < depth; i++) {
+			writer.write(lineIndenter);
+		}
+	}
+
+	private void finishTag() {
+		if (tagInProgress) {
+			writer.write('>');
+		}
+		tagInProgress = false;
+		if (readyForNewLine) {
+			endOfLine();
+		}
+		readyForNewLine = false;
+		tagIsEmpty = false;
+	}
+
+	@Override
+	public void flush() {
+		writer.flush();
+	}
+
+	protected String getNewLine() {
+		return newLine;
+	}
+
+	@Override
+	public void setValue(String text) {
+		readyForNewLine = false;
+		tagIsEmpty = false;
+		finishTag();
+
+		writeText(writer, text);
 	}
 
 	@Override
@@ -199,25 +271,6 @@ public class PrettyPrintWriter extends AbstractWriter {
 	@Override
 	public void startNode(String name, Class clazz) {
 		startNode(name);
-	}
-
-	@Override
-	public void setValue(String text) {
-		readyForNewLine = false;
-		tagIsEmpty = false;
-		finishTag();
-
-		writeText(writer, text);
-	}
-
-	@Override
-	public void addAttribute(String key, String value) {
-		writer.write(' ');
-		writer.write(encodeAttribute(key));
-		writer.write('=');
-		writer.write('\"');
-		writeAttributeValue(writer, value);
-		writer.write('\"');
 	}
 
 	protected void writeAttributeValue(QuickWriter writer, String text) {
@@ -292,58 +345,5 @@ public class PrettyPrintWriter extends AbstractWriter {
 				}
 			}
 		}
-	}
-
-	@Override
-	public void endNode() {
-		depth--;
-		if (tagIsEmpty) {
-			writer.write('/');
-			readyForNewLine = false;
-			finishTag();
-			elementStack.popSilently();
-		} else {
-			finishTag();
-			writer.write(CLOSE);
-			writer.write((String) elementStack.pop());
-			writer.write('>');
-		}
-		readyForNewLine = true;
-		if (depth == 0) {
-			writer.flush();
-		}
-	}
-
-	private void finishTag() {
-		if (tagInProgress) {
-			writer.write('>');
-		}
-		tagInProgress = false;
-		if (readyForNewLine) {
-			endOfLine();
-		}
-		readyForNewLine = false;
-		tagIsEmpty = false;
-	}
-
-	protected void endOfLine() {
-		writer.write(getNewLine());
-		for (int i = 0; i < depth; i++) {
-			writer.write(lineIndenter);
-		}
-	}
-
-	@Override
-	public void flush() {
-		writer.flush();
-	}
-
-	@Override
-	public void close() {
-		writer.close();
-	}
-
-	protected String getNewLine() {
-		return newLine;
 	}
 }

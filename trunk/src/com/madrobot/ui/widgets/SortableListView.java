@@ -110,6 +110,7 @@ public class SortableListView extends ListView {
 
 	private class GestureListener extends GestureDetector.SimpleOnGestureListener {
 
+		@Override
 		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 			if (mDragView != null) {
 				if (velocityX > 1000) {
@@ -369,7 +370,7 @@ public class SortableListView extends ListView {
 				break;
 			}
 
-			View item = (View) getChildAt(itemnum - getFirstVisiblePosition());
+			View item = getChildAt(itemnum - getFirstVisiblePosition());
 
 			if (isDraggableRow(item)) {
 				mDragPoint = y - item.getTop();
@@ -504,6 +505,7 @@ public class SortableListView extends ListView {
 	 * Any other adapter will throw a runtime exception.
 	 * </p>
 	 */
+	@Override
 	public void setAdapter(ListAdapter adapter) {
 		if (!(adapter instanceof ArrayAdapter)) {
 			throw new RuntimeException("Adapter not an instance of ArrayAdapter");
@@ -549,8 +551,8 @@ public class SortableListView extends ListView {
 		mWindowParams.x = x;
 		mWindowParams.y = y - mDragPoint + mCoordOffset;
 
-		mWindowParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-		mWindowParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
+		mWindowParams.height = android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+		mWindowParams.width = android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 		mWindowParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
 				| WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
 				| WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;

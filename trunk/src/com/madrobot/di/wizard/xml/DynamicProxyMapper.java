@@ -20,6 +20,12 @@ import java.lang.reflect.Proxy;
  */
 public class DynamicProxyMapper extends MapperWrapper {
 
+	/**
+	 * Place holder type used for dynamic proxies.
+	 */
+	public static class DynamicProxy {
+	}
+
 	private String alias;
 
 	DynamicProxyMapper(Mapper wrapped) {
@@ -35,8 +41,13 @@ public class DynamicProxyMapper extends MapperWrapper {
 		return alias;
 	}
 
-	public void setAlias(String alias) {
-		this.alias = alias;
+	@Override
+	public Class realClass(String elementName) {
+		if (elementName.equals(alias)) {
+			return DynamicProxy.class;
+		} else {
+			return super.realClass(elementName);
+		}
 	}
 
 	@Override
@@ -48,19 +59,8 @@ public class DynamicProxyMapper extends MapperWrapper {
 		}
 	}
 
-	@Override
-	public Class realClass(String elementName) {
-		if (elementName.equals(alias)) {
-			return DynamicProxy.class;
-		} else {
-			return super.realClass(elementName);
-		}
-	}
-
-	/**
-	 * Place holder type used for dynamic proxies.
-	 */
-	public static class DynamicProxy {
+	public void setAlias(String alias) {
+		this.alias = alias;
 	}
 
 }

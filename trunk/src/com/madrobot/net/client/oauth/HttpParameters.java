@@ -27,7 +27,117 @@ public class HttpParameters implements Map<String, SortedSet<String>>, Serializa
 
     private TreeMap<String, SortedSet<String>> wrappedMap = new TreeMap<String, SortedSet<String>>();
 
-    public SortedSet<String> put(String key, SortedSet<String> value) {
+    @Override
+	public void clear() {
+        wrappedMap.clear();
+    }
+
+    @Override
+	public boolean containsKey(Object key) {
+        return wrappedMap.containsKey(key);
+    }
+
+    @Override
+	public boolean containsValue(Object value) {
+        for (Set<String> values : wrappedMap.values()) {
+            if (values.contains(value)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+	public Set<java.util.Map.Entry<String, SortedSet<String>>> entrySet() {
+        return wrappedMap.entrySet();
+    }
+
+    @Override
+	public SortedSet<String> get(Object key) {
+        return wrappedMap.get(key);
+    }
+
+    public String getAsHeaderElement(String key) {
+        String value = getFirst(key);
+        if (value == null) {
+            return null;
+        }
+        return key + "=\"" + value + "\"";
+    }
+
+    /**
+     * Concatenates all values for the given key to a list of key/value pairs
+     * suitable for use in a URL query string.
+     * 
+     * @param key
+     *        the parameter name
+     * @return the query string
+     */
+    public String getAsQueryString(Object key) {
+        StringBuilder sb = new StringBuilder();
+        key = OAuth.percentEncode((String) key);
+        Set<String> values = wrappedMap.get(key);
+        if (values == null) {
+            return key + "=";
+        }
+        Iterator<String> iter = values.iterator();
+        while (iter.hasNext()) {
+            sb.append(key + "=" + iter.next());
+            if (iter.hasNext()) {
+                sb.append("&");
+            }
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Convenience method for {@link #getFirst(key, false)}.
+     * 
+     * @param key
+     *        the parameter name (must be percent encoded if it contains unsafe
+     *        characters!)
+     * @return the first value found for this parameter
+     */
+    public String getFirst(Object key) {
+        return getFirst(key, false);
+    }
+
+    /**
+     * Returns the first value from the set of all values for the given
+     * parameter name. If the key passed to this method contains special
+     * characters, you MUST first percent encode it using
+     * {@link OAuth#percentEncode(String)}, otherwise the lookup will fail
+     * (that's because upon storing values in this map, keys get
+     * percent-encoded).
+     * 
+     * @param key
+     *        the parameter name (must be percent encoded if it contains unsafe
+     *        characters!)
+     * @param percentDecode
+     *        whether the value being retrieved should be percent decoded
+     * @return the first value found for this parameter
+     */
+    public String getFirst(Object key, boolean percentDecode) {
+        SortedSet<String> values = wrappedMap.get(key);
+        if (values == null || values.isEmpty()) {
+            return null;
+        }
+        String value = values.first();
+        return percentDecode ? OAuth.percentDecode(value) : value;
+    }
+
+    @Override
+	public boolean isEmpty() {
+        return wrappedMap.isEmpty();
+    }
+
+    @Override
+	public Set<String> keySet() {
+        return wrappedMap.keySet();
+    }
+
+    @Override
+	public SortedSet<String> put(String key, SortedSet<String> value) {
         return wrappedMap.put(key, value);
     }
 
@@ -84,21 +194,8 @@ public class HttpParameters implements Map<String, SortedSet<String>>, Serializa
         return value;
     }
 
-    /**
-     * Convenience method to allow for storing null values. {@link #put} doesn't
-     * allow null values, because that would be ambiguous.
-     * 
-     * @param key
-     *        the parameter name
-     * @param nullString
-     *        can be anything, but probably... null?
-     * @return null
-     */
-    public String putNull(String key, String nullString) {
-        return put(key, nullString);
-    }
-
-    public void putAll(Map<? extends String, ? extends SortedSet<String>> m) {
+    @Override
+	public void putAll(Map<? extends String, ? extends SortedSet<String>> m) {
         wrappedMap.putAll(m);
     }
 
@@ -135,93 +232,27 @@ public class HttpParameters implements Map<String, SortedSet<String>>, Serializa
         }
     }
 
-    public SortedSet<String> get(Object key) {
-        return wrappedMap.get(key);
-    }
-
     /**
-     * Convenience method for {@link #getFirst(key, false)}.
-     * 
-     * @param key
-     *        the parameter name (must be percent encoded if it contains unsafe
-     *        characters!)
-     * @return the first value found for this parameter
-     */
-    public String getFirst(Object key) {
-        return getFirst(key, false);
-    }
-
-    /**
-     * Returns the first value from the set of all values for the given
-     * parameter name. If the key passed to this method contains special
-     * characters, you MUST first percent encode it using
-     * {@link OAuth#percentEncode(String)}, otherwise the lookup will fail
-     * (that's because upon storing values in this map, keys get
-     * percent-encoded).
-     * 
-     * @param key
-     *        the parameter name (must be percent encoded if it contains unsafe
-     *        characters!)
-     * @param percentDecode
-     *        whether the value being retrieved should be percent decoded
-     * @return the first value found for this parameter
-     */
-    public String getFirst(Object key, boolean percentDecode) {
-        SortedSet<String> values = wrappedMap.get(key);
-        if (values == null || values.isEmpty()) {
-            return null;
-        }
-        String value = values.first();
-        return percentDecode ? OAuth.percentDecode(value) : value;
-    }
-
-    /**
-     * Concatenates all values for the given key to a list of key/value pairs
-     * suitable for use in a URL query string.
+     * Convenience method to allow for storing null values. {@link #put} doesn't
+     * allow null values, because that would be ambiguous.
      * 
      * @param key
      *        the parameter name
-     * @return the query string
+     * @param nullString
+     *        can be anything, but probably... null?
+     * @return null
      */
-    public String getAsQueryString(Object key) {
-        StringBuilder sb = new StringBuilder();
-        key = OAuth.percentEncode((String) key);
-        Set<String> values = wrappedMap.get(key);
-        if (values == null) {
-            return key + "=";
-        }
-        Iterator<String> iter = values.iterator();
-        while (iter.hasNext()) {
-            sb.append(key + "=" + iter.next());
-            if (iter.hasNext()) {
-                sb.append("&");
-            }
-        }
-        return sb.toString();
+    public String putNull(String key, String nullString) {
+        return put(key, nullString);
     }
 
-    public String getAsHeaderElement(String key) {
-        String value = getFirst(key);
-        if (value == null) {
-            return null;
-        }
-        return key + "=\"" + value + "\"";
+    @Override
+	public SortedSet<String> remove(Object key) {
+        return wrappedMap.remove(key);
     }
 
-    public boolean containsKey(Object key) {
-        return wrappedMap.containsKey(key);
-    }
-
-    public boolean containsValue(Object value) {
-        for (Set<String> values : wrappedMap.values()) {
-            if (values.contains(value)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public int size() {
+    @Override
+	public int size() {
         int count = 0;
         for (String key : wrappedMap.keySet()) {
             count += wrappedMap.get(key).size();
@@ -229,27 +260,8 @@ public class HttpParameters implements Map<String, SortedSet<String>>, Serializa
         return count;
     }
 
-    public boolean isEmpty() {
-        return wrappedMap.isEmpty();
-    }
-
-    public void clear() {
-        wrappedMap.clear();
-    }
-
-    public SortedSet<String> remove(Object key) {
-        return wrappedMap.remove(key);
-    }
-
-    public Set<String> keySet() {
-        return wrappedMap.keySet();
-    }
-
-    public Collection<SortedSet<String>> values() {
+    @Override
+	public Collection<SortedSet<String>> values() {
         return wrappedMap.values();
-    }
-
-    public Set<java.util.Map.Entry<String, SortedSet<String>>> entrySet() {
-        return wrappedMap.entrySet();
     }
 }

@@ -35,13 +35,8 @@ import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
  */
 public class ExternalizableConverter implements Converter {
 
-	private Mapper mapper;
 	private final ClassLoader classLoader;
-
-	public ExternalizableConverter(Mapper mapper, ClassLoader classLoader) {
-		this.mapper = mapper;
-		this.classLoader = classLoader;
-	}
+	private Mapper mapper;
 
 	/**
 	 * @deprecated As of 1.4 use {@link #ExternalizableConverter(Mapper, ClassLoader)}
@@ -49,6 +44,11 @@ public class ExternalizableConverter implements Converter {
 	@Deprecated
 	public ExternalizableConverter(Mapper mapper) {
 		this(mapper, null);
+	}
+
+	public ExternalizableConverter(Mapper mapper, ClassLoader classLoader) {
+		this.mapper = mapper;
+		this.classLoader = classLoader;
 	}
 
 	@Override
@@ -62,21 +62,9 @@ public class ExternalizableConverter implements Converter {
 			Externalizable externalizable = (Externalizable) source;
 			CustomObjectOutputStream.StreamCallback callback = new CustomObjectOutputStream.StreamCallback() {
 				@Override
-				public void writeToStream(Object object) {
-					if (object == null) {
-						writer.startNode("null");
-						writer.endNode();
-					} else {
-						ExtendedHierarchicalStreamWriterHelper.startNode(writer,
-								mapper.serializedClass(object.getClass()), object.getClass());
-						context.convertAnother(object);
-						writer.endNode();
-					}
-				}
-
-				@Override
-				public void writeFieldsToStream(Map fields) {
-					throw new UnsupportedOperationException();
+				public void close() {
+					throw new UnsupportedOperationException(
+							"Objects are not allowed to call ObjectOutput.close() from writeExternal()");
 				}
 
 				@Override
@@ -90,9 +78,21 @@ public class ExternalizableConverter implements Converter {
 				}
 
 				@Override
-				public void close() {
-					throw new UnsupportedOperationException(
-							"Objects are not allowed to call ObjectOutput.close() from writeExternal()");
+				public void writeFieldsToStream(Map fields) {
+					throw new UnsupportedOperationException();
+				}
+
+				@Override
+				public void writeToStream(Object object) {
+					if (object == null) {
+						writer.startNode("null");
+						writer.endNode();
+					} else {
+						ExtendedHierarchicalStreamWriterHelper.startNode(writer,
+								mapper.serializedClass(object.getClass()), object.getClass());
+						context.convertAnother(object);
+						writer.endNode();
+					}
 				}
 			};
 			CustomObjectOutputStream objectOutput = CustomObjectOutputStream.getInstance(context, callback);
@@ -116,6 +116,22 @@ public class ExternalizableConverter implements Converter {
 			final Externalizable externalizable = (Externalizable) defaultConstructor.newInstance((Object[]) null);
 			CustomObjectInputStream.StreamCallback callback = new CustomObjectInputStream.StreamCallback() {
 				@Override
+				public void close() {
+					throw new UnsupportedOperationException(
+							"Objects are not allowed to call ObjectInput.close() from readExternal()");
+				}
+
+				@Override
+				public void defaultReadObject() {
+					throw new UnsupportedOperationException();
+				}
+
+				@Override
+				public Map readFieldsFromStream() {
+					throw new UnsupportedOperationException();
+				}
+
+				@Override
 				public Object readFromStream() {
 					reader.moveDown();
 					Class type = HierarchicalStreams.readClassType(reader, mapper);
@@ -125,25 +141,9 @@ public class ExternalizableConverter implements Converter {
 				}
 
 				@Override
-				public Map readFieldsFromStream() {
-					throw new UnsupportedOperationException();
-				}
-
-				@Override
-				public void defaultReadObject() {
-					throw new UnsupportedOperationException();
-				}
-
-				@Override
 				public void registerValidation(ObjectInputValidation validation, int priority)
 						throws NotActiveException {
 					throw new NotActiveException("stream inactive");
-				}
-
-				@Override
-				public void close() {
-					throw new UnsupportedOperationException(
-							"Objects are not allowed to call ObjectInput.close() from readExternal()");
 				}
 			};
 			CustomObjectInputStream objectInput = CustomObjectInputStream.getInstance(context, callback, classLoader);

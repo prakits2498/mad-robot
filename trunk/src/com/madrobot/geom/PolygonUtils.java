@@ -15,78 +15,6 @@ import android.graphics.PointF;
 public class PolygonUtils {
 
 	/**
-	 * Check if a given point is inside a given (complex) polygon.
-	 * 
-	 * @param x
-	 *            , y Polygon.
-	 * @param pointX
-	 *            , pointY Point to check.
-	 * @return True if the given point is inside the polygon, false otherwise.
-	 * @throws IllegalArgumentException
-	 *             if <code>x</code> or <code>y</code> is null or their array
-	 *             lengths do not match
-	 */
-	public static boolean isPointInsidePolygon(float[] x, float[] y, PointF point)
-			throws IllegalArgumentException {
-		if(isValidPolygon(x, y))
-			throw new IllegalArgumentException("points length do not match or one of the points is null");
-		boolean isInside = false;
-		int nPoints = x.length;
-
-		int j = 0;
-		for(int i = 0; i < nPoints; i++){
-			j++;
-			if(j == nPoints){
-				j = 0;
-			}
-
-			if(((y[i] < point.y) && (y[j] >= point.y)) || ((y[j] < point.y) && (y[i] >= point.y))){
-				if(x[i] + (point.y - y[i]) / (y[j] - y[i]) * (x[j] - x[i]) < point.x){
-					isInside = !isInside;
-				}
-			}
-		}
-
-		return isInside;
-	}
-
-	/**
-	 * Return the x,y position at distance "length" into the given polyline.
-	 * 
-	 * @param x
-	 *            X coordinates of polyline
-	 * @param y
-	 *            Y coordinates of polyline
-	 * @param length
-	 *            Requested position
-	 * @param position
-	 *            Preallocated to int[2]
-	 * @return True if point is within polyline, false otherwise
-	 */
-	public static boolean findPolygonPosition(int[] x, int[] y, double length, int[] position) {
-		if(length < 0){
-			return false;
-		}
-
-		double accumulatedLength = 0.0;
-		for(int i = 1; i < x.length; i++){
-			double legLength = LineUtils.length(new PointF(x[i - 1], y[i - 1]), new PointF(x[i], y[i]));
-			if(legLength + accumulatedLength >= length){
-				double part = length - accumulatedLength;
-				double fraction = part / legLength;
-				position[0] = (int) Math.round(x[i - 1] + fraction * (x[i] - x[i - 1]));
-				position[1] = (int) Math.round(y[i - 1] + fraction * (y[i] - y[i - 1]));
-				return true;
-			}
-
-			accumulatedLength += legLength;
-		}
-
-		// Length is longer than polyline
-		return false;
-	}
-
-	/**
 	 * Compute centorid (center of gravity) of specified polygon.
 	 * 
 	 * @param x
@@ -151,6 +79,114 @@ public class PolygonUtils {
 	}
 
 	/**
+	 * Return the x,y position at distance "length" into the given polyline.
+	 * 
+	 * @param x
+	 *            X coordinates of polyline
+	 * @param y
+	 *            Y coordinates of polyline
+	 * @param length
+	 *            Requested position
+	 * @param position
+	 *            Preallocated to int[2]
+	 * @return True if point is within polyline, false otherwise
+	 */
+	public static boolean findPolygonPosition(int[] x, int[] y, double length, int[] position) {
+		if(length < 0){
+			return false;
+		}
+
+		double accumulatedLength = 0.0;
+		for(int i = 1; i < x.length; i++){
+			double legLength = LineUtils.length(new PointF(x[i - 1], y[i - 1]), new PointF(x[i], y[i]));
+			if(legLength + accumulatedLength >= length){
+				double part = length - accumulatedLength;
+				double fraction = part / legLength;
+				position[0] = (int) Math.round(x[i - 1] + fraction * (x[i] - x[i - 1]));
+				position[1] = (int) Math.round(y[i - 1] + fraction * (y[i] - y[i - 1]));
+				return true;
+			}
+
+			accumulatedLength += legLength;
+		}
+
+		// Length is longer than polyline
+		return false;
+	}
+
+	/**
+	 * Check if a given point is inside a given (complex) polygon.
+	 * 
+	 * @param x
+	 *            , y Polygon.
+	 * @param pointX
+	 *            , pointY Point to check.
+	 * @return True if the given point is inside the polygon, false otherwise.
+	 * @throws IllegalArgumentException
+	 *             if <code>x</code> or <code>y</code> is null or their array
+	 *             lengths do not match
+	 */
+	public static boolean isPointInsidePolygon(float[] x, float[] y, PointF point)
+			throws IllegalArgumentException {
+		if(isValidPolygon(x, y))
+			throw new IllegalArgumentException("points length do not match or one of the points is null");
+		boolean isInside = false;
+		int nPoints = x.length;
+
+		int j = 0;
+		for(int i = 0; i < nPoints; i++){
+			j++;
+			if(j == nPoints){
+				j = 0;
+			}
+
+			if(((y[i] < point.y) && (y[j] >= point.y)) || ((y[j] < point.y) && (y[i] >= point.y))){
+				if(x[i] + (point.y - y[i]) / (y[j] - y[i]) * (x[j] - x[i]) < point.x){
+					isInside = !isInside;
+				}
+			}
+		}
+
+		return isInside;
+	}
+
+	public static boolean isValidPolygon(float[] x, float[] y) {
+		if(x == null || y == null){
+			return false;
+		} else if(x.length != y.length){
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Moves a Polygon (with respect to it's origin) to specified point.
+	 * 
+	 * @param x
+	 *            polygon's x coordinates
+	 * @param y
+	 *            polygon's y coordinates
+	 * @param point
+	 *            the point to move to
+	 */
+	public static void moveTo(float[] x, float[] y, PointF point) {
+		translate(x, y, point.x, point.y);
+	}
+
+	public static void rotate(float[] x, float[] y, float ox, float oy, float cos, float sin)
+			throws IllegalArgumentException {
+		if(isValidPolygon(x, y))
+			throw new IllegalArgumentException("points length do not match or one of the points is null");
+
+		PointF temp;
+		for(int i = 0; i < x.length; i++){
+			temp = PointUtils.rotate(x[i], y[i], ox, oy, cos, sin);
+			x[i] = temp.x;
+			y[i] = temp.y;
+		}
+	}
+
+	/**
 	 * Rotate the polygon with the given angle
 	 * 
 	 * @param x
@@ -174,19 +210,6 @@ public class PolygonUtils {
 
 	}
 
-	public static void rotate(float[] x, float[] y, float ox, float oy, float cos, float sin)
-			throws IllegalArgumentException {
-		if(isValidPolygon(x, y))
-			throw new IllegalArgumentException("points length do not match or one of the points is null");
-
-		PointF temp;
-		for(int i = 0; i < x.length; i++){
-			temp = PointUtils.rotate(x[i], y[i], ox, oy, cos, sin);
-			x[i] = temp.x;
-			y[i] = temp.y;
-		}
-	}
-
 	/**
 	 * 
 	 * 
@@ -208,28 +231,5 @@ public class PolygonUtils {
 			x[i] = temp.x;
 			y[i] = temp.y;
 		}
-	}
-
-	/**
-	 * Moves a Polygon (with respect to it's origin) to specified point.
-	 * 
-	 * @param x
-	 *            polygon's x coordinates
-	 * @param y
-	 *            polygon's y coordinates
-	 * @param point
-	 *            the point to move to
-	 */
-	public static void moveTo(float[] x, float[] y, PointF point) {
-		translate(x, y, point.x, point.y);
-	}
-
-	public static boolean isValidPolygon(float[] x, float[] y) {
-		if(x == null || y == null){
-			return false;
-		} else if(x.length != y.length){
-			return false;
-		}
-		return true;
 	}
 }

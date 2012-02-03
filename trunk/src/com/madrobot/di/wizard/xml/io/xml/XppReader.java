@@ -31,6 +31,31 @@ public class XppReader extends AbstractPullReader {
 	private final Reader reader;
 
 	/**
+	 * @deprecated As of 1.4, use {@link #XppReader(Reader, XmlPullParser)} instead
+	 */
+	@Deprecated
+	public XppReader(Reader reader) {
+		this(reader, new XmlFriendlyNameCoder());
+	}
+
+	/**
+	 * @since 1.2
+	 * @deprecated As of 1.4, use {@link #XppReader(Reader, XmlPullParser, NameCoder)} instead
+	 */
+	@Deprecated
+	public XppReader(Reader reader, XmlFriendlyNameCoder replacer) {
+		super(replacer);
+		try {
+			parser = createParser();
+			this.reader = reader;
+			parser.setInput(this.reader);
+			moveDown();
+		} catch (XmlPullParserException e) {
+			throw new StreamException(e);
+		}
+	}
+
+	/**
 	 * Construct an XppReader.
 	 * 
 	 * @param reader
@@ -66,27 +91,16 @@ public class XppReader extends AbstractPullReader {
 		moveDown();
 	}
 
-	/**
-	 * @deprecated As of 1.4, use {@link #XppReader(Reader, XmlPullParser)} instead
-	 */
-	@Deprecated
-	public XppReader(Reader reader) {
-		this(reader, new XmlFriendlyNameCoder());
+	@Override
+	public void appendErrors(ErrorWriter errorWriter) {
+		errorWriter.add("line number", String.valueOf(parser.getLineNumber()));
 	}
 
-	/**
-	 * @since 1.2
-	 * @deprecated As of 1.4, use {@link #XppReader(Reader, XmlPullParser, NameCoder)} instead
-	 */
-	@Deprecated
-	public XppReader(Reader reader, XmlFriendlyNameCoder replacer) {
-		super(replacer);
+	@Override
+	public void close() {
 		try {
-			parser = createParser();
-			this.reader = reader;
-			parser.setInput(this.reader);
-			moveDown();
-		} catch (XmlPullParserException e) {
+			reader.close();
+		} catch (IOException e) {
 			throw new StreamException(e);
 		}
 	}
@@ -110,6 +124,31 @@ public class XppReader extends AbstractPullReader {
 			exception = e;
 		}
 		throw new StreamException("Cannot create Xpp3 parser instance.", exception);
+	}
+
+	@Override
+	public String getAttribute(int index) {
+		return parser.getAttributeValue(index);
+	}
+
+	@Override
+	public String getAttribute(String name) {
+		return parser.getAttributeValue(null, encodeAttribute(name));
+	}
+
+	@Override
+	public int getAttributeCount() {
+		return parser.getAttributeCount();
+	}
+
+	@Override
+	public String getAttributeName(int index) {
+		return decodeAttribute(parser.getAttributeName(index));
+	}
+
+	@Override
+	protected String pullElementName() {
+		return parser.getName();
 	}
 
 	@Override
@@ -137,47 +176,8 @@ public class XppReader extends AbstractPullReader {
 	}
 
 	@Override
-	protected String pullElementName() {
-		return parser.getName();
-	}
-
-	@Override
 	protected String pullText() {
 		return parser.getText();
-	}
-
-	@Override
-	public String getAttribute(String name) {
-		return parser.getAttributeValue(null, encodeAttribute(name));
-	}
-
-	@Override
-	public String getAttribute(int index) {
-		return parser.getAttributeValue(index);
-	}
-
-	@Override
-	public int getAttributeCount() {
-		return parser.getAttributeCount();
-	}
-
-	@Override
-	public String getAttributeName(int index) {
-		return decodeAttribute(parser.getAttributeName(index));
-	}
-
-	@Override
-	public void appendErrors(ErrorWriter errorWriter) {
-		errorWriter.add("line number", String.valueOf(parser.getLineNumber()));
-	}
-
-	@Override
-	public void close() {
-		try {
-			reader.close();
-		} catch (IOException e) {
-			throw new StreamException(e);
-		}
 	}
 
 }

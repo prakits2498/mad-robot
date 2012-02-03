@@ -24,9 +24,9 @@ import com.madrobot.di.wizard.xml.core.FastField;
  */
 class FieldAliasingMapper extends MapperWrapper {
 
-	protected final Map fieldToAliasMap = new HashMap();
 	protected final Map aliasToFieldMap = new HashMap();
 	protected final Set fieldsToOmit = new HashSet();
+	protected final Map fieldToAliasMap = new HashMap();
 
 	FieldAliasingMapper(Mapper wrapped) {
 		super(wrapped);
@@ -37,8 +37,31 @@ class FieldAliasingMapper extends MapperWrapper {
 		aliasToFieldMap.put(key(type, alias), fieldName);
 	}
 
+	private String getMember(Class type, String name, Map map) {
+		String member = null;
+		for (Class declaringType = type; member == null && declaringType != Object.class; declaringType = declaringType
+				.getSuperclass()) {
+			member = (String) map.get(key(declaringType, name));
+		}
+		return member;
+	}
+
 	private Object key(Class type, String name) {
 		return new FastField(type, name);
+	}
+
+	public void omitField(Class definedIn, String fieldName) {
+		fieldsToOmit.add(key(definedIn, fieldName));
+	}
+
+	@Override
+	public String realMember(Class type, String serialized) {
+		String real = getMember(type, serialized, aliasToFieldMap);
+		if (real == null) {
+			return super.realMember(type, serialized);
+		} else {
+			return real;
+		}
 	}
 
 	@Override
@@ -52,30 +75,7 @@ class FieldAliasingMapper extends MapperWrapper {
 	}
 
 	@Override
-	public String realMember(Class type, String serialized) {
-		String real = getMember(type, serialized, aliasToFieldMap);
-		if (real == null) {
-			return super.realMember(type, serialized);
-		} else {
-			return real;
-		}
-	}
-
-	private String getMember(Class type, String name, Map map) {
-		String member = null;
-		for (Class declaringType = type; member == null && declaringType != Object.class; declaringType = declaringType
-				.getSuperclass()) {
-			member = (String) map.get(key(declaringType, name));
-		}
-		return member;
-	}
-
-	@Override
 	public boolean shouldSerializeMember(Class definedIn, String fieldName) {
 		return !fieldsToOmit.contains(key(definedIn, fieldName));
-	}
-
-	public void omitField(Class definedIn, String fieldName) {
-		fieldsToOmit.add(key(definedIn, fieldName));
 	}
 }

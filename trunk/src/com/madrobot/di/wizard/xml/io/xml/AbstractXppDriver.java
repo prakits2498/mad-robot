@@ -48,16 +48,13 @@ public abstract class AbstractXppDriver extends AbstractDriver {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Create the parser of the XPP implementation.
+	 * 
+	 * @throws XmlPullParserException
+	 *             if the parser cannot be created
+	 * @since 1.4
 	 */
-	@Override
-	public HierarchicalStreamReader createReader(Reader in) {
-		try {
-			return new XppReader(in, createParser(), getNameCoder());
-		} catch (XmlPullParserException e) {
-			throw new StreamException("Cannot create XmlPullParser");
-		}
-	}
+	protected abstract XmlPullParser createParser() throws XmlPullParserException;
 
 	/**
 	 * {@inheritDoc}
@@ -77,8 +74,12 @@ public abstract class AbstractXppDriver extends AbstractDriver {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public HierarchicalStreamWriter createWriter(Writer out) {
-		return new PrettyPrintWriter(out, getNameCoder());
+	public HierarchicalStreamReader createReader(Reader in) {
+		try {
+			return new XppReader(in, createParser(), getNameCoder());
+		} catch (XmlPullParserException e) {
+			throw new StreamException("Cannot create XmlPullParser");
+		}
 	}
 
 	/**
@@ -90,11 +91,10 @@ public abstract class AbstractXppDriver extends AbstractDriver {
 	}
 
 	/**
-	 * Create the parser of the XPP implementation.
-	 * 
-	 * @throws XmlPullParserException
-	 *             if the parser cannot be created
-	 * @since 1.4
+	 * {@inheritDoc}
 	 */
-	protected abstract XmlPullParser createParser() throws XmlPullParserException;
+	@Override
+	public HierarchicalStreamWriter createWriter(Writer out) {
+		return new PrettyPrintWriter(out, getNameCoder());
+	}
 }

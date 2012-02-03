@@ -19,36 +19,82 @@ public class OrientationUtil implements SensorEventListener {
 	}
 	
 	public enum Side {
-        TOP,
         BOTTOM,
         LEFT,
-        RIGHT;
+        RIGHT,
+        TOP;
     }
 
+	public static Animation getRotationAnimation(Side oldside, Side newside) {
+		RotateAnimation retval = null;
+		if(oldside == null || newside == null){
+			retval = new RotateAnimation(0, 0,
+					Animation.RELATIVE_TO_SELF,
+					0.5f,
+					Animation.RELATIVE_TO_SELF,
+					0.5f);
+		} else {
+			final int olddegree = toDegrees(oldside);
+			int newdegree = toDegrees(newside);
+			if(olddegree == 0 && newdegree == 270){
+				newdegree = -90;
+			} else if(olddegree == 270 && newdegree == 0){
+				newdegree = 360;
+			}
+			retval = new RotateAnimation(olddegree,
+					newdegree,
+					Animation.RELATIVE_TO_SELF,
+					0.5f,
+					Animation.RELATIVE_TO_SELF,
+					0.5f);
+
+			retval.setDuration(500);
+			retval.setFillEnabled(true);
+			retval.setFillAfter(true);
+			retval.setInterpolator(new DecelerateInterpolator());
+		}
+
+		return retval;
+	}
+	public static int toDegrees(Side side){
+		int degree = 0;
+		switch(side){
+		case TOP:
+			degree = 0;
+			break;
+		case RIGHT:
+			degree = 90;
+			break;
+		case BOTTOM:
+			degree = 180;
+			break;
+		case LEFT:
+			degree = 270;
+			break;
+		}
+		
+		return degree;
+		
+		
+	}
 	private Side mCurrentSide;
+	
 	private OrientationListener mListener;
+	
 	private SensorManager mSensorManager;
 	
 	public OrientationUtil(Context context) {
-		mSensorManager = (SensorManager)context.getSystemService(Activity.SENSOR_SERVICE);
+		mSensorManager = (SensorManager)context.getSystemService(Context.SENSOR_SERVICE);
 		mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION), SensorManager.SENSOR_DELAY_NORMAL);
-	}
-	
-	public void setListener(OrientationListener listener){
-		mListener = listener;
-	}
-	
-	public void stop() {
-		mSensorManager.unregisterListener(this);
-	}
-	
-	public Side getOrientation() {
-		return mCurrentSide;
 	}
 	
 	@Override
 	protected void finalize() {
 		stop();
+	}
+	
+	public Side getOrientation() {
+		return mCurrentSide;
 	}
 
 	@Override
@@ -87,58 +133,12 @@ public class OrientationUtil implements SensorEventListener {
 	}
 	
 
-	public static Animation getRotationAnimation(Side oldside, Side newside) {
-		RotateAnimation retval = null;
-		if(oldside == null || newside == null){
-			retval = new RotateAnimation(0, 0,
-					Animation.RELATIVE_TO_SELF,
-					0.5f,
-					Animation.RELATIVE_TO_SELF,
-					0.5f);
-		} else {
-			final int olddegree = toDegrees(oldside);
-			int newdegree = toDegrees(newside);
-			if(olddegree == 0 && newdegree == 270){
-				newdegree = -90;
-			} else if(olddegree == 270 && newdegree == 0){
-				newdegree = 360;
-			}
-			retval = new RotateAnimation(olddegree,
-					newdegree,
-					Animation.RELATIVE_TO_SELF,
-					0.5f,
-					Animation.RELATIVE_TO_SELF,
-					0.5f);
-
-			retval.setDuration(500);
-			retval.setFillEnabled(true);
-			retval.setFillAfter(true);
-			retval.setInterpolator(new DecelerateInterpolator());
-		}
-
-		return retval;
+	public void setListener(OrientationListener listener){
+		mListener = listener;
 	}
 	
-	public static int toDegrees(Side side){
-		int degree = 0;
-		switch(side){
-		case TOP:
-			degree = 0;
-			break;
-		case RIGHT:
-			degree = 90;
-			break;
-		case BOTTOM:
-			degree = 180;
-			break;
-		case LEFT:
-			degree = 270;
-			break;
-		}
-		
-		return degree;
-		
-		
+	public void stop() {
+		mSensorManager.unregisterListener(this);
 	}
 
 }

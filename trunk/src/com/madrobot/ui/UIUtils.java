@@ -20,25 +20,6 @@ import android.text.style.ClickableSpan;
 import android.widget.TextView;
 
 public class UIUtils {
-	/**
-	 * Returns the scaled size for different resolutions.
-	 * 
-	 * @param fntSize
-	 * @return
-	 */
-	public static int getDensityIndependentSize(int size, Context ctx) {
-		int density = ctx.getResources().getDisplayMetrics().densityDpi;
-		if (160 == density) {
-			int newSize = (int) (size / (1.5));
-			return newSize;
-		} else if (density == 120) {
-			int newSize = (size / (2));
-			return newSize;
-		}
-
-		return size;
-	}
-
 	public abstract static class ClickSpan extends ClickableSpan {
 
 	}
@@ -74,5 +55,24 @@ public class UIUtils {
 		if ((m == null) || !(m instanceof LinkMovementMethod)) {
 			view.setMovementMethod(LinkMovementMethod.getInstance());
 		}
+	}
+
+	/**
+	 * Returns the scaled size for different resolutions.
+	 * 
+	 * @param fntSize
+	 * @return
+	 */
+	public static int getDensityIndependentSize(int size, Context ctx) {
+		int density = ctx.getResources().getDisplayMetrics().densityDpi;
+		if (160 == density) {
+			int newSize = (int) (size / (1.5));
+			return newSize;
+		} else if (density == 120) {
+			int newSize = (size / (2));
+			return newSize;
+		}
+
+		return size;
 	}
 }

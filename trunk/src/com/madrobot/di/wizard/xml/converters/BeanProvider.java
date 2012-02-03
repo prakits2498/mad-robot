@@ -54,6 +54,53 @@ public class BeanProvider implements JavaBeanProvider {
 		this.propertyDictionary = propertyDictionary;
 	}
 
+	/**
+	 * Returns true if the Bean provider can instantiate the specified class
+	 */
+	@Override
+	public boolean canInstantiate(Class type) {
+		return getDefaultConstrutor(type) != null;
+	}
+
+	protected boolean canStreamProperty(PropertyDescriptor descriptor) {
+		return descriptor.getReadMethod() != null && descriptor.getWriteMethod() != null;
+	}
+
+	/**
+	 * Returns the default constructor, or null if none is found
+	 * 
+	 * @param type
+	 */
+	protected Constructor getDefaultConstrutor(Class type) {
+		Constructor[] constructors = type.getConstructors();
+		for (int i = 0; i < constructors.length; i++) {
+			Constructor c = constructors[i];
+			if (c.getParameterTypes().length == 0 && Modifier.isPublic(c.getModifiers()))
+				return c;
+		}
+		return null;
+	}
+
+	protected PropertyDescriptor getProperty(String name, Class type) {
+		return propertyDictionary.propertyDescriptor(type, name);
+	}
+
+	@Override
+	public Class getPropertyType(Object object, String name) {
+		return getProperty(name, object.getClass()).getPropertyType();
+	}
+
+	protected PropertyDescriptor[] getSerializableProperties(Object object) {
+		List result = new ArrayList();
+		for (final Iterator iter = propertyDictionary.propertiesFor(object.getClass()); iter.hasNext();) {
+			final PropertyDescriptor descriptor = (PropertyDescriptor) iter.next();
+			if (canStreamProperty(descriptor)) {
+				result.add(descriptor);
+			}
+		}
+		return (PropertyDescriptor[]) result.toArray(new PropertyDescriptor[result.size()]);
+	}
+
 	@Override
 	public Object newInstance(Class type) {
 		try {
@@ -71,6 +118,16 @@ public class BeanProvider implements JavaBeanProvider {
 				throw new ObjectAccessException("Constructor for " + type.getName() + " threw an exception", e);
 			}
 		}
+	}
+
+	@Override
+	public boolean propertyDefinedInClass(String name, Class type) {
+		return getProperty(name, type) != null;
+	}
+
+	public boolean propertyWriteable(String name, Class type) {
+		PropertyDescriptor property = getProperty(name, type);
+		return property.getWriteMethod() != null;
 	}
 
 	@Override
@@ -111,63 +168,6 @@ public class BeanProvider implements JavaBeanProvider {
 		} catch (InvocationTargetException e) {
 			throw new ObjectAccessException("Could not set property " + object.getClass() + "." + property.getName(), e);
 		}
-	}
-
-	@Override
-	public Class getPropertyType(Object object, String name) {
-		return getProperty(name, object.getClass()).getPropertyType();
-	}
-
-	@Override
-	public boolean propertyDefinedInClass(String name, Class type) {
-		return getProperty(name, type) != null;
-	}
-
-	/**
-	 * Returns true if the Bean provider can instantiate the specified class
-	 */
-	@Override
-	public boolean canInstantiate(Class type) {
-		return getDefaultConstrutor(type) != null;
-	}
-
-	/**
-	 * Returns the default constructor, or null if none is found
-	 * 
-	 * @param type
-	 */
-	protected Constructor getDefaultConstrutor(Class type) {
-		Constructor[] constructors = type.getConstructors();
-		for (int i = 0; i < constructors.length; i++) {
-			Constructor c = constructors[i];
-			if (c.getParameterTypes().length == 0 && Modifier.isPublic(c.getModifiers()))
-				return c;
-		}
-		return null;
-	}
-
-	protected PropertyDescriptor[] getSerializableProperties(Object object) {
-		List result = new ArrayList();
-		for (final Iterator iter = propertyDictionary.propertiesFor(object.getClass()); iter.hasNext();) {
-			final PropertyDescriptor descriptor = (PropertyDescriptor) iter.next();
-			if (canStreamProperty(descriptor)) {
-				result.add(descriptor);
-			}
-		}
-		return (PropertyDescriptor[]) result.toArray(new PropertyDescriptor[result.size()]);
-	}
-
-	protected boolean canStreamProperty(PropertyDescriptor descriptor) {
-		return descriptor.getReadMethod() != null && descriptor.getWriteMethod() != null;
-	}
-
-	public boolean propertyWriteable(String name, Class type) {
-		PropertyDescriptor property = getProperty(name, type);
-		return property.getWriteMethod() != null;
-	}
-
-	protected PropertyDescriptor getProperty(String name, Class type) {
-		return propertyDictionary.propertyDescriptor(type, name);
 	}
 
 	// /**

@@ -25,13 +25,13 @@ class ReferenceByIdUnmarshaller extends AbstractReferenceUnmarshaller {
 	}
 
 	@Override
-	protected Object getReferenceKey(String reference) {
-		return reference;
-	}
-
-	@Override
 	protected Object getCurrentReferenceKey() {
 		String attributeName = getMapper().aliasForSystemAttribute("id");
 		return attributeName == null ? null : reader.getAttribute(attributeName);
+	}
+
+	@Override
+	protected Object getReferenceKey(String reference) {
+		return reference;
 	}
 }

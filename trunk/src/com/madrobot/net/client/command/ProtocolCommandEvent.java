@@ -34,33 +34,9 @@ public class ProtocolCommandEvent extends EventObject {
 	 *
 	 */
 	private static final long serialVersionUID = 558718268755145726L;
-	private final int __replyCode;
 	private final boolean __isCommand;
 	private final String __message, __command;
-
-	/***
-	 * Creates a ProtocolCommandEvent signalling a command was sent to
-	 * the server. ProtocolCommandEvents created with this constructor
-	 * should only be sent after a command has been sent, but before the
-	 * reply has been received.
-	 * <p>
-	 * 
-	 * @param source
-	 *            The source of the event.
-	 * @param command
-	 *            The string representation of the command type sent, not
-	 *            including the arguments (e.g., "STAT" or "GET").
-	 * @param message
-	 *            The entire command string verbatim as sent to the server,
-	 *            including all arguments.
-	 ***/
-	public ProtocolCommandEvent(Object source, String command, String message) {
-		super(source);
-		__replyCode = 0;
-		__message = message;
-		__isCommand = true;
-		__command = command;
-	}
+	private final int __replyCode;
 
 	/***
 	 * Creates a ProtocolCommandEvent signalling a reply to a command was
@@ -89,6 +65,30 @@ public class ProtocolCommandEvent extends EventObject {
 	}
 
 	/***
+	 * Creates a ProtocolCommandEvent signalling a command was sent to
+	 * the server. ProtocolCommandEvents created with this constructor
+	 * should only be sent after a command has been sent, but before the
+	 * reply has been received.
+	 * <p>
+	 * 
+	 * @param source
+	 *            The source of the event.
+	 * @param command
+	 *            The string representation of the command type sent, not
+	 *            including the arguments (e.g., "STAT" or "GET").
+	 * @param message
+	 *            The entire command string verbatim as sent to the server,
+	 *            including all arguments.
+	 ***/
+	public ProtocolCommandEvent(Object source, String command, String message) {
+		super(source);
+		__replyCode = 0;
+		__message = message;
+		__isCommand = true;
+		__command = command;
+	}
+
+	/***
 	 * Returns the string representation of the command type sent (e.g., "STAT"
 	 * or "GET"). If the ProtocolCommandEvent is a reply event, then null
 	 * is returned.
@@ -99,6 +99,16 @@ public class ProtocolCommandEvent extends EventObject {
 	 ***/
 	public String getCommand() {
 		return __command;
+	}
+
+	/***
+	 * Returns the entire message sent to or received from the server.
+	 * <p>
+	 * 
+	 * @return The entire message sent to or received from the server.
+	 ***/
+	public String getMessage() {
+		return __message;
 	}
 
 	/***
@@ -135,15 +145,5 @@ public class ProtocolCommandEvent extends EventObject {
 	 ***/
 	public boolean isReply() {
 		return !isCommand();
-	}
-
-	/***
-	 * Returns the entire message sent to or received from the server.
-	 * <p>
-	 * 
-	 * @return The entire message sent to or received from the server.
-	 ***/
-	public String getMessage() {
-		return __message;
 	}
 }

@@ -22,17 +22,26 @@ public class PointUtils {
 		return new PointF(p1.x + p2.x, p1.y + p2.y);
 	}
 
-	/*
-	 * Subracts p's x and y values from this points x and y values
-	 */
-	public static PointF subtract(PointF p1, PointF p2) {
-		return new PointF(p1.x - p2.x, p1.y - p2.y);
-	}
-
 	public static float getDistanceBetween(PointF p1, PointF p2) {
 		float deltaX = Math.abs(p1.x - p2.x);
 		float deltaY = Math.abs(p1.y - p2.y);
 		return (float) Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+	}
+
+	public static PointF rotate(float x, float y, float angle) {
+		float newX = (float) (Math.cos(angle) * x - Math.sin(angle) * y);
+		float newY = (float) (Math.sin(angle) * x + Math.cos(angle) * y);
+		return new PointF(newX, newY);
+	}
+
+	public static PointF rotate(float px, float py, float ox, float oy, float cos, float sin) {
+		float x = px - ox;
+		float y = py - oy;
+		px = ((x * cos) - (y * sin));
+		py = ((x * sin) + (y * cos));
+		px += ox;
+		py += oy;
+		return new PointF(px, py);
 	}
 
 	/**
@@ -44,12 +53,6 @@ public class PointUtils {
 	 */
 	public static PointF rotate(PointF point, float angle) {
 		return rotate(point.x, point.y, angle);
-	}
-
-	public static PointF rotate(float x, float y, float angle) {
-		float newX = (float) (Math.cos(angle) * x - Math.sin(angle) * y);
-		float newY = (float) (Math.sin(angle) * x + Math.cos(angle) * y);
-		return new PointF(newX, newY);
 	}
 
 	/**
@@ -88,14 +91,11 @@ public class PointUtils {
 		return rotate(point.x, point.y, origin.x, origin.y, cos, sin);
 	}
 
-	public static PointF rotate(float px, float py, float ox, float oy, float cos, float sin) {
-		float x = px - ox;
-		float y = py - oy;
-		px = ((x * cos) - (y * sin));
-		py = ((x * sin) + (y * cos));
-		px += ox;
-		py += oy;
-		return new PointF(px, py);
+	/*
+	 * Subracts p's x and y values from this points x and y values
+	 */
+	public static PointF subtract(PointF p1, PointF p2) {
+		return new PointF(p1.x - p2.x, p1.y - p2.y);
 	}
 
 	/**

@@ -28,11 +28,11 @@ public abstract class AbstractSingleValueConverter implements SingleValueConvert
 	public abstract boolean canConvert(Class type);
 
 	@Override
+	public abstract Object fromString(String str);
+
+	@Override
 	public String toString(Object obj) {
 		return obj == null ? null : obj.toString();
 	}
-
-	@Override
-	public abstract Object fromString(String str);
 
 }

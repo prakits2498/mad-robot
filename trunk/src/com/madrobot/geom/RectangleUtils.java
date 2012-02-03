@@ -55,37 +55,6 @@ public class RectangleUtils {
 	}
 
 	/**
-	 * Checks if point px,py is within the bounds of the rectangle
-	 * 
-	 * @param px
-	 *            x coordinate of the point to be checked
-	 * @param py
-	 *            y coordinate of the point to be checked
-	 * @param x
-	 *            point of the rectangle
-	 * @param y
-	 *            point of the rectangle
-	 * @param width
-	 *            of the rectangle
-	 * @param height
-	 *            of the rectangle
-	 * @return
-	 */
-	public static boolean withinBounds(final float px, final float py, final float x, final int y,
-			int width, int height) {
-		if((width | height) < 0){
-			return false;
-		}
-		if((px < x) || (py < y)){
-			return false;
-		} else{
-			width += x;
-			height += y;
-			return ((width < x) || (width > px)) && ((height < y) || (height > py));
-		}
-	}
-
-	/**
 	 * Check if a specified point is inside a specified rectangle.
 	 * 
 	 * @param x0
@@ -133,6 +102,37 @@ public class RectangleUtils {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Checks if point px,py is within the bounds of the rectangle
+	 * 
+	 * @param px
+	 *            x coordinate of the point to be checked
+	 * @param py
+	 *            y coordinate of the point to be checked
+	 * @param x
+	 *            point of the rectangle
+	 * @param y
+	 *            point of the rectangle
+	 * @param width
+	 *            of the rectangle
+	 * @param height
+	 *            of the rectangle
+	 * @return
+	 */
+	public static boolean withinBounds(final float px, final float py, final float x, final int y,
+			int width, int height) {
+		if((width | height) < 0){
+			return false;
+		}
+		if((px < x) || (py < y)){
+			return false;
+		} else{
+			width += x;
+			height += y;
+			return ((width < x) || (width > px)) && ((height < y) || (height > py));
+		}
 	}
 
 }

@@ -36,76 +36,6 @@ public class DefaultSocketFactory extends SocketFactory
 {
 
     /***
-     * Creates a Socket connected to the given host and port.
-     * <p>
-     * @param host The hostname to connect to.
-     * @param port The port to connect to.
-     * @return A Socket connected to the given host and port.
-     * @exception UnknownHostException  If the hostname cannot be resolved.
-     * @exception IOException If an I/O error occurs while creating the Socket.
-     ***/
-    @Override
-    public Socket createSocket(String host, int port)
-    throws UnknownHostException, IOException
-    {
-        return new Socket(host, port);
-    }
-
-    /***
-     * Creates a Socket connected to the given host and port.
-     * <p>
-     * @param address The address of the host to connect to.
-     * @param port The port to connect to.
-     * @return A Socket connected to the given host and port.
-     * @exception IOException If an I/O error occurs while creating the Socket.
-     ***/
-    @Override
-    public Socket createSocket(InetAddress address, int port)
-    throws IOException
-    {
-        return new Socket(address, port);
-    }
-
-    /***
-     * Creates a Socket connected to the given host and port and
-     * originating from the specified local address and port.
-     * <p>
-     * @param host The hostname to connect to.
-     * @param port The port to connect to.
-     * @param localAddr  The local address to use.
-     * @param localPort  The local port to use.
-     * @return A Socket connected to the given host and port.
-     * @exception UnknownHostException  If the hostname cannot be resolved.
-     * @exception IOException If an I/O error occurs while creating the Socket.
-     ***/
-    @Override
-    public Socket createSocket(String host, int port,
-                               InetAddress localAddr, int localPort)
-    throws UnknownHostException, IOException
-    {
-        return new Socket(host, port, localAddr, localPort);
-    }
-
-    /***
-     * Creates a Socket connected to the given host and port and
-     * originating from the specified local address and port.
-     * <p>
-     * @param address The address of the host to connect to.
-     * @param port The port to connect to.
-     * @param localAddr  The local address to use.
-     * @param localPort  The local port to use.
-     * @return A Socket connected to the given host and port.
-     * @exception IOException If an I/O error occurs while creating the Socket.
-     ***/
-    @Override
-    public Socket createSocket(InetAddress address, int port,
-                               InetAddress localAddr, int localPort)
-    throws IOException
-    {
-        return new Socket(address, port, localAddr, localPort);
-    }
-
-    /***
      * Creates a ServerSocket bound to a specified port.  A port
      * of 0 will create the ServerSocket on a system-determined free port.
      * <p>
@@ -154,5 +84,75 @@ public class DefaultSocketFactory extends SocketFactory
     throws IOException
     {
         return new ServerSocket(port, backlog, bindAddr);
+    }
+
+    /***
+     * Creates a Socket connected to the given host and port.
+     * <p>
+     * @param address The address of the host to connect to.
+     * @param port The port to connect to.
+     * @return A Socket connected to the given host and port.
+     * @exception IOException If an I/O error occurs while creating the Socket.
+     ***/
+    @Override
+    public Socket createSocket(InetAddress address, int port)
+    throws IOException
+    {
+        return new Socket(address, port);
+    }
+
+    /***
+     * Creates a Socket connected to the given host and port and
+     * originating from the specified local address and port.
+     * <p>
+     * @param address The address of the host to connect to.
+     * @param port The port to connect to.
+     * @param localAddr  The local address to use.
+     * @param localPort  The local port to use.
+     * @return A Socket connected to the given host and port.
+     * @exception IOException If an I/O error occurs while creating the Socket.
+     ***/
+    @Override
+    public Socket createSocket(InetAddress address, int port,
+                               InetAddress localAddr, int localPort)
+    throws IOException
+    {
+        return new Socket(address, port, localAddr, localPort);
+    }
+
+    /***
+     * Creates a Socket connected to the given host and port.
+     * <p>
+     * @param host The hostname to connect to.
+     * @param port The port to connect to.
+     * @return A Socket connected to the given host and port.
+     * @exception UnknownHostException  If the hostname cannot be resolved.
+     * @exception IOException If an I/O error occurs while creating the Socket.
+     ***/
+    @Override
+    public Socket createSocket(String host, int port)
+    throws UnknownHostException, IOException
+    {
+        return new Socket(host, port);
+    }
+
+    /***
+     * Creates a Socket connected to the given host and port and
+     * originating from the specified local address and port.
+     * <p>
+     * @param host The hostname to connect to.
+     * @param port The port to connect to.
+     * @param localAddr  The local address to use.
+     * @param localPort  The local port to use.
+     * @return A Socket connected to the given host and port.
+     * @exception UnknownHostException  If the hostname cannot be resolved.
+     * @exception IOException If an I/O error occurs while creating the Socket.
+     ***/
+    @Override
+    public Socket createSocket(String host, int port,
+                               InetAddress localAddr, int localPort)
+    throws UnknownHostException, IOException
+    {
+        return new Socket(host, port, localAddr, localPort);
     }
 }

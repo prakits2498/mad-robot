@@ -39,27 +39,10 @@ public class StringConverter extends AbstractSingleValueConverter {
 	private final int lengthLimit;
 
 	/**
-	 * Construct a StringConverter using a map-based cache for strings not exceeding the length limit.
-	 * 
-	 * @param map
-	 *            the map to use for the instances to reuse (may be null to not cache at all)
-	 * @param lengthLimit
-	 *            maximum string length of a cached string, -1 to cache all, 0 to turn off the cache
-	 * @since 1.4.2
+	 * Construct a StringConverter using a cache with weak references for strings not exceeding 38 characters.
 	 */
-	public StringConverter(final Map map, int lengthLimit) {
-		cache = map;
-		this.lengthLimit = lengthLimit;
-	}
-
-	/**
-	 * Construct a StringConverter using a map-based cache for strings not exceeding 38 characters.
-	 * 
-	 * @param map
-	 *            the map to use for the instances to reuse (may be null to not cache at all)
-	 */
-	public StringConverter(final Map map) {
-		this(map, LENGTH_LIMIT);
+	public StringConverter() {
+		this(LENGTH_LIMIT);
 	}
 
 	/**
@@ -74,10 +57,27 @@ public class StringConverter extends AbstractSingleValueConverter {
 	}
 
 	/**
-	 * Construct a StringConverter using a cache with weak references for strings not exceeding 38 characters.
+	 * Construct a StringConverter using a map-based cache for strings not exceeding 38 characters.
+	 * 
+	 * @param map
+	 *            the map to use for the instances to reuse (may be null to not cache at all)
 	 */
-	public StringConverter() {
-		this(LENGTH_LIMIT);
+	public StringConverter(final Map map) {
+		this(map, LENGTH_LIMIT);
+	}
+
+	/**
+	 * Construct a StringConverter using a map-based cache for strings not exceeding the length limit.
+	 * 
+	 * @param map
+	 *            the map to use for the instances to reuse (may be null to not cache at all)
+	 * @param lengthLimit
+	 *            maximum string length of a cached string, -1 to cache all, 0 to turn off the cache
+	 * @since 1.4.2
+	 */
+	public StringConverter(final Map map, int lengthLimit) {
+		cache = map;
+		this.lengthLimit = lengthLimit;
 	}
 
 	@Override

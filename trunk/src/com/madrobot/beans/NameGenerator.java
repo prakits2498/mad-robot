@@ -28,8 +28,29 @@ import java.util.Map;
  */
 class NameGenerator {
 
-	private Map valueToName;
+	/**
+	 * Returns a String which capitalizes the first letter of the string.
+	 */
+	public static String capitalize(String name) {
+		if(name == null || name.length() == 0){
+			return name;
+		}
+		return name.substring(0, 1).toUpperCase() + name.substring(1);
+	}
+	/**
+	 * Returns the root name of the class.
+	 */
+	public static String unqualifiedClassName(Class type) {
+		if(type.isArray()){
+			return unqualifiedClassName(type.getComponentType()) + "Array";
+		}
+		String name = type.getName();
+		return name.substring(name.lastIndexOf('.') + 1);
+	}
+
 	private Map nameToCount;
+
+	private Map valueToName;
 
 	public NameGenerator() {
 		valueToName = new IdentityHashMap();
@@ -43,27 +64,6 @@ class NameGenerator {
 	public void clear() {
 		valueToName.clear();
 		nameToCount.clear();
-	}
-
-	/**
-	 * Returns the root name of the class.
-	 */
-	public static String unqualifiedClassName(Class type) {
-		if(type.isArray()){
-			return unqualifiedClassName(type.getComponentType()) + "Array";
-		}
-		String name = type.getName();
-		return name.substring(name.lastIndexOf('.') + 1);
-	}
-
-	/**
-	 * Returns a String which capitalizes the first letter of the string.
-	 */
-	public static String capitalize(String name) {
-		if(name == null || name.length() == 0){
-			return name;
-		}
-		return name.substring(0, 1).toUpperCase() + name.substring(1);
 	}
 
 	/**

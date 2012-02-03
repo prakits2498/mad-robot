@@ -32,13 +32,13 @@ import java.io.Reader;
  */
 public final class DotTerminatedMessageReader extends Reader {
 	private static final String LS = System.getProperty("line.separator");
-	char[] LS_CHARS;
-
 	private boolean atBeginning;
+
 	private boolean eof;
-	private int pos;
 	private char[] internalBuffer;
 	private PushbackReader internalReader;
+	char[] LS_CHARS;
+	private int pos;
 
 	/**
 	 * Creates a DotTerminatedMessageReader that wraps an existing Reader
@@ -56,6 +56,40 @@ public final class DotTerminatedMessageReader extends Reader {
 		atBeginning = true;
 		eof = false;
 		internalReader = new PushbackReader(reader);
+	}
+
+	/**
+	 * Closes the message for reading. This doesn't actually close the
+	 * underlying stream. The underlying stream may still be used for
+	 * communicating with the server and therefore is not closed.
+	 * <p>
+	 * If the end of the message has not yet been reached, this method will read
+	 * the remainder of the message until it reaches the end, so that the
+	 * underlying stream may continue to be used properly for communicating with
+	 * the server. If you do not fully read a message, you MUST close it,
+	 * otherwise your program will likely hang or behave improperly.
+	 * 
+	 * @exception IOException
+	 *                If an error occurs while reading the
+	 *                underlying stream.
+	 */
+	@Override
+	public void close() throws IOException {
+		synchronized(lock){
+			if(internalReader == null){
+				return;
+			}
+
+			if(!eof){
+				while(read() != -1){
+					// read to EOF
+				}
+			}
+			eof = true;
+			atBeginning = false;
+			pos = internalBuffer.length;
+			internalReader = null;
+		}
 	}
 
 	/**
@@ -210,40 +244,6 @@ public final class DotTerminatedMessageReader extends Reader {
 	public boolean ready() throws IOException {
 		synchronized(lock){
 			return ((pos < internalBuffer.length) || internalReader.ready());
-		}
-	}
-
-	/**
-	 * Closes the message for reading. This doesn't actually close the
-	 * underlying stream. The underlying stream may still be used for
-	 * communicating with the server and therefore is not closed.
-	 * <p>
-	 * If the end of the message has not yet been reached, this method will read
-	 * the remainder of the message until it reaches the end, so that the
-	 * underlying stream may continue to be used properly for communicating with
-	 * the server. If you do not fully read a message, you MUST close it,
-	 * otherwise your program will likely hang or behave improperly.
-	 * 
-	 * @exception IOException
-	 *                If an error occurs while reading the
-	 *                underlying stream.
-	 */
-	@Override
-	public void close() throws IOException {
-		synchronized(lock){
-			if(internalReader == null){
-				return;
-			}
-
-			if(!eof){
-				while(read() != -1){
-					// read to EOF
-				}
-			}
-			eof = true;
-			atBeginning = false;
-			pos = internalBuffer.length;
-			internalReader = null;
 		}
 	}
 }

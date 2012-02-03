@@ -21,8 +21,8 @@ public interface DataHolder {
 
 	Object get(Object key);
 
-	void put(Object key, Object value);
-
 	Iterator keys();
+
+	void put(Object key, Object value);
 
 }

@@ -27,24 +27,6 @@ import com.madrobot.reflect.MethodUtils;
 
 public final class DBUtils {
 
-	public static List<String> getColumns(final SQLiteDatabase db, final String tableName) {
-		List<String> ar = null;
-		Cursor c = null;
-		try {
-			c = db.rawQuery("select * from " + tableName + " limit 1", null);
-			if (c != null) {
-				ar = new ArrayList<String>(Arrays.asList(c.getColumnNames()));
-			}
-		} catch (final Exception e) {
-			e.printStackTrace();
-		} finally {
-			if (c != null) {
-				c.close();
-			}
-		}
-		return ar;
-	}
-
 	/**
 	 * Compares two cursors to see if they contain the same data.
 	 * 
@@ -73,6 +55,35 @@ public final class DBUtils {
 		return true;
 	}
 
+	/**
+	 * This method cleans up the cache's created by the toBean methods.
+	 * <p>
+	 * Should be called in critical memory conditions or a application shutdown.
+	 * </p>
+	 */
+	public static void doCacheCleanUp() {
+		Introspector.flushCaches();
+		MethodUtils.flushCaches();
+	}
+
+	public static List<String> getColumns(final SQLiteDatabase db, final String tableName) {
+		List<String> ar = null;
+		Cursor c = null;
+		try {
+			c = db.rawQuery("select * from " + tableName + " limit 1", null);
+			if (c != null) {
+				ar = new ArrayList<String>(Arrays.asList(c.getColumnNames()));
+			}
+		} catch (final Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (c != null) {
+				c.close();
+			}
+		}
+		return ar;
+	}
+
 	public static MatrixCursor matrixCursorFromCursor(Cursor cursor) {
 		final MatrixCursor newCursor = new MatrixCursor(cursor.getColumnNames());
 		final int numColumns = cursor.getColumnCount();
@@ -85,40 +96,6 @@ public final class DBUtils {
 			newCursor.addRow(data);
 		}
 		return newCursor;
-	}
-
-	/**
-	 * Convert a <code>ResultSet</code> row into an <code>Object[]</code>. This implementation copies column values into
-	 * the array in the same order they're returned from the <code>ResultSet</code>. Array elements will be set to
-	 * <code>null</code> if the column was SQL NULL.
-	 * 
-	 * @param rs
-	 *            ResultSet that supplies the array data
-	 * @throws SQLException
-	 *             if a database access error occurs
-	 * @return the newly created array
-	 */
-	public Object[] toArray(ResultSet rs) throws SQLException {
-		ResultSetMetaData meta = rs.getMetaData();
-		int cols = meta.getColumnCount();
-		Object[] result = new Object[cols];
-
-		for (int i = 0; i < cols; i++) {
-			result[i] = rs.getObject(i + 1);
-		}
-
-		return result;
-	}
-
-	/**
-	 * This method cleans up the cache's created by the toBean methods.
-	 * <p>
-	 * Should be called in critical memory conditions or a application shutdown.
-	 * </p>
-	 */
-	public static void doCacheCleanUp() {
-		Introspector.flushCaches();
-		MethodUtils.flushCaches();
 	}
 
 	public static String printCursor(Cursor cursor) {
@@ -151,6 +128,29 @@ public final class DBUtils {
 		}
 
 		return retval.toString();
+	}
+
+	/**
+	 * Convert a <code>ResultSet</code> row into an <code>Object[]</code>. This implementation copies column values into
+	 * the array in the same order they're returned from the <code>ResultSet</code>. Array elements will be set to
+	 * <code>null</code> if the column was SQL NULL.
+	 * 
+	 * @param rs
+	 *            ResultSet that supplies the array data
+	 * @throws SQLException
+	 *             if a database access error occurs
+	 * @return the newly created array
+	 */
+	public Object[] toArray(ResultSet rs) throws SQLException {
+		ResultSetMetaData meta = rs.getMetaData();
+		int cols = meta.getColumnCount();
+		Object[] result = new Object[cols];
+
+		for (int i = 0; i < cols; i++) {
+			result[i] = rs.getObject(i + 1);
+		}
+
+		return result;
 	}
 
 }

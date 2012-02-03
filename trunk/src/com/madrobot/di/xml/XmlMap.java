@@ -25,6 +25,25 @@ import com.madrobot.di.wizard.xml.core.PersistenceStrategy;
  */
 public class XmlMap extends AbstractMap {
 
+	class XmlMapEntries extends AbstractSet {
+
+		@Override
+		public boolean isEmpty() {
+			return XmlMap.this.isEmpty();
+		}
+
+		@Override
+		public Iterator iterator() {
+			return persistenceStrategy.iterator();
+		}
+
+		@Override
+		public int size() {
+			return XmlMap.this.size();
+		}
+
+	}
+
 	private final PersistenceStrategy persistenceStrategy;
 
 	public XmlMap(PersistenceStrategy streamStrategy) {
@@ -32,8 +51,8 @@ public class XmlMap extends AbstractMap {
 	}
 
 	@Override
-	public int size() {
-		return persistenceStrategy.size();
+	public Set entrySet() {
+		return new XmlMapEntries();
 	}
 
 	@Override
@@ -53,27 +72,8 @@ public class XmlMap extends AbstractMap {
 	}
 
 	@Override
-	public Set entrySet() {
-		return new XmlMapEntries();
-	}
-
-	class XmlMapEntries extends AbstractSet {
-
-		@Override
-		public int size() {
-			return XmlMap.this.size();
-		}
-
-		@Override
-		public boolean isEmpty() {
-			return XmlMap.this.isEmpty();
-		}
-
-		@Override
-		public Iterator iterator() {
-			return persistenceStrategy.iterator();
-		}
-
+	public int size() {
+		return persistenceStrategy.size();
 	}
 
 }

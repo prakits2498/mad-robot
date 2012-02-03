@@ -5,17 +5,19 @@ import android.os.Parcelable;
 import android.view.View.BaseSavedState;
 
  class SavedState extends BaseSavedState {
-	int currentPage = -1;
-
 	public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() {
+		@Override
 		public SavedState createFromParcel(Parcel in) {
 			return new SavedState(in);
 		}
 
+		@Override
 		public SavedState[] newArray(int size) {
 			return new SavedState[size];
 		}
 	};
+
+	int currentPage = -1;
 
 	private SavedState(Parcel in) {
 		super(in);

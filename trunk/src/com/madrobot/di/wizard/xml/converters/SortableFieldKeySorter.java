@@ -28,43 +28,18 @@ import com.madrobot.util.OrderRetainingMap;
  */
 public class SortableFieldKeySorter implements FieldKeySorter, Caching {
 
-	private final Map map = new HashMap();
-
-	@Override
-	public Map sort(Class type, Map keyedByFieldKey) {
-		if (map.containsKey(type)) {
-			Map result = new OrderRetainingMap();
-			FieldKey[] fieldKeys = (FieldKey[]) keyedByFieldKey.keySet().toArray(new FieldKey[keyedByFieldKey.size()]);
-			Arrays.sort(fieldKeys, (Comparator) map.get(type));
-			for (int i = 0; i < fieldKeys.length; i++) {
-				result.put(fieldKeys[i], keyedByFieldKey.get(fieldKeys[i]));
-			}
-			return result;
-		} else {
-			return keyedByFieldKey;
-		}
-	}
-
-	/**
-	 * Registers the field order to use for a specific type. This will not affect any of the type's super or sub
-	 * classes. If you skip a field which will be serialized, XStream will thrown an StreamException during the
-	 * serialization process.
-	 * 
-	 * @param type
-	 *            the type
-	 * @param fields
-	 *            the field order
-	 */
-	public void registerFieldOrder(Class type, String[] fields) {
-		map.put(type, new FieldComparator(fields));
-	}
-
 	private class FieldComparator implements Comparator {
 
 		private final String[] fieldOrder;
 
 		public FieldComparator(String[] fields) {
 			this.fieldOrder = fields;
+		}
+
+		@Override
+		public int compare(Object firstObject, Object secondObject) {
+			FieldKey first = (FieldKey) firstObject, second = (FieldKey) secondObject;
+			return compare(first.getFieldName(), second.getFieldName());
 		}
 
 		public int compare(String first, String second) {
@@ -84,16 +59,41 @@ public class SortableFieldKeySorter implements FieldKeySorter, Caching {
 			return firstPosition - secondPosition;
 		}
 
-		@Override
-		public int compare(Object firstObject, Object secondObject) {
-			FieldKey first = (FieldKey) firstObject, second = (FieldKey) secondObject;
-			return compare(first.getFieldName(), second.getFieldName());
-		}
-
 	}
+
+	private final Map map = new HashMap();
 
 	@Override
 	public void flushCache() {
 		map.clear();
+	}
+
+	/**
+	 * Registers the field order to use for a specific type. This will not affect any of the type's super or sub
+	 * classes. If you skip a field which will be serialized, XStream will thrown an StreamException during the
+	 * serialization process.
+	 * 
+	 * @param type
+	 *            the type
+	 * @param fields
+	 *            the field order
+	 */
+	public void registerFieldOrder(Class type, String[] fields) {
+		map.put(type, new FieldComparator(fields));
+	}
+
+	@Override
+	public Map sort(Class type, Map keyedByFieldKey) {
+		if (map.containsKey(type)) {
+			Map result = new OrderRetainingMap();
+			FieldKey[] fieldKeys = (FieldKey[]) keyedByFieldKey.keySet().toArray(new FieldKey[keyedByFieldKey.size()]);
+			Arrays.sort(fieldKeys, (Comparator) map.get(type));
+			for (int i = 0; i < fieldKeys.length; i++) {
+				result.put(fieldKeys[i], keyedByFieldKey.get(fieldKeys[i]));
+			}
+			return result;
+		} else {
+			return keyedByFieldKey;
+		}
 	}
 }

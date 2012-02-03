@@ -130,163 +130,6 @@ public class SMTPClient extends SMTP {
 	}
 
 	/***
-	 * At least one SMTPClient method ({@link #sendMessageData sendMessageData }
-	 * )
-	 * does not complete the entire sequence of SMTP commands to complete a
-	 * transaction. These types of commands require some action by the
-	 * programmer after the reception of a positive intermediate command.
-	 * After the programmer's code completes its actions, it must call this
-	 * method to receive the completion reply from the server and verify the
-	 * success of the entire transaction.
-	 * <p>
-	 * For example,
-	 * 
-	 * <pre>
-	 * writer = client.sendMessage();
-	 * if(writer == null) // failure
-	 * 	return false;
-	 * header = new SimpleSMTPHeader(&quot;foobar@foo.com&quot;, &quot;foo@foobar.com&quot;, &quot;Re: Foo&quot;);
-	 * writer.write(header.toString());
-	 * writer.write(&quot;This is just a test&quot;);
-	 * writer.close();
-	 * if(!client.completePendingCommand()) // failure
-	 * 	return false;
-	 * </pre>
-	 * <p>
-	 * 
-	 * @return True if successfully completed, false if not.
-	 * @exception SMTPConnectionClosedException
-	 *                If the SMTP server prematurely closes the connection as a
-	 *                result
-	 *                of the client being idle or some other reason causing the
-	 *                server
-	 *                to send SMTP reply code 421. This exception may be caught
-	 *                either
-	 *                as an IOException or independently as itself.
-	 * @exception IOException
-	 *                If an I/O error occurs while either sending a
-	 *                command to the server or receiving a reply from the
-	 *                server.
-	 ***/
-	public boolean completePendingCommand() throws IOException {
-		return SMTPReply.isPositiveCompletion(getReply());
-	}
-
-	/***
-	 * Login to the SMTP server by sending the HELO command with the
-	 * given hostname as an argument. Before performing any mail commands,
-	 * you must first login.
-	 * <p>
-	 * 
-	 * @param hostname
-	 *            The hostname with which to greet the SMTP server.
-	 * @return True if successfully completed, false if not.
-	 * @exception SMTPConnectionClosedException
-	 *                If the SMTP server prematurely closes the connection as a
-	 *                result
-	 *                of the client being idle or some other reason causing the
-	 *                server
-	 *                to send SMTP reply code 421. This exception may be caught
-	 *                either
-	 *                as an IOException or independently as itself.
-	 * @exception IOException
-	 *                If an I/O error occurs while either sending a
-	 *                command to the server or receiving a reply from the
-	 *                server.
-	 ***/
-	public boolean login(String hostname) throws IOException {
-		return SMTPReply.isPositiveCompletion(helo(hostname));
-	}
-
-	/***
-	 * Login to the SMTP server by sending the HELO command with the
-	 * client hostname as an argument. Before performing any mail commands,
-	 * you must first login.
-	 * <p>
-	 * 
-	 * @return True if successfully completed, false if not.
-	 * @exception SMTPConnectionClosedException
-	 *                If the SMTP server prematurely closes the connection as a
-	 *                result
-	 *                of the client being idle or some other reason causing the
-	 *                server
-	 *                to send SMTP reply code 421. This exception may be caught
-	 *                either
-	 *                as an IOException or independently as itself.
-	 * @exception IOException
-	 *                If an I/O error occurs while either sending a
-	 *                command to the server or receiving a reply from the
-	 *                server.
-	 ***/
-	public boolean login() throws IOException {
-		String name;
-		InetAddress host;
-
-		host = getLocalAddress();
-		name = host.getHostName();
-
-		if(name == null){
-			return false;
-		}
-
-		return SMTPReply.isPositiveCompletion(helo(name));
-	}
-
-	/***
-	 * Set the sender of a message using the SMTP MAIL command, specifying
-	 * a reverse relay path. The sender must be set first before any
-	 * recipients may be specified, otherwise the mail server will reject
-	 * your commands.
-	 * <p>
-	 * 
-	 * @param path
-	 *            The reverse relay path pointing back to the sender.
-	 * @return True if successfully completed, false if not.
-	 * @exception SMTPConnectionClosedException
-	 *                If the SMTP server prematurely closes the connection as a
-	 *                result
-	 *                of the client being idle or some other reason causing the
-	 *                server
-	 *                to send SMTP reply code 421. This exception may be caught
-	 *                either
-	 *                as an IOException or independently as itself.
-	 * @exception IOException
-	 *                If an I/O error occurs while either sending a
-	 *                command to the server or receiving a reply from the
-	 *                server.
-	 ***/
-	public boolean setSender(RelayPath path) throws IOException {
-		return SMTPReply.isPositiveCompletion(mail(path.toString()));
-	}
-
-	/***
-	 * Set the sender of a message using the SMTP MAIL command, specifying
-	 * the sender's email address. The sender must be set first before any
-	 * recipients may be specified, otherwise the mail server will reject
-	 * your commands.
-	 * <p>
-	 * 
-	 * @param address
-	 *            The sender's email address.
-	 * @return True if successfully completed, false if not.
-	 * @exception SMTPConnectionClosedException
-	 *                If the SMTP server prematurely closes the connection as a
-	 *                result
-	 *                of the client being idle or some other reason causing the
-	 *                server
-	 *                to send SMTP reply code 421. This exception may be caught
-	 *                either
-	 *                as an IOException or independently as itself.
-	 * @exception IOException
-	 *                If an I/O error occurs while either sending a
-	 *                command to the server or receiving a reply from the
-	 *                server.
-	 ***/
-	public boolean setSender(String address) throws IOException {
-		return SMTPReply.isPositiveCompletion(mail("<" + address + ">"));
-	}
-
-	/***
 	 * Add a recipient for a message using the SMTP RCPT command, specifying
 	 * a forward relay path. The sender must be set first before any
 	 * recipients may be specified, otherwise the mail server will reject
@@ -341,6 +184,210 @@ public class SMTPClient extends SMTP {
 	}
 
 	/***
+	 * At least one SMTPClient method ({@link #sendMessageData sendMessageData }
+	 * )
+	 * does not complete the entire sequence of SMTP commands to complete a
+	 * transaction. These types of commands require some action by the
+	 * programmer after the reception of a positive intermediate command.
+	 * After the programmer's code completes its actions, it must call this
+	 * method to receive the completion reply from the server and verify the
+	 * success of the entire transaction.
+	 * <p>
+	 * For example,
+	 * 
+	 * <pre>
+	 * writer = client.sendMessage();
+	 * if(writer == null) // failure
+	 * 	return false;
+	 * header = new SimpleSMTPHeader(&quot;foobar@foo.com&quot;, &quot;foo@foobar.com&quot;, &quot;Re: Foo&quot;);
+	 * writer.write(header.toString());
+	 * writer.write(&quot;This is just a test&quot;);
+	 * writer.close();
+	 * if(!client.completePendingCommand()) // failure
+	 * 	return false;
+	 * </pre>
+	 * <p>
+	 * 
+	 * @return True if successfully completed, false if not.
+	 * @exception SMTPConnectionClosedException
+	 *                If the SMTP server prematurely closes the connection as a
+	 *                result
+	 *                of the client being idle or some other reason causing the
+	 *                server
+	 *                to send SMTP reply code 421. This exception may be caught
+	 *                either
+	 *                as an IOException or independently as itself.
+	 * @exception IOException
+	 *                If an I/O error occurs while either sending a
+	 *                command to the server or receiving a reply from the
+	 *                server.
+	 ***/
+	public boolean completePendingCommand() throws IOException {
+		return SMTPReply.isPositiveCompletion(getReply());
+	}
+
+	/***
+	 * Fetches the system help information from the server and returns the
+	 * full string.
+	 * <p>
+	 * 
+	 * @return The system help string obtained from the server. null if the
+	 *         information could not be obtained.
+	 * @exception SMTPConnectionClosedException
+	 *                If the SMTP server prematurely closes the connection as a
+	 *                result
+	 *                of the client being idle or some other reason causing the
+	 *                server
+	 *                to send SMTP reply code 421. This exception may be caught
+	 *                either
+	 *                as an IOException or independently as itself.
+	 * @exception IOException
+	 *                If an I/O error occurs while either sending a
+	 *                command to the server or receiving a reply from the
+	 *                server.
+	 ***/
+	public String listHelp() throws IOException {
+		if(SMTPReply.isPositiveCompletion(help())){
+			return getReplyString();
+		}
+		return null;
+	}
+
+	/***
+	 * Fetches the help information for a given command from the server and
+	 * returns the full string.
+	 * <p>
+	 * 
+	 * @param command
+	 *            The command on which to ask for help.
+	 * @return The command help string obtained from the server. null if the
+	 *         information could not be obtained.
+	 * @exception SMTPConnectionClosedException
+	 *                If the SMTP server prematurely closes the connection as a
+	 *                result
+	 *                of the client being idle or some other reason causing the
+	 *                server
+	 *                to send SMTP reply code 421. This exception may be caught
+	 *                either
+	 *                as an IOException or independently as itself.
+	 * @exception IOException
+	 *                If an I/O error occurs while either sending a
+	 *                command to the server or receiving a reply from the
+	 *                server.
+	 ***/
+	public String listHelp(String command) throws IOException {
+		if(SMTPReply.isPositiveCompletion(help(command))){
+			return getReplyString();
+		}
+		return null;
+	}
+
+	/***
+	 * Login to the SMTP server by sending the HELO command with the
+	 * client hostname as an argument. Before performing any mail commands,
+	 * you must first login.
+	 * <p>
+	 * 
+	 * @return True if successfully completed, false if not.
+	 * @exception SMTPConnectionClosedException
+	 *                If the SMTP server prematurely closes the connection as a
+	 *                result
+	 *                of the client being idle or some other reason causing the
+	 *                server
+	 *                to send SMTP reply code 421. This exception may be caught
+	 *                either
+	 *                as an IOException or independently as itself.
+	 * @exception IOException
+	 *                If an I/O error occurs while either sending a
+	 *                command to the server or receiving a reply from the
+	 *                server.
+	 ***/
+	public boolean login() throws IOException {
+		String name;
+		InetAddress host;
+
+		host = getLocalAddress();
+		name = host.getHostName();
+
+		if(name == null){
+			return false;
+		}
+
+		return SMTPReply.isPositiveCompletion(helo(name));
+	}
+
+	/***
+	 * Login to the SMTP server by sending the HELO command with the
+	 * given hostname as an argument. Before performing any mail commands,
+	 * you must first login.
+	 * <p>
+	 * 
+	 * @param hostname
+	 *            The hostname with which to greet the SMTP server.
+	 * @return True if successfully completed, false if not.
+	 * @exception SMTPConnectionClosedException
+	 *                If the SMTP server prematurely closes the connection as a
+	 *                result
+	 *                of the client being idle or some other reason causing the
+	 *                server
+	 *                to send SMTP reply code 421. This exception may be caught
+	 *                either
+	 *                as an IOException or independently as itself.
+	 * @exception IOException
+	 *                If an I/O error occurs while either sending a
+	 *                command to the server or receiving a reply from the
+	 *                server.
+	 ***/
+	public boolean login(String hostname) throws IOException {
+		return SMTPReply.isPositiveCompletion(helo(hostname));
+	}
+
+	/***
+	 * Logout of the SMTP server by sending the QUIT command.
+	 * <p>
+	 * 
+	 * @return True if successfully completed, false if not.
+	 * @exception SMTPConnectionClosedException
+	 *                If the SMTP server prematurely closes the connection as a
+	 *                result
+	 *                of the client being idle or some other reason causing the
+	 *                server
+	 *                to send SMTP reply code 421. This exception may be caught
+	 *                either
+	 *                as an IOException or independently as itself.
+	 * @exception IOException
+	 *                If an I/O error occurs while either sending a
+	 *                command to the server or receiving a reply from the
+	 *                server.
+	 ***/
+	public boolean logout() throws IOException {
+		return SMTPReply.isPositiveCompletion(quit());
+	}
+
+	/***
+	 * Aborts the current mail transaction, resetting all server stored
+	 * sender, recipient, and mail data, cleaing all buffers and tables.
+	 * <p>
+	 * 
+	 * @return True if successfully completed, false if not.
+	 * @exception SMTPConnectionClosedException
+	 *                If the SMTP server prematurely closes the connection as a
+	 *                result
+	 *                of the client being idle or some other reason causing the
+	 *                server
+	 *                to send SMTP reply code 421. This exception may be caught
+	 *                either
+	 *                as an IOException or independently as itself.
+	 * @exception IOException
+	 *                If an I/O error occurs while either sending a
+	 *                command to the server or receiving a reply from the
+	 *                server.
+	 ***/
+	public boolean reset() throws IOException {
+		return SMTPReply.isPositiveCompletion(rset());
+	}
+
+	/***
 	 * Send the SMTP DATA command in preparation to send an email message.
 	 * This method returns a DotTerminatedMessageWriter instance to which
 	 * the message can be written. Null is returned if the DATA command
@@ -389,6 +436,29 @@ public class SMTPClient extends SMTP {
 		}
 
 		return new DotTerminatedMessageWriter(_writer);
+	}
+
+	/***
+	 * Sends a NOOP command to the SMTP server. This is useful for preventing
+	 * server timeouts.
+	 * <p>
+	 * 
+	 * @return True if successfully completed, false if not.
+	 * @exception SMTPConnectionClosedException
+	 *                If the SMTP server prematurely closes the connection as a
+	 *                result
+	 *                of the client being idle or some other reason causing the
+	 *                server
+	 *                to send SMTP reply code 421. This exception may be caught
+	 *                either
+	 *                as an IOException or independently as itself.
+	 * @exception IOException
+	 *                If an I/O error occurs while either sending a
+	 *                command to the server or receiving a reply from the
+	 *                server.
+	 ***/
+	public boolean sendNoOp() throws IOException {
+		return SMTPReply.isPositiveCompletion(noop());
 	}
 
 	/***
@@ -521,9 +591,14 @@ public class SMTPClient extends SMTP {
 	}
 
 	/***
-	 * Logout of the SMTP server by sending the QUIT command.
+	 * Set the sender of a message using the SMTP MAIL command, specifying
+	 * a reverse relay path. The sender must be set first before any
+	 * recipients may be specified, otherwise the mail server will reject
+	 * your commands.
 	 * <p>
 	 * 
+	 * @param path
+	 *            The reverse relay path pointing back to the sender.
 	 * @return True if successfully completed, false if not.
 	 * @exception SMTPConnectionClosedException
 	 *                If the SMTP server prematurely closes the connection as a
@@ -538,15 +613,19 @@ public class SMTPClient extends SMTP {
 	 *                command to the server or receiving a reply from the
 	 *                server.
 	 ***/
-	public boolean logout() throws IOException {
-		return SMTPReply.isPositiveCompletion(quit());
+	public boolean setSender(RelayPath path) throws IOException {
+		return SMTPReply.isPositiveCompletion(mail(path.toString()));
 	}
 
 	/***
-	 * Aborts the current mail transaction, resetting all server stored
-	 * sender, recipient, and mail data, cleaing all buffers and tables.
+	 * Set the sender of a message using the SMTP MAIL command, specifying
+	 * the sender's email address. The sender must be set first before any
+	 * recipients may be specified, otherwise the mail server will reject
+	 * your commands.
 	 * <p>
 	 * 
+	 * @param address
+	 *            The sender's email address.
 	 * @return True if successfully completed, false if not.
 	 * @exception SMTPConnectionClosedException
 	 *                If the SMTP server prematurely closes the connection as a
@@ -561,8 +640,8 @@ public class SMTPClient extends SMTP {
 	 *                command to the server or receiving a reply from the
 	 *                server.
 	 ***/
-	public boolean reset() throws IOException {
-		return SMTPReply.isPositiveCompletion(rset());
+	public boolean setSender(String address) throws IOException {
+		return SMTPReply.isPositiveCompletion(mail("<" + address + ">"));
 	}
 
 	/***
@@ -592,85 +671,6 @@ public class SMTPClient extends SMTP {
 		result = vrfy(username);
 
 		return ((result == SMTPReply.ACTION_OK) || (result == SMTPReply.USER_NOT_LOCAL_WILL_FORWARD));
-	}
-
-	/***
-	 * Fetches the system help information from the server and returns the
-	 * full string.
-	 * <p>
-	 * 
-	 * @return The system help string obtained from the server. null if the
-	 *         information could not be obtained.
-	 * @exception SMTPConnectionClosedException
-	 *                If the SMTP server prematurely closes the connection as a
-	 *                result
-	 *                of the client being idle or some other reason causing the
-	 *                server
-	 *                to send SMTP reply code 421. This exception may be caught
-	 *                either
-	 *                as an IOException or independently as itself.
-	 * @exception IOException
-	 *                If an I/O error occurs while either sending a
-	 *                command to the server or receiving a reply from the
-	 *                server.
-	 ***/
-	public String listHelp() throws IOException {
-		if(SMTPReply.isPositiveCompletion(help())){
-			return getReplyString();
-		}
-		return null;
-	}
-
-	/***
-	 * Fetches the help information for a given command from the server and
-	 * returns the full string.
-	 * <p>
-	 * 
-	 * @param command
-	 *            The command on which to ask for help.
-	 * @return The command help string obtained from the server. null if the
-	 *         information could not be obtained.
-	 * @exception SMTPConnectionClosedException
-	 *                If the SMTP server prematurely closes the connection as a
-	 *                result
-	 *                of the client being idle or some other reason causing the
-	 *                server
-	 *                to send SMTP reply code 421. This exception may be caught
-	 *                either
-	 *                as an IOException or independently as itself.
-	 * @exception IOException
-	 *                If an I/O error occurs while either sending a
-	 *                command to the server or receiving a reply from the
-	 *                server.
-	 ***/
-	public String listHelp(String command) throws IOException {
-		if(SMTPReply.isPositiveCompletion(help(command))){
-			return getReplyString();
-		}
-		return null;
-	}
-
-	/***
-	 * Sends a NOOP command to the SMTP server. This is useful for preventing
-	 * server timeouts.
-	 * <p>
-	 * 
-	 * @return True if successfully completed, false if not.
-	 * @exception SMTPConnectionClosedException
-	 *                If the SMTP server prematurely closes the connection as a
-	 *                result
-	 *                of the client being idle or some other reason causing the
-	 *                server
-	 *                to send SMTP reply code 421. This exception may be caught
-	 *                either
-	 *                as an IOException or independently as itself.
-	 * @exception IOException
-	 *                If an I/O error occurs while either sending a
-	 *                command to the server or receiving a reply from the
-	 *                server.
-	 ***/
-	public boolean sendNoOp() throws IOException {
-		return SMTPReply.isPositiveCompletion(noop());
 	}
 
 }

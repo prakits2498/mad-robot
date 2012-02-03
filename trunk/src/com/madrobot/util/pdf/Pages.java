@@ -5,10 +5,10 @@ import java.util.ArrayList;
  class Pages {
 
 	private PDFDocument mDocument;
-	private ArrayList<Page> mPageList;
 	private IndirectObject mIndirectObject;
-	private Array mMediaBox;
 	private Array mKids;
+	private Array mMediaBox;
+	private ArrayList<Page> mPageList;
 	
 	 Pages(PDFDocument document, int pageWidth, int pageHeight) {
 		mDocument = document;

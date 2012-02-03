@@ -26,15 +26,6 @@ package com.madrobot.di.wizard.xml.converters;
 public interface SingleValueConverter extends ConverterMatcher {
 
 	/**
-	 * Marshals an Object into a single value representation.
-	 * 
-	 * @param obj
-	 *            the Object to be converted
-	 * @return a String with the single value of the Object or <code>null</code>
-	 */
-	public String toString(Object obj);
-
-	/**
 	 * Unmarshals an Object from its single value representation.
 	 * 
 	 * @param str
@@ -42,5 +33,14 @@ public interface SingleValueConverter extends ConverterMatcher {
 	 * @return the Object
 	 */
 	public Object fromString(String str);
+
+	/**
+	 * Marshals an Object into a single value representation.
+	 * 
+	 * @param obj
+	 *            the Object to be converted
+	 * @return a String with the single value of the Object or <code>null</code>
+	 */
+	public String toString(Object obj);
 
 }

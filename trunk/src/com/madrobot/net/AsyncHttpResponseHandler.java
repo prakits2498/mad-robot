@@ -67,10 +67,10 @@ import android.os.Looper;
  * </pre>
  */
 public class AsyncHttpResponseHandler {
-    private static final int SUCCESS_MESSAGE = 0;
     private static final int FAILURE_MESSAGE = 1;
-    private static final int START_MESSAGE = 2;
     private static final int FINISH_MESSAGE = 3;
+    private static final int START_MESSAGE = 2;
+    private static final int SUCCESS_MESSAGE = 0;
 
     private Handler handler;
 
@@ -81,7 +81,8 @@ public class AsyncHttpResponseHandler {
         // Set up a handler to post events back to the correct thread if possible
         if(Looper.myLooper() != null) {
             handler = new Handler(){
-                public void handleMessage(Message msg){
+                @Override
+				public void handleMessage(Message msg){
                     AsyncHttpResponseHandler.this.handleMessage(msg);
                 }
             };
@@ -93,74 +94,9 @@ public class AsyncHttpResponseHandler {
     // Callbacks to be overridden, typically anonymously
     //
 
-    /**
-     * Fired when the request is started, override to handle in your own code
-     */
-    public void onStart() {}
-
-    /**
-     * Fired in all cases when the request is finished, after both success and failure, override to handle in your own code
-     */
-    public void onFinish() {}
-
-    /**
-     * Fired when a request returns successfully, override to handle in your own code
-     * @param content the body of the HTTP response from the server
-     */
-    public void onSuccess(String content) {}
-
-    /**
-     * Fired when a request fails to complete, override to handle in your own code
-     * @param error the underlying cause of the failure
-     * @deprecated use {@link #onFailure(Throwable, String)}
-     */
-    public void onFailure(Throwable error) {}
-
-    /**
-     * Fired when a request fails to complete, override to handle in your own code
-     * @param error the underlying cause of the failure
-     * @param content the response body, if any
-     */
-    public void onFailure(Throwable error, String content) {
-        // By default, call the deprecated onFailure(Throwable) for compatibility
-        onFailure(error);
-    }
-
-
-    //
-    // Pre-processing of messages (executes in background threadpool thread)
-    //
-
-    protected void sendSuccessMessage(String responseBody) {
-        sendMessage(obtainMessage(SUCCESS_MESSAGE, responseBody));
-    }
-
-    protected void sendFailureMessage(Throwable e, String responseBody) {
-        sendMessage(obtainMessage(FAILURE_MESSAGE, new Object[]{e, responseBody}));
-    }
-
-    protected void sendStartMessage() {
-        sendMessage(obtainMessage(START_MESSAGE, null));
-    }
-
-    protected void sendFinishMessage() {
-        sendMessage(obtainMessage(FINISH_MESSAGE, null));
-    }
-
-
-    //
-    // Pre-processing of messages (in original calling thread, typically the UI thread)
-    //
-
-    protected void handleSuccessMessage(String responseBody) {
-        onSuccess(responseBody);
-    }
-
     protected void handleFailureMessage(Throwable e, String responseBody) {
         onFailure(e, responseBody);
     }
-
-
 
     // Methods which emulate android's Handler and Message methods
     protected void handleMessage(Message msg) {
@@ -181,12 +117,8 @@ public class AsyncHttpResponseHandler {
         }
     }
 
-    protected void sendMessage(Message msg) {
-        if(handler != null){
-            handler.sendMessage(msg);
-        } else {
-            handleMessage(msg);
-        }
+    protected void handleSuccessMessage(String responseBody) {
+        onSuccess(responseBody);
     }
 
     protected Message obtainMessage(int responseMessage, Object response) {
@@ -201,6 +133,67 @@ public class AsyncHttpResponseHandler {
         return msg;
     }
 
+    /**
+     * Fired when a request fails to complete, override to handle in your own code
+     * @param error the underlying cause of the failure
+     * @deprecated use {@link #onFailure(Throwable, String)}
+     */
+    @Deprecated
+	public void onFailure(Throwable error) {}
+
+
+    //
+    // Pre-processing of messages (executes in background threadpool thread)
+    //
+
+    /**
+     * Fired when a request fails to complete, override to handle in your own code
+     * @param error the underlying cause of the failure
+     * @param content the response body, if any
+     */
+    public void onFailure(Throwable error, String content) {
+        // By default, call the deprecated onFailure(Throwable) for compatibility
+        onFailure(error);
+    }
+
+    /**
+     * Fired in all cases when the request is finished, after both success and failure, override to handle in your own code
+     */
+    public void onFinish() {}
+
+    /**
+     * Fired when the request is started, override to handle in your own code
+     */
+    public void onStart() {}
+
+    /**
+     * Fired when a request returns successfully, override to handle in your own code
+     * @param content the body of the HTTP response from the server
+     */
+    public void onSuccess(String content) {}
+
+
+    //
+    // Pre-processing of messages (in original calling thread, typically the UI thread)
+    //
+
+    protected void sendFailureMessage(Throwable e, String responseBody) {
+        sendMessage(obtainMessage(FAILURE_MESSAGE, new Object[]{e, responseBody}));
+    }
+
+    protected void sendFinishMessage() {
+        sendMessage(obtainMessage(FINISH_MESSAGE, null));
+    }
+
+
+
+    protected void sendMessage(Message msg) {
+        if(handler != null){
+            handler.sendMessage(msg);
+        } else {
+            handleMessage(msg);
+        }
+    }
 
     // Interface to AsyncHttpRequest
     void sendResponseMessage(HttpResponse response) {
@@ -222,5 +215,14 @@ public class AsyncHttpResponseHandler {
         } else {
             sendSuccessMessage(responseBody);
         }
+    }
+
+    protected void sendStartMessage() {
+        sendMessage(obtainMessage(START_MESSAGE, null));
+    }
+
+
+    protected void sendSuccessMessage(String responseBody) {
+        sendMessage(obtainMessage(SUCCESS_MESSAGE, responseBody));
     }
 }
