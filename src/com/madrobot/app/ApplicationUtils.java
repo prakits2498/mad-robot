@@ -1,4 +1,4 @@
-package com.madrobot.device;
+package com.madrobot.app;
 
 import java.io.File;
 import java.lang.reflect.Field;
