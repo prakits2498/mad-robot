@@ -9,7 +9,7 @@
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
 
-package com.madrobot.di.wizard.xml.io.xml;
+package com.madrobot.di.wizard.xml.io;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,11 +23,6 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import com.madrobot.di.wizard.xml.core.XmlHeaderAwareReader;
-import com.madrobot.di.wizard.xml.io.AbstractDriver;
-import com.madrobot.di.wizard.xml.io.HierarchicalStreamReader;
-import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
-import com.madrobot.di.wizard.xml.io.NameCoder;
-import com.madrobot.di.wizard.xml.io.StreamException;
 
 /**
  * An abstract base class for a driver using an XPP implementation.

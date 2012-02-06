@@ -9,13 +9,12 @@
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
 
-package com.madrobot.di.wizard.xml.io.xml;
+package com.madrobot.di.wizard.xml.io;
 
 import java.util.ArrayList;
 import java.util.Map;
 
 import com.madrobot.di.wizard.xml.converters.ObjectAccessException;
-import com.madrobot.di.wizard.xml.io.NameCoder;
 import com.madrobot.util.WeakCache;
 
 /**

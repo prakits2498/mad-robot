@@ -23,7 +23,7 @@ import java.io.Writer;
 import com.madrobot.di.wizard.xml.converters.ConversionException;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamDriver;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamReader;
-import com.madrobot.di.wizard.xml.io.xml.XppDriver;
+import com.madrobot.di.wizard.xml.io.XppDriver;
 
 /**
  * Self-contained XStream generator. The class is a utility to write XML streams that contain additionally the

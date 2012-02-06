@@ -23,13 +23,13 @@ import com.madrobot.di.wizard.xml.core.PersistenceStrategy;
  * version of this map, try the respective Collections methods.
  * 
  */
-public class XmlMap extends AbstractMap {
+public class XMLMap extends AbstractMap {
 
 	class XmlMapEntries extends AbstractSet {
 
 		@Override
 		public boolean isEmpty() {
-			return XmlMap.this.isEmpty();
+			return XMLMap.this.isEmpty();
 		}
 
 		@Override
@@ -39,14 +39,14 @@ public class XmlMap extends AbstractMap {
 
 		@Override
 		public int size() {
-			return XmlMap.this.size();
+			return XMLMap.this.size();
 		}
 
 	}
 
 	private final PersistenceStrategy persistenceStrategy;
 
-	public XmlMap(PersistenceStrategy streamStrategy) {
+	public XMLMap(PersistenceStrategy streamStrategy) {
 		this.persistenceStrategy = streamStrategy;
 	}
 

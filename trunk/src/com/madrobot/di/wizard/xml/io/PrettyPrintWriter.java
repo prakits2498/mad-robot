@@ -9,13 +9,10 @@
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
 
-package com.madrobot.di.wizard.xml.io.xml;
+package com.madrobot.di.wizard.xml.io;
 
 import java.io.Writer;
 
-import com.madrobot.di.wizard.xml.io.AbstractWriter;
-import com.madrobot.di.wizard.xml.io.NameCoder;
-import com.madrobot.di.wizard.xml.io.StreamException;
 import com.madrobot.util.FastStack;
 import com.madrobot.util.QuickWriter;
 

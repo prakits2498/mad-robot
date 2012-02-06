@@ -9,7 +9,7 @@
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
 
-package com.madrobot.di.wizard.xml.io.xml;
+package com.madrobot.di.wizard.xml.io;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -18,8 +18,6 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import com.madrobot.di.wizard.xml.converters.ErrorWriter;
-import com.madrobot.di.wizard.xml.io.NameCoder;
-import com.madrobot.di.wizard.xml.io.StreamException;
 
 /**
  * XStream reader that pulls directly from the stream using the XmlPullParser API.

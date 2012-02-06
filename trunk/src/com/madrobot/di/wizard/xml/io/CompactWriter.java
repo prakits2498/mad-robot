@@ -9,11 +9,10 @@
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
 
-package com.madrobot.di.wizard.xml.io.xml;
+package com.madrobot.di.wizard.xml.io;
 
 import java.io.Writer;
 
-import com.madrobot.di.wizard.xml.io.NameCoder;
 
 public class CompactWriter extends PrettyPrintWriter {
 

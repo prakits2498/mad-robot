@@ -110,7 +110,7 @@ import com.madrobot.di.wizard.xml.io.HierarchicalStreamDriver;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamReader;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
 import com.madrobot.di.wizard.xml.io.StatefulWriter;
-import com.madrobot.di.wizard.xml.io.xml.XppDriver;
+import com.madrobot.di.wizard.xml.io.XppDriver;
 import com.madrobot.reflect.CompositeClassLoader;
 
 /**
