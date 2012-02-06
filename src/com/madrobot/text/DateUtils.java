@@ -957,6 +957,14 @@ public class DateUtils {
         cal2.setTime(date2);
         return isSameDay(cal1, cal2);
     }
+    
+    public static boolean isDateThisYear(Date date) {
+		Calendar d = Calendar.getInstance();
+		d.setTime(date);
+		Calendar today = Calendar.getInstance();
+		
+		return d.get(Calendar.YEAR) == today.get(Calendar.YEAR);		
+	}
 
     /**
      * <p>Checks if two calendar objects represent the same instant in time.</p>
