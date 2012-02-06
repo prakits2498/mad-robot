@@ -121,15 +121,15 @@ public class JVM implements Caching {
 	 * @since 1.4
 	 */
 	private static boolean isAndroid() {
-		return vendor.indexOf("Android") != -1;
+		return true;
 	}
 
 	private static boolean isHarmony() {
-		return vendor.indexOf("Apache Software Foundation") != -1;
+		return false;
 	}
 
 	private static boolean isIBM() {
-		return vendor.indexOf("IBM") != -1;
+		return false;
 	}
 
 	public static boolean reverseFieldDefinition() {

@@ -9,13 +9,10 @@
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
 
-package com.madrobot.di.wizard.xml.io.xml;
+package com.madrobot.di.wizard.xml.io;
 
 import java.util.Iterator;
 
-import com.madrobot.di.wizard.xml.io.AbstractReader;
-import com.madrobot.di.wizard.xml.io.AttributeNameIterator;
-import com.madrobot.di.wizard.xml.io.NameCoder;
 import com.madrobot.util.FastStack;
 
 /**

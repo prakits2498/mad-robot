@@ -9,14 +9,12 @@
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
 
-package com.madrobot.di.wizard.xml.io.xml;
+package com.madrobot.di.wizard.xml.io;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-import com.madrobot.di.wizard.xml.io.HierarchicalStreamDriver;
-import com.madrobot.di.wizard.xml.io.NameCoder;
 
 /**
  * A {@link HierarchicalStreamDriver} using the XmlPullParserFactory to locate an XML Pull Parser.

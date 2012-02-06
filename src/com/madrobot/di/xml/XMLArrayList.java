@@ -20,12 +20,12 @@ import com.madrobot.di.wizard.xml.core.PersistenceStrategy;
  * 
  * @author Guilherme Silveira
  */
-public class XmlArrayList extends AbstractList {
+public class XMLArrayList extends AbstractList {
 
-	private final XmlMap map;
+	private final XMLMap map;
 
-	public XmlArrayList(PersistenceStrategy persistenceStrategy) {
-		this.map = new XmlMap(persistenceStrategy);
+	public XMLArrayList(PersistenceStrategy persistenceStrategy) {
+		this.map = new XMLMap(persistenceStrategy);
 	}
 
 	@Override
