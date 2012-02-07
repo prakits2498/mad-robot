@@ -29,13 +29,7 @@ import java.util.List;
 import android.util.Log;
 
 public class IOUtils {
-	public interface ProgressCallback {
-		public void onComplete();
-
-		public void onError(Throwable t);
-
-		public void onProgress(int bytesWritten);
-	}
+	
 
 	public static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
 
@@ -234,7 +228,7 @@ public class IOUtils {
 		}
 	}
 
-	public static void copy(InputStream in, OutputStream out, ProgressCallback callback) {
+	public static void copy(InputStream in, OutputStream out, IOProgressCallback callback) {
 		try {
 			byte[] buff = new byte[1024];
 			int bytesRead = 0;

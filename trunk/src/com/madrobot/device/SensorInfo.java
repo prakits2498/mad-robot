@@ -12,9 +12,9 @@ package com.madrobot.device;
 
 /**
  * Contains sensor related information
- *<p>
- *{@link DeviceUtils#getSensorInfo(android.content.Context)}
- *</p>
+ * <p>
+ * {@link DeviceUtils#getSensorInfo(android.content.Context)}
+ * </p>
  */
 public class SensorInfo {
 	private boolean hasAccelerometer;
@@ -25,6 +25,9 @@ public class SensorInfo {
 	private boolean hasPressureSensor;
 	private boolean hasProximitySensor;
 	private boolean hasTemperatureSensor;
+
+	SensorInfo() {
+	}
 
 	public boolean hasAccelerometer() {
 		return hasAccelerometer;

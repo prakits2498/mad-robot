@@ -25,7 +25,7 @@ import java.util.zip.ZipInputStream;
 import android.util.Log;
 
 import com.madrobot.io.IOUtils;
-import com.madrobot.io.IOUtils.ProgressCallback;
+import com.madrobot.io.IOProgressCallback;
 import com.madrobot.text.StringUtils;
 
 /**
@@ -126,7 +126,7 @@ public class FileUtils {
 	 * @param callback
 	 *            Progres callback, can be null
 	 */
-	public static void copyFileToFile(File from, File to, boolean overwrite, boolean deleteOriginal, ProgressCallback callback) {
+	public static void copyFileToFile(File from, File to, boolean overwrite, boolean deleteOriginal, IOProgressCallback callback) {
 		if ((!from.exists()) || from.isDirectory())
 			return;
 		try {
@@ -320,7 +320,7 @@ public class FileUtils {
 		}
 	}
 
-	public static final void inputStreamToFile(InputStream src, File file, ProgressCallback callback)
+	public static final void inputStreamToFile(InputStream src, File file, IOProgressCallback callback)
 			throws IOException {
 		FileOutputStream stream = null;
 		try {
@@ -450,7 +450,7 @@ public class FileUtils {
 	 * @param callback
 	 *            Progress callback. can be null.
 	 */
-	public static void recursiveCopy(File from, File targetDirectory, boolean overwrite, boolean deleteOriginal, ProgressCallback callback) {
+	public static void recursiveCopy(File from, File targetDirectory, boolean overwrite, boolean deleteOriginal, IOProgressCallback callback) {
 		if (!from.exists())
 			return;
 
@@ -604,7 +604,7 @@ public class FileUtils {
 	 *            Progress callback. can be null
 	 * @throws IOException
 	 */
-	public static void writeByteArrayToFile(byte[] src, File file, ProgressCallback callback) throws IOException {
+	public static void writeByteArrayToFile(byte[] src, File file, IOProgressCallback callback) throws IOException {
 		ByteArrayInputStream stream = null;
 		try {
 			stream = new ByteArrayInputStream(src);
