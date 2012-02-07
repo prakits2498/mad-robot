@@ -60,7 +60,7 @@ class RetryHandler implements HttpRequestRetryHandler {
 
     private final int maxRetries;
 
-    public RetryHandler(int maxRetries) {
+    RetryHandler(int maxRetries) {
         this.maxRetries = maxRetries;
     }
 

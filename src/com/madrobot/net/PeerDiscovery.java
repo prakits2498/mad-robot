@@ -85,43 +85,46 @@ public class PeerDiscovery {
 		b[index + 3] = (byte) (i & 0xff);
 	}
 
+	
+	
+
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {
-		try{
-			int group = 6969;
-
-			PeerDiscovery mp = new PeerDiscovery(group, 6969);
-
-			boolean stop = false;
-
-			BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
-			while(!stop){
-				System.out.println("enter \"q\" to quit, or anything else to query peers");
-				String s = br.readLine();
-
-				if(s.equals("q")){
-					System.out.print("Closing down...");
-					mp.disconnect();
-					System.out.println(" done");
-					stop = true;
-				} else{
-					System.out.println("Querying");
-
-					Peer[] peers = mp.getPeers(100, (byte) 0);
-
-					System.out.println(peers.length + " peers found");
-					for(Peer p : peers){
-						System.out.println("\t" + p);
-					}
-				}
-			}
-		} catch(Exception e){
-			e.printStackTrace();
-		}
-	}
+//	public static void main(String[] args) {
+//		try{
+//			int group = 6969;
+//
+//			PeerDiscovery mp = new PeerDiscovery(group, 6969);
+//
+//			boolean stop = false;
+//
+//			BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+//
+//			while(!stop){
+//				System.out.println("enter \"q\" to quit, or anything else to query peers");
+//				String s = br.readLine();
+//
+//				if(s.equals("q")){
+//					System.out.print("Closing down...");
+//					mp.disconnect();
+//					System.out.println(" done");
+//					stop = true;
+//				} else{
+//					System.out.println("Querying");
+//
+//					Peer[] peers = mp.getPeers(100, (byte) 0);
+//
+//					System.out.println(peers.length + " peers found");
+//					for(Peer p : peers){
+//						System.out.println("\t" + p);
+//					}
+//				}
+//			}
+//		} catch(Exception e){
+//			e.printStackTrace();
+//		}
+//	}
 
 	/**
 	 * Redefine this to be notified of exceptions on the listen thread.
@@ -184,7 +187,7 @@ public class PeerDiscovery {
 	 * The group identifier. Determines the set of peers that are able
 	 * to discover each other
 	 */
-	public final int group;
+	 private final int group;
 
 	/**
 	 * Used to detect and ignore this peers response to it's own query.
@@ -197,12 +200,12 @@ public class PeerDiscovery {
 	/**
 	 * Data returned with discovery
 	 */
-	public int peerData;
+	private int peerData;
 
 	/**
 	 * The port number that we operate on
 	 */
-	public final int port;
+	private final int port;
 
 	private List<Peer> responseList = null;
 

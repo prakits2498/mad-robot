@@ -40,13 +40,13 @@ public class RequestParams {
         public String fileName;
         public InputStream inputStream;
 
-        public FileWrapper(InputStream inputStream, String fileName, String contentType) {
+        FileWrapper(InputStream inputStream, String fileName, String contentType) {
             this.inputStream = inputStream;
             this.fileName = fileName;
             this.contentType = contentType;
         }
 
-        public String getFileName() {
+        String getFileName() {
             if(fileName != null) {
                 return fileName;
             } else {
