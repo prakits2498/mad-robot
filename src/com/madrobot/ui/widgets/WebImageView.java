@@ -16,6 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.ViewSwitcher;
 
 import com.madrobot.R;
+import com.madrobot.taskpool.TaskPoolManagerImpl;
 import com.madrobot.tasks.DataResponse;
 import com.madrobot.tasks.DownloadBitmapTask;
 import com.madrobot.tasks.TaskNotifier;
@@ -29,7 +30,8 @@ import com.madrobot.tasks.TaskNotifier;
  * <li><b>imageUrl</b>(string): URL for the image to be downloaded</li>
  * <li><b>autoLoad</b>(boolean): Flag to indicate if the image should be downloaded automatically or should be user
  * initiated {@link #loadImage()}</li>
- * <li><b>progressDrawable</b>(drawable): Drawable to be used while the image is loaded. if the ProgressBar is not desired.</li>
+ * <li><b>progressDrawable</b>(drawable): Drawable to be used while the image is loaded. if the ProgressBar is not
+ * desired.</li>
  * <li><b>errorDrawable</b>(drawable):Drawable to be used if the image could not be loaded.
  * </ul>
  * </p>
@@ -71,63 +73,64 @@ public class WebImageView extends ViewSwitcher implements TaskNotifier {
 		// styles.recycle();
 	}
 
-	/**
-	 * @param context
-	 *            the view's current context
-	 * @param imageUrl
-	 *            the URL of the image to download and show
-	 * @param autoLoad
-	 *            Whether the download should start immediately after creating the view. If set to false, use
-	 *            {@link #loadImage()} to manually trigger the image download.
-	 */
-	public WebImageView(Context context, String imageUrl, boolean autoLoad) {
-		super(context);
-		initialize(context, imageUrl, null, null, autoLoad);
-	}
-
-	/**
-	 * @param context
-	 *            the view's current context
-	 * @param imageUrl
-	 *            the URL of the image to download and show
-	 * @param progressDrawable
-	 *            the drawable to be used for the {@link ProgressBar} which is displayed while the image is loading
-	 * @param autoLoad
-	 *            Whether the download should start immediately after creating the view. If set to false, use
-	 *            {@link #loadImage()} to manually trigger the image download.
-	 */
-	public WebImageView(Context context, String imageUrl, Drawable progressDrawable, boolean autoLoad) {
-		super(context);
-		initialize(context, imageUrl, progressDrawable, null, autoLoad);
-	}
-
-	/**
-	 * @param context
-	 *            the view's current context
-	 * @param imageUrl
-	 *            the URL of the image to download and show
-	 * @param progressDrawable
-	 *            the drawable to be used for the {@link ProgressBar} which is displayed while the image is loading
-	 * @param errorDrawable
-	 *            the drawable to be used if a download error occurs
-	 * @param autoLoad
-	 *            Whether the download should start immediately after creating the view. If set to false, use
-	 *            {@link #loadImage()} to manually trigger the image download.
-	 */
-	public WebImageView(
-			Context context,
-			String imageUrl,
-			Drawable progressDrawable,
-			Drawable errorDrawable,
-			boolean autoLoad) {
-		super(context);
-		initialize(context, imageUrl, progressDrawable, errorDrawable, autoLoad);
-	}
+	// /**
+	// * @param context
+	// * the view's current context
+	// * @param imageUrl
+	// * the URL of the image to download and show
+	// * @param autoLoad
+	// * Whether the download should start immediately after creating the view. If set to false, use
+	// * {@link #loadImage()} to manually trigger the image download.
+	// */
+	// public WebImageView(Context context, String imageUrl, boolean autoLoad) {
+	// super(context);
+	// initialize(context, imageUrl, null, null, autoLoad);
+	// }
+	//
+	// /**
+	// * @param context
+	// * the view's current context
+	// * @param imageUrl
+	// * the URL of the image to download and show
+	// * @param progressDrawable
+	// * the drawable to be used for the {@link ProgressBar} which is displayed while the image is loading
+	// * @param autoLoad
+	// * Whether the download should start immediately after creating the view. If set to false, use
+	// * {@link #loadImage()} to manually trigger the image download.
+	// */
+	// public WebImageView(Context context, String imageUrl, Drawable progressDrawable, boolean autoLoad) {
+	// super(context);
+	// initialize(context, imageUrl, progressDrawable, null, autoLoad);
+	// }
+	//
+	// /**
+	// * @param context
+	// * the view's current context
+	// * @param imageUrl
+	// * the URL of the image to download and show
+	// * @param progressDrawable
+	// * the drawable to be used for the {@link ProgressBar} which is displayed while the image is loading
+	// * @param errorDrawable
+	// * the drawable to be used if a download error occurs
+	// * @param autoLoad
+	// * Whether the download should start immediately after creating the view. If set to false, use
+	// * {@link #loadImage()} to manually trigger the image download.
+	// */
+	// public WebImageView(
+	// Context context,
+	// String imageUrl,
+	// Drawable progressDrawable,
+	// Drawable errorDrawable,
+	// boolean autoLoad) {
+	// super(context);
+	// initialize(context, imageUrl, progressDrawable, errorDrawable, autoLoad);
+	// }
 
 	private void addImageView(Context context) {
 		imageView = new ImageView(context);
 		imageView.setScaleType(scaleType);
-		LayoutParams lp = new LayoutParams(android.view.ViewGroup.LayoutParams.WRAP_CONTENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
+		LayoutParams lp = new LayoutParams(android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
+				android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
 		lp.gravity = Gravity.CENTER;
 		addView(imageView, 1, lp);
 	}

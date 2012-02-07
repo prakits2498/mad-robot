@@ -29,7 +29,7 @@ import com.madrobot.io.IOProgressCallback;
 import com.madrobot.text.StringUtils;
 
 /**
- * 
+ * File System utilities
  * @author elton.stephen.kent
  * 
  */
@@ -139,7 +139,6 @@ public class FileUtils {
 			if (callback != null)
 				callback.onError(e);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			if (callback != null)
 				callback.onError(e);
@@ -446,7 +445,7 @@ public class FileUtils {
 	 * @param from
 	 * @param targetDirectory
 	 * @param overwrite
-	 * @param deleteOriginal
+	 * @param deleteOriginal if true, the original file will be deleted
 	 * @param callback
 	 *            Progress callback. can be null.
 	 */

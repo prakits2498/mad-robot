@@ -36,7 +36,7 @@ import java.util.TimeZone;
  *   
  *   
  */
-public class DateUtils {
+public final class DateUtils {
     
     /**
      * <p>Date iterator.</p>

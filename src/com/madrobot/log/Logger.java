@@ -18,7 +18,7 @@ package com.madrobot.log;
  * 
  */
 public class Logger {
-	private static ALogMethod logger = new LoggerStrategyDDMSLog();
+	private static LogMethod logger = new LoggerStrategyDDMSLog();
 
 	/**
 	 *Logs a debug message
@@ -62,7 +62,7 @@ public class Logger {
 	 *@see LoggerStrategy
 	 */
 	public static final void setLoggerStragtegy(LoggerStrategy loggerStrategy) {
-		logger = (ALogMethod) loggerStrategy;
+		logger = (LogMethod) loggerStrategy;
 	}
 
 	/**
