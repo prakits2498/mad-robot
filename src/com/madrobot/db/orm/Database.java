@@ -25,7 +25,7 @@ import com.madrobot.db.DBException;
 
 /**
  * Represents a database to be used by Android Active Record entities.
- * 
+ * @see DatabaseClient
  */
 public class Database {
 	static Map<String, DatabaseBuilder> _builders = new HashMap<String, DatabaseBuilder>();

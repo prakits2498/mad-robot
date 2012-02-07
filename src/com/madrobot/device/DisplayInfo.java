@@ -36,8 +36,10 @@ public final class DisplayInfo {
 	private float verticalDensity;
 
 	private int widthInPixels;
+
 	DisplayInfo() {
 	}
+
 	public double getDiagonalSizeInInch() {
 		return diagonalSizeInInch;
 	}
@@ -68,7 +70,7 @@ public final class DisplayInfo {
 
 	/**
 	 * 
-	 *
+	 * 
 	 * @return {@link DisplayInfo#SCREENTYPE_XXX}
 	 */
 	public int getScreenType() {

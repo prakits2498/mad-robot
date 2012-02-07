@@ -26,7 +26,7 @@ import com.madrobot.text.WordUtils;
 
 /**
  * Base class for tables entities
- * 
+ * @see Database
  * 
  */
 public class DatabaseClient {
@@ -41,7 +41,7 @@ public class DatabaseClient {
 	 * @param db
 	 * @return
 	 */
-	static public DatabaseClient createInstance(Database db) {
+	public static DatabaseClient createInstance(Database db) {
 		return new DatabaseClient(db);
 	}
 	/**
