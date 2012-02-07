@@ -12,16 +12,16 @@ package com.madrobot.text;
 
 public final class English {
 
-	public static String intToEnglish(int i) {
-		StringBuilder result = new StringBuilder();
-		longToEnglish(i, result);
-		return result.toString();
-	}
 
-	public static void intToEnglish(int i, StringBuilder result) {
-		longToEnglish(i, result);
-	}
-
+	/**
+	 * Convert a long value to the corresponding english 
+	 * <p>
+	 * <b>Eg:</b>
+	 * <code>longToEnglish(3456)</code> will return - <code>three thousand, four hundred sixty-five</code> 
+	 * </p>
+	 * @param i
+	 * @return
+	 */
 	public static String longToEnglish(long i) {
 		StringBuilder result = new StringBuilder();
 		longToEnglish(i, result);

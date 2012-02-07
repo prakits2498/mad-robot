@@ -12,7 +12,7 @@ package com.madrobot.log;
 
 import android.util.Log;
 
-public class LoggerStrategyDDMSLog extends ALogMethod implements LoggerStrategy {
+public class LoggerStrategyDDMSLog extends LogMethod implements LoggerStrategy {
 
 	@Override
 	void d(String tag, String message) {

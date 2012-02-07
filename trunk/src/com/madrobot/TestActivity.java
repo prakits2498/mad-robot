@@ -14,6 +14,7 @@ import android.app.Activity;
 import android.os.Bundle;
 
 import com.madrobot.di.wizard.xml.XMLWizard;
+import com.madrobot.text.English;
 
 public class TestActivity extends Activity {
 	/** Called when the activity is first created. */
@@ -21,7 +22,7 @@ public class TestActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		
+		System.out.println("English"+English.longToEnglish(3465));
 		Person person=new Person();
 		person.setAge("12");
 		person.setName("elton");

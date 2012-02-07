@@ -28,7 +28,7 @@ import com.madrobot.io.file.SDCardUtils;
  * The SDCard write permission needs to be set for this logging strategy
  * </p>
  */
-public class LoggerStrategyLogFile extends ALogMethod implements LoggerStrategy {
+public class LoggerStrategyLogFile extends LogMethod implements LoggerStrategy {
 	private File currentLogFile;
 	private final String[] LEVELS = { "Verbose", "Debug", "Info", "Warn", "Error" };
 	private File logDirectory;

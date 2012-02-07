@@ -10,7 +10,7 @@
  ******************************************************************************/
 package com.madrobot.log;
 
-abstract class ALogMethod {
+abstract class LogMethod {
 
 	abstract void d(String tag, String message);
 

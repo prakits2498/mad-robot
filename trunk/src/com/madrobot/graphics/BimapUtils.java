@@ -1394,8 +1394,18 @@ public final class BimapUtils {
 	// }
 	// }
 
+	/**
+	 * Write a bitmap to the file specified
+	 * @param bitmap
+	 * @param file The full path of the file to write to including filename and extension.
+	 * @throws IOException
+	 * @throws llegalArgumentException if the file specified is a directory
+	 */
 	public static void writeBitmapToFile(Bitmap bitmap, File file)
 			throws IOException {
+		if(!file.isDirectory()){
+			throw new IllegalArgumentException("File is a directory");
+		}
 		Bitmap.CompressFormat format = (file.getPath().endsWith("jpg") || file
 				.getPath().endsWith("JPG")) ? CompressFormat.JPEG
 				: CompressFormat.PNG;
