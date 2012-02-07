@@ -1,5 +1,7 @@
 package com.madrobot.net;
 
+import java.io.File;
+
 public class HttpSettings {
 
 	/**
@@ -98,4 +100,5 @@ public class HttpSettings {
 		this.socketTimeout = timeout;
 	}
 
+	
 }
