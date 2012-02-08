@@ -37,8 +37,7 @@ public final class BimapUtils {
 
 	private static final int bottom = 8 * 1024;
 
-	public static void addBitmapLayer(Bitmap src, Bitmap layer, int left,
-			int top) throws IllegalArgumentException {
+	public static void addBitmapLayer(Bitmap src, Bitmap layer, int left, int top) throws IllegalArgumentException {
 		if (!src.isMutable()) {
 			throw new IllegalArgumentException("Bitmap is not mutable");
 		}
@@ -46,44 +45,84 @@ public final class BimapUtils {
 		canvas.drawBitmap(layer, left, top, null);
 	}
 
-	private static Bitmap applyFilter(Bitmap bitmap, int value,
-			byte[][] filter, Bitmap.Config outputConfig) {
+	private static Bitmap applyFilter(Bitmap bitmap, int value, byte[][] filter, Bitmap.Config outputConfig) {
 		int[] argbData = getPixels(bitmap);
-		applyFilter(filter, value, argbData, bitmap.getWidth(),
-				bitmap.getHeight());
-		return Bitmap.createBitmap(argbData, bitmap.getWidth(),
-				bitmap.getHeight(), outputConfig);
+		applyFilter(filter, value, argbData, bitmap.getWidth(), bitmap.getHeight());
+		return Bitmap.createBitmap(argbData, bitmap.getWidth(), bitmap.getHeight(), outputConfig);
 
 	}
-	
+
+	/**
+	 * Compute the inSampleSize value for BitmapFactory.Options.
+	 * <p>
+	 * The <code>stream</code> is consumed. Hence it cannot be used again.
+	 * </p>
+	 * 
+	 * @param stream
+	 *            The Bitmap input stream
+	 * @param maxW
+	 *            max width of the target bitmap
+	 * @param maxH
+	 *            max height of the target bitmap
+	 * @return
+	 */
+	public static int computeInSampleSize(InputStream stream, int maxW, int maxH) {
+		BitmapFactory.Options options = new BitmapFactory.Options();
+		options.inJustDecodeBounds = true;
+		BitmapFactory.decodeStream(stream, null, options);
+		double w = options.outWidth;
+		double h = options.outHeight;
+		int sampleSize = (int) Math.ceil(Math.max(w / maxW, h / maxH));
+		return sampleSize;
+	}
+
+	/**
+	 * Compute the inSampleSize for the BitmapFactory.Options used for image decoding
+	 * 
+	 * @param srcW
+	 *            The width of the src image to be decoded.
+	 * @param srcH
+	 *            The height of the src image to be decoded.
+	 * @param maxW
+	 *            The maximum width of the image after decoding
+	 * @param maxH
+	 *            The maximum height of the image after decoding
+	 * @return
+	 */
+	public static int computeInSampleSize(int srcW, int srcH, int maxW, int maxH) {
+
+		int sampleSize = (int) Math.ceil(Math.max(srcW / maxW, srcH / maxH));
+		return sampleSize;
+	}
+
 	/**
 	 * Resizes a bitmap to the given destination width and height
+	 * 
 	 * @param input
 	 * @param destWidth
 	 * @param destHeight
 	 * @return
 	 */
-	public static Bitmap resizeBitmap( Bitmap input, int destWidth, int destHeight )
-	{
+	public static Bitmap resizeBitmap(Bitmap input, int destWidth, int destHeight) {
 		int srcWidth = input.getWidth();
 		int srcHeight = input.getHeight();
 		boolean needsResize = false;
 		float p;
-		if ( srcWidth > destWidth || srcHeight > destHeight ) {
+		if (srcWidth > destWidth || srcHeight > destHeight) {
 			needsResize = true;
-			if ( srcWidth > srcHeight && srcWidth > destWidth ) {
-				p = (float)destWidth / (float)srcWidth;
-				destHeight = (int)( srcHeight * p );
+			if (srcWidth > srcHeight && srcWidth > destWidth) {
+				p = (float) destWidth / (float) srcWidth;
+				destHeight = (int) (srcHeight * p);
 			} else {
-				p = (float)destHeight / (float)srcHeight;
-				destWidth = (int)( srcWidth * p );
+				p = (float) destHeight / (float) srcHeight;
+				destWidth = (int) (srcWidth * p);
 			}
 		} else {
 			destWidth = srcWidth;
 			destHeight = srcHeight;
 		}
-		if ( needsResize ) {
-			Bitmap output = Bitmap.createScaledBitmap( input, destWidth, destHeight, true );
+		if (needsResize) {
+			Bitmap output = Bitmap.createScaledBitmap(input, destWidth, destHeight, true);
 			return output;
 		} else {
 			return input;
@@ -94,14 +133,12 @@ public final class BimapUtils {
 	 * Performs a convolution of an image with a given matrix.
 	 * 
 	 * @param filterMatrix
-	 *            a matrix, which should have odd rows an colums (not
-	 *            neccessarily a square). The matrix is used for a 2-dimensional
-	 *            convolution. Negative values are possible.
+	 *            a matrix, which should have odd rows an colums (not neccessarily a square). The matrix is used for a
+	 *            2-dimensional convolution. Negative values are possible.
 	 * 
 	 * @param brightness
-	 *            you can vary the brightness of the image measured in percent.
-	 *            Note that the algorithm tries to keep the original brightness
-	 *            as far as is possible.
+	 *            you can vary the brightness of the image measured in percent. Note that the algorithm tries to keep
+	 *            the original brightness as far as is possible.
 	 * 
 	 * @param argbData
 	 *            the image (RGB+transparency)
@@ -110,13 +147,11 @@ public final class BimapUtils {
 	 *            of the given Image
 	 * 
 	 * @param height
-	 *            of the given Image Be aware that the computation time depends
-	 *            on the size of the matrix.
+	 *            of the given Image Be aware that the computation time depends on the size of the matrix.
 	 * @throws IllegalArgumentException
 	 *             if the filter matrix length is an even number
 	 */
-	private final static void applyFilter(byte[][] filterMatrix,
-			int brightness, int[] argbData, int width, int height) {
+	private final static void applyFilter(byte[][] filterMatrix, int brightness, int[] argbData, int width, int height) {
 		// ############ tested by $t3p#3n on 29-july-08 #################//
 		int COLOR_BIT_MASK = 0x000000FF;
 		// check whether the matrix is ok
@@ -160,17 +195,12 @@ public final class BimapUtils {
 
 						// take the Data from the little buffer and skale the
 						// color
-						currentPixel = tmpRect[fRow * width + col + fCol
-								- fwRadius + 1];
+						currentPixel = tmpRect[fRow * width + col + fCol - fwRadius + 1];
 						if (((currentPixel >>> 24) & COLOR_BIT_MASK) != 0) {
-							newTran += filterMatrix[fRow][fCol]
-									* ((currentPixel >>> 24) & COLOR_BIT_MASK);
-							newRed += filterMatrix[fRow][fCol]
-									* ((currentPixel >>> 16) & COLOR_BIT_MASK);
-							newGreen += filterMatrix[fRow][fCol]
-									* ((currentPixel >>> 8) & COLOR_BIT_MASK);
-							newBlue += filterMatrix[fRow][fCol]
-									* (currentPixel & COLOR_BIT_MASK);
+							newTran += filterMatrix[fRow][fCol] * ((currentPixel >>> 24) & COLOR_BIT_MASK);
+							newRed += filterMatrix[fRow][fCol] * ((currentPixel >>> 16) & COLOR_BIT_MASK);
+							newGreen += filterMatrix[fRow][fCol] * ((currentPixel >>> 8) & COLOR_BIT_MASK);
+							newBlue += filterMatrix[fRow][fCol] * (currentPixel & COLOR_BIT_MASK);
 						}
 
 					}
@@ -186,19 +216,16 @@ public final class BimapUtils {
 				newRed = Math.max(0, Math.min(255, newRed));
 				newGreen = Math.max(0, Math.min(255, newGreen));
 				newBlue = Math.max(0, Math.min(255, newBlue));
-				argbData[(row) * width + col] = (newTran << 24 | newRed << 16
-						| newGreen << 8 | newBlue);
+				argbData[(row) * width + col] = (newTran << 24 | newRed << 16 | newGreen << 8 | newBlue);
 
 			}
 
 			// shift the buffer if we are not near the end
 			if (row + fhRadius != height) {
-				System.arraycopy(tmpRect, width, tmpRect, 0, width
-						* (filterMatrix.length - 1)); // shift
+				System.arraycopy(tmpRect, width, tmpRect, 0, width * (filterMatrix.length - 1)); // shift
 				// it
 				// back
-				System.arraycopy(argbData, width * (row + fhRadius), tmpRect,
-						width * (filterMatrix.length - 1), width); // add
+				System.arraycopy(argbData, width * (row + fhRadius), tmpRect, width * (filterMatrix.length - 1), width); // add
 				// new
 				// data
 			}
@@ -216,15 +243,13 @@ public final class BimapUtils {
 	 *            Bitmap configuration of the output bitmap
 	 * @return
 	 */
-	public static final Bitmap applySepia(Bitmap bitmap, int depth,
-			Bitmap.Config outputConfig) {
+	public static final Bitmap applySepia(Bitmap bitmap, int depth, Bitmap.Config outputConfig) {
 		/* Tested Apr 27 2011 */
 		int[] argb = getPixels(bitmap);
 		for (int i = 0; i < argb.length; i++) {
 			argb[i] = ColorUtils.applySepia(argb[i], depth);
 		}
-		return Bitmap.createBitmap(argb, bitmap.getWidth(), bitmap.getHeight(),
-				outputConfig);
+		return Bitmap.createBitmap(argb, bitmap.getWidth(), bitmap.getHeight(), outputConfig);
 	}
 
 	/**
@@ -258,8 +283,7 @@ public final class BimapUtils {
 	 * @param dest
 	 *            the converted array int[argb.getHeight()][argb.getWidth()];
 	 */
-	public static final void convertTo2D(int[] argb, int srcWidth,
-			int srcHeight, int[][] dest) {
+	public static final void convertTo2D(int[] argb, int srcWidth, int srcHeight, int[][] dest) {
 		for (int i = 0; i < srcHeight; i++) {
 			for (int j = 0; j < srcWidth; j++) {
 				dest[i][j] = argb[i * srcWidth + j];
@@ -284,8 +308,7 @@ public final class BimapUtils {
 	/**
 	 * Create a reflection of an image
 	 * <p>
-	 * Reflection with <code>bgColor=0xffffff</code> and
-	 * <code> reflectionHeight=20</code>
+	 * Reflection with <code>bgColor=0xffffff</code> and <code> reflectionHeight=20</code>
 	 * <table border="0">
 	 * <tr>
 	 * <td>
@@ -304,14 +327,12 @@ public final class BimapUtils {
 	 * 
 	 * @return Image
 	 */
-	public static final Bitmap createReflection(final Bitmap image,
-			final int reflectionHeight, Bitmap.Config outputConfig) {
+	public static final Bitmap createReflection(final Bitmap image, final int reflectionHeight, Bitmap.Config outputConfig) {
 		/* Tested Apr 27 2011 */
 		int w = image.getWidth();
 		int h = image.getHeight();
 
-		final Bitmap reflectedImage = Bitmap.createBitmap(w, h
-				+ reflectionHeight, outputConfig);
+		final Bitmap reflectedImage = Bitmap.createBitmap(w, h + reflectionHeight, outputConfig);
 		reflectedImage.setDensity(image.getDensity());
 		Canvas canvas = new Canvas(reflectedImage);
 
@@ -345,8 +366,7 @@ public final class BimapUtils {
 	}
 
 	/**
-	 * The weights specified are scaled so that the image average brightness
-	 * should not change after the halftoning.
+	 * The weights specified are scaled so that the image average brightness should not change after the halftoning.
 	 * 
 	 * @param n0
 	 *            the weight for pixel (r,c+1)
@@ -359,8 +379,7 @@ public final class BimapUtils {
 	 * @param n4
 	 *            the weight for pixel (r,c+5)
 	 */
-	public static final Bitmap deBlurHorizontalHalftone(Bitmap bitmap, int n0,
-			int n1, int n2, int n3, int n4, Bitmap.Config outputConfig) {
+	public static final Bitmap deBlurHorizontalHalftone(Bitmap bitmap, int n0, int n1, int n2, int n3, int n4, Bitmap.Config outputConfig) {
 		int sum = n0 + n1 + n2 + n3 + n4;
 		n0 = 8 * n0 / sum;
 		n1 = 8 * n1 / sum;
@@ -384,43 +403,32 @@ public final class BimapUtils {
 				}
 				int nDiff = bVal - bNewVal;
 				if (j < bitmap.getWidth() - 1) {
-					bData[nRow + j + 1] = Math.max(
-							Integer.MIN_VALUE,
-							Math.min(Integer.MAX_VALUE, bData[nRow + j + 1]
-									+ n0 * nDiff / 8));
+					bData[nRow + j + 1] = Math.max(Integer.MIN_VALUE,
+							Math.min(Integer.MAX_VALUE, bData[nRow + j + 1] + n0 * nDiff / 8));
 				}
 				if (j < bitmap.getWidth() - 2) {
-					bData[nRow + j + 2] = Math.max(
-							Integer.MIN_VALUE,
-							Math.min(Integer.MAX_VALUE, bData[nRow + j + 2]
-									+ n1 * nDiff / 8));
+					bData[nRow + j + 2] = Math.max(Integer.MIN_VALUE,
+							Math.min(Integer.MAX_VALUE, bData[nRow + j + 2] + n1 * nDiff / 8));
 
 				}
 				if (j < bitmap.getWidth() - 3) {
-					bData[nRow + j + 3] = Math.max(
-							Integer.MIN_VALUE,
-							Math.min(Integer.MAX_VALUE, bData[nRow + j + 3]
-									+ n2 * nDiff / 8));
+					bData[nRow + j + 3] = Math.max(Integer.MIN_VALUE,
+							Math.min(Integer.MAX_VALUE, bData[nRow + j + 3] + n2 * nDiff / 8));
 
 				}
 				if (j < bitmap.getWidth() - 4) {
-					bData[nRow + j + 4] = Math.max(
-							Integer.MIN_VALUE,
-							Math.min(Integer.MAX_VALUE, bData[nRow + j + 4]
-									+ n3 * nDiff / 8));
+					bData[nRow + j + 4] = Math.max(Integer.MIN_VALUE,
+							Math.min(Integer.MAX_VALUE, bData[nRow + j + 4] + n3 * nDiff / 8));
 
 				}
 				if (j < bitmap.getWidth() - 5) {
-					bData[nRow + j + 5] = Math.max(
-							Integer.MIN_VALUE,
-							Math.min(Integer.MAX_VALUE, bData[nRow + j + 5]
-									+ n4 * nDiff / 8));
+					bData[nRow + j + 5] = Math.max(Integer.MIN_VALUE,
+							Math.min(Integer.MAX_VALUE, bData[nRow + j + 5] + n4 * nDiff / 8));
 
 				}
 			}
 		}
-		return Bitmap.createBitmap(bData, bitmap.getWidth(),
-				bitmap.getHeight(), outputConfig);
+		return Bitmap.createBitmap(bData, bitmap.getWidth(), bitmap.getHeight(), outputConfig);
 
 	}
 
@@ -431,8 +439,7 @@ public final class BimapUtils {
 	 * @param bitOffset
 	 * @return
 	 */
-	public static Bitmap decreaseColorDepth(final Bitmap bitmap,
-			final int bitOffset, Bitmap.Config config) {
+	public static Bitmap decreaseColorDepth(final Bitmap bitmap, final int bitOffset, Bitmap.Config config) {
 		int A, R, G, B;
 		int[] pixels = getPixels(bitmap);
 		for (int i = 0; i < pixels.length; i++) {
@@ -456,8 +463,7 @@ public final class BimapUtils {
 
 			pixels[i] = Color.argb(A, R, G, B);
 		}
-		return Bitmap.createBitmap(pixels, bitmap.getWidth(),
-				bitmap.getHeight(), config);
+		return Bitmap.createBitmap(pixels, bitmap.getWidth(), bitmap.getHeight(), config);
 	}
 
 	/**
@@ -482,8 +488,7 @@ public final class BimapUtils {
 	 * @param outputConfig
 	 *            Bitmap configuration of the output bitmap
 	 */
-	public static final Bitmap doGaussianBlurFilter(Bitmap bitmap,
-			int brightness, Bitmap.Config outputConfig) {
+	public static final Bitmap doGaussianBlurFilter(Bitmap bitmap, int brightness, Bitmap.Config outputConfig) {
 		byte[][] filter = { { 1, 2, 1 }, { 2, 4, 2 }, { 1, 2, 1 } };
 		return applyFilter(bitmap, brightness, filter, outputConfig);
 	}
@@ -498,8 +503,7 @@ public final class BimapUtils {
 	 *            Bitmap configuration of the output bitmap
 	 * @return
 	 */
-	public static final Bitmap doGrayscaleFilter(Bitmap src, int saturation,
-			Bitmap.Config outputConfig) {
+	public static final Bitmap doGrayscaleFilter(Bitmap src, int saturation, Bitmap.Config outputConfig) {
 		int[] rgbInput = getPixels(src);
 		int[] rgbOutput = new int[src.getWidth() * src.getHeight()];
 
@@ -539,8 +543,7 @@ public final class BimapUtils {
 
 			rgbOutput[p] = alpha | output_red | output_green | output_blue;
 		}
-		return getBitmap(rgbOutput, src.getWidth(), src.getHeight(),
-				outputConfig);
+		return getBitmap(rgbOutput, src.getWidth(), src.getHeight(), outputConfig);
 	}
 
 	/**
@@ -618,8 +621,7 @@ public final class BimapUtils {
 		return BitmapFactory.decodeByteArray(data, 0, data.length);
 	}
 
-	public static Bitmap getBitmap(int[] pixels, int width, int height,
-			Bitmap.Config config) {
+	public static Bitmap getBitmap(int[] pixels, int width, int height, Bitmap.Config config) {
 		return Bitmap.createBitmap(pixels, width, height, config);
 	}
 
@@ -651,8 +653,8 @@ public final class BimapUtils {
 	}
 
 	/**
-	 * Returns the new height for the given degree. The new heigth symbols the
-	 * heigth for an rotated rgb data array with the same degree rotation.
+	 * Returns the new height for the given degree. The new heigth symbols the heigth for an rotated rgb data array with
+	 * the same degree rotation.
 	 * 
 	 * @param degree
 	 *            the degree value of the rotation.
@@ -662,8 +664,7 @@ public final class BimapUtils {
 	 *            the heigth of the rgb source
 	 * @return the new height of the rgb data.
 	 */
-	public static int getRotatedHeight(int degree, int width, int heigth,
-			double angle) {
+	public static int getRotatedHeight(int degree, int width, int heigth, double angle) {
 		double degreeCos = Math.cos(Math.PI * angle / 180);
 		double degreeSin = Math.sin(Math.PI * angle / 180);
 		if (degree == -90 || degree == 90 || degree == 270 || degree == -270) {
@@ -699,8 +700,8 @@ public final class BimapUtils {
 	}
 
 	/**
-	 * Returns the new width for the given degree. The new width symbols the
-	 * width for an rotated rgb data array with the same degree rotation.
+	 * Returns the new width for the given degree. The new width symbols the width for an rotated rgb data array with
+	 * the same degree rotation.
 	 * 
 	 * @param degree
 	 *            the degree value of the rotation.
@@ -710,8 +711,7 @@ public final class BimapUtils {
 	 *            the heigth of the rgb source
 	 * @return the new width of the rgb data.
 	 */
-	public static int getRotatedWidth(int degree, int width, int heigth,
-			double angle) {
+	public static int getRotatedWidth(int degree, int width, int heigth, double angle) {
 		double degreeCos = Math.cos(Math.PI * angle / 180);
 		double degreeSin = Math.sin(Math.PI * angle / 180);
 		if (degree == -90 || degree == 90 || degree == 270 || degree == -270) {
@@ -752,8 +752,7 @@ public final class BimapUtils {
 	}
 
 	public static Bitmap getRoundedCornerBitmap(Bitmap bitmap, int pixels) {
-		Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
-				bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+		Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
 		Canvas canvas = new Canvas(output);
 
 		final int color = 0xff424242;
@@ -783,17 +782,14 @@ public final class BimapUtils {
 	 * @param tileWidth
 	 * @param tileHeight
 	 * @param fromHorizontal
-	 *            if true, extract tiles horizontally from the image. Else
-	 *            extract vertically.
+	 *            if true, extract tiles horizontally from the image. Else extract vertically.
 	 * @return
 	 */
-	public static Bitmap[] getTiles(Bitmap bitmap, int number, int tileWidth,
-			int tileHeight, boolean fromHorizontal) {
+	public static Bitmap[] getTiles(Bitmap bitmap, int number, int tileWidth, int tileHeight, boolean fromHorizontal) {
 		Bitmap[] tiles = new Bitmap[number];
 		for (int i = 0; i < number; i++) {
-			tiles[i] = Bitmap.createBitmap(bitmap, fromHorizontal ? i
-					* tileWidth : 0, fromHorizontal ? 0 : i * tileHeight,
-					tileWidth, tileHeight);
+			tiles[i] = Bitmap.createBitmap(bitmap, fromHorizontal ? i * tileWidth : 0, fromHorizontal ? 0 : i
+					* tileHeight, tileWidth, tileHeight);
 		}
 		return tiles;
 	}
@@ -812,8 +808,7 @@ public final class BimapUtils {
 		for (int i = 0; i < argb.length; i++) {
 			argb[i] = ColorUtils.invertColor(argb[i]);
 		}
-		return Bitmap.createBitmap(argb, bitmap.getWidth(), bitmap.getHeight(),
-				outputConfig);
+		return Bitmap.createBitmap(argb, bitmap.getWidth(), bitmap.getHeight(), outputConfig);
 	}
 
 	/**
@@ -826,14 +821,12 @@ public final class BimapUtils {
 	 *            Bitmap configuration of the output bitmap
 	 * @return
 	 */
-	public static final Bitmap posterize(Bitmap bitmap, int depth,
-			Bitmap.Config outputConfig) {
+	public static final Bitmap posterize(Bitmap bitmap, int depth, Bitmap.Config outputConfig) {
 		int[] argb = getPixels(bitmap);
 		for (int i = 0; i < argb.length; i++) {
 			argb[i] = ColorUtils.posterizePixel(argb[i], depth);
 		}
-		return Bitmap.createBitmap(argb, bitmap.getWidth(), bitmap.getHeight(),
-				outputConfig);
+		return Bitmap.createBitmap(argb, bitmap.getWidth(), bitmap.getHeight(), outputConfig);
 	}
 
 	/**
@@ -847,8 +840,7 @@ public final class BimapUtils {
 		option.inSampleSize = 1;
 		Bitmap image = null;
 		try {
-			image = BitmapFactory.decodeStream(new FileInputStream(file), null,
-					option);
+			image = BitmapFactory.decodeStream(new FileInputStream(file), null, option);
 			Thread.sleep(4);
 		} catch (Exception e) {
 			Log.e("Blog/DM", "Execption : " + e);
@@ -865,23 +857,20 @@ public final class BimapUtils {
 	 * @param outputConfig
 	 * @return
 	 */
-	public static final Bitmap saturate(Bitmap bitmap, int percent,
-			Bitmap.Config outputConfig) {
+	public static final Bitmap saturate(Bitmap bitmap, int percent, Bitmap.Config outputConfig) {
 		int[] argb = getPixels(bitmap);
 		for (int i = 0; i < argb.length; i++) {
 			argb[i] = ColorUtils.setSaturation(argb[i], percent);
 		}
-		return Bitmap.createBitmap(argb, bitmap.getWidth(), bitmap.getHeight(),
-				outputConfig);
+		return Bitmap.createBitmap(argb, bitmap.getWidth(), bitmap.getHeight(), outputConfig);
 	}
 
 	/**
-	 * Scales an rgb data unproportional in every new size you want bigger or
-	 * smaller than the given original.
+	 * Scales an rgb data unproportional in every new size you want bigger or smaller than the given original.
 	 * 
 	 * @param opacity
-	 *            the maximum alpha value, 255 (0xFF) means fully opaque, 0
-	 *            fully transparent. Lower alpha values will be preserved.
+	 *            the maximum alpha value, 255 (0xFF) means fully opaque, 0 fully transparent. Lower alpha values will
+	 *            be preserved.
 	 * @param rgbData
 	 *            the original rgbdata
 	 * @param newWidth
@@ -895,8 +884,7 @@ public final class BimapUtils {
 	 * @param newRgbData
 	 *            the new rgbdata has to be initialised
 	 */
-	public static void scale(int opacity, int[] rgbData, int newWidth,
-			int newHeight, int oldWidth, int oldHeight, int[] newRgbData) {
+	public static void scale(int opacity, int[] rgbData, int newWidth, int newHeight, int oldWidth, int oldHeight, int[] newRgbData) {
 		int currentX = 0, currentY = 0;
 		int oldLenght = rgbData.length;
 		int newLength = newRgbData.length;
@@ -929,8 +917,7 @@ public final class BimapUtils {
 	}
 
 	/**
-	 * Scales an rgb data unproportional in every new size you want bigger or
-	 * smaller than the given original.
+	 * Scales an rgb data unproportional in every new size you want bigger or smaller than the given original.
 	 * 
 	 * @param rgbData
 	 *            the original rgbdata
@@ -945,8 +932,7 @@ public final class BimapUtils {
 	 * @param newRgbData
 	 *            the new rgbdata has to be initialised
 	 */
-	public static void scale(int[] rgbData, int newWidth, int newHeight,
-			int oldWidth, int oldHeight, int[] newRgbData) {
+	public static void scale(int[] rgbData, int newWidth, int newHeight, int oldWidth, int oldHeight, int[] newRgbData) {
 
 		int x, y, dy;
 		int srcOffset;
@@ -993,8 +979,7 @@ public final class BimapUtils {
 	 *            the y position of the pixel to be scaled.
 	 * @return position of the scaled pixel in the old rgb data array.
 	 */
-	public static int scaledPixel(int oldLength, int oldWidth, int oldHeigth,
-			int newWidth, int newHeigth, int currentX, int currentY) {
+	public static int scaledPixel(int oldLength, int oldWidth, int oldHeigth, int newWidth, int newHeigth, int currentX, int currentY) {
 		int targetArrayIndex;
 		int verticalShrinkFactorPercent = ((newHeigth * 100) / oldHeigth);
 		int horizontalScaleFactorPercent = ((newWidth * 100) / oldWidth);
@@ -1010,8 +995,7 @@ public final class BimapUtils {
 	}
 
 	/**
-	 * Scales an image to fit into the specified available width and height
-	 * while maintaining the ratio.
+	 * Scales an image to fit into the specified available width and height while maintaining the ratio.
 	 * 
 	 * @param source
 	 *            the source bitmap
@@ -1023,16 +1007,14 @@ public final class BimapUtils {
 	 *            Bitmap configuration of the output bitmap
 	 * @return the resulting image
 	 */
-	public static Bitmap scaleToFit(Bitmap source, int availableWidth,
-			int availableHeight, Bitmap.Config outputConfig) {
+	public static Bitmap scaleToFit(Bitmap source, int availableWidth, int availableHeight, Bitmap.Config outputConfig) {
 		int sourceWidth = source.getWidth();
 		int sourceHeight = source.getHeight();
 
 		if (sourceWidth > availableWidth || sourceHeight > availableHeight) {
 			int[] rgbData = getPixels(source);
 
-			double availableRatio = (double) availableWidth
-					/ (double) availableHeight;
+			double availableRatio = (double) availableWidth / (double) availableHeight;
 			double sourceRatio = (double) sourceWidth / (double) sourceHeight;
 
 			int targetWidth = availableWidth;
@@ -1045,10 +1027,8 @@ public final class BimapUtils {
 			}
 
 			int[] newRgbData = new int[targetWidth * targetHeight];
-			scale(rgbData, targetWidth, targetHeight, sourceWidth,
-					sourceHeight, newRgbData);
-			return getBitmap(newRgbData, targetWidth, targetHeight,
-					outputConfig);
+			scale(rgbData, targetWidth, targetHeight, sourceWidth, sourceHeight, newRgbData);
+			return getBitmap(newRgbData, targetWidth, targetHeight, outputConfig);
 		}
 
 		return source;
@@ -1059,22 +1039,18 @@ public final class BimapUtils {
 	 * 
 	 * @param bitmap
 	 * @param level
-	 *            between 0 and 256. 0 indicates fully transparent and 256
-	 *            indicates its fully opaque
+	 *            between 0 and 256. 0 indicates fully transparent and 256 indicates its fully opaque
 	 * @param outputConfig
 	 * @return
 	 */
-	public static final Bitmap setTransparency(final Bitmap bitmap, int level,
-			Bitmap.Config outputConfig) {
+	public static final Bitmap setTransparency(final Bitmap bitmap, int level, Bitmap.Config outputConfig) {
 		int[] argb = getPixels(bitmap);
 		ColorUtils.setTransparency(argb, level);
-		return Bitmap.createBitmap(argb, bitmap.getWidth(), bitmap.getHeight(),
-				outputConfig);
+		return Bitmap.createBitmap(argb, bitmap.getWidth(), bitmap.getHeight(), outputConfig);
 	}
 
 	/**
-	 * Stretches the rgb data horizontal to the given left and rigth stretch
-	 * factor and returns the new rgb data array.
+	 * Stretches the rgb data horizontal to the given left and rigth stretch factor and returns the new rgb data array.
 	 * 
 	 * @param argbArray
 	 *            the rgb data to be stretched.
@@ -1088,8 +1064,7 @@ public final class BimapUtils {
 	 *            the source heigth of the rgb data.
 	 * @return stretched rgb data array.
 	 */
-	public static int[] stretchHorizontal(int[] argbArray,
-			int leftStrechFactor, int rightStrechFactor, int width, int heigth) {
+	public static int[] stretchHorizontal(int[] argbArray, int leftStrechFactor, int rightStrechFactor, int width, int heigth) {
 		int newHeigthLeft = (heigth * leftStrechFactor) / 100;
 		int newHeigthRight = (heigth * rightStrechFactor) / 100;
 		int procentualScalingWidth;
@@ -1102,14 +1077,12 @@ public final class BimapUtils {
 			biggerHeigth = newHeigthLeft;
 		}
 		int[] newArgbArray = new int[biggerHeigth * width];
-		return stretchHorizontal(argbArray, newHeigthLeft, newHeigthRight,
-				biggerHeigth, width, heigth, procentualScalingWidth,
-				newArgbArray);
+		return stretchHorizontal(argbArray, newHeigthLeft, newHeigthRight, biggerHeigth, width, heigth,
+				procentualScalingWidth, newArgbArray);
 	}
 
 	/**
-	 * Stretches the rgb data horizontal to the given left and heigth width and
-	 * returns the new rgb data array.
+	 * Stretches the rgb data horizontal to the given left and heigth width and returns the new rgb data array.
 	 * 
 	 * 
 	 * @param argbArray
@@ -1125,15 +1098,12 @@ public final class BimapUtils {
 	 * @param heigth
 	 *            the source heigth of the rgb data.
 	 * @param procentualScalingHeight
-	 *            the procentual scaling heigth(biggerHeigth -
-	 *            smallerSmaller)/widthOfTheOriginalImage).
+	 *            the procentual scaling heigth(biggerHeigth - smallerSmaller)/widthOfTheOriginalImage).
 	 * @param newArgbArray
 	 *            the new rgb data where the changes getting in.
 	 * @return return the filled newArgbArray with stretched changes.
 	 */
-	public static int[] stretchHorizontal(int[] argbArray, int newLeftHeigth,
-			int newRigthHeigth, int biggerHeigth, int width, int heigth,
-			int procentualScalingHeight, int[] newArgbArray) {
+	public static int[] stretchHorizontal(int[] argbArray, int newLeftHeigth, int newRigthHeigth, int biggerHeigth, int width, int heigth, int procentualScalingHeight, int[] newArgbArray) {
 		if (procentualScalingHeight == 0) {
 			procentualScalingHeight++;
 		}
@@ -1154,8 +1124,7 @@ public final class BimapUtils {
 		for (int i = 0; i < length; i++) {
 
 			if (startColumn <= idY && endColumn >= idY) {
-				newArgbArray[whereIamAt] = argbArray[scaledPixel(oldLength,
-						width, heigth, width, newHeigth, x, y)];
+				newArgbArray[whereIamAt] = argbArray[scaledPixel(oldLength, width, heigth, width, newHeigth, x, y)];
 				y = (y + 1) % newHeigth;
 			} else {
 				newArgbArray[whereIamAt] = 000000;
@@ -1179,8 +1148,7 @@ public final class BimapUtils {
 	}
 
 	/**
-	 * Stretches the rgb data vertical to the given top and bottom stretch
-	 * factor and returns the new rgb data array.
+	 * Stretches the rgb data vertical to the given top and bottom stretch factor and returns the new rgb data array.
 	 * 
 	 * @param argbArray
 	 *            the rgb data to be stretched.
@@ -1194,8 +1162,7 @@ public final class BimapUtils {
 	 *            the source heigth of the rgb data.
 	 * @return stretched rgb data array.
 	 */
-	public static int[] stretchVertical(int[] argbArray, int topStrechFactor,
-			int bottomStrechFactor, int width, int heigth) {
+	public static int[] stretchVertical(int[] argbArray, int topStrechFactor, int bottomStrechFactor, int width, int heigth) {
 		int newWidthTop = (width * topStrechFactor) / 100;
 		int newWidthBottom = (width * bottomStrechFactor) / 100;
 		int procentualScalingHeight;
@@ -1208,14 +1175,12 @@ public final class BimapUtils {
 			biggerWidth = newWidthTop;
 		}
 		int[] newArgbArray = new int[biggerWidth * heigth];
-		return stretchVertical(argbArray, newWidthTop, newWidthBottom,
-				biggerWidth, width, heigth, procentualScalingHeight,
-				newArgbArray);
+		return stretchVertical(argbArray, newWidthTop, newWidthBottom, biggerWidth, width, heigth,
+				procentualScalingHeight, newArgbArray);
 	}
 
 	/**
-	 * Stretches the rgb data vertical to the given top and bottom width and
-	 * returns the new rgb data array.
+	 * Stretches the rgb data vertical to the given top and bottom width and returns the new rgb data array.
 	 * 
 	 * 
 	 * @param argbArray
@@ -1231,15 +1196,12 @@ public final class BimapUtils {
 	 * @param heigth
 	 *            the source heigth of the rgb data.
 	 * @param procentualScalingHeight
-	 *            the procentual scaling heigth(biggerWidth -
-	 *            smallerWidth)/heigthOfTheOriginalImage).
+	 *            the procentual scaling heigth(biggerWidth - smallerWidth)/heigthOfTheOriginalImage).
 	 * @param newArgbArray
 	 *            the new rgb data where the changes getting in.
 	 * @return return filled the newArgbArray with stretched changes.
 	 */
-	public static int[] stretchVertical(int[] argbArray, int newWidthTop,
-			int newWidthBottom, int biggerWidth, int width, int heigth,
-			int procentualScalingHeight, int[] newArgbArray) {
+	public static int[] stretchVertical(int[] argbArray, int newWidthTop, int newWidthBottom, int biggerWidth, int width, int heigth, int procentualScalingHeight, int[] newArgbArray) {
 		if (procentualScalingHeight == 0) {
 			procentualScalingHeight++;
 		}
@@ -1267,8 +1229,7 @@ public final class BimapUtils {
 			}
 			if (outsideCurrentX >= sum1 && outsideCurrentX < sum2) {
 				insideCurrentX = (insideCurrentX + 1) % newWidthTop;
-				newArgbArray[i] = argbArray[scaledPixel(oldLength, width,
-						heigth, newWidthTop, heigth, insideCurrentX,
+				newArgbArray[i] = argbArray[scaledPixel(oldLength, width, heigth, newWidthTop, heigth, insideCurrentX,
 						insideCurrentY)];
 			} else {
 				newArgbArray[i] = 000000;
@@ -1287,8 +1248,7 @@ public final class BimapUtils {
 	 *            for the output bitmap
 	 * @return
 	 */
-	public static Bitmap tint(Bitmap bitmap, int tintDegree,
-			Bitmap.Config config) {
+	public static Bitmap tint(Bitmap bitmap, int tintDegree, Bitmap.Config config) {
 		int pich = bitmap.getHeight();
 		int picw = bitmap.getWidth();
 		int[] pix = getPixels(bitmap);
@@ -1430,18 +1390,19 @@ public final class BimapUtils {
 
 	/**
 	 * Write a bitmap to the file specified
+	 * 
 	 * @param bitmap
-	 * @param file The full path of the file to write to including filename and extension.
+	 * @param file
+	 *            The full path of the file to write to including filename and extension.
 	 * @throws IOException
-	 * @throws llegalArgumentException if the file specified is a directory
+	 * @throws llegalArgumentException
+	 *             if the file specified is a directory
 	 */
-	public static void writeBitmapToFile(Bitmap bitmap, File file)
-			throws IOException {
-		if(!file.isDirectory()){
+	public static void writeBitmapToFile(Bitmap bitmap, File file) throws IOException {
+		if (!file.isDirectory()) {
 			throw new IllegalArgumentException("File is a directory");
 		}
-		Bitmap.CompressFormat format = (file.getPath().endsWith("jpg") || file
-				.getPath().endsWith("JPG")) ? CompressFormat.JPEG
+		Bitmap.CompressFormat format = (file.getPath().endsWith("jpg") || file.getPath().endsWith("JPG")) ? CompressFormat.JPEG
 				: CompressFormat.PNG;
 		final FileOutputStream fos = new FileOutputStream(file);
 		bitmap.compress(format, 100, fos);
