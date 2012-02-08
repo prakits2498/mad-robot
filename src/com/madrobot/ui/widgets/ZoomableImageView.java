@@ -1,519 +1,500 @@
 package com.madrobot.ui.widgets;
 
-import java.lang.reflect.Method;
-
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.PointF;
-import android.graphics.Rect;
-import android.os.Bundle;
-import android.os.Parcelable;
+import android.graphics.Matrix;
+import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
-import android.view.View;
-import android.widget.LinearLayout;
-
-import com.madrobot.R;
+import android.view.ScaleGestureDetector;
+import android.view.ViewConfiguration;
+import android.widget.ImageView;
 
 /**
- * ImageView that can zoomed with double tap, pinch and scroll gestures. Compatible with Android 2.1 onwards.
- * <p>
- * <table border="0" width="450" cellspacing="1">
- * <tr>
- * <th><b>Attribute</b></td>
- * <td><b>Type</b></td>
- * <td><b>Default</b></td>
- * <td><b>Description</b></td>
- * </tr>
- * <tr>
- * <td><code>maxZoomSteps</code></td>
- * <td>Integer</td>
- * <td>3</td>
- * <td>Number of steps the user can tap to zoom in/out</td>
- * </tr>
- * <tr>
- * <td><code>doubleTapToZoom</code></td>
- * <td>Boolean</td>
- * <td>true</td>
- * <td>Flag to enable zooming in/out when the ImageView is double tapped</td>
- * </tr>
- * <tr>
- * <td><code>minMaxZoom</code></td>
- * <td>float</td>
- * <td>2.0</td>
- * <td>Zoom ratio for small images</td>
- * </tr>
- * <tr>
- * <td><code>pinchToZoomMinDistance</code></td>
- * <td>float</td>
- * <td>1.0</td>
- * <td>Minimum distance for which the pinch zoom gesture should be recognised</td>
- * </tr>
- * 
- * <tr>
- * <td><code>angleTolerant</code></td>
- * <td>integer</td>
- * <td>50</td>
- * <td>Tolerance angle for pinch to zoom</td>
- * </tr>
- * </table>
- * </p>
- * 
- * @author elton.kent
- * 
+ * ImageView that can be zoomed with Pinch and double tap gestures
+ * @author elton.stephen.kent
+ *
  */
-public class ZoomableImageView extends LinearLayout {
+public class ZoomableImageView extends ImageView {
+	private enum Command {
+		Center, Layout, Move, Reset, Zoom,
+	};
 
 	private class GestureListener extends GestureDetector.SimpleOnGestureListener {
-		// event when double tap occurs
+
 		@Override
 		public boolean onDoubleTap(MotionEvent e) {
-			if (isImageValid() && doubleTapZooms) {
-				doubleTapZoom(e.getX(), e.getY());
-			}
-			return true;
+			float scale = getScale();
+			float targetScale = scale;
+			targetScale = onDoubleTapPost(scale, getMaxZoom());
+			targetScale = Math.min(getMaxZoom(), Math.max(targetScale, MIN_ZOOM));
+			mCurrentScaleFactor = targetScale;
+			zoomTo(targetScale, e.getX(), e.getY(), 200);
+			invalidate();
+			return super.onDoubleTap(e);
 		}
 
 		@Override
-		public boolean onDown(MotionEvent e) {
-			if (isImageValid()) {
-				float posX = (e.getX() - mZoomInfo.screenStartX) * mZoomInfo.scaleWidth + mScrollRectX;
-				float posY = (e.getY() - mZoomInfo.screenStartY) * mZoomInfo.scaleWidth + mScrollRectY;
-				onImageClick(posX, posY);
+		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+			if (e1.getPointerCount() > 1 || e2.getPointerCount() > 1)
+				return false;
+			if (mScaleDetector.isInProgress())
+				return false;
+
+			float diffX = e2.getX() - e1.getX();
+			float diffY = e2.getY() - e1.getY();
+
+			if (Math.abs(velocityX) > 800 || Math.abs(velocityY) > 800) {
+				scrollBy(diffX / 2, diffY / 2, 300);
+				invalidate();
 			}
-			return true;
+			return super.onFling(e1, e2, velocityX, velocityY);
 		}
 
-		// its important that small bitmal is loaded
 		@Override
 		public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-			if (isImageValid()) {
-				scroll(distanceX, distanceY);
+			if (e1 == null || e2 == null)
+				return false;
+			if (e1.getPointerCount() > 1 || e2.getPointerCount() > 1)
+				return false;
+			if (mScaleDetector.isInProgress())
+				return false;
+			if (getScale() == 1f)
+				return false;
+			scrollBy(-distanceX, -distanceY);
+			invalidate();
+			return super.onScroll(e1, e2, distanceX, distanceY);
+		}
+	};
+
+	public interface OnBitmapChangedListener {
+
+		void onBitmapChanged(Bitmap bitmap);
+	}
+	
+	private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+
+		@SuppressWarnings("unused")
+		@Override
+		public boolean onScale(ScaleGestureDetector detector) {
+			float span = detector.getCurrentSpan() - detector.getPreviousSpan();
+			float targetScale = mCurrentScaleFactor * detector.getScaleFactor();
+			if (true) {
+				targetScale = Math.min(getMaxZoom(), Math.max(targetScale, MIN_ZOOM));
+				zoomTo(targetScale, detector.getFocusX(), detector.getFocusY());
+				mCurrentScaleFactor = Math.min(getMaxZoom(), Math.max(targetScale, MIN_ZOOM));
+				mDoubleTapDirection = 1;
+				invalidate();
+				return true;
 			}
-			return true;
+			return false;
 		}
 	}
+	static final float MIN_ZOOM = 0.9f;
+	final private float MAX_ZOOM = 2.0f;
+	private Matrix mBaseMatrix = new Matrix();
+	final private RotateBitmap mBitmapDisplayed = new RotateBitmap(null, 0);
+	private float mCurrentScaleFactor;
+	private final Matrix mDisplayMatrix = new Matrix();
 
-	private class ZoomInfo {
-		public int currentHeight;
-		public int currentWidth;
-		// 100px and not 480px
-		public int displayHeight;
-		public int displayWidth; // for example if current zoom is 100px and layout width is 480px than screenWidth is
-		public float scaleHeight;
-		public float scaleWidth;
-		public int screenStartX = 0;
-									public int screenStartY = 0;
-		public int zoomDisplayHeight;
-		public int zoomDisplayWidth; // how much pixels of bitmap are drawn on screen
-	}
-	private static int distanceZoomMultiplier = 10;
-	private int angleTolerant;
-	private boolean doubleTapZooms;
-	private int maxZoomSteps;
-	private Bitmap mBitmap = null;
-
-	private int mCurrentZoomInc = 1;
-	private int mCurrentZoomStep = 1;
-	private Rect mDstRect = new Rect();
-	private Object[] mEmptyObjectArray = new Object[] {};
-	private PointF mFirstFingerStartPoint;
-
+	private int mDoubleTapDirection;
 	private GestureDetector mGestureDetector;
-	private float minMaxZoom;
-	private Object[] mInt1ObjectArray = new Object[] { 1 };
 
-	private boolean mIsInChanging = false;
-	private boolean mIsReflectionError = true;
-	private boolean mIsTwoFinger = false;
-	private int mMaxZoomWidth = 0;
+	private GestureListener mGestureListener;
+	private Handler mHandler = new Handler();
+	private OnBitmapChangedListener mListener;
+	private final float[] mMatrixValues = new float[9];
+	private float mMaxZoom;
+	private Runnable mOnLayoutRunnable = null;
+	private ScaleGestureDetector mScaleDetector;
+	private float mScaleFactor;
+	private ScaleListener mScaleListener;
+	private Matrix mSuppMatrix = new Matrix();
 
-	private Method mMethodGetX;
+	private int mThisWidth = -1, mThisHeight = -1;
 
-	private Method mMethodGetY;
-	private Method mMethodPointerCount;
-	private int mMinZoomWidth = 0;
-
-	private Paint mPaint;
-	private int mScrollRectX = 0; // current left location of scroll rect
-	private int mScrollRectY = 0; // current top location of scroll rect
-	private PointF mSecondFingerStartPoint;
-	private Rect mSrcRect = new Rect();
-	private ZoomInfo mZoomInfo = new ZoomInfo();
-
-	private float pinchToZoomMinDistance; // must be greaterequal to 1
+	private int mTouchSlop;
 
 	public ZoomableImageView(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		initAttributes(context, attrs);
-		// get 2.1+ methods by reflection
-		try {
-			Class<?> eventClass = MotionEvent.class;
-			mMethodPointerCount = eventClass.getMethod("getPointerCount");
-			mMethodGetX = eventClass.getMethod("getX", new Class[] { int.class });
-			mMethodGetY = eventClass.getMethod("getY", new Class[] { int.class });
-			mIsReflectionError = false;
-		} catch (Exception e) {
-			mIsReflectionError = true;
-		}
-
-		setOrientation(VERTICAL);
-		// without those settings zoomed bitmap will be full of ugly squares
-		mPaint = new Paint();
-		mPaint.setAntiAlias(true);
-		mPaint.setFilterBitmap(true);
-		mPaint.setDither(true);
-
-		// because we are overriding onDraw method
-		this.setWillNotDraw(false);
-		mGestureDetector = new GestureDetector(context, new GestureListener());
+		init();
 	}
 
-	protected void calcSmoothZoom(int offset, ZoomInfo zoomInfo) {
-		int newWidth = zoomInfo.currentWidth + offset;
-		updateZoomInfo(newWidth, zoomInfo);
-
-		// for now - reset double tap zoom variables to middle zoom step
-		mCurrentZoomStep = (int) Math.ceil((double) maxZoomSteps / 2);
-		mCurrentZoomInc = offset > 0 ? 1 : -1;
-	}
-
-	protected void calcStepZoom(int step, ZoomInfo zoomInfo) {
-		if (step == 1) {
-			updateZoomInfo(mMinZoomWidth, zoomInfo);
+	private void center(boolean horizontal, boolean vertical) {
+		if (mBitmapDisplayed.getBitmap() == null)
 			return;
-		} else if (step == maxZoomSteps) {
-			updateZoomInfo(mMaxZoomWidth, zoomInfo);
-			return;
-		}
-		float newWidth = (float) (mMaxZoomWidth - mMinZoomWidth) * (float) step / maxZoomSteps + mMinZoomWidth;
-		updateZoomInfo(newWidth, zoomInfo);
-	}
-
-	protected void doubleTapZoom(float x, float y) {
-		mCurrentZoomStep += mCurrentZoomInc;
-		if (mCurrentZoomStep == maxZoomSteps || mCurrentZoomStep == 1) {
-			mCurrentZoomInc = -mCurrentZoomInc;
-		}
-
-		zoomIt(false, mCurrentZoomStep, x, y);
-	}
-
-	// fix scroll x and y so user cant scroll outside the image
-	protected void fixScrollXY() {
-		if (mScrollRectX < 0) {
-			mScrollRectX = 0;
-		} else if (mScrollRectX + mZoomInfo.zoomDisplayWidth >= mBitmap.getWidth()) {
-			mScrollRectX = mBitmap.getWidth() - mZoomInfo.zoomDisplayWidth;
-		}
-
-		if (mScrollRectY < 0) {
-			mScrollRectY = 0;
-		} else if (mScrollRectY + mZoomInfo.zoomDisplayHeight >= mBitmap.getHeight()) {
-			mScrollRectY = mBitmap.getHeight() - mZoomInfo.zoomDisplayHeight;
+		RectF rect = getCenter(horizontal, vertical);
+		if (rect.left != 0 || rect.top != 0) {
+			postTranslate(rect.left, rect.top);
 		}
 	}
 
-	protected PointF getCenterVector(PointF v1, PointF v2) {
-		PointF v = new PointF(v1.x + (v2.x - v1.x) / 2, v1.y + (v2.y - v1.y) / 2);
-		return v;
+	public void clear() {
+		setImageBitmapReset(null, true);
 	}
 
-	protected PointF getDifVector(PointF v1, PointF v2) {
-		return new PointF(v2.x - v1.x, v2.y - v1.y);
-	}
-
-	protected float getDistance(PointF a, PointF b) {
-		double difx = a.x - b.x;
-		double dify = a.y - b.y;
-		double value = Math.sqrt(difx * difx + dify * dify);
-		return (float) value;
-	}
-
-	protected float getVectorAngle(PointF v) {
-		float norm = getVectorNorm(v);
-		if (v.y == 0) {
-			return v.x >= 0 ? 0 : -180;
-		}
-
-		double angle = Math.asin(Math.abs(v.y) / norm) * 180 / Math.PI;
-
-		if (v.y < 0) {
-			if (v.x > 0) {
-				angle = 270 + angle;
-			} else {
-				angle = 180 + angle;
+	public void dispose() {
+		if (mBitmapDisplayed.getBitmap() != null) {
+			if (!mBitmapDisplayed.getBitmap().isRecycled()) {
+				mBitmapDisplayed.getBitmap().recycle();
 			}
-		} else if (v.x < 0) {
-			angle = 90 + angle;
 		}
-
-		return (float) angle;
+		clear();
 	}
 
-	protected float getVectorNorm(PointF v) {
-		double value = Math.sqrt(v.x * v.x + v.y * v.y);
-		return (float) value;
+	private float easeOut(float time, float start, float end, float duration) {
+		return end * ((time = time / duration - 1) * time * time + 1) + start;
 	}
 
-	private void initAttributes(Context context, AttributeSet attrs) {
-		TypedArray styledAttrs = context.obtainStyledAttributes(attrs, R.styleable.ZoomableImageView);
-		maxZoomSteps = styledAttrs.getInt(R.styleable.ZoomableImageView_maxZoomSteps, 3);
-		// workaround because maxZoomSteps is 0 based.
-		maxZoomSteps++;
-		doubleTapZooms = styledAttrs.getBoolean(R.styleable.ZoomableImageView_doubleTapToZoom, true);
-		minMaxZoom = styledAttrs.getFloat(R.styleable.ZoomableImageView_minMaxZoom, 2.0f);
-		pinchToZoomMinDistance = styledAttrs.getFloat(R.styleable.ZoomableImageView_pinchToZoomMinDistance, 1);
-		angleTolerant = styledAttrs.getInt(R.styleable.ZoomableImageView_angleTolerant, 50);
-
+	private RectF getBitmapRect() {
+		if (mBitmapDisplayed.getBitmap() == null)
+			return null;
+		Matrix m = getImageViewMatrix();
+		RectF rect = new RectF(0, 0, mBitmapDisplayed.getBitmap().getWidth(), mBitmapDisplayed.getBitmap().getHeight());
+		m.mapRect(rect);
+		return rect;
 	}
 
-	protected boolean isImageValid() {
-		return mBitmap != null && !mIsInChanging && getWidth() > 0;
-	}
-
-	@Override
-	protected void onDraw(Canvas canvas) {
-		super.onDraw(canvas);
-		// bitmap not exist or component didnt recieved width yet
-		if (mBitmap != null && this.getWidth() > 0) {
-			mDstRect.set(mZoomInfo.screenStartX, mZoomInfo.screenStartY, mZoomInfo.displayWidth
-					+ mZoomInfo.screenStartX, mZoomInfo.displayHeight + mZoomInfo.screenStartY);
-			mSrcRect.set(mScrollRectX, mScrollRectY, mScrollRectX + mZoomInfo.zoomDisplayWidth, mScrollRectY
-					+ mZoomInfo.zoomDisplayHeight);
-			canvas.drawBitmap(mBitmap, mSrcRect, mDstRect, mPaint);
+	private RectF getCenter(boolean horizontal, boolean vertical) {
+		if (mBitmapDisplayed.getBitmap() == null)
+			return new RectF(0, 0, 0, 0);
+		RectF rect = getBitmapRect();
+		float height = rect.height();
+		float width = rect.width();
+		float deltaX = 0, deltaY = 0;
+		if (vertical) {
+			int viewHeight = getHeight();
+			if (height < viewHeight) {
+				deltaY = (viewHeight - height) / 2 - rect.top;
+			} else if (rect.top > 0) {
+				deltaY = -rect.top;
+			} else if (rect.bottom < viewHeight) {
+				deltaY = getHeight() - rect.bottom;
+			}
 		}
+		if (horizontal) {
+			int viewWidth = getWidth();
+			if (width < viewWidth) {
+				deltaX = (viewWidth - width) / 2 - rect.left;
+			} else if (rect.left > 0) {
+				deltaX = -rect.left;
+			} else if (rect.right < viewWidth) {
+				deltaX = viewWidth - rect.right;
+			}
+		}
+		return new RectF(deltaX, deltaY, 0, 0);
 	}
 
-	// ment to be overriden - add some hotspots or simular
-	protected void onImageClick(float posX, float posY) {
+	public RotateBitmap getDisplayBitmap() {
+		return mBitmapDisplayed;
+	}
+
+	public Matrix getImageViewMatrix() {
+		mDisplayMatrix.set(mBaseMatrix);
+		mDisplayMatrix.postConcat(mSuppMatrix);
+		return mDisplayMatrix;
+	}
+
+	public float getMaxZoom() {
+		return mMaxZoom;
 	}
 
 	/**
-	 * Overridden to restore instance state when device orientation changes. This method is called automatically if you
-	 * assign an id to the RangeSeekBar widget using the {@link #setId(int)} method.
+	 * Setup the base matrix so that the image is centered and scaled properly.
+	 * 
+	 * @param bitmap
+	 * @param matrix
 	 */
-	@Override
-	protected void onRestoreInstanceState(Parcelable parcel) {
-		Bundle bundle = (Bundle) parcel;
-		super.onRestoreInstanceState(bundle.getParcelable("SUPER"));
-		mScrollRectX = bundle.getInt("SCROLLX");
-		mScrollRectY = bundle.getInt("SCROLLY");
-		mZoomInfo.currentHeight = bundle.getInt("ZI_CH");
-		mZoomInfo.currentWidth = bundle.getInt("ZI_CW");
-		mZoomInfo.displayHeight = bundle.getInt("ZI_DH");
-		mZoomInfo.displayWidth = bundle.getInt("ZI_DW");
-		mZoomInfo.scaleHeight = bundle.getFloat("ZI_SH");
-		mZoomInfo.scaleWidth = bundle.getFloat("ZI_SW");
-		mZoomInfo.screenStartX = bundle.getInt("ZI_SSX");
-		mZoomInfo.screenStartY = bundle.getInt("ZI_SSY");
-		mZoomInfo.zoomDisplayHeight = bundle.getInt("ZI_ZDH");
-		mZoomInfo.zoomDisplayWidth = bundle.getInt("ZI_ZDW");
-
+	private void getProperBaseMatrix(RotateBitmap bitmap, Matrix matrix) {
+		float viewWidth = getWidth();
+		float viewHeight = getHeight();
+		float w = bitmap.getWidth();
+		float h = bitmap.getHeight();
+		matrix.reset();
+		float widthScale = Math.min(viewWidth / w, MAX_ZOOM);
+		float heightScale = Math.min(viewHeight / h, MAX_ZOOM);
+		float scale = Math.min(widthScale, heightScale);
+		matrix.postConcat(bitmap.getRotateMatrix());
+		matrix.postScale(scale, scale);
+		matrix.postTranslate((viewWidth - w * scale) / MAX_ZOOM, (viewHeight - h * scale) / MAX_ZOOM);
 	}
 
-	/**
-	 * Overridden to save instance state when device orientation changes. This method is called automatically if you
-	 * assign an id to the RangeSeekBar widget using the {@link #setId(int)} method. Other members of this class than
-	 * the normalized min and max values don't need to be saved.
-	 */
-	@Override
-	protected Parcelable onSaveInstanceState() {
-		Bundle bundle = new Bundle();
-		bundle.putParcelable("SUPER", super.onSaveInstanceState());
-		bundle.putInt("SCROLLX", mScrollRectX);
-		bundle.putInt("SCROLLY", mScrollRectY);
-		bundle.putInt("ZI_CH", mZoomInfo.currentHeight);
-		bundle.putInt("ZI_CW", mZoomInfo.currentWidth);
-		bundle.putInt("ZI_DH", mZoomInfo.displayHeight);
-		bundle.putInt("ZI_DW", mZoomInfo.displayWidth);
-		bundle.putInt("ZI_SSX", mZoomInfo.screenStartX);
-		bundle.putInt("ZI_SSY", mZoomInfo.screenStartY);
-		bundle.putInt("ZI_ZDH", mZoomInfo.zoomDisplayHeight);
-		bundle.putInt("ZI_ZDW", mZoomInfo.zoomDisplayWidth);
-		bundle.putFloat("ZI_SH", mZoomInfo.scaleHeight);
-		bundle.putFloat("ZI_SW", mZoomInfo.scaleWidth);
-		return bundle;
+	public float getScale() {
+		return getScale(mSuppMatrix);
+	}
+
+	private float getScale(Matrix matrix) {
+		return getValue(matrix, Matrix.MSCALE_X);
+	}
+
+	private float getValue(Matrix matrix, int whichValue) {
+		matrix.getValues(mMatrixValues);
+		return mMatrixValues[whichValue];
+	}
+
+	private void init() {
+		setScaleType(ImageView.ScaleType.MATRIX);
+		mTouchSlop = ViewConfiguration.getTouchSlop();
+		mGestureListener = new GestureListener();
+		mScaleListener = new ScaleListener();
+
+		mScaleDetector = new ScaleGestureDetector(getContext(), mScaleListener);
+		mGestureDetector = new GestureDetector(getContext(), mGestureListener, null, true);
+		mCurrentScaleFactor = 1f;
+		mDoubleTapDirection = 1;
+	}
+
+	private float maxZoom() {
+		if (mBitmapDisplayed.getBitmap() == null) {
+			return 1F;
+		}
+		float fw = (float) mBitmapDisplayed.getWidth() / (float) mThisWidth;
+		float fh = (float) mBitmapDisplayed.getHeight() / (float) mThisHeight;
+		float max = Math.max(fw, fh) * 4;
+		return max;
+	}
+
+	private float onDoubleTapPost(float scale, float maxZoom) {
+		if (mDoubleTapDirection == 1) {
+			if ((scale + (mScaleFactor * 2)) <= maxZoom) {
+				return scale + mScaleFactor;
+			} else {
+				mDoubleTapDirection = -1;
+				return maxZoom;
+			}
+		} else {
+			mDoubleTapDirection = 1;
+			return 1f;
+		}
 	}
 
 	@Override
-	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-		if (mBitmap != null) {
-			setImage(mBitmap, w);
+	protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+		super.onLayout(changed, left, top, right, bottom);
+		mThisWidth = right - left;
+		mThisHeight = bottom - top;
+		Runnable r = mOnLayoutRunnable;
+		if (r != null) {
+			mOnLayoutRunnable = null;
+			r.run();
+		}
+		if (mBitmapDisplayed.getBitmap() != null) {
+			getProperBaseMatrix(mBitmapDisplayed, mBaseMatrix);
+			setImageMatrix(Command.Layout, getImageViewMatrix());
 		}
 	}
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		if (mIsReflectionError) {
-			return mGestureDetector.onTouchEvent(event);
-		}
-
-		boolean rv = true;
-		// if (event.getPointerCount() == 2) // two fingers are active
-		try {
-			if ((Integer) mMethodPointerCount.invoke(event, mEmptyObjectArray) == 2) {
-				PointF newFirstFingerPosition = new PointF(event.getX(), event.getY());
-				// PointF newSecondFingerPosition = new PointF(event.getX(1), event.getY(1));
-				PointF newSecondFingerPosition = new PointF((Float) mMethodGetX.invoke(event, mInt1ObjectArray),
-						(Float) mMethodGetY.invoke(event, mInt1ObjectArray));
-
-				if (mIsTwoFinger) {
-					zoomIfPinch(newFirstFingerPosition, newSecondFingerPosition);
-				} else {
-					mFirstFingerStartPoint = newFirstFingerPosition;
-					mSecondFingerStartPoint = newSecondFingerPosition;
-					mIsTwoFinger = true;
-				}
-			} else {
-				mIsTwoFinger = false;
-				rv = mGestureDetector.onTouchEvent(event);
+		mScaleDetector.onTouchEvent(event);
+		if (!mScaleDetector.isInProgress())
+			mGestureDetector.onTouchEvent(event);
+		int action = event.getAction();
+		switch (action & MotionEvent.ACTION_MASK) {
+		case MotionEvent.ACTION_UP:
+			if (getScale() < 1f) {
+				zoomTo(1f, 50);
 			}
-		} catch (Exception e) {
-			rv = mGestureDetector.onTouchEvent(event);
+			break;
 		}
-
-		return rv;
-	}
-
-	protected void scroll(float distanceX, float distanceY) {
-		mScrollRectX = mScrollRectX + (int) (distanceX * mZoomInfo.scaleWidth);
-		mScrollRectY = mScrollRectY + (int) (distanceY * mZoomInfo.scaleHeight);
-		fixScrollXY();
-		ZoomableImageView.this.invalidate(); // force a redraw
-	}
-
-	public void setImage(Bitmap bitmap) {
-		setImage(bitmap, this.getWidth());
-	}
-
-	// must call after layout is loaded and measured
-	/**
-	 * Set the bitmap to be used for this ImageView. Any previously set bitmap is recycled.
-	 * 
-	 * @param bitmap
-	 * @param widthOfParent
-	 */
-	public void setImage(Bitmap bitmap, int widthOfParent) {
-		// if(mBitmap!=null){
-		// bitmap.recycle();
-		// }
-		mIsInChanging = true;
-		mBitmap = bitmap;
-		mMinZoomWidth = widthOfParent <= bitmap.getWidth() ? widthOfParent : bitmap.getWidth(); // try to fit to width
-																								// if greater than width
-		// if image to small make max zoom minMaxZoom(1.5) times larger than bitmap width
-		mMaxZoomWidth = minMaxZoom * mMinZoomWidth > bitmap.getWidth() ? (int) (minMaxZoom * mMinZoomWidth) : bitmap
-				.getWidth();
-		mIsTwoFinger = false;
-		mCurrentZoomStep = 1;
-		mCurrentZoomInc = 1;
-		mScrollRectY = mScrollRectX = 0;
-		calcStepZoom(mCurrentZoomStep, mZoomInfo);
-		setVisibility(true);
-		ZoomableImageView.this.invalidate();
-		mIsInChanging = false;
-	}
-
-	public void setVisibility(boolean isVisible) {
-		this.setVisibility(isVisible ? View.VISIBLE : View.GONE);
-	}
-
-	protected void updateZoomInfo(float newWidth, ZoomInfo zoomInfo) {
-		this.mIsInChanging = true;
-		// fix maximal width
-		if (newWidth < mMinZoomWidth) {
-			newWidth = mMinZoomWidth;
-		} else if (newWidth > mMaxZoomWidth) {
-			newWidth = mMaxZoomWidth;
-		}
-
-		// calculate new height
-		float newHeight = (float) mBitmap.getHeight() / mBitmap.getWidth() * newWidth;
-
-		// width/height of current zoomed image
-		zoomInfo.currentWidth = (int) newWidth;
-		zoomInfo.currentHeight = (int) newHeight;
-		// width/height of current "display"
-		zoomInfo.displayWidth = this.getWidth() <= zoomInfo.currentWidth ? this.getWidth() : zoomInfo.currentWidth;
-		zoomInfo.displayHeight = this.getHeight() <= zoomInfo.currentHeight ? this.getHeight() : zoomInfo.currentHeight;
-		// ration of real image size and current image size
-		zoomInfo.scaleWidth = (float) mBitmap.getWidth() / zoomInfo.currentWidth;
-		zoomInfo.scaleHeight = (float) mBitmap.getHeight() / zoomInfo.currentHeight;
-		// how much virtual bitmap pixels are shown on display
-		zoomInfo.zoomDisplayWidth = (int) (zoomInfo.scaleWidth * zoomInfo.displayWidth);
-		zoomInfo.zoomDisplayHeight = (int) (zoomInfo.scaleHeight * zoomInfo.displayHeight);
-
-		// calculate start positions of drawing - if zoom to small for current
-		zoomInfo.screenStartX = this.getWidth() <= zoomInfo.displayWidth ? 0
-				: (int) (0.5f * (this.getWidth() - zoomInfo.displayWidth));
-		zoomInfo.screenStartY = this.getHeight() <= zoomInfo.displayHeight ? 0
-				: (int) (0.5f * (this.getHeight() - zoomInfo.displayHeight));
-		this.mIsInChanging = false;
-	}
-
-	protected boolean zoomIfPinch(PointF newFirst, PointF newSecond) {
-
-		PointF firstFingerDiff = getDifVector(mFirstFingerStartPoint, newFirst);
-		PointF secondFingerDiff = getDifVector(mSecondFingerStartPoint, newSecond);
-		float firstFingerDistance = getVectorNorm(firstFingerDiff);
-		float secondFingerDistance = getVectorNorm(secondFingerDiff);
-		int distance = (int) (firstFingerDistance + secondFingerDistance);
-
-		if (distance < pinchToZoomMinDistance) {
-			return false;
-		}
-
-		float angleDiff = Math.abs(getVectorAngle(firstFingerDiff) - getVectorAngle(secondFingerDiff));
-
-		// if one finger didnt move at all we have pinch zoom also
-		if ((angleDiff < 180 - angleTolerant || angleDiff > 180 + angleTolerant) && firstFingerDistance > 0.0f
-				&& secondFingerDistance > 0.0f) {
-			return false;
-		}
-
-		// point beetween two fingers at start - it will be center of new scroll position
-		PointF center = getCenterVector(mFirstFingerStartPoint, mSecondFingerStartPoint);
-		// difference from start and end points
-		float startDiff = getDistance(mFirstFingerStartPoint, mSecondFingerStartPoint);
-		float endDiff = getDistance(newFirst, newSecond);
-
-		if (startDiff < endDiff) {
-			// zooom in
-			zoomIt(true, distance * distanceZoomMultiplier, center.x, center.y);
-		} else {
-			// zoom out
-			zoomIt(true, -distance * distanceZoomMultiplier, center.x, center.y);
-		}
-
-		mFirstFingerStartPoint = newFirst;
-		mSecondFingerStartPoint = newSecond;
 		return true;
 	}
 
-	// how i fish java has delegates... i dont want to make class of everything
-	// offsetOrZoomStep is offset if smooth or currentZoomStep otherwise
-	protected void zoomIt(boolean isSmooth, int offsetOrZoomStep, float x, float y) {
-		x -= mZoomInfo.screenStartX;
-		y -= mZoomInfo.screenStartY;
+	private void onZoom(float scale) {
+		// super.onZoom( scale );
+		if (!mScaleDetector.isInProgress())
+			mCurrentScaleFactor = scale;
+	}
 
-		float posX = mScrollRectX + (x * mZoomInfo.scaleWidth);
-		float posY = mScrollRectY + (y * mZoomInfo.scaleHeight);
+	private void panBy(float dx, float dy) {
+		RectF rect = getBitmapRect();
+		RectF srect = new RectF(dx, dy, 0, 0);
+		updateRect(rect, srect);
+		postTranslate(srect.left, srect.top);
+		center(true, true);
+	}
 
-		if (isSmooth) {
-			calcSmoothZoom(offsetOrZoomStep, mZoomInfo); // new zoom data
-		} else {
-			calcStepZoom(offsetOrZoomStep, mZoomInfo); // new zoom data
+	private void postScale(float scale, float centerX, float centerY) {
+		mSuppMatrix.postScale(scale, scale, centerX, centerY);
+		setImageMatrix(Command.Zoom, getImageViewMatrix());
+	}
+
+	private void postTranslate(float deltaX, float deltaY) {
+		mSuppMatrix.postTranslate(deltaX, deltaY);
+		setImageMatrix(Command.Move, getImageViewMatrix());
+	}
+
+	public void scrollBy(float x, float y) {
+		panBy(x, y);
+	}
+
+	private void scrollBy(float distanceX, float distanceY, final float durationMs) {
+		final float dx = distanceX;
+		final float dy = distanceY;
+		final long startTime = System.currentTimeMillis();
+		mHandler.post(new Runnable() {
+
+			float old_x = 0;
+			float old_y = 0;
+
+			@Override
+			public void run() {
+				long now = System.currentTimeMillis();
+				float currentMs = Math.min(durationMs, now - startTime);
+				float x = easeOut(currentMs, 0, dx, durationMs);
+				float y = easeOut(currentMs, 0, dy, durationMs);
+				panBy((x - old_x), (y - old_y));
+				old_x = x;
+				old_y = y;
+				if (currentMs < durationMs) {
+					mHandler.post(this);
+				} else {
+					RectF centerRect = getCenter(true, true);
+					if (centerRect.left != 0 || centerRect.top != 0)
+						scrollBy(centerRect.left, centerRect.top);
+				}
+			}
+		});
+	}
+
+	@Override
+	public void setImageBitmap(Bitmap bitmap) {
+		setImageBitmap(bitmap, 0);
+	}
+
+	/**
+	 * This is the ultimate method called when a new bitmap is set
+	 * 
+	 * @param bitmap
+	 * @param rotation
+	 */
+	public void setImageBitmap(Bitmap bitmap, int rotation) {
+		super.setImageBitmap(bitmap);
+		Drawable d = getDrawable();
+		if (d != null) {
+			d.setDither(true);
+		}
+		mBitmapDisplayed.setBitmap(bitmap);
+		mBitmapDisplayed.setRotation(rotation);
+	}
+
+	public void setImageBitmapReset(final Bitmap bitmap, final boolean reset) {
+		setImageRotateBitmapReset(new RotateBitmap(bitmap, 0), reset);
+	}
+
+	// protected void onZoom(float scale) {
+	// }
+
+	public void setImageBitmapReset(final Bitmap bitmap, final int rotation, final boolean reset) {
+		setImageRotateBitmapReset(new RotateBitmap(bitmap, rotation), reset);
+	}
+
+	private void setImageMatrix(Command command, Matrix matrix) {
+		setImageMatrix(matrix);
+	}
+
+	private void setImageRotateBitmapReset(final RotateBitmap bitmap, final boolean reset) {
+
+		final int viewWidth = getWidth();
+		if (viewWidth <= 0) {
+			mOnLayoutRunnable = new Runnable() {
+
+				@Override
+				public void run() {
+					setImageBitmapReset(bitmap.getBitmap(), bitmap.getRotation(), reset);
+				}
+			};
+			return;
 		}
 
-		mScrollRectX = (int) (posX - x * mZoomInfo.scaleWidth);
-		mScrollRectY = (int) (posY - y * mZoomInfo.scaleHeight);
-		fixScrollXY();
+		if (bitmap.getBitmap() != null) {
+			getProperBaseMatrix(bitmap, mBaseMatrix);
+			setImageBitmap(bitmap.getBitmap(), bitmap.getRotation());
+		} else {
+			mBaseMatrix.reset();
+			setImageBitmap(null);
+		}
 
-		ZoomableImageView.this.invalidate();
+		if (reset) {
+			mSuppMatrix.reset();
+		}
+
+		setImageMatrix(Command.Reset, getImageViewMatrix());
+		mMaxZoom = maxZoom();
+
+		if (mListener != null) {
+			mListener.onBitmapChanged(bitmap.getBitmap());
+		}
+		mScaleFactor = getMaxZoom() / 3;
+	}
+
+	public void setOnBitmapChangedListener(OnBitmapChangedListener listener) {
+		mListener = listener;
+	}
+
+	private void updateRect(RectF bitmapRect, RectF scrollRect) {
+		float width = getWidth();
+		float height = getHeight();
+
+		if (bitmapRect.top >= 0 && bitmapRect.bottom <= height)
+			scrollRect.top = 0;
+		if (bitmapRect.left >= 0 && bitmapRect.right <= width)
+			scrollRect.left = 0;
+		if (bitmapRect.top + scrollRect.top >= 0 && bitmapRect.bottom > height)
+			scrollRect.top = (int) (0 - bitmapRect.top);
+		if (bitmapRect.bottom + scrollRect.top <= (height - 0) && bitmapRect.top < 0)
+			scrollRect.top = (int) ((height - 0) - bitmapRect.bottom);
+		if (bitmapRect.left + scrollRect.left >= 0)
+			scrollRect.left = (int) (0 - bitmapRect.left);
+		if (bitmapRect.right + scrollRect.left <= (width - 0))
+			scrollRect.left = (int) ((width - 0) - bitmapRect.right);
+		// Log.d( LOG_TAG, "scrollRect(2): " + scrollRect.toString() );
+	}
+
+	public void zoomTo(float scale) {
+		float cx = getWidth() / 2F;
+		float cy = getHeight() / 2F;
+		zoomTo(scale, cx, cy);
+	}
+
+	public void zoomTo(float scale, float durationMs) {
+		float cx = getWidth() / 2F;
+		float cy = getHeight() / 2F;
+		zoomTo(scale, cx, cy, durationMs);
+	}
+
+	public void zoomTo(float scale, float centerX, float centerY) {
+		if (scale > mMaxZoom)
+			scale = mMaxZoom;
+		float oldScale = getScale();
+		float deltaScale = scale / oldScale;
+		postScale(deltaScale, centerX, centerY);
+		onZoom(getScale());
+		center(true, true);
+	}
+
+	private void zoomTo(float scale, final float centerX, final float centerY, final float durationMs) {
+		// Log.d( LOG_TAG, "zoomTo: " + scale + ", " + centerX + ": " + centerY );
+		final long startTime = System.currentTimeMillis();
+		final float incrementPerMs = (scale - getScale()) / durationMs;
+		final float oldScale = getScale();
+		mHandler.post(new Runnable() {
+
+			@Override
+			public void run() {
+				long now = System.currentTimeMillis();
+				float currentMs = Math.min(durationMs, now - startTime);
+				float target = oldScale + (incrementPerMs * currentMs);
+				zoomTo(target, centerX, centerY);
+				if (currentMs < durationMs) {
+					mHandler.post(this);
+				} else {
+					// if ( getScale() < 1f ) {}
+				}
+			}
+		});
 	}
 }

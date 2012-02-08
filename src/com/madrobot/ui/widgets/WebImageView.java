@@ -52,6 +52,10 @@ public class WebImageView extends ViewSwitcher implements TaskNotifier {
 
 	private ScaleType scaleType = ScaleType.CENTER_CROP;
 
+//	public WebImageView(Context context, AttributeSet attributes,int defStyle) {
+//		this(context,attributes,0);
+//	}
+	
 	public WebImageView(Context context, AttributeSet attributes) {
 		super(context, attributes);
 		TypedArray styledAttrs = context.obtainStyledAttributes(attributes, R.styleable.WebImageView);

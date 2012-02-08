@@ -109,4 +109,8 @@ public class UIUtils {
         anim.setDuration(duration);
         return anim;
     }
+    
+    public static int getScaledPixels(Context ctx, int unscaled) {
+    	return (int) (unscaled * ctx.getResources().getDisplayMetrics().density + 0.5f);
+    }
 }

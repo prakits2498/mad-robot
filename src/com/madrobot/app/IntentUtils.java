@@ -1,5 +1,6 @@
 package com.madrobot.app;
 
+import java.io.File;
 import java.util.List;
 
 import android.content.Context;
@@ -26,8 +27,7 @@ public class IntentUtils {
 	public static boolean isIntentAvailable(Context context, String action) {
 		final PackageManager packageManager = context.getPackageManager();
 		final Intent intent = new Intent(action);
-		List<ResolveInfo> resolveInfo = packageManager.queryIntentActivities(
-				intent, PackageManager.MATCH_DEFAULT_ONLY);
+		List<ResolveInfo> resolveInfo = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
 		if (resolveInfo.size() > 0) {
 			return true;
 		}
@@ -41,8 +41,8 @@ public class IntentUtils {
 	 *            application context
 	 */
 	public static void openMarketPage(Context context) {
-		Intent marketIntent = new Intent(Intent.ACTION_VIEW,
-				Uri.parse("market://details?id=" + context.getPackageName()));
+		Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id="
+				+ context.getPackageName()));
 		context.startActivity(marketIntent);
 	}
 
@@ -55,8 +55,24 @@ public class IntentUtils {
 	 *            application context
 	 */
 	public static void searchMarket(String query, Context context) {
-		Intent marketIntent = new Intent(Intent.ACTION_VIEW,
-				Uri.parse("market://search?q=" + query));
+		Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://search?q=" + query));
 		context.startActivity(marketIntent);
+	}
+
+	/**
+	 * Install the APK at the given file path.
+	 * <p>
+	 * Launches the package installer activity after setting the given APK file to be installed.
+	 * </p>
+	 * 
+	 * @param context
+	 * @param filePath
+	 */
+	public static void installAPK(Context context, final String filePath) {
+		Intent intent = new Intent(Intent.ACTION_VIEW);
+		intent.setDataAndType(Uri.fromFile(new File(filePath)), "application/vnd.android.package-archive");
+		intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+		intent.setClassName("com.android.packageinstaller", "com.android.packageinstaller.PackageInstallerActivity");
+		context.startActivity(intent);
 	}
 }

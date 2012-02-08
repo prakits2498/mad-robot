@@ -10,6 +10,9 @@
  ******************************************************************************/
 package com.madrobot.db;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -17,12 +20,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 
 import com.madrobot.beans.Introspector;
+import com.madrobot.io.IOUtils;
 import com.madrobot.reflect.MethodUtils;
 
 public final class DBUtils {
@@ -151,6 +156,16 @@ public final class DBUtils {
 		}
 
 		return result;
+	}
+
+	public static void copyDataBaseFromAssets(Context context, String dbName) throws IOException {
+
+		// Path to the just created empty db
+		File dbDir = new File("data/data/" + context.getPackageName() + "/databases/");
+		dbDir.mkdirs();
+		String outFileName = dbDir.getAbsolutePath() + dbName;
+		IOUtils.copy( context.getAssets().open(dbName),new File(outFileName));
+
 	}
 
 }

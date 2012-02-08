@@ -18,18 +18,20 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.channels.FileChannel;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import android.util.Log;
 
-import com.madrobot.io.IOUtils;
 import com.madrobot.io.IOProgressCallback;
+import com.madrobot.io.IOUtils;
 import com.madrobot.text.StringUtils;
 
 /**
  * File System utilities
+ * 
  * @author elton.stephen.kent
  * 
  */
@@ -56,6 +58,27 @@ public class FileUtils {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Returns the size of the file in byte units.
+	 * <p>
+	 * Eg:<br/>
+	 * <code>size(7168)</code> will return <code> 7KB</code>
+	 * </p>
+	 * 
+	 * @param size
+	 * @return
+	 */
+	public static String size(long size) {
+		if (size / (1024 * 1024) > 0) {
+			float tmpSize = (float) (size) / (float) (1024 * 1024);
+			DecimalFormat df = new DecimalFormat("#.##");
+			return "" + df.format(tmpSize) + "MB";
+		} else if (size / 1024 > 0) {
+			return "" + (size / (1024)) + "KB";
+		} else
+			return "" + size + "Bytes";
 	}
 
 	/**
@@ -445,7 +468,8 @@ public class FileUtils {
 	 * @param from
 	 * @param targetDirectory
 	 * @param overwrite
-	 * @param deleteOriginal if true, the original file will be deleted
+	 * @param deleteOriginal
+	 *            if true, the original file will be deleted
 	 * @param callback
 	 *            Progress callback. can be null.
 	 */
@@ -496,30 +520,30 @@ public class FileUtils {
 	 * <p>
 	 * Could be a blocking method, good to use in a non blocking thread.
 	 * </p>
+	 * 
 	 * @param file
-	 * @return Size in bytes of the directory, 0 if the file does not exist 
+	 * @return Size in bytes of the directory, 0 if the file does not exist
 	 */
 	public static long getDirectorySize(File file) {
 		long size = 0;
 		if (!file.exists())
 			return 0;
-		if(file.isDirectory()){
+		if (file.isDirectory()) {
 			File[] contents = file.listFiles();
-			for (int i = 0; i < contents.length; i++){
-				if(contents[i].isDirectory()){
-					size +=getDirectorySize(contents[i]);
-				}else{
-					size +=contents[i].length();
+			for (int i = 0; i < contents.length; i++) {
+				if (contents[i].isDirectory()) {
+					size += getDirectorySize(contents[i]);
+				} else {
+					size += contents[i].length();
 				}
 			}
-		}else{
-			size=file.length();
+		} else {
+			size = file.length();
 		}
-		
+
 		return size;
 
 	}
-
 
 	/**
 	 * Removes all files from the directory
