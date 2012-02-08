@@ -14,6 +14,9 @@ import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -29,7 +32,6 @@ import java.util.List;
 import android.util.Log;
 
 public class IOUtils {
-	
 
 	public static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
 
@@ -137,6 +139,18 @@ public class IOUtils {
 			return -1;
 		}
 		return (int) count;
+	}
+
+	/**
+	 * Copy the given input stream to a file
+	 * @param input
+	 * @param file
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	public static int copy(InputStream input, File file) throws FileNotFoundException, IOException {
+		return copy(input, new FileOutputStream(file));
 	}
 
 	/**
@@ -268,6 +282,9 @@ public class IOUtils {
 			output.write(buffer, 0, n);
 			count += n;
 		}
+		output.flush();
+		output.close();
+		input.close();
 		return count;
 	}
 

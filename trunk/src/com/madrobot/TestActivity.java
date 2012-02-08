@@ -10,11 +10,13 @@
  ******************************************************************************/
 package com.madrobot;
 
+import java.io.File;
+
 import android.app.Activity;
 import android.os.Bundle;
 
 import com.madrobot.di.wizard.xml.XMLWizard;
-import com.madrobot.text.English;
+import com.madrobot.io.file.FileUtils;
 
 public class TestActivity extends Activity {
 	/** Called when the activity is first created. */
@@ -22,7 +24,8 @@ public class TestActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		System.out.println("English"+English.longToEnglish(3465));
+		System.out.println("size"+new File("mnt/sdcard/build.xml").length());
+		System.out.println("Size"+FileUtils.size(new File("mnt/sdcard/build.xml").length()));
 		Person person=new Person();
 		person.setAge("12");
 		person.setName("elton");
