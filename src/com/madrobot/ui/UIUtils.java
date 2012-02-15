@@ -17,12 +17,16 @@ import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.text.method.MovementMethod;
 import android.text.style.ClickableSpan;
+import android.util.DisplayMetrics;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
-import android.view.animation.Animation.AnimationListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class UIUtils {
 	public abstract static class ClickSpan extends ClickableSpan {
@@ -34,8 +38,11 @@ public class UIUtils {
 	 * <p>
 	 * The entire text needs to set to the textview before calling this method
 	 * </p>
-	 * @param view Textview to assign the clickage text to.
-	 * @param clickableText Text in the textview that needs to be made clickable.
+	 * 
+	 * @param view
+	 *            Textview to assign the clickage text to.
+	 * @param clickableText
+	 *            Text in the textview that needs to be made clickable.
 	 * @param span
 	 */
 	public static void clickify(TextView view, final String clickableText, final ClickSpan span) {
@@ -80,37 +87,82 @@ public class UIUtils {
 
 		return size;
 	}
-	
+
 	public static Animation createHeightChangeAnimation(int oldHeight, int newHeight, int duration, AnimationListener listener) {
-		float targetScale = (float)newHeight / (float)oldHeight;
+		float targetScale = (float) newHeight / (float) oldHeight;
 		ScaleAnimation anim = new ScaleAnimation(1, 1, 1.0f, targetScale);
 		anim.setDuration(duration);
 		anim.setAnimationListener(listener);
 		return anim;
 	}
-	
+
 	public static Animation createFadeAnimation(boolean out, int duration, AnimationListener listener) {
 		AlphaAnimation anim = new AlphaAnimation((out ? 1.0f : 0.0f), (out ? 0.0f : 1.0f));
 		anim.setDuration(duration);
 		anim.setAnimationListener(listener);
 		return anim;
 	}
+
+	public static Animation createSlideAnimation(boolean relToParent, boolean horizontal, boolean fromLeftOrTop, boolean exiting, int duration) {
+		int rel = (relToParent ? Animation.RELATIVE_TO_PARENT : Animation.RELATIVE_TO_SELF);
+		float movingFrom = (exiting ? 0f : (fromLeftOrTop ? -1f : 1f));
+		float movingTo = (exiting ? (fromLeftOrTop ? 1f : -1f) : 0f);
+		TranslateAnimation anim;
+		if (horizontal) {
+			anim = new TranslateAnimation(rel, movingFrom, rel, movingTo, rel, 0, rel, 0);
+		} else {
+			anim = new TranslateAnimation(rel, 0, rel, 0, rel, movingFrom, rel, movingTo);
+		}
+		anim.setDuration(duration);
+		return anim;
+	}
+
+	public static int getScaledPixels(Context ctx, int unscaled) {
+		return (int) (unscaled * ctx.getResources().getDisplayMetrics().density + 0.5f);
+	}
+
+	/**
+	 * Display a system Toast using a custom ui view.
+	 * 
+	 * @param viewResId
+	 *            the view res id
+	 * @param duration
+	 *            the duration
+	 * @param gravity
+	 *            the gravity
+	 */
+	public static void showCustomToast(Context mContext, int viewResId, int duration, int gravity) {
+		View layout = getLayoutInflater(mContext).inflate(viewResId, null);
+
+		Toast toast = new Toast(mContext.getApplicationContext());
+
+		toast.setGravity(gravity, 0, 0);
+		toast.setDuration(duration);
+		toast.setView(layout);
+		toast.show();
+	}
+
+	public static LayoutInflater getLayoutInflater(Context mContext) {
+		return (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+	}
 	
-    public static Animation createSlideAnimation(boolean relToParent, boolean horizontal, boolean fromLeftOrTop, boolean exiting, int duration) {
-        int rel = (relToParent ? Animation.RELATIVE_TO_PARENT : Animation.RELATIVE_TO_SELF);
-        float movingFrom = (exiting ? 0f : (fromLeftOrTop ? -1f : 1f));
-        float movingTo = (exiting ? (fromLeftOrTop ? 1f : -1f) : 0f);
-        TranslateAnimation anim;
-        if (horizontal) {
-            anim = new TranslateAnimation(rel, movingFrom, rel, movingTo, rel, 0, rel, 0);
-        } else {
-            anim = new TranslateAnimation(rel, 0, rel, 0, rel, movingFrom, rel, movingTo);
-        }
-        anim.setDuration(duration);
-        return anim;
-    }
-    
-    public static int getScaledPixels(Context ctx, int unscaled) {
-    	return (int) (unscaled * ctx.getResources().getDisplayMetrics().density + 0.5f);
-    }
+	/**
+	 * Gets the optimal number of columns that can be used for the given width
+	 *
+	 * @param drawable_width the drawable_width
+	 * @return the screen optimal columns
+	 */
+	public static int getScreenOptimalColumns( Context mContext,int drawable_width ) {
+		DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
+		double a = (double) metrics.widthPixels / (double) metrics.densityDpi; // 2.25
+		int b = (int) Math.ceil( a * 2.0 ); // 5
+		
+		if( ( b * drawable_width ) > metrics.widthPixels ){
+			return metrics.widthPixels/drawable_width;
+		}
+		
+		return Math.min( Math.max( b, 3 ), 10 );
+	}
+
 }
