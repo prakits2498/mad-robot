@@ -31,7 +31,7 @@ import java.util.Random;
  * </p>
  * 
  */
-public class RandomStringUtils {
+public class RandomString {
 
 	/**
 	 * <p>
@@ -398,7 +398,7 @@ public class RandomStringUtils {
 	 * instance to operate.
 	 * </p>
 	 */
-	public RandomStringUtils() {
+	public RandomString() {
 		super();
 	}
 
