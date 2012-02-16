@@ -10,6 +10,15 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 
+/**
+ * Location service that can be started dynamically.
+ * <p>
+ * 
+ * </p>
+ * @see com.madrobot.device.ServiceBinder
+ * @author elton.stephen.kent
+ *
+ */
 public class LocationService extends Service {
 
 	private Location mBestLocation;
