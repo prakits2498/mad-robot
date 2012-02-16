@@ -8,7 +8,7 @@
  * Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
-package com.madrobot.io.file;
+package com.madrobot.io;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
