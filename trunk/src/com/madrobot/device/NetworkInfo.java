@@ -23,13 +23,24 @@ public final class NetworkInfo {
 
 	private boolean hasTelephoneSupport;
 	private boolean isRoaming;
+	private boolean hasDataConnection;
+
+	public boolean isHasDataConnection() {
+		return hasDataConnection;
+	}
+
+	void setHasDataConnection(boolean hasDataConnection) {
+		this.hasDataConnection = hasDataConnection;
+	}
+
 	private int networkType;
 	private String operatorName;
 	private int phoneType;
 	private String voicemailNumber;
+
 	NetworkInfo() {
 	}
-	
+
 	/**
 	 * 
 	 * 
@@ -72,6 +83,7 @@ public final class NetworkInfo {
 
 	/**
 	 * Returns true if the device has telephony support
+	 * 
 	 * @return
 	 */
 	public boolean hasTelephoneSupport() {
@@ -107,8 +119,7 @@ public final class NetworkInfo {
 	 * Get the phone type
 	 * 
 	 * 
-	 * @return TelephonyManager.PHONETYPE_XXX , 0 if phone type cannot be
-	 *         established.
+	 * @return TelephonyManager.PHONETYPE_XXX , 0 if phone type cannot be established.
 	 */
 	void setPhoneType(int phoneType) {
 		this.phoneType = phoneType;

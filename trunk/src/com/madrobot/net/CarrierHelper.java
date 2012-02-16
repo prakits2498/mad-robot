@@ -28,6 +28,7 @@ import android.net.wifi.WifiManager;
  * Utility to find out the current carrier type used by the device. (i.e) Wifi
  * or 3G
  * <p>
+ * <b>Note:</b>ACCESS_NETWORK_STATE permission needs to be set before using this class.
  * It implements a dynamic broadcast listener that receives carrier information
  * as and when it changes.<br/>
  * Usage:</br>
