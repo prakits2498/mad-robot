@@ -1,6 +1,7 @@
 package com.madrobot.ui.widgets;
 
 import com.madrobot.R;
+import com.madrobot.ui.UIUtils;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -27,13 +28,13 @@ import android.widget.ImageView;
  * <td><code>centerViewZoom</code></td>
  * <td>integer</td>
  * <td>120</td>
- * <td>The Zoom level of the view thats in the center of the CoverFlowGallery(currently selected)</td>
+ * <td>The Zoom level of the ImageView thats in the center of the CoverFlowGallery(currently selected)</td>
  * </tr>
  * <tr>
  * <td><code>rotationAngle</code></td>
  * <td>integer</td>
  * <td>60</td>
- * <td>Angle at which the items to the left and right of the center item stay rotated</td>
+ * <td>Angle at which the ImageViews to the left and right of the center item stay rotated</td>
  * </tr>
  * </table>
  * 
@@ -45,8 +46,7 @@ import android.widget.ImageView;
  * 
  * <b>Creating a CoverFlowGallery Adapter</b><br/>
  * <p>
- * An item in a this adapter could be anything that extends a View. To comply with common association of a Gallery, we
- * will create an Adapter that uses an ImageView.
+ * Creating an ImageAdapter is simply done by extending BaseAdapter.
  * </p>
  * <code>
  * <pre>
@@ -70,7 +70,7 @@ import android.widget.ImageView;
  *		public long getItemId(int position) {
  *			return position;
  *		}
- *
+ *		<font color="#007F0E">//Must return an instance of ImageView only</font>
  *		public View getView(int position, View convertView, ViewGroup parent) {
  *
  *			<font color="#007F0E">//Use this code if you want to load from resources</font>
@@ -95,14 +95,7 @@ import android.widget.ImageView;
  */
 public class CoverFlowGallery extends Gallery {
 
-	/**
-	 * Get the Centre of the View
-	 * 
-	 * @return The centre of the given view.
-	 */
-	private static int getCenterOfView(View view) {
-		return view.getLeft() + view.getWidth() / 2;
-	}
+
 
 	/**
 	 * Graphics Camera used for transforming the matrix of ImageViews
@@ -157,7 +150,7 @@ public class CoverFlowGallery extends Gallery {
 	 */
 	protected boolean getChildStaticTransformation(View child, Transformation t) {
 
-		final int childCenter = getCenterOfView(child);
+		final int childCenter = UIUtils.getCenterOfView(child);
 		final int childWidth = child.getWidth();
 		int rotationAngle = 0;
 
@@ -176,7 +169,7 @@ public class CoverFlowGallery extends Gallery {
 
 		return true;
 	}
-
+	
 	/**
 	 * Get the max rotational angle of the image
 	 * 

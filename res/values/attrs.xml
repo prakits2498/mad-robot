@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Attribute sets for custom widgets DO NOT EDIT -->
 <resources>
+ <!-- Attributes for com.madrobot.ui.widgets.ColorPickerView-->
+    <declare-styleable name="ColorPickerView">
+        <attr format="color" name="borderColor" />
+        <attr format="dimension" name="selectorRadius" />
+        <attr format="color" name="selectorOuterColor" />
+        <attr format="color" name="selectorInnerColor" />
+        <attr format="color" name="sliderPanelSelectorColor" />
+        <attr format="dimension" name="sliderPanelPadding" />
+        <attr format="dimension" name="sliderPanelWidth" />
+    </declare-styleable>
 
     <!-- Attributes for com.madrobot.ui.widgets.WebImageView -->
     <declare-styleable name="WebImageView">

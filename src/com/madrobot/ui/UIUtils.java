@@ -88,8 +88,6 @@ public class UIUtils {
 		return size;
 	}
 
-	
-
 	public static int getScaledPixels(Context ctx, int unscaled) {
 		return (int) (unscaled * ctx.getResources().getDisplayMetrics().density + 0.5f);
 	}
@@ -119,23 +117,32 @@ public class UIUtils {
 		return (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
 	}
-	
+
 	/**
 	 * Gets the optimal number of columns that can be used for the given width
-	 *
-	 * @param drawable_width the drawable_width
+	 * 
+	 * @param drawable_width
+	 *            the drawable_width
 	 * @return the screen optimal columns
 	 */
-	public static int getScreenOptimalColumns( Context mContext,int drawable_width ) {
+	public static int getScreenOptimalColumns(Context mContext, int drawable_width) {
 		DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
 		double a = (double) metrics.widthPixels / (double) metrics.densityDpi; // 2.25
-		int b = (int) Math.ceil( a * 2.0 ); // 5
-		
-		if( ( b * drawable_width ) > metrics.widthPixels ){
-			return metrics.widthPixels/drawable_width;
+		int b = (int) Math.ceil(a * 2.0); // 5
+
+		if ((b * drawable_width) > metrics.widthPixels) {
+			return metrics.widthPixels / drawable_width;
 		}
-		
-		return Math.min( Math.max( b, 3 ), 10 );
+
+		return Math.min(Math.max(b, 3), 10);
 	}
 
+	/**
+	 * Get the Centre of the View
+	 * 
+	 * @return The centre of the given view.
+	 */
+	public static int getCenterOfView(View view) {
+		return view.getLeft() + view.getWidth() / 2;
+	}
 }

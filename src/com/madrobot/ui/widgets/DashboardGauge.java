@@ -29,8 +29,10 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.View;
+import android.view.View.MeasureSpec;
 
-public final class DashboardGauge extends CustomWidget {
+public final class DashboardGauge extends View {
 
 	private static final int centerDegree = 40; // the one in the top center (12
 
@@ -85,14 +87,17 @@ public final class DashboardGauge extends CustomWidget {
 
 	public DashboardGauge(Context context) {
 		super(context);
+		setupDrawingTools();
 	}
 
 	public DashboardGauge(Context context, AttributeSet attrs) {
 		super(context, attrs);
+		setupDrawingTools();
 	}
 
 	public DashboardGauge(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
+		setupDrawingTools();
 	}
 
 	private int chooseDimension(int mode, int size) {
@@ -378,7 +383,7 @@ public final class DashboardGauge extends CustomWidget {
 		invalidate();
 	}
 
-	@Override
+	
 	protected void setupDrawingTools() {
 		rimRect = new RectF(0.1f, 0.1f, 0.9f, 0.9f);
 
