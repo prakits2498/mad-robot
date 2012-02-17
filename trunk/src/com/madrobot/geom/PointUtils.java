@@ -112,5 +112,20 @@ public class PointUtils {
 		point.x += dx;
 		point.y += dy;
 	}
-	
+
+	/**
+	 * convert an x,y point to degrees.
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	public static float xyToDegrees(float x, float y) {
+		float distanceFromCenter = PointF.length((x - 0.5f), (y - 0.5f));
+		if (distanceFromCenter < 0.1f || distanceFromCenter > 0.5f) { // ignore center and out of bounds events
+			return Float.NaN;
+		} else {
+			return (float) Math.toDegrees(Math.atan2(x - 0.5f, y - 0.5f));
+		}
+	}
+
 }
