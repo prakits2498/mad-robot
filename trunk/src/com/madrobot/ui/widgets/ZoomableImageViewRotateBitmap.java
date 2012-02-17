@@ -4,6 +4,12 @@ import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.RectF;
 
+/**
+ * 
+ * @author elton.stephen.kent
+ * @hide
+ * @exclude
+ */
 class ZoomableImageViewRotateBitmap {
 
 	private Bitmap mBitmap;
