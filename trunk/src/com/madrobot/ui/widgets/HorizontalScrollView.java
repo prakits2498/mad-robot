@@ -468,7 +468,7 @@ public class HorizontalScrollView extends ViewGroup {
 
 	@Override
 	protected void onRestoreInstanceState(Parcelable state) {
-		SavedState savedState = (SavedState) state;
+		HorizontalScrollViewSavedState savedState = (HorizontalScrollViewSavedState) state;
 		super.onRestoreInstanceState(savedState.getSuperState());
 		if (savedState.currentPage != INVALID_PAGE) {
 			mCurrentPage = savedState.currentPage;
@@ -477,7 +477,7 @@ public class HorizontalScrollView extends ViewGroup {
 
 	@Override
 	protected Parcelable onSaveInstanceState() {
-		final SavedState state = new SavedState(super.onSaveInstanceState());
+		final HorizontalScrollViewSavedState state = new HorizontalScrollViewSavedState(super.onSaveInstanceState());
 		state.currentPage = mCurrentPage;
 		return state;
 	}
