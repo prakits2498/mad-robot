@@ -96,7 +96,7 @@ public class ZoomableImageView extends ImageView {
 	static final float MIN_ZOOM = 0.9f;
 	final private float MAX_ZOOM = 2.0f;
 	private Matrix mBaseMatrix = new Matrix();
-	final private RotateBitmap mBitmapDisplayed = new RotateBitmap(null, 0);
+	final private ZoomableImageViewRotateBitmap mBitmapDisplayed = new ZoomableImageViewRotateBitmap(null, 0);
 	private float mCurrentScaleFactor;
 	private final Matrix mDisplayMatrix = new Matrix();
 
@@ -188,7 +188,7 @@ public class ZoomableImageView extends ImageView {
 		return new RectF(deltaX, deltaY, 0, 0);
 	}
 
-	public RotateBitmap getDisplayBitmap() {
+	public ZoomableImageViewRotateBitmap getDisplayBitmap() {
 		return mBitmapDisplayed;
 	}
 
@@ -208,7 +208,7 @@ public class ZoomableImageView extends ImageView {
 	 * @param bitmap
 	 * @param matrix
 	 */
-	private void getProperBaseMatrix(RotateBitmap bitmap, Matrix matrix) {
+	private void getProperBaseMatrix(ZoomableImageViewRotateBitmap bitmap, Matrix matrix) {
 		float viewWidth = getWidth();
 		float viewHeight = getHeight();
 		float w = bitmap.getWidth();
@@ -382,21 +382,21 @@ public class ZoomableImageView extends ImageView {
 	}
 
 	public void setImageBitmapReset(final Bitmap bitmap, final boolean reset) {
-		setImageRotateBitmapReset(new RotateBitmap(bitmap, 0), reset);
+		setImageRotateBitmapReset(new ZoomableImageViewRotateBitmap(bitmap, 0), reset);
 	}
 
 	// protected void onZoom(float scale) {
 	// }
 
 	public void setImageBitmapReset(final Bitmap bitmap, final int rotation, final boolean reset) {
-		setImageRotateBitmapReset(new RotateBitmap(bitmap, rotation), reset);
+		setImageRotateBitmapReset(new ZoomableImageViewRotateBitmap(bitmap, rotation), reset);
 	}
 
 	private void setImageMatrix(Command command, Matrix matrix) {
 		setImageMatrix(matrix);
 	}
 
-	private void setImageRotateBitmapReset(final RotateBitmap bitmap, final boolean reset) {
+	private void setImageRotateBitmapReset(final ZoomableImageViewRotateBitmap bitmap, final boolean reset) {
 
 		final int viewWidth = getWidth();
 		if (viewWidth <= 0) {

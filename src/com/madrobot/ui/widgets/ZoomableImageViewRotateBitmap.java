@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.RectF;
 
-class RotateBitmap {
+class ZoomableImageViewRotateBitmap {
 
 	private Bitmap mBitmap;
 	private int mRotation;
@@ -13,7 +13,7 @@ class RotateBitmap {
 	private int mBitmapWidth;
 	private int mBitmapHeight;
 
-	RotateBitmap(Bitmap bitmap, int rotation) {
+	ZoomableImageViewRotateBitmap(Bitmap bitmap, int rotation) {
 		mRotation = rotation % 360;
 		setBitmap(bitmap);
 	}
