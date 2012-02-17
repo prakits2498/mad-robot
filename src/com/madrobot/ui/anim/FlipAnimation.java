@@ -1,4 +1,4 @@
-package com.madrobot.ui;
+package com.madrobot.ui.anim;
 
 import android.graphics.Camera;
 import android.graphics.Matrix;
