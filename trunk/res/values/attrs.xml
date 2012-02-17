@@ -27,14 +27,17 @@
         <attr format="boolean" name="drawSelector" />
     </declare-styleable>
 
-<!--     Attributes for com.madrobot.ui.widgets.ZoomableImageView
+    <!--
+         Attributes for com.madrobot.ui.widgets.ZoomableImageView
     <declare-styleable name="ZoomableImageView">
         <attr format="integer" name="maxZoomSteps" />
         <attr format="boolean" name="doubleTapToZoom" />
         <attr format="float" name="minMaxZoom" />
         <attr format="float" name="pinchToZoomMinDistance" />
         <attr format="integer" name="angleTolerant" />
-    </declare-styleable> -->
+    </declare-styleable>
+    -->
+
 
     <!-- Attributes for com.madrobot.ui.widgets.SortableListView -->
     <declare-styleable name="SortableListView">
@@ -49,6 +52,12 @@
             <enum name="slideRight" value="1" />
             <enum name="slideLeft" value="2" />
         </attr>
+    </declare-styleable>
+
+    <!-- Attributes for com.madrobot.ui.widgets.CoverFlowGallery -->
+    <declare-styleable name="CoverFlowGallery">
+        <attr format="integer" name="centerViewZoom" />
+        <attr format="integer" name="rotationAngle" />
     </declare-styleable>
 
 </resources>
