@@ -10,17 +10,16 @@
  ******************************************************************************/
 package com.madrobot;
 
-import java.io.File;
-
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.widget.TextView;
+import android.widget.ImageView;
 
-import com.madrobot.di.wizard.xml.XMLWizard;
-import com.madrobot.io.file.FileUtils;
-import com.madrobot.ui.UIUtils;
+import com.madrobot.graphics.bitmap.BitmapFilters;
+import com.madrobot.graphics.bitmap.ConvolveBitmapFilters;
+import com.madrobot.graphics.bitmap.WholeImageBitmapFilters;
 
 public class TestActivity extends Activity {
 	/** Called when the activity is first created. */
@@ -28,28 +27,12 @@ public class TestActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		System.out.println("size"+new File("mnt/sdcard/build.xml").length());
-		System.out.println("Size"+FileUtils.size(new File("mnt/sdcard/build.xml").length()));
-		Person person=new Person();
-		person.setAge("12");
-		person.setName("elton");
-		Asset ass=new Asset("test","test2");
-	 	ass.setCar("carrol");
-		ass.setBike("sdfs");
-		person.setAsset(ass);
-		
-		
-		XMLWizard xx=new XMLWizard();
-		xx.alias("pekkrson", Person.class);
-		xx.alias("Ass", Asset.class);
-		String xml=xx.toXML(person);
-		System.out.println("XML->"+xml);
-
-		Person pe=(Person) xx.fromXML(xml);
-		System.out.println(pe.getName());
-		System.out.println(pe.list[0].getBike());
-		TextView text=(TextView) findViewById(R.id.textText);
-		Bitmap textN=BitmapFactory.decodeResource(getResources(), R.drawable.icon);
-		UIUtils.insertBitmapIntoTextView(text, "Text with bitmap inlined!", textN, 16);
+		Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.two);
+		Bitmap bitmap2 = WholeImageBitmapFilters.oilPaint(bitmap, 3, 256, Config.ARGB_8888);// (bitmap,Config.ARGB_8888);//(bitmap,
+																							// BitmapFilters.CLAMP_EDGES,
+																							// true, true,
+																							// Bitmap.Config.ARGB_8888);
+		ImageView img = (ImageView) findViewById(R.id.text);
+		img.setImageBitmap(bitmap2);
 	}
 }
