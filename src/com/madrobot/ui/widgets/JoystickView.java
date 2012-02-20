@@ -18,8 +18,9 @@ import com.madrobot.R;
  * Joystick view. Behaves just an analog joystick.
  * <p>
  * Requires the vibrate permission to be set (android.permission.VIBRATE).<br/>
+ * <img src="../../../../resources/JoystickView.png"><br/>
  * The following are the JoystickView attributes (attrs.xml)
- * <table width="350" cellspacing="1">
+ * <table  cellspacing="1" cellpadding="3">
  * <tr>
  * <th><b>Attribute</b></td>
  * <td><b>Type</b></td>

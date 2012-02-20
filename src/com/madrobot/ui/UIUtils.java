@@ -157,6 +157,9 @@ public class UIUtils {
 
 	/**
 	 * Sets bitmap along with a text in a TextView
+	 * <p>
+	 * <img src="../../../../resources/bitmapinlined.png"><br/>
+	 * </p>
 	 * @param tv text view to set the text along with the image
 	 * @param string string to set to the textview
 	 * @param bitmap bitmap to insert in the string
@@ -166,10 +169,7 @@ public class UIUtils {
 		StringBuilder appender=new StringBuilder(string);
 		appender.insert(insertionIndex, ' ');
 		SpannableStringBuilder builder=new SpannableStringBuilder(appender.toString());
-		
 		ImageSpan imageSpan=new ImageSpan(bitmap);
-		if(insertionIndex==0){
-		}
 		builder.setSpan(imageSpan, insertionIndex,insertionIndex+1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 		tv.setText( builder, BufferType.SPANNABLE );
 	}

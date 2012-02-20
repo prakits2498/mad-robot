@@ -24,7 +24,7 @@ import com.madrobot.ui.adapters.WheelViewAdapter;
  * iPhone style wheel based selector
  * <p>
  * The following are the WheelView attributes (attrs.xml)
- * <table border="0" width="250" cellspacing="1">
+ * <table  cellspacing="1" cellpadding="3">
  * <tr>
  * <th><b>Attribute</b></td>
  * <td><b>Type</b></td>

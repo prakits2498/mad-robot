@@ -35,8 +35,9 @@ import com.madrobot.ui.drawables.AlphaPatternDrawable;
  * Displays a color picker to the user and allow them to select a color. A slider for the alpha channel is also
  * available. Enable it by setting setAlphaSliderVisible(boolean) to true.
  * <p>
+ * <img src="../../../../resources/ColorPickerView.png"><br/>
  * Attributes<br/>
- * <table width="350" cellspacing="1">
+ * <table  cellspacing="1" cellpadding="3">
  * <tr>
  * <th><b>Attribute</b></td>
  * <td><b>Type</b></td>

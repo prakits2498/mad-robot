@@ -32,7 +32,7 @@ import android.widget.ListView;
  * <li>The adapter should be an instance of an array adapter.</li>
  * <li>List header and footer cannot be added for this ListView.</li>
  * </ul>
- * <table border="0" width="350" cellspacing="1" cellpadding="5">
+ * <table  cellspacing="1" cellpadding="3">
  * <tr>
  * <th><b>Attribute</b></td>
  * <td width="50"><b>Type</b></td>
