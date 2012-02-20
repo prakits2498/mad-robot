@@ -75,4 +75,16 @@ public class IntentUtils {
 		intent.setClassName("com.android.packageinstaller", "com.android.packageinstaller.PackageInstallerActivity");
 		context.startActivity(intent);
 	}
+
+	/**
+	 * Get Compatible activities for the given intent
+	 * <p>
+	 * Similar to <code>intent.getChooser</code>
+	 * </p>
+	 */
+	public static List<ResolveInfo> getCompatibleActivities(Context context, Intent intent) {
+		PackageManager packMan = context.getPackageManager();
+		List<ResolveInfo> resolved = packMan.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+		return resolved;
+	}
 }

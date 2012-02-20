@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Attribute sets for custom widgets DO NOT EDIT -->
 <resources>
- <!-- Attributes for com.madrobot.ui.widgets.ColorPickerView-->
+
+    <!-- Attributes for com.madrobot.ui.widgets.ColorPickerView -->
     <declare-styleable name="ColorPickerView">
         <attr format="color" name="borderColor" />
         <attr format="dimension" name="selectorRadius" />
@@ -37,18 +38,6 @@
         <attr format="boolean" name="drawSelector" />
     </declare-styleable>
 
-    <!--
-         Attributes for com.madrobot.ui.widgets.ZoomableImageView
-    <declare-styleable name="ZoomableImageView">
-        <attr format="integer" name="maxZoomSteps" />
-        <attr format="boolean" name="doubleTapToZoom" />
-        <attr format="float" name="minMaxZoom" />
-        <attr format="float" name="pinchToZoomMinDistance" />
-        <attr format="integer" name="angleTolerant" />
-    </declare-styleable>
-    -->
-
-
     <!-- Attributes for com.madrobot.ui.widgets.SortableListView -->
     <declare-styleable name="SortableListView">
         <attr format="dimension" name="normalHeight" />
@@ -68,6 +57,21 @@
     <declare-styleable name="CoverFlowGallery">
         <attr format="integer" name="centerViewZoom" />
         <attr format="integer" name="rotationAngle" />
+    </declare-styleable>
+
+    <!-- Attributes for com.madrobot.ui.widgets.JoystickView -->
+    <declare-styleable name="JoystickView">
+        <attr format="color" name="bgColor" />
+        <attr format="integer" name="bgAlpha" />
+        <attr format="color" name="handleColor" />
+        <attr format="float" name="clickThreshold" />
+        <attr format="float" name="moveResolution" />
+        <attr format="boolean" name="autoReturnToCenter" />
+        <attr name="coordinateSystem">
+            <enum name="cartesian" value="0" />
+            <enum name="differential" value="1" />
+        </attr>
+        <attr format="boolean" name="yAxisInverted" />
     </declare-styleable>
 
 </resources>

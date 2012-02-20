@@ -145,4 +145,8 @@ public class UIUtils {
 	public static int getCenterOfView(View view) {
 		return view.getLeft() + view.getWidth() / 2;
 	}
+
+	public static void makeGlow(TextView txtView, int glowColor) {
+		txtView.setShadowLayer(2, 0, 0, glowColor);
+	}
 }
