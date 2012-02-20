@@ -10,6 +10,8 @@
  ******************************************************************************/
 package com.madrobot.graphics;
 
+import com.madrobot.graphics.bitmap.BitmapUtils;
+
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -81,7 +83,7 @@ public class PackedImage {
 	public static PackedImage pack(Bitmap bitmap) {
 		int width = bitmap.getWidth();
 		int height = bitmap.getHeight();
-		int rgb[] = BimapUtils.getPixels(bitmap);
+		int rgb[] = BitmapUtils.getPixels(bitmap);
 		return pack(rgb, width, height);
 
 	}
