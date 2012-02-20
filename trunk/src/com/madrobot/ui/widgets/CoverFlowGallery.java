@@ -80,7 +80,7 @@ import android.widget.ImageView;
  *			i.setLayoutParams(new CoverFlowGallery.LayoutParams(350, 250));
  *			i.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
  *
- *			<font color="#007F0E">// Make sure we set anti-aliasing.</font>
+ *			<font color="#007F0E">// Make sure we enable anti-aliasing.</font>
  *			BitmapDrawable drawable = (BitmapDrawable) i.getDrawable();
  *			drawable.setAntiAlias(true);
  *			return i;
