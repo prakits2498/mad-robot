@@ -16,8 +16,9 @@ import android.widget.ImageView;
 /**
  * iPhone Style image gallery.
  * <p>
+ * <img src="../../../../resources/CoverFlowGallery.png"><br/>
  * The following are the CoverFlowGallery attributes (attrs.xml)
- * <table width="350" cellspacing="1">
+ *<table  cellspacing="1" cellpadding="3">
  * <tr>
  * <th><b>Attribute</b></td>
  * <td><b>Type</b></td>
