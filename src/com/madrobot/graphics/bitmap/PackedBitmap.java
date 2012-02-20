@@ -8,9 +8,8 @@
  * Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
-package com.madrobot.graphics;
+package com.madrobot.graphics.bitmap;
 
-import com.madrobot.graphics.bitmap.BitmapUtils;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -41,7 +40,7 @@ import android.graphics.Paint;
  * 
  * 
  */
-public class PackedImage {
+public class PackedBitmap {
 
 	private static boolean contains(int array[], int length, int value) {
 		for(int iter = 0; iter < length; iter++){
@@ -60,7 +59,7 @@ public class PackedImage {
 	 *            previously stored image data
 	 * @return newly created packed image
 	 */
-	public static PackedImage load(byte data[]) {
+	public static PackedBitmap load(byte data[]) {
 		try{
 			java.io.DataInputStream input = new java.io.DataInputStream(new java.io.ByteArrayInputStream(
 					data));
@@ -73,14 +72,14 @@ public class PackedImage {
 
 			byte[] arr = new byte[width * height];
 			input.readFully(arr);
-			return new PackedImage(width, height, palette, arr);
+			return new PackedBitmap(width, height, palette, arr);
 		} catch(java.io.IOException e){
 			e.printStackTrace();
 			return null;
 		}
 	}
 
-	public static PackedImage pack(Bitmap bitmap) {
+	public static PackedBitmap pack(Bitmap bitmap) {
 		int width = bitmap.getWidth();
 		int height = bitmap.getHeight();
 		int rgb[] = BitmapUtils.getPixels(bitmap);
@@ -99,7 +98,7 @@ public class PackedImage {
 	 *            height of the image
 	 * @return a packed image or null
 	 */
-	public static PackedImage pack(int rgb[], int width, int height) {
+	public static PackedBitmap pack(int rgb[], int width, int height) {
 		int arrayLength = width * height;
 		int tempPalette[] = new int[256];
 		int paletteLocation = 0;
@@ -120,7 +119,7 @@ public class PackedImage {
 			System.arraycopy(tempPalette, 0, newArray, 0, paletteLocation);
 			tempPalette = newArray;
 		}
-		return new PackedImage(width, height, tempPalette, rgb);
+		return new PackedBitmap(width, height, tempPalette, rgb);
 
 	}
 
@@ -134,17 +133,17 @@ public class PackedImage {
 
 	private int width;
 
-	private PackedImage() {
+	private PackedBitmap() {
 	}
 
-	private PackedImage(int width, int height, int palette[], byte data[]) {
+	private PackedBitmap(int width, int height, int palette[], byte data[]) {
 		this.width = width;
 		this.height = height;
 		this.palette = palette;
 		imageDataByte = data;
 	}
 
-	private PackedImage(int width, int height, int palette[], int rgb[]) {
+	private PackedBitmap(int width, int height, int palette[], int rgb[]) {
 		this.width = width;
 		this.height = height;
 		this.palette = palette;
