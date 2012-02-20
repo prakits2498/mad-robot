@@ -13,10 +13,14 @@ package com.madrobot;
 import java.io.File;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.widget.TextView;
 
 import com.madrobot.di.wizard.xml.XMLWizard;
 import com.madrobot.io.file.FileUtils;
+import com.madrobot.ui.UIUtils;
 
 public class TestActivity extends Activity {
 	/** Called when the activity is first created. */
@@ -30,7 +34,7 @@ public class TestActivity extends Activity {
 		person.setAge("12");
 		person.setName("elton");
 		Asset ass=new Asset("test","test2");
-		ass.setCar("carrol");
+	 	ass.setCar("carrol");
 		ass.setBike("sdfs");
 		person.setAsset(ass);
 		
@@ -44,5 +48,8 @@ public class TestActivity extends Activity {
 		Person pe=(Person) xx.fromXML(xml);
 		System.out.println(pe.getName());
 		System.out.println(pe.list[0].getBike());
+		TextView text=(TextView) findViewById(R.id.textText);
+		Bitmap textN=BitmapFactory.decodeResource(getResources(), R.drawable.icon);
+		UIUtils.insertBitmapIntoTextView(text, "Text with bitmap inlined!", textN, 16);
 	}
 }
