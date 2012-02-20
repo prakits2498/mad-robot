@@ -24,6 +24,7 @@ import com.madrobot.R;
 /**
  * A ViewGroup that arranges Views/ViewGroups horizontally.
  * <p>
+ * The difference between the native horizontal scroll view is that the width each page can be set.
  * <b>Styled Attributes</b>
  * <ul>
  * <li><b>pageWidth</b>(dip):</li> Width of each horizontal page in dip. If not specified, the value mentioned in the

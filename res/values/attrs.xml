@@ -72,6 +72,8 @@
             <enum name="differential" value="1" />
         </attr>
         <attr format="boolean" name="yAxisInverted" />
+        <attr format="boolean" name="vibrate" />
+        <attr format="integer" name="vibrateDuration" />
     </declare-styleable>
 
 </resources>
