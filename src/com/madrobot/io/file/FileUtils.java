@@ -499,16 +499,24 @@ public class FileUtils {
 	 * 
 	 * @param file
 	 *            File or directory to delete
+	 * @param callback
+	 *            Progress callback. can be null.
 	 */
-	public static void recursiveDelete(File file) {
+	public static void recursiveDelete(File file, FileProgressCallback callback) {
 		if (!file.exists())
 			return;
 		if (file.isDirectory()) {
 			File[] contents = file.listFiles();
+			if (callback != null) {
+				callback.onDirectoryDiscovered(contents.length);
+			}
 			for (int i = 0; i < contents.length; i++)
-				recursiveDelete(contents[i]);
+				recursiveDelete(contents[i], callback);
 		}
 		try {
+			if (callback != null) {
+				callback.beforeDelete(file);
+			}
 			file.delete();
 		} catch (Exception e) {
 			e.printStackTrace();
