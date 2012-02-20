@@ -11,12 +11,16 @@
 package com.madrobot.ui;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.SpannedString;
 import android.text.method.LinkMovementMethod;
 import android.text.method.MovementMethod;
 import android.text.style.ClickableSpan;
+import android.text.style.ImageSpan;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +30,7 @@ import android.view.animation.Animation.AnimationListener;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.TextView;
+import android.widget.TextView.BufferType;
 import android.widget.Toast;
 
 public class UIUtils {
@@ -148,5 +153,24 @@ public class UIUtils {
 
 	public static void makeGlow(TextView txtView, int glowColor) {
 		txtView.setShadowLayer(2, 0, 0, glowColor);
+	}
+
+	/**
+	 * Sets bitmap along with a text in a TextView
+	 * @param tv text view to set the text along with the image
+	 * @param string string to set to the textview
+	 * @param bitmap bitmap to insert in the string
+	 * @param insertionIndex index in the string at which to insert the <code>bitmap</code>
+	 */
+	public static void insertBitmapIntoTextView(TextView tv, String string, Bitmap bitmap, int insertionIndex) {
+		StringBuilder appender=new StringBuilder(string);
+		appender.insert(insertionIndex, ' ');
+		SpannableStringBuilder builder=new SpannableStringBuilder(appender.toString());
+		
+		ImageSpan imageSpan=new ImageSpan(bitmap);
+		if(insertionIndex==0){
+		}
+		builder.setSpan(imageSpan, insertionIndex,insertionIndex+1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+		tv.setText( builder, BufferType.SPANNABLE );
 	}
 }
