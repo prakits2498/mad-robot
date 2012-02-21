@@ -22,6 +22,7 @@ import android.text.method.MovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ImageSpan;
 import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
@@ -172,5 +173,16 @@ public class UIUtils {
 		ImageSpan imageSpan=new ImageSpan(bitmap);
 		builder.setSpan(imageSpan, insertionIndex,insertionIndex+1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 		tv.setText( builder, BufferType.SPANNABLE );
+	}
+	
+	/**
+	 * Convert to pix from DPI.
+	 * @param context
+	 * @param dips
+	 * @return
+	 */
+	public static int fromDip(Context context, int dips) {
+		return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 
+                dips, context.getResources().getDisplayMetrics());
 	}
 }

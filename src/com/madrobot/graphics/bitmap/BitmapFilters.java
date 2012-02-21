@@ -1,6 +1,11 @@
 package com.madrobot.graphics.bitmap;
 
+import com.madrobot.graphics.PixelUtils;
+
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 
 public class BitmapFilters {
 	/**
@@ -23,6 +28,285 @@ public class BitmapFilters {
 		applyFilter(filter, value, argbData, bitmap.getWidth(), bitmap.getHeight());
 		return Bitmap.createBitmap(argbData, bitmap.getWidth(), bitmap.getHeight(), outputConfig);
 
+	}
+
+	/**
+	 * Apply sepia filters
+	 * 
+	 * @param bitmap
+	 * @param depth
+	 *            Sepia depth. values between 1-100 provide an optimal output.
+	 * @param outputConfig
+	 *            Bitmap configuration of the output bitmap
+	 * @return
+	 */
+	public static final Bitmap applySepia(Bitmap bitmap, int depth, Bitmap.Config outputConfig) {
+		/* Tested Apr 27 2011 */
+		int[] argb = BitmapUtils.getPixels(bitmap);
+		for (int i = 0; i < argb.length; i++) {
+			argb[i] = PixelUtils.applySepia(argb[i], depth);
+		}
+		return Bitmap.createBitmap(argb, bitmap.getWidth(), bitmap.getHeight(), outputConfig);
+	}
+
+	/**
+	 * Create a reflection of an image
+	 * <p>
+	 * Reflection with <code>bgColor=0xffffff</code> and <code> reflectionHeight=20</code>
+	 * <table border="0">
+	 * <tr>
+	 * <td>
+	 * <img src="../../../resources/gray.png"></td>
+	 * <td><img src="../../../resources/reflection.png"></td>
+	 * </tr>
+	 * </table>
+	 * </p>
+	 * 
+	 * @param image
+	 *            source image
+	 * @param reflectionHeight
+	 *            height of the reflection
+	 * @param outputConfig
+	 *            Bitmap configuration of the output bitmap
+	 * 
+	 * @return Image
+	 */
+	public static final Bitmap createReflection(final Bitmap image, final int reflectionHeight, Bitmap.Config outputConfig) {
+		/* Tested Apr 27 2011 */
+		int w = image.getWidth();
+		int h = image.getHeight();
+
+		final Bitmap reflectedImage = Bitmap.createBitmap(w, h + reflectionHeight, outputConfig);
+		reflectedImage.setDensity(image.getDensity());
+		Canvas canvas = new Canvas(reflectedImage);
+
+		Paint bitmapPaint2 = new Paint();
+		bitmapPaint2.setAntiAlias(true);
+
+		canvas.drawBitmap(image, 0, 0, bitmapPaint2);
+
+		int[] rgba = new int[w];
+		int currentY = -1;
+
+		for (int i = 0; i < reflectionHeight; i++) {
+			int y = (h - 1) - (i * h / reflectionHeight);
+
+			if (y != currentY) {
+				image.getPixels(rgba, 0, w, 0, y, w, 1);
+			}
+
+			int alpha = 0xff - (i * 0xff / reflectionHeight);
+
+			for (int j = 0; j < w; j++) {
+				int origAlpha = (rgba[j] >> 24);
+				int newAlpha = (alpha & origAlpha) * alpha / 0xff;
+
+				rgba[j] = (rgba[j] & 0x00ffffff);
+				rgba[j] = (rgba[j] | (newAlpha << 24));
+			}
+			canvas.drawBitmap(rgba, 0, w, 0, h + i, w, 1, true, bitmapPaint2);
+		}
+		return reflectedImage;
+	}
+
+	/**
+	 * The weights specified are scaled so that the image average brightness should not change after the halftoning.
+	 * 
+	 * @param n0
+	 *            the weight for pixel (r,c+1)
+	 * @param n1
+	 *            the weight for pixel (r,c+2)
+	 * @param n2
+	 *            the weight for pixel (r,c+3)
+	 * @param n3
+	 *            the weight for pixel (r,c+4)
+	 * @param n4
+	 *            the weight for pixel (r,c+5)
+	 */
+	public static final Bitmap deBlurHorizontalHalftone(Bitmap bitmap, int n0, int n1, int n2, int n3, int n4, Bitmap.Config outputConfig) {
+		int sum = n0 + n1 + n2 + n3 + n4;
+		n0 = 8 * n0 / sum;
+		n1 = 8 * n1 / sum;
+		n2 = 8 * n2 / sum;
+		n3 = 8 * n3 / sum;
+		n4 = 8 * n4 / sum;
+		// integer division may make the sum not quite 8. correct this
+		// in the weight for pixel (r,c+1)
+		n0 = 8 - (n0 + n1 + n2 + n3 + n4);
+
+		int[] bData = BitmapUtils.getPixels(bitmap);
+		for (int i = 0; i < bitmap.getHeight(); i++) {
+			int nRow = i * bitmap.getWidth();
+			for (int j = 0; j < bitmap.getWidth(); j++) {
+				int bVal = bData[nRow + j];
+				int bNewVal;
+				if (bVal >= 0) {
+					bNewVal = Integer.MAX_VALUE;
+				} else {
+					bNewVal = Integer.MIN_VALUE;
+				}
+				int nDiff = bVal - bNewVal;
+				if (j < bitmap.getWidth() - 1) {
+					bData[nRow + j + 1] = Math.max(Integer.MIN_VALUE,
+							Math.min(Integer.MAX_VALUE, bData[nRow + j + 1] + n0 * nDiff / 8));
+				}
+				if (j < bitmap.getWidth() - 2) {
+					bData[nRow + j + 2] = Math.max(Integer.MIN_VALUE,
+							Math.min(Integer.MAX_VALUE, bData[nRow + j + 2] + n1 * nDiff / 8));
+
+				}
+				if (j < bitmap.getWidth() - 3) {
+					bData[nRow + j + 3] = Math.max(Integer.MIN_VALUE,
+							Math.min(Integer.MAX_VALUE, bData[nRow + j + 3] + n2 * nDiff / 8));
+
+				}
+				if (j < bitmap.getWidth() - 4) {
+					bData[nRow + j + 4] = Math.max(Integer.MIN_VALUE,
+							Math.min(Integer.MAX_VALUE, bData[nRow + j + 4] + n3 * nDiff / 8));
+
+				}
+				if (j < bitmap.getWidth() - 5) {
+					bData[nRow + j + 5] = Math.max(Integer.MIN_VALUE,
+							Math.min(Integer.MAX_VALUE, bData[nRow + j + 5] + n4 * nDiff / 8));
+
+				}
+			}
+		}
+		return Bitmap.createBitmap(bData, bitmap.getWidth(), bitmap.getHeight(), outputConfig);
+
+	}
+
+	/**
+	 * Decrease the color depth of the given bitmap
+	 * 
+	 * @param pixel
+	 * @param bitOffset
+	 * @return
+	 */
+	public static Bitmap decreaseColorDepth(final Bitmap bitmap, final int bitOffset, Bitmap.Config config) {
+		int A, R, G, B;
+		int[] pixels = BitmapUtils.getPixels(bitmap);
+		for (int i = 0; i < pixels.length; i++) {
+			A = Color.alpha(pixels[i]);
+			R = Color.red(pixels[i]);
+			G = Color.green(pixels[i]);
+			B = Color.blue(pixels[i]);
+			// round-off color offset
+			R = ((R + (bitOffset / 2)) - ((R + (bitOffset / 2)) % bitOffset) - 1);
+			if (R < 0) {
+				R = 0;
+			}
+			G = ((G + (bitOffset / 2)) - ((G + (bitOffset / 2)) % bitOffset) - 1);
+			if (G < 0) {
+				G = 0;
+			}
+			B = ((B + (bitOffset / 2)) - ((B + (bitOffset / 2)) % bitOffset) - 1);
+			if (B < 0) {
+				B = 0;
+			}
+
+			pixels[i] = Color.argb(A, R, G, B);
+		}
+		return Bitmap.createBitmap(pixels, bitmap.getWidth(), bitmap.getHeight(), config);
+	}
+
+	/**
+	 * Invert the bitmap's colors.
+	 * 
+	 * @param bitmap
+	 * @param outputConfig
+	 *            Bitmap configuration of the output bitmap
+	 * @return
+	 */
+	public static final Bitmap invert(Bitmap bitmap, Bitmap.Config outputConfig) {
+		/* Tested Apr 27 2011 */
+		int[] argb = BitmapUtils.getPixels(bitmap);
+		for (int i = 0; i < argb.length; i++) {
+			argb[i] = PixelUtils.invertColor(argb[i]);
+		}
+		return Bitmap.createBitmap(argb, bitmap.getWidth(), bitmap.getHeight(), outputConfig);
+	}
+
+	/**
+	 * Poseterize the given bitmap
+	 * 
+	 * @param bitmap
+	 * @param depth
+	 *            Posterization depth
+	 * @param outputConfig
+	 *            Bitmap configuration of the output bitmap
+	 * @return
+	 */
+	public static final Bitmap posterize(Bitmap bitmap, int depth, Bitmap.Config outputConfig) {
+		int[] argb = BitmapUtils.getPixels(bitmap);
+		for (int i = 0; i < argb.length; i++) {
+			argb[i] = PixelUtils.posterizePixel(argb[i], depth);
+		}
+		return Bitmap.createBitmap(argb, bitmap.getWidth(), bitmap.getHeight(), outputConfig);
+	}
+
+	/**
+	 * Tint the given bitmap
+	 * 
+	 * @param bitmap
+	 * @param tintDegree
+	 *            degree to tint the bitmap
+	 * @param config
+	 *            for the output bitmap
+	 * @return
+	 */
+	public static Bitmap tint(Bitmap bitmap, int tintDegree, Bitmap.Config config) {
+		int pich = bitmap.getHeight();
+		int picw = bitmap.getWidth();
+		int[] pix = BitmapUtils.getPixels(bitmap);
+		int RY, BY, RYY, GYY, BYY, R, G, B, Y;
+		double angle = (3.14159d * tintDegree) / 180.0d;
+		int S = (int) (256.0d * Math.sin(angle));
+		int C = (int) (256.0d * Math.cos(angle));
+
+		for (int i = 0; i < pix.length; i++) {
+			int r = (pix[i] >> 16) & 0xff;
+			int g = (pix[i] >> 8) & 0xff;
+			int b = pix[i] & 0xff;
+			RY = (70 * r - 59 * g - 11 * b) / 100;
+			// GY = (-30 * r + 41 * g - 11 * b) / 100;
+			BY = (-30 * r - 59 * g + 89 * b) / 100;
+			Y = (30 * r + 59 * g + 11 * b) / 100;
+			RYY = (S * BY + C * RY) / 256;
+			BYY = (C * BY - S * RY) / 256;
+			GYY = (-51 * RYY - 19 * BYY) / 100;
+			R = Y + RYY;
+			R = (R < 0) ? 0 : ((R > 255) ? 255 : R);
+			G = Y + GYY;
+			G = (G < 0) ? 0 : ((G > 255) ? 255 : G);
+			B = Y + BYY;
+			B = (B < 0) ? 0 : ((B > 255) ? 255 : B);
+			pix[i] = 0xff000000 | (R << 16) | (G << 8) | B;
+		}
+		// for (int y = 0; y < pich; y++)
+		// for (int x = 0; x < picw; x++) {
+		// int index = y * picw + x;
+		//
+		// }
+
+		return Bitmap.createBitmap(pix, picw, pich, config);
+
+	}
+
+	/**
+	 * Saturate the given bitmap
+	 * 
+	 * @param bitmap
+	 * @param percent
+	 * @param outputConfig
+	 * @return
+	 */
+	public static final Bitmap saturate(Bitmap bitmap, int percent, Bitmap.Config outputConfig) {
+		int[] argb = BitmapUtils.getPixels(bitmap);
+		for (int i = 0; i < argb.length; i++) {
+			argb[i] = PixelUtils.setSaturation(argb[i], percent);
+		}
+		return Bitmap.createBitmap(argb, bitmap.getWidth(), bitmap.getHeight(), outputConfig);
 	}
 
 	/**
@@ -222,10 +506,12 @@ public class BitmapFilters {
 	 * @return
 	 */
 	public static Bitmap emboss(Bitmap bitmap, Bitmap.Config outputConfig) {
+
 		byte[][] filter = { { -2, 0, 0 }, { 0, 1, 0 }, { 0, 0, 2 } };
 		return applyFilter(bitmap, 100, filter, outputConfig);
 	}
-	
+
+
 	/**
 	 * Converts
 	 * 

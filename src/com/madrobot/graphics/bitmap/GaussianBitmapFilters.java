@@ -1,10 +1,54 @@
 package com.madrobot.graphics.bitmap;
 
-import com.madrobot.graphics.PixelUtils;
-
 import android.graphics.Bitmap;
 
+import com.madrobot.graphics.PixelUtils;
+
+/**
+ * Gaussian theory based bitmap filters
+ * 
+ * <p>
+ * <b>Gaussian</b><br/>
+ * Gaussian using the <code>radius</code> of <code>2</code><br/>
+ * <img src="../../../../resources/gaussian.png"><br/>
+ * 
+ * <b>Glow</b><br/>
+ * Glow using the <code>glowAmount</code> of <code>0.5</code> and <code>glowRadius</code> of <code>2</code><br/>
+ * <img src="../../../../resources/glow.png"><br/>
+ * </p>
+ * 
+ * @author elton.stephen.kent
+ * 
+ */
 public class GaussianBitmapFilters {
+
+	/**
+	 * Apply gaussian filter
+	 * 
+	 * @param src
+	 * @param radius
+	 *            filter radius
+	 * @param convolveAlpha
+	 * @param premultiplyAlpha
+	 * @param outputConfig
+	 * @return
+	 */
+	public static Bitmap gaussian(Bitmap src, int radius, boolean convolveAlpha, boolean premultiplyAlpha, Bitmap.Config outputConfig) {
+		int width = src.getWidth();
+		int height = src.getHeight();
+		int[] inPixels = BitmapUtils.getPixels(src);
+		int[] outPixels = new int[inPixels.length];
+		Kernel kernel = makeKernel(radius);
+		if (radius > 0) {
+			convolveAndTranspose(kernel, inPixels, outPixels, width, height, convolveAlpha, convolveAlpha
+					&& premultiplyAlpha, false, BitmapFilters.CLAMP_EDGES);
+			convolveAndTranspose(kernel, outPixels, inPixels, height, width, convolveAlpha, false, convolveAlpha
+					&& premultiplyAlpha, BitmapFilters.CLAMP_EDGES);
+		}
+
+		return Bitmap.createBitmap(inPixels, src.getWidth(), src.getHeight(), outputConfig);
+
+	}
 
 	/**
 	 * Blur and transpose a block of ARGB pixels.
@@ -175,8 +219,10 @@ public class GaussianBitmapFilters {
 
 	/**
 	 * Gaussian high pass filter.
+	 * 
 	 * @param src
-	 * @param radius recommended: 10
+	 * @param radius
+	 *            recommended: 10
 	 * @param processAlpha
 	 * @param premultiplyAlpha
 	 * @param outputConfig

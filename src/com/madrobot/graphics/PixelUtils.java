@@ -917,4 +917,23 @@ public class PixelUtils {
 		b = clamp(b + (int)(amount * (randomGenerator.nextFloat()-0.5)));
 		return 0xff000000 | (r << 16) | (g << 8) | b;
 	}
+	
+	/**
+	 * Get the pixel at the given location
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 * @param argb
+	 * @return
+	 */
+	public static int getPixel(int x, int y,int width,int height, int[] argb) {
+		int nRow = y * width;
+		return argb[nRow + x];
+	}
+	
+	public static void setPixel(int pixel,int x, int y,int width,int height, int[] argb) {
+		int nRow = y * width;
+		argb[nRow + x]=pixel;
+	}
 }
