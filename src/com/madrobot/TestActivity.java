@@ -16,6 +16,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.widget.ImageView;
 
+import com.madrobot.graphics.bitmap.TransferBitmapFilters;
 import com.madrobot.graphics.bitmap.WholeImageBitmapFilters;
 
 public class TestActivity extends Activity {
@@ -26,7 +27,7 @@ public class TestActivity extends Activity {
 		setContentView(R.layout.main);
 		Bitmap src = BitmapFactory.decodeResource(getResources(), R.drawable.two);
 		Bitmap.Config outputConfig = Bitmap.Config.ARGB_8888;
-		Bitmap bitmap2=WholeImageBitmapFilters.emboss(src,  (float)(135.0f * Math.PI / 180.0f), (float)(30.0f * Math.PI / 180f), 3f, true, outputConfig);// = TransformBitmapFilters.circle(src, 20, 0, (float)Math.PI, 10, 0.5f, 0.5f, TransformBitmapFilters.INTERPOLATION_BILINEAR, outputConfig);
+		Bitmap bitmap2=TransferBitmapFilters.exposure(src, -3.0f, outputConfig);
 		// SimpleBitmapFilters.motionBlur(src, 1.0f, 5.0f, 0.0f, 0.0f, true, false, outputConfig);// (src,
 		// outputConfig);//(src,
 		// outputConfig);//(bitmap,
