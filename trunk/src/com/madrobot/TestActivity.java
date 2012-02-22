@@ -10,14 +10,13 @@
  ******************************************************************************/
 package com.madrobot;
 
+import com.madrobot.graphics.bitmap.EnhancementFilters;
+
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.widget.ImageView;
-
-import com.madrobot.graphics.bitmap.TransferBitmapFilters;
-import com.madrobot.graphics.bitmap.WholeImageBitmapFilters;
 
 public class TestActivity extends Activity {
 	/** Called when the activity is first created. */
@@ -27,7 +26,9 @@ public class TestActivity extends Activity {
 		setContentView(R.layout.main);
 		Bitmap src = BitmapFactory.decodeResource(getResources(), R.drawable.two);
 		Bitmap.Config outputConfig = Bitmap.Config.ARGB_8888;
-		Bitmap bitmap2=TransferBitmapFilters.exposure(src, -3.0f, outputConfig);
+		long time=System.currentTimeMillis();
+		Bitmap bitmap2 =EnhancementFilters.reduceNoise(src, outputConfig);
+		System.out.println("============================== DONE ===================="+(System.currentTimeMillis()-time));
 		// SimpleBitmapFilters.motionBlur(src, 1.0f, 5.0f, 0.0f, 0.0f, true, false, outputConfig);// (src,
 		// outputConfig);//(src,
 		// outputConfig);//(bitmap,
