@@ -889,5 +889,19 @@ public final class BitmapUtils {
 		bitmap.compress(format, 100, fos);
 		fos.close();
 	}
+	
+	/**
+	 * Set a row of pixels in the given argb array
+	 * @param row to be set
+	 * @param column the current column
+	 * @param width of the bitmap
+	 * @param argb the argb array of the bitmap
+	 */
+	public static void setPixelRow(int[] row, int column, int width, int[] argb) {
+		for (int i = 0; i < row.length; i++) {
+			int nRow = column * width;
+			argb[nRow + i] = row[i];
+		}
+	}
 
 }

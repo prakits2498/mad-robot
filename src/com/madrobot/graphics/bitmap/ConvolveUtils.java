@@ -4,45 +4,15 @@ import com.madrobot.graphics.PixelUtils;
 
 import android.graphics.Bitmap;
 
-public class ConvolveBitmapFilters {
+public class ConvolveUtils {
 
-	/**
-	 * A filter which performs a simple 3x3 sharpening operation.
-	 * 
-	 * @param src
-	 * @param edgeAction
-	 *            use the EdgeAction constants defined in {@link BitmapFilters} . Recommended:
-	 *            {@link BitmapFilters#CLAMP_EDGES}
-	 * @param processAlpha
-	 * @param premultiplyAlpha
-	 * @param outputConfig
-	 * @return
-	 */
-	public static Bitmap sharpen(Bitmap src, int edgeAction, boolean processAlpha, boolean premultiplyAlpha, Bitmap.Config outputConfig) {
-		float[] sharpenMatrix = { 0.0f, -0.2f, 0.0f, -0.2f, 1.8f, -0.2f, 0.0f, -0.2f, 0.0f };
-		return doConvolve(sharpenMatrix, src, edgeAction, processAlpha, premultiplyAlpha, outputConfig);
-	}
 
-	/**
-	 * A simple embossing filter.
-	 * 
-	 * @param src
-	 * @param edgeAction
-	 *            use the EdgeAction constants defined in {@link BitmapFilters} . Recommended:
-	 *            {@link BitmapFilters#CLAMP_EDGES}
-	 * @param processAlpha
-	 * @param premultiplyAlpha
-	 * @param outputConfig
-	 * @return
-	 */
-	public static Bitmap bump(Bitmap src, int edgeAction, boolean processAlpha, boolean premultiplyAlpha, Bitmap.Config outputConfig) {
-		float[] embossMatrix = { -1.0f, -1.0f, 0.0f, -1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f };
-		return doConvolve(embossMatrix, src, edgeAction, processAlpha, premultiplyAlpha, outputConfig);
-	}
+
+
 
 	
 	
-	private static Bitmap doConvolve(float[] matrix, Bitmap src, int edgeAction, boolean processAlpha, boolean premultiplyAlpha, Bitmap.Config outputConfig) {
+	public static Bitmap doConvolve(float[] matrix, Bitmap src, int edgeAction, boolean processAlpha, boolean premultiplyAlpha, Bitmap.Config outputConfig) {
 		Kernel kernel = new Kernel(3, 3, matrix);
 		int width = src.getWidth();
 		int height = src.getHeight();

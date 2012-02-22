@@ -1,14 +1,18 @@
 package com.madrobot.graphics.bitmap;
 
-import android.graphics.Bitmap;
-import android.graphics.PointF;
-
 import com.madrobot.geom.AffineTransform;
 import com.madrobot.graphics.PixelUtils;
 
+import android.graphics.Bitmap;
+import android.graphics.PointF;
+
 /**
- * Commonly used bitmap filters
+ * Collection of various blur filters
  * <p>
+ * <b>Gaussian Blur</b><br/>
+ * Gaussian using the <code>radius</code> of <code>2</code><br/>
+ * <img src="../../../../resources/gaussian.png"><br/>
+ * 
  * <b>Motion Blur</b><br/>
  * Motion blur with <code>angle</code> 1.0f and <code>distance</code> 5.0f.<br/>
  * <img src="../../../../resources/motionBlur.png"><br/>
@@ -17,7 +21,35 @@ import com.madrobot.graphics.PixelUtils;
  * @author elton.stephen.kent
  * 
  */
-public class SimpleBitmapFilters {
+public class BlurFilters {
+
+	/**
+	 * Apply gaussian filter
+	 * 
+	 * @param src
+	 * @param radius
+	 *            filter radius
+	 * @param convolveAlpha
+	 * @param premultiplyAlpha
+	 * @param outputConfig
+	 * @return
+	 */
+	public static Bitmap gaussianBlur(Bitmap src, int radius, boolean convolveAlpha, boolean premultiplyAlpha, Bitmap.Config outputConfig) {
+		int width = src.getWidth();
+		int height = src.getHeight();
+		int[] inPixels = BitmapUtils.getPixels(src);
+		int[] outPixels = new int[inPixels.length];
+		Kernel kernel = GaussianUtils.makeKernel(radius);
+		if (radius > 0) {
+			GaussianUtils.convolveAndTranspose(kernel, inPixels, outPixels, width, height, convolveAlpha,
+					convolveAlpha && premultiplyAlpha, false, BitmapFilters.CLAMP_EDGES);
+			GaussianUtils.convolveAndTranspose(kernel, outPixels, inPixels, height, width, convolveAlpha,
+					false, convolveAlpha && premultiplyAlpha, BitmapFilters.CLAMP_EDGES);
+		}
+
+		return Bitmap.createBitmap(inPixels, src.getWidth(), src.getHeight(), outputConfig);
+
+	}
 
 	/**
 	 * Produces motion blur the slow, but higher-quality way.
@@ -118,5 +150,34 @@ public class SimpleBitmapFilters {
 
 	}
 
-	
+	/**
+	 * Apply image blur filter on the given image data
+	 * <p>
+	 * <table border="0">
+	 * 
+	 * <tr>
+	 * <td><b>Before</b></td>
+	 * <td><b>After</b></td>
+	 * </tr>
+	 * <tr>
+	 * <td>
+	 * <img src="../../../resources/before.png"></td>
+	 * <td><img src="../../../resources/blur.png"></td>
+	 * </tr>
+	 * </table>
+	 * </p>
+	 * 
+	 * @param argbData
+	 *            of the image
+	 * 
+	 * @param width
+	 *            of the image
+	 * @param height
+	 *            of the image
+	 */
+	public static Bitmap simpleBlur(Bitmap bitmap, Bitmap.Config outputConfig) {
+		byte[][] filter = { { -1, -1, -1 }, { -1, 0, -1 }, { -1, -1, -1 } };
+		return BitmapFilters.applyFilter(bitmap, 100, filter, outputConfig);
+	}
+
 }
