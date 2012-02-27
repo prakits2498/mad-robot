@@ -1,5 +1,7 @@
 package com.madrobot.graphics.bitmap;
 
+import com.madrobot.graphics.bitmap.BitmapFilters.BitmapMeta;
+
 import android.graphics.Bitmap;
 
 /**
@@ -37,20 +39,20 @@ public class EnhancementFilters {
 	 */
 	public static Bitmap sharpen(Bitmap src, int edgeAction, boolean processAlpha, boolean premultiplyAlpha, Bitmap.Config outputConfig) {
 		float[] sharpenMatrix = { 0.0f, -0.2f, 0.0f, -0.2f, 1.8f, -0.2f, 0.0f, -0.2f, 0.0f };
-		return ConvolveUtils.doConvolve(sharpenMatrix, src, edgeAction, processAlpha, premultiplyAlpha,
-				outputConfig);
+		return ConvolveUtils.doConvolve(sharpenMatrix, src, edgeAction, processAlpha, premultiplyAlpha, outputConfig);
 	}
 
-	public static Bitmap exposure(Bitmap src, float exposure, Bitmap.Config outputConfig) {
-		int width = src.getWidth();
-		int height = src.getHeight();
+	public static Bitmap exposure(Bitmap src, float exposure, OutputConfiguration outputConfig) {
+
+		BitmapMeta meta = BitmapFilters.getMeta(src, outputConfig);
 		int[] inPixels = BitmapUtils.getPixels(src);
 		int[] rTable, gTable, bTable;
 		rTable = gTable = bTable = makeTable(exposure);
-		for (int y = 0; y < height; y++) {
-			int nRow = y * width;
-			for (int x = 0; x < width; x++) {
-				int rgb = inPixels[nRow + x];
+		int position, rgb;
+		for (int y = meta.y; y < meta.targetHeight; y++) {
+			for (int x = meta.x; x < meta.targetWidth; x++) {
+				position = (y * meta.bitmapWidth) + x;
+				rgb = inPixels[position];
 				int a = rgb & 0xff000000;
 				int r = (rgb >> 16) & 0xff;
 				int g = (rgb >> 8) & 0xff;
@@ -58,12 +60,15 @@ public class EnhancementFilters {
 				r = rTable[r];
 				g = gTable[g];
 				b = bTable[b];
-				inPixels[nRow + x] = a | (r << 16) | (g << 8) | b;
+				inPixels[position] = a | (r << 16) | (g << 8) | b;
 			}
 
 		}
 
-		return Bitmap.createBitmap(inPixels, src.getWidth(), src.getHeight(), outputConfig);
+		if (outputConfig.canRecycleSrc) {
+			src.recycle();
+		}
+		return Bitmap.createBitmap(inPixels, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
 	}
 
 	private static int[] makeTable(float exposure) {

@@ -7,6 +7,7 @@ import android.graphics.Color;
 
 import com.madrobot.geom.Rectangle;
 import com.madrobot.graphics.PixelUtils;
+import com.madrobot.graphics.bitmap.BitmapFilters.BitmapMeta;
 
 /**
  * Bitmap texture filters
@@ -38,59 +39,7 @@ import com.madrobot.graphics.PixelUtils;
  */
 public class ColorFilters {
 
-	private static class BitmapMeta {
-		int x;
-		int y;
-		int bitmapWidth;
-		int bitmapHeight;
-		/**
-		 * the target area width affected by the filter
-		 */
-		int targetWidth;
-		/**
-		 * the target area height  affected by the filter
-		 */
-		int targetHeight;
 
-	}
-
-	/**
-	 * res[0]= bitmap width<br/>
-	 * res[1]=bitmap height<br/>
-	 * res[2]=target width where the filter acts res[3]=target height where the filter acts
-	 * 
-	 * @param bitmap
-	 * @param outputConfig
-	 * @return
-	 */
-	private static BitmapMeta getMeta(Bitmap bitmap, OutputConfiguration outputConfig) {
-
-		BitmapMeta meta = new BitmapMeta();
-		meta.bitmapWidth = bitmap.getWidth(); // res[0]
-		meta.bitmapHeight = bitmap.getHeight();// res[1]
-
-		if (outputConfig.getAffectedArea() != null) {
-			outputConfig.checkRectangleBounds(meta.bitmapWidth, meta.bitmapHeight);
-		}
-
-		meta.targetWidth = meta.bitmapWidth;// res[2]
-		meta.targetHeight = meta.bitmapHeight;// res[3]
-
-		if (outputConfig.affectedArea != null) {
-			meta.targetWidth = outputConfig.affectedArea.x + outputConfig.affectedArea.width;
-			if (meta.targetWidth > meta.bitmapWidth) {
-				meta.targetWidth = meta.bitmapWidth;
-			}
-			meta.targetHeight = outputConfig.affectedArea.y + outputConfig.affectedArea.height;
-			if (meta.targetHeight > meta.bitmapHeight) {
-				meta.targetHeight = meta.bitmapHeight;
-			}
-		}
-
-		meta.x = outputConfig.affectedArea != null ? outputConfig.affectedArea.x : 0;// res[4]
-		meta.y = outputConfig.affectedArea != null ? outputConfig.affectedArea.y : 0;// res[5]
-		return meta;
-	}
 
 	/**
 	 * Poseterize the given bitmap
@@ -105,7 +54,7 @@ public class ColorFilters {
 	public static final Bitmap posterize(Bitmap bitmap, int depth, OutputConfiguration outputConfig) {
 		int[] argb = BitmapUtils.getPixels(bitmap);
 
-		BitmapMeta meta = getMeta(bitmap, outputConfig);
+		BitmapMeta meta = BitmapFilters.getMeta(bitmap, outputConfig);
 		for (int ver = meta.y; ver < meta.targetHeight; ver++) {
 			for (int hr = meta.x; hr < meta.targetWidth; hr++) {
 				int position = (ver * meta.bitmapWidth) + hr;
@@ -130,7 +79,7 @@ public class ColorFilters {
 
 		int[] argb = BitmapUtils.getPixels(bitmap);
 
-		BitmapMeta meta = getMeta(bitmap, outputConfig);
+		BitmapMeta meta = BitmapFilters.getMeta(bitmap, outputConfig);
 		for (int ver = meta.y; ver < meta.targetHeight; ver++) {
 			for (int hr = meta.x; hr < meta.targetWidth; hr++) {
 
@@ -157,7 +106,7 @@ public class ColorFilters {
 	public static final Bitmap applySepia(Bitmap bitmap, Integer depth, OutputConfiguration outputConfig) {
 		int[] argb = BitmapUtils.getPixels(bitmap);
 
-		BitmapMeta meta = getMeta(bitmap, outputConfig);
+		BitmapMeta meta = BitmapFilters.getMeta(bitmap, outputConfig);
 		for (int ver = meta.y; ver < meta.targetHeight; ver++) {
 			for (int hr = meta.x; hr < meta.targetWidth; hr++) {
 
@@ -182,7 +131,7 @@ public class ColorFilters {
 	public static final Bitmap saturate(Bitmap bitmap, int percent, OutputConfiguration outputConfig) {
 		int[] argb = BitmapUtils.getPixels(bitmap);
 
-		BitmapMeta meta = getMeta(bitmap, outputConfig);
+		BitmapMeta meta = BitmapFilters.getMeta(bitmap, outputConfig);
 		for (int ver = meta.y; ver < meta.targetHeight; ver++) {
 			for (int hr = meta.x; hr < meta.targetWidth; hr++) {
 
@@ -654,7 +603,7 @@ public class ColorFilters {
 		int pixel = 0;
 		int position;
 
-		BitmapMeta meta = getMeta(src, outputConfig);
+		BitmapMeta meta = BitmapFilters.getMeta(src, outputConfig);
 		for (int ver = meta.y; ver < meta.targetHeight; ver++) {
 			for (int hr = meta.x; hr < meta.targetWidth; hr++) {
 
@@ -690,7 +639,7 @@ public class ColorFilters {
 	public static Bitmap decreaseColorDepth(final Bitmap bitmap, final int bitOffset, OutputConfiguration outputConfig) {
 		int[] argb = BitmapUtils.getPixels(bitmap);
 		int A, R, G, B;
-		BitmapMeta meta = getMeta(bitmap, outputConfig);
+		BitmapMeta meta = BitmapFilters.getMeta(bitmap, outputConfig);
 		for (int ver = meta.y; ver < meta.targetHeight; ver++) {
 			for (int hr = meta.x; hr < meta.targetWidth; hr++) {
 
