@@ -1,5 +1,6 @@
 package com.madrobot.graphics.bitmap;
 
+import java.lang.reflect.Method;
 import java.util.Random;
 
 import android.graphics.Bitmap;
@@ -48,12 +49,57 @@ public class ColorFilters {
 	 *            Bitmap configuration of the output bitmap
 	 * @return
 	 */
-	public static final Bitmap posterize(Bitmap bitmap, int depth, Bitmap.Config outputConfig) {
+	public static final Bitmap posterize(Bitmap bitmap, int depth, OutputConfiguration outputConfig) {
+		int res[] = getMeta(bitmap, outputConfig);
 		int[] argb = BitmapUtils.getPixels(bitmap);
-		for (int i = 0; i < argb.length; i++) {
-			argb[i] = PixelUtils.posterizePixel(argb[i], depth);
+
+		for (int ver = res[5]; ver < res[3]; ver++) {
+			for (int hr = res[4]; hr < res[2]; hr++) {
+				int position = (ver * res[0]) + hr;
+				argb[position] = PixelUtils.posterizePixel(argb[position], depth);
+			}
 		}
-		return Bitmap.createBitmap(argb, bitmap.getWidth(), bitmap.getHeight(), outputConfig);
+		if (outputConfig.canRecycleSrc) {
+			bitmap.recycle();
+		}
+		return Bitmap.createBitmap(argb, res[0], res[1], outputConfig.config);
+	}
+
+	/**
+	 * res[0]= bitmap width<br/>
+	 * res[1]=bitmap height<br/>
+	 * res[2]=target width where the filter acts res[3]=target height where the filter acts
+	 * 
+	 * @param bitmap
+	 * @param outputConfig
+	 * @return
+	 */
+	private static int[] getMeta(Bitmap bitmap, OutputConfiguration outputConfig) {
+		int[] res = new int[6];
+
+		res[0] = bitmap.getWidth();
+		res[1] = bitmap.getHeight();
+
+		if (outputConfig.getAffectedArea() != null) {
+			outputConfig.checkRectangleBounds(res[0], res[1]);
+		}
+
+		res[2] = res[0];
+		res[3] = res[1];
+		if (outputConfig.affectedArea != null) {
+			res[2] = outputConfig.affectedArea.x + outputConfig.affectedArea.width;
+			if (res[2] > res[0]) {
+				res[2] = res[0];
+			}
+			res[3] = outputConfig.affectedArea.y + outputConfig.affectedArea.height;
+			if (res[3] > res[1]) {
+				res[3] = res[1];
+			}
+		}
+
+		res[4] = outputConfig.affectedArea != null ? outputConfig.affectedArea.x : 0;
+		res[5] = outputConfig.affectedArea != null ? outputConfig.affectedArea.y : 0;
+		return res;
 	}
 
 	/**
@@ -64,13 +110,20 @@ public class ColorFilters {
 	 *            Bitmap configuration of the output bitmap
 	 * @return
 	 */
-	public static final Bitmap invert(Bitmap bitmap, Bitmap.Config outputConfig) {
-		/* Tested Apr 27 2011 */
+	public static final Bitmap invert(Bitmap bitmap, OutputConfiguration outputConfig) {
+		int res[] = getMeta(bitmap, outputConfig);
 		int[] argb = BitmapUtils.getPixels(bitmap);
-		for (int i = 0; i < argb.length; i++) {
-			argb[i] = PixelUtils.invertColor(argb[i]);
+
+		for (int ver = res[5]; ver < res[3]; ver++) {
+			for (int hr = res[4]; hr < res[2]; hr++) {
+				int position = (ver * res[0]) + hr;
+				argb[position] = PixelUtils.invertColor(argb[position]);
+			}
 		}
-		return Bitmap.createBitmap(argb, bitmap.getWidth(), bitmap.getHeight(), outputConfig);
+		if (outputConfig.canRecycleSrc) {
+			bitmap.recycle();
+		}
+		return Bitmap.createBitmap(argb, res[0], res[1], outputConfig.config);
 	}
 
 	/**
@@ -83,13 +136,20 @@ public class ColorFilters {
 	 *            Bitmap configuration of the output bitmap
 	 * @return
 	 */
-	public static final Bitmap applySepia(Bitmap bitmap, int depth, Bitmap.Config outputConfig) {
-		/* Tested Apr 27 2011 */
+	public static final Bitmap applySepia(Bitmap bitmap, Integer depth, OutputConfiguration outputConfig) {
+		int res[] = getMeta(bitmap, outputConfig);
 		int[] argb = BitmapUtils.getPixels(bitmap);
-		for (int i = 0; i < argb.length; i++) {
-			argb[i] = PixelUtils.applySepia(argb[i], depth);
+
+		for (int ver = res[5]; ver < res[3]; ver++) {
+			for (int hr = res[4]; hr < res[2]; hr++) {
+				int position = (ver * res[0]) + hr;
+				argb[position] = PixelUtils.applySepia(argb[position], depth);
+			}
 		}
-		return Bitmap.createBitmap(argb, bitmap.getWidth(), bitmap.getHeight(), outputConfig);
+		if (outputConfig.canRecycleSrc) {
+			bitmap.recycle();
+		}
+		return Bitmap.createBitmap(argb, res[0], res[1], outputConfig.config);
 	}
 
 	/**
@@ -100,12 +160,20 @@ public class ColorFilters {
 	 * @param outputConfig
 	 * @return
 	 */
-	public static final Bitmap saturate(Bitmap bitmap, int percent, Bitmap.Config outputConfig) {
+	public static final Bitmap saturate(Bitmap bitmap, int percent, OutputConfiguration outputConfig) {
+		int res[] = getMeta(bitmap, outputConfig);
 		int[] argb = BitmapUtils.getPixels(bitmap);
-		for (int i = 0; i < argb.length; i++) {
-			argb[i] = PixelUtils.setSaturation(argb[i], percent);
+
+		for (int ver = res[5]; ver < res[3]; ver++) {
+			for (int hr = res[4]; hr < res[2]; hr++) {
+				int position = (ver * res[0]) + hr;
+				argb[position] = PixelUtils.setSaturation(argb[position], percent);
+			}
 		}
-		return Bitmap.createBitmap(argb, bitmap.getWidth(), bitmap.getHeight(), outputConfig);
+		if (outputConfig.canRecycleSrc) {
+			bitmap.recycle();
+		}
+		return Bitmap.createBitmap(argb, res[0], res[1], outputConfig.config);
 	}
 
 	/**
@@ -538,9 +606,9 @@ public class ColorFilters {
 	 *            Bitmap configuration of the output bitmap
 	 * @return
 	 */
-	public static final Bitmap doGrayscaleFilter(Bitmap src, int saturation, Bitmap.Config outputConfig) {
+	public static final Bitmap grayScale(Bitmap src, int saturation, OutputConfiguration outputConfig) {
 		int[] rgbInput = BitmapUtils.getPixels(src);
-		int[] rgbOutput = new int[src.getWidth() * src.getHeight()];
+		// int[] rgbOutput = new int[src.getWidth() * src.getHeight()];
 
 		int alpha, red, green, blue;
 		int output_red, output_green, output_blue;
@@ -564,21 +632,30 @@ public class ColorFilters {
 		i = (1024 - saturation) * RB + saturation * 1024;
 
 		int pixel = 0;
-		for (int p = 0; p < rgbOutput.length; p++) {
-			pixel = rgbInput[p];
-			alpha = (0xFF000000 & pixel);
-			red = (0x00FF & (pixel >> 16));
-			green = (0x0000FF & (pixel >> 8));
-			blue = pixel & (0x000000FF);
+		int res[] = getMeta(src, outputConfig);
+		int position;
+		for (int ver = res[5]; ver < res[3]; ver++) {
+			for (int hr = res[4]; hr < res[2]; hr++) {
+				position = (ver * res[0]) + hr;
+				pixel = rgbInput[position];
+				alpha = (0xFF000000 & pixel);
+				red = (0x00FF & (pixel >> 16));
+				green = (0x0000FF & (pixel >> 8));
+				blue = pixel & (0x000000FF);
 
-			// Matrix multiplication
-			output_red = ((a * red + d * green + g * blue) >> 4) & 0x00FF0000;
-			output_green = ((b * red + e * green + h * blue) >> 12) & 0x0000FF00;
-			output_blue = (c * red + f * green + i * blue) >> 20;
+				// Matrix multiplication
+				output_red = ((a * red + d * green + g * blue) >> 4) & 0x00FF0000;
+				output_green = ((b * red + e * green + h * blue) >> 12) & 0x0000FF00;
+				output_blue = (c * red + f * green + i * blue) >> 20;
 
-			rgbOutput[p] = alpha | output_red | output_green | output_blue;
+				rgbInput[position] = alpha | output_red | output_green | output_blue;
+			}
 		}
-		return BitmapUtils.getBitmap(rgbOutput, src.getWidth(), src.getHeight(), outputConfig);
+
+		if (outputConfig.canRecycleSrc) {
+			src.recycle();
+		}
+		return Bitmap.createBitmap(rgbInput, res[0], res[1], outputConfig.config);
 	}
 
 	/**
@@ -588,31 +665,39 @@ public class ColorFilters {
 	 * @param bitOffset
 	 * @return
 	 */
-	public static Bitmap decreaseColorDepth(final Bitmap bitmap, final int bitOffset, Bitmap.Config config) {
+	public static Bitmap decreaseColorDepth(final Bitmap bitmap, final int bitOffset, OutputConfiguration outputConfig) {
+		int res[] = getMeta(bitmap, outputConfig);
+		int[] argb = BitmapUtils.getPixels(bitmap);
 		int A, R, G, B;
-		int[] pixels = BitmapUtils.getPixels(bitmap);
-		for (int i = 0; i < pixels.length; i++) {
-			A = Color.alpha(pixels[i]);
-			R = Color.red(pixels[i]);
-			G = Color.green(pixels[i]);
-			B = Color.blue(pixels[i]);
-			// round-off color offset
-			R = ((R + (bitOffset / 2)) - ((R + (bitOffset / 2)) % bitOffset) - 1);
-			if (R < 0) {
-				R = 0;
-			}
-			G = ((G + (bitOffset / 2)) - ((G + (bitOffset / 2)) % bitOffset) - 1);
-			if (G < 0) {
-				G = 0;
-			}
-			B = ((B + (bitOffset / 2)) - ((B + (bitOffset / 2)) % bitOffset) - 1);
-			if (B < 0) {
-				B = 0;
-			}
+		for (int ver = res[5]; ver < res[3]; ver++) {
+			for (int hr = res[4]; hr < res[2]; hr++) {
+				int position = (ver * res[0]) + hr;
+				// argb[position] = PixelUtils.setSaturation(argb[position], percent);
+				A = Color.alpha(argb[position]);
+				R = Color.red(argb[position]);
+				G = Color.green(argb[position]);
+				B = Color.blue(argb[position]);
+				// round-off color offset
+				R = ((R + (bitOffset / 2)) - ((R + (bitOffset / 2)) % bitOffset) - 1);
+				if (R < 0) {
+					R = 0;
+				}
+				G = ((G + (bitOffset / 2)) - ((G + (bitOffset / 2)) % bitOffset) - 1);
+				if (G < 0) {
+					G = 0;
+				}
+				B = ((B + (bitOffset / 2)) - ((B + (bitOffset / 2)) % bitOffset) - 1);
+				if (B < 0) {
+					B = 0;
+				}
 
-			pixels[i] = Color.argb(A, R, G, B);
+				argb[position] = Color.argb(A, R, G, B);
+			}
 		}
-		return Bitmap.createBitmap(pixels, bitmap.getWidth(), bitmap.getHeight(), config);
+		if (outputConfig.canRecycleSrc) {
+			bitmap.recycle();
+		}
+		return Bitmap.createBitmap(argb, res[0], res[1], outputConfig.config);
 	}
 
 	/**
@@ -642,6 +727,7 @@ public class ColorFilters {
 		int[] rTotal = new int[levels];
 		int[] gTotal = new int[levels];
 		int[] bTotal = new int[levels];
+
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 				for (int i = 0; i < levels; i++)
