@@ -22,6 +22,34 @@ import android.graphics.PointF;
  * 
  */
 public class BlurFilters {
+	
+	/**
+	 * Apply Gaussian blur Filter to the given image data
+	 * <p>
+	 * <table border="0">
+	 * <tr>
+	 * <td><b>Before</b></td>
+	 * <td><b>After</b></td>
+	 * </tr>
+	 * <tr>
+	 * <td>
+	 * <img src="../../../resources/before.png"></td>
+	 * <td><img src="../../../resources/gaussian.png"></td>
+	 * </tr>
+	 * </table>
+	 * </p>
+	 * 
+	 * @param bitmap
+	 * @param brightness
+	 *            of the result. Optimum values are within 200
+	 * @param outputConfig
+	 *            Bitmap configuration of the output bitmap
+	 */
+	public static final Bitmap fastGaussianBlur(Bitmap bitmap, int brightness, Bitmap.Config outputConfig) {
+		byte[][] filter = { { 1, 2, 1 }, { 2, 4, 2 }, { 1, 2, 1 } };
+		return BitmapFilters.applyFilter(bitmap, brightness, filter, outputConfig);
+	}
+
 
 	/**
 	 * Apply gaussian filter
@@ -170,7 +198,7 @@ public class BlurFilters {
 	 * @param argbData
 	 *            of the image
 	 * 
-	 * @param width
+	 * @param bitmapWidth
 	 *            of the image
 	 * @param height
 	 *            of the image
