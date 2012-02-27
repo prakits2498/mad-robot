@@ -234,7 +234,7 @@ public class TransformFilters {
 		outX = transformedSpace.x;
 		outY = transformedSpace.y;
 		float[] out = new float[2];
-		Bitmap dest = Bitmap.createBitmap(outWidth, outHeight, outputConfig);
+//		Bitmap dest = Bitmap.createBitmap(outWidth, outHeight, outputConfig);
 		for (int y = 0; y < outHeight; y++) {
 			for (int x = 0; x < outWidth; x++) {
 				transformInverse(outX + x, outY + y, out, icentreX, icentreY, refractionIndex, a, b, a2, b2);
@@ -295,6 +295,7 @@ public class TransformFilters {
 			out[1] = y - (float) Math.tan(angle2) * z;
 		}
 	}
+
 
 	/**
 	 * Create a reflection of an image
@@ -448,4 +449,5 @@ public class TransformFilters {
 		}
 		return Bitmap.createBitmap(inPixels, src.getWidth(), src.getHeight(), outputConfig);
 	}
+
 }
