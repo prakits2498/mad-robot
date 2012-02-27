@@ -18,6 +18,7 @@ import android.widget.ImageView;
 
 import com.madrobot.geom.Rectangle;
 import com.madrobot.graphics.bitmap.ColorFilters;
+import com.madrobot.graphics.bitmap.EnhancementFilters;
 import com.madrobot.graphics.bitmap.OutputConfiguration;
 
 public class TestActivity extends Activity {
@@ -31,7 +32,7 @@ public class TestActivity extends Activity {
 		long time = System.currentTimeMillis();
 		OutputConfiguration outputConfig = new OutputConfiguration();
 		outputConfig.setAffectedArea(new Rectangle(src.getWidth() / 2, 0, src.getWidth() / 2, src.getHeight() / 2));
-		Bitmap bitmap2 = ColorFilters.grayScale(src, 50, outputConfig);// = TransformFilters.torsion(src, new float[]
+		Bitmap bitmap2 = EnhancementFilters.exposure(src, 3, outputConfig);// = TransformFilters.torsion(src, new float[]
 																			// { 0, 0, 64, 0, 64, 64, 0, 64 }, new
 																			// float[] { 0, 0,
 		// 96, 0, 64, 96, 0, 64 }, outputConfig);

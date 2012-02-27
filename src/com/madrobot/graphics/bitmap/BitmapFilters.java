@@ -1,11 +1,6 @@
 package com.madrobot.graphics.bitmap;
 
-import com.madrobot.graphics.PixelUtils;
-
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 
 /**
  * Commonly used bitmap filters
@@ -17,6 +12,61 @@ import android.graphics.Paint;
  * 
  */
 public class BitmapFilters {
+
+	static class BitmapMeta {
+		int x;
+		int y;
+		int bitmapWidth;
+		int bitmapHeight;
+		/**
+		 * the target area width affected by the filter
+		 */
+		int targetWidth;
+		/**
+		 * the target area height affected by the filter
+		 */
+		int targetHeight;
+
+	}
+
+	/**
+	 * res[0]= bitmap width<br/>
+	 * res[1]=bitmap height<br/>
+	 * res[2]=target width where the filter acts res[3]=target height where the filter acts
+	 * 
+	 * @param bitmap
+	 * @param outputConfig
+	 * @return
+	 */
+	static BitmapMeta getMeta(Bitmap bitmap, OutputConfiguration outputConfig) {
+
+		BitmapMeta meta = new BitmapMeta();
+		meta.bitmapWidth = bitmap.getWidth(); // res[0]
+		meta.bitmapHeight = bitmap.getHeight();// res[1]
+
+		if (outputConfig.getAffectedArea() != null) {
+			outputConfig.checkRectangleBounds(meta.bitmapWidth, meta.bitmapHeight);
+		}
+
+		meta.targetWidth = meta.bitmapWidth;// res[2]
+		meta.targetHeight = meta.bitmapHeight;// res[3]
+
+		if (outputConfig.affectedArea != null) {
+			meta.targetWidth = outputConfig.affectedArea.x + outputConfig.affectedArea.width;
+			if (meta.targetWidth > meta.bitmapWidth) {
+				meta.targetWidth = meta.bitmapWidth;
+			}
+			meta.targetHeight = outputConfig.affectedArea.y + outputConfig.affectedArea.height;
+			if (meta.targetHeight > meta.bitmapHeight) {
+				meta.targetHeight = meta.bitmapHeight;
+			}
+		}
+
+		meta.x = outputConfig.affectedArea != null ? outputConfig.affectedArea.x : 0;// res[4]
+		meta.y = outputConfig.affectedArea != null ? outputConfig.affectedArea.y : 0;// res[5]
+		return meta;
+	}
+
 	/**
 	 * Treat pixels off the edge as zero.
 	 */
