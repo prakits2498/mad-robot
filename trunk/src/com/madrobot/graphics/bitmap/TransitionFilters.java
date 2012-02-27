@@ -1,5 +1,7 @@
 package com.madrobot.graphics.bitmap;
 
+import com.madrobot.graphics.bitmap.BitmapFilters.BitmapMeta;
+
 import android.graphics.Bitmap;
 
 /**
@@ -31,10 +33,8 @@ public class TransitionFilters {
 	 * @param outputConfig
 	 * @return
 	 */
-	public static Bitmap fade(Bitmap src, float angle, float fadeStart, float fadeWidth, boolean invert, int sides, Bitmap.Config outputConfig) {
-		int width = src.getWidth();
-		int height = src.getHeight();
-		int[] inPixels = BitmapUtils.getPixels(src);
+	public static Bitmap fade(Bitmap src, float angle, float fadeStart, float fadeWidth, boolean invert, int sides, OutputConfiguration outputConfig) {
+
 		float cos = (float) Math.cos(angle);
 		float sin = (float) Math.sin(angle);
 		float m00 = cos;
@@ -42,11 +42,13 @@ public class TransitionFilters {
 		float m10 = -sin;
 		float m11 = cos;
 
-		for (int y = 0; y < height; y++) {
-			int nRow = y * width;
-			for (int x = 0; x < width; x++) {
-				int rgb = inPixels[nRow + x];
-
+		BitmapMeta meta = BitmapFilters.getMeta(src, outputConfig);
+		int[] inPixels = BitmapUtils.getPixels(src);
+		int position, rgb;
+		for (int y = meta.y; y < meta.targetHeight; y++) {
+			for (int x = meta.x; x < meta.targetWidth; x++) {
+				position = (y * meta.bitmapWidth) + x;
+				rgb = inPixels[position];
 				float nx = m00 * x + m01 * y;
 				float ny = m10 * x + m11 * y;
 				if (sides == 2)
@@ -59,10 +61,10 @@ public class TransitionFilters {
 				if (invert)
 					alpha = 255 - alpha;
 
-				inPixels[nRow + x] = (alpha << 24) | (rgb & 0x00ffffff);
+				inPixels[position] = (alpha << 24) | (rgb & 0x00ffffff);
 			}
 		}
-		return Bitmap.createBitmap(inPixels, src.getWidth(), src.getHeight(), outputConfig);
+		return Bitmap.createBitmap(inPixels, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
 	}
 
 	private static float symmetry(float x, float b) {

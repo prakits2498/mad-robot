@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 
 import com.madrobot.geom.Rectangle;
+import com.madrobot.graphics.bitmap.BitmapFilters.BitmapMeta;
 
 /**
  * Bitmap shapes/perception transforming filters.
@@ -408,10 +409,9 @@ public class TransformFilters {
 	 * @param outputConfig
 	 * @return
 	 */
-	public static Bitmap sparkle(Bitmap src, int color, int amount, int rays, int radius, int randomness, Bitmap.Config outputConfig) {
+	public static Bitmap sparkle(Bitmap src, int color, int amount, int rays, int radius, int randomness, OutputConfiguration outputConfig) {
 		int width = src.getWidth();
 		int height = src.getHeight();
-		int[] inPixels = BitmapUtils.getPixels(src);
 
 		Random randomNumbers = new Random();
 		int centreX = width / 2;
@@ -421,10 +421,13 @@ public class TransformFilters {
 		for (int i = 0; i < rays; i++)
 			rayLengths[i] = radius + randomness / 100.0f * radius * (float) randomNumbers.nextGaussian();
 
-		for (int y = 0; y < height; y++) {
-			int nRow = y * width;
-			for (int x = 0; x < width; x++) {
-				int rgb = inPixels[nRow + x];
+		BitmapMeta meta = BitmapFilters.getMeta(src, outputConfig);
+		int[] inPixels = BitmapUtils.getPixels(src);
+		int position, rgb;
+		for (int y = meta.y; y < meta.targetHeight; y++) {
+			for (int x = meta.x; x < meta.targetWidth; x++) {
+				position = (y * meta.bitmapWidth) + x;
+				rgb = inPixels[position];
 
 				float dx = x - centreX;
 				float dy = y - centreY;
@@ -444,10 +447,10 @@ public class TransformFilters {
 					f *= g;
 				}
 				f = ImageMath.clamp(f, 0, 1);
-				inPixels[nRow + x] = ImageMath.mixColors(f, rgb, color);
+				inPixels[position] = ImageMath.mixColors(f, rgb, color);
 			}
 		}
-		return Bitmap.createBitmap(inPixels, src.getWidth(), src.getHeight(), outputConfig);
+		return Bitmap.createBitmap(inPixels, meta.bitmapWidth,meta.bitmapHeight, outputConfig.config);
 	}
 
 }
