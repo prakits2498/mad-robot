@@ -12,6 +12,9 @@ import com.madrobot.graphics.PixelUtils;
  * 
  * <b>La place Edge Detection</b><br/>
  * <img src="../../../../resources/laplaceedge.png" width="300" height="224"><br/>
+ * 
+ * <b>Simple Emboss</b><br/>
+ * <img src="../../../../resources/simpleEmboss.png" width="300" height="224"><br/>
  * <table>
  * <tr>
  * <th>Emboss with <code>emboss</code> set to false and <code>bumpHeight</code> of 3</th>
@@ -194,6 +197,20 @@ public class EdgeFilters {
 	}
 
 	/**
+	 * Apply emboss filter to the given image data
+	 * @param bitmap
+	 *            of the image
+	 * @param outputConfig
+	 *            Bitmap configuration of the output bitmap
+	 * @return
+	 */
+	public static Bitmap simpleEmboss(Bitmap bitmap, Bitmap.Config outputConfig) {
+
+		byte[][] filter = { { -2, 0, 0 }, { 0, 1, 0 }, { 0, 0, 2 } };
+		return BitmapFilters.applyFilter(bitmap, 100, filter, outputConfig);
+	}
+
+	/**
 	 * A simple embossing filter.
 	 * 
 	 * @param src
@@ -222,6 +239,7 @@ public class EdgeFilters {
 
 	/**
 	 * Edge detection using the Laplacian operator
+	 * 
 	 * @param src
 	 * @param outputConfig
 	 * @return
@@ -285,7 +303,7 @@ public class EdgeFilters {
 
 				pixels[x] = 0xff000000 | (r << 16) | (r << 8) | r;
 			}
-//			setRGB(dst, 0, y, width, 1, pixels);
+			// setRGB(dst, 0, y, width, 1, pixels);
 			BitmapUtils.setPixelRow(pixels, y, width, inPixels);
 			int[] t = row1;
 			row1 = row2;
@@ -293,7 +311,6 @@ public class EdgeFilters {
 			row3 = t;
 		}
 
-		
 		return Bitmap.createBitmap(inPixels, width, height, outputConfig);
 	}
 }

@@ -11,6 +11,9 @@ import android.graphics.Bitmap;
  * <b>Fade</b><br/>
  * Fade using the <code>fadeWidth</code> of 100<br/>
  * <img src="../../../../resources/fade.png"><br/>
+ * <b>Dissolve</b><br/>
+ * Dissolve using the <code>density</code> of 0.65 and <code>softness</code> 0.50. This bitmap has a black background<br/>
+ * <img src="../../../../resources/dissolve.png"><br/>
  * </p>
  * 
  * @author elton.stephen.kent
@@ -64,6 +67,9 @@ public class TransitionFilters {
 				inPixels[position] = (alpha << 24) | (rgb & 0x00ffffff);
 			}
 		}
+		if (outputConfig.canRecycleSrc) {
+			src.recycle();
+		}
 		return Bitmap.createBitmap(inPixels, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
 	}
 
@@ -104,6 +110,9 @@ public class TransitionFilters {
 				f = ImageMath.smoothStep(minDensity, maxDensity, v);
 				inPixels[position] = ((int) (a * f) << 24) | rgb & 0x00ffffff;
 			}
+		}
+		if (outputConfig.canRecycleSrc) {
+			src.recycle();
 		}
 		return Bitmap.createBitmap(inPixels, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
 	}

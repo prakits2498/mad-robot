@@ -36,8 +36,8 @@ public class TestActivity extends Activity {
 		// Bitmap.Config outputConfig = Bitmap.Config.ARGB_8888;
 		long time = System.currentTimeMillis();
 		OutputConfiguration outputConfig = new OutputConfiguration();
-//		outputConfig.setAffectedArea(new Rectangle(0, 0, src.getWidth() / 2, src.getHeight() / 2));
-		Bitmap bitmap2 =TransitionFilters.dissolve(src, 0.65f, 0.50f, outputConfig);
+		outputConfig.setAffectedArea(new Rectangle(0, 0, src.getWidth() / 2, src.getHeight() ));
+		Bitmap bitmap2 =EnhancementFilters.adjustRGB(src, 0.5f, 0.5f, 0, outputConfig);
 		// 96, 0, 64, 96, 0, 64 }, outputConfig);
 		 System.out.println("============================== DONE ====================");
 		// + (System.currentTimeMillis() - time));

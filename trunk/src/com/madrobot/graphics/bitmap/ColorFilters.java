@@ -166,33 +166,7 @@ public class ColorFilters {
 		return Bitmap.createBitmap(argb, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
 	}
 
-	/**
-	 * Apply emboss filter to the given image data
-	 * <p>
-	 * <table border="0">
-	 * <tr>
-	 * <td><b>Before</b></td>
-	 * <td><b>After</b></td>
-	 * </tr>
-	 * <tr>
-	 * <td>
-	 * <img src="../../../resources/before.png"></td>
-	 * <td><img src="../../../resources/emboss.png"></td>
-	 * </tr>
-	 * </table>
-	 * </p>
-	 * 
-	 * @param bitmap
-	 *            of the image
-	 * @param outputConfig
-	 *            Bitmap configuration of the output bitmap
-	 * @return
-	 */
-	public static Bitmap emboss(Bitmap bitmap, Bitmap.Config outputConfig) {
-
-		byte[][] filter = { { -2, 0, 0 }, { 0, 1, 0 }, { 0, 0, 2 } };
-		return BitmapFilters.applyFilter(bitmap, 100, filter, outputConfig);
-	}
+	
 
 	/**
 	 * A filter which quantizes an image to a set number of colors
