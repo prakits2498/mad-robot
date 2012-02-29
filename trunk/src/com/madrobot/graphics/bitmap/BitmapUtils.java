@@ -48,6 +48,7 @@ public final class BitmapUtils {
 
 	/**
 	 * crop the given bitmap
+	 * 
 	 * @param bitmap
 	 * @param x
 	 * @param y
@@ -223,13 +224,18 @@ public final class BitmapUtils {
 		int[] pixels = new int[w * h];
 		bitmap.getPixels(pixels, 0, w, 0, 0, w, h);
 		return pixels;
-
 	}
 
 	public static int[] getPixelRow(Bitmap bitmap, int width, int columnNumber) {
 		int[] sub = new int[width];
 		bitmap.getPixels(sub, 0, width, 0, columnNumber, width, 1);
 		return sub;
+	}
+
+	public static int[] getPixelRow(int[] argb, int x, int y, int width) {
+		int[] row = new int[width];
+		System.arraycopy(argb, (y * width) + x, row, 0, width);
+		return row;
 	}
 
 	/**
@@ -889,13 +895,18 @@ public final class BitmapUtils {
 		bitmap.compress(format, 100, fos);
 		fos.close();
 	}
-	
+
 	/**
 	 * Set a row of pixels in the given argb array
-	 * @param row to be set
-	 * @param column the current column
-	 * @param width of the bitmap
-	 * @param argb the argb array of the bitmap
+	 * 
+	 * @param row
+	 *            to be set
+	 * @param column
+	 *            the current column
+	 * @param width
+	 *            of the bitmap
+	 * @param argb
+	 *            the argb array of the bitmap
 	 */
 	public static void setPixelRow(int[] row, int column, int width, int[] argb) {
 		for (int i = 0; i < row.length; i++) {

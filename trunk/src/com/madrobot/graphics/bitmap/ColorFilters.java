@@ -7,7 +7,7 @@ import android.graphics.Color;
 
 import com.madrobot.geom.Rectangle;
 import com.madrobot.graphics.PixelUtils;
-import com.madrobot.graphics.bitmap.BitmapFilters.BitmapMeta;
+import com.madrobot.graphics.bitmap.OutputConfiguration.BitmapMeta;
 
 /**
  * Bitmap texture filters
@@ -39,8 +39,6 @@ import com.madrobot.graphics.bitmap.BitmapFilters.BitmapMeta;
  */
 public class ColorFilters {
 
-
-
 	/**
 	 * Poseterize the given bitmap
 	 * 
@@ -54,10 +52,10 @@ public class ColorFilters {
 	public static final Bitmap posterize(Bitmap bitmap, int depth, OutputConfiguration outputConfig) {
 		int[] argb = BitmapUtils.getPixels(bitmap);
 
-		BitmapMeta meta = BitmapFilters.getMeta(bitmap, outputConfig);
-		for (int ver = meta.y; ver < meta.targetHeight; ver++) {
-			for (int hr = meta.x; hr < meta.targetWidth; hr++) {
-				int position = (ver * meta.bitmapWidth) + hr;
+		BitmapMeta meta = outputConfig.getBitmapMeta(bitmap);
+		for (int y = meta.y; y < meta.targetHeight; y++) {
+			for (int x = meta.x; x < meta.targetWidth; x++) {
+				int position = (y * meta.bitmapWidth) + x;
 				argb[position] = PixelUtils.posterizePixel(argb[position], depth);
 			}
 		}
@@ -79,7 +77,7 @@ public class ColorFilters {
 
 		int[] argb = BitmapUtils.getPixels(bitmap);
 
-		BitmapMeta meta = BitmapFilters.getMeta(bitmap, outputConfig);
+		BitmapMeta meta = outputConfig.getBitmapMeta(bitmap);
 		for (int ver = meta.y; ver < meta.targetHeight; ver++) {
 			for (int hr = meta.x; hr < meta.targetWidth; hr++) {
 
@@ -106,7 +104,7 @@ public class ColorFilters {
 	public static final Bitmap applySepia(Bitmap bitmap, Integer depth, OutputConfiguration outputConfig) {
 		int[] argb = BitmapUtils.getPixels(bitmap);
 
-		BitmapMeta meta = BitmapFilters.getMeta(bitmap, outputConfig);
+		BitmapMeta meta = outputConfig.getBitmapMeta(bitmap);
 		for (int ver = meta.y; ver < meta.targetHeight; ver++) {
 			for (int hr = meta.x; hr < meta.targetWidth; hr++) {
 
@@ -131,7 +129,7 @@ public class ColorFilters {
 	public static final Bitmap saturate(Bitmap bitmap, int percent, OutputConfiguration outputConfig) {
 		int[] argb = BitmapUtils.getPixels(bitmap);
 
-		BitmapMeta meta = BitmapFilters.getMeta(bitmap, outputConfig);
+		BitmapMeta meta = outputConfig.getBitmapMeta(bitmap);
 		for (int ver = meta.y; ver < meta.targetHeight; ver++) {
 			for (int hr = meta.x; hr < meta.targetWidth; hr++) {
 
@@ -603,7 +601,7 @@ public class ColorFilters {
 		int pixel = 0;
 		int position;
 
-		BitmapMeta meta = BitmapFilters.getMeta(src, outputConfig);
+		BitmapMeta meta = outputConfig.getBitmapMeta(src);
 		for (int ver = meta.y; ver < meta.targetHeight; ver++) {
 			for (int hr = meta.x; hr < meta.targetWidth; hr++) {
 
@@ -639,7 +637,7 @@ public class ColorFilters {
 	public static Bitmap decreaseColorDepth(final Bitmap bitmap, final int bitOffset, OutputConfiguration outputConfig) {
 		int[] argb = BitmapUtils.getPixels(bitmap);
 		int A, R, G, B;
-		BitmapMeta meta = BitmapFilters.getMeta(bitmap, outputConfig);
+		BitmapMeta meta = outputConfig.getBitmapMeta(bitmap);
 		for (int ver = meta.y; ver < meta.targetHeight; ver++) {
 			for (int hr = meta.x; hr < meta.targetWidth; hr++) {
 

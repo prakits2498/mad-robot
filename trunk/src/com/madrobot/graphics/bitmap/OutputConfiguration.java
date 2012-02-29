@@ -13,23 +13,79 @@ import android.graphics.Bitmap.Config;
  */
 public class OutputConfiguration {
 
-	Bitmap.Config config = Config.ARGB_8888;
-	Rectangle affectedArea;
-	boolean canRecycleSrc;
+	static class BitmapMeta {
+		int bitmapHeight;
+		int bitmapWidth;
+		/**
+		 * the target area height affected by the filter
+		 */
+		int targetHeight;
+		/**
+		 * the target area width affected by the filter
+		 */
+		int targetWidth;
+		int x;
+		int y;
 
-	public boolean isCanRecycleSrc() {
-		return canRecycleSrc;
+	}
+
+	Rectangle affectedArea;
+
+	boolean canRecycleSrc;
+	Bitmap.Config config = Config.ARGB_8888;
+	void checkRectangleBounds(int width, int height) {
+
+		if (!new Rectangle(0, 0, width, height).contains(affectedArea)) {
+
+			throw new IllegalArgumentException("affected area bounds exceeds the bounds of the image ");
+		}
 	}
 
 	/**
-	 * Recycle the src image.
-	 * <p>
-	 * The default is false.
-	 * </p>
-	 * @param canRecycleSrc
+	 * Area of the bitmap that is affected by the filter
+	 * 
+	 * @return
 	 */
-	public void setCanRecycleSrc(boolean canRecycleSrc) {
-		this.canRecycleSrc = canRecycleSrc;
+	public Rectangle getAffectedArea() {
+		return affectedArea;
+	}
+
+	/**
+	 * res[0]= bitmap width<br/>
+	 * res[1]=bitmap height<br/>
+	 * res[2]=target width where the filter acts res[3]=target height where the filter acts
+	 * 
+	 * @param bitmap
+	 * @param outputConfig
+	 * @return
+	 */
+	BitmapMeta getBitmapMeta(Bitmap bitmap) {
+
+		BitmapMeta meta = new BitmapMeta();
+		meta.bitmapWidth = bitmap.getWidth();
+		meta.bitmapHeight = bitmap.getHeight();
+
+		if (affectedArea != null) {
+			checkRectangleBounds(meta.bitmapWidth, meta.bitmapHeight);
+		}
+
+		meta.targetWidth = meta.bitmapWidth;
+		meta.targetHeight = meta.bitmapHeight;
+
+		if (affectedArea != null) {
+			meta.targetWidth = affectedArea.x + affectedArea.width;
+			if (meta.targetWidth > meta.bitmapWidth) {
+				meta.targetWidth = meta.bitmapWidth;
+			}
+			meta.targetHeight = affectedArea.y + affectedArea.height;
+			if (meta.targetHeight > meta.bitmapHeight) {
+				meta.targetHeight = meta.bitmapHeight;
+			}
+		}
+
+		meta.x = affectedArea != null ? affectedArea.x : 0;
+		meta.y = affectedArea != null ? affectedArea.y : 0;
+		return meta;
 	}
 
 	/**
@@ -39,6 +95,32 @@ public class OutputConfiguration {
 	 */
 	public Bitmap.Config getConfig() {
 		return config;
+	}
+
+	public boolean isCanRecycleSrc() {
+		return canRecycleSrc;
+	}
+
+	/**
+	 * Set the area of the bitmap that should be affected by the filter.
+	 * 
+	 * @param affectedArea
+	 *            if null, the filter is applied to the whole bitmap.
+	 */
+	public void setAffectedArea(Rectangle affectedArea) {
+		this.affectedArea = affectedArea;
+	}
+
+	/**
+	 * Recycle the src image.
+	 * <p>
+	 * The default is false.
+	 * </p>
+	 * 
+	 * @param canRecycleSrc
+	 */
+	public void setCanRecycleSrc(boolean canRecycleSrc) {
+		this.canRecycleSrc = canRecycleSrc;
 	}
 
 	/**
@@ -52,32 +134,5 @@ public class OutputConfiguration {
 	 */
 	public void setConfig(Bitmap.Config config) {
 		this.config = config;
-	}
-
-	/**
-	 * Area of the bitmap that is affected by the filter
-	 * 
-	 * @return
-	 */
-	public Rectangle getAffectedArea() {
-		return affectedArea;
-	}
-
-	/**
-	 * Set the area of the bitmap that should be affected by the filter.
-	 * 
-	 * @param affectedArea
-	 *            if null, the filter is applied to the whole bitmap.
-	 */
-	public void setAffectedArea(Rectangle affectedArea) {
-		this.affectedArea = affectedArea;
-	}
-
-	void checkRectangleBounds(int width, int height) {
-
-		if (!new Rectangle(0, 0, width, height).contains(affectedArea)) {
-
-			throw new IllegalArgumentException("affected area bounds exceeds the bounds of the image ");
-		}
 	}
 }

@@ -1,8 +1,10 @@
 package com.madrobot.graphics.bitmap;
 
-import com.madrobot.graphics.bitmap.BitmapFilters.BitmapMeta;
-
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
+
+import com.madrobot.graphics.PixelUtils;
+import com.madrobot.graphics.bitmap.OutputConfiguration.BitmapMeta;
 
 /**
  * Basic bitmap enhancement operations.
@@ -42,12 +44,12 @@ public class EnhancementFilters {
 		return ConvolveUtils.doConvolve(sharpenMatrix, src, edgeAction, processAlpha, premultiplyAlpha, outputConfig);
 	}
 
-	public static Bitmap exposure(Bitmap src, float exposure, OutputConfiguration outputConfig) {
+	public static Bitmap setExposure(Bitmap src, float exposure, OutputConfiguration outputConfig) {
 
-		BitmapMeta meta = BitmapFilters.getMeta(src, outputConfig);
+		BitmapMeta meta = outputConfig.getBitmapMeta(src);
 		int[] inPixels = BitmapUtils.getPixels(src);
 		int[] rTable, gTable, bTable;
-		rTable = gTable = bTable = makeTable(exposure);
+		rTable = gTable = bTable = makeExposureTable(exposure);
 		int position, rgb;
 		for (int y = meta.y; y < meta.targetHeight; y++) {
 			for (int x = meta.x; x < meta.targetWidth; x++) {
@@ -71,14 +73,15 @@ public class EnhancementFilters {
 		return Bitmap.createBitmap(inPixels, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
 	}
 
-	private static int[] makeTable(float exposure) {
+	private static int[] makeExposureTable(float exposure) {
 		int[] table = new int[256];
 		for (int i = 0; i < 256; i++)
-			table[i] = com.madrobot.graphics.PixelUtils.clamp((int) (255 * transferFunction(i / 255.0f, exposure)));
+			table[i] = com.madrobot.graphics.PixelUtils.clamp((int) (255 * exposureTransferFunction(i / 255.0f,
+					exposure)));
 		return table;
 	}
 
-	private static float transferFunction(float f, float exposure) {
+	private static float exposureTransferFunction(float f, float exposure) {
 		return 1 - (float) Math.exp(-f * exposure);
 	}
 
@@ -259,4 +262,56 @@ public class EnhancementFilters {
 			c--;
 		return c;
 	}
+
+	/**
+	 * Set the brightness and contrast of the given bitmap
+	 * @param src
+	 * @param brightness min:0 max:1. Values >1 can also be used
+	 * @param contrast min:0 max:1. Values >1 can also be used
+	 * @param outputConfig
+	 * @return
+	 */
+	public static Bitmap setBrightnessAndContrast(Bitmap src, float brightness, float contrast, OutputConfiguration outputConfig) {
+		int[] argb = BitmapUtils.getPixels(src);
+		BitmapMeta meta = outputConfig.getBitmapMeta(src);
+		int[] rTable, gTable, bTable;
+		rTable = gTable = bTable = makeTable(brightness, contrast);
+		int position;
+		for (int y = meta.y; y < meta.targetHeight; y++) {
+			for (int x = meta.x; x < meta.targetWidth; x++) {
+				position = (y * meta.bitmapWidth) + x;
+				argb[position] = filterRGB(x, y, argb[position], rTable, gTable, bTable);
+			}
+		}
+		if (outputConfig.canRecycleSrc) {
+			src.recycle();
+		}
+		return Bitmap.createBitmap(argb, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
+	}
+
+	private static int[] makeTable(float brightness, float contrast) {
+		int[] table = new int[256];
+		for (int i = 0; i < 256; i++)
+			table[i] = PixelUtils.clamp((int) (255 * transferFunction(i / 255.0f, brightness, contrast)));
+		return table;
+	}
+
+	private static int filterRGB(int x, int y, int rgb, int[] rTable, int[] gTable, int[] bTable) {
+
+		int a = rgb & 0xff000000;
+		int r = (rgb >> 16) & 0xff;
+		int g = (rgb >> 8) & 0xff;
+		int b = rgb & 0xff;
+		r = rTable[r];
+		g = gTable[g];
+		b = bTable[b];
+		return a | (r << 16) | (g << 8) | b;
+	}
+
+	private static float transferFunction(float f, float brightness, float contrast) {
+		f = f * brightness;
+		f = (f - 0.5f) * contrast + 0.5f;
+		return f;
+	}
+
 }

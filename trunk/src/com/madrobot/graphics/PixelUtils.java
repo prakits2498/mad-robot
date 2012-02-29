@@ -5,7 +5,7 @@ import java.util.Random;
 import android.graphics.Color;
 
 /**
- *Pixel level manipulation utils
+ * Pixel level manipulation utils
  */
 public class PixelUtils {
 
@@ -55,6 +55,13 @@ public class PixelUtils {
 		return (r + g + b) / 3;
 	}
 
+	/**
+	 * Check if the colors are near each other in terms of the defined tolerance
+	 * @param rgb1
+	 * @param rgb2
+	 * @param tolerance
+	 * @return
+	 */
 	public static boolean nearColors(int rgb1, int rgb2, int tolerance) {
 		int r1 = (rgb1 >> 16) & 0xff;
 		int g1 = (rgb1 >> 8) & 0xff;
@@ -77,8 +84,24 @@ public class PixelUtils {
 		return (rgb2 & ~channelMask) | combinePixels(rgb1 & channelMask, rgb2, op, extraAlpha);
 	}
 
-	public static int combinePixels(int rgb1, int rgb2, int op, int extraAlpha) {
-		if (op == REPLACE)
+	/**
+	 * Combine pixels using the specified operation
+	 * 
+	 * @param rgb1
+	 *            first pixel to combine
+	 * @param rgb2
+	 *            second pixel to combine
+	 * @param operation
+	 *            see {@link PixelUtils#NORMAL} , {@link PixelUtils#MIN}, {@link PixelUtils#MAX}, {@link PixelUtils#MAX}
+	 *            ,{@link PixelUtils#ADD},{@link PixelUtils#SUBTRACT} , {@link PixelUtils#DIFFERENCE},
+	 *            {@link PixelUtils#DISSOLVE} , {@link PixelUtils#DST_IN}, {@link PixelUtils#MULTIPLY},
+	 *            {@link PixelUtils#AVERAGE},{@link PixelUtils#ALPHA_TO_GRAY} and so on.
+	 * @param extraAlpha
+	 *            level of alpha to extract. Maximum value: 255, Min Value:0
+	 * @return
+	 */
+	public static int combinePixels(int rgb1, int rgb2, int operation, int extraAlpha) {
+		if (operation == REPLACE)
 			return rgb1;
 		int a1 = (rgb1 >> 24) & 0xff;
 		int r1 = (rgb1 >> 16) & 0xff;
@@ -89,7 +112,7 @@ public class PixelUtils {
 		int g2 = (rgb2 >> 8) & 0xff;
 		int b2 = rgb2 & 0xff;
 
-		switch (op) {
+		switch (operation) {
 		case NORMAL:
 			break;
 		case MIN:
@@ -140,7 +163,7 @@ public class PixelUtils {
 		case COLOR:
 			Color.RGBToHSV(r1, g1, b1, hsb1);
 			Color.RGBToHSV(r2, g2, b2, hsb2);
-			switch (op) {
+			switch (operation) {
 			case HUE:
 				hsb2[0] = hsb1[0];
 				break;
@@ -888,10 +911,10 @@ public class PixelUtils {
 	 * @param pixels
 	 * @param stride
 	 */
-	public  static void putPixel(int x, int y, int rgb, int[] pixels, int stride) {
+	public static void putPixel(int x, int y, int rgb, int[] pixels, int stride) {
 		pixels[y * stride + x] = rgb;
 	}
-	
+
 	/**
 	 * 
 	 * @param x
@@ -901,25 +924,26 @@ public class PixelUtils {
 	 * @return
 	 */
 	public static int getPixel(int x, int y, int[] pixels, int stride) {
-		return pixels[y*stride+x];
+		return pixels[y * stride + x];
 	}
-	
+
 	public static int average(int rgb1, int rgb2) {
 		return combinePixels(rgb1, rgb2, PixelUtils.AVERAGE);
 	}
-	
+
 	public static int displace(int rgb, float amount) {
 		int r = (rgb >> 16) & 0xff;
 		int g = (rgb >> 8) & 0xff;
 		int b = rgb & 0xff;
-		r = clamp(r + (int)(amount * (randomGenerator.nextFloat()-0.5)));
-		g = clamp(g + (int)(amount * (randomGenerator.nextFloat()-0.5)));
-		b = clamp(b + (int)(amount * (randomGenerator.nextFloat()-0.5)));
+		r = clamp(r + (int) (amount * (randomGenerator.nextFloat() - 0.5)));
+		g = clamp(g + (int) (amount * (randomGenerator.nextFloat() - 0.5)));
+		b = clamp(b + (int) (amount * (randomGenerator.nextFloat() - 0.5)));
 		return 0xff000000 | (r << 16) | (g << 8) | b;
 	}
-	
+
 	/**
 	 * Get the pixel at the given location
+	 * 
 	 * @param x
 	 * @param y
 	 * @param width
@@ -927,13 +951,13 @@ public class PixelUtils {
 	 * @param argb
 	 * @return
 	 */
-	public static int getPixel(int x, int y,int width,int height, int[] argb) {
+	public static int getPixel(int x, int y, int width, int height, int[] argb) {
 		int nRow = y * width;
 		return argb[nRow + x];
 	}
-	
-	public static void setPixel(int pixel,int x, int y,int width,int height, int[] argb) {
+
+	public static void setPixel(int pixel, int x, int y, int width, int height, int[] argb) {
 		int nRow = y * width;
-		argb[nRow + x]=pixel;
+		argb[nRow + x] = pixel;
 	}
 }

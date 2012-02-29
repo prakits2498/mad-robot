@@ -13,11 +13,14 @@ package com.madrobot;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Bitmap.Config;
 import android.os.Bundle;
 import android.widget.ImageView;
 
 import com.madrobot.geom.Rectangle;
+import com.madrobot.graphics.bitmap.BlurFilters;
 import com.madrobot.graphics.bitmap.ColorFilters;
+import com.madrobot.graphics.bitmap.EdgeFilters;
 import com.madrobot.graphics.bitmap.EnhancementFilters;
 import com.madrobot.graphics.bitmap.OutputConfiguration;
 import com.madrobot.graphics.bitmap.TransformFilters;
@@ -33,10 +36,8 @@ public class TestActivity extends Activity {
 		// Bitmap.Config outputConfig = Bitmap.Config.ARGB_8888;
 		long time = System.currentTimeMillis();
 		OutputConfiguration outputConfig = new OutputConfiguration();
-		outputConfig.setAffectedArea(new Rectangle(src.getWidth() / 2, 0, src.getWidth() / 2, src.getHeight() / 2));
-		Bitmap bitmap2 = TransitionFilters.fade(src, -45, 0, 100, true, 0, outputConfig);// = TransformFilters.torsion(src, new float[]
-																			// { 0, 0, 64, 0, 64, 64, 0, 64 }, new
-																			// float[] { 0, 0,
+//		outputConfig.setAffectedArea(new Rectangle(0, 0, src.getWidth() / 2, src.getHeight() / 2));
+		Bitmap bitmap2 =TransitionFilters.dissolve(src, 0.65f, 0.50f, outputConfig);
 		// 96, 0, 64, 96, 0, 64 }, outputConfig);
 		 System.out.println("============================== DONE ====================");
 		// + (System.currentTimeMillis() - time));

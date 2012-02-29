@@ -1,6 +1,6 @@
 package com.madrobot.graphics.bitmap;
 
-import com.madrobot.graphics.bitmap.BitmapFilters.BitmapMeta;
+import java.util.Random;
 
 import android.graphics.Bitmap;
 
@@ -42,7 +42,7 @@ public class TransitionFilters {
 		float m10 = -sin;
 		float m11 = cos;
 
-		BitmapMeta meta = BitmapFilters.getMeta(src, outputConfig);
+		com.madrobot.graphics.bitmap.OutputConfiguration.BitmapMeta meta = outputConfig.getBitmapMeta(src);
 		int[] inPixels = BitmapUtils.getPixels(src);
 		int position, rgb;
 		for (int y = meta.y; y < meta.targetHeight; y++) {
@@ -73,6 +73,39 @@ public class TransitionFilters {
 		if (x > b)
 			return 2 * b - x;
 		return x;
+	}
+
+	/**
+	 * A filter which "dissolves" an image by thresholding the alpha channel with random numbers.
+	 * 
+	 * @param src
+	 * @param density
+	 *            the density of the image in the range 0..1.
+	 * @param softness
+	 *            the softness of the dissolve in the range 0..1.
+	 * @param outputConfig
+	 * @return
+	 */
+	public static Bitmap dissolve(Bitmap src, float density, float softness, OutputConfiguration outputConfig) {
+		float d = (1 - density) * (1 + softness);
+		float minDensity = d - softness;
+		float maxDensity = d;
+		Random randomNumbers = new Random(0);
+		com.madrobot.graphics.bitmap.OutputConfiguration.BitmapMeta meta = outputConfig.getBitmapMeta(src);
+		int[] inPixels = BitmapUtils.getPixels(src);
+		int position, rgb, a;
+		float v, f;
+		for (int y = meta.y; y < meta.targetHeight; y++) {
+			for (int x = meta.x; x < meta.targetWidth; x++) {
+				position = (y * meta.bitmapWidth) + x;
+				rgb = inPixels[position];
+				a = (rgb >> 24) & 0xff;
+				v = randomNumbers.nextFloat();
+				f = ImageMath.smoothStep(minDensity, maxDensity, v);
+				inPixels[position] = ((int) (a * f) << 24) | rgb & 0x00ffffff;
+			}
+		}
+		return Bitmap.createBitmap(inPixels, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
 	}
 
 }

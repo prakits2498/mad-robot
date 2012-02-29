@@ -10,7 +10,8 @@ import com.madrobot.graphics.PixelUtils;
  * <b>Edge Detection</b><br/>
  * <img src="../../../../resources/wholeimage_edge.png" width="300" height="224"><br/>
  * 
- * 
+ * <b>La place Edge Detection</b><br/>
+ * <img src="../../../../resources/laplaceedge.png" width="300" height="224"><br/>
  * <table>
  * <tr>
  * <th>Emboss with <code>emboss</code> set to false and <code>bumpHeight</code> of 3</th>
@@ -207,5 +208,92 @@ public class EdgeFilters {
 	public static Bitmap bump(Bitmap src, int edgeAction, boolean processAlpha, boolean premultiplyAlpha, Bitmap.Config outputConfig) {
 		float[] embossMatrix = { -1.0f, -1.0f, 0.0f, -1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f };
 		return ConvolveUtils.doConvolve(embossMatrix, src, edgeAction, processAlpha, premultiplyAlpha, outputConfig);
+	}
+
+	private static void brightness(int[] row) {
+		for (int i = 0; i < row.length; i++) {
+			int rgb = row[i];
+			int r = rgb >> 16 & 0xff;
+			int g = rgb >> 8 & 0xff;
+			int b = rgb & 0xff;
+			row[i] = (r + g + b) / 3;
+		}
+	}
+
+	/**
+	 * Edge detection using the Laplacian operator
+	 * @param src
+	 * @param outputConfig
+	 * @return
+	 */
+	public static Bitmap laPlaceEdge(Bitmap src, Bitmap.Config outputConfig) {
+		int width = src.getWidth();
+		int height = src.getHeight();
+		int[] inPixels = BitmapUtils.getPixels(src);
+		int[] row1 = new int[width];
+		int[] row2 = new int[width];
+		int[] row3 = new int[width];
+		int[] pixels = new int[width];
+		src.getPixels(row1, 0, width, 0, 0, width, 1);
+		src.getPixels(row2, 0, width, 0, 1, width, 1);
+
+		brightness(row1);
+		brightness(row2);
+		for (int y = 0; y < height; y++) {
+			if (y < height - 1) {
+				src.getPixels(row3, 0, width, 0, y + 1, width, 1);// getRGB(src, 0, y + 1, width, 1, row3);
+				brightness(row3);
+			}
+			pixels[0] = pixels[width - 1] = 0xff000000;// FIXME
+			for (int x = 1; x < width - 1; x++) {
+				int l1 = row2[x - 1];
+				int l2 = row1[x];
+				int l3 = row3[x];
+				int l4 = row2[x + 1];
+
+				int l = row2[x];
+				int max = Math.max(Math.max(l1, l2), Math.max(l3, l4));
+				int min = Math.min(Math.min(l1, l2), Math.min(l3, l4));
+
+				int gradient = (int) (0.5f * Math.max((max - l), (l - min)));
+
+				int r = ((row1[x - 1] + row1[x] + row1[x + 1] + row2[x - 1] - (8 * row2[x]) + row2[x + 1] + row3[x - 1]
+						+ row3[x] + row3[x + 1]) > 0) ? gradient : (128 + gradient);
+				pixels[x] = r;
+			}
+			BitmapUtils.setPixelRow(pixels, y, width, inPixels);
+			// setRGB(dst, 0, y, width, 1, pixels);
+			int[] t = row1;
+			row1 = row2;
+			row2 = row3;
+			row3 = t;
+		}
+
+		row1 = BitmapUtils.getPixelRow(inPixels, 0, 0, width);// getRGB(dst, 0, 0, width, 1, row1);
+		row2 = BitmapUtils.getPixelRow(inPixels, 0, 1, width);// getRGB(dst, 0, 0, width, 1, row2);
+		for (int y = 0; y < height; y++) {
+			if (y < height - 1) {
+				row3 = BitmapUtils.getPixelRow(inPixels, 0, y + 1, width);// getRGB(dst, 0, y + 1, width, 1, row3);
+			}
+			pixels[0] = pixels[width - 1] = 0xff000000;// FIXME
+			for (int x = 1; x < width - 1; x++) {
+				int r = row2[x];
+				r = (((r <= 128) && ((row1[x - 1] > 128) || (row1[x] > 128) || (row1[x + 1] > 128)
+						|| (row2[x - 1] > 128) || (row2[x + 1] > 128) || (row3[x - 1] > 128) || (row3[x] > 128) || (row3[x + 1] > 128))) ? ((r >= 128) ? (r - 128)
+						: r)
+						: 0);
+
+				pixels[x] = 0xff000000 | (r << 16) | (r << 8) | r;
+			}
+//			setRGB(dst, 0, y, width, 1, pixels);
+			BitmapUtils.setPixelRow(pixels, y, width, inPixels);
+			int[] t = row1;
+			row1 = row2;
+			row2 = row3;
+			row3 = t;
+		}
+
+		
+		return Bitmap.createBitmap(inPixels, width, height, outputConfig);
 	}
 }
