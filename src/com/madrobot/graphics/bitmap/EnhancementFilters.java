@@ -1,7 +1,6 @@
 package com.madrobot.graphics.bitmap;
 
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
 
 import com.madrobot.graphics.PixelUtils;
 import com.madrobot.graphics.bitmap.OutputConfiguration.BitmapMeta;
@@ -23,6 +22,14 @@ import com.madrobot.graphics.bitmap.OutputConfiguration.BitmapMeta;
  * 
  * <b>DeSpeckle</b><br/>
  * <img src="../../../../resources/despeckle.png" width="300" height="224"><br/>
+ * <b>HSB adjust</b><br/>
+ * HSB adjusted with <code>hFactor</code> set to 0.5 and <code>sFactor</code> set to 0.5. . Adjustment applied to one
+ * half of the image. the remaining half is the normal image<br/>
+ * <img src="../../../../resources/despeckle.png" width="300" height="224"><br/>
+ * <b>RGB adjust</b><br/>
+ * RGB adjusted with <code>rFactor</code> set to 0.5 and <code>gFactor</code> set to 0.5. . Adjustment applied to one
+ * half of the image. the remaining half is the normal image<br/>
+ * <img src="../../../../resources/rgbadjust.png" width="300" height="224"><br/>
  * </p>
  */
 public class EnhancementFilters {
@@ -265,9 +272,12 @@ public class EnhancementFilters {
 
 	/**
 	 * Set the brightness and contrast of the given bitmap
+	 * 
 	 * @param src
-	 * @param brightness min:0 max:1. Values >1 can also be used
-	 * @param contrast min:0 max:1. Values >1 can also be used
+	 * @param brightness
+	 *            min:0 max:1. Values >1 can also be used
+	 * @param contrast
+	 *            min:0 max:1. Values >1 can also be used
 	 * @param outputConfig
 	 * @return
 	 */
@@ -314,4 +324,90 @@ public class EnhancementFilters {
 		return f;
 	}
 
+	/**
+	 * Adjust the HSB components
+	 * 
+	 * @param src
+	 * @param hFactor
+	 *            scale from 0...1
+	 * @param sFactor
+	 *            scale from 0...1
+	 * @param bFactor
+	 *            scale from 0...1
+	 * @param outputConfig
+	 * @return
+	 */
+	public static Bitmap adjustHSB(Bitmap src, float hFactor, float sFactor, float bFactor, OutputConfiguration outputConfig) {
+		int[] argb = BitmapUtils.getPixels(src);
+		BitmapMeta meta = outputConfig.getBitmapMeta(src);
+		int position, rgb;
+		float[] hsb = new float[3];
+		for (int y = meta.y; y < meta.targetHeight; y++) {
+			for (int x = meta.x; x < meta.targetWidth; x++) {
+				position = (y * meta.bitmapWidth) + x;
+				rgb = argb[position];
+				int a = rgb & 0xff000000;
+				int r = (rgb >> 16) & 0xff;
+				int g = (rgb >> 8) & 0xff;
+				int b = rgb & 0xff;
+				android.graphics.Color.RGBToHSV(r, g, b, hsb);// RGBtoHSB(r, g, b, hsb);
+				hsb[0] += hFactor;
+				while (hsb[0] < 0)
+					hsb[0] += Math.PI * 2;
+				hsb[1] += sFactor;
+				if (hsb[1] < 0)
+					hsb[1] = 0;
+				else if (hsb[1] > 1.0)
+					hsb[1] = 1.0f;
+				hsb[2] += bFactor;
+				if (hsb[2] < 0)
+					hsb[2] = 0;
+				else if (hsb[2] > 1.0)
+					hsb[2] = 1.0f;
+				rgb = android.graphics.Color.HSVToColor(hsb);// HSBtoRGB(hsb[0], hsb[1], hsb[2]);
+				argb[position] = a | (rgb & 0xffffff);
+			}
+		}
+		if (outputConfig.canRecycleSrc) {
+			src.recycle();
+		}
+		return Bitmap.createBitmap(argb, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
+	}
+
+	/**
+	 * Adjust RGB components.
+	 * @param src
+	 * @param rFactor
+	 * @param gFactor
+	 * @param bFactor
+	 * @param outputConfig
+	 * @return
+	 */
+	public static Bitmap adjustRGB(Bitmap src, float rFactor, float gFactor, float bFactor, OutputConfiguration outputConfig) {
+		rFactor = 1 + rFactor;
+		gFactor = 1 + gFactor;
+		bFactor = 1 + bFactor;
+		int[] argb = BitmapUtils.getPixels(src);
+		BitmapMeta meta = outputConfig.getBitmapMeta(src);
+		int position, rgb;
+		int a, r, g, b;
+		for (int y = meta.y; y < meta.targetHeight; y++) {
+			for (int x = meta.x; x < meta.targetWidth; x++) {
+				position = (y * meta.bitmapWidth) + x;
+				rgb = argb[position];
+				a = rgb & 0xff000000;
+				r = (rgb >> 16) & 0xff;
+				g = (rgb >> 8) & 0xff;
+				b = rgb & 0xff;
+				r = PixelUtils.clamp((int) (r * rFactor));
+				g = PixelUtils.clamp((int) (g * gFactor));
+				b = PixelUtils.clamp((int) (b * bFactor));
+				argb[position] = a | (r << 16) | (g << 8) | b;
+			}
+		}
+		if (outputConfig.canRecycleSrc) {
+			src.recycle();
+		}
+		return Bitmap.createBitmap(argb, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
+	}
 }
