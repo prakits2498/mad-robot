@@ -569,20 +569,7 @@ public final class BitmapUtils {
 		return source;
 	}
 
-	/**
-	 * Set the transparency of an image
-	 * 
-	 * @param bitmap
-	 * @param level
-	 *            between 0 and 256. 0 indicates fully transparent and 256 indicates its fully opaque
-	 * @param outputConfig
-	 * @return
-	 */
-	public static final Bitmap setTransparency(final Bitmap bitmap, int level, Bitmap.Config outputConfig) {
-		int[] argb = getPixels(bitmap);
-		PixelUtils.setTransparency(argb, level);
-		return Bitmap.createBitmap(argb, bitmap.getWidth(), bitmap.getHeight(), outputConfig);
-	}
+	
 
 	/**
 	 * Stretches the rgb data horizontal to the given left and rigth stretch factor and returns the new rgb data array.

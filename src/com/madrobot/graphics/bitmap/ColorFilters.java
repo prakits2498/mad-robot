@@ -66,6 +66,29 @@ public class ColorFilters {
 	}
 
 	/**
+	 * Set the transparency of an image
+	 * 
+	 * @param bitmap
+	 * @param level
+	 *            between 0 and 256. 0 indicates fully transparent and 256 indicates its fully opaque
+	 * @param outputConfig
+	 * @return
+	 */
+	public static final Bitmap setTransparency(final Bitmap bitmap, int level, OutputConfiguration outputConfig) {
+
+		int[] argb = BitmapUtils.getPixels(bitmap);
+		level = (level << 24);
+		BitmapMeta meta = outputConfig.getBitmapMeta(bitmap);
+		for (int y = meta.y; y < meta.targetHeight; y++) {
+			for (int x = meta.x; x < meta.targetWidth; x++) {
+				int position = (y * meta.bitmapWidth) + x;
+				argb[position] = (argb[position] & 0x00ffffff) | level;
+			}
+		}
+		return Bitmap.createBitmap(argb, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
+	}
+
+	/**
 	 * Invert the bitmap's colors.
 	 * 
 	 * @param bitmap

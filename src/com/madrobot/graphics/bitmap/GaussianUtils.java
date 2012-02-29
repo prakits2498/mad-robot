@@ -8,7 +8,7 @@ import com.madrobot.graphics.PixelUtils;
  * @author elton.stephen.kent
  * 
  */
-public class GaussianUtils {
+ class GaussianUtils {
 
 	/**
 	 * Blur and transpose a block of ARGB pixels.
@@ -28,7 +28,7 @@ public class GaussianUtils {
 	 * @param edgeAction
 	 *            what to do at the edges
 	 */
-	public static void convolveAndTranspose(Kernel kernel, int[] inPixels, int[] outPixels, int width, int height, boolean alpha, boolean premultiply, boolean unpremultiply, int edgeAction) {
+	 static void convolveAndTranspose(Kernel kernel, int[] inPixels, int[] outPixels, int width, int height, boolean alpha, boolean premultiply, boolean unpremultiply, int edgeAction) {
 		float[] matrix = kernel.getKernelData(null);
 		int cols = kernel.getWidth();
 		int cols2 = cols / 2;
@@ -95,7 +95,7 @@ public class GaussianUtils {
 	 *            the blur radius
 	 * @return the kernel
 	 */
-	public static Kernel makeKernel(float radius) {
+	 static Kernel makeKernel(float radius) {
 		int r = (int) Math.ceil(radius);
 		int rows = r * 2 + 1;
 		float[] matrix = new float[rows];
