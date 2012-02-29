@@ -7,7 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 
 import com.madrobot.geom.Rectangle;
-import com.madrobot.graphics.bitmap.BitmapFilters.BitmapMeta;
+import com.madrobot.graphics.bitmap.OutputConfiguration.BitmapMeta;
 
 /**
  * Bitmap shapes/perception transforming filters.
@@ -235,7 +235,7 @@ public class TransformFilters {
 		outX = transformedSpace.x;
 		outY = transformedSpace.y;
 		float[] out = new float[2];
-//		Bitmap dest = Bitmap.createBitmap(outWidth, outHeight, outputConfig);
+		// Bitmap dest = Bitmap.createBitmap(outWidth, outHeight, outputConfig);
 		for (int y = 0; y < outHeight; y++) {
 			for (int x = 0; x < outWidth; x++) {
 				transformInverse(outX + x, outY + y, out, icentreX, icentreY, refractionIndex, a, b, a2, b2);
@@ -260,13 +260,11 @@ public class TransformFilters {
 					se = getPixel(inPixels, srcX + 1, srcY + 1, srcWidth, srcHeight, CLAMP);
 				}
 				outPixels[x] = ImageMath.bilinearInterpolate(xWeight, yWeight, nw, ne, sw, se);
-				// dest.setPixel(x, y, ImageMath.bilinearInterpolate(xWeight, yWeight, nw, ne, sw, se));
 			}
 			// set pixel
 			BitmapUtils.setPixelRow(outPixels, y, outWidth, destPixels);
 		}
 		return Bitmap.createBitmap(destPixels, outWidth, outHeight, outputConfig);
-		// return dest;
 	}
 
 	private static void transformInverse(int x, int y, float[] out, float icentreX, float icentreY, float refractionIndex, float a, float b, float a2, float b2) {
@@ -296,7 +294,6 @@ public class TransformFilters {
 			out[1] = y - (float) Math.tan(angle2) * z;
 		}
 	}
-
 
 	/**
 	 * Create a reflection of an image
@@ -421,7 +418,7 @@ public class TransformFilters {
 		for (int i = 0; i < rays; i++)
 			rayLengths[i] = radius + randomness / 100.0f * radius * (float) randomNumbers.nextGaussian();
 
-		BitmapMeta meta = BitmapFilters.getMeta(src, outputConfig);
+		BitmapMeta meta = outputConfig.getBitmapMeta(src);
 		int[] inPixels = BitmapUtils.getPixels(src);
 		int position, rgb;
 		for (int y = meta.y; y < meta.targetHeight; y++) {
@@ -450,7 +447,7 @@ public class TransformFilters {
 				inPixels[position] = ImageMath.mixColors(f, rgb, color);
 			}
 		}
-		return Bitmap.createBitmap(inPixels, meta.bitmapWidth,meta.bitmapHeight, outputConfig.config);
+		return Bitmap.createBitmap(inPixels, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
 	}
 
 }

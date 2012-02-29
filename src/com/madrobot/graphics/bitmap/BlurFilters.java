@@ -1,10 +1,11 @@
 package com.madrobot.graphics.bitmap;
 
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
+import android.graphics.PointF;
+
 import com.madrobot.geom.AffineTransform;
 import com.madrobot.graphics.PixelUtils;
-
-import android.graphics.Bitmap;
-import android.graphics.PointF;
 
 /**
  * Collection of various blur filters
@@ -22,7 +23,7 @@ import android.graphics.PointF;
  * 
  */
 public class BlurFilters {
-	
+
 	/**
 	 * Apply Gaussian blur Filter to the given image data
 	 * <p>
@@ -50,7 +51,6 @@ public class BlurFilters {
 		return BitmapFilters.applyFilter(bitmap, brightness, filter, outputConfig);
 	}
 
-
 	/**
 	 * Apply gaussian filter
 	 * 
@@ -69,16 +69,17 @@ public class BlurFilters {
 		int[] outPixels = new int[inPixels.length];
 		Kernel kernel = GaussianUtils.makeKernel(radius);
 		if (radius > 0) {
-			GaussianUtils.convolveAndTranspose(kernel, inPixels, outPixels, width, height, convolveAlpha,
-					convolveAlpha && premultiplyAlpha, false, BitmapFilters.CLAMP_EDGES);
-			GaussianUtils.convolveAndTranspose(kernel, outPixels, inPixels, height, width, convolveAlpha,
-					false, convolveAlpha && premultiplyAlpha, BitmapFilters.CLAMP_EDGES);
+			GaussianUtils.convolveAndTranspose(kernel, inPixels, outPixels, width, height, convolveAlpha, convolveAlpha
+					&& premultiplyAlpha, false, BitmapFilters.CLAMP_EDGES);
+			GaussianUtils.convolveAndTranspose(kernel, outPixels, inPixels, height, width, convolveAlpha, false,
+					convolveAlpha && premultiplyAlpha, BitmapFilters.CLAMP_EDGES);
 		}
 
 		return Bitmap.createBitmap(inPixels, src.getWidth(), src.getHeight(), outputConfig);
 
 	}
 
+	
 	/**
 	 * Produces motion blur the slow, but higher-quality way.
 	 * 
