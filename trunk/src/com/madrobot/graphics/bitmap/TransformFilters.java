@@ -14,16 +14,19 @@ import com.madrobot.graphics.bitmap.OutputConfiguration.BitmapMeta;
  * <p>
  * <b>Water Ripple</b><br/>
  * Ripple effect with <code>wavelength</code> of 16, <code>amplitude</code> 10 and <code>radius</code> of 150. <br/>
- * <img src="../../../../resources/waterripple.png" width="300" height="224"><br/>
+ * <img src="../../../../resources/waterripple.png" ><br/>
  * 
  * * <b>Lens</b><br/>
  * Lens with <code>refractionIndex</code> of 1.5 and <code>radius</code> of 150. <br/>
- * <img src="../../../../resources/lens.png" width="300" height="224"><br/>
+ * <img src="../../../../resources/lens.png" ><br/>
  * 
  * <b>Reflection</b><br/>
- * <img src="../../../../resources/reflection.png" width="300" height="224"><br/>
+ * <img src="../../../../resources/reflection.png" ><br/>
  * <b>Flush 3D</b><br/>
- * <img src="../../../../resources/flush3d.png" width="300" height="224"><br/>
+ * <img src="../../../../resources/flush3d.png" ><br/>
+ * <b>Rotate</b><br/>
+ * Rotation with the <code>angle</code> of 2.<br/>
+ * <img src="../../../../resources/rotate.png" ><br/>
  * </p>
  * 
  * @author elton.stephen.kent
@@ -448,6 +451,135 @@ public class TransformFilters {
 			}
 		}
 		return Bitmap.createBitmap(inPixels, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
+	}
+
+	private static void transformSpace(Rectangle rect, boolean resize, float sin, float cos) {
+		if (resize) {
+			com.madrobot.geom.Point out = new com.madrobot.geom.Point(0, 0);
+			int minx = Integer.MAX_VALUE;
+			int miny = Integer.MAX_VALUE;
+			int maxx = Integer.MIN_VALUE;
+			int maxy = Integer.MIN_VALUE;
+			int w = rect.width;
+			int h = rect.height;
+			int x = rect.x;
+			int y = rect.y;
+
+			for (int i = 0; i < 4; i++) {
+				switch (i) {
+				case 0:
+					transform(x, y, out, sin, cos);
+					break;
+				case 1:
+					transform(x + w, y, out, sin, cos);
+					break;
+				case 2:
+					transform(x, y + h, out, sin, cos);
+					break;
+				case 3:
+					transform(x + w, y + h, out, sin, cos);
+					break;
+				}
+				minx = Math.min(minx, out.x);
+				miny = Math.min(miny, out.y);
+				maxx = Math.max(maxx, out.x);
+				maxy = Math.max(maxy, out.y);
+			}
+
+			rect.x = minx;
+			rect.y = miny;
+			rect.width = maxx - rect.x;
+			rect.height = maxy - rect.y;
+		}
+	}
+
+	private static void transform(int x, int y, com.madrobot.geom.Point out, float sin, float cos) {
+		out.x = (int) ((x * cos) + (y * sin));
+		out.y = (int) ((y * cos) - (x * sin));
+	}
+
+	private static void transformInverse(int x, int y, float[] out, float sin, float cos) {
+		out[0] = (x * cos) - (y * sin);
+		out[1] = (y * cos) + (x * sin);
+	}
+
+	/**
+	 * Rotate the bitmap by the given angle
+	 * 
+	 * @param src
+	 * @param angle
+	 * @param resize
+	 *            allow resizing of the bitmap
+	 * @param outputConfig
+	 * @return
+	 */
+	public static Bitmap rotate(Bitmap src, float angle, boolean resize, Bitmap.Config outputConfig) {
+		int width = src.getWidth();
+		int height = src.getHeight();
+		float cos, sin;
+		cos = (float) Math.cos(angle);
+		sin = (float) Math.sin(angle);
+
+		Rectangle originalSpace = new Rectangle(0, 0, width, height);
+		Rectangle transformedSpace = new Rectangle(0, 0, width, height);
+		transformSpace(transformedSpace, resize, sin, cos);
+
+		// if (dst == null) {
+		// ColorModel dstCM = src.getColorModel();
+		// dst = new BufferedImage(dstCM, dstCM.createCompatibleWritableRaster(transformedSpace.width,
+		// transformedSpace.height), dstCM.isAlphaPremultiplied(), null);
+		// }
+		// WritableRaster dstRaster = dst.getRaster();
+
+		int[] inPixels = BitmapUtils.getPixels(src);// getRGB(src, 0, 0, width, height, null);
+
+		// if (interpolation == NEAREST_NEIGHBOUR)
+		// return filterPixelsNN(dst, width, height, inPixels, transformedSpace);
+
+		int srcWidth = width;
+		int srcHeight = height;
+		int srcWidth1 = width - 1;
+		int srcHeight1 = height - 1;
+		int outWidth = transformedSpace.width;
+		int outHeight = transformedSpace.height;
+		int outX, outY;
+		int index = 0;
+		int[] outPixels = new int[outWidth];
+		int[] destPixels = new int[outWidth * outHeight];
+
+		outX = transformedSpace.x;
+		outY = transformedSpace.y;
+		float[] out = new float[2];
+
+		for (int y = 0; y < outHeight; y++) {
+			for (int x = 0; x < outWidth; x++) {
+				transformInverse(outX + x, outY + y, out, sin, cos);
+				int srcX = (int) Math.floor(out[0]);
+				int srcY = (int) Math.floor(out[1]);
+				float xWeight = out[0] - srcX;
+				float yWeight = out[1] - srcY;
+				int nw, ne, sw, se;
+
+				if (srcX >= 0 && srcX < srcWidth1 && srcY >= 0 && srcY < srcHeight1) {
+					// Easy case, all corners are in the image
+					int i = srcWidth * srcY + srcX;
+					nw = inPixels[i];
+					ne = inPixels[i + 1];
+					sw = inPixels[i + srcWidth];
+					se = inPixels[i + srcWidth + 1];
+				} else {
+					// Some of the corners are off the image
+					nw = getPixel(inPixels, srcX, srcY, srcWidth, srcHeight, RGB_CLAMP);
+					ne = getPixel(inPixels, srcX + 1, srcY, srcWidth, srcHeight, RGB_CLAMP);
+					sw = getPixel(inPixels, srcX, srcY + 1, srcWidth, srcHeight, RGB_CLAMP);
+					se = getPixel(inPixels, srcX + 1, srcY + 1, srcWidth, srcHeight, RGB_CLAMP);
+				}
+				outPixels[x] = ImageMath.bilinearInterpolate(xWeight, yWeight, nw, ne, sw, se);
+			}
+			BitmapUtils.setPixelRow(outPixels, y, transformedSpace.width, destPixels);
+			// setRGB(dst, 0, y, transformedSpace.width, 1, outPixels);
+		}
+		return Bitmap.createBitmap(destPixels, transformedSpace.width, transformedSpace.height, outputConfig);
 	}
 
 }

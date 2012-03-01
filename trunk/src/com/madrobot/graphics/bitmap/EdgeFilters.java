@@ -8,21 +8,21 @@ import com.madrobot.graphics.PixelUtils;
  * Edge detection filters
  * <p>
  * <b>Edge Detection</b><br/>
- * <img src="../../../../resources/wholeimage_edge.png" width="300" height="224"><br/>
+ * <img src="../../../../resources/wholeimage_edge.png" ><br/>
  * 
  * <b>La place Edge Detection</b><br/>
- * <img src="../../../../resources/laplaceedge.png" width="300" height="224"><br/>
+ * <img src="../../../../resources/laplaceedge.png" ><br/>
  * 
  * <b>Simple Emboss</b><br/>
- * <img src="../../../../resources/simpleEmboss.png" width="300" height="224"><br/>
+ * <img src="../../../../resources/simpleEmboss.png" ><br/>
  * <table>
  * <tr>
  * <th>Emboss with <code>emboss</code> set to false and <code>bumpHeight</code> of 3</th>
  * <th>Emboss with <code>emboss</code> set to true and <code>bumpHeight</code> of 3</th>
  * </tr>
  * <tr>
- * <td><img src="../../../../resources/emboss_false.png" width="300" height="224"></td>
- * <td><img src="../../../../resources/emboss_true.png" width="300" height="224"></td>
+ * <td><img src="../../../../resources/emboss_false.png" ></td>
+ * <td><img src="../../../../resources/emboss_true.png" ></td>
  * </tr>
  * </table>
  * </p>

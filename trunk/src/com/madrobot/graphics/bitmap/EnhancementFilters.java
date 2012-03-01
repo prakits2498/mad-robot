@@ -15,21 +15,30 @@ import com.madrobot.graphics.bitmap.OutputConfiguration.BitmapMeta;
  * <th>Exposure set to 3</th>
  * </tr>
  * <tr>
- * <td><img src="../../../../resources/src.png" width="300" height="224"></td>
- * <td><img src="../../../../resources/exposure.png" width="300" height="224"></td>
+ * <td><img src="../../../../resources/src.png" ></td>
+ * <td><img src="../../../../resources/exposure.png" ></td>
  * </tr>
  * </table>
+ * <br/>
+ * <b>Gain and Bias</b><br/>
+ * Gain and bias with each set to 0.10 . Adjustment applied to one half of the image. the remaining half is the normal
+ * image<br/>
+ * <img src="../../../../resources/gainbias.png" ><br/>
  * 
+ * <b>Gamma</b><br/>
+ * Gamma with all three channels set to 0.75. Adjustment applied to one half of the image. the remaining half is the
+ * normal image<br/>
+ * <img src="../../../../resources/gamma.png" ><br/>
  * <b>DeSpeckle</b><br/>
- * <img src="../../../../resources/despeckle.png" width="300" height="224"><br/>
+ * <img src="../../../../resources/despeckle.png" ><br/>
  * <b>HSB adjust</b><br/>
  * HSB adjusted with <code>hFactor</code> set to 0.5 and <code>sFactor</code> set to 0.5. . Adjustment applied to one
  * half of the image. the remaining half is the normal image<br/>
- * <img src="../../../../resources/despeckle.png" width="300" height="224"><br/>
+ * <img src="../../../../resources/hsbadjust.png" ><br/>
  * <b>RGB adjust</b><br/>
  * RGB adjusted with <code>rFactor</code> set to 0.5 and <code>gFactor</code> set to 0.5. . Adjustment applied to one
  * half of the image. the remaining half is the normal image<br/>
- * <img src="../../../../resources/rgbadjust.png" width="300" height="224"><br/>
+ * <img src="../../../../resources/rgbadjust.png" ><br/>
  * </p>
  */
 public class EnhancementFilters {
@@ -49,6 +58,117 @@ public class EnhancementFilters {
 	public static Bitmap sharpen(Bitmap src, int edgeAction, boolean processAlpha, boolean premultiplyAlpha, Bitmap.Config outputConfig) {
 		float[] sharpenMatrix = { 0.0f, -0.2f, 0.0f, -0.2f, 1.8f, -0.2f, 0.0f, -0.2f, 0.0f };
 		return ConvolveUtils.doConvolve(sharpenMatrix, src, edgeAction, processAlpha, premultiplyAlpha, outputConfig);
+	}
+
+	private static float transferBiasGainFunction(float f, float gain, float bias) {
+		f = ImageMath.gain(f, gain);
+		f = ImageMath.bias(f, bias);
+		return f;
+	}
+
+	private static int[] makeGainBiasTable(float gain, float bias) {
+		int[] table = new int[256];
+		for (int i = 0; i < 256; i++)
+			table[i] = PixelUtils.clamp((int) (255 * transferBiasGainFunction(i / 255.0f, gain, bias)));
+		return table;
+	}
+
+	/**
+	 * Adjust the gain and bias for the given image
+	 * 
+	 * @param src
+	 * @param gain
+	 *            min:0 max:1. recommended: 0.5.
+	 * @param bias
+	 *            min:0 max:1. recommended: 0.5.
+	 * @param outputConfig
+	 * @return
+	 */
+	public static Bitmap setGainAndBias(Bitmap src, float gain, float bias, OutputConfiguration outputConfig) {
+		BitmapMeta meta = outputConfig.getBitmapMeta(src);
+		int[] inPixels = BitmapUtils.getPixels(src);
+		int position, rgb, a, r, b, g;
+		int[] rTable, gTable, bTable;
+		rTable = gTable = bTable = makeGainBiasTable(gain, bias);
+		for (int y = meta.y; y < meta.targetHeight; y++) {
+			for (int x = meta.x; x < meta.targetWidth; x++) {
+				position = (y * meta.bitmapWidth) + x;
+				rgb = inPixels[position];
+				a = rgb & 0xff000000;
+				r = (rgb >> 16) & 0xff;
+				g = (rgb >> 8) & 0xff;
+				b = rgb & 0xff;
+				r = rTable[r];
+				g = gTable[g];
+				b = bTable[b];
+				inPixels[position] = a | (r << 16) | (g << 8) | b;
+
+			}
+		}
+		return Bitmap.createBitmap(inPixels, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
+	}
+
+	/**
+	 * Correct Gamma for individual channels
+	 * <p>
+	 * For best results all three channels should have the same gamma value
+	 * </p>
+	 * 
+	 * @param src
+	 * @param rGamma
+	 *            min:0 max:1. recommended: 1
+	 * @param gGamma
+	 *            min:0 max:1. recommended: 1
+	 * @param bGamma
+	 *            min:0 max:1. recommended: 1
+	 * @param outputConfig
+	 * @return
+	 */
+	public static Bitmap correctGamma(Bitmap src, float rGamma, float gGamma, float bGamma, OutputConfiguration outputConfig) {
+		int[] rTable, gTable, bTable;
+		rTable = makeGammaTable(rGamma);
+		if (gGamma == rGamma)
+			gTable = rTable;
+		else
+			gTable = makeGammaTable(gGamma);
+
+		if (bGamma == rGamma)
+			bTable = rTable;
+		else if (bGamma == gGamma)
+			bTable = gTable;
+		else
+			bTable = makeGammaTable(bGamma);
+
+		BitmapMeta meta = outputConfig.getBitmapMeta(src);
+		int[] inPixels = BitmapUtils.getPixels(src);
+		int position, rgb, a, r, b, g;
+		for (int y = meta.y; y < meta.targetHeight; y++) {
+			for (int x = meta.x; x < meta.targetWidth; x++) {
+				position = (y * meta.bitmapWidth) + x;
+				rgb = inPixels[position];
+				a = rgb & 0xff000000;
+				r = (rgb >> 16) & 0xff;
+				g = (rgb >> 8) & 0xff;
+				b = rgb & 0xff;
+				r = rTable[r];
+				g = gTable[g];
+				b = bTable[b];
+				inPixels[position] = a | (r << 16) | (g << 8) | b;
+
+			}
+		}
+		return Bitmap.createBitmap(inPixels, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
+	}
+
+	private static int[] makeGammaTable(float gamma) {
+		int[] table = new int[256];
+		for (int i = 0; i < 256; i++) {
+			int v = (int) ((255.0 * Math.pow(i / 255.0, 1.0 / gamma)) + 0.5);
+			if (v > 255)
+				v = 255;
+			table[i] = v;
+		}
+		return table;
 	}
 
 	public static Bitmap setExposure(Bitmap src, float exposure, OutputConfiguration outputConfig) {
@@ -285,12 +405,20 @@ public class EnhancementFilters {
 		int[] argb = BitmapUtils.getPixels(src);
 		BitmapMeta meta = outputConfig.getBitmapMeta(src);
 		int[] rTable, gTable, bTable;
-		rTable = gTable = bTable = makeTable(brightness, contrast);
-		int position;
+		rTable = gTable = bTable = makeBrightnessContrastTable(brightness, contrast);
+		int position, rgb, a, r, g, b;
 		for (int y = meta.y; y < meta.targetHeight; y++) {
 			for (int x = meta.x; x < meta.targetWidth; x++) {
 				position = (y * meta.bitmapWidth) + x;
-				argb[position] = filterRGB(x, y, argb[position], rTable, gTable, bTable);
+				rgb = argb[position];
+				a = rgb & 0xff000000;
+				r = (rgb >> 16) & 0xff;
+				g = (rgb >> 8) & 0xff;
+				b = rgb & 0xff;
+				r = rTable[r];
+				g = gTable[g];
+				b = bTable[b];
+				argb[position] = a | (r << 16) | (g << 8) | b;
 			}
 		}
 		if (outputConfig.canRecycleSrc) {
@@ -299,26 +427,15 @@ public class EnhancementFilters {
 		return Bitmap.createBitmap(argb, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
 	}
 
-	private static int[] makeTable(float brightness, float contrast) {
+	private static int[] makeBrightnessContrastTable(float brightness, float contrast) {
 		int[] table = new int[256];
 		for (int i = 0; i < 256; i++)
-			table[i] = PixelUtils.clamp((int) (255 * transferFunction(i / 255.0f, brightness, contrast)));
+			table[i] = PixelUtils.clamp((int) (255 * brightnessContrastTransferFunction(i / 255.0f, brightness,
+					contrast)));
 		return table;
 	}
 
-	private static int filterRGB(int x, int y, int rgb, int[] rTable, int[] gTable, int[] bTable) {
-
-		int a = rgb & 0xff000000;
-		int r = (rgb >> 16) & 0xff;
-		int g = (rgb >> 8) & 0xff;
-		int b = rgb & 0xff;
-		r = rTable[r];
-		g = gTable[g];
-		b = bTable[b];
-		return a | (r << 16) | (g << 8) | b;
-	}
-
-	private static float transferFunction(float f, float brightness, float contrast) {
+	private static float brightnessContrastTransferFunction(float f, float brightness, float contrast) {
 		f = f * brightness;
 		f = (f - 0.5f) * contrast + 0.5f;
 		return f;
@@ -376,6 +493,7 @@ public class EnhancementFilters {
 
 	/**
 	 * Adjust RGB components.
+	 * 
 	 * @param src
 	 * @param rFactor
 	 * @param gFactor
