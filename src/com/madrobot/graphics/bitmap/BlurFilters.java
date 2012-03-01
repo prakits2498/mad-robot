@@ -74,12 +74,9 @@ public class BlurFilters {
 			GaussianUtils.convolveAndTranspose(kernel, outPixels, inPixels, height, width, convolveAlpha, false,
 					convolveAlpha && premultiplyAlpha, BitmapFilters.CLAMP_EDGES);
 		}
-
 		return Bitmap.createBitmap(inPixels, src.getWidth(), src.getHeight(), outputConfig);
-
 	}
 
-	
 	/**
 	 * Produces motion blur the slow, but higher-quality way.
 	 * 
@@ -176,25 +173,10 @@ public class BlurFilters {
 			ImageMath.unpremultiply(outPixels, 0, inPixels.length);
 
 		return Bitmap.createBitmap(outPixels, src.getWidth(), src.getHeight(), outputConfig);
-
 	}
 
 	/**
 	 * Apply image blur filter on the given image data
-	 * <p>
-	 * <table border="0">
-	 * 
-	 * <tr>
-	 * <td><b>Before</b></td>
-	 * <td><b>After</b></td>
-	 * </tr>
-	 * <tr>
-	 * <td>
-	 * <img src="../../../resources/before.png"></td>
-	 * <td><img src="../../../resources/blur.png"></td>
-	 * </tr>
-	 * </table>
-	 * </p>
 	 * 
 	 * @param argbData
 	 *            of the image

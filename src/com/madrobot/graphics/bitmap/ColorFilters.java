@@ -13,9 +13,9 @@ import com.madrobot.graphics.bitmap.OutputConfiguration.BitmapMeta;
  * Bitmap texture filters
  * <p>
  * * <b>Invert</b><br/>
- * <img src="../../../../resources/invert.png" width="300" height="224"><br/>
+ * <img src="../../../../resources/invert.png" ><br/>
  * <b>Sepia</b><br/>
- * Sepia with the <code>depth</code> of 10. </br> <img src="../../../../resources/sepia.png" width="300" height="224"><br/>
+ * Sepia with the <code>depth</code> of 10. </br> <img src="../../../../resources/sepia.png" ><br/>
  * 
  * <b>Quantize</b><br/>
  * <table>
@@ -24,8 +24,8 @@ import com.madrobot.graphics.bitmap.OutputConfiguration.BitmapMeta;
  * <th>With 256 Colors</th>
  * </tr>
  * <tr>
- * <td><img src="../../../../resources/quantize128.png" width="300" height="224"></td>
- * <td><img src="../../../../resources/quantize256.png" width="300" height="224"></td>
+ * <td><img src="../../../../resources/quantize128.png" ></td>
+ * <td><img src="../../../../resources/quantize256.png" ></td>
  * </tr>
  * </table>
  * <br/>
@@ -34,7 +34,7 @@ import com.madrobot.graphics.bitmap.OutputConfiguration.BitmapMeta;
  * <img src="../../../../resources/glow.png"><br/>
  * 
  * <b>Oil Paint</b><br/>
- * <img src="../../../../resources/wholeimage_oilpaint.png" width="300" height="224"><br/>
+ * <img src="../../../../resources/wholeimage_oilpaint.png" ><br/>
  * </p>
  */
 public class ColorFilters {
