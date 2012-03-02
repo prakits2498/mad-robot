@@ -30,7 +30,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
 
-import com.madrobot.graphics.PixelUtils;
 import com.madrobot.io.IOUtils;
 import com.madrobot.math.MathUtils;
 

@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 
 import com.madrobot.geom.Rectangle;
-import com.madrobot.graphics.PixelUtils;
 import com.madrobot.graphics.bitmap.OutputConfiguration.BitmapMeta;
 
 /**
@@ -14,6 +13,8 @@ import com.madrobot.graphics.bitmap.OutputConfiguration.BitmapMeta;
  * <p>
  * * <b>Invert</b><br/>
  * <img src="../../../../resources/invert.png" ><br/>
+ * <b>Solarize</b><br/>
+ * <img src="../../../../resources/solarize.png" ><br/>
  * <b>Sepia</b><br/>
  * Sepia with the <code>depth</code> of 10. </br> <img src="../../../../resources/sepia.png" ><br/>
  * 
@@ -35,6 +36,20 @@ import com.madrobot.graphics.bitmap.OutputConfiguration.BitmapMeta;
  * 
  * <b>Oil Paint</b><br/>
  * <img src="../../../../resources/wholeimage_oilpaint.png" ><br/>
+ * <b>Plasma</b><br/>
+ * <img src="../../../../resources/plasma.png" ><br/>
+ * <b>Temperature</b><br/>
+ * <code>temperature</code> set to 8500. Note:The filter is applied to the first of the image only.</br> <img
+ * src="../../../../resources/temperature.png" ><br/>
+ * <b>Tritone</b><br/>
+ * Tritone with the <code>shadowColor</code> Color.GRAY, the <code>midColor</code> Color.BLUE and the
+ * <code>highColor</code> of Color.RED. Note:The filter is applied to the first of the image only.</br> <img
+ * src="../../../../resources/tritone.png" ><br/>
+ * <b>Mix Channels</b><br/>
+ * Mix channels filter applied by neglecting the green channel and blending it with red.<br/>
+ * 
+ * Note:The filter is applied to the first of the image only.<br/>
+ * <img src="../../../../resources/mixchannels.png" ><br/>
  * </p>
  */
 public class ColorFilters {
@@ -165,8 +180,6 @@ public class ColorFilters {
 		}
 		return Bitmap.createBitmap(argb, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
 	}
-
-	
 
 	/**
 	 * A filter which quantizes an image to a set number of colors
@@ -743,5 +756,180 @@ public class ColorFilters {
 			}
 		}
 		return Bitmap.createBitmap(outPixels, src.getWidth(), src.getHeight(), outputConfig);
+	}
+
+	/**
+	 * Set the temperature of the image
+	 * 
+	 * @param src
+	 * @param temperature
+	 *            of the image min:1000 max:10000
+	 * @param outputConfig
+	 * @return
+	 */
+	public static Bitmap temperature(Bitmap src, float temperature, OutputConfiguration outputConfig) {
+		int[] argb = BitmapUtils.getPixels(src);
+		BitmapMeta meta = outputConfig.getBitmapMeta(src);
+		int position, rgb, a, r, g, b;
+		temperature = Math.max(1000F, Math.min(10000F, temperature));
+		int t = 3 * (int) ((temperature - 1000F) / 100F);
+		float rFactor = 1.0F / PixelUtils.blackBodyRGB[t];
+		float gFactor = 1.0F / PixelUtils.blackBodyRGB[t + 1];
+		float bFactor = 1.0F / PixelUtils.blackBodyRGB[t + 2];
+		float m = Math.max(Math.max(rFactor, gFactor), bFactor);
+		rFactor /= m;
+		gFactor /= m;
+		bFactor /= m;
+		for (int y = meta.y; y < meta.targetHeight; y++) {
+			for (int x = meta.x; x < meta.targetWidth; x++) {
+				position = (y * meta.bitmapWidth) + x;
+				rgb = argb[position];
+
+				a = rgb & 0xff000000;
+				r = rgb >> 16 & 0xff;
+				g = rgb >> 8 & 0xff;
+				b = rgb & 0xff;
+				r = (int) ((float) r * rFactor);
+				g = (int) ((float) g * gFactor);
+				b = (int) ((float) b * bFactor);
+				argb[position] = a | r << 16 | g << 8 | b;
+
+			}
+		}
+		if (outputConfig.canRecycleSrc) {
+			src.recycle();
+		}
+		return Bitmap.createBitmap(argb, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
+
+	}
+
+	/**
+	 * A filter which performs a tritone conversion on an image.
+	 * <p>
+	 * Given three colors for shadows, midtones and highlights, it converts the image to grayscale and then applies a
+	 * color mapping based on the colors.
+	 * </p>
+	 * 
+	 * @param src
+	 * @param shadowColor
+	 * @param midColor
+	 * @param highColor
+	 * @param outputConfig
+	 * @return
+	 */
+	public static Bitmap tritone(Bitmap src, int shadowColor, int midColor, int highColor, OutputConfiguration outputConfig) {
+		int[] argb = BitmapUtils.getPixels(src);
+		BitmapMeta meta = outputConfig.getBitmapMeta(src);
+		int position, rgb;
+		int[] lut = new int[256];
+		for (int i = 0; i < 128; i++) {
+			float t = i / 127.0f;
+			lut[i] = ImageMath.mixColors(t, shadowColor, midColor);
+		}
+		for (int i = 128; i < 256; i++) {
+			float t = (i - 127) / 128.0f;
+			lut[i] = ImageMath.mixColors(t, midColor, highColor);
+		}
+		for (int y = meta.y; y < meta.targetHeight; y++) {
+			for (int x = meta.x; x < meta.targetWidth; x++) {
+				position = (y * meta.bitmapWidth) + x;
+				rgb = argb[position];
+				argb[position] = lut[PixelUtils.brightness(rgb)];
+			}
+		}
+		if (outputConfig.canRecycleSrc) {
+			src.recycle();
+		}
+		return Bitmap.createBitmap(argb, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
+	}
+
+	/**
+	 * A filter which allows the red, green and blue channels of an image to be mixed into each other.
+	 * <p>
+	 * Any particular color channel can be neglected by setting it to 0. and setting the <code>intoXX</code> value to
+	 * 255.
+	 * </p>
+	 * 
+	 * @param src
+	 * @param blueGreen
+	 *            amount of blue to mix into green. min:0 max:255
+	 * @param intoRed
+	 *            corresponding level into red. min:0 max:255
+	 * @param redBlue
+	 *            amount of red to mix into blue. min:0 max:255
+	 * @param intoGreen
+	 *            corresponding level into green. min:0 max:255
+	 * @param greenRed
+	 *            amount of green to mix into red. min:0 max:255
+	 * @param intoBlue
+	 *            corresponding level into blue. min:0 max:255
+	 * @param outputConfig
+	 * @return
+	 */
+	public static Bitmap mixChannels(Bitmap src, int blueGreen, int intoRed, int redBlue, int intoGreen, int greenRed, int intoBlue, OutputConfiguration outputConfig) {
+		int[] argb = BitmapUtils.getPixels(src);
+		BitmapMeta meta = outputConfig.getBitmapMeta(src);
+		int position, rgb, a, r, g, b, nr, ng, nb;
+		for (int y = meta.y; y < meta.targetHeight; y++) {
+			for (int x = meta.x; x < meta.targetWidth; x++) {
+				position = (y * meta.bitmapWidth) + x;
+				rgb = argb[position];
+
+				a = rgb & 0xff000000;
+				r = (rgb >> 16) & 0xff;
+				g = (rgb >> 8) & 0xff;
+				b = rgb & 0xff;
+				nr = PixelUtils
+						.clamp((intoRed * (blueGreen * g + (255 - blueGreen) * b) / 255 + (255 - intoRed) * r) / 255);
+				ng = PixelUtils
+						.clamp((intoGreen * (redBlue * b + (255 - redBlue) * r) / 255 + (255 - intoGreen) * g) / 255);
+				nb = PixelUtils
+						.clamp((intoBlue * (greenRed * r + (255 - greenRed) * g) / 255 + (255 - intoBlue) * b) / 255);
+				argb[position] = a | (nr << 16) | (ng << 8) | nb;
+			}
+		}
+		if (outputConfig.canRecycleSrc) {
+			src.recycle();
+		}
+		return Bitmap.createBitmap(argb, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
+
+	}
+
+	public static Bitmap solarize(Bitmap src, OutputConfiguration outputConfig) {
+		int[] argb = BitmapUtils.getPixels(src);
+		BitmapMeta meta = outputConfig.getBitmapMeta(src);
+		int position, rgb, a, r, g, b;
+		int[] rTable, gTable, bTable;
+		rTable = gTable = bTable = makeSolarizeTable();
+		for (int y = meta.y; y < meta.targetHeight; y++) {
+			for (int x = meta.x; x < meta.targetWidth; x++) {
+				position = (y * meta.bitmapWidth) + x;
+				rgb = argb[position];
+
+				a = rgb & 0xff000000;
+				r = (rgb >> 16) & 0xff;
+				g = (rgb >> 8) & 0xff;
+				b = rgb & 0xff;
+				r = rTable[r];
+				g = gTable[g];
+				b = bTable[b];
+				argb[position] = a | (r << 16) | (g << 8) | b;
+			}
+		}
+		if (outputConfig.canRecycleSrc) {
+			src.recycle();
+		}
+		return Bitmap.createBitmap(argb, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
+	}
+
+	private static float transferFunction(float v) {
+		return v > 0.5f ? 2 * (v - 0.5f) : 2 * (0.5f - v);
+	}
+
+	private static int[] makeSolarizeTable() {
+		int[] table = new int[256];
+		for (int i = 0; i < 256; i++)
+			table[i] = PixelUtils.clamp((int) (255 * transferFunction(i / 255.0f)));
+		return table;
 	}
 }

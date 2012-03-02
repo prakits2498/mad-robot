@@ -27,6 +27,9 @@ import com.madrobot.graphics.bitmap.OutputConfiguration.BitmapMeta;
  * <b>Rotate</b><br/>
  * Rotation with the <code>angle</code> of 2.<br/>
  * <img src="../../../../resources/rotate.png" ><br/>
+ * 
+ * <b>Stipple</b><br/>
+ * <img src="../../../../resources/stipple.png" ><br/>
  * </p>
  * 
  * @author elton.stephen.kent
@@ -520,21 +523,10 @@ public class TransformFilters {
 		cos = (float) Math.cos(angle);
 		sin = (float) Math.sin(angle);
 
-		Rectangle originalSpace = new Rectangle(0, 0, width, height);
 		Rectangle transformedSpace = new Rectangle(0, 0, width, height);
 		transformSpace(transformedSpace, resize, sin, cos);
 
-		// if (dst == null) {
-		// ColorModel dstCM = src.getColorModel();
-		// dst = new BufferedImage(dstCM, dstCM.createCompatibleWritableRaster(transformedSpace.width,
-		// transformedSpace.height), dstCM.isAlphaPremultiplied(), null);
-		// }
-		// WritableRaster dstRaster = dst.getRaster();
-
 		int[] inPixels = BitmapUtils.getPixels(src);// getRGB(src, 0, 0, width, height, null);
-
-		// if (interpolation == NEAREST_NEIGHBOUR)
-		// return filterPixelsNN(dst, width, height, inPixels, transformedSpace);
 
 		int srcWidth = width;
 		int srcHeight = height;
@@ -580,6 +572,30 @@ public class TransformFilters {
 			// setRGB(dst, 0, y, transformedSpace.width, 1, outPixels);
 		}
 		return Bitmap.createBitmap(destPixels, transformedSpace.width, transformedSpace.height, outputConfig);
+	}
+
+	/**
+	 * A filter which produces the stipple effect.
+	 * 
+	 * @param bitmap
+	 * @param outputConfig
+	 * @return
+	 */
+	public static final Bitmap stipple(Bitmap bitmap, OutputConfiguration outputConfig) {
+		int[] argb = BitmapUtils.getPixels(bitmap);
+		BitmapMeta meta = outputConfig.getBitmapMeta(bitmap);
+		int position, rgb;
+		for (int y = meta.y; y < meta.targetHeight; y++) {
+			for (int x = meta.x; x < meta.targetWidth; x++) {
+				position = (y * meta.bitmapWidth) + x;
+				rgb = argb[position];
+				argb[position] = ((x & 1) == (y & 1)) ? rgb : ImageMath.mixColors(0.25f, 0xff999999, rgb);
+			}
+		}
+		if (outputConfig.canRecycleSrc) {
+			bitmap.recycle();
+		}
+		return Bitmap.createBitmap(argb, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
 	}
 
 }

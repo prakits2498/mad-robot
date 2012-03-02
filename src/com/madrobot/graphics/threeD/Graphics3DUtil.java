@@ -10,7 +10,7 @@
  ******************************************************************************/
 package com.madrobot.graphics.threeD;
 
-import com.madrobot.graphics.PixelUtils;
+import com.madrobot.graphics.bitmap.PixelUtils;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;

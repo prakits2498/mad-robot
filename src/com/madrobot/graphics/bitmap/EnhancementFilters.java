@@ -2,7 +2,6 @@ package com.madrobot.graphics.bitmap;
 
 import android.graphics.Bitmap;
 
-import com.madrobot.graphics.PixelUtils;
 import com.madrobot.graphics.bitmap.OutputConfiguration.BitmapMeta;
 
 /**
@@ -171,6 +170,15 @@ public class EnhancementFilters {
 		return table;
 	}
 
+	/**
+	 * Set the exposure of the bitmap
+	 * 
+	 * @param src
+	 * @param exposure
+	 *            min:0 max:5
+	 * @param outputConfig
+	 * @return
+	 */
 	public static Bitmap setExposure(Bitmap src, float exposure, OutputConfiguration outputConfig) {
 
 		BitmapMeta meta = outputConfig.getBitmapMeta(src);
@@ -203,7 +211,7 @@ public class EnhancementFilters {
 	private static int[] makeExposureTable(float exposure) {
 		int[] table = new int[256];
 		for (int i = 0; i < 256; i++)
-			table[i] = com.madrobot.graphics.PixelUtils.clamp((int) (255 * exposureTransferFunction(i / 255.0f,
+			table[i] = com.madrobot.graphics.bitmap.PixelUtils.clamp((int) (255 * exposureTransferFunction(i / 255.0f,
 					exposure)));
 		return table;
 	}
@@ -395,9 +403,9 @@ public class EnhancementFilters {
 	 * 
 	 * @param src
 	 * @param brightness
-	 *            min:0 max:1. Values >1 can also be used
+	 *            min:0 max:2.
 	 * @param contrast
-	 *            min:0 max:1. Values >1 can also be used
+	 *            min:0 max:2.
 	 * @param outputConfig
 	 * @return
 	 */
@@ -528,4 +536,5 @@ public class EnhancementFilters {
 		}
 		return Bitmap.createBitmap(argb, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
 	}
+
 }

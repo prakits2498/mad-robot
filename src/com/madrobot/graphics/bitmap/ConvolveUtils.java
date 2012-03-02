@@ -1,6 +1,5 @@
 package com.madrobot.graphics.bitmap;
 
-import com.madrobot.graphics.PixelUtils;
 
 import android.graphics.Bitmap;
 
