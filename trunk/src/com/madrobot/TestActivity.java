@@ -14,6 +14,7 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Bitmap.Config;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -42,8 +43,8 @@ public class TestActivity extends Activity {
 		// Bitmap.Config outputConfig = Bitmap.Config.ARGB_8888;
 		long time = System.currentTimeMillis();
 		outputConfig = new OutputConfiguration();
-		outputConfig.setAffectedArea(new Rectangle(0, 0, src.getWidth() / 2, src.getHeight()));
-		 Bitmap bitmap2 = EnhancementFilters.correctGamma(src, 0.75f, 0.75f,0.75f, outputConfig);
+//		outputConfig.setAffectedArea(new Rectangle(0, 0, src.getWidth() / 2, src.getHeight()));
+		Bitmap bitmap2 = ColorFilters.solarize(src, outputConfig);
 		// 96, 0, 64, 96, 0, 64 }, outputConfig);
 		System.out.println("============================== DONE ====================");
 		// + (System.currentTimeMillis() - time));
@@ -58,8 +59,8 @@ public class TestActivity extends Activity {
 		// Bitmap.Config.ARGB_8888);
 
 		img = (ImageView) findViewById(R.id.text);
-		 img.setImageBitmap(bitmap2);
-//		new DownloadFilesTask().execute();
+		img.setImageBitmap(bitmap2);
+		// new DownloadFilesTask().execute();
 	}
 
 	private class DownloadFilesTask extends AsyncTask<Void, Bitmap, Void> {
@@ -71,7 +72,7 @@ public class TestActivity extends Activity {
 
 		@Override
 		protected Void doInBackground(Void... arg0) {
-			Bitmap bitmap2 =BitmapFactory.decodeResource(getResources(), R.drawable.two);
+			Bitmap bitmap2 = BitmapFactory.decodeResource(getResources(), R.drawable.two);
 			for (int i = 0; i < 360; i++) {
 				bitmap2 = TransformFilters.rotate(bitmap2, i, true, outputConfig.getConfig());
 				publishProgress(bitmap2);

@@ -2,7 +2,6 @@ package com.madrobot.graphics.bitmap;
 
 import android.graphics.Bitmap;
 
-import com.madrobot.graphics.PixelUtils;
 
 /**
  * Edge detection filters
@@ -115,18 +114,19 @@ public class EdgeFilters {
 	 * Emboss the given bitmap
 	 * 
 	 * @param src
-	 * @param azimuth
-	 *            Recommended value: <code>135.0f * Math.PI / 180.0f</code>
-	 * @param elevation
-	 *            Recommended value:<code>30.0f * Math.PI / 180f</code>
+	 * @param lightDirection
+	 *            Direction of the light. min:0 max:360
+	 * @param lightElevation
+	 *            brightness. min:0 max:90
+	 * 
 	 * @param bumpHeight
-	 *            Height of the emobssed parts of the image. Recommended: value <10
+	 *            Height of the emobssed parts of the image. min:0 max:100
 	 * @param emboss
 	 *            if true, the bitmap is embossed retaining its color. else a grayscale image is embossed.
 	 * @param outputConfig
 	 * @return
 	 */
-	public static Bitmap emboss(Bitmap src, float azimuth, float elevation, float bumpHeight, boolean emboss, Bitmap.Config outputConfig) {
+	public static Bitmap emboss(Bitmap src, float lightDirection, float lightElevation, float bumpHeight, boolean emboss, Bitmap.Config outputConfig) {
 		int width = src.getWidth();
 		int height = src.getHeight();
 		int index = 0;
@@ -146,9 +146,9 @@ public class EdgeFilters {
 		int Nx, Ny, Nz, Lx, Ly, Lz, Nz2, NzLz, NdotL;
 		int shade, background;
 
-		Lx = (int) (Math.cos(azimuth) * Math.cos(elevation) * pixelScale);
-		Ly = (int) (Math.sin(azimuth) * Math.cos(elevation) * pixelScale);
-		Lz = (int) (Math.sin(elevation) * pixelScale);
+		Lx = (int) (Math.cos(lightDirection) * Math.cos(lightElevation) * pixelScale);
+		Ly = (int) (Math.sin(lightDirection) * Math.cos(lightElevation) * pixelScale);
+		Lz = (int) (Math.sin(lightElevation) * pixelScale);
 
 		Nz = (int) (6 * 255 / width45);
 		Nz2 = Nz * Nz;
@@ -198,6 +198,7 @@ public class EdgeFilters {
 
 	/**
 	 * Apply emboss filter to the given image data
+	 * 
 	 * @param bitmap
 	 *            of the image
 	 * @param outputConfig
