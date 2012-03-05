@@ -39,17 +39,24 @@ import com.madrobot.graphics.bitmap.OutputConfiguration.BitmapMeta;
  * <b>Plasma</b><br/>
  * <img src="../../../../resources/plasma.png" ><br/>
  * <b>Temperature</b><br/>
- * <code>temperature</code> set to 8500. Note:The filter is applied to the first of the image only.</br> <img
- * src="../../../../resources/temperature.png" ><br/>
+ * <code>temperature</code> set to 8500.<br/>
+ * Note:The filter is applied to the first half of the image only.</br> <img src="../../../../resources/temperature.png"
+ * ><br/>
  * <b>Tritone</b><br/>
  * Tritone with the <code>shadowColor</code> Color.GRAY, the <code>midColor</code> Color.BLUE and the
- * <code>highColor</code> of Color.RED. Note:The filter is applied to the first of the image only.</br> <img
- * src="../../../../resources/tritone.png" ><br/>
+ * <code>highColor</code> of Color.RED.<br/>
+ * Note:The filter is applied to the first half of the image only.</br> <img src="../../../../resources/tritone.png" ><br/>
  * <b>Mix Channels</b><br/>
  * Mix channels filter applied by neglecting the green channel and blending it with red.<br/>
  * 
- * Note:The filter is applied to the first of the image only.<br/>
+ * Note:The filter is applied to the first half of the image only.<br/>
  * <img src="../../../../resources/mixchannels.png" ><br/>
+ * * <b>Stamp</b><br/>
+ * Stamp filter with the <code>lowerColor</code> as white , <code>upperColor</code> as red,<code> threshold</code> and
+ * <code>softness</code> are both 0.5.<br/>
+ * 
+ * Note:The filter is applied to the first half of the image only.<br/>
+ * <img src="../../../../resources/stamp.png" ><br/>
  * </p>
  */
 public class ColorFilters {
@@ -931,5 +938,45 @@ public class ColorFilters {
 		for (int i = 0; i < 256; i++)
 			table[i] = PixelUtils.clamp((int) (255 * transferFunction(i / 255.0f)));
 		return table;
+	}
+
+	/**
+	 * A filter which produces a rubber-stamp type of effect.
+	 * 
+	 * @param src
+	 * @param lowerColor
+	 * @param upperColor
+	 *            Set the color to be used for pixels above the upper threshold.
+	 * @param threshold
+	 *            the color to be used for pixels below the lower threshold. min:0 max:1
+	 * @param softness
+	 *            the softness of the effect. min:0 max:1
+	 * @param outputConfig
+	 * @return
+	 */
+	public static Bitmap stamp(Bitmap src, int lowerColor, int upperColor, float threshold, float softness, OutputConfiguration outputConfig) {
+
+		int[] argb = BitmapUtils.getPixels(src);
+		BitmapMeta meta = outputConfig.getBitmapMeta(src);
+		int position, rgb, a, r, g, b, l;
+		float lowerThreshold3 = 255 * 3 * (threshold - softness * 0.5f);
+		float upperThreshold3 = 255 * 3 * (threshold + softness * 0.5f);
+		for (int y = meta.y; y < meta.targetHeight; y++) {
+			for (int x = meta.x; x < meta.targetWidth; x++) {
+				position = (y * meta.bitmapWidth) + x;
+				rgb = argb[position];
+				a = rgb & 0xff000000;
+				r = (rgb >> 16) & 0xff;
+				g = (rgb >> 8) & 0xff;
+				b = rgb & 0xff;
+				l = r + g + b;
+				float f = ImageMath.smoothStep(lowerThreshold3, upperThreshold3, l);
+				argb[position] = ImageMath.mixColors(f, upperColor, lowerColor);
+			}
+		}
+		if (outputConfig.canRecycleSrc) {
+			src.recycle();
+		}
+		return Bitmap.createBitmap(argb, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
 	}
 }
