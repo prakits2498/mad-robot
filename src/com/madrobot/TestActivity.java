@@ -13,21 +13,15 @@ package com.madrobot;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Bitmap.Config;
-import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.widget.ImageView;
 
 import com.madrobot.geom.Rectangle;
-import com.madrobot.graphics.bitmap.BlurFilters;
 import com.madrobot.graphics.bitmap.ColorFilters;
-import com.madrobot.graphics.bitmap.EdgeFilters;
-import com.madrobot.graphics.bitmap.EnhancementFilters;
 import com.madrobot.graphics.bitmap.OutputConfiguration;
-import com.madrobot.graphics.bitmap.TransformFilters;
-import com.madrobot.graphics.bitmap.TransitionFilters;
+import com.madrobot.graphics.bitmap.AestheticTransformFilters;
+import com.madrobot.graphics.bitmap.PixellateFilters;
+import com.madrobot.graphics.bitmap.ShapeTransformFilters;
 
 public class TestActivity extends Activity {
 	/** Called when the activity is first created. */
@@ -43,8 +37,8 @@ public class TestActivity extends Activity {
 		// Bitmap.Config outputConfig = Bitmap.Config.ARGB_8888;
 		long time = System.currentTimeMillis();
 		outputConfig = new OutputConfiguration();
-//		outputConfig.setAffectedArea(new Rectangle(0, 0, src.getWidth() / 2, src.getHeight()));
-		Bitmap bitmap2 = ColorFilters.solarize(src, outputConfig);
+		outputConfig.setAffectedArea(new Rectangle(0, 0, src.getWidth() / 2, src.getHeight()));
+		Bitmap bitmap2 = ColorFilters.stamp(src,   0xffffffff,0xffff0000, 0.5f, 0.5f, outputConfig);
 		// 96, 0, 64, 96, 0, 64 }, outputConfig);
 		System.out.println("============================== DONE ====================");
 		// + (System.currentTimeMillis() - time));
@@ -61,25 +55,6 @@ public class TestActivity extends Activity {
 		img = (ImageView) findViewById(R.id.text);
 		img.setImageBitmap(bitmap2);
 		// new DownloadFilesTask().execute();
-	}
-
-	private class DownloadFilesTask extends AsyncTask<Void, Bitmap, Void> {
-
-		protected void onProgressUpdate(Bitmap... progress) {
-			// setProgressPercent(progress[0]);
-			img.setImageBitmap(progress[0]);
-		}
-
-		@Override
-		protected Void doInBackground(Void... arg0) {
-			Bitmap bitmap2 = BitmapFactory.decodeResource(getResources(), R.drawable.two);
-			for (int i = 0; i < 360; i++) {
-				bitmap2 = TransformFilters.rotate(bitmap2, i, true, outputConfig.getConfig());
-				publishProgress(bitmap2);
-			}
-			return null;
-		}
-
 	}
 
 }
