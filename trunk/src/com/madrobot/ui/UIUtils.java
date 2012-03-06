@@ -17,6 +17,7 @@ import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.SpannedString;
+import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.method.MovementMethod;
 import android.text.style.ClickableSpan;
@@ -30,6 +31,7 @@ import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.widget.TextView.BufferType;
 import android.widget.Toast;
@@ -128,7 +130,7 @@ public class UIUtils {
 	 * Gets the optimal number of columns that can be used for the given width
 	 * 
 	 * @param drawable_width
-	 *            the drawable_width
+	 *            the drawable_width in dip
 	 * @return the screen optimal columns
 	 */
 	public static int getScreenOptimalColumns(Context mContext, int drawable_width) {
@@ -138,6 +140,24 @@ public class UIUtils {
 
 		if ((b * drawable_width) > metrics.widthPixels) {
 			return metrics.widthPixels / drawable_width;
+		}
+
+		return Math.min(Math.max(b, 3), 10);
+	}
+
+	/**
+	 * Get the optimal number of rows for the given height of an item
+	 * @param mContext
+	 * @param drawable_height in dip
+	 * @return
+	 */
+	public static int getScreenOptimalRows(Context mContext, int drawable_height) {
+		DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
+		double a = (double) metrics.heightPixels / (double) metrics.densityDpi; // 2.25
+		int b = (int) Math.ceil(a * 2.0); // 5
+
+		if ((b * drawable_height) > metrics.heightPixels) {
+			return metrics.widthPixels / drawable_height;
 		}
 
 		return Math.min(Math.max(b, 3), 10);
@@ -161,28 +181,116 @@ public class UIUtils {
 	 * <p>
 	 * <img src="../../../../resources/bitmapinlined.png"><br/>
 	 * </p>
-	 * @param tv text view to set the text along with the image
-	 * @param string string to set to the textview
-	 * @param bitmap bitmap to insert in the string
-	 * @param insertionIndex index in the string at which to insert the <code>bitmap</code>
+	 * 
+	 * @param tv
+	 *            text view to set the text along with the image
+	 * @param string
+	 *            string to set to the textview
+	 * @param bitmap
+	 *            bitmap to insert in the string
+	 * @param insertionIndex
+	 *            index in the string at which to insert the <code>bitmap</code>
 	 */
 	public static void insertBitmapIntoTextView(TextView tv, String string, Bitmap bitmap, int insertionIndex) {
-		StringBuilder appender=new StringBuilder(string);
+		StringBuilder appender = new StringBuilder(string);
 		appender.insert(insertionIndex, ' ');
-		SpannableStringBuilder builder=new SpannableStringBuilder(appender.toString());
-		ImageSpan imageSpan=new ImageSpan(bitmap);
-		builder.setSpan(imageSpan, insertionIndex,insertionIndex+1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-		tv.setText( builder, BufferType.SPANNABLE );
+		SpannableStringBuilder builder = new SpannableStringBuilder(appender.toString());
+		ImageSpan imageSpan = new ImageSpan(bitmap);
+		builder.setSpan(imageSpan, insertionIndex, insertionIndex + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+		tv.setText(builder, BufferType.SPANNABLE);
 	}
-	
+
 	/**
 	 * Convert to pix from DPI.
+	 * 
 	 * @param context
 	 * @param dips
 	 * @return
 	 */
 	public static int fromDip(Context context, int dips) {
-		return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 
-                dips, context.getResources().getDisplayMetrics());
+		return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dips, context.getResources()
+				.getDisplayMetrics());
+	}
+
+	/**
+	 * Hide soft keyboard.
+	 * 
+	 * @param textView
+	 *            text view containing current window token
+	 */
+	public static void hideSoftInput(final View textView) {
+		try {
+			final InputMethodManager imm = (InputMethodManager) textView.getContext().getSystemService(
+					Context.INPUT_METHOD_SERVICE);
+			imm.hideSoftInputFromWindow(textView.getWindowToken(), 0);
+		} catch (final Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Show soft keyboard.
+	 * 
+	 * @param textView
+	 *            text view containing current window token
+	 */
+	public static void showSoftInput(final View textView) {
+		try {
+			final InputMethodManager imm = (InputMethodManager) textView.getContext().getSystemService(
+					Context.INPUT_METHOD_SERVICE);
+			imm.showSoftInput(textView, InputMethodManager.SHOW_FORCED);
+		} catch (final Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Toggles keyboard visibility.
+	 * 
+	 * @param textView
+	 *            text view containing current window token
+	 */
+	public static void toggleSoftInput(final View textView) {
+		try {
+			final InputMethodManager imm = (InputMethodManager) textView.getContext().getSystemService(
+					Context.INPUT_METHOD_SERVICE);
+			imm.toggleSoftInputFromWindow(textView.getWindowToken(), 0, 0);
+		} catch (final Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Set text view value or change its visibility in case of empty value.
+	 * 
+	 * @param view
+	 *            view instance
+	 * @param text
+	 *            text value
+	 * @param hvisibility
+	 *            visibility value
+	 */
+	public static void setTextOrHide(final TextView view, final CharSequence text, final int hvisibility) {
+		if (TextUtils.isEmpty(text)) {
+			view.setVisibility(hvisibility);
+		} else {
+			view.setText(text);
+			view.setVisibility(View.VISIBLE);
+		}
+	}
+
+	/**
+	 * Get the given view copied onto a bitmap.
+	 * 
+	 * @param view
+	 * @param outputConfig
+	 *            for the bitmap that is returned
+	 * @return
+	 */
+	public static Bitmap getSnap(View view, Bitmap.Config outputConfig) {
+		Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), outputConfig);
+		android.graphics.Canvas canvas = new android.graphics.Canvas(bitmap);
+		view.draw(canvas);
+		return bitmap;
 	}
 }
