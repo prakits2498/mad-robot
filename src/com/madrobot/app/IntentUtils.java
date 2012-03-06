@@ -87,4 +87,44 @@ public class IntentUtils {
 		List<ResolveInfo> resolved = packMan.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
 		return resolved;
 	}
+
+	/**
+	 * Print the contents of this Intent
+	 * <p>
+	 * Print the intent's action,data,type,category and the extras.
+	 * </p>
+	 * 
+	 * @param tag
+	 * @param intent
+	 */
+	public static void logIntent(final String tag, final Intent intent) {
+		android.util.Log.d(tag, "========================================================");
+		android.util.Log.d(tag, "action=" + intent.getAction());
+		android.util.Log.d(tag, "data=" + intent.getData());
+		android.util.Log.d(tag, "type=" + intent.getType());
+		android.util.Log.d(tag, "categories=" + intent.getCategories());
+		// Log.d(tag, "sourceBounds=" + intent.getSourceBounds());
+		android.util.Log.d(tag, "extras:");
+		final android.os.Bundle extras = intent.getExtras();
+		if (extras != null) {
+			for (final String key : extras.keySet()) {
+				final Object o = intent.getExtras().get(key);
+				android.util.Log.d(tag, "  " + key + "=" + (o != null ? o.getClass() : null) + "/" + o);
+			}
+		}
+	}
+
+	/**
+	 * Checks if the given activity is started from the launcher.
+	 * 
+	 * @param a
+	 *            activity instance
+	 * @return whether the activity was started from launcher
+	 */
+	public static boolean isStartedFromLauncher(final android.app.Activity a) {
+		final Intent intent = a.getIntent();
+		final String intentAction = intent.getAction();
+		return intent.hasCategory(Intent.CATEGORY_LAUNCHER) && intentAction != null
+				&& intentAction.equals(Intent.ACTION_MAIN);
+	}
 }

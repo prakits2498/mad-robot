@@ -22,6 +22,7 @@ import com.madrobot.graphics.bitmap.OutputConfiguration;
 import com.madrobot.graphics.bitmap.AestheticTransformFilters;
 import com.madrobot.graphics.bitmap.PixellateFilters;
 import com.madrobot.graphics.bitmap.ShapeTransformFilters;
+import com.madrobot.graphics.bitmap.TransformFilters;
 
 public class TestActivity extends Activity {
 	/** Called when the activity is first created. */
@@ -38,7 +39,7 @@ public class TestActivity extends Activity {
 		long time = System.currentTimeMillis();
 		outputConfig = new OutputConfiguration();
 		outputConfig.setAffectedArea(new Rectangle(0, 0, src.getWidth() / 2, src.getHeight()));
-		Bitmap bitmap2 = ColorFilters.stamp(src,   0xffffffff,0xffff0000, 0.5f, 0.5f, outputConfig);
+		Bitmap bitmap2 = ShapeTransformFilters.shear(src, 0,5, TransformFilters.EDGE_ACTION_RGB_CLAMP, outputConfig.getConfig());
 		// 96, 0, 64, 96, 0, 64 }, outputConfig);
 		System.out.println("============================== DONE ====================");
 		// + (System.currentTimeMillis() - time));
