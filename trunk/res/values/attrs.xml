@@ -76,4 +76,13 @@
         <attr format="integer" name="vibrateDuration" />
     </declare-styleable>
 
+    <!-- Attributes for com.madrobot.ui.widgets.WeightedLinearLayout -->
+    <declare-styleable name="WeightedLinearLayout">
+        <attr format="float" name="majorWeightMin" />
+        <attr format="float" name="minorWeightMin" />
+        <attr format="float" name="majorWeightMax" />
+        <attr format="float" name="minorWeightMax" />
+        
+    </declare-styleable>
+
 </resources>

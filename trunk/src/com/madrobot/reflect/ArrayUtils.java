@@ -1392,25 +1392,23 @@ public class ArrayUtils {
 		return indexOf(array, valueToFind) != INDEX_NOT_FOUND;
 	}
 
-	/**
-	 * <p>
-	 * Checks if the object is in the given array.
-	 * </p>
-	 * 
-	 * <p>
-	 * The method returns <code>false</code> if a <code>null</code> array is
-	 * passed in.
-	 * </p>
-	 * 
-	 * @param array
-	 *            the array to search through
-	 * @param objectToFind
-	 *            the object to find
-	 * @return <code>true</code> if the array contains the object
-	 */
-	public static boolean contains(Object[] array, Object objectToFind) {
-		return indexOf(array, objectToFind) != INDEX_NOT_FOUND;
-	}
+    /**
+     * Checks that value is present as at least one of the elements of the array.
+     * @param array the array to check in
+     * @param value the value to check for
+     * @return true if the value is present in the array
+     */
+    public static <T> boolean contains(T[] array, T value) {
+        for (T element : array) {
+            if (element == null) {
+                if (value == null) return true;
+            } else {
+                if (value != null && element.equals(value)) return true;
+            }
+        }
+        return false;
+    }
+
 
 	/**
 	 * <p>

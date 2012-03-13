@@ -212,6 +212,20 @@ public final class BitmapUtils {
 	}
 
 	/**
+	 * Get the byte[] for the given bitmap
+	 * 
+	 * @param bitmap
+	 * @param compressionFormat
+	 * @return
+	 */
+	public static byte[] getByteArray(Bitmap bitmap, Bitmap.CompressFormat compressionFormat) {
+		java.io.ByteArrayOutputStream stream = new java.io.ByteArrayOutputStream();
+		bitmap.compress(compressionFormat, 100, stream);
+		return stream.toByteArray();
+
+	}
+
+	/**
 	 * Get the pixels for the given bitmap
 	 * 
 	 * @param bitmap
@@ -567,8 +581,6 @@ public final class BitmapUtils {
 
 		return source;
 	}
-
-	
 
 	/**
 	 * Stretches the rgb data horizontal to the given left and rigth stretch factor and returns the new rgb data array.
