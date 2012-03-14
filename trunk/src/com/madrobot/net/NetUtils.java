@@ -34,12 +34,16 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.X509TrustManager;
 
+import com.madrobot.security.HexDump;
+
 public class NetUtils {
 	private final static String emailPattern = "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
 	/**
 	 * Decode the IP Address represented as an integer
-	 * @param ip String representation of the IP address.
+	 * 
+	 * @param ip
+	 *            String representation of the IP address.
 	 * @return
 	 */
 	public static String decodeIPAddress(int ip) {
@@ -50,7 +54,7 @@ public class NetUtils {
 		num[2] = (ip & 0x0000ff00) >> 8;
 		num[3] = ip & 0x000000ff;
 
-		StringBuilder builder=new StringBuilder();
+		StringBuilder builder = new StringBuilder();
 		builder.append(num[0]).append('.').append(num[1]).append('.').append(num[2]).append('.').append(num[3]);
 
 		return builder.toString();
@@ -312,5 +316,31 @@ public class NetUtils {
 		} catch (Exception e) { // should never happen
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * @return True if the url is correctly URL encoded
+	 */
+	public static boolean verifyURLEncoding(String url) {
+		int count = url.length();
+		if (count == 0) {
+			return false;
+		}
+
+		int index = url.indexOf('%');
+		while (index >= 0 && index < count) {
+			if (index < count - 2) {
+				try {
+					HexDump.parseHex(url.charAt(++index));
+					HexDump.parseHex(url.charAt(++index));
+				} catch (IllegalArgumentException e) {
+					return false;
+				}
+			} else {
+				return false;
+			}
+			index = url.indexOf('%', index + 1);
+		}
+		return true;
 	}
 }
