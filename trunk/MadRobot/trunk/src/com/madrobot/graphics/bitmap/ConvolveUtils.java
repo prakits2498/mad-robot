@@ -4,13 +4,6 @@ package com.madrobot.graphics.bitmap;
 import android.graphics.Bitmap;
 
  class ConvolveUtils {
-
-
-
-
-
-	
-	
 	 static Bitmap doConvolve(float[] matrix, Bitmap src, int edgeAction, boolean processAlpha, boolean premultiplyAlpha, Bitmap.Config outputConfig) {
 		Kernel kernel = new Kernel(3, 3, matrix);
 		int width = src.getWidth();
