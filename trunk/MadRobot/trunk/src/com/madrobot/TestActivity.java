@@ -44,29 +44,28 @@ public class TestActivity extends Activity {
 		outputConfig = new OutputConfiguration();
 		outputConfig.setAffectedArea(new Rectangle(0, 0, src.getWidth() / 2, src.getHeight()));
 		img = (ImageView) findViewById(R.id.text);
-		try {
-			Method method = Surface.class.getMethod("screenshot", new Class[] { Integer.class, Integer.class });
-			Bitmap bitmap=(Bitmap) method.invoke(null, 50,50);
-			img.setImageBitmap(bitmap);
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-//		Bitmap bitmap2 =  ShapeTransformFilters.shear(src, 0,5,
-//													TransformFilters.EDGE_ACTION_RGB_CLAMP,
-//													 outputConfig.getConfig());
+//		try {
+//			Method method = Surface.class.getMethod("screenshot", new Class[] { Integer.class, Integer.class });
+//			Bitmap bitmap=(Bitmap) method.invoke(null, 50,50);
+//			img.setImageBitmap(bitmap);
+//		} catch (IllegalArgumentException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IllegalAccessException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (InvocationTargetException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (SecurityException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (NoSuchMethodException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		Bitmap bitmap2 =AestheticTransformFilters.sketch(src, outputConfig.getConfig());  
+
 		// 96, 0, 64, 96, 0, 64 }, outputConfig);
 		System.out.println("============================== DONE ====================");
 		// + (System.currentTimeMillis() - time));
@@ -80,7 +79,7 @@ public class TestActivity extends Activity {
 		// true, true,
 		// Bitmap.Config.ARGB_8888);
 
-//		img.setImageBitmap(bitmap2);
+		img.setImageBitmap(bitmap2);
 		// new DownloadFilesTask().execute();
 	}
 

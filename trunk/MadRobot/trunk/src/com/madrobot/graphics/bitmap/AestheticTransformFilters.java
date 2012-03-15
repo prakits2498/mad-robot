@@ -14,11 +14,13 @@ import com.madrobot.graphics.bitmap.OutputConfiguration.BitmapMeta;
  * Bitmap shapes/perception transforming filters.
  * <p>
  * <b>Water Ripple</b><br/>
- * Ripple effect with <code>wavelength</code> of 16, <code>amplitude</code> 10 and <code>radius</code> of 150. <br/>
+ * Ripple effect with <code>wavelength</code> of 16, <code>amplitude</code> 10
+ * and <code>radius</code> of 150. <br/>
  * <img src="../../../../resources/waterripple.png" ><br/>
  * 
- * * <b>Lens</b><br/>
- * Lens with <code>refractionIndex</code> of 1.5 and <code>radius</code> of 150. <br/>
+ * <b>Lens</b><br/>
+ * Lens with <code>refractionIndex</code> of 1.5 and <code>radius</code> of 150.
+ * <br/>
  * <img src="../../../../resources/lens.png" ><br/>
  * 
  * <b>Reflection</b><br/>
@@ -26,20 +28,24 @@ import com.madrobot.graphics.bitmap.OutputConfiguration.BitmapMeta;
  * <b>Flush 3D</b><br/>
  * <img src="../../../../resources/flush3d.png" ><br/>
  * 
- * 
+ * <b>Sketch</b><br/>
+ * <img src="../../../../resources/sketch.png" ><br/>
  * <b>Stipple</b><br/>
  * <img src="../../../../resources/stipple.png" ><br/>
  * <b>Fade</b><br/>
  * Fade using the <code>fadeWidth</code> of 100<br/>
  * <img src="../../../../resources/fade.png"><br/>
  * <b>Dissolve</b><br/>
- * Dissolve using the <code>density</code> of 0.65 and <code>softness</code> 0.50. This bitmap has a black background<br/>
+ * Dissolve using the <code>density</code> of 0.65 and <code>softness</code>
+ * 0.50. This bitmap has a black background<br/>
  * <img src="../../../../resources/dissolve.png"><br/>
  * <b>Diffuse</b><br/>
- * Diffuse using the <code>scale</code> of 30 and <code>edgeAction</code> ZERO. This bitmap has a black background<br/>
+ * Diffuse using the <code>scale</code> of 30 and <code>edgeAction</code> ZERO.
+ * This bitmap has a black background<br/>
  * <img src="../../../../resources/dissolve.png"><br/>
  * <b>Twirl</b><br/>
- * Twirl using the <code>angle</code> of -2.5, <code>radius</code> 100 and {@link #EDGE_ACTION_CLAMP}. <br/>
+ * Twirl using the <code>angle</code> of -2.5, <code>radius</code> 100 and
+ * {@link #EDGE_ACTION_CLAMP}. <br/>
  * <img src="../../../../resources/twirl.png"><br/>
  * </p>
  * 
@@ -59,21 +65,26 @@ public class AestheticTransformFilters extends TransformFilters {
 	 * @param phase
 	 *            of the ripple waves. recommended:0
 	 * @param centreX
-	 *            x coordinate for the origin of the ripple. the value <code>0.5</code> represents the centre of the
-	 *            bitmap
+	 *            x coordinate for the origin of the ripple. the value
+	 *            <code>0.5</code> represents the centre of the bitmap
 	 * @param centreY
-	 *            Y coordinate for the origin of the ripple. the value <code>0.5</code> represents the centre of the
-	 *            bitmap
+	 *            Y coordinate for the origin of the ripple. the value
+	 *            <code>0.5</code> represents the centre of the bitmap
 	 * @param radius
-	 *            radius of the ripple. could be any value that falls within the bounds of the image
+	 *            radius of the ripple. could be any value that falls within the
+	 *            bounds of the image
 	 * @param edgeAction
 	 *            for the effect. {@link TransformFilters#EDGE_ACTION_CLAMP},
-	 *            {@link TransformFilters#EDGE_ACTION_RGB_CLAMP}, {@link TransformFilters#EDGE_ACTION_WRAP} and
-	 *            {@link TransformFilters#EDGE_ACTION_ZERO}. recommended: {@link TransformFilters#EDGE_ACTION_CLAMP}
+	 *            {@link TransformFilters#EDGE_ACTION_RGB_CLAMP},
+	 *            {@link TransformFilters#EDGE_ACTION_WRAP} and
+	 *            {@link TransformFilters#EDGE_ACTION_ZERO}. recommended:
+	 *            {@link TransformFilters#EDGE_ACTION_CLAMP}
 	 * @param outputConfig
 	 * @return
 	 */
-	public static Bitmap waterRipple(Bitmap src, float wavelength, float amplitude, float phase, float centreX, float centreY, float radius, int edgeAction, Bitmap.Config outputConfig) {
+	public static Bitmap waterRipple(Bitmap src, float wavelength,
+			float amplitude, float phase, float centreX, float centreY,
+			float radius, int edgeAction, Bitmap.Config outputConfig) {
 		int width = src.getWidth();
 
 		int height = src.getHeight();
@@ -105,15 +116,16 @@ public class AestheticTransformFilters extends TransformFilters {
 
 		for (int y = 0; y < outHeight; y++) {
 			for (int x = 0; x < outWidth; x++) {
-				waterRippleTransformInverse(outX + x, outY + y, out, icentreX, icentreY, radius2, amplitude,
-						wavelength, phase, radius);
+				waterRippleTransformInverse(outX + x, outY + y, out, icentreX,
+						icentreY, radius2, amplitude, wavelength, phase, radius);
 				int srcX = (int) Math.floor(out[0]);
 				int srcY = (int) Math.floor(out[1]);
 				float xWeight = out[0] - srcX;
 				float yWeight = out[1] - srcY;
 				int nw, ne, sw, se;
 
-				if (srcX >= 0 && srcX < srcWidth1 && srcY >= 0 && srcY < srcHeight1) {
+				if (srcX >= 0 && srcX < srcWidth1 && srcY >= 0
+						&& srcY < srcHeight1) {
 					// Easy case, all corners are in the image
 					int i = srcWidth * srcY + srcX;
 					nw = inPixels[i];
@@ -122,20 +134,28 @@ public class AestheticTransformFilters extends TransformFilters {
 					se = inPixels[i + srcWidth + 1];
 				} else {
 					// Some of the corners are off the image
-					nw = TransformFilters.getPixel(inPixels, srcX, srcY, srcWidth, srcHeight, edgeAction);
-					ne = TransformFilters.getPixel(inPixels, srcX + 1, srcY, srcWidth, srcHeight, edgeAction);
-					sw = TransformFilters.getPixel(inPixels, srcX, srcY + 1, srcWidth, srcHeight, edgeAction);
-					se = TransformFilters.getPixel(inPixels, srcX + 1, srcY + 1, srcWidth, srcHeight, edgeAction);
+					nw = TransformFilters.getPixel(inPixels, srcX, srcY,
+							srcWidth, srcHeight, edgeAction);
+					ne = TransformFilters.getPixel(inPixels, srcX + 1, srcY,
+							srcWidth, srcHeight, edgeAction);
+					sw = TransformFilters.getPixel(inPixels, srcX, srcY + 1,
+							srcWidth, srcHeight, edgeAction);
+					se = TransformFilters.getPixel(inPixels, srcX + 1,
+							srcY + 1, srcWidth, srcHeight, edgeAction);
 				}
-				outPixels[x] = ImageMath.bilinearInterpolate(xWeight, yWeight, nw, ne, sw, se);
+				outPixels[x] = ImageMath.bilinearInterpolate(xWeight, yWeight,
+						nw, ne, sw, se);
 			}
 			BitmapUtils.setPixelRow(outPixels, y, outWidth, destPixels);
 		}
 
-		return Bitmap.createBitmap(destPixels, outWidth, outHeight, outputConfig);
+		return Bitmap.createBitmap(destPixels, outWidth, outHeight,
+				outputConfig);
 	}
 
-	private static void waterRippleTransformInverse(int x, int y, float[] out, float icentreX, float icentreY, float radius2, float amplitude, float wavelength, float phase, float radius) {
+	private static void waterRippleTransformInverse(int x, int y, float[] out,
+			float icentreX, float icentreY, float radius2, float amplitude,
+			float wavelength, float phase, float radius) {
 		float dx = x - icentreX;
 		float dy = y - icentreY;
 		float distance2 = dx * dx + dy * dy;
@@ -144,7 +164,9 @@ public class AestheticTransformFilters extends TransformFilters {
 			out[1] = y;
 		} else {
 			float distance = (float) Math.sqrt(distance2);
-			float amount = amplitude * (float) Math.sin(distance / wavelength * ImageMath.TWO_PI - phase);
+			float amount = amplitude
+					* (float) Math.sin(distance / wavelength * ImageMath.TWO_PI
+							- phase);
 			amount *= (radius - distance) / radius;
 			if (distance != 0)
 				amount *= wavelength / distance;
@@ -158,11 +180,11 @@ public class AestheticTransformFilters extends TransformFilters {
 	 * 
 	 * @param src
 	 * @param centreX
-	 *            the X coordinate of the center of the lens. The value <code>0.5</code> represents the centre of the
-	 *            bitmap
+	 *            the X coordinate of the center of the lens. The value
+	 *            <code>0.5</code> represents the centre of the bitmap
 	 * @param centreY
-	 *            the Y coordinate of the center of the lens. The value <code>0.5</code> represents the centre of the
-	 *            bitmap
+	 *            the Y coordinate of the center of the lens. The value
+	 *            <code>0.5</code> represents the centre of the bitmap
 	 * @param radius
 	 *            Radius of the lens
 	 * @param refractionIndex
@@ -172,7 +194,9 @@ public class AestheticTransformFilters extends TransformFilters {
 	 * @param outputConfig
 	 * @return
 	 */
-	public static Bitmap lens(Bitmap src, float centreX, float centreY, float radius, float refractionIndex, int edgeAction, Bitmap.Config outputConfig) {
+	public static Bitmap lens(Bitmap src, float centreX, float centreY,
+			float radius, float refractionIndex, int edgeAction,
+			Bitmap.Config outputConfig) {
 		int width = src.getWidth();
 		int height = src.getHeight();
 		float a = radius;
@@ -210,14 +234,16 @@ public class AestheticTransformFilters extends TransformFilters {
 		// Bitmap dest = Bitmap.createBitmap(outWidth, outHeight, outputConfig);
 		for (int y = 0; y < outHeight; y++) {
 			for (int x = 0; x < outWidth; x++) {
-				transformInverse(outX + x, outY + y, out, icentreX, icentreY, refractionIndex, a, b, a2, b2);
+				transformInverse(outX + x, outY + y, out, icentreX, icentreY,
+						refractionIndex, a, b, a2, b2);
 				int srcX = (int) Math.floor(out[0]);
 				int srcY = (int) Math.floor(out[1]);
 				float xWeight = out[0] - srcX;
 				float yWeight = out[1] - srcY;
 				int nw, ne, sw, se;
 
-				if (srcX >= 0 && srcX < srcWidth1 && srcY >= 0 && srcY < srcHeight1) {
+				if (srcX >= 0 && srcX < srcWidth1 && srcY >= 0
+						&& srcY < srcHeight1) {
 					// Easy case, all corners are in the image
 					int i = srcWidth * srcY + srcX;
 					nw = inPixels[i];
@@ -226,20 +252,28 @@ public class AestheticTransformFilters extends TransformFilters {
 					se = inPixels[i + srcWidth + 1];
 				} else {
 					// Some of the corners are off the image
-					nw = TransformFilters.getPixel(inPixels, srcX, srcY, srcWidth, srcHeight, edgeAction);
-					ne = TransformFilters.getPixel(inPixels, srcX + 1, srcY, srcWidth, srcHeight, edgeAction);
-					sw = TransformFilters.getPixel(inPixels, srcX, srcY + 1, srcWidth, srcHeight, edgeAction);
-					se = TransformFilters.getPixel(inPixels, srcX + 1, srcY + 1, srcWidth, srcHeight, edgeAction);
+					nw = TransformFilters.getPixel(inPixels, srcX, srcY,
+							srcWidth, srcHeight, edgeAction);
+					ne = TransformFilters.getPixel(inPixels, srcX + 1, srcY,
+							srcWidth, srcHeight, edgeAction);
+					sw = TransformFilters.getPixel(inPixels, srcX, srcY + 1,
+							srcWidth, srcHeight, edgeAction);
+					se = TransformFilters.getPixel(inPixels, srcX + 1,
+							srcY + 1, srcWidth, srcHeight, edgeAction);
 				}
-				outPixels[x] = ImageMath.bilinearInterpolate(xWeight, yWeight, nw, ne, sw, se);
+				outPixels[x] = ImageMath.bilinearInterpolate(xWeight, yWeight,
+						nw, ne, sw, se);
 			}
 			// set pixel
 			BitmapUtils.setPixelRow(outPixels, y, outWidth, destPixels);
 		}
-		return Bitmap.createBitmap(destPixels, outWidth, outHeight, outputConfig);
+		return Bitmap.createBitmap(destPixels, outWidth, outHeight,
+				outputConfig);
 	}
 
-	private static void transformInverse(int x, int y, float[] out, float icentreX, float icentreY, float refractionIndex, float a, float b, float a2, float b2) {
+	private static void transformInverse(int x, int y, float[] out,
+			float icentreX, float icentreY, float refractionIndex, float a,
+			float b, float a2, float b2) {
 		float dx = x - icentreX;
 		float dy = y - icentreY;
 		float x2 = dx * dx;
@@ -277,14 +311,17 @@ public class AestheticTransformFilters extends TransformFilters {
 	 * @param outputConfig
 	 *            Bitmap configuration of the output bitmap
 	 * 
-	 * @return Image the height of the image is increased to accommodate the reflection height.
+	 * @return Image the height of the image is increased to accommodate the
+	 *         reflection height.
 	 */
-	public static final Bitmap createReflection(final Bitmap image, final int reflectionHeight, Bitmap.Config outputConfig) {
+	public static final Bitmap createReflection(final Bitmap image,
+			final int reflectionHeight, Bitmap.Config outputConfig) {
 		/* Tested Apr 27 2011 */
 		int w = image.getWidth();
 		int h = image.getHeight();
 
-		final Bitmap reflectedImage = Bitmap.createBitmap(w, h + reflectionHeight, outputConfig);
+		final Bitmap reflectedImage = Bitmap.createBitmap(w, h
+				+ reflectionHeight, outputConfig);
 		reflectedImage.setDensity(image.getDensity());
 		Canvas canvas = new Canvas(reflectedImage);
 
@@ -331,7 +368,8 @@ public class AestheticTransformFilters extends TransformFilters {
 	}
 
 	/**
-	 * This filter tries to apply the Swing "flush 3D" effect to the black lines in an image.
+	 * This filter tries to apply the Swing "flush 3D" effect to the black lines
+	 * in an image.
 	 * 
 	 * @param src
 	 * @param outputConfig
@@ -362,7 +400,8 @@ public class AestheticTransformFilters extends TransformFilters {
 			}
 
 		}
-		return Bitmap.createBitmap(outPixels, src.getWidth(), src.getHeight(), outputConfig);
+		return Bitmap.createBitmap(outPixels, src.getWidth(), src.getHeight(),
+				outputConfig);
 	}
 
 	/**
@@ -382,7 +421,9 @@ public class AestheticTransformFilters extends TransformFilters {
 	 * @param outputConfig
 	 * @return
 	 */
-	public static Bitmap sparkle(Bitmap src, int rayColor, int shineAmount, int noOfRays, int sparkleRadius, int randomness, OutputConfiguration outputConfig) {
+	public static Bitmap sparkle(Bitmap src, int rayColor, int shineAmount,
+			int noOfRays, int sparkleRadius, int randomness,
+			OutputConfiguration outputConfig) {
 		int width = src.getWidth();
 		int height = src.getHeight();
 
@@ -392,7 +433,8 @@ public class AestheticTransformFilters extends TransformFilters {
 		randomNumbers.setSeed(371);
 		float[] rayLengths = new float[noOfRays];
 		for (int i = 0; i < noOfRays; i++)
-			rayLengths[i] = sparkleRadius + randomness / 100.0f * sparkleRadius * (float) randomNumbers.nextGaussian();
+			rayLengths[i] = sparkleRadius + randomness / 100.0f * sparkleRadius
+					* (float) randomNumbers.nextGaussian();
 
 		BitmapMeta meta = outputConfig.getBitmapMeta(src);
 		int[] inPixels = BitmapUtils.getPixels(src);
@@ -406,12 +448,14 @@ public class AestheticTransformFilters extends TransformFilters {
 				float dy = y - centreY;
 				float distance = dx * dx + dy * dy;
 				float angle = (float) Math.atan2(dy, dx);
-				float d = (angle + ImageMath.PI) / (ImageMath.TWO_PI) * noOfRays;
+				float d = (angle + ImageMath.PI) / (ImageMath.TWO_PI)
+						* noOfRays;
 				int i = (int) d;
 				float f = d - i;
 
 				if (sparkleRadius != 0) {
-					float length = ImageMath.lerp(f, rayLengths[i % noOfRays], rayLengths[(i + 1) % noOfRays]);
+					float length = ImageMath.lerp(f, rayLengths[i % noOfRays],
+							rayLengths[(i + 1) % noOfRays]);
 					float g = length * length / (distance + 0.0001f);
 					g = (float) Math.pow(g, (100 - shineAmount) / 50.0);
 					f -= 0.5f;
@@ -423,7 +467,8 @@ public class AestheticTransformFilters extends TransformFilters {
 				inPixels[position] = ImageMath.mixColors(f, rgb, rayColor);
 			}
 		}
-		return Bitmap.createBitmap(inPixels, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
+		return Bitmap.createBitmap(inPixels, meta.bitmapWidth,
+				meta.bitmapHeight, outputConfig.config);
 	}
 
 	/**
@@ -433,7 +478,8 @@ public class AestheticTransformFilters extends TransformFilters {
 	 * @param outputConfig
 	 * @return
 	 */
-	public static final Bitmap stipple(Bitmap bitmap, OutputConfiguration outputConfig) {
+	public static final Bitmap stipple(Bitmap bitmap,
+			OutputConfiguration outputConfig) {
 		int[] argb = BitmapUtils.getPixels(bitmap);
 		BitmapMeta meta = outputConfig.getBitmapMeta(bitmap);
 		int position, rgb;
@@ -441,13 +487,15 @@ public class AestheticTransformFilters extends TransformFilters {
 			for (int x = meta.x; x < meta.targetWidth; x++) {
 				position = (y * meta.bitmapWidth) + x;
 				rgb = argb[position];
-				argb[position] = ((x & 1) == (y & 1)) ? rgb : ImageMath.mixColors(0.25f, 0xff999999, rgb);
+				argb[position] = ((x & 1) == (y & 1)) ? rgb : ImageMath
+						.mixColors(0.25f, 0xff999999, rgb);
 			}
 		}
 		if (outputConfig.canRecycleSrc) {
 			bitmap.recycle();
 		}
-		return Bitmap.createBitmap(argb, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
+		return Bitmap.createBitmap(argb, meta.bitmapWidth, meta.bitmapHeight,
+				outputConfig.config);
 	}
 
 	/**
@@ -465,7 +513,9 @@ public class AestheticTransformFilters extends TransformFilters {
 	 * @param outputConfig
 	 * @return
 	 */
-	public static Bitmap fade(Bitmap src, float angle, float fadeStart, float fadeWidth, boolean invert, int sides, OutputConfiguration outputConfig) {
+	public static Bitmap fade(Bitmap src, float angle, float fadeStart,
+			float fadeWidth, boolean invert, int sides,
+			OutputConfiguration outputConfig) {
 
 		float cos = (float) Math.cos(angle);
 		float sin = (float) Math.sin(angle);
@@ -474,7 +524,8 @@ public class AestheticTransformFilters extends TransformFilters {
 		float m10 = -sin;
 		float m11 = cos;
 
-		com.madrobot.graphics.bitmap.OutputConfiguration.BitmapMeta meta = outputConfig.getBitmapMeta(src);
+		com.madrobot.graphics.bitmap.OutputConfiguration.BitmapMeta meta = outputConfig
+				.getBitmapMeta(src);
 		int[] inPixels = BitmapUtils.getPixels(src);
 		int position, rgb;
 		for (int y = meta.y; y < meta.targetHeight; y++) {
@@ -489,7 +540,8 @@ public class AestheticTransformFilters extends TransformFilters {
 					nx = ImageMath.mod(nx, 16);
 				else if (sides == 4)
 					nx = symmetry(nx, 16);
-				int alpha = (int) (ImageMath.smoothStep(fadeStart, fadeStart + fadeWidth, nx) * 255);
+				int alpha = (int) (ImageMath.smoothStep(fadeStart, fadeStart
+						+ fadeWidth, nx) * 255);
 				if (invert)
 					alpha = 255 - alpha;
 
@@ -499,7 +551,8 @@ public class AestheticTransformFilters extends TransformFilters {
 		if (outputConfig.canRecycleSrc) {
 			src.recycle();
 		}
-		return Bitmap.createBitmap(inPixels, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
+		return Bitmap.createBitmap(inPixels, meta.bitmapWidth,
+				meta.bitmapHeight, outputConfig.config);
 	}
 
 	private static float symmetry(float x, float b) {
@@ -511,7 +564,8 @@ public class AestheticTransformFilters extends TransformFilters {
 	}
 
 	/**
-	 * A filter which "dissolves" an image by thresholding the alpha channel with random numbers.
+	 * A filter which "dissolves" an image by thresholding the alpha channel
+	 * with random numbers.
 	 * 
 	 * @param src
 	 * @param density
@@ -521,12 +575,14 @@ public class AestheticTransformFilters extends TransformFilters {
 	 * @param outputConfig
 	 * @return
 	 */
-	public static Bitmap dissolve(Bitmap src, float density, float softness, OutputConfiguration outputConfig) {
+	public static Bitmap dissolve(Bitmap src, float density, float softness,
+			OutputConfiguration outputConfig) {
 		float d = (1 - density) * (1 + softness);
 		float minDensity = d - softness;
 		float maxDensity = d;
 		Random randomNumbers = new Random(0);
-		com.madrobot.graphics.bitmap.OutputConfiguration.BitmapMeta meta = outputConfig.getBitmapMeta(src);
+		com.madrobot.graphics.bitmap.OutputConfiguration.BitmapMeta meta = outputConfig
+				.getBitmapMeta(src);
 		int[] inPixels = BitmapUtils.getPixels(src);
 		int position, rgb, a;
 		float v, f;
@@ -543,7 +599,8 @@ public class AestheticTransformFilters extends TransformFilters {
 		if (outputConfig.canRecycleSrc) {
 			src.recycle();
 		}
-		return Bitmap.createBitmap(inPixels, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
+		return Bitmap.createBitmap(inPixels, meta.bitmapWidth,
+				meta.bitmapHeight, outputConfig.config);
 	}
 
 	/**
@@ -556,7 +613,8 @@ public class AestheticTransformFilters extends TransformFilters {
 	 * @param outputConfig
 	 * @return
 	 */
-	public static Bitmap diffuse(Bitmap src, float scale, int edgeAction, Config outputConfig) {
+	public static Bitmap diffuse(Bitmap src, float scale, int edgeAction,
+			Config outputConfig) {
 		float[] sinTable = new float[256];
 		float[] cosTable = new float[256];
 		for (int i = 0; i < 256; i++) {
@@ -593,7 +651,8 @@ public class AestheticTransformFilters extends TransformFilters {
 				float yWeight = out[1] - srcY;
 				int nw, ne, sw, se;
 
-				if (srcX >= 0 && srcX < srcWidth1 && srcY >= 0 && srcY < srcHeight1) {
+				if (srcX >= 0 && srcX < srcWidth1 && srcY >= 0
+						&& srcY < srcHeight1) {
 					// Easy case, all corners are in the image
 					int i = srcWidth * srcY + srcX;
 					nw = inPixels[i];
@@ -602,28 +661,35 @@ public class AestheticTransformFilters extends TransformFilters {
 					se = inPixels[i + srcWidth + 1];
 				} else {
 					// Some of the corners are off the image
-					nw = getPixel(inPixels, srcX, srcY, srcWidth, srcHeight, edgeAction);
-					ne = getPixel(inPixels, srcX + 1, srcY, srcWidth, srcHeight, edgeAction);
-					sw = AestheticTransformFilters.getPixel(inPixels, srcX, srcY + 1, srcWidth, srcHeight, edgeAction);
-					se = AestheticTransformFilters.getPixel(inPixels, srcX + 1, srcY + 1, srcWidth, srcHeight,
+					nw = getPixel(inPixels, srcX, srcY, srcWidth, srcHeight,
 							edgeAction);
+					ne = getPixel(inPixels, srcX + 1, srcY, srcWidth,
+							srcHeight, edgeAction);
+					sw = AestheticTransformFilters.getPixel(inPixels, srcX,
+							srcY + 1, srcWidth, srcHeight, edgeAction);
+					se = AestheticTransformFilters.getPixel(inPixels, srcX + 1,
+							srcY + 1, srcWidth, srcHeight, edgeAction);
 				}
-				outPixels[x] = ImageMath.bilinearInterpolate(xWeight, yWeight, nw, ne, sw, se);
+				outPixels[x] = ImageMath.bilinearInterpolate(xWeight, yWeight,
+						nw, ne, sw, se);
 			}
 			BitmapUtils.setPixelRow(outPixels, y, outWidth, destPixels);
 		}
 
-		return Bitmap.createBitmap(destPixels, outWidth, outHeight, outputConfig);
+		return Bitmap.createBitmap(destPixels, outWidth, outHeight,
+				outputConfig);
 	}
 
-	private static void transformInverse(int x, int y, float[] out, float[] sinTable, float[] cosTable) {
+	private static void transformInverse(int x, int y, float[] out,
+			float[] sinTable, float[] cosTable) {
 		int angle = (int) (Math.random() * 255);
 		float distance = (float) Math.random();
 		out[0] = x + distance * sinTable[angle];
 		out[1] = y + distance * cosTable[angle];
 	}
 
-	public static Bitmap contour(Bitmap bitmap, int contourColor, float levels, float scale, float offset, Config outputConfig) {
+	public static Bitmap contour(Bitmap bitmap, int contourColor, float levels,
+			float scale, float offset, Config outputConfig) {
 		int[] inPixels = BitmapUtils.getPixels(bitmap);
 		int width = bitmap.getWidth();
 
@@ -636,7 +702,9 @@ public class AestheticTransformFilters extends TransformFilters {
 		int offsetl = (int) (offset * 256 / levels);
 		for (int i = 0; i < 256; i++)
 			table[i] = (short) PixelUtils
-					.clamp((int) (255 * Math.floor(levels * (i + offsetl) / 256) / (levels - 1) - offsetl));
+					.clamp((int) (255
+							* Math.floor(levels * (i + offsetl) / 256)
+							/ (levels - 1) - offsetl));
 
 		for (int x = 0; x < width; x++) {
 			int rgb = inPixels[x];
@@ -668,7 +736,8 @@ public class AestheticTransformFilters extends TransformFilters {
 					short se = table[seb];
 
 					if (nw != ne || nw != sw || ne != se || sw != se) {
-						v = (int) (scale * (Math.abs(nwb - neb) + Math.abs(nwb - swb) + Math.abs(neb - seb) + Math
+						v = (int) (scale * (Math.abs(nwb - neb)
+								+ Math.abs(nwb - swb) + Math.abs(neb - seb) + Math
 								.abs(swb - seb)));
 						// v /= 255;
 						if (v > 255)
@@ -677,9 +746,12 @@ public class AestheticTransformFilters extends TransformFilters {
 				}
 
 				if (v != 0)
-					outPixels[index] = PixelUtils.combinePixels(inPixels[index], contourColor, PixelUtils.EXCHANGE, v);
-//				 outPixels[index] = PixelUtils.combinePixels( (contourColor & 0xff)|(v << 24), inPixels[index],
-//				 PixelUtils.NORMAL );
+					outPixels[index] = PixelUtils.combinePixels(
+							inPixels[index], contourColor, PixelUtils.EXCHANGE,
+							v);
+				// outPixels[index] = PixelUtils.combinePixels( (contourColor &
+				// 0xff)|(v << 24), inPixels[index],
+				// PixelUtils.NORMAL );
 				else
 					outPixels[index] = inPixels[index];
 				index++;
@@ -691,5 +763,63 @@ public class AestheticTransformFilters extends TransformFilters {
 			r[2] = t;
 		}
 		return Bitmap.createBitmap(outPixels, width, height, outputConfig);
+	}
+
+	public static Bitmap sketch(Bitmap bitmap, Bitmap.Config outputConfig) {
+		int w = bitmap.getWidth();
+		int h = bitmap.getHeight();
+		int[] image = BitmapUtils.getPixels(bitmap);
+		int idx, p, r, g, b, x, y;
+		for (y = 0; y < h; y++) {
+			for (x = 0; x < w; x++) {
+				idx = (y * w) + x;
+				p = image[idx];
+				r = p & 0x00FF0000 >> 16;
+				g = p & 0x0000FF >> 8;
+				b = p & 0x000000FF;
+				image[idx] = (int) ((r + g + b) / 3.0);
+			}
+		}
+		int convolutionSize = 3;
+		int[][] convolution = { { 0, -1, 0 }, { -1, 4, -1 }, { 0, -1, 0 } };
+		int[] newImage = new int[w * h];
+		// Apply the convolution to the whole image, note that we start at
+		// 1 instead 0 zero to avoid out-of-bounds access
+		for (y = 1; y + 1 < h; y++) {
+			for (x = 1; x + 1 < w; x++) {
+				idx = (y * w) + x;
+
+				// Apply the convolution
+				for (int cy = 0; cy < convolutionSize; cy++) {
+					for (int cx = 0; cx < convolutionSize; cx++) {
+						int cIdx = (((y - 1) + cy) * w) + ((x - 1) + cx);
+						newImage[idx] += convolution[cy][cx] * image[cIdx];
+					}
+				}
+
+				// pixel value rounding
+				if (newImage[idx] < 0) {
+					newImage[idx] = -newImage[idx];
+				} else {
+					newImage[idx] = 0;
+				}
+				if (newImage[idx] > 0) {
+					newImage[idx] = 120 - newImage[idx];
+				} else {
+					newImage[idx] = 255;
+				}
+
+			}
+		}
+
+		// Convert to "proper" grayscale
+		for (y = 0; y < h; y++) {
+			for (x = 0; x < w; x++) {
+				idx = (y * w) + x;
+				p = newImage[idx];
+				newImage[idx] = 0xFF000000 | (p << 16) | (p << 8) | p;
+			}
+		}
+		return Bitmap.createBitmap(newImage, w, h, outputConfig);
 	}
 }
