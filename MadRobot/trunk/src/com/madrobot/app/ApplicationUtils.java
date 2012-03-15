@@ -29,7 +29,6 @@ public final class ApplicationUtils {
      * @return
      */
     public static boolean isPackageInstalled(Context context, String packagName) {
-		// test to see if tunewiki is installed
 		boolean rv = true;
 
     	try {
@@ -44,7 +43,6 @@ public final class ApplicationUtils {
     }
 	
     public static int getAPINumber() {
-		// SDK_INT is available from API 4
 		if (isAPILevelLower4()) return 3;
 		int version = 3;
 		try {
