@@ -28,10 +28,12 @@ import java.util.Enumeration;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.net.SocketFactory;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.X509TrustManager;
 
 import com.madrobot.security.HexDump;
@@ -55,7 +57,8 @@ public class NetUtils {
 		num[3] = ip & 0x000000ff;
 
 		StringBuilder builder = new StringBuilder();
-		builder.append(num[0]).append('.').append(num[1]).append('.').append(num[2]).append('.').append(num[3]);
+		builder.append(num[0]).append('.').append(num[1]).append('.')
+				.append(num[2]).append('.').append(num[3]);
 
 		return builder.toString();
 	}
@@ -71,7 +74,8 @@ public class NetUtils {
 	public static void enableHttpResponseCache(String cacheDir, long cacheSize) {
 		try {
 			File httpCacheDir = new File(cacheDir, "http");
-			Class.forName("android.net.http.HttpResponseCache").getMethod("install", File.class, long.class)
+			Class.forName("android.net.http.HttpResponseCache")
+					.getMethod("install", File.class, long.class)
 					.invoke(null, httpCacheDir, cacheSize);
 		} catch (Exception e) {
 		}
@@ -122,7 +126,8 @@ public class NetUtils {
 	public static Inet4Address getGlobalAddress(String url) {
 		try {
 			URLConnection uc = new URL(url).openConnection();
-			BufferedReader br = new BufferedReader(new InputStreamReader(uc.getInputStream()));
+			BufferedReader br = new BufferedReader(new InputStreamReader(
+					uc.getInputStream()));
 			return (Inet4Address) InetAddress.getByName(br.readLine());
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -136,12 +141,14 @@ public class NetUtils {
 	/**
 	 * Finds a local, non-loopback, IPv4 address
 	 * 
-	 * @return The first non-loopback IPv4 address found, or <code>null</code> if no such addresses found
+	 * @return The first non-loopback IPv4 address found, or <code>null</code>
+	 *         if no such addresses found
 	 * @throws SocketException
 	 *             If there was a problem querying the network interfaces
 	 */
 	public static InetAddress getLocalAddress() throws SocketException {
-		Enumeration<NetworkInterface> ifaces = NetworkInterface.getNetworkInterfaces();
+		Enumeration<NetworkInterface> ifaces = NetworkInterface
+				.getNetworkInterfaces();
 		while (ifaces.hasMoreElements()) {
 			NetworkInterface iface = ifaces.nextElement();
 			Enumeration<InetAddress> addresses = iface.getInetAddresses();
@@ -192,7 +199,8 @@ public class NetUtils {
 
 		int pos;
 		int start = 0;
-		while (start < temp.length() && (pos = temp.indexOf('.', start)) > start) {
+		while (start < temp.length()
+				&& (pos = temp.indexOf('.', start)) > start) {
 			if (octets == 4) {
 				return false;
 			}
@@ -215,7 +223,8 @@ public class NetUtils {
 		int index = address.indexOf("/");
 		String mask = address.substring(index + 1);
 
-		return (index > 0) && isValidIPv4(address.substring(0, index)) && (isValidIPv4(mask) || isMaskValue(mask, 32));
+		return (index > 0) && isValidIPv4(address.substring(0, index))
+				&& (isValidIPv4(mask) || isMaskValue(mask, 32));
 	}
 
 	/**
@@ -238,7 +247,8 @@ public class NetUtils {
 		boolean doubleColonFound = false;
 		int pos;
 		int start = 0;
-		while (start < temp.length() && (pos = temp.indexOf(':', start)) >= start) {
+		while (start < temp.length()
+				&& (pos = temp.indexOf(':', start)) >= start) {
 			if (octets == 8) {
 				return false;
 			}
@@ -254,7 +264,8 @@ public class NetUtils {
 					octets++; // add an extra one as address covers 2 words.
 				} else {
 					try {
-						octet = Integer.parseInt(temp.substring(start, pos), 16);
+						octet = Integer
+								.parseInt(temp.substring(start, pos), 16);
 					} catch (NumberFormatException ex) {
 						return false;
 					}
@@ -280,7 +291,8 @@ public class NetUtils {
 		String mask = address.substring(index + 1);
 
 		return (index > 0)
-				&& (isValidIPv6(address.substring(0, index)) && (isValidIPv6(mask) || isMaskValue(mask, 128)));
+				&& (isValidIPv6(address.substring(0, index)) && (isValidIPv6(mask) || isMaskValue(
+						mask, 128)));
 	}
 
 	/**
@@ -291,20 +303,24 @@ public class NetUtils {
 	 */
 	public static void trustAllSecureConnections() {
 		try {
-			HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
-				@Override
-				public boolean verify(String hostname, SSLSession session) {
-					return true;
-				}
-			});
+			HttpsURLConnection
+					.setDefaultHostnameVerifier(new HostnameVerifier() {
+						@Override
+						public boolean verify(String hostname,
+								SSLSession session) {
+							return true;
+						}
+					});
 			SSLContext context = SSLContext.getInstance("TLS");
 			context.init(null, new X509TrustManager[] { new X509TrustManager() {
 				@Override
-				public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+				public void checkClientTrusted(X509Certificate[] chain,
+						String authType) throws CertificateException {
 				}
 
 				@Override
-				public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+				public void checkServerTrusted(X509Certificate[] chain,
+						String authType) throws CertificateException {
 				}
 
 				@Override
@@ -312,7 +328,8 @@ public class NetUtils {
 					return new X509Certificate[0];
 				}
 			} }, new SecureRandom());
-			HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
+			HttpsURLConnection.setDefaultSSLSocketFactory(context
+					.getSocketFactory());
 		} catch (Exception e) { // should never happen
 			e.printStackTrace();
 		}
@@ -343,4 +360,5 @@ public class NetUtils {
 		}
 		return true;
 	}
+
 }

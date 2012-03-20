@@ -1,15 +1,14 @@
-
 package com.madrobot.graphics.bitmap;
 
 import java.io.PrintStream;
-import java.util.Vector;
+import java.util.ArrayList;
 
 /**
- * An image Quantizer based on the Octree algorithm. This is a very basic implementation
- * at present and could be much improved by picking the nodes to reduce more carefully 
- * (i.e. not completely at random) when I get the time.
+ * An image Quantizer based on the Octree algorithm. This is a very basic
+ * implementation at present and could be much improved by picking the nodes to
+ * reduce more carefully (i.e. not completely at random) when I get the time.
  */
- class OctTreeQuantizer {
+class OctTreeQuantizer {
 
 	/**
 	 * The greatest depth the tree is allowed to reach
@@ -26,24 +25,26 @@ import java.util.Vector;
 		OctTreeNode leaf[] = new OctTreeNode[8];
 		boolean isLeaf;
 		int count;
-		int	totalRed;
-		int	totalGreen;
-		int	totalBlue;
+		int totalRed;
+		int totalGreen;
+		int totalBlue;
 		int index;
-		
+
 		/**
 		 * A debugging method which prints the tree out.
 		 */
-		 void list(PrintStream s, int level) {
+		void list(PrintStream s, int level) {
 			for (int i = 0; i < level; i++)
 				System.out.print(' ');
 			if (count == 0)
-				System.out.println(index+": count="+count);
+				System.out.println(index + ": count=" + count);
 			else
-				System.out.println(index+": count="+count+" red="+(totalRed/count)+" green="+(totalGreen/count)+" blue="+(totalBlue/count));
+				System.out.println(index + ": count=" + count + " red="
+						+ (totalRed / count) + " green=" + (totalGreen / count)
+						+ " blue=" + (totalBlue / count));
 			for (int i = 0; i < 8; i++)
 				if (leaf[i] != null)
-					leaf[i].list(s, level+2);
+					leaf[i].list(s, level + 2);
 		}
 	}
 
@@ -52,45 +53,53 @@ import java.util.Vector;
 	private int reduceColors;
 	private int maximumColors;
 	private int colors = 0;
-	private Vector[] colorList;
-	
-	 OctTreeQuantizer() {
+	private ArrayList[] colorList;
+
+	OctTreeQuantizer() {
 		setup(256);
-		colorList = new Vector[MAX_LEVEL+1];
-		for (int i = 0; i < MAX_LEVEL+1; i++)
-			colorList[i] = new Vector();
+		colorList = new ArrayList[MAX_LEVEL + 1];
+		for (int i = 0; i < MAX_LEVEL + 1; i++)
+			colorList[i] = new ArrayList<OctTreeNode>();
 		root = new OctTreeNode();
 	}
 
 	/**
 	 * Initialize the quantizer. This should be called before adding any pixels.
-	 * @param numColors the number of colors we're quantizing to.
+	 * 
+	 * @param numColors
+	 *            the number of colors we're quantizing to.
 	 */
-	 void setup(int numColors) {
+	void setup(int numColors) {
 		maximumColors = numColors;
 		reduceColors = Math.max(512, numColors * 2);
 	}
-	
+
 	/**
 	 * Add pixels to the quantizer.
-	 * @param pixels the array of ARGB pixels
-	 * @param offset the offset into the array
-	 * @param count the count of pixels
+	 * 
+	 * @param pixels
+	 *            the array of ARGB pixels
+	 * @param offset
+	 *            the offset into the array
+	 * @param count
+	 *            the count of pixels
 	 */
-	 void addPixels(int[] pixels, int offset, int count) {
+	void addPixels(int[] pixels, int offset, int count) {
 		for (int i = 0; i < count; i++) {
-			insertColor(pixels[i+offset]);
+			insertColor(pixels[i + offset]);
 			if (colors > reduceColors)
 				reduceTree(reduceColors);
 		}
-	}	
+	}
 
-    /**
-     * Get the color table index for a color.
-     * @param rgb the color
-     * @return the index
-     */
-	 int getIndexForColor(int rgb) {
+	/**
+	 * Get the color table index for a color.
+	 * 
+	 * @param rgb
+	 *            the color
+	 * @return the index
+	 */
+	int getIndexForColor(int rgb) {
 		int red = (rgb >> 16) & 0xff;
 		int green = (rgb >> 8) & 0xff;
 		int blue = rgb & 0xff;
@@ -122,14 +131,14 @@ import java.util.Vector;
 		return 0;
 	}
 
-	 void insertColor(int rgb) {
+	void insertColor(int rgb) {
 		int red = (rgb >> 16) & 0xff;
 		int green = (rgb >> 8) & 0xff;
 		int blue = rgb & 0xff;
 
 		OctTreeNode node = root;
 
-//		System.out.println("insertColor="+Integer.toHexString(rgb));
+		// System.out.println("insertColor="+Integer.toHexString(rgb));
 		for (int level = 0; level <= MAX_LEVEL; level++) {
 			OctTreeNode child;
 			int bit = 0x80 >> level;
@@ -152,7 +161,7 @@ import java.util.Vector;
 				node.leaf[index] = child;
 				node.isLeaf = false;
 				nodes++;
-				colorList[level].addElement(child);
+				colorList[level].add(child);
 
 				if (level == MAX_LEVEL) {
 					child.isLeaf = true;
@@ -179,11 +188,11 @@ import java.util.Vector;
 	}
 
 	private void reduceTree(int numColors) {
-		for (int level = MAX_LEVEL-1; level >= 0; level--) {
-			Vector v = colorList[level];
+		for (int level = MAX_LEVEL - 1; level >= 0; level--) {
+			ArrayList<OctTreeNode> v = colorList[level];
 			if (v != null && v.size() > 0) {
 				for (int j = 0; j < v.size(); j++) {
-					OctTreeNode node = (OctTreeNode)v.elementAt(j);
+					OctTreeNode node = v.get(j);//(OctTreeNode) v.elementAt(j);
 					if (node.children > 0) {
 						for (int i = 0; i < 8; i++) {
 							OctTreeNode child = node.leaf[i];
@@ -198,7 +207,7 @@ import java.util.Vector;
 								node.children--;
 								colors--;
 								nodes--;
-								colorList[level+1].removeElement(child);
+								colorList[level + 1].remove(child);//removeElement(child);
 							}
 						}
 						node.isLeaf = true;
@@ -213,22 +222,27 @@ import java.util.Vector;
 		System.out.println("Unable to reduce the OctTree");
 	}
 
-    /**
-     * Build the color table.
-     * @return the color table
-     */
-	 int[] buildColorTable() {
+	/**
+	 * Build the color table.
+	 * 
+	 * @return the color table
+	 */
+	int[] buildColorTable() {
 		int[] table = new int[colors];
 		buildColorTable(root, table, 0);
 		return table;
 	}
-	
+
 	/**
-	 * A quick way to use the quantizer. Just create a table the right size and pass in the pixels.
-     * @param inPixels the input colors
-     * @param table the output color table
-     */
-	 void buildColorTable(int[] inPixels, int[] table) {
+	 * A quick way to use the quantizer. Just create a table the right size and
+	 * pass in the pixels.
+	 * 
+	 * @param inPixels
+	 *            the input colors
+	 * @param table
+	 *            the output color table
+	 */
+	void buildColorTable(int[] inPixels, int[] table) {
 		int count = inPixels.length;
 		maximumColors = table.length;
 		for (int i = 0; i < count; i++) {
@@ -247,10 +261,8 @@ import java.util.Vector;
 
 		if (node.isLeaf) {
 			int count = node.count;
-			table[index] = 0xff000000 |
-				((node.totalRed/count) << 16) |
-				((node.totalGreen/count) << 8) |
-				node.totalBlue/count;
+			table[index] = 0xff000000 | ((node.totalRed / count) << 16)
+					| ((node.totalGreen / count) << 8) | node.totalBlue / count;
 			node.index = index++;
 		} else {
 			for (int i = 0; i < 8; i++) {
@@ -262,6 +274,5 @@ import java.util.Vector;
 		}
 		return index;
 	}
-	
-}
 
+}

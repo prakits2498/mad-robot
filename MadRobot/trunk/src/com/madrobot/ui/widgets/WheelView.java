@@ -91,13 +91,15 @@ import com.madrobot.ui.adapters.WheelViewAdapter;
  * </table>
  * <br/>
  * <b>Using the WheelView</b><br/>
- * A background needs to be set for the WheelView if the transparent look is not desired.
+ * A background needs to be set for the WheelView if the transparent look is not desired.<br/>
  * <code>
+ * <pre>
  * 		&lt;com.madrobot.ui.widgets.WheelView 
  * 					android:layout_width="wrap_content" 
  * 					android:layout_height="wrap_content"
  * 					android:background="#fff"
  * 					{your_namespace}:isCyclic="true">
+ * </pre>
  * </code><br/>
  * <b>Creating a WheelView Adapter</b></br>
  * </p>
