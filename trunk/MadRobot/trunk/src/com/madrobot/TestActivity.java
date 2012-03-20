@@ -10,23 +10,16 @@
  ******************************************************************************/
 package com.madrobot;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.view.Surface;
 import android.widget.ImageView;
 
 import com.madrobot.geom.Rectangle;
-import com.madrobot.graphics.bitmap.ColorFilters;
-import com.madrobot.graphics.bitmap.OutputConfiguration;
 import com.madrobot.graphics.bitmap.AestheticTransformFilters;
-import com.madrobot.graphics.bitmap.PixellateFilters;
-import com.madrobot.graphics.bitmap.ShapeTransformFilters;
-import com.madrobot.graphics.bitmap.TransformFilters;
+import com.madrobot.graphics.bitmap.OutputConfiguration;
+import com.madrobot.text.English;
 
 public class TestActivity extends Activity {
 	/** Called when the activity is first created. */
@@ -44,6 +37,7 @@ public class TestActivity extends Activity {
 		outputConfig = new OutputConfiguration();
 		outputConfig.setAffectedArea(new Rectangle(0, 0, src.getWidth() / 2, src.getHeight()));
 		img = (ImageView) findViewById(R.id.text);
+		System.out.println("Time->"+English.timeToString(System.currentTimeMillis()));
 //		try {
 //			Method method = Surface.class.getMethod("screenshot", new Class[] { Integer.class, Integer.class });
 //			Bitmap bitmap=(Bitmap) method.invoke(null, 50,50);

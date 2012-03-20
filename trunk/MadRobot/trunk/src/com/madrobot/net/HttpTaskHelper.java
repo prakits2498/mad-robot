@@ -61,10 +61,6 @@ public class HttpTaskHelper {
 
 	private static final String TAG = "MadRobot";
 
-	
-
-	
-
 	private HttpClient httpClient;
 
 	public HttpResponse httpResponse;

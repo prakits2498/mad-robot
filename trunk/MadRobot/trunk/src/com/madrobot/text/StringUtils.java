@@ -11,6 +11,9 @@
 package com.madrobot.text;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 
 /**
@@ -93,6 +96,25 @@ public final class StringUtils {
 		char chars[] = name.toCharArray();
 		chars[0] = Character.toLowerCase(chars[0]);
 		return new String(chars);
+	}
+
+	/**
+	 * Check if the given string is a JSON Objectd
+	 * 
+	 * @param s
+	 * @return
+	 */
+	public static boolean isJsonObject(String s) {
+		if (s.startsWith("{") || s.startsWith("[") || s.equals("true")
+				|| s.equals("false") || s.equals("null")) {
+			return true;
+		}
+		try {
+			new Integer(s);
+			return true;
+		} catch (NumberFormatException e) {
+			return false;
+		}
 	}
 
 	/**
@@ -567,7 +589,7 @@ public final class StringUtils {
 	 * @param s
 	 *            the encoded string
 	 * @return the string
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public static String javaDecode(String s) throws Exception {
 		int length = s.length();
@@ -618,7 +640,7 @@ public final class StringUtils {
 						c = (char) (Integer.parseInt(s.substring(i + 1, i + 5),
 								16));
 					} catch (NumberFormatException e) {
-						 throw new Exception("String format error");
+						throw new Exception("String format error");
 					}
 					i += 4;
 					buff.append(c);
@@ -630,12 +652,12 @@ public final class StringUtils {
 							c = (char) (Integer.parseInt(s.substring(i, i + 3),
 									8));
 						} catch (NumberFormatException e) {
-							 throw new Exception("String format error");
+							throw new Exception("String format error");
 						}
 						i += 2;
 						buff.append(c);
 					} else {
-						 throw new Exception("String format error");
+						throw new Exception("String format error");
 					}
 				}
 			} else {
@@ -1881,6 +1903,26 @@ public final class StringUtils {
 		return new StringBuilder(strLen)
 				.append(Character.toLowerCase(cs.charAt(0)))
 				.append(subSequence(cs, 1)).toString();
+	}
+
+	public static final Charset UTF8 = Charset.forName("UTF8");
+
+	public static byte[] getUTF8Bytes(CharSequence s) {
+		// The String.getBytes(Charset) method was not implemented until Java
+		// 6/Android 9
+		// For compatibility with older runtimes, implement it here in terms of
+		// its
+		// primitives
+		ByteBuffer bb = UTF8.encode(CharBuffer.wrap(s));
+		byte[] ret = new byte[bb.remaining()];
+		bb.get(ret);
+		return ret;
+	}
+
+	public static CharSequence fromUTF8Bytes(byte[] bytes) {
+		ByteBuffer bb = ByteBuffer.wrap(bytes);
+		CharBuffer charBuffer = UTF8.decode(bb);
+		return charBuffer;
 	}
 
 	private StringUtils() {
