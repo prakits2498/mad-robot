@@ -8,7 +8,7 @@
  * Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
-package com.madrobot.util;
+package com.madrobot.util.collections;
 
 /**
  * A listener for expired object events.

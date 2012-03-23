@@ -1,5 +1,5 @@
 
-package com.madrobot.util;
+package com.madrobot.util.collections;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -17,7 +17,6 @@ import java.util.WeakHashMap;
  * A HashMap implementation with weak references values and by default for the key. WHen the
  * value is garbage collected, the key will also vanish from the map.
  * 
- * @since 1.4
  */
 public class WeakCache extends AbstractMap {
 

@@ -21,7 +21,7 @@ import com.madrobot.di.wizard.xml.core.HierarchicalStreams;
 import com.madrobot.di.wizard.xml.core.JVM;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamReader;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
-import com.madrobot.util.PresortedMap;
+import com.madrobot.util.collections.PresortedMap;
 
 /**
  * Converts a java.util.TreeMap to XML, and serializes the associated java.util.Comparator. The converter assumes that

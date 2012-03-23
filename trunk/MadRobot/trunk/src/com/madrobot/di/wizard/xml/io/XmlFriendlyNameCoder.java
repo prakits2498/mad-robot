@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import com.madrobot.di.wizard.xml.converters.ObjectAccessException;
-import com.madrobot.util.WeakCache;
+import com.madrobot.util.collections.WeakCache;
 
 /**
  * Encode and decode tag and attribute names in XML drivers.

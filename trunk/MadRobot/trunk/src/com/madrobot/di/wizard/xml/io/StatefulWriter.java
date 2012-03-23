@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.madrobot.util.FastStack;
+import com.madrobot.util.collections.FastStack;
 
 /**
  * An wrapper for all {@link HierarchicalStreamWriter} implementations, that keeps the state. Writing in a wrong state

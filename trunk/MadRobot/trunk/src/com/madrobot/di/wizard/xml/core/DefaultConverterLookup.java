@@ -21,7 +21,7 @@ import com.madrobot.di.wizard.xml.converters.ConversionException;
 import com.madrobot.di.wizard.xml.converters.Converter;
 import com.madrobot.di.wizard.xml.converters.ConverterLookup;
 import com.madrobot.di.wizard.xml.converters.ConverterRegistry;
-import com.madrobot.util.PrioritizedList;
+import com.madrobot.util.collections.PrioritizedList;
 
 /**
  * The default implementation of converters lookup.

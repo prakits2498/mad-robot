@@ -14,7 +14,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import com.madrobot.di.wizard.xml.XMLWizardException;
-import com.madrobot.util.OrderRetainingMap;
+import com.madrobot.util.collections.OrderRetainingMap;
 
 /**
  * Thrown by {@link Converter} implementations when they cannot convert an object to/from textual data.

@@ -1,10 +1,4 @@
-/*
- * Copyright (C) 2006, 2007, 2010 XStream Committers.
- * All rights reserved.
- *
- * Created on 12.10.2010 by Joerg Schaible, extracted from TreeMapConverter.
- */
-package com.madrobot.util;
+package com.madrobot.util.collections;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,7 +9,6 @@ import java.util.Set;
 import java.util.SortedMap;
 
 /**
- * @author J&ouml;rg Schaible
  */
 public class PresortedMap implements SortedMap {
 
