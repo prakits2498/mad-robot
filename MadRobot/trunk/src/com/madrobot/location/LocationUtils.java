@@ -23,6 +23,11 @@ import android.location.Location;
 public final class LocationUtils {
 
 	/**
+	 * The default location provider used for all location instances returned by
+	 * this utility
+	 */
+	public final static String LOCATION_PROVIDER = "MadRobot";
+	/**
 	 * The multiplication factor to convert from double to int.
 	 */
 	private static final double FACTOR_DOUBLE_TO_INT = 1000000;
@@ -194,7 +199,7 @@ public final class LocationUtils {
 		dLat *= LocationConstants.DEG;
 		dLong *= LocationConstants.DEG;
 
-		Location location = new Location("MadRobot");
+		Location location = new Location(LOCATION_PROVIDER);
 		location.setLatitude(dLat);
 		location.setLongitude(dLong);
 		return location;
@@ -211,7 +216,7 @@ public final class LocationUtils {
 				Math.sqrt((Math.cos(lat1) + Bx) * (Math.cos(lat1) + Bx) + By
 						* By));
 		double lon3 = lon1 + Math.atan2(By, Math.cos(lat1) + Bx);
-		Location location = new Location("MadRobot");
+		Location location = new Location(LOCATION_PROVIDER);
 		location.setLatitude(lat3);
 		location.setLongitude(lon3);
 		return location;
@@ -347,11 +352,11 @@ public final class LocationUtils {
 				+ Math.atan2(Math.sin(brng) * sinD * cosLat, cosD - sinLat
 						* Math.sin(lat2));
 
-		Location location = new Location("MadRobot");
+		Location location = new Location(LOCATION_PROVIDER);
 		location.setLatitude(lat2);
 		location.setLongitude(lon2);
 		return location;
-//		return new LatLon(Math.toDegrees(lat2), Math.toDegrees(lon2));
+		// return new LatLon(Math.toDegrees(lat2), Math.toDegrees(lon2));
 	}
 
 	/**
@@ -659,5 +664,66 @@ public final class LocationUtils {
 		double s = LocationConstants.POLARRADIUS * A * (sigma - deltaSigma);
 
 		return s;
+	}
+
+	/**
+	 * Returns true if the line segment connecting the two specified longitudes
+	 * crosses the international dateline.
+	 * 
+	 * @param longitude1
+	 *            first longitude
+	 * @param longitude2
+	 *            second longitude
+	 * @return true if the line segment crosses the internation dateline, false
+	 *         otherwise
+	 */
+	public static boolean dateLineCrossOver(double longitude1, double longitude2) {
+		if (Math.abs(longitude1 - longitude2) > 180.0)
+			return true;
+		return false;
+	}
+
+	/**
+	 * Gets the circular region approximation on the earth surface using
+	 * haversine formula.
+	 * 
+	 * @param numberOfPoints
+	 *            the number of points used to estimate the circular region
+	 * @param centerLatitude
+	 *            latitude of the center point
+	 * @param centerLongitude
+	 *            longitude of the center point
+	 * @return an array of LatLon representing the points that estimate the
+	 *         circular region
+	 */
+	public static Location[] getCircularRegionApproximation(int numberOfPoints,
+			double centerLatitude, double centerLongitude, double radius) {
+		if (radius >= LocationConstants.HALF_EARTH_CIRCUMFERENCE) {
+			Location[] points = new Location[5];
+			points[0] = new Location(LOCATION_PROVIDER);
+			points[0].setLatitude(-90.0);
+			points[0].setLongitude(-180.0);
+			points[1] = new Location(LOCATION_PROVIDER);
+			points[1].setLatitude(90.0);
+			points[1].setLongitude(-180.0);
+			points[2] = new Location(LOCATION_PROVIDER);
+			points[2].setLatitude(90.0);
+			points[2].setLongitude(180.0);
+			points[3] = new Location(LOCATION_PROVIDER);
+			points[3].setLatitude(-90.0);
+			points[3].setLongitude(180.0);
+			points[4] = points[0];
+			return points;
+		}
+		// plus one to add closing point
+		Location[] points = new Location[numberOfPoints + 1];
+		for (int i = 0; i < 360; i += (360 / numberOfPoints)) {
+			points[i] = getPointOnGreatCircle(centerLatitude,
+					centerLongitude, radius, i);
+		}
+
+		points[numberOfPoints] = points[0];
+
+		return points;
 	}
 }
