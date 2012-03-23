@@ -13,8 +13,8 @@ package com.madrobot.di.wizard.xml.io;
 
 import java.io.Writer;
 
-import com.madrobot.util.FastStack;
 import com.madrobot.util.QuickWriter;
+import com.madrobot.util.collections.FastStack;
 
 /**
  * A simple writer that outputs XML in a pretty-printed indented stream.

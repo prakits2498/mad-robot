@@ -1,11 +1,11 @@
-package com.madrobot.util;
+package com.madrobot.util.collections;
 
 import java.util.ArrayList;
 
 /**
- * This class implements a cyclic list based on a ArrayList.
+ * Cyclic list implementation. Based on a ArrayList.
+ *
  */
-
 public class CircularList extends ArrayList {
 
 	private int iCurrentIndex, iMaxIndex;

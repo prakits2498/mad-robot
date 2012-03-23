@@ -24,7 +24,7 @@ import com.madrobot.di.wizard.xml.Mapper;
 import com.madrobot.di.wizard.xml.core.JVM;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamReader;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
-import com.madrobot.util.PresortedSet;
+import com.madrobot.util.collections.PresortedSet;
 
 /**
  * Converts a java.util.TreeSet to XML, and serializes the associated java.util.Comparator. The converter assumes that

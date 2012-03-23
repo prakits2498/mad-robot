@@ -1,10 +1,4 @@
-/*
- * Copyright (C) 2006, 2007, 2010 XStream Committers.
- * All rights reserved.
- *
- * Created on 12.10.2010 by Joerg Schaible, extracted from TreeSetConverter.
- */
-package com.madrobot.util;
+package com.madrobot.util.collections;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,7 +8,6 @@ import java.util.List;
 import java.util.SortedSet;
 
 /**
- * @author J&ouml;rg Schaible
  */
 public class PresortedSet implements SortedSet {
     private final Comparator comparator;

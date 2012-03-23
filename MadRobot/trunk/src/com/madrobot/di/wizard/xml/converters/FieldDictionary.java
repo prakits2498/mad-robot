@@ -23,7 +23,7 @@ import java.util.Set;
 
 import com.madrobot.di.wizard.xml.core.Caching;
 import com.madrobot.di.wizard.xml.core.JVM;
-import com.madrobot.util.OrderRetainingMap;
+import com.madrobot.util.collections.OrderRetainingMap;
 
 /**
  * A field dictionary instance caches information about classes fields.

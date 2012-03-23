@@ -1,21 +1,8 @@
-/*
- * Copyright (C) 2004, 2005 Joe Walnes.
- * Copyright (C) 2006, 2007, 2009 XStream Committers.
- * All rights reserved.
- *
- * The software in this package is published under the terms of the BSD
- * style license a copy of which has been included with this distribution in
- * the LICENSE.txt file.
- * 
- * Created on 02. September 2004 by Joe Walnes
- */
-package com.madrobot.util;
+package com.madrobot.util.collections;
 
 /**
  * An array-based stack implementation.
  * 
- * @author Joe Walnes
- * @author J&ouml;rg Schaible
  */
 public final class FastStack {
 

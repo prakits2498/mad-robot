@@ -14,7 +14,7 @@ package com.madrobot.di.wizard.xml.io.path;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.madrobot.util.FastStack;
+import com.madrobot.util.collections.FastStack;
 
 /**
  * Represents a path to a single node in the tree.

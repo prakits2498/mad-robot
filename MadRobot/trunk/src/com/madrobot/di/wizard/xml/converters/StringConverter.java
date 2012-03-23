@@ -13,7 +13,7 @@ package com.madrobot.di.wizard.xml.converters;
 import java.util.Collections;
 import java.util.Map;
 
-import com.madrobot.util.WeakCache;
+import com.madrobot.util.collections.WeakCache;
 
 /**
  * Converts a String to a String ;).

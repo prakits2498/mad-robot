@@ -22,7 +22,7 @@ import java.util.Map;
 
 import com.madrobot.di.wizard.xml.converters.ConversionException;
 import com.madrobot.di.wizard.xml.converters.DataHolder;
-import com.madrobot.util.FastStack;
+import com.madrobot.util.collections.FastStack;
 
 public class CustomObjectInputStream extends ObjectInputStream {
 

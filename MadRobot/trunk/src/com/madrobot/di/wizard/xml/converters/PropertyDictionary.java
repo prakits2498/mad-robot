@@ -21,7 +21,7 @@ import com.madrobot.beans.IntrospectionException;
 import com.madrobot.beans.Introspector;
 import com.madrobot.beans.PropertyDescriptor;
 import com.madrobot.di.wizard.xml.core.Caching;
-import com.madrobot.util.OrderRetainingMap;
+import com.madrobot.util.collections.OrderRetainingMap;
 
 /**
  * Builds the properties maps for each bean and caches them.

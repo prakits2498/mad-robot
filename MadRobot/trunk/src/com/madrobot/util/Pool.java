@@ -1,20 +1,8 @@
-/*
- * Copyright (c) 2007 XStream Committers.
- * All rights reserved.
- *
- * The software in this package is published under the terms of the BSD
- * style license a copy of which has been included with this distribution in
- * the LICENSE.txt file.
- * 
- * Created on 10. May 2007 by Joerg Schaible
- */
 package com.madrobot.util;
 
 /**
  * A simple pool implementation.
  *
- * @author J&ouml;rg Schaible
- * @author Joe Walnes
  */
 public class Pool {
     

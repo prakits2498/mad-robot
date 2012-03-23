@@ -18,7 +18,7 @@ import com.madrobot.di.wizard.xml.converters.ConversionException;
 import com.madrobot.di.wizard.xml.converters.Converter;
 import com.madrobot.di.wizard.xml.converters.ConverterLookup;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamReader;
-import com.madrobot.util.FastStack;
+import com.madrobot.util.collections.FastStack;
 
 /**
  * Abstract base class for a TreeUnmarshaller, that resolves references.

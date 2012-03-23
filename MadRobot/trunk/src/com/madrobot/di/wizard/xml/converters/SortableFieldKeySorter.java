@@ -18,7 +18,7 @@ import java.util.Map;
 
 import com.madrobot.di.wizard.xml.core.Caching;
 import com.madrobot.di.wizard.xml.io.StreamException;
-import com.madrobot.util.OrderRetainingMap;
+import com.madrobot.util.collections.OrderRetainingMap;
 
 /**
  * The default implementation for sorting fields. Invoke registerFieldOrder in order to set the field order for an

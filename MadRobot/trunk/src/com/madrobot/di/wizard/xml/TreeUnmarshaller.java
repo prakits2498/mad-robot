@@ -23,8 +23,8 @@ import com.madrobot.di.wizard.xml.converters.UnmarshallingContext;
 import com.madrobot.di.wizard.xml.core.HierarchicalStreams;
 import com.madrobot.di.wizard.xml.core.MapBackedDataHolder;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamReader;
-import com.madrobot.util.FastStack;
-import com.madrobot.util.PrioritizedList;
+import com.madrobot.util.collections.FastStack;
+import com.madrobot.util.collections.PrioritizedList;
 
 class TreeUnmarshaller implements UnmarshallingContext {
 

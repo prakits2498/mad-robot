@@ -18,8 +18,8 @@ import java.util.Map;
 
 import com.madrobot.di.wizard.xml.converters.ConversionException;
 import com.madrobot.di.wizard.xml.converters.DataHolder;
-import com.madrobot.util.FastStack;
-import com.madrobot.util.OrderRetainingMap;
+import com.madrobot.util.collections.FastStack;
+import com.madrobot.util.collections.OrderRetainingMap;
 
 public class CustomObjectOutputStream extends ObjectOutputStream {
 

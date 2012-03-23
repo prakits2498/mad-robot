@@ -13,7 +13,7 @@ package com.madrobot.di.wizard.xml.io;
 
 import java.util.Iterator;
 
-import com.madrobot.util.FastStack;
+import com.madrobot.util.collections.FastStack;
 
 /**
  * Base class that contains common functionality across HierarchicalStreamReader implementations that need to read from

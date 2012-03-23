@@ -1,15 +1,4 @@
-/*
- * Copyright (C) 2005, 2006 Joe Walnes.
- * Copyright (C) 2006, 2007, 2011 XStream Committers.
- * All rights reserved.
- *
- * The software in this package is published under the terms of the BSD
- * style license a copy of which has been included with this distribution in
- * the LICENSE.txt file.
- * 
- * Created on 06. February 2005 by Joe Walnes
- */
-package com.madrobot.util;
+package com.madrobot.util.collections;
 
 import java.util.Iterator;
 import java.util.Set;
@@ -22,8 +11,6 @@ import java.util.TreeSet;
  * priority are added to the list, the most recently added one will be iterated over first. Implementation uses a
  * TreeSet, which has a guaranteed add time of O(log(n)).
  * 
- * @author Joe Walnes
- * @author Guilherme Silveira
  */
 public class PrioritizedList {
 

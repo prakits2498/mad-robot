@@ -15,6 +15,7 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * String manipulation utilities
@@ -1923,6 +1924,27 @@ public final class StringUtils {
 		ByteBuffer bb = ByteBuffer.wrap(bytes);
 		CharBuffer charBuffer = UTF8.decode(bb);
 		return charBuffer;
+	}
+
+	/**
+	 * Copy the given Collection into a String array. The Collection must
+	 * contain String elements only.
+	 * <p/>
+	 * <p>
+	 * Copied from the Spring Framework while retaining all license, copyright
+	 * and author information.
+	 * 
+	 * @param collection
+	 *            the Collection to copy
+	 * @return the String array (<code>null</code> if the passed-in Collection
+	 *         was <code>null</code>)
+	 */
+	@SuppressWarnings({ "unchecked" })
+	public static String[] toStringArray(Collection collection) {
+		if (collection == null) {
+			return null;
+		}
+		return (String[]) collection.toArray(new String[collection.size()]);
 	}
 
 	private StringUtils() {

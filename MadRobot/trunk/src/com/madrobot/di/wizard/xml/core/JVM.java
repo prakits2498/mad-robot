@@ -23,9 +23,9 @@ import java.util.TreeSet;
 
 import com.madrobot.di.wizard.xml.converters.PureJavaReflectionProvider;
 import com.madrobot.di.wizard.xml.converters.ReflectionProvider;
-import com.madrobot.util.PresortedMap;
-import com.madrobot.util.PresortedSet;
-import com.madrobot.util.WeakCache;
+import com.madrobot.util.collections.PresortedMap;
+import com.madrobot.util.collections.PresortedSet;
+import com.madrobot.util.collections.WeakCache;
 
 public class JVM implements Caching {
 
