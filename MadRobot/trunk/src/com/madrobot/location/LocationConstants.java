@@ -45,4 +45,7 @@ public final class LocationConstants {
 	static final double UTMK_SCALE = 0.9996;
 	static final double UTMK_WIDTH = 1000000.;
 
+	public static final int EARTH_RADIUS_KM = 6371; // in km
+	public static final double HALF_EARTH_CIRCUMFERENCE = 20037.58; // in km
+
 }
