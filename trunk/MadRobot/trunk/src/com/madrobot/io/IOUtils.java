@@ -583,4 +583,27 @@ public class IOUtils {
 		}
 	}
 
+	/**
+	 * Convert the specified string to an input stream, encoded as bytes using
+	 * the specified character encoding.
+	 * <p>
+	 * Character encoding names can be found at <a
+	 * href="http://www.iana.org/assignments/character-sets">IANA</a>.
+	 * 
+	 * @param input
+	 *            the string to convert
+	 * @param encoding
+	 *            the encoding to use, null means platform default
+	 * @throws IOException
+	 *             if the encoding is invalid
+	 * @return an input stream
+	 * @since 1.1
+	 */
+	public static InputStream toInputStream(String input, String encoding)
+			throws IOException {
+		byte[] bytes = encoding != null ? input.getBytes(encoding) : input
+				.getBytes();
+		return new ByteArrayInputStream(bytes);
+	}
+
 }
