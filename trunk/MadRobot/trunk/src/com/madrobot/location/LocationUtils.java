@@ -686,6 +686,10 @@ public final class LocationUtils {
 	/**
 	 * Gets the circular region approximation on the earth surface using
 	 * haversine formula.
+	 * <p>
+	 * Given a center point, this method returns a points around the given
+	 * center.
+	 * </p>
 	 * 
 	 * @param numberOfPoints
 	 *            the number of points used to estimate the circular region
@@ -696,7 +700,7 @@ public final class LocationUtils {
 	 * @return an array of LatLon representing the points that estimate the
 	 *         circular region
 	 */
-	public static Location[] getCircularRegionApproximation(int numberOfPoints,
+	public static Location[] getCircularRegion(int numberOfPoints,
 			double centerLatitude, double centerLongitude, double radius) {
 		if (radius >= LocationConstants.HALF_EARTH_CIRCUMFERENCE) {
 			Location[] points = new Location[5];
@@ -718,8 +722,8 @@ public final class LocationUtils {
 		// plus one to add closing point
 		Location[] points = new Location[numberOfPoints + 1];
 		for (int i = 0; i < 360; i += (360 / numberOfPoints)) {
-			points[i] = getPointOnGreatCircle(centerLatitude,
-					centerLongitude, radius, i);
+			points[i] = getPointOnGreatCircle(centerLatitude, centerLongitude,
+					radius, i);
 		}
 
 		points[numberOfPoints] = points[0];
