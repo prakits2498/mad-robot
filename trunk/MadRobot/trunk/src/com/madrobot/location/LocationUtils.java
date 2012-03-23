@@ -133,7 +133,7 @@ public final class LocationUtils {
 	 * @param utm
 	 * @return
 	 */
-	public static GPSCoordinate getGPSCoordinate(UTMCoordinate utm) {
+	public static Location getGPSCoordinate(UTMCoordinate utm) {
 		int x = (utm.getX() - 340000000) / 10;
 		int y = (utm.getY() - 130000000) / 10;
 
@@ -177,10 +177,13 @@ public final class LocationUtils {
 		dLat *= LocationConstants.DEG;
 		dLong *= LocationConstants.DEG;
 
-		return new GPSCoordinate(dLong, dLat);
+		Location location=new Location("MadRobot");
+		location.setLatitude(dLat);
+		location.setLongitude(dLong);
+		return location;
 	}
 
-	public static GPSCoordinate getMidPoint(double lon1, double lat1, double lon2, double lat2) {
+	public static Location getMidPoint(double lon1, double lat1, double lon2, double lat2) {
 		// double dLat = Math.toRadians((lat2 - lat1));
 		double dLon = Math.toRadians((lon2 - lon1));
 		double Bx = Math.cos(lat2) * Math.cos(dLon);
@@ -188,7 +191,10 @@ public final class LocationUtils {
 		double lat3 = Math.atan2(Math.sin(lat1) + Math.sin(lat2),
 				Math.sqrt((Math.cos(lat1) + Bx) * (Math.cos(lat1) + Bx) + By * By));
 		double lon3 = lon1 + Math.atan2(By, Math.cos(lat1) + Bx);
-		return new GPSCoordinate(lat3, lon3);
+		Location location=new Location("MadRobot");
+		location.setLatitude(lat3);
+		location.setLongitude(lon3);
+		return location;
 	}
 
 	/**
@@ -200,9 +206,9 @@ public final class LocationUtils {
 	 *            Latitude
 	 * @return The converted output
 	 */
-	public static UTMCoordinate getUTMCoordinate(GPSCoordinate coordinate) {
-		double lat = coordinate.getLatitude();
-		double lon = coordinate.getLongitude();
+	public static UTMCoordinate getUTMCoordinate(double lat,double lon) {
+//		double lat = coordinate.getLatitude();
+//		double lon = coordinate.getLongitude();
 
 		lat *= LocationConstants.RAD;
 		lon *= LocationConstants.RAD;
@@ -284,7 +290,7 @@ public final class LocationUtils {
 	 *            The new Location that you want to evaluate
 	 * @param currentBestLocation
 	 *            The Location fix, to which you want to compare the new one
-	 * @return true of {@code location} is better that {@code currentBestLocation}
+	 * @return true of {@code location} is better than {@code currentBestLocation}
 	 */
 	public static boolean isBetterLocation(Location location, Location currentBestLocation) {
 		 final int TWO_MINUTES = 1000 * 60 * 2;
@@ -398,7 +404,7 @@ public final class LocationUtils {
 	 *            coordinates
 	 * @return Coordinates in GPX format
 	 */
-	public static String toGPX(final List<GPSCoordinate> g) {
+	public static String toGPX(final List<Location> g) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>").append("\n");
 		sb.append(
@@ -406,7 +412,7 @@ public final class LocationUtils {
 						+ "version=\"1.1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
 						+ "xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 "
 						+ "http://www.topografix.com/GPX/1/1/gpx.xsd\">").append("\n");
-		for (GPSCoordinate c : g) {
+		for (Location c : g) {
 			sb.append("\t<wpt ").append("lat=\"").append(c.getLatitude()).append("\" ");
 			sb.append("lon=\"").append(c.getLongitude()).append("\"/>");
 			sb.append("\n");
@@ -476,7 +482,7 @@ public final class LocationUtils {
 	 * 
 	 * @return distance in meters between points as a double
 	 */
-	public static double vincentyDistance(GPSCoordinate gc1, GPSCoordinate gc2) {
+	public static double vincentyDistance(Location gc1, Location gc2) {
 		double f = 1 / LocationConstants.INVERSEFLATTENING;
 		double L = Math.toRadians(gc2.getLongitude() - gc1.getLongitude());
 		double U1 = Math.atan((1 - f) * Math.tan(Math.toRadians(gc1.getLatitude())));
