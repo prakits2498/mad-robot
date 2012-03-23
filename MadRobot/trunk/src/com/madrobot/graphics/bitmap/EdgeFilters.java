@@ -2,7 +2,6 @@ package com.madrobot.graphics.bitmap;
 
 import android.graphics.Bitmap;
 
-
 /**
  * Edge detection filters
  * <p>
@@ -16,8 +15,10 @@ import android.graphics.Bitmap;
  * <img src="../../../../resources/simpleEmboss.png" ><br/>
  * <table>
  * <tr>
- * <th>Emboss with <code>emboss</code> set to false and <code>bumpHeight</code> of 3</th>
- * <th>Emboss with <code>emboss</code> set to true and <code>bumpHeight</code> of 3</th>
+ * <th>Emboss with <code>emboss</code> set to false and <code>bumpHeight</code>
+ * of 3</th>
+ * <th>Emboss with <code>emboss</code> set to true and <code>bumpHeight</code>
+ * of 3</th>
  * </tr>
  * <tr>
  * <td><img src="../../../../resources/emboss_false.png" ></td>
@@ -49,15 +50,16 @@ public class EdgeFilters {
 	 * 
 	 * @param src
 	 * @param vEdgeMatrix
-	 *            can be {@link #ROBERTS_V}, {@link #PREWITT_V},{@link #SOBEL_V} or {@link #FREI_CHEN_V}. recommended:
-	 *            {@link #SOBEL_V}
+	 *            can be {@link #ROBERTS_V}, {@link #PREWITT_V},{@link #SOBEL_V}
+	 *            or {@link #FREI_CHEN_V}. recommended: {@link #SOBEL_V}
 	 * @param hEdgeMatrix
-	 *            can be {@link #ROBERTS_H}, {@link #PREWITT_H},{@link #SOBEL_H} or {@link #FREI_CHEN_H}. recommended:
-	 *            {@link #SOBEL_H}
+	 *            can be {@link #ROBERTS_H}, {@link #PREWITT_H},{@link #SOBEL_H}
+	 *            or {@link #FREI_CHEN_H}. recommended: {@link #SOBEL_H}
 	 * @param outputConfig
 	 * @return
 	 */
-	public static Bitmap detectEdge(Bitmap src, float[] vEdgeMatrix, float[] hEdgeMatrix, Bitmap.Config outputConfig) {
+	public static Bitmap detectEdge(Bitmap src, float[] vEdgeMatrix,
+			float[] hEdgeMatrix, Bitmap.Config outputConfig) {
 		int index = 0;
 		int width = src.getWidth();
 		int height = src.getHeight();
@@ -107,7 +109,8 @@ public class EdgeFilters {
 			}
 
 		}
-		return Bitmap.createBitmap(outPixels, src.getWidth(), src.getHeight(), outputConfig);
+		return Bitmap.createBitmap(outPixels, src.getWidth(), src.getHeight(),
+				outputConfig);
 	}
 
 	/**
@@ -122,11 +125,14 @@ public class EdgeFilters {
 	 * @param bumpHeight
 	 *            Height of the emobssed parts of the image. min:0 max:100
 	 * @param emboss
-	 *            if true, the bitmap is embossed retaining its color. else a grayscale image is embossed.
+	 *            if true, the bitmap is embossed retaining its color. else a
+	 *            grayscale image is embossed.
 	 * @param outputConfig
 	 * @return
 	 */
-	public static Bitmap emboss(Bitmap src, float lightDirection, float lightElevation, float bumpHeight, boolean emboss, Bitmap.Config outputConfig) {
+	public static Bitmap emboss(Bitmap src, float lightDirection,
+			float lightElevation, float bumpHeight, boolean emboss,
+			Bitmap.Config outputConfig) {
 		int width = src.getWidth();
 		int height = src.getHeight();
 		int index = 0;
@@ -165,17 +171,20 @@ public class EdgeFilters {
 
 			for (int x = 0; x < width; x++, s1++, s2++, s3++) {
 				if (y != 0 && y < height - 2 && x != 0 && x < width - 2) {
-					Nx = bumpPixels[s1 - 1] + bumpPixels[s2 - 1] + bumpPixels[s3 - 1] - bumpPixels[s1 + 1]
+					Nx = bumpPixels[s1 - 1] + bumpPixels[s2 - 1]
+							+ bumpPixels[s3 - 1] - bumpPixels[s1 + 1]
 							- bumpPixels[s2 + 1] - bumpPixels[s3 + 1];
-					Ny = bumpPixels[s3 - 1] + bumpPixels[s3] + bumpPixels[s3 + 1] - bumpPixels[s1 - 1] - bumpPixels[s1]
-							- bumpPixels[s1 + 1];
+					Ny = bumpPixels[s3 - 1] + bumpPixels[s3]
+							+ bumpPixels[s3 + 1] - bumpPixels[s1 - 1]
+							- bumpPixels[s1] - bumpPixels[s1 + 1];
 
 					if (Nx == 0 && Ny == 0)
 						shade = background;
 					else if ((NdotL = Nx * Lx + Ny * Ly + NzLz) < 0)
 						shade = 0;
 					else
-						shade = (int) (NdotL / Math.sqrt(Nx * Nx + Ny * Ny + Nz2));
+						shade = (int) (NdotL / Math.sqrt(Nx * Nx + Ny * Ny
+								+ Nz2));
 				} else
 					shade = background;
 
@@ -190,10 +199,12 @@ public class EdgeFilters {
 					b = (b * shade) >> 8;
 					outPixels[index++] = a | (r << 16) | (g << 8) | b;
 				} else
-					outPixels[index++] = 0xff000000 | (shade << 16) | (shade << 8) | shade;
+					outPixels[index++] = 0xff000000 | (shade << 16)
+							| (shade << 8) | shade;
 			}
 		}
-		return Bitmap.createBitmap(outPixels, src.getWidth(), src.getHeight(), outputConfig);
+		return Bitmap.createBitmap(outPixels, src.getWidth(), src.getHeight(),
+				outputConfig);
 	}
 
 	/**
@@ -216,16 +227,19 @@ public class EdgeFilters {
 	 * 
 	 * @param src
 	 * @param edgeAction
-	 *            use the EdgeAction constants defined in {@link BitmapFilters} . Recommended:
-	 *            {@link BitmapFilters#CLAMP_EDGES}
+	 *            use the EdgeAction constants defined in {@link BitmapFilters}
+	 *            . Recommended: {@link BitmapFilters#CLAMP_EDGES}
 	 * @param processAlpha
 	 * @param premultiplyAlpha
 	 * @param outputConfig
 	 * @return
 	 */
-	public static Bitmap bump(Bitmap src, int edgeAction, boolean processAlpha, boolean premultiplyAlpha, Bitmap.Config outputConfig) {
-		float[] embossMatrix = { -1.0f, -1.0f, 0.0f, -1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f };
-		return ConvolveUtils.doConvolve(embossMatrix, src, edgeAction, processAlpha, premultiplyAlpha, outputConfig);
+	public static Bitmap bump(Bitmap src, int edgeAction, boolean processAlpha,
+			boolean premultiplyAlpha, Bitmap.Config outputConfig) {
+		float[] embossMatrix = { -1.0f, -1.0f, 0.0f, -1.0f, 1.0f, 1.0f, 0.0f,
+				1.0f, 1.0f };
+		return ConvolveUtils.doConvolve(embossMatrix, src, edgeAction,
+				processAlpha, premultiplyAlpha, outputConfig);
 	}
 
 	private static void brightness(int[] row) {
@@ -260,7 +274,10 @@ public class EdgeFilters {
 		brightness(row2);
 		for (int y = 0; y < height; y++) {
 			if (y < height - 1) {
-				src.getPixels(row3, 0, width, 0, y + 1, width, 1);// getRGB(src, 0, y + 1, width, 1, row3);
+				src.getPixels(row3, 0, width, 0, y + 1, width, 1);// getRGB(src,
+																	// 0, y + 1,
+																	// width, 1,
+																	// row3);
 				brightness(row3);
 			}
 			pixels[0] = pixels[width - 1] = 0xff000000;// FIXME
@@ -276,8 +293,9 @@ public class EdgeFilters {
 
 				int gradient = (int) (0.5f * Math.max((max - l), (l - min)));
 
-				int r = ((row1[x - 1] + row1[x] + row1[x + 1] + row2[x - 1] - (8 * row2[x]) + row2[x + 1] + row3[x - 1]
-						+ row3[x] + row3[x + 1]) > 0) ? gradient : (128 + gradient);
+				int r = ((row1[x - 1] + row1[x] + row1[x + 1] + row2[x - 1]
+						- (8 * row2[x]) + row2[x + 1] + row3[x - 1] + row3[x] + row3[x + 1]) > 0) ? gradient
+						: (128 + gradient);
 				pixels[x] = r;
 			}
 			BitmapUtils.setPixelRow(pixels, y, width, inPixels);
@@ -288,17 +306,30 @@ public class EdgeFilters {
 			row3 = t;
 		}
 
-		row1 = BitmapUtils.getPixelRow(inPixels, 0, 0, width);// getRGB(dst, 0, 0, width, 1, row1);
-		row2 = BitmapUtils.getPixelRow(inPixels, 0, 1, width);// getRGB(dst, 0, 0, width, 1, row2);
+		row1 = BitmapUtils.getPixelRow(inPixels, 0, 0, width);// getRGB(dst, 0,
+																// 0, width, 1,
+																// row1);
+		row2 = BitmapUtils.getPixelRow(inPixels, 0, 1, width);// getRGB(dst, 0,
+																// 0, width, 1,
+																// row2);
 		for (int y = 0; y < height; y++) {
 			if (y < height - 1) {
-				row3 = BitmapUtils.getPixelRow(inPixels, 0, y + 1, width);// getRGB(dst, 0, y + 1, width, 1, row3);
+				row3 = BitmapUtils.getPixelRow(inPixels, 0, y + 1, width);// getRGB(dst,
+																			// 0,
+																			// y
+																			// +
+																			// 1,
+																			// width,
+																			// 1,
+																			// row3);
 			}
 			pixels[0] = pixels[width - 1] = 0xff000000;// FIXME
 			for (int x = 1; x < width - 1; x++) {
 				int r = row2[x];
-				r = (((r <= 128) && ((row1[x - 1] > 128) || (row1[x] > 128) || (row1[x + 1] > 128)
-						|| (row2[x - 1] > 128) || (row2[x + 1] > 128) || (row3[x - 1] > 128) || (row3[x] > 128) || (row3[x + 1] > 128))) ? ((r >= 128) ? (r - 128)
+				r = (((r <= 128) && ((row1[x - 1] > 128) || (row1[x] > 128)
+						|| (row1[x + 1] > 128) || (row2[x - 1] > 128)
+						|| (row2[x + 1] > 128) || (row3[x - 1] > 128)
+						|| (row3[x] > 128) || (row3[x + 1] > 128))) ? ((r >= 128) ? (r - 128)
 						: r)
 						: 0);
 
@@ -314,4 +345,8 @@ public class EdgeFilters {
 
 		return Bitmap.createBitmap(inPixels, width, height, outputConfig);
 	}
+
+//	public static Bitmap chrome(Bitmap src, Config outputConfig) {
+//
+//	}
 }
