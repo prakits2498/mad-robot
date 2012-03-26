@@ -36,6 +36,7 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.X509TrustManager;
 
+import com.madrobot.net.client.websocket.NetConfig;
 import com.madrobot.security.HexDump;
 import com.madrobot.text.CharUtils;
 
@@ -118,7 +119,7 @@ public class NetUtils {
 	}
 
 	/**
-	 * Finds this computer's global IP address
+	 * Finds this device's global IP address
 	 * 
 	 * @param url
 	 *            the url to find the global IP
