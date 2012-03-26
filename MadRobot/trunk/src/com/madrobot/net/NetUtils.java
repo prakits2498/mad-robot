@@ -21,6 +21,7 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -31,9 +32,11 @@ import java.util.regex.Pattern;
 import javax.net.SocketFactory;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import com.madrobot.net.client.websocket.NetConfig;
@@ -296,6 +299,28 @@ public class NetUtils {
 				&& (isValidIPv6(address.substring(0, index)) && (isValidIPv6(mask) || isMaskValue(
 						mask, 128)));
 	}
+	
+	/**
+     * Create and initialise sn SSLContext.
+     * @param protocol the protocol used to instatiate the context
+     * @param keyManagers the array of key managers, may be {@code null} but array entries must not be {@code null}
+     * @param trustManagers the array of trust managers, may be {@code null} but array entries must not be {@code null}
+     * @return the initialised context.
+     * @throws IOException this is used to wrap any {@link GeneralSecurityException} that occurs
+     */
+    public static SSLContext createSSLContext(String protocol, KeyManager[] keyManagers, TrustManager[] trustManagers)
+        throws IOException {
+        SSLContext ctx;
+        try {
+            ctx = SSLContext.getInstance(protocol);
+            ctx.init(keyManagers, trustManagers, /*SecureRandom*/ null);
+        } catch (GeneralSecurityException e) {
+            IOException ioe = new IOException("Could not initialize SSL context");
+            ioe.initCause(e);
+            throw ioe;
+        }
+        return ctx;
+    }
 
 	/**
 	 * Makes the platform trust all SSL connections.
