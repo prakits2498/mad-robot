@@ -25,6 +25,7 @@ import java.util.WeakHashMap;
 import com.madrobot.reflect.ClassUtils;
 import com.madrobot.reflect.MethodUtils;
 import com.madrobot.text.StringUtils;
+import com.madrobot.text.WordUtils;
 
 /**
  * Package private implementation support class for Introspector's
@@ -786,7 +787,7 @@ public class Introspector {
 					if(removes.get(listenerName) == null || !listenerName.endsWith("Listener")){
 						continue;
 					}
-					String eventName = StringUtils.decapitalize(listenerName.substring(0, listenerName
+					String eventName = WordUtils.simpleUncapitalize(listenerName.substring(0, listenerName
 							.length() - 8));
 					Method addMethod = (Method) adds.get(listenerName);
 					Method removeMethod = (Method) removes.get(listenerName);
@@ -987,20 +988,20 @@ public class Introspector {
 					if(argCount == 0){
 						if(name.startsWith(GET_PREFIX)){
 							// Simple getter
-							pd = new PropertyDescriptor(StringUtils.decapitalize(name.substring(3)),
+							pd = new PropertyDescriptor(WordUtils.simpleUncapitalize(name.substring(3)),
 									method, null);
 						} else if(resultType == boolean.class && name.startsWith(IS_PREFIX)){
 							// Boolean getter
-							pd = new PropertyDescriptor(StringUtils.decapitalize(name.substring(2)),
+							pd = new PropertyDescriptor(WordUtils.simpleUncapitalize(name.substring(2)),
 									method, null);
 						}
 					} else if(argCount == 1){
 						if(argTypes[0] == int.class && name.startsWith(GET_PREFIX)){
-							pd = new IndexedPropertyDescriptor(StringUtils.decapitalize(name.substring(3)),
+							pd = new IndexedPropertyDescriptor(WordUtils.simpleUncapitalize(name.substring(3)),
 									null, null, method, null);
 						} else if(resultType == void.class && name.startsWith(SET_PREFIX)){
 							// Simple setter
-							pd = new PropertyDescriptor(StringUtils.decapitalize(name.substring(3)), null,
+							pd = new PropertyDescriptor(WordUtils.simpleUncapitalize(name.substring(3)), null,
 									method);
 							if(MethodUtils.throwsException(method, PropertyVetoException.class)){
 								pd.setConstrained(true);
@@ -1008,7 +1009,7 @@ public class Introspector {
 						}
 					} else if(argCount == 2){
 						if(argTypes[0] == int.class && name.startsWith(SET_PREFIX)){
-							pd = new IndexedPropertyDescriptor(StringUtils.decapitalize(name.substring(3)),
+							pd = new IndexedPropertyDescriptor(WordUtils.simpleUncapitalize(name.substring(3)),
 									null, null, null, method);
 							if(MethodUtils.throwsException(method, PropertyVetoException.class)){
 								pd.setConstrained(true);
