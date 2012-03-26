@@ -8,7 +8,7 @@
  * Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
-package com.madrobot.io.file;
+package com.madrobot.io.file.monitor;
 
 import java.io.File;
 import java.lang.ref.PhantomReference;
@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+
 
 /**
  * Keeps track of files awaiting deletion, and deletes them when an associated
