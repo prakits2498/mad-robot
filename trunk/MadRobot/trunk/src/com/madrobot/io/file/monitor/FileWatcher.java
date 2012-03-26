@@ -8,9 +8,10 @@
  * Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
-package com.madrobot.io.file;
+package com.madrobot.io.file.monitor;
 
 import java.io.File;
+
 
 import android.os.FileObserver;
 
@@ -21,7 +22,7 @@ import android.os.FileObserver;
  * @author Elton Kent
  */
 public class FileWatcher extends FileObserver {
-	private FileListener listener;
+	private IFileListener listener;
 
 	public FileWatcher(String path, int mask) {
 		super(path, mask);
@@ -34,7 +35,7 @@ public class FileWatcher extends FileObserver {
 		}
 	}
 
-	public void setFileListener(FileListener listener) {
+	public void setFileListener(IFileListener listener) {
 		this.listener = listener;
 	}
 

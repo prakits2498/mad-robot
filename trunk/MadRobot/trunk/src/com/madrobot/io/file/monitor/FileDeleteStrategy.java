@@ -25,10 +25,12 @@
  * limitations under the License.
  */
 
-package com.madrobot.io.file;
+package com.madrobot.io.file.monitor;
 
 import java.io.File;
 import java.io.IOException;
+
+import com.madrobot.io.file.FileUtils;
 
 /**
  * Strategy for deleting files.

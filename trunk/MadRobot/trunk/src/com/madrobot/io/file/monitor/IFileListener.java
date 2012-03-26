@@ -8,11 +8,11 @@
  * Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
-package com.madrobot.io.file;
+package com.madrobot.io.file.monitor;
 
 import java.io.File;
 
-public interface FileListener {
+public interface IFileListener {
 	/**
 	 * 
 	 * 
