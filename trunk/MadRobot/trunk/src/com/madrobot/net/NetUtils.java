@@ -37,6 +37,7 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.X509TrustManager;
 
 import com.madrobot.security.HexDump;
+import com.madrobot.text.CharUtils;
 
 public class NetUtils {
 	private final static String emailPattern = "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
@@ -361,4 +362,45 @@ public class NetUtils {
 		return true;
 	}
 
+	/**
+	 * Encodes the string in the string buffer
+	 * <p>
+	 * Encodes a string so that it is suitable for transmission over HTTP
+	 * </p>
+	 * 
+	 * @param string
+	 * @return the encoded string
+	 */
+	public final static String encodeString(StringBuilder string) {
+		StringBuilder encodedUrl = new StringBuilder(); // Encoded URL
+
+		int len = string.length();
+		// Encode each URL character
+		final String UNRESERVED = "-_.!~*'()\"";
+		for (int i = 0; i < len; i++) {
+			char c = string.charAt(i); // Get next character
+			if (((c >= '0') && (c <= '9')) || ((c >= 'a') && (c <= 'z'))
+					|| ((c >= 'A') && (c <= 'Z'))) {
+				// Alphanumeric characters require no encoding, append as is
+				encodedUrl.append(c);
+			} else {
+				int imark = UNRESERVED.indexOf(c);
+				if (imark >= 0) {
+					// Unreserved punctuation marks and symbols require
+					// no encoding, append as is
+					encodedUrl.append(c);
+				} else {
+					// Encode all other characters to Hex, using the format
+					// "%XX",
+					// where XX are the hex digits
+					encodedUrl.append('%'); // Add % character
+					// Encode the character's high-order nibble to Hex
+					encodedUrl.append(CharUtils.toHexChar((c & 0xF0) >> 4));
+					// Encode the character's low-order nibble to Hex
+					encodedUrl.append(CharUtils.toHexChar(c & 0x0F));
+				}
+			}
+		}
+		return encodedUrl.toString(); // Return encoded URL
+	}
 }

@@ -16,6 +16,7 @@ import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Random;
 
 /**
  * String manipulation utilities
@@ -73,33 +74,6 @@ public final class StringUtils {
 	}
 
 	/**
-	 * Utility method to take a string and convert it to normal Java variable
-	 * name capitalization. This normally means converting the first character
-	 * from upper case to lower case, but in the (unusual) special case when
-	 * there is more than one character and both the first and second characters
-	 * are upper case, we leave it alone.
-	 * <p>
-	 * Thus "FooBah" becomes "fooBah" and "X" becomes "x", but "URL" stays as
-	 * "URL".
-	 * 
-	 * @param name
-	 *            The string to be decapitalized.
-	 * @return The decapitalized version of the string.
-	 */
-	public static String decapitalize(String name) {
-		if (name == null || name.length() == 0) {
-			return name;
-		}
-		if (name.length() > 1 && Character.isUpperCase(name.charAt(1))
-				&& Character.isUpperCase(name.charAt(0))) {
-			return name;
-		}
-		char chars[] = name.toCharArray();
-		chars[0] = Character.toLowerCase(chars[0]);
-		return new String(chars);
-	}
-
-	/**
 	 * Check if the given string is a JSON Objectd
 	 * 
 	 * @param s
@@ -117,22 +91,6 @@ public final class StringUtils {
 			return false;
 		}
 	}
-
-	/**
-	 * 
-	 * @param base
-	 *            String to compare
-	 * @param end
-	 *            Ending String
-	 * @return <code>True</code> if <code>base</code> ends with <code>end</code>
-	 */
-	// public static boolean endsWithIgnoreCase(CharSequence base, String end) {
-	// if(base.length() < end.length()){
-	// return false;
-	// }
-	// return base.regionMatches(true, base.length() - end.length(), end, 0,
-	// end.length());
-	// }
 
 	/**
 	 * <p>
@@ -190,49 +148,6 @@ public final class StringUtils {
 			return str;
 		}
 		return new String(chs, 0, count);
-	}
-
-	/**
-	 * Encodes the string in the string buffer
-	 * <p>
-	 * Encodes a string so that it is suitable for transmission over HTTP
-	 * </p>
-	 * 
-	 * @param string
-	 * @return the encoded string
-	 */
-	public final static String encodeString(StringBuilder string) {
-		StringBuilder encodedUrl = new StringBuilder(); // Encoded URL
-
-		int len = string.length();
-		// Encode each URL character
-		final String UNRESERVED = "-_.!~*'()\"";
-		for (int i = 0; i < len; i++) {
-			char c = string.charAt(i); // Get next character
-			if (((c >= '0') && (c <= '9')) || ((c >= 'a') && (c <= 'z'))
-					|| ((c >= 'A') && (c <= 'Z'))) {
-				// Alphanumeric characters require no encoding, append as is
-				encodedUrl.append(c);
-			} else {
-				int imark = UNRESERVED.indexOf(c);
-				if (imark >= 0) {
-					// Unreserved punctuation marks and symbols require
-					// no encoding, append as is
-					encodedUrl.append(c);
-				} else {
-					// Encode all other characters to Hex, using the format
-					// "%XX",
-					// where XX are the hex digits
-					encodedUrl.append('%'); // Add % character
-					// Encode the character's high-order nibble to Hex
-					encodedUrl.append(CharUtils.toHexChar((c & 0xF0) >> 4));
-					// Encode the character's low-order nibble to Hex
-					encodedUrl.append(CharUtils.toHexChar(c & 0x0F));
-				}
-			}
-		}
-		System.out.println("Encoded string " + encodedUrl.toString());
-		return encodedUrl.toString(); // Return encoded URL
 	}
 
 	/**
@@ -898,16 +813,54 @@ public final class StringUtils {
 	}
 
 	/**
-	 * Gets a CharSequence length or <code>0</code> if the CharSequence is
-	 * <code>null</code>.
+	 * <p>
+	 * Creates a random string based on a variety of options, using supplied
+	 * source of randomness.
+	 * </p>
 	 * 
-	 * @param cs
-	 *            a CharSequence or <code>null</code>
-	 * @return CharSequence length or <code>0</code> if the CharSequence is
-	 *         <code>null</code>.
+	 * <p>
+	 * If start and end are both {@code 0}, start and end are set to {@code ' '}
+	 * and {@code 'z'}, the ASCII printable characters, will be used, unless
+	 * letters and numbers are both {@code false}, in which case, start and end
+	 * are set to {@code 0} and {@code Integer.MAX_VALUE}.
+	 * 
+	 * <p>
+	 * If set is not {@code null}, characters between start and end are chosen.
+	 * </p>
+	 * 
+	 * <p>
+	 * This method accepts a user-supplied {@link Random} instance to use as a
+	 * source of randomness. By seeding a single {@link Random} instance with a
+	 * fixed seed and using it for each call, the same random sequence of
+	 * strings can be generated repeatedly and predictably.
+	 * </p>
+	 * 
+	 * @param count
+	 *            the length of random string to create
+	 * @param start
+	 *            the position in set of chars to start at
+	 * @param end
+	 *            the position in set of chars to end before
+	 * @param letters
+	 *            only allow letters?
+	 * @param numbers
+	 *            only allow numbers?
+	 * @param chars
+	 *            the set of chars to choose randoms from. If {@code null}, then
+	 *            it will use the set of all chars.
+	 * @param random
+	 *            a source of randomness.
+	 * @return the random string
+	 * @throws ArrayIndexOutOfBoundsException
+	 *             if there are not {@code (end - start) + 1} characters in the
+	 *             set array.
+	 * @throws IllegalArgumentException
+	 *             if {@code count} &lt; 0.
+	 * @see RandomString
 	 */
-	public static int length(CharSequence cs) {
-		return cs == null ? 0 : cs.length();
+	public static String random(int count, int start, int end, boolean letters,
+			boolean numbers, char[] chars, Random random) {
+		return RandomString.random(count, start, end, letters, numbers, chars, random);
 	}
 
 	/**
@@ -1265,64 +1218,7 @@ public final class StringUtils {
 		return buf.toString();
 	}
 
-	/**
-	 * Replace all occurance of the given string
-	 * 
-	 * @param input
-	 *            string
-	 * @param search
-	 * @param replace
-	 *            string to replace
-	 * @return Replaced string
-	 */
-	public static String replaceAll(String input, String search, String replace) {
-		StringBuilder buffer = new StringBuilder();
-		byte found = 0;
-
-		for (int i = 0; i < input.length(); i++) {
-			if (input.charAt(i) == search.charAt(0)) {
-				found = 1;
-				for (int j = 0; j < search.length(); j++) {
-					if (input.charAt(i + j) != search.charAt(j)) {
-						found = 0;
-						break;
-					}
-				}
-
-				if (found == 1) {
-					buffer.append(replace);
-					i += search.length() - 1;
-					continue;
-				}
-			} else {
-				buffer.append(input.charAt(i));
-			}
-		}
-
-		return buffer.toString();
-	}
-
-	/**
-	 * Replace the first occurance of the the <code>search</code> string
-	 * 
-	 * @param input
-	 *            string
-	 * @param search
-	 *            string to find
-	 * @param replace
-	 *            string to replace
-	 * @return Replaced string
-	 */
-	public static String replaceFirst(String input, String search,
-			String replace) {
-		int pos = input.indexOf(search);
-		if (pos != -1) {
-			input = input.substring(0, pos) + replace
-					+ input.substring(pos + search.length());
-		}
-		return input;
-	}
-
+	
 	/**
 	 * Replace the last occurance of the <code>search</code> string
 	 * 
@@ -1386,20 +1282,6 @@ public final class StringUtils {
 	public static String replaceOnce(String text, String searchString,
 			String replacement) {
 		return replace(text, searchString, replacement, 1);
-	}
-
-	/**
-	 * Reverse a given string
-	 * 
-	 * @param text
-	 * @return reversed text
-	 */
-	public static String reverse(String text) {
-		StringBuilder buffer = new StringBuilder();
-		for (int i = 0; i < text.length(); i++) {
-			buffer.append(text.charAt(text.length() - 1 - i));
-		}
-		return buffer.toString();
 	}
 
 	/**
@@ -1472,38 +1354,6 @@ public final class StringUtils {
 		return str.concat(padding(pads, padChar));
 	}
 
-	// /**
-	// * Strips any defined character from the start and end of a String.
-	// *
-	// * @param str
-	// * String to strip.
-	// * @param character
-	// * Character to strip from string.
-	// * @return Stripped string.
-	// */
-	// private static String stripChar(final String str, final char character) {
-	// StringBuilder stripBuffer = new StringBuilder(str);
-	// boolean search = true;
-	//
-	// while(search && (stripBuffer.length() > 0)){
-	// // strip the tail
-	// char stripChar = stripBuffer.charAt(stripBuffer.length() - 1);
-	// if(stripChar == character){
-	// stripBuffer.deleteCharAt(stripBuffer.length() - 1);
-	// } else{
-	// search = false;
-	// }
-	// // strip the head
-	// if(stripBuffer.length() > 0){
-	// stripChar = stripBuffer.charAt(0);
-	// if(stripChar == character){
-	// stripBuffer.deleteCharAt(0);
-	// search = true;
-	// }
-	// }
-	// }
-	// return stripBuffer.toString();
-	// }
 
 	/**
 	 * <p>
@@ -1566,172 +1416,172 @@ public final class StringUtils {
 		}
 	}
 
-	/**
-	 * Splits the provided text into an array, using whitespace as the
-	 * separator.
-	 * 
-	 * @param str
-	 *            the String to parse, may be null.
-	 * @return an array of parsed Strings, null if null String input
-	 */
-	public static String[] split(final String str) {
-		return split(str, null, -1);
-	}
+//	/**
+//	 * Splits the provided text into an array, using whitespace as the
+//	 * separator.
+//	 * 
+//	 * @param str
+//	 *            the String to parse, may be null.
+//	 * @return an array of parsed Strings, null if null String input
+//	 */
+//	public static String[] split(final String str) {
+//		return split(str, null, -1);
+//	}
 
-	/**
-	 * Split a string into an array of string
-	 * 
-	 * @param toSplit
-	 *            string to split
-	 * @param delimiter
-	 *            character
-	 * @param ignoreEmpty
-	 *            flag to ignore empty spaces
-	 * @return array of string that is split at the given delimiter
-	 */
-	public static String[] split(String toSplit, char delimiter,
-			boolean ignoreEmpty) {
-		StringBuilder buffer = new StringBuilder();
-		java.util.Stack<String> stringStack = new java.util.Stack<String>();
-		try {
-			for (int i = 0; i < toSplit.length(); i++) {
-				if (toSplit.charAt(i) != delimiter) {
-
-					buffer.append(toSplit.charAt(i));
-				} else {
-					if ((buffer.toString().trim().length() == 0) && ignoreEmpty) {
-
-					} else {
-						stringStack.addElement(buffer.toString());
-					}
-					buffer = new StringBuilder();
-				}
-			}
-		} catch (StringIndexOutOfBoundsException e) {
-			System.out.println("[StringUtil.split] " + e.toString());
-		}
-		if (buffer.length() != 0) {
-			stringStack.addElement(buffer.toString());
-		}
-
-		String[] split = new String[stringStack.size()];
-		for (int i = 0; i < split.length; i++) {
-			split[split.length - 1 - i] = stringStack.pop();
-		}
-		stringStack = null;
-		buffer = null;
-		return split;
-	}
-
-	/**
-	 * Splits the provided text into an array with a maximum length, separators
-	 * specified.
-	 * 
-	 * @param str
-	 *            the String to parse, may be null.
-	 * @param separatorChars
-	 *            the characters used as the delimiters, null splits on
-	 *            whitespace
-	 * @param max
-	 *            the maximum number of elements to include in the array. A zero
-	 *            or negative value implies no limit
-	 * 
-	 * @return an array of parsed Strings, null if null String input.
-	 */
-	public static String[] split(final String str, final String separatorChars,
-			final int max) {
-		return splitWorker(str, separatorChars, max, false);
-	}
-
-	private static String[] splitWorker(final String str,
-			final String separatorChars, final int max,
-			final boolean preserveAllTokens) {
-
-		String[] result = null;
-
-		if ((str != null) && (str.length() == 0)) {
-			result = new String[0];
-		} else if (str != null) {
-			int len = str.length();
-			ArrayList<String> list = new ArrayList<String>();
-			int sizePlus1 = 1;
-			int i = 0, start = 0;
-			boolean match = false;
-			boolean lastMatch = false;
-			if (separatorChars == null) {
-				// Null separator means use whitespace
-				while (i < len) {
-					if (SPACE == str.charAt(i)) {
-						if (match || preserveAllTokens) {
-							lastMatch = true;
-							if (sizePlus1++ == max) {
-								i = len;
-								lastMatch = false;
-							}
-							list.add(str.substring(start, i));
-							match = false;
-						}
-						start = ++i;
-						continue;
-					}
-					lastMatch = false;
-					match = true;
-					i++;
-				}
-			} else if (separatorChars.length() == 1) {
-				// Optimise 1 character case
-				char sep = separatorChars.charAt(0);
-				while (i < len) {
-					if (str.charAt(i) == sep) {
-						if (match || preserveAllTokens) {
-							lastMatch = true;
-							if (sizePlus1++ == max) {
-								i = len;
-								lastMatch = false;
-							}
-							list.add(str.substring(start, i));
-							match = false;
-						}
-						start = ++i;
-						continue;
-					}
-					lastMatch = false;
-					match = true;
-					i++;
-				}
-			} else {
-				// standard case
-				while (i < len) {
-					if (separatorChars.indexOf(str.charAt(i)) >= 0) {
-						if (match || preserveAllTokens) {
-							lastMatch = true;
-							if (sizePlus1++ == max) {
-								i = len;
-								lastMatch = false;
-							}
-							list.add(str.substring(start, i));
-							match = false;
-						}
-						start = ++i;
-						continue;
-					}
-					lastMatch = false;
-					match = true;
-					i++;
-				}
-			}
-			if (match || (preserveAllTokens && lastMatch)) {
-				list.add(str.substring(start, i));
-			}
-
-			result = new String[list.size()];
-			for (int j = 0; j < list.size(); j++) {
-				result[j] = list.get(j);
-			}
-		}
-		return result;
-
-	}
+//	/**
+//	 * Split a string into an array of string
+//	 * 
+//	 * @param toSplit
+//	 *            string to split
+//	 * @param delimiter
+//	 *            character
+//	 * @param ignoreEmpty
+//	 *            flag to ignore empty spaces
+//	 * @return array of string that is split at the given delimiter
+//	 */
+//	public static String[] split(String toSplit, char delimiter,
+//			boolean ignoreEmpty) {
+//		StringBuilder buffer = new StringBuilder();
+//		java.util.Stack<String> stringStack = new java.util.Stack<String>();
+//		try {
+//			for (int i = 0; i < toSplit.length(); i++) {
+//				if (toSplit.charAt(i) != delimiter) {
+//
+//					buffer.append(toSplit.charAt(i));
+//				} else {
+//					if ((buffer.toString().trim().length() == 0) && ignoreEmpty) {
+//
+//					} else {
+//						stringStack.addElement(buffer.toString());
+//					}
+//					buffer = new StringBuilder();
+//				}
+//			}
+//		} catch (StringIndexOutOfBoundsException e) {
+//			System.out.println("[StringUtil.split] " + e.toString());
+//		}
+//		if (buffer.length() != 0) {
+//			stringStack.addElement(buffer.toString());
+//		}
+//
+//		String[] split = new String[stringStack.size()];
+//		for (int i = 0; i < split.length; i++) {
+//			split[split.length - 1 - i] = stringStack.pop();
+//		}
+//		stringStack = null;
+//		buffer = null;
+//		return split;
+//	}
+//
+//	/**
+//	 * Splits the provided text into an array with a maximum length, separators
+//	 * specified.
+//	 * 
+//	 * @param str
+//	 *            the String to parse, may be null.
+//	 * @param separatorChars
+//	 *            the characters used as the delimiters, null splits on
+//	 *            whitespace
+//	 * @param max
+//	 *            the maximum number of elements to include in the array. A zero
+//	 *            or negative value implies no limit
+//	 * 
+//	 * @return an array of parsed Strings, null if null String input.
+//	 */
+//	public static String[] split(final String str, final String separatorChars,
+//			final int max) {
+//		return splitWorker(str, separatorChars, max, false);
+//	}
+//
+//	private static String[] splitWorker(final String str,
+//			final String separatorChars, final int max,
+//			final boolean preserveAllTokens) {
+//
+//		String[] result = null;
+//
+//		if ((str != null) && (str.length() == 0)) {
+//			result = new String[0];
+//		} else if (str != null) {
+//			int len = str.length();
+//			ArrayList<String> list = new ArrayList<String>();
+//			int sizePlus1 = 1;
+//			int i = 0, start = 0;
+//			boolean match = false;
+//			boolean lastMatch = false;
+//			if (separatorChars == null) {
+//				// Null separator means use whitespace
+//				while (i < len) {
+//					if (SPACE == str.charAt(i)) {
+//						if (match || preserveAllTokens) {
+//							lastMatch = true;
+//							if (sizePlus1++ == max) {
+//								i = len;
+//								lastMatch = false;
+//							}
+//							list.add(str.substring(start, i));
+//							match = false;
+//						}
+//						start = ++i;
+//						continue;
+//					}
+//					lastMatch = false;
+//					match = true;
+//					i++;
+//				}
+//			} else if (separatorChars.length() == 1) {
+//				// Optimise 1 character case
+//				char sep = separatorChars.charAt(0);
+//				while (i < len) {
+//					if (str.charAt(i) == sep) {
+//						if (match || preserveAllTokens) {
+//							lastMatch = true;
+//							if (sizePlus1++ == max) {
+//								i = len;
+//								lastMatch = false;
+//							}
+//							list.add(str.substring(start, i));
+//							match = false;
+//						}
+//						start = ++i;
+//						continue;
+//					}
+//					lastMatch = false;
+//					match = true;
+//					i++;
+//				}
+//			} else {
+//				// standard case
+//				while (i < len) {
+//					if (separatorChars.indexOf(str.charAt(i)) >= 0) {
+//						if (match || preserveAllTokens) {
+//							lastMatch = true;
+//							if (sizePlus1++ == max) {
+//								i = len;
+//								lastMatch = false;
+//							}
+//							list.add(str.substring(start, i));
+//							match = false;
+//						}
+//						start = ++i;
+//						continue;
+//					}
+//					lastMatch = false;
+//					match = true;
+//					i++;
+//				}
+//			}
+//			if (match || (preserveAllTokens && lastMatch)) {
+//				list.add(str.substring(start, i));
+//			}
+//
+//			result = new String[list.size()];
+//			for (int j = 0; j < list.size(); j++) {
+//				result[j] = list.get(j);
+//			}
+//		}
+//		return result;
+//
+//	}
 
 	/**
 	 * 
