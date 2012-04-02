@@ -18,8 +18,6 @@ import com.madrobot.io.file.IOFileFilter;
  * file filter implementations in this package so you don't have to import every
  * class you use.
  * 
- * @since 1.0
- * @version $Id$
  */
 public class FileFilterUtils {
 

@@ -43,7 +43,6 @@ import com.madrobot.io.file.IOFileFilter;
  * }
  * </pre>
  * 
- * @since 1.3
  * @version $Id$
  */
 public class CanReadFileFilter extends AbstractFileFilter implements

@@ -8,8 +8,6 @@ import com.madrobot.io.file.IOFileFilter;
 /**
  * This filter produces a logical NOT of the filters specified.
  * 
- * @since 1.0
- * @version $Id$
  * @see FileFilterUtils#notFileFilter(IOFileFilter)
  */
 public class NotFileFilter extends AbstractFileFilter implements Serializable {

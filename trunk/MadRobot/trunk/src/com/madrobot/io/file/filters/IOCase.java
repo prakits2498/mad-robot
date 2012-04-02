@@ -17,8 +17,6 @@ import com.madrobot.io.file.FilenameUtils;
  * Wherever possible, you should use the <code>check</code> methods in this
  * class to compare filenames.
  *
- * @version $Id$
- * @since 1.3
  */
 public final class IOCase implements Serializable {
 

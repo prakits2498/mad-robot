@@ -19,8 +19,6 @@ import com.madrobot.io.file.IOFileFilter;
  * }
  * </pre>
  * 
- * @since 1.0
- * @version $Id$
  * 
  * @see FileFilterUtils#directoryFileFilter()
  */

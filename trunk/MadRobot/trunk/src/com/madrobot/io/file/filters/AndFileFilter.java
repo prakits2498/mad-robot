@@ -15,9 +15,6 @@ import com.madrobot.io.file.IOFileFilter;
  * Checking of the file filter list stops when the first filter returns
  * <code>false</code>.
  * 
- * @since 1.0
- * @version $Id$
- * 
  * @see FileFilterUtils#and(IOFileFilter...)
  */
 public class AndFileFilter extends AbstractFileFilter implements

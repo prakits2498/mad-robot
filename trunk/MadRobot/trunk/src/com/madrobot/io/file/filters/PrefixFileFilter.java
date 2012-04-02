@@ -19,8 +19,6 @@ import java.util.List;
  * }
  * </pre>
  *
- * @since 1.0
- * @version $Id$
  * @see FileFilterUtils#prefixFileFilter(String)
  * @see FileFilterUtils#prefixFileFilter(String, IOCase)
  */

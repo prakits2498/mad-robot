@@ -6,8 +6,6 @@ import java.util.Map;
 /**
  * Utility class for primitives.
  * 
- * @author J&ouml;rg Schaible
- * @since 1.2.1
  */
 public final class PrimitiveUtils {
     private final static Map BOX = new HashMap();
