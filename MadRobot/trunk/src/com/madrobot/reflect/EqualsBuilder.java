@@ -17,6 +17,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import android.util.Pair;
+
 
 /**
  * <p>Assists in implementing {@link Object#equals(Object)} methods.</p>
@@ -151,8 +153,8 @@ import java.util.Set;
     static boolean isRegistered(Object lhs, Object rhs) {
         Set<Pair<IDKey, IDKey>> registry = getRegistry();
         Pair<IDKey, IDKey> pair = getRegisterPair(lhs, rhs);
-        Pair<IDKey, IDKey> swappedPair = new Pair<IDKey, IDKey>(pair.right,
-                pair.left);
+        Pair<IDKey, IDKey> swappedPair = new Pair<IDKey, IDKey>(pair.first,
+                pair.second);
 
         return registry != null
                 && (registry.contains(pair) || registry.contains(swappedPair));

@@ -7,8 +7,6 @@ import com.madrobot.io.file.IOFileFilter;
 /**
  * Defines operations for conditional file filters.
  * 
- * @since 1.1
- * @version $Id$
  */
 public interface ConditionalFileFilter {
 

@@ -18,8 +18,6 @@ import java.util.List;
  * }
  * </pre>
  * 
- * @since 1.0
- * @version $Id$
  * @see FileFilterUtils#nameFileFilter(String)
  * @see FileFilterUtils#nameFileFilter(String, IOCase)
  */

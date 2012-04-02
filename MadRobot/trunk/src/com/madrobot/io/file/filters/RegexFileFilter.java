@@ -22,8 +22,6 @@ import java.util.regex.Pattern;
  * }
  * </pre>
  * 
- * @version $Id$
- * @since 1.4
  */
 public class RegexFileFilter extends AbstractFileFilter implements Serializable {
 

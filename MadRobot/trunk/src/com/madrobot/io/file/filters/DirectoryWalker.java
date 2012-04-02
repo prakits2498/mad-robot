@@ -227,8 +227,6 @@ import com.madrobot.io.file.IOFileFilter;
  *  }
  * </pre>
  *
- * @since 1.3
- * @version $Id$
  */
 public abstract class DirectoryWalker<T> {
 

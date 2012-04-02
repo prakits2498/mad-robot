@@ -20,7 +20,6 @@ package com.madrobot.lang;
  *       }
  * </pre>
  *
- * @version  $Id$
  */
 public class ThreadMonitor implements Runnable {
 

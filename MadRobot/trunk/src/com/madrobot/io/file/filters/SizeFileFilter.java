@@ -19,8 +19,6 @@ import java.io.Serializable;
  * }
  * </pre>
  *
- * @version $Id$
- * @since 1.2
  * @see FileFilterUtils#sizeFileFilter(long)
  * @see FileFilterUtils#sizeFileFilter(long, boolean)
  * @see FileFilterUtils#sizeRangeFileFilter(long, long)
