@@ -32,7 +32,8 @@ public class XMLArrayList extends AbstractList {
 	public void add(int index, Object element) {
 		int size = size();
 		if (index >= (size + 1) || index < 0) {
-			throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+			throw new IndexOutOfBoundsException("Index: " + index + ", Size: "
+					+ size);
 		}
 		int to = index != size ? index - 1 : index;
 		for (int i = size; i > to; i--) {
@@ -50,7 +51,8 @@ public class XMLArrayList extends AbstractList {
 	private void rangeCheck(int index) {
 		int size = size();
 		if (index >= size || index < 0) {
-			throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+			throw new IndexOutOfBoundsException("Index: " + index + ", Size: "
+					+ size);
 		}
 	}
 

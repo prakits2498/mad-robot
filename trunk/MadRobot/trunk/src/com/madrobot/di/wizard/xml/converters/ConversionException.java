@@ -17,15 +17,17 @@ import com.madrobot.di.wizard.xml.XMLWizardException;
 import com.madrobot.util.collections.OrderRetainingMap;
 
 /**
- * Thrown by {@link Converter} implementations when they cannot convert an object to/from textual data.
+ * Thrown by {@link Converter} implementations when they cannot convert an
+ * object to/from textual data.
  * 
- * When this exception is thrown it can be passed around to things that accept an {@link ErrorWriter}, allowing them to
- * add diagnostics to the stack trace.
+ * When this exception is thrown it can be passed around to things that accept
+ * an {@link ErrorWriter}, allowing them to add diagnostics to the stack trace.
  * 
  * 
  * @see ErrorWriter
  */
-public class ConversionException extends XMLWizardException implements ErrorWriter {
+public class ConversionException extends XMLWizardException implements
+		ErrorWriter {
 
 	private static final String SEPARATOR = "\n-------------------------------";
 	private Map stuff = new OrderRetainingMap();
@@ -41,8 +43,9 @@ public class ConversionException extends XMLWizardException implements ErrorWrit
 		}
 		if (cause != null) {
 			add("cause-exception", cause.getClass().getName());
-			add("cause-message", cause instanceof ConversionException ? ((ConversionException) cause).getShortMessage()
-					: cause.getMessage());
+			add("cause-message",
+					cause instanceof ConversionException ? ((ConversionException) cause)
+							.getShortMessage() : cause.getMessage());
 		}
 	}
 
@@ -81,7 +84,8 @@ public class ConversionException extends XMLWizardException implements ErrorWrit
 			String k = (String) iterator.next();
 			String v = get(k);
 			result.append('\n').append(k);
-			result.append("                    ".substring(Math.min(20, k.length())));
+			result.append("                    ".substring(Math.min(20,
+					k.length())));
 			result.append(": ").append(v);
 		}
 		result.append(SEPARATOR);

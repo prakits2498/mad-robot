@@ -34,11 +34,8 @@ class ReferenceByXPathUnmarshaller extends AbstractReferenceUnmarshaller {
 	protected boolean isNameEncoding;
 	private PathTracker pathTracker = new PathTracker();
 
-	ReferenceByXPathUnmarshaller(
-			Object root,
-			HierarchicalStreamReader reader,
-			ConverterLookup converterLookup,
-			Mapper mapper) {
+	ReferenceByXPathUnmarshaller(Object root, HierarchicalStreamReader reader,
+			ConverterLookup converterLookup, Mapper mapper) {
 		super(root, reader, converterLookup, mapper);
 		this.reader = new PathTrackingReader(reader, pathTracker);
 		isNameEncoding = reader.underlyingReader() instanceof AbstractReader;
@@ -51,10 +48,12 @@ class ReferenceByXPathUnmarshaller extends AbstractReferenceUnmarshaller {
 
 	@Override
 	protected Object getReferenceKey(String reference) {
-		final Path path = new Path(isNameEncoding ? ((AbstractReader) reader.underlyingReader()).decodeNode(reference)
-				: reference);
+		final Path path = new Path(
+				isNameEncoding ? ((AbstractReader) reader.underlyingReader())
+						.decodeNode(reference) : reference);
 		// We have absolute references, if path starts with '/'
-		return reference.charAt(0) != '/' ? pathTracker.getPath().apply(path) : path;
+		return reference.charAt(0) != '/' ? pathTracker.getPath().apply(path)
+				: path;
 	}
 
 }

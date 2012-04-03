@@ -14,7 +14,8 @@ package com.madrobot.di.wizard.xml.converters;
 import java.util.Map;
 
 /**
- * A sorter that keeps the natural order of the bean properties as they are returned by the JavaBean introspection.
+ * A sorter that keeps the natural order of the bean properties as they are
+ * returned by the JavaBean introspection.
  * 
  * @author J&ouml;rg Schaible
  * @since 1.4

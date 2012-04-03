@@ -54,9 +54,9 @@ public final class TaskPoolManagerImpl implements TaskPoolManager {
 		@Override
 		public boolean cancel(boolean mayInterruptIfRunning) {
 			boolean cancelSuccess = false;
-			try{
+			try {
 				task.cancel();
-			} finally{
+			} finally {
 				cancelSuccess = super.cancel(mayInterruptIfRunning);
 				done();
 			}
@@ -77,14 +77,14 @@ public final class TaskPoolManagerImpl implements TaskPoolManager {
 		 */
 		public void postExecute() {
 
-			try{
-				if(!isCancelled()){
+			try {
+				if (!isCancelled()) {
 					task.postExecute(get(), throwable);
 				}
-			} catch(Throwable e){
+			} catch (Throwable e) {
 				task.postExecute(null, e);
 				cancel(true);
-			} finally{
+			} finally {
 				done();
 			}
 		}
@@ -93,9 +93,9 @@ public final class TaskPoolManagerImpl implements TaskPoolManager {
 		 * Called after the preExecute
 		 */
 		public void preExecute() {
-			try{
+			try {
 				task.preExecute();
-			} catch(Throwable e){
+			} catch (Throwable e) {
 				this.throwable = e;
 				cancel(true);
 			}
@@ -106,9 +106,9 @@ public final class TaskPoolManagerImpl implements TaskPoolManager {
 		 */
 		private void removeFromActiveTasks() {
 			listLock.lock();
-			try{
+			try {
 				activeTasks.remove(this);
-			} finally{
+			} finally {
 				listLock.unlock();
 			}
 		}
@@ -119,6 +119,7 @@ public final class TaskPoolManagerImpl implements TaskPoolManager {
 	 */
 	private static TaskPoolManager serviceManager;
 	private static String TAG = "LIB:TaskManager";
+
 	// ////////////////////////////////////////////////////////////
 	// Public methods
 	/**
@@ -131,7 +132,7 @@ public final class TaskPoolManagerImpl implements TaskPoolManager {
 	 * @return return shared instance of {@link IServiceHandler}
 	 */
 	public static synchronized TaskPoolManager getTaskPool() {
-		if(serviceManager == null){
+		if (serviceManager == null) {
 			serviceManager = new TaskPoolManagerImpl();
 		}
 		return serviceManager;
@@ -175,9 +176,9 @@ public final class TaskPoolManagerImpl implements TaskPoolManager {
 	 */
 	private <T> void addToActiveTasks(ManagedServiceTask<T> managedTask) {
 		listLock.lock();
-		try{
+		try {
 			activeTasks.add(managedTask);
-		} finally{
+		} finally {
 			listLock.unlock();
 		}
 	}
@@ -191,17 +192,17 @@ public final class TaskPoolManagerImpl implements TaskPoolManager {
 	public void cancelAllTasks() {
 		listLock.lock();
 
-		try{
+		try {
 
 			sessionThreadPool.purge();
-			for(ManagedServiceTask<?> t : activeTasks){
+			for (ManagedServiceTask<?> t : activeTasks) {
 				t.cancel(true);
 			}
 			activeTasks.clear();
 			sessionThreadPool.purge();
-		} catch(ConcurrentModificationException e){
+		} catch (ConcurrentModificationException e) {
 
-		} finally{
+		} finally {
 			listLock.unlock();
 		}
 	}
@@ -234,7 +235,7 @@ public final class TaskPoolManagerImpl implements TaskPoolManager {
 	 */
 	@Override
 	public <T> void submit(Task<T> task) {
-		if(isRunning){
+		if (isRunning) {
 			ManagedServiceTask<T> managedTask = new ManagedServiceTask<T>(task);
 			addToActiveTasks(managedTask);
 			sessionThreadPool.execute(managedTask);

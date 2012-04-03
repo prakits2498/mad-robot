@@ -14,9 +14,10 @@ package com.madrobot.di.wizard.xml.io;
 /**
  * A NameCoder that does nothing.
  * <p>
- * The usage of this implementation implies that the names used for the objects can also be used in the target format
- * without any change. This applies also for XML if the object graph contains no object that is an instance of an inner
- * class type or is in the default package.
+ * The usage of this implementation implies that the names used for the objects
+ * can also be used in the target format without any change. This applies also
+ * for XML if the object graph contains no object that is an instance of an
+ * inner class type or is in the default package.
  * </p>
  * 
  * @since 1.4

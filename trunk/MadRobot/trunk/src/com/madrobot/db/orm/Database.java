@@ -25,6 +25,7 @@ import com.madrobot.db.DBException;
 
 /**
  * Represents a database to be used by Android Active Record entities.
+ * 
  * @see DatabaseClient
  */
 public class Database {
@@ -50,10 +51,12 @@ public class Database {
 					"Schema wasn't initialized. Call Database.setBuilder() first");
 		return new Database(ctx, dbName, dbVersion, builder);
 	}
+
 	public static Database createInstance(Context ctx, String dbName,
 			int dbVersion, DatabaseBuilder builder) {
 		return new Database(ctx, dbName, dbVersion, builder);
 	}
+
 	/**
 	 * Returns DatabaseBuilder object assosicted with Database
 	 * 
@@ -64,6 +67,7 @@ public class Database {
 	public static DatabaseBuilder getBuilder(String dbName) {
 		return _builders.get(dbName);
 	}
+
 	/**
 	 * Get the SQLite type for an input class.
 	 * 
@@ -176,7 +180,7 @@ public class Database {
 		if (_database != null)
 			_database.close();
 		_database = null;
-		Log.e("MadRobot", CNAME+" .close(): db obj "+d+" set to null");
+		Log.e("MadRobot", CNAME + " .close(): db obj " + d + " set to null");
 	}
 
 	/**
@@ -288,7 +292,8 @@ public class Database {
 			_database = null;
 		}
 		_database = _dbHelper.getReadableDatabase();
-		Log.e("MadRobot", CNAME+ " .open(): new db obj  "+_database.toString());
+		Log.e("MadRobot",
+				CNAME + " .open(): new db obj  " + _database.toString());
 	}
 
 	/**

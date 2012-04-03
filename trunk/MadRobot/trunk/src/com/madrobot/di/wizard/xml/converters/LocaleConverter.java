@@ -40,7 +40,8 @@ public class LocaleConverter extends AbstractSingleValueConverter {
 			variant = "";
 		} else { // "language_country_variant"
 			language = str.substring(0, underscorePositions[0]);
-			country = str.substring(underscorePositions[0] + 1, underscorePositions[1]);
+			country = str.substring(underscorePositions[0] + 1,
+					underscorePositions[1]);
 			variant = str.substring(underscorePositions[1] + 1);
 		}
 		return new Locale(language, country, variant);

@@ -22,10 +22,12 @@ import com.madrobot.di.wizard.xml.io.HierarchicalStreamReader;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
 
 /**
- * Converts a java.util.Map to XML, specifying an 'entry' element with 'key' and 'value' children.
+ * Converts a java.util.Map to XML, specifying an 'entry' element with 'key' and
+ * 'value' children.
  * <p>
- * Note: 'key' and 'value' is not the name of the generated tag. The children are serialized as normal elements and the
- * implementation expects them in the order 'key'/'value'.
+ * Note: 'key' and 'value' is not the name of the generated tag. The children
+ * are serialized as normal elements and the implementation expects them in the
+ * order 'key'/'value'.
  * </p>
  * <p>
  * Supports java.util.HashMap, java.util.Hashtable and java.util.LinkedHashMap.
@@ -41,22 +43,24 @@ public class MapConverter extends AbstractCollectionConverter {
 	@Override
 	public boolean canConvert(Class type) {
 		return type.equals(HashMap.class) || type.equals(Hashtable.class)
-				|| type.getName().equals("java.util.LinkedHashMap") || type.getName().equals("sun.font.AttributeMap") // Used
-																														// by
-																														// java.awt.Font
-																														// in
-																														// JDK
-																														// 6
+				|| type.getName().equals("java.util.LinkedHashMap")
+				|| type.getName().equals("sun.font.AttributeMap") // Used
+																	// by
+																	// java.awt.Font
+																	// in
+																	// JDK
+																	// 6
 		;
 	}
 
 	@Override
-	public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
+	public void marshal(Object source, HierarchicalStreamWriter writer,
+			MarshallingContext context) {
 		Map map = (Map) source;
 		for (Iterator iterator = map.entrySet().iterator(); iterator.hasNext();) {
 			Map.Entry entry = (Map.Entry) iterator.next();
-			ExtendedHierarchicalStreamWriterHelper.startNode(writer, mapper().serializedClass(Map.Entry.class),
-					Map.Entry.class);
+			ExtendedHierarchicalStreamWriterHelper.startNode(writer, mapper()
+					.serializedClass(Map.Entry.class), Map.Entry.class);
 
 			writeItem(entry.getKey(), context, writer);
 			writeItem(entry.getValue(), context, writer);
@@ -65,11 +69,13 @@ public class MapConverter extends AbstractCollectionConverter {
 		}
 	}
 
-	protected void populateMap(HierarchicalStreamReader reader, UnmarshallingContext context, Map map) {
+	protected void populateMap(HierarchicalStreamReader reader,
+			UnmarshallingContext context, Map map) {
 		populateMap(reader, context, map, map);
 	}
 
-	protected void populateMap(HierarchicalStreamReader reader, UnmarshallingContext context, Map map, Map target) {
+	protected void populateMap(HierarchicalStreamReader reader,
+			UnmarshallingContext context, Map map, Map target) {
 		while (reader.hasMoreChildren()) {
 			reader.moveDown();
 			putCurrentEntryIntoMap(reader, context, map, target);
@@ -77,7 +83,8 @@ public class MapConverter extends AbstractCollectionConverter {
 		}
 	}
 
-	protected void putCurrentEntryIntoMap(HierarchicalStreamReader reader, UnmarshallingContext context, Map map, Map target) {
+	protected void putCurrentEntryIntoMap(HierarchicalStreamReader reader,
+			UnmarshallingContext context, Map map, Map target) {
 		reader.moveDown();
 		Object key = readItem(reader, context, map);
 		reader.moveUp();
@@ -90,7 +97,8 @@ public class MapConverter extends AbstractCollectionConverter {
 	}
 
 	@Override
-	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+	public Object unmarshal(HierarchicalStreamReader reader,
+			UnmarshallingContext context) {
 		Map map = (Map) createCollection(context.getRequiredType());
 		populateMap(reader, context, map);
 		return map;

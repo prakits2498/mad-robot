@@ -13,11 +13,11 @@ package com.madrobot.net.client.mail;
 import java.util.EventListener;
 
 /***
- * There exists a large class of IETF protocols that work by sending an
- * ASCII text command and arguments to a server, and then receiving an
- * ASCII text reply. For debugging and other purposes, it is extremely
- * useful to log or keep track of the contents of the protocol messages.
- * The ProtocolCommandListener interface coupled with the
+ * There exists a large class of IETF protocols that work by sending an ASCII
+ * text command and arguments to a server, and then receiving an ASCII text
+ * reply. For debugging and other purposes, it is extremely useful to log or
+ * keep track of the contents of the protocol messages. The
+ * ProtocolCommandListener interface coupled with the
  * {@link ProtocolCommandEvent} class facilitate this process.
  * <p>
  * To receive ProtocolCommandEvents, you merely implement the
@@ -33,8 +33,8 @@ import java.util.EventListener;
 public interface ProtocolCommandListener extends EventListener {
 
 	/***
-	 * This method is invoked by a ProtocolCommandEvent source after
-	 * sending a protocol command to a server.
+	 * This method is invoked by a ProtocolCommandEvent source after sending a
+	 * protocol command to a server.
 	 * <p>
 	 * 
 	 * @param event
@@ -43,8 +43,8 @@ public interface ProtocolCommandListener extends EventListener {
 	public void protocolCommandSent(ProtocolCommandEvent event);
 
 	/***
-	 * This method is invoked by a ProtocolCommandEvent source after
-	 * receiving a reply from a server.
+	 * This method is invoked by a ProtocolCommandEvent source after receiving a
+	 * reply from a server.
 	 * <p>
 	 * 
 	 * @param event

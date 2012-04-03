@@ -7,13 +7,14 @@ import java.io.Serializable;
 import android.graphics.PointF;
 
 /**
- * This class represents an affine transformation between two coordinate spaces in 2 dimensions. Such a transform
- * preserves the "straightness" and "parallelness" of lines. The transform is built from a sequence of translations,
- * scales, flips, rotations, and shears.
+ * This class represents an affine transformation between two coordinate spaces
+ * in 2 dimensions. Such a transform preserves the "straightness" and
+ * "parallelness" of lines. The transform is built from a sequence of
+ * translations, scales, flips, rotations, and shears.
  * 
  * <p>
- * The transformation can be represented using matrix math on a 3x3 array. Given (x,y), the transformation (x',y') can
- * be found by:
+ * The transformation can be represented using matrix math on a 3x3 array. Given
+ * (x,y), the transformation (x',y') can be found by:
  * 
  * <pre>
  * [ x']   [ m00 m01 m02 ] [ x ]   [ m00*x + m01*y + m02 ]
@@ -21,7 +22,8 @@ import android.graphics.PointF;
  * [ 1 ]   [  0   0   1  ] [ 1 ]   [          1          ]
  * </pre>
  * 
- * The bottom row of the matrix is constant, so a transform can be uniquely represented (as in {@link #toString()}) by
+ * The bottom row of the matrix is constant, so a transform can be uniquely
+ * represented (as in {@link #toString()}) by
  * "[[m00, m01, m02], [m10, m11, m12]]".
  * 
  * @author Tom Tromey (tromey@cygnus.com)
@@ -36,8 +38,9 @@ public class AffineTransform implements Cloneable, Serializable {
 	private static final long serialVersionUID = 1330973210523860834L;
 
 	/**
-	 * The transformation is the identity (x' = x, y' = y). All other transforms have either a combination of the
-	 * appropriate transform flag bits for their type, or the type GENERAL_TRANSFORM.
+	 * The transformation is the identity (x' = x, y' = y). All other transforms
+	 * have either a combination of the appropriate transform flag bits for
+	 * their type, or the type GENERAL_TRANSFORM.
 	 * 
 	 * @see #TYPE_TRANSLATION
 	 * @see #TYPE_UNIFORM_SCALE
@@ -51,7 +54,8 @@ public class AffineTransform implements Cloneable, Serializable {
 	public static final int TYPE_IDENTITY = 0;
 
 	/**
-	 * The transformation includes a translation - shifting in the x or y direction without changing length or angles.
+	 * The transformation includes a translation - shifting in the x or y
+	 * direction without changing length or angles.
 	 * 
 	 * @see #TYPE_IDENTITY
 	 * @see #TYPE_UNIFORM_SCALE
@@ -65,8 +69,9 @@ public class AffineTransform implements Cloneable, Serializable {
 	public static final int TYPE_TRANSLATION = 1;
 
 	/**
-	 * The transformation includes a uniform scale - length is scaled in both the x and y directions by the same amount,
-	 * without affecting angles. This is mutually exclusive with TYPE_GENERAL_SCALE.
+	 * The transformation includes a uniform scale - length is scaled in both
+	 * the x and y directions by the same amount, without affecting angles. This
+	 * is mutually exclusive with TYPE_GENERAL_SCALE.
 	 * 
 	 * @see #TYPE_IDENTITY
 	 * @see #TYPE_TRANSLATION
@@ -81,8 +86,9 @@ public class AffineTransform implements Cloneable, Serializable {
 	public static final int TYPE_UNIFORM_SCALE = 2;
 
 	/**
-	 * The transformation includes a general scale - length is scaled in either or both the x and y directions, but by
-	 * different amounts; without affecting angles. This is mutually exclusive with TYPE_UNIFORM_SCALE.
+	 * The transformation includes a general scale - length is scaled in either
+	 * or both the x and y directions, but by different amounts; without
+	 * affecting angles. This is mutually exclusive with TYPE_UNIFORM_SCALE.
 	 * 
 	 * @see #TYPE_IDENTITY
 	 * @see #TYPE_TRANSLATION
@@ -105,9 +111,10 @@ public class AffineTransform implements Cloneable, Serializable {
 	public static final int TYPE_MASK_SCALE = 6;
 
 	/**
-	 * The transformation includes a flip about an axis, swapping between right-handed and left-handed coordinate
-	 * systems. In a right-handed system, the positive x-axis rotates counter-clockwise to the positive y-axis; in a
-	 * left-handed system it rotates clockwise.
+	 * The transformation includes a flip about an axis, swapping between
+	 * right-handed and left-handed coordinate systems. In a right-handed
+	 * system, the positive x-axis rotates counter-clockwise to the positive
+	 * y-axis; in a left-handed system it rotates clockwise.
 	 * 
 	 * @see #TYPE_IDENTITY
 	 * @see #TYPE_TRANSLATION
@@ -121,8 +128,9 @@ public class AffineTransform implements Cloneable, Serializable {
 	public static final int TYPE_FLIP = 64;
 
 	/**
-	 * The transformation includes a rotation of a multiple of 90 degrees (PI/2 radians). Angles are rotated, but length
-	 * is preserved. This is mutually exclusive with TYPE_GENERAL_ROTATION.
+	 * The transformation includes a rotation of a multiple of 90 degrees (PI/2
+	 * radians). Angles are rotated, but length is preserved. This is mutually
+	 * exclusive with TYPE_GENERAL_ROTATION.
 	 * 
 	 * @see #TYPE_IDENTITY
 	 * @see #TYPE_TRANSLATION
@@ -137,8 +145,9 @@ public class AffineTransform implements Cloneable, Serializable {
 	public static final int TYPE_QUADRANT_ROTATION = 8;
 
 	/**
-	 * The transformation includes a rotation by an arbitrary angle. Angles are rotated, but length is preserved. This
-	 * is mutually exclusive with TYPE_QUADRANT_ROTATION.
+	 * The transformation includes a rotation by an arbitrary angle. Angles are
+	 * rotated, but length is preserved. This is mutually exclusive with
+	 * TYPE_QUADRANT_ROTATION.
 	 * 
 	 * @see #TYPE_IDENTITY
 	 * @see #TYPE_TRANSLATION
@@ -161,7 +170,8 @@ public class AffineTransform implements Cloneable, Serializable {
 	public static final int TYPE_MASK_ROTATION = 24;
 
 	/**
-	 * The transformation is an arbitrary conversion of coordinates which could not be decomposed into the other TYPEs.
+	 * The transformation is an arbitrary conversion of coordinates which could
+	 * not be decomposed into the other TYPEs.
 	 * 
 	 * @see #TYPE_IDENTITY
 	 * @see #TYPE_TRANSLATION
@@ -266,7 +276,8 @@ public class AffineTransform implements Cloneable, Serializable {
 	 * @param m12
 	 *            the y translation component
 	 */
-	public AffineTransform(float m00, float m10, float m01, float m11, float m02, float m12) {
+	public AffineTransform(float m00, float m10, float m01, float m11,
+			float m02, float m12) {
 		this.m00 = m00;
 		this.m10 = m10;
 		this.m01 = m01;
@@ -277,8 +288,9 @@ public class AffineTransform implements Cloneable, Serializable {
 	}
 
 	/**
-	 * Construct a transform from a sequence of float entries. The array must have at least 4 entries, which has a
-	 * translation factor of 0; or 6 entries, for specifying all parameters:
+	 * Construct a transform from a sequence of float entries. The array must
+	 * have at least 4 entries, which has a translation factor of 0; or 6
+	 * entries, for specifying all parameters:
 	 * 
 	 * <pre>
 	 * [ f[0] f[2] (f[4]) ]
@@ -327,7 +339,8 @@ public class AffineTransform implements Cloneable, Serializable {
 	 * @param m12
 	 *            the y translation component
 	 */
-	public AffineTransform(double m00, double m10, double m01, double m11, double m02, double m12) {
+	public AffineTransform(double m00, double m10, double m01, double m11,
+			double m02, double m12) {
 		this.m00 = m00;
 		this.m10 = m10;
 		this.m01 = m01;
@@ -338,8 +351,9 @@ public class AffineTransform implements Cloneable, Serializable {
 	}
 
 	/**
-	 * Construct a transform from a sequence of double entries. The array must have at least 4 entries, which has a
-	 * translation factor of 0; or 6 entries, for specifying all parameters:
+	 * Construct a transform from a sequence of double entries. The array must
+	 * have at least 4 entries, which has a translation factor of 0; or 6
+	 * entries, for specifying all parameters:
 	 * 
 	 * <pre>
 	 * [ d[0] d[2] (d[4]) ]
@@ -390,7 +404,8 @@ public class AffineTransform implements Cloneable, Serializable {
 	}
 
 	/**
-	 * Returns a rotation transform. A positive angle (in radians) rotates the positive x-axis to the positive y-axis:
+	 * Returns a rotation transform. A positive angle (in radians) rotates the
+	 * positive x-axis to the positive y-axis:
 	 * 
 	 * <pre>
 	 * [ cos(theta) -sin(theta) 0 ]
@@ -409,8 +424,9 @@ public class AffineTransform implements Cloneable, Serializable {
 	}
 
 	/**
-	 * Returns a rotation transform about a point. A positive angle (in radians) rotates the positive x-axis to the
-	 * positive y-axis. This is the same as calling:
+	 * Returns a rotation transform about a point. A positive angle (in radians)
+	 * rotates the positive x-axis to the positive y-axis. This is the same as
+	 * calling:
 	 * 
 	 * <pre>
 	 * AffineTransform tx = new AffineTransform();
@@ -436,7 +452,8 @@ public class AffineTransform implements Cloneable, Serializable {
 	 *            the y coordinate of the pivot point
 	 * @return the rotating transform
 	 */
-	public static AffineTransform getRotateInstance(double theta, double x, double y) {
+	public static AffineTransform getRotateInstance(double theta, double x,
+			double y) {
 		AffineTransform t = new AffineTransform();
 		t.setToTranslation(x, y);
 		t.rotate(theta);
@@ -466,8 +483,9 @@ public class AffineTransform implements Cloneable, Serializable {
 	}
 
 	/**
-	 * Returns a shearing transform (points are shifted in the x direction based on a factor of their y coordinate, and
-	 * in the y direction as a factor of their x coordinate):
+	 * Returns a shearing transform (points are shifted in the x direction based
+	 * on a factor of their y coordinate, and in the y direction as a factor of
+	 * their x coordinate):
 	 * 
 	 * <pre>
 	 * [  1  shx 0 ]
@@ -488,10 +506,12 @@ public class AffineTransform implements Cloneable, Serializable {
 	}
 
 	/**
-	 * Returns the type of this transform. The result is always valid, although it may not be the simplest
-	 * interpretation (in other words, there are sequences of transforms which reduce to something simpler, which this
-	 * does not always detect). The result is either TYPE_GENERAL_TRANSFORM, or a bit-wise combination of
-	 * TYPE_TRANSLATION, the mutually exclusive TYPE_*_ROTATIONs, and the mutually exclusive TYPE_*_SCALEs.
+	 * Returns the type of this transform. The result is always valid, although
+	 * it may not be the simplest interpretation (in other words, there are
+	 * sequences of transforms which reduce to something simpler, which this
+	 * does not always detect). The result is either TYPE_GENERAL_TRANSFORM, or
+	 * a bit-wise combination of TYPE_TRANSLATION, the mutually exclusive
+	 * TYPE_*_ROTATIONs, and the mutually exclusive TYPE_*_SCALEs.
 	 * 
 	 * @return The type.
 	 * 
@@ -508,13 +528,16 @@ public class AffineTransform implements Cloneable, Serializable {
 	}
 
 	/**
-	 * Return the determinant of this transform matrix. If the determinant is non-zero, the transform is invertible;
-	 * otherwise operations which require an inverse throw a NoninvertibleTransformException. A result very near zero,
-	 * due to rounding errors, may indicate that inversion results do not carry enough precision to be meaningful.
+	 * Return the determinant of this transform matrix. If the determinant is
+	 * non-zero, the transform is invertible; otherwise operations which require
+	 * an inverse throw a NoninvertibleTransformException. A result very near
+	 * zero, due to rounding errors, may indicate that inversion results do not
+	 * carry enough precision to be meaningful.
 	 * 
 	 * <p>
-	 * If this is a uniform scale transformation, the determinant also represents the squared value of the scale.
-	 * Otherwise, it carries little additional meaning. The determinant is calculated as:
+	 * If this is a uniform scale transformation, the determinant also
+	 * represents the squared value of the scale. Otherwise, it carries little
+	 * additional meaning. The determinant is calculated as:
 	 * 
 	 * <pre>
 	 * | m00 m01 m02 |
@@ -530,8 +553,10 @@ public class AffineTransform implements Cloneable, Serializable {
 	}
 
 	/**
-	 * Return the matrix of values used in this transform. If the matrix has fewer than 6 entries, only the scale and
-	 * shear factors are returned; otherwise the translation factors are copied as well. The resulting values are:
+	 * Return the matrix of values used in this transform. If the matrix has
+	 * fewer than 6 entries, only the scale and shear factors are returned;
+	 * otherwise the translation factors are copied as well. The resulting
+	 * values are:
 	 * 
 	 * <pre>
 	 * [ d[0] d[2] (d[4]) ]
@@ -618,7 +643,8 @@ public class AffineTransform implements Cloneable, Serializable {
 	}
 
 	/**
-	 * Concatenate a translation onto this transform. This is equivalent, but more efficient than
+	 * Concatenate a translation onto this transform. This is equivalent, but
+	 * more efficient than
 	 * <code>concatenate(AffineTransform.getTranslateInstance(tx, ty))</code>.
 	 * 
 	 * @param tx
@@ -635,7 +661,8 @@ public class AffineTransform implements Cloneable, Serializable {
 	}
 
 	/**
-	 * Concatenate a rotation onto this transform. This is equivalent, but more efficient than
+	 * Concatenate a rotation onto this transform. This is equivalent, but more
+	 * efficient than
 	 * <code>concatenate(AffineTransform.getRotateInstance(theta))</code>.
 	 * 
 	 * @param theta
@@ -658,7 +685,8 @@ public class AffineTransform implements Cloneable, Serializable {
 	}
 
 	/**
-	 * Concatenate a rotation about a point onto this transform. This is equivalent, but more efficient than
+	 * Concatenate a rotation about a point onto this transform. This is
+	 * equivalent, but more efficient than
 	 * <code>concatenate(AffineTransform.getRotateInstance(theta, x, y))</code>.
 	 * 
 	 * @param theta
@@ -677,7 +705,8 @@ public class AffineTransform implements Cloneable, Serializable {
 	}
 
 	/**
-	 * Concatenate a scale onto this transform. This is equivalent, but more efficient than
+	 * Concatenate a scale onto this transform. This is equivalent, but more
+	 * efficient than
 	 * <code>concatenate(AffineTransform.getScaleInstance(sx, sy))</code>.
 	 * 
 	 * @param sx
@@ -696,7 +725,8 @@ public class AffineTransform implements Cloneable, Serializable {
 	}
 
 	/**
-	 * Concatenate a shearing onto this transform. This is equivalent, but more efficient than
+	 * Concatenate a shearing onto this transform. This is equivalent, but more
+	 * efficient than
 	 * <code>concatenate(AffineTransform.getShearInstance(sx, sy))</code>.
 	 * 
 	 * @param shx
@@ -756,8 +786,8 @@ public class AffineTransform implements Cloneable, Serializable {
 	}
 
 	/**
-	 * Set this transform to a rotation. A positive angle (in radians) rotates the positive x-axis to the positive
-	 * y-axis:
+	 * Set this transform to a rotation. A positive angle (in radians) rotates
+	 * the positive x-axis to the positive y-axis:
 	 * 
 	 * <pre>
 	 * [ cos(theta) -sin(theta) 0 ]
@@ -777,12 +807,15 @@ public class AffineTransform implements Cloneable, Serializable {
 		m10 = s;
 		m11 = c;
 		m12 = 0;
-		type = (c == 1 ? TYPE_IDENTITY : c == 0 || c == -1 ? TYPE_QUADRANT_ROTATION : TYPE_GENERAL_ROTATION);
+		type = (c == 1 ? TYPE_IDENTITY
+				: c == 0 || c == -1 ? TYPE_QUADRANT_ROTATION
+						: TYPE_GENERAL_ROTATION);
 	}
 
 	/**
-	 * Set this transform to a rotation about a point. A positive angle (in radians) rotates the positive x-axis to the
-	 * positive y-axis. This is the same as calling:
+	 * Set this transform to a rotation about a point. A positive angle (in
+	 * radians) rotates the positive x-axis to the positive y-axis. This is the
+	 * same as calling:
 	 * 
 	 * <pre>
 	 * tx.setToTranslation(x, y);
@@ -836,12 +869,14 @@ public class AffineTransform implements Cloneable, Serializable {
 		m00 = sx;
 		m01 = m02 = m10 = m12 = 0;
 		m11 = sy;
-		type = (sx != sy ? TYPE_GENERAL_SCALE : sx == 1 ? TYPE_IDENTITY : TYPE_UNIFORM_SCALE);
+		type = (sx != sy ? TYPE_GENERAL_SCALE : sx == 1 ? TYPE_IDENTITY
+				: TYPE_UNIFORM_SCALE);
 	}
 
 	/**
-	 * Set this transform to a shear (points are shifted in the x direction based on a factor of their y coordinate, and
-	 * in the y direction as a factor of their x coordinate):
+	 * Set this transform to a shear (points are shifted in the x direction
+	 * based on a factor of their y coordinate, and in the y direction as a
+	 * factor of their x coordinate):
 	 * 
 	 * <pre>
 	 * [  1  shx 0 ]
@@ -902,7 +937,8 @@ public class AffineTransform implements Cloneable, Serializable {
 	 * @param m12
 	 *            the y translation component
 	 */
-	public void setTransform(double m00, double m10, double m01, double m11, double m02, double m12) {
+	public void setTransform(double m00, double m10, double m01, double m11,
+			double m02, double m12) {
 		this.m00 = m00;
 		this.m10 = m10;
 		this.m01 = m01;
@@ -913,8 +949,9 @@ public class AffineTransform implements Cloneable, Serializable {
 	}
 
 	/**
-	 * Set this transform to the result of performing the original version of this followed by tx. This is commonly used
-	 * when chaining transformations from one space to another. In matrix form:
+	 * Set this transform to the result of performing the original version of
+	 * this followed by tx. This is commonly used when chaining transformations
+	 * from one space to another. In matrix form:
 	 * 
 	 * <pre>
 	 * [ this ] = [ this ] x [ tx ]
@@ -943,9 +980,10 @@ public class AffineTransform implements Cloneable, Serializable {
 	}
 
 	/**
-	 * Set this transform to the result of performing tx followed by the original version of this. This is less common
-	 * than normal concatenation, but can still be used to chain transformations from one space to another. In matrix
-	 * form:
+	 * Set this transform to the result of performing tx followed by the
+	 * original version of this. This is less common than normal concatenation,
+	 * but can still be used to chain transformations from one space to another.
+	 * In matrix form:
 	 * 
 	 * <pre>
 	 * [ this ] = [ tx ] x [ this ]
@@ -974,9 +1012,11 @@ public class AffineTransform implements Cloneable, Serializable {
 	}
 
 	/**
-	 * Returns a transform, which if concatenated to this one, will result in the identity transform. This is useful for
-	 * undoing transformations, but is only possible if the original transform has an inverse (ie. does not map multiple
-	 * points to the same line or point). A transform exists only if getDeterminant() has a non-zero value.
+	 * Returns a transform, which if concatenated to this one, will result in
+	 * the identity transform. This is useful for undoing transformations, but
+	 * is only possible if the original transform has an inverse (ie. does not
+	 * map multiple points to the same line or point). A transform exists only
+	 * if getDeterminant() has a non-zero value.
 	 * 
 	 * The inverse is calculated as:
 	 * 
@@ -1029,8 +1069,9 @@ public class AffineTransform implements Cloneable, Serializable {
 	}
 
 	/**
-	 * Perform this transformation on the given source point, and store the result in the destination (creating it if
-	 * necessary). It is safe for src and dst to be the same.
+	 * Perform this transformation on the given source point, and store the
+	 * result in the destination (creating it if necessary). It is safe for src
+	 * and dst to be the same.
 	 * 
 	 * @param src
 	 *            the source point
@@ -1053,12 +1094,14 @@ public class AffineTransform implements Cloneable, Serializable {
 	}
 
 	/**
-	 * Perform this transformation on an array of points, storing the results in another (possibly same) array. This
-	 * will not create a destination array, but will create points for the null entries of the destination. The
-	 * transformation is done sequentially. While having a single source and destination point be the same is safe, you
-	 * should be aware that duplicate references to the same point in the source, and having the source overlap the
-	 * destination, may result in your source points changing from a previous transform before it is their turn to be
-	 * evaluated.
+	 * Perform this transformation on an array of points, storing the results in
+	 * another (possibly same) array. This will not create a destination array,
+	 * but will create points for the null entries of the destination. The
+	 * transformation is done sequentially. While having a single source and
+	 * destination point be the same is safe, you should be aware that duplicate
+	 * references to the same point in the source, and having the source overlap
+	 * the destination, may result in your source points changing from a
+	 * previous transform before it is their turn to be evaluated.
 	 * 
 	 * @param src
 	 *            the array of source points
@@ -1077,15 +1120,18 @@ public class AffineTransform implements Cloneable, Serializable {
 	 * @throws ArrayStoreException
 	 *             if new points are incompatible with dst
 	 */
-	public void transform(PointF[] src, int srcOff, PointF[] dst, int dstOff, int num) {
+	public void transform(PointF[] src, int srcOff, PointF[] dst, int dstOff,
+			int num) {
 		while (--num >= 0)
 			dst[dstOff] = transform(src[srcOff++], dst[dstOff++]);
 	}
 
 	/**
-	 * Perform this transformation on an array of points, in (x,y) pairs, storing the results in another (possibly same)
-	 * array. This will not create a destination array. All sources are copied before the transformation, so that no
-	 * result will overwrite a point that has not yet been evaluated.
+	 * Perform this transformation on an array of points, in (x,y) pairs,
+	 * storing the results in another (possibly same) array. This will not
+	 * create a destination array. All sources are copied before the
+	 * transformation, so that no result will overwrite a point that has not yet
+	 * been evaluated.
 	 * 
 	 * @param srcPts
 	 *            the array of source points
@@ -1102,8 +1148,10 @@ public class AffineTransform implements Cloneable, Serializable {
 	 * @throws ArrayIndexOutOfBoundsException
 	 *             if array bounds are exceeded
 	 */
-	public void transform(float[] srcPts, int srcOff, float[] dstPts, int dstOff, int num) {
-		if (srcPts == dstPts && dstOff > srcOff && num > 1 && srcOff + 2 * num > dstOff) {
+	public void transform(float[] srcPts, int srcOff, float[] dstPts,
+			int dstOff, int num) {
+		if (srcPts == dstPts && dstOff > srcOff && num > 1
+				&& srcOff + 2 * num > dstOff) {
 			float[] f = new float[2 * num];
 			System.arraycopy(srcPts, srcOff, f, 0, 2 * num);
 			srcPts = f;
@@ -1117,9 +1165,11 @@ public class AffineTransform implements Cloneable, Serializable {
 	}
 
 	/**
-	 * Perform this transformation on an array of points, in (x,y) pairs, storing the results in another (possibly same)
-	 * array. This will not create a destination array. All sources are copied before the transformation, so that no
-	 * result will overwrite a point that has not yet been evaluated.
+	 * Perform this transformation on an array of points, in (x,y) pairs,
+	 * storing the results in another (possibly same) array. This will not
+	 * create a destination array. All sources are copied before the
+	 * transformation, so that no result will overwrite a point that has not yet
+	 * been evaluated.
 	 * 
 	 * @param srcPts
 	 *            the array of source points
@@ -1136,8 +1186,10 @@ public class AffineTransform implements Cloneable, Serializable {
 	 * @throws ArrayIndexOutOfBoundsException
 	 *             if array bounds are exceeded
 	 */
-	public void transform(double[] srcPts, int srcOff, double[] dstPts, int dstOff, int num) {
-		if (srcPts == dstPts && dstOff > srcOff && num > 1 && srcOff + 2 * num > dstOff) {
+	public void transform(double[] srcPts, int srcOff, double[] dstPts,
+			int dstOff, int num) {
+		if (srcPts == dstPts && dstOff > srcOff && num > 1
+				&& srcOff + 2 * num > dstOff) {
 			double[] d = new double[2 * num];
 			System.arraycopy(srcPts, srcOff, d, 0, 2 * num);
 			srcPts = d;
@@ -1151,8 +1203,9 @@ public class AffineTransform implements Cloneable, Serializable {
 	}
 
 	/**
-	 * Perform this transformation on an array of points, in (x,y) pairs, storing the results in another array. This
-	 * will not create a destination array.
+	 * Perform this transformation on an array of points, in (x,y) pairs,
+	 * storing the results in another array. This will not create a destination
+	 * array.
 	 * 
 	 * @param srcPts
 	 *            the array of source points
@@ -1169,7 +1222,8 @@ public class AffineTransform implements Cloneable, Serializable {
 	 * @throws ArrayIndexOutOfBoundsException
 	 *             if array bounds are exceeded
 	 */
-	public void transform(float[] srcPts, int srcOff, double[] dstPts, int dstOff, int num) {
+	public void transform(float[] srcPts, int srcOff, double[] dstPts,
+			int dstOff, int num) {
 		while (--num >= 0) {
 			float x = srcPts[srcOff++];
 			float y = srcPts[srcOff++];
@@ -1179,8 +1233,9 @@ public class AffineTransform implements Cloneable, Serializable {
 	}
 
 	/**
-	 * Perform this transformation on an array of points, in (x,y) pairs, storing the results in another array. This
-	 * will not create a destination array.
+	 * Perform this transformation on an array of points, in (x,y) pairs,
+	 * storing the results in another array. This will not create a destination
+	 * array.
 	 * 
 	 * @param srcPts
 	 *            the array of source points
@@ -1197,7 +1252,8 @@ public class AffineTransform implements Cloneable, Serializable {
 	 * @throws ArrayIndexOutOfBoundsException
 	 *             if array bounds are exceeded
 	 */
-	public void transform(double[] srcPts, int srcOff, float[] dstPts, int dstOff, int num) {
+	public void transform(double[] srcPts, int srcOff, float[] dstPts,
+			int dstOff, int num) {
 		while (--num >= 0) {
 			double x = srcPts[srcOff++];
 			double y = srcPts[srcOff++];
@@ -1207,8 +1263,9 @@ public class AffineTransform implements Cloneable, Serializable {
 	}
 
 	/**
-	 * Perform the inverse of this transformation on the given source point, and store the result in the destination
-	 * (creating it if necessary). It is safe for src and dst to be the same.
+	 * Perform the inverse of this transformation on the given source point, and
+	 * store the result in the destination (creating it if necessary). It is
+	 * safe for src and dst to be the same.
 	 * 
 	 * @param src
 	 *            the source point
@@ -1226,9 +1283,11 @@ public class AffineTransform implements Cloneable, Serializable {
 	}
 
 	/**
-	 * Perform the inverse of this transformation on an array of points, in (x,y) pairs, storing the results in another
-	 * (possibly same) array. This will not create a destination array. All sources are copied before the
-	 * transformation, so that no result will overwrite a point that has not yet been evaluated.
+	 * Perform the inverse of this transformation on an array of points, in
+	 * (x,y) pairs, storing the results in another (possibly same) array. This
+	 * will not create a destination array. All sources are copied before the
+	 * transformation, so that no result will overwrite a point that has not yet
+	 * been evaluated.
 	 * 
 	 * @param srcPts
 	 *            the array of source points
@@ -1248,14 +1307,16 @@ public class AffineTransform implements Cloneable, Serializable {
 	 *             if the inverse does not exist
 	 * @see #getDeterminant()
 	 */
-	public void inverseTransform(double[] srcPts, int srcOff, double[] dstPts, int dstOff, int num) {
+	public void inverseTransform(double[] srcPts, int srcOff, double[] dstPts,
+			int dstOff, int num) {
 		createInverse().transform(srcPts, srcOff, dstPts, dstOff, num);
 	}
 
 	/**
-	 * Perform this transformation, less any translation, on the given source point, and store the result in the
-	 * destination (creating it if necessary). It is safe for src and dst to be the same. The reduced transform is
-	 * equivalent to:
+	 * Perform this transformation, less any translation, on the given source
+	 * point, and store the result in the destination (creating it if
+	 * necessary). It is safe for src and dst to be the same. The reduced
+	 * transform is equivalent to:
 	 * 
 	 * <pre>
 	 * [ x' ] = [ m00 m01 ] [ x ] = [ m00 * x + m01 * y ]
@@ -1284,10 +1345,11 @@ public class AffineTransform implements Cloneable, Serializable {
 	}
 
 	/**
-	 * Perform this transformation, less any translation, on an array of points, in (x,y) pairs, storing the results in
-	 * another (possibly same) array. This will not create a destination array. All sources are copied before the
-	 * transformation, so that no result will overwrite a point that has not yet been evaluated. The reduced transform
-	 * is equivalent to:
+	 * Perform this transformation, less any translation, on an array of points,
+	 * in (x,y) pairs, storing the results in another (possibly same) array.
+	 * This will not create a destination array. All sources are copied before
+	 * the transformation, so that no result will overwrite a point that has not
+	 * yet been evaluated. The reduced transform is equivalent to:
 	 * 
 	 * <pre>
 	 * [ x' ] = [ m00 m01 ] [ x ] = [ m00 * x + m01 * y ]
@@ -1309,8 +1371,10 @@ public class AffineTransform implements Cloneable, Serializable {
 	 * @throws ArrayIndexOutOfBoundsException
 	 *             if array bounds are exceeded
 	 */
-	public void deltaTransform(double[] srcPts, int srcOff, double[] dstPts, int dstOff, int num) {
-		if (srcPts == dstPts && dstOff > srcOff && num > 1 && srcOff + 2 * num > dstOff) {
+	public void deltaTransform(double[] srcPts, int srcOff, double[] dstPts,
+			int dstOff, int num) {
+		if (srcPts == dstPts && dstOff > srcOff && num > 1
+				&& srcOff + 2 * num > dstOff) {
 			double[] d = new double[2 * num];
 			System.arraycopy(srcPts, srcOff, d, 0, 2 * num);
 			srcPts = d;
@@ -1330,8 +1394,10 @@ public class AffineTransform implements Cloneable, Serializable {
 	 * 
 	 * @return the string representation
 	 */
+	@Override
 	public String toString() {
-		return "AffineTransform[[" + m00 + ", " + m01 + ", " + m02 + "], [" + m10 + ", " + m11 + ", " + m12 + "]]";
+		return "AffineTransform[[" + m00 + ", " + m01 + ", " + m02 + "], ["
+				+ m10 + ", " + m11 + ", " + m12 + "]]";
 	}
 
 	/**
@@ -1351,10 +1417,12 @@ public class AffineTransform implements Cloneable, Serializable {
 	}
 
 	/**
-	 * Create a new transform of the same run-time type, with the same transforming properties as this one.
+	 * Create a new transform of the same run-time type, with the same
+	 * transforming properties as this one.
 	 * 
 	 * @return the clone
 	 */
+	@Override
 	public Object clone() {
 		try {
 			return super.clone();
@@ -1364,7 +1432,8 @@ public class AffineTransform implements Cloneable, Serializable {
 	}
 
 	/**
-	 * Return the hashcode for this transformation. The formula is not documented, but appears to be the same as:
+	 * Return the hashcode for this transformation. The formula is not
+	 * documented, but appears to be the same as:
 	 * 
 	 * <pre>
 	 * long l = Double.doubleToLongBits(getScaleX());
@@ -1378,6 +1447,7 @@ public class AffineTransform implements Cloneable, Serializable {
 	 * 
 	 * @return the hashcode
 	 */
+	@Override
 	public int hashCode() {
 		long l = Double.doubleToLongBits(m00);
 		l = l * 31 + Double.doubleToLongBits(m01);
@@ -1389,22 +1459,25 @@ public class AffineTransform implements Cloneable, Serializable {
 	}
 
 	/**
-	 * Compares two transforms for equality. This returns true if they have the same matrix values.
+	 * Compares two transforms for equality. This returns true if they have the
+	 * same matrix values.
 	 * 
 	 * @param obj
 	 *            the transform to compare
 	 * @return true if it is equal
 	 */
+	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof AffineTransform))
 			return false;
 		AffineTransform t = (AffineTransform) obj;
-		return (m00 == t.m00 && m01 == t.m01 && m02 == t.m02 && m10 == t.m10 && m11 == t.m11 && m12 == t.m12);
+		return (m00 == t.m00 && m01 == t.m01 && m02 == t.m02 && m10 == t.m10
+				&& m11 == t.m11 && m12 == t.m12);
 	}
 
 	/**
-	 * Helper to decode the type from the matrix. This is not guaranteed to find the optimal type, but at least it will
-	 * be valid.
+	 * Helper to decode the type from the matrix. This is not guaranteed to find
+	 * the optimal type, but at least it will be valid.
 	 */
 	private void updateType() {
 		double det = getDeterminant();
@@ -1442,7 +1515,8 @@ public class AffineTransform implements Cloneable, Serializable {
 	 * @throws IOException
 	 *             if there is a problem deserializing
 	 */
-	private void readObject(ObjectInputStream s) throws ClassNotFoundException, IOException {
+	private void readObject(ObjectInputStream s) throws ClassNotFoundException,
+			IOException {
 		s.defaultReadObject();
 		updateType();
 	}

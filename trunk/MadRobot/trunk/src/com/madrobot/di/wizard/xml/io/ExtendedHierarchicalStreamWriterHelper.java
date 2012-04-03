@@ -12,7 +12,8 @@
 package com.madrobot.di.wizard.xml.io;
 
 public class ExtendedHierarchicalStreamWriterHelper {
-	public static void startNode(HierarchicalStreamWriter writer, String name, Class clazz) {
+	public static void startNode(HierarchicalStreamWriter writer, String name,
+			Class clazz) {
 		if (writer instanceof ExtendedHierarchicalStreamWriter) {
 			((ExtendedHierarchicalStreamWriter) writer).startNode(name, clazz);
 		} else {

@@ -23,8 +23,9 @@ import com.madrobot.di.wizard.xml.converters.ReflectionProvider;
 import com.madrobot.di.wizard.xml.converters.SingleValueConverter;
 
 /**
- * Mapper that allows the usage of attributes for fields and corresponding types or specified arbitrary types. It is
- * responsible for the lookup of the {@link SingleValueConverter} for item types and attribute names.
+ * Mapper that allows the usage of attributes for fields and corresponding types
+ * or specified arbitrary types. It is responsible for the lookup of the
+ * {@link SingleValueConverter} for item types and attribute names.
  * 
  * @since 1.2
  */
@@ -44,7 +45,8 @@ class AttributeMapper extends MapperWrapper {
 		this(wrapped, null, null);
 	}
 
-	AttributeMapper(Mapper wrapped, ConverterLookup converterLookup, ReflectionProvider refProvider) {
+	AttributeMapper(Mapper wrapped, ConverterLookup converterLookup,
+			ReflectionProvider refProvider) {
 		super(wrapped);
 		this.converterLookup = converterLookup;
 		this.reflectionProvider = refProvider;
@@ -66,7 +68,8 @@ class AttributeMapper extends MapperWrapper {
 	 * @since 1.3
 	 */
 	public void addAttributeFor(Class definedIn, String fieldName) {
-		fieldToUseAsAttribute.add(reflectionProvider.getField(definedIn, fieldName));
+		fieldToUseAsAttribute.add(reflectionProvider.getField(definedIn,
+				fieldName));
 	}
 
 	/**
@@ -85,17 +88,20 @@ class AttributeMapper extends MapperWrapper {
 	}
 
 	/**
-	 * @deprecated As of 1.3.1, use {@link #getConverterFromAttribute(Class, String, Class)}
+	 * @deprecated As of 1.3.1, use
+	 *             {@link #getConverterFromAttribute(Class, String, Class)}
 	 */
 	@Deprecated
 	@Override
-	public SingleValueConverter getConverterFromAttribute(Class definedIn, String attribute) {
+	public SingleValueConverter getConverterFromAttribute(Class definedIn,
+			String attribute) {
 		Field field = reflectionProvider.getField(definedIn, attribute);
 		return getConverterFromAttribute(definedIn, attribute, field.getType());
 	}
 
 	@Override
-	public SingleValueConverter getConverterFromAttribute(Class definedIn, String attribute, Class type) {
+	public SingleValueConverter getConverterFromAttribute(Class definedIn,
+			String attribute, Class type) {
 		if (shouldLookForSingleValueConverter(attribute, type, definedIn)) {
 			SingleValueConverter converter = getLocalConverterFromItemType(type);
 			if (converter != null) {
@@ -106,7 +112,8 @@ class AttributeMapper extends MapperWrapper {
 	}
 
 	/**
-	 * @deprecated As of 1.3, use {@link #getConverterFromAttribute(Class, String, Class)}
+	 * @deprecated As of 1.3, use
+	 *             {@link #getConverterFromAttribute(Class, String, Class)}
 	 */
 	@Deprecated
 	@Override
@@ -120,7 +127,8 @@ class AttributeMapper extends MapperWrapper {
 	}
 
 	/**
-	 * @deprecated As of 1.3, use {@link #getConverterFromItemType(String, Class, Class)}
+	 * @deprecated As of 1.3, use
+	 *             {@link #getConverterFromItemType(String, Class, Class)}
 	 */
 	@Deprecated
 	@Override
@@ -133,11 +141,13 @@ class AttributeMapper extends MapperWrapper {
 	}
 
 	/**
-	 * @deprecated As of 1.3, use {@link #getConverterFromItemType(String, Class, Class)}
+	 * @deprecated As of 1.3, use
+	 *             {@link #getConverterFromItemType(String, Class, Class)}
 	 */
 	@Deprecated
 	@Override
-	public SingleValueConverter getConverterFromItemType(String fieldName, Class type) {
+	public SingleValueConverter getConverterFromItemType(String fieldName,
+			Class type) {
 		if (fieldNameToTypeMap.get(fieldName) == type) {
 			return getLocalConverterFromItemType(type);
 		} else {
@@ -146,7 +156,8 @@ class AttributeMapper extends MapperWrapper {
 	}
 
 	@Override
-	public SingleValueConverter getConverterFromItemType(String fieldName, Class type, Class definedIn) {
+	public SingleValueConverter getConverterFromItemType(String fieldName,
+			Class type, Class definedIn) {
 		if (shouldLookForSingleValueConverter(fieldName, type, definedIn)) {
 			SingleValueConverter converter = getLocalConverterFromItemType(type);
 			if (converter != null) {
@@ -173,9 +184,11 @@ class AttributeMapper extends MapperWrapper {
 		this.converterLookup = converterLookup;
 	}
 
-	public boolean shouldLookForSingleValueConverter(String fieldName, Class type, Class definedIn) {
+	public boolean shouldLookForSingleValueConverter(String fieldName,
+			Class type, Class definedIn) {
 		Field field = reflectionProvider.getField(definedIn, fieldName);
-		return fieldToUseAsAttribute.contains(field) || fieldNameToTypeMap.get(fieldName) == type
+		return fieldToUseAsAttribute.contains(field)
+				|| fieldNameToTypeMap.get(fieldName) == type
 				|| typeSet.contains(type);
 	}
 }

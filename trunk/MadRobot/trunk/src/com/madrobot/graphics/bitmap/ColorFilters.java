@@ -16,7 +16,8 @@ import com.madrobot.graphics.bitmap.OutputConfiguration.BitmapMeta;
  * <b>Solarize</b><br/>
  * <img src="../../../../resources/solarize.png" ><br/>
  * <b>Sepia</b><br/>
- * Sepia with the <code>depth</code> of 10. </br> <img src="../../../../resources/sepia.png" ><br/>
+ * Sepia with the <code>depth</code> of 10. </br> <img
+ * src="../../../../resources/sepia.png" ><br/>
  * 
  * <b>Quantize</b><br/>
  * <table>
@@ -31,7 +32,8 @@ import com.madrobot.graphics.bitmap.OutputConfiguration.BitmapMeta;
  * </table>
  * <br/>
  * <b>Glow</b><br/>
- * Glow using the <code>glowAmount</code> of <code>0.5</code> and <code>glowRadius</code> of <code>2</code><br/>
+ * Glow using the <code>glowAmount</code> of <code>0.5</code> and
+ * <code>glowRadius</code> of <code>2</code><br/>
  * <img src="../../../../resources/glow.png"><br/>
  * 
  * <b>Oil Paint</b><br/>
@@ -40,19 +42,23 @@ import com.madrobot.graphics.bitmap.OutputConfiguration.BitmapMeta;
  * <img src="../../../../resources/plasma.png" ><br/>
  * <b>Temperature</b><br/>
  * <code>temperature</code> set to 8500.<br/>
- * Note:The filter is applied to the first half of the image only.</br> <img src="../../../../resources/temperature.png"
- * ><br/>
+ * Note:The filter is applied to the first half of the image only.</br> <img
+ * src="../../../../resources/temperature.png" ><br/>
  * <b>Tritone</b><br/>
- * Tritone with the <code>shadowColor</code> Color.GRAY, the <code>midColor</code> Color.BLUE and the
- * <code>highColor</code> of Color.RED.<br/>
- * Note:The filter is applied to the first half of the image only.</br> <img src="../../../../resources/tritone.png" ><br/>
+ * Tritone with the <code>shadowColor</code> Color.GRAY, the
+ * <code>midColor</code> Color.BLUE and the <code>highColor</code> of Color.RED.
+ * <br/>
+ * Note:The filter is applied to the first half of the image only.</br> <img
+ * src="../../../../resources/tritone.png" ><br/>
  * <b>Mix Channels</b><br/>
- * Mix channels filter applied by neglecting the green channel and blending it with red.<br/>
+ * Mix channels filter applied by neglecting the green channel and blending it
+ * with red.<br/>
  * 
  * Note:The filter is applied to the first half of the image only.<br/>
  * <img src="../../../../resources/mixchannels.png" ><br/>
  * * <b>Stamp</b><br/>
- * Stamp filter with the <code>lowerColor</code> as white , <code>upperColor</code> as red,<code> threshold</code> and
+ * Stamp filter with the <code>lowerColor</code> as white ,
+ * <code>upperColor</code> as red,<code> threshold</code> and
  * <code>softness</code> are both 0.5.<br/>
  * 
  * Note:The filter is applied to the first half of the image only.<br/>
@@ -71,20 +77,23 @@ public class ColorFilters {
 	 *            Bitmap configuration of the output bitmap
 	 * @return
 	 */
-	public static final Bitmap posterize(Bitmap bitmap, int depth, OutputConfiguration outputConfig) {
+	public static final Bitmap posterize(Bitmap bitmap, int depth,
+			OutputConfiguration outputConfig) {
 		int[] argb = BitmapUtils.getPixels(bitmap);
 
 		BitmapMeta meta = outputConfig.getBitmapMeta(bitmap);
 		for (int y = meta.y; y < meta.targetHeight; y++) {
 			for (int x = meta.x; x < meta.targetWidth; x++) {
 				int position = (y * meta.bitmapWidth) + x;
-				argb[position] = PixelUtils.posterizePixel(argb[position], depth);
+				argb[position] = PixelUtils.posterizePixel(argb[position],
+						depth);
 			}
 		}
 		if (outputConfig.canRecycleSrc) {
 			bitmap.recycle();
 		}
-		return Bitmap.createBitmap(argb, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
+		return Bitmap.createBitmap(argb, meta.bitmapWidth, meta.bitmapHeight,
+				outputConfig.config);
 	}
 
 	/**
@@ -92,11 +101,13 @@ public class ColorFilters {
 	 * 
 	 * @param bitmap
 	 * @param level
-	 *            between 0 and 256. 0 indicates fully transparent and 256 indicates its fully opaque
+	 *            between 0 and 256. 0 indicates fully transparent and 256
+	 *            indicates its fully opaque
 	 * @param outputConfig
 	 * @return
 	 */
-	public static final Bitmap setTransparency(final Bitmap bitmap, int level, OutputConfiguration outputConfig) {
+	public static final Bitmap setTransparency(final Bitmap bitmap, int level,
+			OutputConfiguration outputConfig) {
 
 		int[] argb = BitmapUtils.getPixels(bitmap);
 		level = (level << 24);
@@ -107,7 +118,8 @@ public class ColorFilters {
 				argb[position] = (argb[position] & 0x00ffffff) | level;
 			}
 		}
-		return Bitmap.createBitmap(argb, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
+		return Bitmap.createBitmap(argb, meta.bitmapWidth, meta.bitmapHeight,
+				outputConfig.config);
 	}
 
 	/**
@@ -118,7 +130,8 @@ public class ColorFilters {
 	 *            Bitmap configuration of the output bitmap
 	 * @return
 	 */
-	public static final Bitmap invert(Bitmap bitmap, OutputConfiguration outputConfig) {
+	public static final Bitmap invert(Bitmap bitmap,
+			OutputConfiguration outputConfig) {
 
 		int[] argb = BitmapUtils.getPixels(bitmap);
 
@@ -133,7 +146,8 @@ public class ColorFilters {
 		if (outputConfig.canRecycleSrc) {
 			bitmap.recycle();
 		}
-		return Bitmap.createBitmap(argb, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
+		return Bitmap.createBitmap(argb, meta.bitmapWidth, meta.bitmapHeight,
+				outputConfig.config);
 	}
 
 	/**
@@ -146,7 +160,8 @@ public class ColorFilters {
 	 *            Bitmap configuration of the output bitmap
 	 * @return
 	 */
-	public static final Bitmap applySepia(Bitmap bitmap, Integer depth, OutputConfiguration outputConfig) {
+	public static final Bitmap applySepia(Bitmap bitmap, Integer depth,
+			OutputConfiguration outputConfig) {
 		int[] argb = BitmapUtils.getPixels(bitmap);
 
 		BitmapMeta meta = outputConfig.getBitmapMeta(bitmap);
@@ -160,7 +175,8 @@ public class ColorFilters {
 		if (outputConfig.canRecycleSrc) {
 			bitmap.recycle();
 		}
-		return Bitmap.createBitmap(argb, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
+		return Bitmap.createBitmap(argb, meta.bitmapWidth, meta.bitmapHeight,
+				outputConfig.config);
 	}
 
 	/**
@@ -171,7 +187,8 @@ public class ColorFilters {
 	 * @param outputConfig
 	 * @return
 	 */
-	public static final Bitmap saturate(Bitmap bitmap, int percent, OutputConfiguration outputConfig) {
+	public static final Bitmap saturate(Bitmap bitmap, int percent,
+			OutputConfiguration outputConfig) {
 		int[] argb = BitmapUtils.getPixels(bitmap);
 
 		BitmapMeta meta = outputConfig.getBitmapMeta(bitmap);
@@ -179,36 +196,42 @@ public class ColorFilters {
 			for (int hr = meta.x; hr < meta.targetWidth; hr++) {
 
 				int position = (ver * meta.bitmapWidth) + hr;
-				argb[position] = PixelUtils.setSaturation(argb[position], percent);
+				argb[position] = PixelUtils.setSaturation(argb[position],
+						percent);
 			}
 		}
 		if (outputConfig.canRecycleSrc) {
 			bitmap.recycle();
 		}
-		return Bitmap.createBitmap(argb, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
+		return Bitmap.createBitmap(argb, meta.bitmapWidth, meta.bitmapHeight,
+				outputConfig.config);
 	}
 
 	/**
 	 * A filter which quantizes an image to a set number of colors
 	 * <p>
-	 * useful for producing images which are to be encoded using an index color model. The filter can perform
-	 * Floyd-Steinberg error-diffusion dithering if required. At present, the quantization is done using an octtree
-	 * algorithm but I eventually hope to add more quantization methods such as median cut. Note: at present, the filter
-	 * produces an image which uses the RGB color model (because the application it was written for required it).
+	 * useful for producing images which are to be encoded using an index color
+	 * model. The filter can perform Floyd-Steinberg error-diffusion dithering
+	 * if required. At present, the quantization is done using an octtree
+	 * algorithm but I eventually hope to add more quantization methods such as
+	 * median cut. Note: at present, the filter produces an image which uses the
+	 * RGB color model (because the application it was written for required it).
 	 * </p>
 	 * 
 	 * @param src
 	 * @param numColors
 	 *            the number of colors to quantize to. Usually:256
 	 * @param dither
-	 *            Set whether to use dithering or not. If not, the image is posterized.
+	 *            Set whether to use dithering or not. If not, the image is
+	 *            posterized.
 	 * @param serpentine
-	 *            Set whether to use a serpentine pattern for return or not. This can reduce 'avalanche' artifacts in
-	 *            the output.
+	 *            Set whether to use a serpentine pattern for return or not.
+	 *            This can reduce 'avalanche' artifacts in the output.
 	 * @param outputConfig
 	 * @return
 	 */
-	public static Bitmap quantize(Bitmap src, int numColors, boolean dither, boolean serpentine, Bitmap.Config outputConfig) {
+	public static Bitmap quantize(Bitmap src, int numColors, boolean dither,
+			boolean serpentine, Bitmap.Config outputConfig) {
 		int width = src.getWidth();
 		int height = src.getHeight();
 		int[] inPixels = BitmapUtils.getPixels(src);
@@ -278,7 +301,8 @@ public class ColorFilters {
 										r1 += er * w / sum;
 										g1 += eg * w / sum;
 										b1 += eb * w / sum;
-										inPixels[k] = (PixelUtils.clamp(r1) << 16) | (PixelUtils.clamp(g1) << 8)
+										inPixels[k] = (PixelUtils.clamp(r1) << 16)
+												| (PixelUtils.clamp(g1) << 8)
 												| PixelUtils.clamp(b1);
 									}
 								}
@@ -289,7 +313,8 @@ public class ColorFilters {
 				}
 			}
 		}
-		return Bitmap.createBitmap(outPixels, src.getWidth(), src.getHeight(), outputConfig);
+		return Bitmap.createBitmap(outPixels, src.getWidth(), src.getHeight(),
+				outputConfig);
 	}
 
 	/**
@@ -308,7 +333,9 @@ public class ColorFilters {
 	 * @param outputConfig
 	 * @return
 	 */
-	public static Bitmap applyGlow(Bitmap src, float glowAmount, float blurRadius, boolean processAlpha, boolean premultiplyAlpha, Bitmap.Config outputConfig) {
+	public static Bitmap applyGlow(Bitmap src, float glowAmount,
+			float blurRadius, boolean processAlpha, boolean premultiplyAlpha,
+			Bitmap.Config outputConfig) {
 
 		int width = src.getWidth();
 		int height = src.getHeight();
@@ -316,10 +343,12 @@ public class ColorFilters {
 		int[] dest = new int[argb.length];
 		Kernel kernel = GaussianUtils.makeKernel(blurRadius);
 		if (blurRadius > 0) {
-			GaussianUtils.convolveAndTranspose(kernel, argb, dest, width, height, processAlpha, processAlpha
-					&& premultiplyAlpha, false, BitmapFilters.CLAMP_EDGES);
-			GaussianUtils.convolveAndTranspose(kernel, dest, argb, height, width, processAlpha, false, processAlpha
-					&& premultiplyAlpha, BitmapFilters.CLAMP_EDGES);
+			GaussianUtils.convolveAndTranspose(kernel, argb, dest, width,
+					height, processAlpha, processAlpha && premultiplyAlpha,
+					false, BitmapFilters.CLAMP_EDGES);
+			GaussianUtils.convolveAndTranspose(kernel, dest, argb, height,
+					width, processAlpha, false, processAlpha
+							&& premultiplyAlpha, BitmapFilters.CLAMP_EDGES);
 		}
 		dest = BitmapUtils.getPixels(src);
 		float a = 4 * glowAmount;
@@ -345,7 +374,8 @@ public class ColorFilters {
 			}
 		}
 
-		return Bitmap.createBitmap(argb, src.getWidth(), src.getHeight(), outputConfig);
+		return Bitmap.createBitmap(argb, src.getWidth(), src.getHeight(),
+				outputConfig);
 	}
 
 	/**
@@ -359,17 +389,22 @@ public class ColorFilters {
 	 * @param outputConfig
 	 * @return
 	 */
-	public static Bitmap applyHighPass(Bitmap src, float radius, boolean processAlpha, boolean premultiplyAlpha, Bitmap.Config outputConfig) {
+	public static Bitmap applyHighPass(Bitmap src, float radius,
+			boolean processAlpha, boolean premultiplyAlpha,
+			Bitmap.Config outputConfig) {
 		int width = src.getWidth();
 		int height = src.getHeight();
 		int[] inPixels = BitmapUtils.getPixels(src);
 		int[] outPixels = new int[inPixels.length];
 		Kernel kernel = GaussianUtils.makeKernel(radius);
 		if (radius > 0) {
-			GaussianUtils.convolveAndTranspose(kernel, inPixels, outPixels, width, height, processAlpha, processAlpha
-					&& premultiplyAlpha, false, BitmapFilters.CLAMP_EDGES);
-			GaussianUtils.convolveAndTranspose(kernel, outPixels, inPixels, height, width, processAlpha, false,
-					processAlpha && premultiplyAlpha, BitmapFilters.CLAMP_EDGES);
+			GaussianUtils.convolveAndTranspose(kernel, inPixels, outPixels,
+					width, height, processAlpha, processAlpha
+							&& premultiplyAlpha, false,
+					BitmapFilters.CLAMP_EDGES);
+			GaussianUtils.convolveAndTranspose(kernel, outPixels, inPixels,
+					height, width, processAlpha, false, processAlpha
+							&& premultiplyAlpha, BitmapFilters.CLAMP_EDGES);
 		}
 		outPixels = BitmapUtils.getPixels(src);
 
@@ -390,14 +425,18 @@ public class ColorFilters {
 				g1 = (g1 + 255 - g2) / 2;
 				b1 = (b1 + 255 - b2) / 2;
 
-				inPixels[index] = (rgb1 & 0xff000000) | (r1 << 16) | (g1 << 8) | b1;
+				inPixels[index] = (rgb1 & 0xff000000) | (r1 << 16) | (g1 << 8)
+						| b1;
 				index++;
 			}
 		}
-		return Bitmap.createBitmap(inPixels, src.getWidth(), src.getHeight(), outputConfig);
+		return Bitmap.createBitmap(inPixels, src.getWidth(), src.getHeight(),
+				outputConfig);
 	}
 
-	private static int randomRGB(int[] inPixels, int x, int y, boolean useImageColors, Rectangle originalSpace, Random randomGenerator) {
+	private static int randomRGB(int[] inPixels, int x, int y,
+			boolean useImageColors, Rectangle originalSpace,
+			Random randomGenerator) {
 		if (useImageColors) {
 			return inPixels[y * originalSpace.width + x];
 		} else {
@@ -408,7 +447,8 @@ public class ColorFilters {
 		}
 	}
 
-	private static boolean doPlasmaPixel(int x1, int y1, int x2, int y2, int[] pixels, int stride, int depth, int scale, float turbulence) {
+	private static boolean doPlasmaPixel(int x1, int y1, int x2, int y2,
+			int[] pixels, int stride, int depth, int scale, float turbulence) {
 		int mx, my;
 
 		if (depth == 0) {
@@ -469,17 +509,22 @@ public class ColorFilters {
 		mx = (x1 + x2) / 2;
 		my = (y1 + y2) / 2;
 
-		doPlasmaPixel(x1, y1, mx, my, pixels, stride, depth - 1, scale + 1, turbulence);
-		doPlasmaPixel(x1, my, mx, y2, pixels, stride, depth - 1, scale + 1, turbulence);
-		doPlasmaPixel(mx, y1, x2, my, pixels, stride, depth - 1, scale + 1, turbulence);
-		return doPlasmaPixel(mx, my, x2, y2, pixels, stride, depth - 1, scale + 1, turbulence);
+		doPlasmaPixel(x1, y1, mx, my, pixels, stride, depth - 1, scale + 1,
+				turbulence);
+		doPlasmaPixel(x1, my, mx, y2, pixels, stride, depth - 1, scale + 1,
+				turbulence);
+		doPlasmaPixel(mx, y1, x2, my, pixels, stride, depth - 1, scale + 1,
+				turbulence);
+		return doPlasmaPixel(mx, my, x2, y2, pixels, stride, depth - 1,
+				scale + 1, turbulence);
 	}
 
 	/**
 	 * 
 	 * @param src
 	 * @param turbulence
-	 *            Specifies the turbulence of the texture. Min Value: 0,Max value: 10. recommended:1.0
+	 *            Specifies the turbulence of the texture. Min Value: 0,Max
+	 *            value: 10. recommended:1.0
 	 * @param useImageColors
 	 *            recommended: false.
 	 * @param useColormap
@@ -487,7 +532,9 @@ public class ColorFilters {
 	 * @param outputConfig
 	 * @return
 	 */
-	public static Bitmap plasma(Bitmap src, float turbulence, boolean useImageColors, boolean useColormap, Bitmap.Config outputConfig) {
+	public static Bitmap plasma(Bitmap src, float turbulence,
+			boolean useImageColors, boolean useColormap,
+			Bitmap.Config outputConfig) {
 		int width = src.getWidth();
 		int height = src.getHeight();
 		int[] inPixels = BitmapUtils.getPixels(src);
@@ -498,38 +545,68 @@ public class ColorFilters {
 		Rectangle originalSpace = new Rectangle(0, 0, width, height);
 		int w1 = width - 1;
 		int h1 = height - 1;
-		PixelUtils.putPixel(0, 0, randomRGB(inPixels, 0, 0, useImageColors, originalSpace, randomGenerator), outPixels,
-				width);
-		PixelUtils.putPixel(w1, 0, randomRGB(inPixels, w1, 0, useImageColors, originalSpace, randomGenerator),
-				outPixels, width);
-		PixelUtils.putPixel(0, h1, randomRGB(inPixels, 0, h1, useImageColors, originalSpace, randomGenerator),
-				outPixels, width);
-		PixelUtils.putPixel(w1, h1, randomRGB(inPixels, w1, h1, useImageColors, originalSpace, randomGenerator),
-				outPixels, width);
-		PixelUtils.putPixel(w1 / 2, h1 / 2,
-				randomRGB(inPixels, w1 / 2, h1 / 2, useImageColors, originalSpace, randomGenerator), outPixels, width);
-		PixelUtils.putPixel(0, h1 / 2, randomRGB(inPixels, 0, h1 / 2, useImageColors, originalSpace, randomGenerator),
-				outPixels, width);
-		PixelUtils.putPixel(w1, h1 / 2,
-				randomRGB(inPixels, w1, h1 / 2, useImageColors, originalSpace, randomGenerator), outPixels, width);
-		PixelUtils.putPixel(w1 / 2, 0, randomRGB(inPixels, w1 / 2, 0, useImageColors, originalSpace, randomGenerator),
-				outPixels, width);
-		PixelUtils.putPixel(w1 / 2, h1,
-				randomRGB(inPixels, w1 / 2, h1, useImageColors, originalSpace, randomGenerator), outPixels, width);
+		PixelUtils.putPixel(
+				0,
+				0,
+				randomRGB(inPixels, 0, 0, useImageColors, originalSpace,
+						randomGenerator), outPixels, width);
+		PixelUtils.putPixel(
+				w1,
+				0,
+				randomRGB(inPixels, w1, 0, useImageColors, originalSpace,
+						randomGenerator), outPixels, width);
+		PixelUtils.putPixel(
+				0,
+				h1,
+				randomRGB(inPixels, 0, h1, useImageColors, originalSpace,
+						randomGenerator), outPixels, width);
+		PixelUtils.putPixel(
+				w1,
+				h1,
+				randomRGB(inPixels, w1, h1, useImageColors, originalSpace,
+						randomGenerator), outPixels, width);
+		PixelUtils.putPixel(
+				w1 / 2,
+				h1 / 2,
+				randomRGB(inPixels, w1 / 2, h1 / 2, useImageColors,
+						originalSpace, randomGenerator), outPixels, width);
+		PixelUtils.putPixel(
+				0,
+				h1 / 2,
+				randomRGB(inPixels, 0, h1 / 2, useImageColors, originalSpace,
+						randomGenerator), outPixels, width);
+		PixelUtils.putPixel(
+				w1,
+				h1 / 2,
+				randomRGB(inPixels, w1, h1 / 2, useImageColors, originalSpace,
+						randomGenerator), outPixels, width);
+		PixelUtils.putPixel(
+				w1 / 2,
+				0,
+				randomRGB(inPixels, w1 / 2, 0, useImageColors, originalSpace,
+						randomGenerator), outPixels, width);
+		PixelUtils.putPixel(
+				w1 / 2,
+				h1,
+				randomRGB(inPixels, w1 / 2, h1, useImageColors, originalSpace,
+						randomGenerator), outPixels, width);
 		int depth = 1;
-		while (doPlasmaPixel(0, 0, width - 1, height - 1, outPixels, width, depth, 0, turbulence))
+		while (doPlasmaPixel(0, 0, width - 1, height - 1, outPixels, width,
+				depth, 0, turbulence))
 			depth++;
 
 		if (useColormap && colormap != null) {
 			int index = 0;
 			for (int y = 0; y < height; y++) {
 				for (int x = 0; x < width; x++) {
-					outPixels[index] = colormap.getColor((outPixels[index] & 0xff) / 255.0f);
+					outPixels[index] = colormap
+							.getColor((outPixels[index] & 0xff) / 255.0f);
 					index++;
 				}
 			}
 		}
-		return Bitmap.createBitmap(outPixels, src.getWidth(), src.getHeight(), outputConfig);
+		return Bitmap.createBitmap(outPixels, src.getWidth(), src.getHeight(),
+				outputConfig);
 	}
 
 	/**
@@ -542,7 +619,8 @@ public class ColorFilters {
 	 *            for the output bitmap
 	 * @return
 	 */
-	public static Bitmap tint(Bitmap bitmap, int tintDegree, Bitmap.Config config) {
+	public static Bitmap tint(Bitmap bitmap, int tintDegree,
+			Bitmap.Config config) {
 		int pich = bitmap.getHeight();
 		int picw = bitmap.getWidth();
 		int[] pix = BitmapUtils.getPixels(bitmap);
@@ -590,7 +668,8 @@ public class ColorFilters {
 	 *            Bitmap configuration of the output bitmap
 	 * @return
 	 */
-	public static final Bitmap grayScale(Bitmap src, int saturation, OutputConfiguration outputConfig) {
+	public static final Bitmap grayScale(Bitmap src, int saturation,
+			OutputConfiguration outputConfig) {
 		int[] rgbInput = BitmapUtils.getPixels(src);
 		// int[] rgbOutput = new int[src.getWidth() * src.getHeight()];
 
@@ -634,14 +713,16 @@ public class ColorFilters {
 				output_green = ((b * red + e * green + h * blue) >> 12) & 0x0000FF00;
 				output_blue = (c * red + f * green + i * blue) >> 20;
 
-				rgbInput[position] = alpha | output_red | output_green | output_blue;
+				rgbInput[position] = alpha | output_red | output_green
+						| output_blue;
 			}
 		}
 
 		if (outputConfig.canRecycleSrc) {
 			src.recycle();
 		}
-		return Bitmap.createBitmap(rgbInput, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
+		return Bitmap.createBitmap(rgbInput, meta.bitmapWidth,
+				meta.bitmapHeight, outputConfig.config);
 	}
 
 	/**
@@ -651,7 +732,8 @@ public class ColorFilters {
 	 * @param bitOffset
 	 * @return
 	 */
-	public static Bitmap decreaseColorDepth(final Bitmap bitmap, final int bitOffset, OutputConfiguration outputConfig) {
+	public static Bitmap decreaseColorDepth(final Bitmap bitmap,
+			final int bitOffset, OutputConfiguration outputConfig) {
 		int[] argb = BitmapUtils.getPixels(bitmap);
 		int A, R, G, B;
 		BitmapMeta meta = outputConfig.getBitmapMeta(bitmap);
@@ -659,21 +741,25 @@ public class ColorFilters {
 			for (int hr = meta.x; hr < meta.targetWidth; hr++) {
 
 				int position = (ver * meta.bitmapWidth) + hr;
-				// argb[position] = PixelUtils.setSaturation(argb[position], percent);
+				// argb[position] = PixelUtils.setSaturation(argb[position],
+				// percent);
 				A = Color.alpha(argb[position]);
 				R = Color.red(argb[position]);
 				G = Color.green(argb[position]);
 				B = Color.blue(argb[position]);
 				// round-off color offset
-				R = ((R + (bitOffset / 2)) - ((R + (bitOffset / 2)) % bitOffset) - 1);
+				R = ((R + (bitOffset / 2))
+						- ((R + (bitOffset / 2)) % bitOffset) - 1);
 				if (R < 0) {
 					R = 0;
 				}
-				G = ((G + (bitOffset / 2)) - ((G + (bitOffset / 2)) % bitOffset) - 1);
+				G = ((G + (bitOffset / 2))
+						- ((G + (bitOffset / 2)) % bitOffset) - 1);
 				if (G < 0) {
 					G = 0;
 				}
-				B = ((B + (bitOffset / 2)) - ((B + (bitOffset / 2)) % bitOffset) - 1);
+				B = ((B + (bitOffset / 2))
+						- ((B + (bitOffset / 2)) % bitOffset) - 1);
 				if (B < 0) {
 					B = 0;
 				}
@@ -684,7 +770,8 @@ public class ColorFilters {
 		if (outputConfig.canRecycleSrc) {
 			bitmap.recycle();
 		}
-		return Bitmap.createBitmap(argb, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
+		return Bitmap.createBitmap(argb, meta.bitmapWidth, meta.bitmapHeight,
+				outputConfig.config);
 	}
 
 	/**
@@ -702,7 +789,8 @@ public class ColorFilters {
 	 * @param outputConfig
 	 * @return
 	 */
-	public static Bitmap oilPaint(Bitmap src, int range, int levels, Bitmap.Config outputConfig) {
+	public static Bitmap oilPaint(Bitmap src, int range, int levels,
+			Bitmap.Config outputConfig) {
 		int width = src.getWidth();
 		int height = src.getHeight();
 		int[] inPixels = BitmapUtils.getPixels(src);
@@ -758,11 +846,13 @@ public class ColorFilters {
 				r = rTotal[r] / rHistogram[r];
 				g = gTotal[g] / gHistogram[g];
 				b = bTotal[b] / bHistogram[b];
-				outPixels[index] = (inPixels[index] & 0xff000000) | (r << 16) | (g << 8) | b;
+				outPixels[index] = (inPixels[index] & 0xff000000) | (r << 16)
+						| (g << 8) | b;
 				index++;
 			}
 		}
-		return Bitmap.createBitmap(outPixels, src.getWidth(), src.getHeight(), outputConfig);
+		return Bitmap.createBitmap(outPixels, src.getWidth(), src.getHeight(),
+				outputConfig);
 	}
 
 	/**
@@ -774,7 +864,8 @@ public class ColorFilters {
 	 * @param outputConfig
 	 * @return
 	 */
-	public static Bitmap temperature(Bitmap src, float temperature, OutputConfiguration outputConfig) {
+	public static Bitmap temperature(Bitmap src, float temperature,
+			OutputConfiguration outputConfig) {
 		int[] argb = BitmapUtils.getPixels(src);
 		BitmapMeta meta = outputConfig.getBitmapMeta(src);
 		int position, rgb, a, r, g, b;
@@ -796,9 +887,9 @@ public class ColorFilters {
 				r = rgb >> 16 & 0xff;
 				g = rgb >> 8 & 0xff;
 				b = rgb & 0xff;
-				r = (int) ((float) r * rFactor);
-				g = (int) ((float) g * gFactor);
-				b = (int) ((float) b * bFactor);
+				r = (int) (r * rFactor);
+				g = (int) (g * gFactor);
+				b = (int) (b * bFactor);
 				argb[position] = a | r << 16 | g << 8 | b;
 
 			}
@@ -806,15 +897,16 @@ public class ColorFilters {
 		if (outputConfig.canRecycleSrc) {
 			src.recycle();
 		}
-		return Bitmap.createBitmap(argb, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
+		return Bitmap.createBitmap(argb, meta.bitmapWidth, meta.bitmapHeight,
+				outputConfig.config);
 
 	}
 
 	/**
 	 * A filter which performs a tritone conversion on an image.
 	 * <p>
-	 * Given three colors for shadows, midtones and highlights, it converts the image to grayscale and then applies a
-	 * color mapping based on the colors.
+	 * Given three colors for shadows, midtones and highlights, it converts the
+	 * image to grayscale and then applies a color mapping based on the colors.
 	 * </p>
 	 * 
 	 * @param src
@@ -824,7 +916,8 @@ public class ColorFilters {
 	 * @param outputConfig
 	 * @return
 	 */
-	public static Bitmap tritone(Bitmap src, int shadowColor, int midColor, int highColor, OutputConfiguration outputConfig) {
+	public static Bitmap tritone(Bitmap src, int shadowColor, int midColor,
+			int highColor, OutputConfiguration outputConfig) {
 		int[] argb = BitmapUtils.getPixels(src);
 		BitmapMeta meta = outputConfig.getBitmapMeta(src);
 		int position, rgb;
@@ -847,14 +940,16 @@ public class ColorFilters {
 		if (outputConfig.canRecycleSrc) {
 			src.recycle();
 		}
-		return Bitmap.createBitmap(argb, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
+		return Bitmap.createBitmap(argb, meta.bitmapWidth, meta.bitmapHeight,
+				outputConfig.config);
 	}
 
 	/**
-	 * A filter which allows the red, green and blue channels of an image to be mixed into each other.
+	 * A filter which allows the red, green and blue channels of an image to be
+	 * mixed into each other.
 	 * <p>
-	 * Any particular color channel can be neglected by setting it to 0. and setting the <code>intoXX</code> value to
-	 * 255.
+	 * Any particular color channel can be neglected by setting it to 0. and
+	 * setting the <code>intoXX</code> value to 255.
 	 * </p>
 	 * 
 	 * @param src
@@ -873,7 +968,9 @@ public class ColorFilters {
 	 * @param outputConfig
 	 * @return
 	 */
-	public static Bitmap mixChannels(Bitmap src, int blueGreen, int intoRed, int redBlue, int intoGreen, int greenRed, int intoBlue, OutputConfiguration outputConfig) {
+	public static Bitmap mixChannels(Bitmap src, int blueGreen, int intoRed,
+			int redBlue, int intoGreen, int greenRed, int intoBlue,
+			OutputConfiguration outputConfig) {
 		int[] argb = BitmapUtils.getPixels(src);
 		BitmapMeta meta = outputConfig.getBitmapMeta(src);
 		int position, rgb, a, r, g, b, nr, ng, nb;
@@ -887,18 +984,24 @@ public class ColorFilters {
 				g = (rgb >> 8) & 0xff;
 				b = rgb & 0xff;
 				nr = PixelUtils
-						.clamp((intoRed * (blueGreen * g + (255 - blueGreen) * b) / 255 + (255 - intoRed) * r) / 255);
+						.clamp((intoRed
+								* (blueGreen * g + (255 - blueGreen) * b) / 255 + (255 - intoRed)
+								* r) / 255);
 				ng = PixelUtils
-						.clamp((intoGreen * (redBlue * b + (255 - redBlue) * r) / 255 + (255 - intoGreen) * g) / 255);
+						.clamp((intoGreen * (redBlue * b + (255 - redBlue) * r)
+								/ 255 + (255 - intoGreen) * g) / 255);
 				nb = PixelUtils
-						.clamp((intoBlue * (greenRed * r + (255 - greenRed) * g) / 255 + (255 - intoBlue) * b) / 255);
+						.clamp((intoBlue
+								* (greenRed * r + (255 - greenRed) * g) / 255 + (255 - intoBlue)
+								* b) / 255);
 				argb[position] = a | (nr << 16) | (ng << 8) | nb;
 			}
 		}
 		if (outputConfig.canRecycleSrc) {
 			src.recycle();
 		}
-		return Bitmap.createBitmap(argb, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
+		return Bitmap.createBitmap(argb, meta.bitmapWidth, meta.bitmapHeight,
+				outputConfig.config);
 
 	}
 
@@ -926,7 +1029,8 @@ public class ColorFilters {
 		if (outputConfig.canRecycleSrc) {
 			src.recycle();
 		}
-		return Bitmap.createBitmap(argb, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
+		return Bitmap.createBitmap(argb, meta.bitmapWidth, meta.bitmapHeight,
+				outputConfig.config);
 	}
 
 	private static float transferFunction(float v) {
@@ -936,7 +1040,8 @@ public class ColorFilters {
 	private static int[] makeSolarizeTable() {
 		int[] table = new int[256];
 		for (int i = 0; i < 256; i++)
-			table[i] = PixelUtils.clamp((int) (255 * transferFunction(i / 255.0f)));
+			table[i] = PixelUtils
+					.clamp((int) (255 * transferFunction(i / 255.0f)));
 		return table;
 	}
 
@@ -948,13 +1053,15 @@ public class ColorFilters {
 	 * @param upperColor
 	 *            Set the color to be used for pixels above the upper threshold.
 	 * @param threshold
-	 *            the color to be used for pixels below the lower threshold. min:0 max:1
+	 *            the color to be used for pixels below the lower threshold.
+	 *            min:0 max:1
 	 * @param softness
 	 *            the softness of the effect. min:0 max:1
 	 * @param outputConfig
 	 * @return
 	 */
-	public static Bitmap stamp(Bitmap src, int lowerColor, int upperColor, float threshold, float softness, OutputConfiguration outputConfig) {
+	public static Bitmap stamp(Bitmap src, int lowerColor, int upperColor,
+			float threshold, float softness, OutputConfiguration outputConfig) {
 
 		int[] argb = BitmapUtils.getPixels(src);
 		BitmapMeta meta = outputConfig.getBitmapMeta(src);
@@ -970,13 +1077,15 @@ public class ColorFilters {
 				g = (rgb >> 8) & 0xff;
 				b = rgb & 0xff;
 				l = r + g + b;
-				float f = ImageMath.smoothStep(lowerThreshold3, upperThreshold3, l);
+				float f = ImageMath.smoothStep(lowerThreshold3,
+						upperThreshold3, l);
 				argb[position] = ImageMath.mixColors(f, upperColor, lowerColor);
 			}
 		}
 		if (outputConfig.canRecycleSrc) {
 			src.recycle();
 		}
-		return Bitmap.createBitmap(argb, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
+		return Bitmap.createBitmap(argb, meta.bitmapWidth, meta.bitmapHeight,
+				outputConfig.config);
 	}
 }

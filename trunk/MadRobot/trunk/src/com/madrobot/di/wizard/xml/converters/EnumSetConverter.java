@@ -25,8 +25,9 @@ import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
 import com.madrobot.reflect.FieldUtils;
 
 /**
- * Serializes a Java 5 EnumSet. If a SecurityManager is set, the converter will only work with permissions for
- * SecurityManager.checkPackageAccess, SecurityManager.checkMemberAccess(this, EnumSet.MEMBER) and
+ * Serializes a Java 5 EnumSet. If a SecurityManager is set, the converter will
+ * only work with permissions for SecurityManager.checkPackageAccess,
+ * SecurityManager.checkMemberAccess(this, EnumSet.MEMBER) and
  * ReflectPermission("suppressAccessChecks").
  * 
  * @author Joe Walnes
@@ -49,7 +50,8 @@ public class EnumSetConverter implements Converter {
 				}
 			}
 			if (assumedTypeField == null) {
-				throw new ExceptionInInitializerError("Cannot detect element type of EnumSet");
+				throw new ExceptionInInitializerError(
+						"Cannot detect element type of EnumSet");
 			}
 		} catch (SecurityException ex) {
 			// ignore, no access possible with current SecurityManager
@@ -84,7 +86,8 @@ public class EnumSetConverter implements Converter {
 	}
 
 	@Override
-	public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
+	public void marshal(Object source, HierarchicalStreamWriter writer,
+			MarshallingContext context) {
 		EnumSet set = (EnumSet) source;
 		Class enumTypeForSet = null;
 		try {
@@ -95,19 +98,22 @@ public class EnumSetConverter implements Converter {
 		}
 		String attributeName = mapper.aliasForSystemAttribute("enum-type");
 		if (attributeName != null) {
-			writer.addAttribute(attributeName, mapper.serializedClass(enumTypeForSet));
+			writer.addAttribute(attributeName,
+					mapper.serializedClass(enumTypeForSet));
 		}
 		writer.setValue(joinEnumValues(set));
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+	public Object unmarshal(HierarchicalStreamReader reader,
+			UnmarshallingContext context) {
 		String attributeName = mapper.aliasForSystemAttribute("enum-type");
 		if (attributeName == null) {
 			throw new ConversionException("No EnumType specified for EnumSet");
 		}
-		Class enumTypeForSet = mapper.realClass(reader.getAttribute(attributeName));
+		Class enumTypeForSet = mapper.realClass(reader
+				.getAttribute(attributeName));
 		EnumSet set = EnumSet.noneOf(enumTypeForSet);
 		String[] enumValues = reader.getValue().split(",");
 		for (int i = 0; i < enumValues.length; i++) {

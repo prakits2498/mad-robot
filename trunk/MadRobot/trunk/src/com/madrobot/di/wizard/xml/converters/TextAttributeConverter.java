@@ -17,7 +17,8 @@ import java.awt.font.TextAttribute;
  * 
  * @since 1.2
  */
-public class TextAttributeConverter extends AbstractAttributedCharacterIteratorAttributeConverter {
+public class TextAttributeConverter extends
+		AbstractAttributedCharacterIteratorAttributeConverter {
 
 	/**
 	 * Constructs a TextAttributeConverter.

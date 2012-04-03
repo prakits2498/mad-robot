@@ -16,7 +16,8 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * Sort the fields in their natural order. Fields are returned in their declaration order, fields of base classes first.
+ * Sort the fields in their natural order. Fields are returned in their
+ * declaration order, fields of base classes first.
  * 
  * @author J&ouml;rg Schaible
  * @since 1.2.2

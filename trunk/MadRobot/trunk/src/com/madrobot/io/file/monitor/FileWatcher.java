@@ -12,7 +12,6 @@ package com.madrobot.io.file.monitor;
 
 import java.io.File;
 
-
 import android.os.FileObserver;
 
 /**
@@ -30,7 +29,7 @@ public class FileWatcher extends FileObserver {
 
 	@Override
 	public void onEvent(int i, String s) {
-		if(listener != null){
+		if (listener != null) {
 			listener.onFileStatusChanged(i, new File(s));
 		}
 	}

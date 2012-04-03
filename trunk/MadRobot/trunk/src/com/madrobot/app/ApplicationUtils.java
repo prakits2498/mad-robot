@@ -19,45 +19,44 @@ public final class ApplicationUtils {
 	public File getDexFileDirectory(Context context) {
 		return context.getDir("dex", 0);
 	}
-	
-	
+
 	/**
-     * Utility method to test if a package is installed or not.
-     *
-     * @param context
-     * @param packagName
-     * @return
-     */
-    public static boolean isPackageInstalled(Context context, String packagName) {
+	 * Utility method to test if a package is installed or not.
+	 * 
+	 * @param context
+	 * @param packagName
+	 * @return
+	 */
+	public static boolean isPackageInstalled(Context context, String packagName) {
 		boolean rv = true;
 
-    	try {
+		try {
 			PackageManager pm = context.getPackageManager();
 			pm.getPackageInfo(packagName, 0);
-		}
-		catch (NameNotFoundException e) {
+		} catch (NameNotFoundException e) {
 			rv = false;
 		}
 
 		return rv;
-    }
-	
-    public static int getAPINumber() {
-		if (isAPILevelLower4()) return 3;
+	}
+
+	public static int getAPINumber() {
+		if (isAPILevelLower4())
+			return 3;
 		int version = 3;
 		try {
 			Class buildClass = Build.VERSION.class;
 			Field sdkint = buildClass.getField("SDK_INT");
 			version = sdkint.getInt(null);
-		} catch (Exception ignore) {}
+		} catch (Exception ignore) {
+		}
 		return version;
 	}
 
-    
-    /**
-	 * Returns true when platform version is lower or equal to 1.5
-	 * Since prior to 1.5 there was no Build.VERSION.SDK_INT available.
-	 *
+	/**
+	 * Returns true when platform version is lower or equal to 1.5 Since prior
+	 * to 1.5 there was no Build.VERSION.SDK_INT available.
+	 * 
 	 * @return
 	 */
 	public static boolean isAPILevelLower4() {

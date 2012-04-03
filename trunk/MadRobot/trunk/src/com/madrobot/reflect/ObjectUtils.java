@@ -123,32 +123,35 @@ public class ObjectUtils {
 	 * @since 3.0
 	 */
 	public static <T> T clone(final T o) {
-		if(o instanceof Cloneable){
+		if (o instanceof Cloneable) {
 			final Object result;
-			if(o.getClass().isArray()){
+			if (o.getClass().isArray()) {
 				final Class<?> componentType = o.getClass().getComponentType();
-				if(!componentType.isPrimitive()){
+				if (!componentType.isPrimitive()) {
 					result = ((Object[]) o).clone();
-				} else{
+				} else {
 					int length = Array.getLength(o);
 					result = Array.newInstance(componentType, length);
-					while(length-- > 0){
+					while (length-- > 0) {
 						Array.set(result, length, Array.get(o, length));
 					}
 				}
-			} else{
-				try{
+			} else {
+				try {
 					final Method clone = o.getClass().getMethod("clone");
 					result = clone.invoke(o);
-				} catch(final NoSuchMethodException e){
-					throw new CloneFailedException("Cloneable type " + o.getClass().getName()
-							+ " has no clone method", e);
-				} catch(final IllegalAccessException e){
-					throw new CloneFailedException("Cannot clone Cloneable type " + o.getClass().getName(),
+				} catch (final NoSuchMethodException e) {
+					throw new CloneFailedException("Cloneable type "
+							+ o.getClass().getName() + " has no clone method",
 							e);
-				} catch(final InvocationTargetException e){
-					throw new CloneFailedException("Exception cloning Cloneable type "
-							+ o.getClass().getName(), e.getCause());
+				} catch (final IllegalAccessException e) {
+					throw new CloneFailedException(
+							"Cannot clone Cloneable type "
+									+ o.getClass().getName(), e);
+				} catch (final InvocationTargetException e) {
+					throw new CloneFailedException(
+							"Exception cloning Cloneable type "
+									+ o.getClass().getName(), e.getCause());
 				}
 			}
 			@SuppressWarnings("unchecked")
@@ -161,15 +164,13 @@ public class ObjectUtils {
 
 	/**
 	 * Clone an object if possible. This method is similar to
-	 * {@link #clone(Object)}, but will
-	 * return the provided instance as the return value instead of
-	 * <code>null</code> if the instance
-	 * is not cloneable. This is more convenient if the caller uses different
+	 * {@link #clone(Object)}, but will return the provided instance as the
+	 * return value instead of <code>null</code> if the instance is not
+	 * cloneable. This is more convenient if the caller uses different
 	 * implementations (e.g. of a service) and some of the implementations do
-	 * not allow concurrent
-	 * processing or have state. In such cases the implementation can simply
-	 * provide a proper
-	 * clone implementation and the caller's code does not have to change.
+	 * not allow concurrent processing or have state. In such cases the
+	 * implementation can simply provide a proper clone implementation and the
+	 * caller's code does not have to change.
 	 * 
 	 * @param <T>
 	 *            the type of the object
@@ -238,10 +239,10 @@ public class ObjectUtils {
 	 * @return <code>true</code> if the values of both objects are the same
 	 */
 	public static boolean equals(Object object1, Object object2) {
-		if(object1 == object2){
+		if (object1 == object2) {
 			return true;
 		}
-		if((object1 == null) || (object2 == null)){
+		if ((object1 == null) || (object2 == null)) {
 			return false;
 		}
 		return object1.equals(object2);
@@ -268,13 +269,13 @@ public class ObjectUtils {
 	 * @param values
 	 *            the values to test, may be <code>null</code> or empty
 	 * @return the first value from <code>values</code> which is not
-	 *         <code>null</code>,
-	 *         or <code>null</code> if there are no non-null values
+	 *         <code>null</code>, or <code>null</code> if there are no non-null
+	 *         values
 	 */
 	public static <T> T firstNonNull(T... values) {
-		if(values != null){
-			for(T val : values){
-				if(val != null){
+		if (values != null) {
+			for (T val : values) {
+				if (val != null) {
 					return val;
 				}
 			}
@@ -303,7 +304,7 @@ public class ObjectUtils {
 	 *         <code>null</code> passed in
 	 */
 	public static String identityToString(Object object) {
-		if(object == null){
+		if (object == null) {
 			return null;
 		}
 		StringBuffer buffer = new StringBuffer();
@@ -331,11 +332,12 @@ public class ObjectUtils {
 	 * @since 2.4
 	 */
 	public static void identityToString(StringBuffer buffer, Object object) {
-		if(object == null){
-			throw new NullPointerException("Cannot get the toString of a null identity");
+		if (object == null) {
+			throw new NullPointerException(
+					"Cannot get the toString of a null identity");
 		}
-		buffer.append(object.getClass().getName()).append('@').append(
-				Integer.toHexString(System.identityHashCode(object)));
+		buffer.append(object.getClass().getName()).append('@')
+				.append(Integer.toHexString(System.identityHashCode(object)));
 	}
 
 	/**
@@ -345,8 +347,7 @@ public class ObjectUtils {
 	 *            the first comparable, may be null
 	 * @param c2
 	 *            the second comparable, may be null
-	 * @return
-	 *         <ul>
+	 * @return <ul>
 	 *         <li>If both objects are non-null and unequal, the greater object.
 	 *         <li>If both objects are non-null and equal, c1.
 	 *         <li>If one of the comparables is null, the non-null object.
@@ -354,9 +355,9 @@ public class ObjectUtils {
 	 *         </ul>
 	 */
 	public static <T extends Comparable<? super T>> T max(T c1, T c2) {
-		if(c1 != null && c2 != null){
+		if (c1 != null && c2 != null) {
 			return c1.compareTo(c2) >= 0 ? c1 : c2;
-		} else{
+		} else {
 			return c1 != null ? c1 : c2;
 		}
 	}
@@ -370,8 +371,7 @@ public class ObjectUtils {
 	 *            the first comparable, may be null
 	 * @param c2
 	 *            the second comparable, may be null
-	 * @return
-	 *         <ul>
+	 * @return <ul>
 	 *         <li>If both objects are non-null and unequal, the lesser object.
 	 *         <li>If both objects are non-null and equal, c1.
 	 *         <li>If one of the comparables is null, the non-null object.
@@ -379,9 +379,9 @@ public class ObjectUtils {
 	 *         </ul>
 	 */
 	public static <T extends Comparable<? super T>> T min(T c1, T c2) {
-		if(c1 != null && c2 != null){
+		if (c1 != null && c2 != null) {
 			return c1.compareTo(c2) < 1 ? c1 : c2;
-		} else{
+		} else {
 			return c1 != null ? c1 : c2;
 		}
 	}

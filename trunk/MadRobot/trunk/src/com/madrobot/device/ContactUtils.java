@@ -31,18 +31,19 @@ public final class ContactUtils {
 
 	public static List<Contact> fetchContacts(Context context) {
 		ContentResolver cr = context.getContentResolver();
-		Cursor namesCursor = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
-		try{
+		Cursor namesCursor = cr.query(ContactsContract.Contacts.CONTENT_URI,
+				null, null, null, null);
+		try {
 			return BeanGenerator.toBeanList(namesCursor, Contact.class);
-		} catch(IllegalArgumentException e){
+		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		} catch(IllegalAccessException e){
+		} catch (IllegalAccessException e) {
 			e.printStackTrace();
-		} catch(InstantiationException e){
+		} catch (InstantiationException e) {
 			e.printStackTrace();
-		} catch(IntrospectionException e){
+		} catch (IntrospectionException e) {
 			e.printStackTrace();
-		} catch(InvocationTargetException e){
+		} catch (InvocationTargetException e) {
 			e.printStackTrace();
 		}
 		return null;
@@ -57,7 +58,8 @@ public final class ContactUtils {
 	 *            Phone number to save
 	 */
 	public static void saveToContact(Context context, String number) {
-		Intent intent = new Intent(Contacts.Intents.Insert.ACTION, Contacts.People.CONTENT_URI);
+		Intent intent = new Intent(Contacts.Intents.Insert.ACTION,
+				Contacts.People.CONTENT_URI);
 		intent.putExtra(Contacts.Intents.Insert.PHONE, number);
 		context.startActivity(intent);
 	}

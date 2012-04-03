@@ -10,7 +10,6 @@
  ******************************************************************************/
 package com.madrobot.ui.widgets;
 
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
@@ -30,12 +29,10 @@ import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.view.View.MeasureSpec;
 
 public final class DashboardGauge extends View {
 
 	private static final int centerDegree = 40; // the one in the top center (12
-
 
 	// scale configuration
 	private static final int totalNicks = 100;
@@ -101,23 +98,21 @@ public final class DashboardGauge extends View {
 	}
 
 	private int chooseDimension(int mode, int size) {
-		if(mode == MeasureSpec.AT_MOST || mode == MeasureSpec.EXACTLY){
+		if (mode == MeasureSpec.AT_MOST || mode == MeasureSpec.EXACTLY) {
 			return size;
-		} else{ // (mode == MeasureSpec.UNSPECIFIED)
+		} else { // (mode == MeasureSpec.UNSPECIFIED)
 			return getPreferredSize();
 		}
 	}
-
-	
 
 	private float degreeToAngle(float degree) {
 		return (degree - centerDegree) / 2.0f * degreesPerNick;
 	}
 
 	private void drawBackground(Canvas canvas) {
-		if(background == null){
+		if (background == null) {
 			Log.w(TAG, "Background not created");
-		} else{
+		} else {
 			canvas.drawBitmap(background, 0, 0, backgroundPaint);
 		}
 	}
@@ -130,10 +125,8 @@ public final class DashboardGauge extends View {
 		canvas.drawOval(faceRect, rimShadowPaint);
 	}
 
-	
-
 	private void drawHand(Canvas canvas) {
-		if(handInitialized){
+		if (handInitialized) {
 			float handAngle = degreeToAngle(handPosition);
 			canvas.save(Canvas.MATRIX_SAVE_FLAG);
 			canvas.rotate(handAngle, 0.5f, 0.5f);
@@ -146,20 +139,21 @@ public final class DashboardGauge extends View {
 
 	private void drawLogo(Canvas canvas) {
 		canvas.save(Canvas.MATRIX_SAVE_FLAG);
-		canvas.translate(0.5f - logo.getWidth() * logoScale / 2.0f, 0.5f - logo.getHeight() * logoScale
-				/ 2.0f);
+		canvas.translate(0.5f - logo.getWidth() * logoScale / 2.0f,
+				0.5f - logo.getHeight() * logoScale / 2.0f);
 
 		int color = 0x00000000;
 		float position = getRelativeTemperaturePosition();
-		if(position < 0){
+		if (position < 0) {
 			color |= (int) ((0xf0) * -position); // blue
-		} else{
+		} else {
 			color |= ((int) ((0xf0) * position)) << 16; // red
 		}
 		// Log.d(TAG, "*** " + Integer.toHexString(color));
-		LightingColorFilter logoFilter = new LightingColorFilter(0xff008822, color);
+		LightingColorFilter logoFilter = new LightingColorFilter(0xff008822,
+				color);
 		logoPaint.setColorFilter(logoFilter);
-		if(logo != null)
+		if (logo != null)
 			canvas.drawBitmap(logo, logoMatrix, logoPaint);
 		canvas.restore();
 	}
@@ -174,16 +168,16 @@ public final class DashboardGauge extends View {
 	private void drawScale(Canvas canvas) {
 		canvas.drawOval(scaleRect, scalePaint);
 		canvas.save(Canvas.MATRIX_SAVE_FLAG);
-		for(int i = 0; i < totalNicks; ++i){
+		for (int i = 0; i < totalNicks; ++i) {
 			float y1 = scaleRect.top;
 			float y2 = y1 - 0.020f;
 
 			canvas.drawLine(0.5f, y1, 0.5f, y2, scalePaint);
 
-			if(i % 5 == 0){
+			if (i % 5 == 0) {
 				int value = nickToDegree(i);
 
-				if(value >= minDegrees && value <= maxDegrees){
+				if (value >= minDegrees && value <= maxDegrees) {
 					String valueString = Integer.toString(value);
 					canvas.drawText(valueString, 0.5f, y2 - 0.015f, scalePaint);
 				}
@@ -204,9 +198,9 @@ public final class DashboardGauge extends View {
 	}
 
 	private float getRelativeTemperaturePosition() {
-		if(handPosition < centerDegree){
+		if (handPosition < centerDegree) {
 			return -(centerDegree - handPosition) / (centerDegree - minDegrees);
-		} else{
+		} else {
 			return (handPosition - centerDegree) / (maxDegrees - centerDegree);
 		}
 	}
@@ -220,32 +214,32 @@ public final class DashboardGauge extends View {
 	}
 
 	private void moveHand() {
-		if(!handNeedsToMove()){
+		if (!handNeedsToMove()) {
 			return;
 		}
 
-		if(lastHandMoveTime != -1L){
+		if (lastHandMoveTime != -1L) {
 			long currentTime = System.currentTimeMillis();
 			float delta = (currentTime - lastHandMoveTime) / 1000.0f;
 
 			float direction = Math.signum(handVelocity);
-			if(Math.abs(handVelocity) < 90.0f){
+			if (Math.abs(handVelocity) < 90.0f) {
 				handAcceleration = 5.0f * (handTarget - handPosition);
-			} else{
+			} else {
 				handAcceleration = 0.0f;
 			}
 			handPosition += handVelocity * delta;
 			handVelocity += handAcceleration * delta;
-			if((handTarget - handPosition) * direction < 0.01f * direction){
+			if ((handTarget - handPosition) * direction < 0.01f * direction) {
 				handPosition = handTarget;
 				handVelocity = 0.0f;
 				handAcceleration = 0.0f;
 				lastHandMoveTime = -1L;
-			} else{
+			} else {
 				lastHandMoveTime = System.currentTimeMillis();
 			}
 			invalidate();
-		} else{
+		} else {
 			lastHandMoveTime = System.currentTimeMillis();
 			moveHand();
 		}
@@ -270,7 +264,7 @@ public final class DashboardGauge extends View {
 
 		canvas.restore();
 
-		if(handNeedsToMove()){
+		if (handNeedsToMove()) {
 			moveHand();
 		}
 	}
@@ -332,11 +326,12 @@ public final class DashboardGauge extends View {
 
 	private void regenerateBackground() {
 		// free the old bitmap
-		if(background != null){
+		if (background != null) {
 			background.recycle();
 		}
 
-		background = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
+		background = Bitmap.createBitmap(getWidth(), getHeight(),
+				Bitmap.Config.ARGB_8888);
 		Canvas backgroundCanvas = new Canvas(background);
 		float scale = getWidth();
 		backgroundCanvas.scale(scale, scale);
@@ -348,9 +343,9 @@ public final class DashboardGauge extends View {
 	}
 
 	public void setHandTarget(float value) {
-		if(value < minDegrees){
+		if (value < minDegrees) {
 			value = minDegrees;
-		} else if(value > maxDegrees){
+		} else if (value > maxDegrees) {
 			value = maxDegrees;
 		}
 		handTarget = value;
@@ -368,10 +363,11 @@ public final class DashboardGauge extends View {
 
 	public void setScaleTexture(Bitmap texture) {
 		this.faceTexture = texture;
-		BitmapShader paperShader = new BitmapShader(faceTexture, Shader.TileMode.MIRROR,
-				Shader.TileMode.MIRROR);
+		BitmapShader paperShader = new BitmapShader(faceTexture,
+				Shader.TileMode.MIRROR, Shader.TileMode.MIRROR);
 		Matrix paperMatrix = new Matrix();
-		paperMatrix.setScale(1.0f / faceTexture.getWidth(), 1.0f / faceTexture.getHeight());
+		paperMatrix.setScale(1.0f / faceTexture.getWidth(),
+				1.0f / faceTexture.getHeight());
 		paperShader.setLocalMatrix(paperMatrix);
 		facePaint.setFilterBitmap(true);
 		facePaint.setShader(paperShader);
@@ -383,15 +379,15 @@ public final class DashboardGauge extends View {
 		invalidate();
 	}
 
-	
 	protected void setupDrawingTools() {
 		rimRect = new RectF(0.1f, 0.1f, 0.9f, 0.9f);
 
 		// the linear gradient is a bit skewed for realism
 		rimPaint = new Paint();
 		rimPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
-		rimPaint.setShader(new LinearGradient(0.40f, 0.0f, 0.60f, 1.0f, Color.rgb(0xf0, 0xf5, 0xf0), Color
-				.rgb(0x30, 0x31, 0x30), Shader.TileMode.CLAMP));
+		rimPaint.setShader(new LinearGradient(0.40f, 0.0f, 0.60f, 1.0f, Color
+				.rgb(0xf0, 0xf5, 0xf0), Color.rgb(0x30, 0x31, 0x30),
+				Shader.TileMode.CLAMP));
 
 		rimCirclePaint = new Paint();
 		rimCirclePaint.setAntiAlias(true);
@@ -401,17 +397,17 @@ public final class DashboardGauge extends View {
 
 		float rimSize = 0.02f;
 		faceRect = new RectF();
-		faceRect.set(rimRect.left + rimSize, rimRect.top + rimSize, rimRect.right - rimSize, rimRect.bottom
-				- rimSize);
-
+		faceRect.set(rimRect.left + rimSize, rimRect.top + rimSize,
+				rimRect.right - rimSize, rimRect.bottom - rimSize);
 
 		facePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		facePaint.setStyle(Paint.Style.FILL);
-		
+
 		rimShadowPaint = new Paint();
-		rimShadowPaint.setShader(new RadialGradient(0.5f, 0.5f, faceRect.width() / 2.0f, new int[] {
-				0x00000000, 0x00000500, 0x50000500 }, new float[] { 0.96f, 0.96f, 0.99f },
-				Shader.TileMode.MIRROR));
+		rimShadowPaint.setShader(new RadialGradient(0.5f, 0.5f, faceRect
+				.width() / 2.0f,
+				new int[] { 0x00000000, 0x00000500, 0x50000500 }, new float[] {
+						0.96f, 0.96f, 0.99f }, Shader.TileMode.MIRROR));
 		rimShadowPaint.setStyle(Paint.Style.FILL);
 
 		scalePaint = new Paint();
@@ -427,8 +423,9 @@ public final class DashboardGauge extends View {
 
 		float scalePosition = 0.10f;
 		scaleRect = new RectF();
-		scaleRect.set(faceRect.left + scalePosition, faceRect.top + scalePosition, faceRect.right
-				- scalePosition, faceRect.bottom - scalePosition);
+		scaleRect.set(faceRect.left + scalePosition, faceRect.top
+				+ scalePosition, faceRect.right - scalePosition,
+				faceRect.bottom - scalePosition);
 
 		titlePaint = new Paint();
 		titlePaint.setColor(0xaf946109);
@@ -439,7 +436,8 @@ public final class DashboardGauge extends View {
 		titlePaint.setTextScaleX(0.8f);
 
 		titlePath = new Path();
-		titlePath.addArc(new RectF(0.24f, 0.24f, 0.76f, 0.76f), -180.0f, -180.0f);
+		titlePath.addArc(new RectF(0.24f, 0.24f, 0.76f, 0.76f), -180.0f,
+				-180.0f);
 
 		logoPaint = new Paint();
 		logoPaint.setFilterBitmap(true);

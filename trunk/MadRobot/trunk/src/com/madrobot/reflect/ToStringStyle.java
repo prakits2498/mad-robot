@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-
 /**
  * <p>
  * Controls <code>String</code> formatting for {@link ToStringBuilder}. The main
@@ -48,8 +47,9 @@ import java.util.WeakHashMap;
  * 
  * <pre>
  * public class MyStyle extends ToStringStyle {
- * 	protected void appendDetail(StringBuffer buffer, String fieldName, Object value) {
- * 		if(value instanceof Date){
+ * 	protected void appendDetail(StringBuffer buffer, String fieldName,
+ * 			Object value) {
+ * 		if (value instanceof Date) {
  * 			value = new SimpleDateFormat(&quot;yyyy-MM-dd&quot;).format(value);
  * 		}
  * 		buffer.append(value);
@@ -288,7 +288,7 @@ abstract class ToStringStyle implements Serializable {
 	 * Person@182f0db[name=John Doe,age=33,smoker=false]
 	 * </pre>
 	 */
-	 static final ToStringStyle DEFAULT_STYLE = new DefaultToStringStyle();
+	static final ToStringStyle DEFAULT_STYLE = new DefaultToStringStyle();
 
 	/**
 	 * The multi line toString style. Using the Using the <code>Person</code>
@@ -302,7 +302,7 @@ abstract class ToStringStyle implements Serializable {
 	 * ]
 	 * </pre>
 	 */
-	 static final ToStringStyle MULTI_LINE_STYLE = new MultiLineToStringStyle();
+	static final ToStringStyle MULTI_LINE_STYLE = new MultiLineToStringStyle();
 
 	/**
 	 * The no field names toString style. Using the Using the
@@ -313,7 +313,7 @@ abstract class ToStringStyle implements Serializable {
 	 * Person@182f0db[John Doe,33,false]
 	 * </pre>
 	 */
-	 static final ToStringStyle NO_FIELD_NAMES_STYLE = new NoFieldNameToStringStyle();
+	static final ToStringStyle NO_FIELD_NAMES_STYLE = new NoFieldNameToStringStyle();
 
 	/**
 	 * <p>
@@ -333,7 +333,7 @@ abstract class ToStringStyle implements Serializable {
 	 * 
 	 * @since 2.1
 	 */
-	 static final ToStringStyle SHORT_PREFIX_STYLE = new ShortPrefixToStringStyle();
+	static final ToStringStyle SHORT_PREFIX_STYLE = new ShortPrefixToStringStyle();
 
 	/**
 	 * The simple toString style. Using the Using the <code>Person</code>
@@ -343,7 +343,7 @@ abstract class ToStringStyle implements Serializable {
 	 * John Doe,33,false
 	 * </pre>
 	 */
-	 static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
+	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 
 	/**
 	 * <p>
@@ -383,9 +383,9 @@ abstract class ToStringStyle implements Serializable {
 	 *            The object to register.
 	 */
 	static void register(Object value) {
-		if(value != null){
+		if (value != null) {
 			Map<Object, Object> m = getRegistry();
-			if(m == null){
+			if (m == null) {
 				REGISTRY.set(new WeakHashMap<Object, Object>());
 			}
 			getRegistry().put(value, null);
@@ -405,11 +405,11 @@ abstract class ToStringStyle implements Serializable {
 	 *            The object to unregister.
 	 */
 	static void unregister(Object value) {
-		if(value != null){
+		if (value != null) {
 			Map<Object, Object> m = getRegistry();
-			if(m != null){
+			if (m != null) {
 				m.remove(value);
-				if(m.isEmpty()){
+				if (m.isEmpty()) {
 					REGISTRY.remove();
 				}
 			}
@@ -447,8 +447,8 @@ abstract class ToStringStyle implements Serializable {
 	private String contentStart = "[";
 
 	/**
-	 * The value to use when fullDetail is <code>null</code>,
-	 * the default value is <code>true</code>.
+	 * The value to use when fullDetail is <code>null</code>, the default value
+	 * is <code>true</code>.
 	 */
 	private boolean defaultFullDetail = true;
 
@@ -544,7 +544,7 @@ abstract class ToStringStyle implements Serializable {
 	 * @param value
 	 *            the value to add to the <code>toString</code>
 	 */
-	 void append(StringBuffer buffer, String fieldName, boolean value) {
+	void append(StringBuffer buffer, String fieldName, boolean value) {
 		appendFieldStart(buffer, fieldName);
 		appendDetail(buffer, fieldName, value);
 		appendFieldEnd(buffer, fieldName);
@@ -565,16 +565,17 @@ abstract class ToStringStyle implements Serializable {
 	 *            <code>true</code> for detail, <code>false</code> for summary
 	 *            info, <code>null</code> for style decides
 	 */
-	 void append(StringBuffer buffer, String fieldName, boolean[] array, Boolean fullDetail) {
+	void append(StringBuffer buffer, String fieldName, boolean[] array,
+			Boolean fullDetail) {
 		appendFieldStart(buffer, fieldName);
 
-		if(array == null){
+		if (array == null) {
 			appendNullText(buffer, fieldName);
 
-		} else if(isFullDetail(fullDetail)){
+		} else if (isFullDetail(fullDetail)) {
 			appendDetail(buffer, fieldName, array);
 
-		} else{
+		} else {
 			appendSummary(buffer, fieldName, array);
 		}
 
@@ -614,16 +615,17 @@ abstract class ToStringStyle implements Serializable {
 	 *            <code>true</code> for detail, <code>false</code> for summary
 	 *            info, <code>null</code> for style decides
 	 */
-	 void append(StringBuffer buffer, String fieldName, byte[] array, Boolean fullDetail) {
+	void append(StringBuffer buffer, String fieldName, byte[] array,
+			Boolean fullDetail) {
 		appendFieldStart(buffer, fieldName);
 
-		if(array == null){
+		if (array == null) {
 			appendNullText(buffer, fieldName);
 
-		} else if(isFullDetail(fullDetail)){
+		} else if (isFullDetail(fullDetail)) {
 			appendDetail(buffer, fieldName, array);
 
-		} else{
+		} else {
 			appendSummary(buffer, fieldName, array);
 		}
 
@@ -663,16 +665,17 @@ abstract class ToStringStyle implements Serializable {
 	 *            <code>true</code> for detail, <code>false</code> for summary
 	 *            info, <code>null</code> for style decides
 	 */
-	 void append(StringBuffer buffer, String fieldName, char[] array, Boolean fullDetail) {
+	void append(StringBuffer buffer, String fieldName, char[] array,
+			Boolean fullDetail) {
 		appendFieldStart(buffer, fieldName);
 
-		if(array == null){
+		if (array == null) {
 			appendNullText(buffer, fieldName);
 
-		} else if(isFullDetail(fullDetail)){
+		} else if (isFullDetail(fullDetail)) {
 			appendDetail(buffer, fieldName, array);
 
-		} else{
+		} else {
 			appendSummary(buffer, fieldName, array);
 		}
 
@@ -691,7 +694,7 @@ abstract class ToStringStyle implements Serializable {
 	 * @param value
 	 *            the value to add to the <code>toString</code>
 	 */
-	 void append(StringBuffer buffer, String fieldName, double value) {
+	void append(StringBuffer buffer, String fieldName, double value) {
 		appendFieldStart(buffer, fieldName);
 		appendDetail(buffer, fieldName, value);
 		appendFieldEnd(buffer, fieldName);
@@ -714,16 +717,17 @@ abstract class ToStringStyle implements Serializable {
 	 *            <code>true</code> for detail, <code>false</code> for summary
 	 *            info, <code>null</code> for style decides
 	 */
-	 void append(StringBuffer buffer, String fieldName, double[] array, Boolean fullDetail) {
+	void append(StringBuffer buffer, String fieldName, double[] array,
+			Boolean fullDetail) {
 		appendFieldStart(buffer, fieldName);
 
-		if(array == null){
+		if (array == null) {
 			appendNullText(buffer, fieldName);
 
-		} else if(isFullDetail(fullDetail)){
+		} else if (isFullDetail(fullDetail)) {
 			appendDetail(buffer, fieldName, array);
 
-		} else{
+		} else {
 			appendSummary(buffer, fieldName, array);
 		}
 
@@ -742,7 +746,7 @@ abstract class ToStringStyle implements Serializable {
 	 * @param value
 	 *            the value to add to the <code>toString</code>
 	 */
-	 void append(StringBuffer buffer, String fieldName, float value) {
+	void append(StringBuffer buffer, String fieldName, float value) {
 		appendFieldStart(buffer, fieldName);
 		appendDetail(buffer, fieldName, value);
 		appendFieldEnd(buffer, fieldName);
@@ -765,16 +769,17 @@ abstract class ToStringStyle implements Serializable {
 	 *            <code>true</code> for detail, <code>false</code> for summary
 	 *            info, <code>null</code> for style decides
 	 */
-	 void append(StringBuffer buffer, String fieldName, float[] array, Boolean fullDetail) {
+	void append(StringBuffer buffer, String fieldName, float[] array,
+			Boolean fullDetail) {
 		appendFieldStart(buffer, fieldName);
 
-		if(array == null){
+		if (array == null) {
 			appendNullText(buffer, fieldName);
 
-		} else if(isFullDetail(fullDetail)){
+		} else if (isFullDetail(fullDetail)) {
 			appendDetail(buffer, fieldName, array);
 
-		} else{
+		} else {
 			appendSummary(buffer, fieldName, array);
 		}
 
@@ -816,16 +821,17 @@ abstract class ToStringStyle implements Serializable {
 	 *            <code>true</code> for detail, <code>false</code> for summary
 	 *            info, <code>null</code> for style decides
 	 */
-	 void append(StringBuffer buffer, String fieldName, int[] array, Boolean fullDetail) {
+	void append(StringBuffer buffer, String fieldName, int[] array,
+			Boolean fullDetail) {
 		appendFieldStart(buffer, fieldName);
 
-		if(array == null){
+		if (array == null) {
 			appendNullText(buffer, fieldName);
 
-		} else if(isFullDetail(fullDetail)){
+		} else if (isFullDetail(fullDetail)) {
 			appendDetail(buffer, fieldName, array);
 
-		} else{
+		} else {
 			appendSummary(buffer, fieldName, array);
 		}
 
@@ -867,16 +873,17 @@ abstract class ToStringStyle implements Serializable {
 	 *            <code>true</code> for detail, <code>false</code> for summary
 	 *            info, <code>null</code> for style decides
 	 */
-	 void append(StringBuffer buffer, String fieldName, long[] array, Boolean fullDetail) {
+	void append(StringBuffer buffer, String fieldName, long[] array,
+			Boolean fullDetail) {
 		appendFieldStart(buffer, fieldName);
 
-		if(array == null){
+		if (array == null) {
 			appendNullText(buffer, fieldName);
 
-		} else if(isFullDetail(fullDetail)){
+		} else if (isFullDetail(fullDetail)) {
 			appendDetail(buffer, fieldName, array);
 
-		} else{
+		} else {
 			appendSummary(buffer, fieldName, array);
 		}
 
@@ -900,13 +907,14 @@ abstract class ToStringStyle implements Serializable {
 	 *            <code>true</code> for detail, <code>false</code> for summary
 	 *            info, <code>null</code> for style decides
 	 */
-	public void append(StringBuffer buffer, String fieldName, Object value, Boolean fullDetail) {
+	public void append(StringBuffer buffer, String fieldName, Object value,
+			Boolean fullDetail) {
 		appendFieldStart(buffer, fieldName);
 
-		if(value == null){
+		if (value == null) {
 			appendNullText(buffer, fieldName);
 
-		} else{
+		} else {
 			appendInternal(buffer, fieldName, value, isFullDetail(fullDetail));
 		}
 
@@ -930,16 +938,17 @@ abstract class ToStringStyle implements Serializable {
 	 *            <code>true</code> for detail, <code>false</code> for summary
 	 *            info, <code>null</code> for style decides
 	 */
-	 void append(StringBuffer buffer, String fieldName, Object[] array, Boolean fullDetail) {
+	void append(StringBuffer buffer, String fieldName, Object[] array,
+			Boolean fullDetail) {
 		appendFieldStart(buffer, fieldName);
 
-		if(array == null){
+		if (array == null) {
 			appendNullText(buffer, fieldName);
 
-		} else if(isFullDetail(fullDetail)){
+		} else if (isFullDetail(fullDetail)) {
 			appendDetail(buffer, fieldName, array);
 
-		} else{
+		} else {
 			appendSummary(buffer, fieldName, array);
 		}
 
@@ -981,16 +990,17 @@ abstract class ToStringStyle implements Serializable {
 	 *            <code>true</code> for detail, <code>false</code> for summary
 	 *            info, <code>null</code> for style decides
 	 */
-	 void append(StringBuffer buffer, String fieldName, short[] array, Boolean fullDetail) {
+	void append(StringBuffer buffer, String fieldName, short[] array,
+			Boolean fullDetail) {
 		appendFieldStart(buffer, fieldName);
 
-		if(array == null){
+		if (array == null) {
 			appendNullText(buffer, fieldName);
 
-		} else if(isFullDetail(fullDetail)){
+		} else if (isFullDetail(fullDetail)) {
 			appendDetail(buffer, fieldName, array);
 
-		} else{
+		} else {
 			appendSummary(buffer, fieldName, array);
 		}
 
@@ -1008,11 +1018,11 @@ abstract class ToStringStyle implements Serializable {
 	 *            the <code>Object</code> whose name to output
 	 */
 	protected void appendClassName(StringBuffer buffer, Object object) {
-		if(useClassName && object != null){
+		if (useClassName && object != null) {
 			register(object);
-			if(useShortClassName){
+			if (useShortClassName) {
 				buffer.append(getShortClassName(object.getClass()));
-			} else{
+			} else {
 				buffer.append(object.getClass().getName());
 			}
 		}
@@ -1058,12 +1068,13 @@ abstract class ToStringStyle implements Serializable {
 	 * @param fieldName
 	 *            the field name, typically not used as already appended
 	 * @param value
-	 *            the value to add to the <code>toString</code>,
-	 *            not <code>null</code>
+	 *            the value to add to the <code>toString</code>, not
+	 *            <code>null</code>
 	 * 
 	 * @since 2.2
 	 */
-	protected void appendCyclicObject(StringBuffer buffer, String fieldName, Object value) {
+	protected void appendCyclicObject(StringBuffer buffer, String fieldName,
+			Object value) {
 		ObjectUtils.identityToString(buffer, value);
 	}
 
@@ -1079,7 +1090,8 @@ abstract class ToStringStyle implements Serializable {
 	 * @param value
 	 *            the value to add to the <code>toString</code>
 	 */
-	protected void appendDetail(StringBuffer buffer, String fieldName, boolean value) {
+	protected void appendDetail(StringBuffer buffer, String fieldName,
+			boolean value) {
 		buffer.append(value);
 	}
 
@@ -1094,13 +1106,14 @@ abstract class ToStringStyle implements Serializable {
 	 * @param fieldName
 	 *            the field name, typically not used as already appended
 	 * @param array
-	 *            the array to add to the <code>toString</code>,
-	 *            not <code>null</code>
+	 *            the array to add to the <code>toString</code>, not
+	 *            <code>null</code>
 	 */
-	protected void appendDetail(StringBuffer buffer, String fieldName, boolean[] array) {
+	protected void appendDetail(StringBuffer buffer, String fieldName,
+			boolean[] array) {
 		buffer.append(arrayStart);
-		for(int i = 0; i < array.length; i++){
-			if(i > 0){
+		for (int i = 0; i < array.length; i++) {
+			if (i > 0) {
 				buffer.append(arraySeparator);
 			}
 			appendDetail(buffer, fieldName, array[i]);
@@ -1122,7 +1135,8 @@ abstract class ToStringStyle implements Serializable {
 	 * @param value
 	 *            the value to add to the <code>toString</code>
 	 */
-	protected void appendDetail(StringBuffer buffer, String fieldName, byte value) {
+	protected void appendDetail(StringBuffer buffer, String fieldName,
+			byte value) {
 		buffer.append(value);
 	}
 
@@ -1137,13 +1151,14 @@ abstract class ToStringStyle implements Serializable {
 	 * @param fieldName
 	 *            the field name, typically not used as already appended
 	 * @param array
-	 *            the array to add to the <code>toString</code>,
-	 *            not <code>null</code>
+	 *            the array to add to the <code>toString</code>, not
+	 *            <code>null</code>
 	 */
-	protected void appendDetail(StringBuffer buffer, String fieldName, byte[] array) {
+	protected void appendDetail(StringBuffer buffer, String fieldName,
+			byte[] array) {
 		buffer.append(arrayStart);
-		for(int i = 0; i < array.length; i++){
-			if(i > 0){
+		for (int i = 0; i < array.length; i++) {
+			if (i > 0) {
 				buffer.append(arraySeparator);
 			}
 			appendDetail(buffer, fieldName, array[i]);
@@ -1163,7 +1178,8 @@ abstract class ToStringStyle implements Serializable {
 	 * @param value
 	 *            the value to add to the <code>toString</code>
 	 */
-	protected void appendDetail(StringBuffer buffer, String fieldName, char value) {
+	protected void appendDetail(StringBuffer buffer, String fieldName,
+			char value) {
 		buffer.append(value);
 	}
 
@@ -1180,13 +1196,14 @@ abstract class ToStringStyle implements Serializable {
 	 * @param fieldName
 	 *            the field name, typically not used as already appended
 	 * @param array
-	 *            the array to add to the <code>toString</code>,
-	 *            not <code>null</code>
+	 *            the array to add to the <code>toString</code>, not
+	 *            <code>null</code>
 	 */
-	protected void appendDetail(StringBuffer buffer, String fieldName, char[] array) {
+	protected void appendDetail(StringBuffer buffer, String fieldName,
+			char[] array) {
 		buffer.append(arrayStart);
-		for(int i = 0; i < array.length; i++){
-			if(i > 0){
+		for (int i = 0; i < array.length; i++) {
+			if (i > 0) {
 				buffer.append(arraySeparator);
 			}
 			appendDetail(buffer, fieldName, array[i]);
@@ -1207,7 +1224,8 @@ abstract class ToStringStyle implements Serializable {
 	 *            the <code>Collection</code> to add to the
 	 *            <code>toString</code>, not <code>null</code>
 	 */
-	protected void appendDetail(StringBuffer buffer, String fieldName, Collection<?> coll) {
+	protected void appendDetail(StringBuffer buffer, String fieldName,
+			Collection<?> coll) {
 		buffer.append(coll);
 	}
 
@@ -1223,7 +1241,8 @@ abstract class ToStringStyle implements Serializable {
 	 * @param value
 	 *            the value to add to the <code>toString</code>
 	 */
-	protected void appendDetail(StringBuffer buffer, String fieldName, double value) {
+	protected void appendDetail(StringBuffer buffer, String fieldName,
+			double value) {
 		buffer.append(value);
 	}
 
@@ -1240,13 +1259,14 @@ abstract class ToStringStyle implements Serializable {
 	 * @param fieldName
 	 *            the field name, typically not used as already appended
 	 * @param array
-	 *            the array to add to the <code>toString</code>,
-	 *            not <code>null</code>
+	 *            the array to add to the <code>toString</code>, not
+	 *            <code>null</code>
 	 */
-	protected void appendDetail(StringBuffer buffer, String fieldName, double[] array) {
+	protected void appendDetail(StringBuffer buffer, String fieldName,
+			double[] array) {
 		buffer.append(arrayStart);
-		for(int i = 0; i < array.length; i++){
-			if(i > 0){
+		for (int i = 0; i < array.length; i++) {
+			if (i > 0) {
 				buffer.append(arraySeparator);
 			}
 			appendDetail(buffer, fieldName, array[i]);
@@ -1266,7 +1286,7 @@ abstract class ToStringStyle implements Serializable {
 	 * @param value
 	 *            the value to add to the <code>toString</code>
 	 */
-	 void appendDetail(StringBuffer buffer, String fieldName, float value) {
+	void appendDetail(StringBuffer buffer, String fieldName, float value) {
 		buffer.append(value);
 	}
 
@@ -1281,13 +1301,14 @@ abstract class ToStringStyle implements Serializable {
 	 * @param fieldName
 	 *            the field name, typically not used as already appended
 	 * @param array
-	 *            the array to add to the <code>toString</code>,
-	 *            not <code>null</code>
+	 *            the array to add to the <code>toString</code>, not
+	 *            <code>null</code>
 	 */
-	protected void appendDetail(StringBuffer buffer, String fieldName, float[] array) {
+	protected void appendDetail(StringBuffer buffer, String fieldName,
+			float[] array) {
 		buffer.append(arrayStart);
-		for(int i = 0; i < array.length; i++){
-			if(i > 0){
+		for (int i = 0; i < array.length; i++) {
+			if (i > 0) {
 				buffer.append(arraySeparator);
 			}
 			appendDetail(buffer, fieldName, array[i]);
@@ -1324,13 +1345,14 @@ abstract class ToStringStyle implements Serializable {
 	 * @param fieldName
 	 *            the field name, typically not used as already appended
 	 * @param array
-	 *            the array to add to the <code>toString</code>,
-	 *            not <code>null</code>
+	 *            the array to add to the <code>toString</code>, not
+	 *            <code>null</code>
 	 */
-	protected void appendDetail(StringBuffer buffer, String fieldName, int[] array) {
+	protected void appendDetail(StringBuffer buffer, String fieldName,
+			int[] array) {
 		buffer.append(arrayStart);
-		for(int i = 0; i < array.length; i++){
-			if(i > 0){
+		for (int i = 0; i < array.length; i++) {
+			if (i > 0) {
 				buffer.append(arraySeparator);
 			}
 			appendDetail(buffer, fieldName, array[i]);
@@ -1350,7 +1372,8 @@ abstract class ToStringStyle implements Serializable {
 	 * @param value
 	 *            the value to add to the <code>toString</code>
 	 */
-	protected void appendDetail(StringBuffer buffer, String fieldName, long value) {
+	protected void appendDetail(StringBuffer buffer, String fieldName,
+			long value) {
 		buffer.append(value);
 	}
 
@@ -1367,13 +1390,14 @@ abstract class ToStringStyle implements Serializable {
 	 * @param fieldName
 	 *            the field name, typically not used as already appended
 	 * @param array
-	 *            the array to add to the <code>toString</code>,
-	 *            not <code>null</code>
+	 *            the array to add to the <code>toString</code>, not
+	 *            <code>null</code>
 	 */
-	protected void appendDetail(StringBuffer buffer, String fieldName, long[] array) {
+	protected void appendDetail(StringBuffer buffer, String fieldName,
+			long[] array) {
 		buffer.append(arrayStart);
-		for(int i = 0; i < array.length; i++){
-			if(i > 0){
+		for (int i = 0; i < array.length; i++) {
+			if (i > 0) {
 				buffer.append(arraySeparator);
 			}
 			appendDetail(buffer, fieldName, array[i]);
@@ -1391,10 +1415,11 @@ abstract class ToStringStyle implements Serializable {
 	 * @param fieldName
 	 *            the field name, typically not used as already appended
 	 * @param map
-	 *            the <code>Map</code> to add to the <code>toString</code>,
-	 *            not <code>null</code>
+	 *            the <code>Map</code> to add to the <code>toString</code>, not
+	 *            <code>null</code>
 	 */
-	protected void appendDetail(StringBuffer buffer, String fieldName, Map<?, ?> map) {
+	protected void appendDetail(StringBuffer buffer, String fieldName,
+			Map<?, ?> map) {
 		buffer.append(map);
 	}
 
@@ -1409,10 +1434,11 @@ abstract class ToStringStyle implements Serializable {
 	 * @param fieldName
 	 *            the field name, typically not used as already appended
 	 * @param value
-	 *            the value to add to the <code>toString</code>,
-	 *            not <code>null</code>
+	 *            the value to add to the <code>toString</code>, not
+	 *            <code>null</code>
 	 */
-	protected void appendDetail(StringBuffer buffer, String fieldName, Object value) {
+	protected void appendDetail(StringBuffer buffer, String fieldName,
+			Object value) {
 		buffer.append(value);
 	}
 
@@ -1429,20 +1455,21 @@ abstract class ToStringStyle implements Serializable {
 	 * @param fieldName
 	 *            the field name, typically not used as already appended
 	 * @param array
-	 *            the array to add to the <code>toString</code>,
-	 *            not <code>null</code>
+	 *            the array to add to the <code>toString</code>, not
+	 *            <code>null</code>
 	 */
-	protected void appendDetail(StringBuffer buffer, String fieldName, Object[] array) {
+	protected void appendDetail(StringBuffer buffer, String fieldName,
+			Object[] array) {
 		buffer.append(arrayStart);
-		for(int i = 0; i < array.length; i++){
+		for (int i = 0; i < array.length; i++) {
 			Object item = array[i];
-			if(i > 0){
+			if (i > 0) {
 				buffer.append(arraySeparator);
 			}
-			if(item == null){
+			if (item == null) {
 				appendNullText(buffer, fieldName);
 
-			} else{
+			} else {
 				appendInternal(buffer, fieldName, item, arrayContentDetail);
 			}
 		}
@@ -1461,7 +1488,8 @@ abstract class ToStringStyle implements Serializable {
 	 * @param value
 	 *            the value to add to the <code>toString</code>
 	 */
-	protected void appendDetail(StringBuffer buffer, String fieldName, short value) {
+	protected void appendDetail(StringBuffer buffer, String fieldName,
+			short value) {
 		buffer.append(value);
 	}
 
@@ -1476,13 +1504,14 @@ abstract class ToStringStyle implements Serializable {
 	 * @param fieldName
 	 *            the field name, typically not used as already appended
 	 * @param array
-	 *            the array to add to the <code>toString</code>,
-	 *            not <code>null</code>
+	 *            the array to add to the <code>toString</code>, not
+	 *            <code>null</code>
 	 */
-	protected void appendDetail(StringBuffer buffer, String fieldName, short[] array) {
+	protected void appendDetail(StringBuffer buffer, String fieldName,
+			short[] array) {
 		buffer.append(arrayStart);
-		for(int i = 0; i < array.length; i++){
-			if(i > 0){
+		for (int i = 0; i < array.length; i++) {
+			if (i > 0) {
 				buffer.append(arraySeparator);
 			}
 			appendDetail(buffer, fieldName, array[i]);
@@ -1503,7 +1532,7 @@ abstract class ToStringStyle implements Serializable {
 	 *            the <code>Object</code> to build a <code>toString</code> for.
 	 */
 	public void appendEnd(StringBuffer buffer, Object object) {
-		if(this.fieldSeparatorAtEnd == false){
+		if (this.fieldSeparatorAtEnd == false) {
 			removeLastFieldSeparator(buffer);
 		}
 		appendContentEnd(buffer);
@@ -1549,7 +1578,7 @@ abstract class ToStringStyle implements Serializable {
 	 *            the field name
 	 */
 	protected void appendFieldStart(StringBuffer buffer, String fieldName) {
-		if(useFieldNames && fieldName != null){
+		if (useFieldNames && fieldName != null) {
 			buffer.append(fieldName);
 			buffer.append(fieldNameValueSeparator);
 		}
@@ -1566,7 +1595,7 @@ abstract class ToStringStyle implements Serializable {
 	 *            the <code>Object</code> whose id to output
 	 */
 	protected void appendIdentityHashCode(StringBuffer buffer, Object object) {
-		if(this.isUseIdentityHashCode() && object != null){
+		if (this.isUseIdentityHashCode() && object != null) {
 			register(object);
 			buffer.append('@');
 			buffer.append(Integer.toHexString(System.identityHashCode(object)));
@@ -1599,106 +1628,109 @@ abstract class ToStringStyle implements Serializable {
 	 * @param fieldName
 	 *            the field name, typically not used as already appended
 	 * @param value
-	 *            the value to add to the <code>toString</code>,
-	 *            not <code>null</code>
+	 *            the value to add to the <code>toString</code>, not
+	 *            <code>null</code>
 	 * @param detail
 	 *            output detail or not
 	 */
-	protected void appendInternal(StringBuffer buffer, String fieldName, Object value, boolean detail) {
-		if(isRegistered(value)
-				&& !(value instanceof Number || value instanceof Boolean || value instanceof Character)){
+	protected void appendInternal(StringBuffer buffer, String fieldName,
+			Object value, boolean detail) {
+		if (isRegistered(value)
+				&& !(value instanceof Number || value instanceof Boolean || value instanceof Character)) {
 			appendCyclicObject(buffer, fieldName, value);
 			return;
 		}
 
 		register(value);
 
-		try{
-			if(value instanceof Collection<?>){
-				if(detail){
+		try {
+			if (value instanceof Collection<?>) {
+				if (detail) {
 					appendDetail(buffer, fieldName, (Collection<?>) value);
-				} else{
-					appendSummarySize(buffer, fieldName, ((Collection<?>) value).size());
+				} else {
+					appendSummarySize(buffer, fieldName,
+							((Collection<?>) value).size());
 				}
 
-			} else if(value instanceof Map<?, ?>){
-				if(detail){
+			} else if (value instanceof Map<?, ?>) {
+				if (detail) {
 					appendDetail(buffer, fieldName, (Map<?, ?>) value);
-				} else{
-					appendSummarySize(buffer, fieldName, ((Map<?, ?>) value).size());
+				} else {
+					appendSummarySize(buffer, fieldName,
+							((Map<?, ?>) value).size());
 				}
 
-			} else if(value instanceof long[]){
-				if(detail){
+			} else if (value instanceof long[]) {
+				if (detail) {
 					appendDetail(buffer, fieldName, (long[]) value);
-				} else{
+				} else {
 					appendSummary(buffer, fieldName, (long[]) value);
 				}
 
-			} else if(value instanceof int[]){
-				if(detail){
+			} else if (value instanceof int[]) {
+				if (detail) {
 					appendDetail(buffer, fieldName, (int[]) value);
-				} else{
+				} else {
 					appendSummary(buffer, fieldName, (int[]) value);
 				}
 
-			} else if(value instanceof short[]){
-				if(detail){
+			} else if (value instanceof short[]) {
+				if (detail) {
 					appendDetail(buffer, fieldName, (short[]) value);
-				} else{
+				} else {
 					appendSummary(buffer, fieldName, (short[]) value);
 				}
 
-			} else if(value instanceof byte[]){
-				if(detail){
+			} else if (value instanceof byte[]) {
+				if (detail) {
 					appendDetail(buffer, fieldName, (byte[]) value);
-				} else{
+				} else {
 					appendSummary(buffer, fieldName, (byte[]) value);
 				}
 
-			} else if(value instanceof char[]){
-				if(detail){
+			} else if (value instanceof char[]) {
+				if (detail) {
 					appendDetail(buffer, fieldName, (char[]) value);
-				} else{
+				} else {
 					appendSummary(buffer, fieldName, (char[]) value);
 				}
 
-			} else if(value instanceof double[]){
-				if(detail){
+			} else if (value instanceof double[]) {
+				if (detail) {
 					appendDetail(buffer, fieldName, (double[]) value);
-				} else{
+				} else {
 					appendSummary(buffer, fieldName, (double[]) value);
 				}
 
-			} else if(value instanceof float[]){
-				if(detail){
+			} else if (value instanceof float[]) {
+				if (detail) {
 					appendDetail(buffer, fieldName, (float[]) value);
-				} else{
+				} else {
 					appendSummary(buffer, fieldName, (float[]) value);
 				}
 
-			} else if(value instanceof boolean[]){
-				if(detail){
+			} else if (value instanceof boolean[]) {
+				if (detail) {
 					appendDetail(buffer, fieldName, (boolean[]) value);
-				} else{
+				} else {
 					appendSummary(buffer, fieldName, (boolean[]) value);
 				}
 
-			} else if(value.getClass().isArray()){
-				if(detail){
+			} else if (value.getClass().isArray()) {
+				if (detail) {
 					appendDetail(buffer, fieldName, (Object[]) value);
-				} else{
+				} else {
 					appendSummary(buffer, fieldName, (Object[]) value);
 				}
 
-			} else{
-				if(detail){
+			} else {
+				if (detail) {
 					appendDetail(buffer, fieldName, value);
-				} else{
+				} else {
 					appendSummary(buffer, fieldName, value);
 				}
 			}
-		} finally{
+		} finally {
 			unregister(value);
 		}
 	}
@@ -1734,11 +1766,11 @@ abstract class ToStringStyle implements Serializable {
 	 *            the <code>Object</code> to build a <code>toString</code> for
 	 */
 	public void appendStart(StringBuffer buffer, Object object) {
-		if(object != null){
+		if (object != null) {
 			appendClassName(buffer, object);
 			appendIdentityHashCode(buffer, object);
 			appendContentStart(buffer);
-			if(fieldSeparatorAtStart){
+			if (fieldSeparatorAtStart) {
 				appendFieldSeparator(buffer);
 			}
 		}
@@ -1755,10 +1787,11 @@ abstract class ToStringStyle implements Serializable {
 	 * @param fieldName
 	 *            the field name, typically not used as already appended
 	 * @param array
-	 *            the array to add to the <code>toString</code>,
-	 *            not <code>null</code>
+	 *            the array to add to the <code>toString</code>, not
+	 *            <code>null</code>
 	 */
-	protected void appendSummary(StringBuffer buffer, String fieldName, boolean[] array) {
+	protected void appendSummary(StringBuffer buffer, String fieldName,
+			boolean[] array) {
 		appendSummarySize(buffer, fieldName, array.length);
 	}
 
@@ -1775,10 +1808,11 @@ abstract class ToStringStyle implements Serializable {
 	 * @param fieldName
 	 *            the field name, typically not used as already appended
 	 * @param array
-	 *            the array to add to the <code>toString</code>,
-	 *            not <code>null</code>
+	 *            the array to add to the <code>toString</code>, not
+	 *            <code>null</code>
 	 */
-	protected void appendSummary(StringBuffer buffer, String fieldName, byte[] array) {
+	protected void appendSummary(StringBuffer buffer, String fieldName,
+			byte[] array) {
 		appendSummarySize(buffer, fieldName, array.length);
 	}
 
@@ -1793,10 +1827,11 @@ abstract class ToStringStyle implements Serializable {
 	 * @param fieldName
 	 *            the field name, typically not used as already appended
 	 * @param array
-	 *            the array to add to the <code>toString</code>,
-	 *            not <code>null</code>
+	 *            the array to add to the <code>toString</code>, not
+	 *            <code>null</code>
 	 */
-	protected void appendSummary(StringBuffer buffer, String fieldName, char[] array) {
+	protected void appendSummary(StringBuffer buffer, String fieldName,
+			char[] array) {
 		appendSummarySize(buffer, fieldName, array.length);
 	}
 
@@ -1811,10 +1846,11 @@ abstract class ToStringStyle implements Serializable {
 	 * @param fieldName
 	 *            the field name, typically not used as already appended
 	 * @param array
-	 *            the array to add to the <code>toString</code>,
-	 *            not <code>null</code>
+	 *            the array to add to the <code>toString</code>, not
+	 *            <code>null</code>
 	 */
-	protected void appendSummary(StringBuffer buffer, String fieldName, double[] array) {
+	protected void appendSummary(StringBuffer buffer, String fieldName,
+			double[] array) {
 		appendSummarySize(buffer, fieldName, array.length);
 	}
 
@@ -1829,10 +1865,11 @@ abstract class ToStringStyle implements Serializable {
 	 * @param fieldName
 	 *            the field name, typically not used as already appended
 	 * @param array
-	 *            the array to add to the <code>toString</code>,
-	 *            not <code>null</code>
+	 *            the array to add to the <code>toString</code>, not
+	 *            <code>null</code>
 	 */
-	protected void appendSummary(StringBuffer buffer, String fieldName, float[] array) {
+	protected void appendSummary(StringBuffer buffer, String fieldName,
+			float[] array) {
 		appendSummarySize(buffer, fieldName, array.length);
 	}
 
@@ -1847,10 +1884,11 @@ abstract class ToStringStyle implements Serializable {
 	 * @param fieldName
 	 *            the field name, typically not used as already appended
 	 * @param array
-	 *            the array to add to the <code>toString</code>,
-	 *            not <code>null</code>
+	 *            the array to add to the <code>toString</code>, not
+	 *            <code>null</code>
 	 */
-	protected void appendSummary(StringBuffer buffer, String fieldName, int[] array) {
+	protected void appendSummary(StringBuffer buffer, String fieldName,
+			int[] array) {
 		appendSummarySize(buffer, fieldName, array.length);
 	}
 
@@ -1865,10 +1903,11 @@ abstract class ToStringStyle implements Serializable {
 	 * @param fieldName
 	 *            the field name, typically not used as already appended
 	 * @param array
-	 *            the array to add to the <code>toString</code>,
-	 *            not <code>null</code>
+	 *            the array to add to the <code>toString</code>, not
+	 *            <code>null</code>
 	 */
-	protected void appendSummary(StringBuffer buffer, String fieldName, long[] array) {
+	protected void appendSummary(StringBuffer buffer, String fieldName,
+			long[] array) {
 		appendSummarySize(buffer, fieldName, array.length);
 	}
 
@@ -1883,10 +1922,11 @@ abstract class ToStringStyle implements Serializable {
 	 * @param fieldName
 	 *            the field name, typically not used as already appended
 	 * @param value
-	 *            the value to add to the <code>toString</code>,
-	 *            not <code>null</code>
+	 *            the value to add to the <code>toString</code>, not
+	 *            <code>null</code>
 	 */
-	protected void appendSummary(StringBuffer buffer, String fieldName, Object value) {
+	protected void appendSummary(StringBuffer buffer, String fieldName,
+			Object value) {
 		buffer.append(summaryObjectStartText);
 		buffer.append(getShortClassName(value.getClass()));
 		buffer.append(summaryObjectEndText);
@@ -1903,10 +1943,11 @@ abstract class ToStringStyle implements Serializable {
 	 * @param fieldName
 	 *            the field name, typically not used as already appended
 	 * @param array
-	 *            the array to add to the <code>toString</code>,
-	 *            not <code>null</code>
+	 *            the array to add to the <code>toString</code>, not
+	 *            <code>null</code>
 	 */
-	protected void appendSummary(StringBuffer buffer, String fieldName, Object[] array) {
+	protected void appendSummary(StringBuffer buffer, String fieldName,
+			Object[] array) {
 		appendSummarySize(buffer, fieldName, array.length);
 	}
 
@@ -1921,10 +1962,11 @@ abstract class ToStringStyle implements Serializable {
 	 * @param fieldName
 	 *            the field name, typically not used as already appended
 	 * @param array
-	 *            the array to add to the <code>toString</code>,
-	 *            not <code>null</code>
+	 *            the array to add to the <code>toString</code>, not
+	 *            <code>null</code>
 	 */
-	protected void appendSummary(StringBuffer buffer, String fieldName, short[] array) {
+	protected void appendSummary(StringBuffer buffer, String fieldName,
+			short[] array) {
 		appendSummarySize(buffer, fieldName, array.length);
 	}
 
@@ -1953,7 +1995,8 @@ abstract class ToStringStyle implements Serializable {
 	 * @param size
 	 *            the size to append
 	 */
-	protected void appendSummarySize(StringBuffer buffer, String fieldName, int size) {
+	protected void appendSummarySize(StringBuffer buffer, String fieldName,
+			int size) {
 		buffer.append(sizeStartText);
 		buffer.append(size);
 		buffer.append(sizeEndText);
@@ -2007,12 +2050,12 @@ abstract class ToStringStyle implements Serializable {
 	 * @since 2.0
 	 */
 	public void appendToString(StringBuffer buffer, String toString) {
-		if(toString != null){
+		if (toString != null) {
 			int pos1 = toString.indexOf(contentStart) + contentStart.length();
 			int pos2 = toString.lastIndexOf(contentEnd);
-			if(pos1 != pos2 && pos1 >= 0 && pos2 >= 0){
+			if (pos1 != pos2 && pos1 >= 0 && pos2 >= 0) {
 				String data = toString.substring(pos1, pos2);
-				if(fieldSeparatorAtStart){
+				if (fieldSeparatorAtStart) {
 					removeLastFieldSeparator(buffer);
 				}
 				buffer.append(data);
@@ -2274,7 +2317,7 @@ abstract class ToStringStyle implements Serializable {
 	 * @return whether full detail is to be shown
 	 */
 	protected boolean isFullDetail(Boolean fullDetailRequest) {
-		if(fullDetailRequest == null){
+		if (fullDetailRequest == null) {
 			return defaultFullDetail;
 		}
 		return fullDetailRequest.booleanValue();
@@ -2339,22 +2382,23 @@ abstract class ToStringStyle implements Serializable {
 	 * @param fieldName
 	 *            the field name, typically not used as already appended
 	 * @param array
-	 *            the array to add to the <code>toString</code>,
-	 *            not <code>null</code>
+	 *            the array to add to the <code>toString</code>, not
+	 *            <code>null</code>
 	 * @since 2.0
 	 */
-	protected void reflectionAppendArrayDetail(StringBuffer buffer, String fieldName, Object array) {
+	protected void reflectionAppendArrayDetail(StringBuffer buffer,
+			String fieldName, Object array) {
 		buffer.append(arrayStart);
 		int length = Array.getLength(array);
-		for(int i = 0; i < length; i++){
+		for (int i = 0; i < length; i++) {
 			Object item = Array.get(array, i);
-			if(i > 0){
+			if (i > 0) {
 				buffer.append(arraySeparator);
 			}
-			if(item == null){
+			if (item == null) {
 				appendNullText(buffer, fieldName);
 
-			} else{
+			} else {
 				appendInternal(buffer, fieldName, item, arrayContentDetail);
 			}
 		}
@@ -2375,15 +2419,16 @@ abstract class ToStringStyle implements Serializable {
 	protected void removeLastFieldSeparator(StringBuffer buffer) {
 		int len = buffer.length();
 		int sepLen = fieldSeparator.length();
-		if(len > 0 && sepLen > 0 && len >= sepLen){
+		if (len > 0 && sepLen > 0 && len >= sepLen) {
 			boolean match = true;
-			for(int i = 0; i < sepLen; i++){
-				if(buffer.charAt(len - 1 - i) != fieldSeparator.charAt(sepLen - 1 - i)){
+			for (int i = 0; i < sepLen; i++) {
+				if (buffer.charAt(len - 1 - i) != fieldSeparator.charAt(sepLen
+						- 1 - i)) {
 					match = false;
 					break;
 				}
 			}
-			if(match){
+			if (match) {
 				buffer.setLength(len - sepLen);
 			}
 		}
@@ -2416,7 +2461,7 @@ abstract class ToStringStyle implements Serializable {
 	 *            the new array end text
 	 */
 	protected void setArrayEnd(String arrayEnd) {
-		if(arrayEnd == null){
+		if (arrayEnd == null) {
 			arrayEnd = "";
 		}
 		this.arrayEnd = arrayEnd;
@@ -2435,7 +2480,7 @@ abstract class ToStringStyle implements Serializable {
 	 *            the new array separator text
 	 */
 	protected void setArraySeparator(String arraySeparator) {
-		if(arraySeparator == null){
+		if (arraySeparator == null) {
 			arraySeparator = "";
 		}
 		this.arraySeparator = arraySeparator;
@@ -2456,7 +2501,7 @@ abstract class ToStringStyle implements Serializable {
 	 *            the new array start text
 	 */
 	protected void setArrayStart(String arrayStart) {
-		if(arrayStart == null){
+		if (arrayStart == null) {
 			arrayStart = "";
 		}
 		this.arrayStart = arrayStart;
@@ -2475,7 +2520,7 @@ abstract class ToStringStyle implements Serializable {
 	 *            the new content end text
 	 */
 	protected void setContentEnd(String contentEnd) {
-		if(contentEnd == null){
+		if (contentEnd == null) {
 			contentEnd = "";
 		}
 		this.contentEnd = contentEnd;
@@ -2496,7 +2541,7 @@ abstract class ToStringStyle implements Serializable {
 	 *            the new content start text
 	 */
 	protected void setContentStart(String contentStart) {
-		if(contentStart == null){
+		if (contentStart == null) {
 			contentStart = "";
 		}
 		this.contentStart = contentStart;
@@ -2529,7 +2574,7 @@ abstract class ToStringStyle implements Serializable {
 	 *            the new field name value separator text
 	 */
 	protected void setFieldNameValueSeparator(String fieldNameValueSeparator) {
-		if(fieldNameValueSeparator == null){
+		if (fieldNameValueSeparator == null) {
 			fieldNameValueSeparator = "";
 		}
 		this.fieldNameValueSeparator = fieldNameValueSeparator;
@@ -2548,7 +2593,7 @@ abstract class ToStringStyle implements Serializable {
 	 *            the new field separator text
 	 */
 	protected void setFieldSeparator(String fieldSeparator) {
-		if(fieldSeparator == null){
+		if (fieldSeparator == null) {
 			fieldSeparator = "";
 		}
 		this.fieldSeparator = fieldSeparator;
@@ -2599,7 +2644,7 @@ abstract class ToStringStyle implements Serializable {
 	 *            the new text to output when null found
 	 */
 	protected void setNullText(String nullText) {
-		if(nullText == null){
+		if (nullText == null) {
 			nullText = "";
 		}
 		this.nullText = nullText;
@@ -2623,7 +2668,7 @@ abstract class ToStringStyle implements Serializable {
 	 *            the new end of size text
 	 */
 	protected void setSizeEndText(String sizeEndText) {
-		if(sizeEndText == null){
+		if (sizeEndText == null) {
 			sizeEndText = "";
 		}
 		this.sizeEndText = sizeEndText;
@@ -2649,7 +2694,7 @@ abstract class ToStringStyle implements Serializable {
 	 *            the new start of size text
 	 */
 	protected void setSizeStartText(String sizeStartText) {
-		if(sizeStartText == null){
+		if (sizeStartText == null) {
 			sizeStartText = "";
 		}
 		this.sizeStartText = sizeStartText;
@@ -2673,7 +2718,7 @@ abstract class ToStringStyle implements Serializable {
 	 *            the new end of summary text
 	 */
 	protected void setSummaryObjectEndText(String summaryObjectEndText) {
-		if(summaryObjectEndText == null){
+		if (summaryObjectEndText == null) {
 			summaryObjectEndText = "";
 		}
 		this.summaryObjectEndText = summaryObjectEndText;
@@ -2699,7 +2744,7 @@ abstract class ToStringStyle implements Serializable {
 	 *            the new start of summary text
 	 */
 	protected void setSummaryObjectStartText(String summaryObjectStartText) {
-		if(summaryObjectStartText == null){
+		if (summaryObjectStartText == null) {
 			summaryObjectStartText = "";
 		}
 		this.summaryObjectStartText = summaryObjectStartText;

@@ -16,8 +16,7 @@ import java.io.OutputStream;
 /**
  * ByteArrayOutputStream thats NOT thread safe.
  */
-public class FastByteArrayOutputStream extends OutputStream
-{
+public class FastByteArrayOutputStream extends OutputStream {
 	private final byte bytes[];
 
 	private int count = 0;
@@ -31,7 +30,7 @@ public class FastByteArrayOutputStream extends OutputStream
 	}
 
 	public byte[] toByteArray() {
-		if(count < bytes.length){
+		if (count < bytes.length) {
 			byte result[] = new byte[count];
 			System.arraycopy(bytes, 0, result, 0, count);
 			return result;
@@ -41,8 +40,9 @@ public class FastByteArrayOutputStream extends OutputStream
 
 	@Override
 	public void write(int value) throws IOException {
-		if(count >= bytes.length){
-			throw new IOException("Write exceeded expected length (" + count + ", " + bytes.length + ")");
+		if (count >= bytes.length) {
+			throw new IOException("Write exceeded expected length (" + count
+					+ ", " + bytes.length + ")");
 		}
 
 		bytes[count] = (byte) value;

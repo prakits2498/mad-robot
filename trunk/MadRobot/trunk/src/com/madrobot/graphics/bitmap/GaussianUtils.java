@@ -1,13 +1,12 @@
 package com.madrobot.graphics.bitmap;
 
-
 /**
  * Gaussian theory utils
  * 
  * @author elton.stephen.kent
  * 
  */
- class GaussianUtils {
+class GaussianUtils {
 
 	/**
 	 * Blur and transpose a block of ARGB pixels.
@@ -27,7 +26,9 @@ package com.madrobot.graphics.bitmap;
 	 * @param edgeAction
 	 *            what to do at the edges
 	 */
-	 static void convolveAndTranspose(Kernel kernel, int[] inPixels, int[] outPixels, int width, int height, boolean alpha, boolean premultiply, boolean unpremultiply, int edgeAction) {
+	static void convolveAndTranspose(Kernel kernel, int[] inPixels,
+			int[] outPixels, int width, int height, boolean alpha,
+			boolean premultiply, boolean unpremultiply, int edgeAction) {
 		float[] matrix = kernel.getKernelData(null);
 		int cols = kernel.getWidth();
 		int cols2 = cols / 2;
@@ -94,7 +95,7 @@ package com.madrobot.graphics.bitmap;
 	 *            the blur radius
 	 * @return the kernel
 	 */
-	 static Kernel makeKernel(float radius) {
+	static Kernel makeKernel(float radius) {
 		int r = (int) Math.ceil(radius);
 		int rows = r * 2 + 1;
 		float[] matrix = new float[rows];
@@ -110,7 +111,8 @@ package com.madrobot.graphics.bitmap;
 			if (distance > radius2)
 				matrix[index] = 0;
 			else
-				matrix[index] = (float) Math.exp(-(distance) / sigma22) / sqrtSigmaPi2;
+				matrix[index] = (float) Math.exp(-(distance) / sigma22)
+						/ sqrtSigmaPi2;
 			total += matrix[index];
 			index++;
 		}

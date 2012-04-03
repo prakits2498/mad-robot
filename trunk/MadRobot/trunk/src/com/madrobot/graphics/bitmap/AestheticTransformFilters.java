@@ -665,9 +665,9 @@ public class AestheticTransformFilters extends TransformFilters {
 							edgeAction);
 					ne = getPixel(inPixels, srcX + 1, srcY, srcWidth,
 							srcHeight, edgeAction);
-					sw = AestheticTransformFilters.getPixel(inPixels, srcX,
+					sw = TransformFilters.getPixel(inPixels, srcX,
 							srcY + 1, srcWidth, srcHeight, edgeAction);
-					se = AestheticTransformFilters.getPixel(inPixels, srcX + 1,
+					se = TransformFilters.getPixel(inPixels, srcX + 1,
 							srcY + 1, srcWidth, srcHeight, edgeAction);
 				}
 				outPixels[x] = ImageMath.bilinearInterpolate(xWeight, yWeight,

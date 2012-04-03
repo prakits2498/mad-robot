@@ -46,6 +46,7 @@ import android.util.Log;
  * </pre>
  * 
  * </p>
+ * 
  * @see Model
  * @author elton.kent
  */
@@ -95,13 +96,13 @@ public final class OBJFileLoader {
 								polygon.add(s);
 							}
 							faces.addAll(triangulate(polygon));// triangulate
-																			// the
-																			// polygon
-																			// and
-																			// add
-																			// the
-																			// resulting
-																			// faces
+																// the
+																// polygon
+																// and
+																// add
+																// the
+																// resulting
+																// faces
 						}
 					}
 					if (tokens[1].matches("[0-9]+/[0-9]+")) {// if: v/vt
@@ -260,13 +261,13 @@ public final class OBJFileLoader {
 	public static Model loadOBJ(String fileName) throws FileNotFoundException {
 		return loadOBJ(new FileInputStream(fileName));
 	}
-	
-	private static ArrayList<Short> triangulate(ArrayList<Short> polygon){
-		ArrayList<Short> triangles=new ArrayList<Short>();
-		for(int i=1; i<polygon.size()-1; i++){
+
+	private static ArrayList<Short> triangulate(ArrayList<Short> polygon) {
+		ArrayList<Short> triangles = new ArrayList<Short>();
+		for (int i = 1; i < polygon.size() - 1; i++) {
 			triangles.add(polygon.get(0));
 			triangles.add(polygon.get(i));
-			triangles.add(polygon.get(i+1));
+			triangles.add(polygon.get(i + 1));
 		}
 		return triangles;
 	}

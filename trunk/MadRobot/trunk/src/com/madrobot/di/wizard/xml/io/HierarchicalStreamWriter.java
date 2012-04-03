@@ -40,10 +40,12 @@ public interface HierarchicalStreamWriter {
 	 * Return the underlying HierarchicalStreamWriter implementation.
 	 * 
 	 * <p>
-	 * If a Converter needs to access methods of a specific HierarchicalStreamWriter implementation that are not defined
-	 * in the HierarchicalStreamWriter interface, it should call this method before casting. This is because the writer
-	 * passed to the Converter is often wrapped/decorated by another implementation to provide additional functionality
-	 * (such as XPath tracking).
+	 * If a Converter needs to access methods of a specific
+	 * HierarchicalStreamWriter implementation that are not defined in the
+	 * HierarchicalStreamWriter interface, it should call this method before
+	 * casting. This is because the writer passed to the Converter is often
+	 * wrapped/decorated by another implementation to provide additional
+	 * functionality (such as XPath tracking).
 	 * </p>
 	 * 
 	 * <p>
@@ -61,8 +63,9 @@ public interface HierarchicalStreamWriter {
 	 * </pre>
 	 * 
 	 * <p>
-	 * Implementations of HierarchicalStreamWriter should return 'this', unless they are a decorator, in which case they
-	 * should delegate to whatever they are wrapping.
+	 * Implementations of HierarchicalStreamWriter should return 'this', unless
+	 * they are a decorator, in which case they should delegate to whatever they
+	 * are wrapping.
 	 * </p>
 	 */
 	HierarchicalStreamWriter underlyingWriter();

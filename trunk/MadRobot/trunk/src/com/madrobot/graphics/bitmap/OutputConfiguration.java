@@ -1,12 +1,13 @@
 package com.madrobot.graphics.bitmap;
 
-import com.madrobot.geom.Rectangle;
-
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 
+import com.madrobot.geom.Rectangle;
+
 /**
- * Configuration settings for the output bitmap when using any of the bitmap filters.
+ * Configuration settings for the output bitmap when using any of the bitmap
+ * filters.
  * 
  * @author elton.stephen.kent
  * 
@@ -33,11 +34,13 @@ public class OutputConfiguration {
 
 	boolean canRecycleSrc;
 	Bitmap.Config config = Config.ARGB_8888;
+
 	void checkRectangleBounds(int width, int height) {
 
 		if (!new Rectangle(0, 0, width, height).contains(affectedArea)) {
 
-			throw new IllegalArgumentException("affected area bounds exceeds the bounds of the image ");
+			throw new IllegalArgumentException(
+					"affected area bounds exceeds the bounds of the image ");
 		}
 	}
 
@@ -53,7 +56,8 @@ public class OutputConfiguration {
 	/**
 	 * res[0]= bitmap width<br/>
 	 * res[1]=bitmap height<br/>
-	 * res[2]=target width where the filter acts res[3]=target height where the filter acts
+	 * res[2]=target width where the filter acts res[3]=target height where the
+	 * filter acts
 	 * 
 	 * @param bitmap
 	 * @param outputConfig
@@ -127,7 +131,8 @@ public class OutputConfiguration {
 	 * Set the configuration of the o/p bitmap.
 	 * <p>
 	 * The default configuration is ARGB_8888.<br/>
-	 * This field is not used if {@link #setModifySource(boolean)} is set to <code>true</code>.
+	 * This field is not used if {@link #setModifySource(boolean)} is set to
+	 * <code>true</code>.
 	 * </p>
 	 * 
 	 * @param config

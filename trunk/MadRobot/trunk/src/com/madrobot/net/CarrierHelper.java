@@ -28,9 +28,9 @@ import android.net.wifi.WifiManager;
  * Utility to find out the current carrier type used by the device. (i.e) Wifi
  * or 3G
  * <p>
- * <b>Note:</b>ACCESS_NETWORK_STATE permission needs to be set before using this class.
- * It implements a dynamic broadcast listener that receives carrier information
- * as and when it changes.<br/>
+ * <b>Note:</b>ACCESS_NETWORK_STATE permission needs to be set before using this
+ * class. It implements a dynamic broadcast listener that receives carrier
+ * information as and when it changes.<br/>
  * Usage:</br>
  * 
  * <pre>
@@ -51,8 +51,7 @@ public final class CarrierHelper {
 	 * Represents the Current Carrier
 	 */
 	public enum Carrier {
-		BEARER_3G,
-		BEARER_WIFI;
+		BEARER_3G, BEARER_WIFI;
 	}
 
 	/**
@@ -73,14 +72,14 @@ public final class CarrierHelper {
 	 */
 	public static synchronized CarrierHelper getInstance(Context context) {
 
-		try{
-			if(carrierHandler == null){
+		try {
+			if (carrierHandler == null) {
 				carrierHandler = new CarrierHelper();
 				carrierHandler.init(context);
 				return carrierHandler;
 			}
 			return carrierHandler;
-		} catch(Exception e){
+		} catch (Exception e) {
 
 			carrierHandler = null;
 			return null;
@@ -139,36 +138,39 @@ public final class CarrierHelper {
 			final boolean noConnectivity = intent.getBooleanExtra(
 					ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);
 
-			if(noConnectivity){
+			if (noConnectivity) {
 				noConnectivity();
-			} else{
+			} else {
 				final NetworkInfo networkInfo = (NetworkInfo) intent
 						.getParcelableExtra(ConnectivityManager.EXTRA_NETWORK_INFO);
 
-				if(networkInfo != null){
-					if((networkInfo.getType() == ConnectivityManager.TYPE_WIFI) && networkInfo.isConnected()){
+				if (networkInfo != null) {
+					if ((networkInfo.getType() == ConnectivityManager.TYPE_WIFI)
+							&& networkInfo.isConnected()) {
 						enableWifi();
-					} else if((networkInfo.getType() == ConnectivityManager.TYPE_MOBILE)
-							&& networkInfo.isConnected()){
+					} else if ((networkInfo.getType() == ConnectivityManager.TYPE_MOBILE)
+							&& networkInfo.isConnected()) {
 						enabled3G();
 					}
 				}
 			}
 
-			final int wifiState = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, 0);
+			final int wifiState = intent.getIntExtra(
+					WifiManager.EXTRA_WIFI_STATE, 0);
 
-			if(wifiState == 0){
+			if (wifiState == 0) {
 				final SupplicantState supplicantState = intent
 						.getParcelableExtra(WifiManager.EXTRA_NEW_STATE);
 
-				if((supplicantState != null) && (supplicantState == SupplicantState.DISCONNECTED)){
+				if ((supplicantState != null)
+						&& (supplicantState == SupplicantState.DISCONNECTED)) {
 					setWifiDisabled();
 				}
-			} else{
-				if((wifiState == WifiManager.WIFI_STATE_DISABLED)
-						|| (wifiState == WifiManager.WIFI_STATE_UNKNOWN)){
+			} else {
+				if ((wifiState == WifiManager.WIFI_STATE_DISABLED)
+						|| (wifiState == WifiManager.WIFI_STATE_UNKNOWN)) {
 					setWifiDisabled();
-				} else if(wifiState == WifiManager.WIFI_STATE_ENABLED){
+				} else if (wifiState == WifiManager.WIFI_STATE_ENABLED) {
 					enableWifi();
 				}
 			}
@@ -223,17 +225,19 @@ public final class CarrierHelper {
 	private void init(Context context) {
 
 		this.context = context;
-		this.availableBearer = Collections.synchronizedSet(new HashSet<Carrier>(Carrier.values().length));
-		connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		this.availableBearer = Collections
+				.synchronizedSet(new HashSet<Carrier>(Carrier.values().length));
+		connectivityManager = (ConnectivityManager) context
+				.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-		if(isWifiAvailable()){
+		if (isWifiAvailable()) {
 			this.getAvailableCarrier().add(Carrier.BEARER_WIFI);
 			this.setCurrentCarrier(Carrier.BEARER_WIFI);
 		}
 
-		if(is3GAvailable()){
+		if (is3GAvailable()) {
 			this.getAvailableCarrier().add(Carrier.BEARER_3G);
-			if(this.getCurrentCarrier() == null){
+			if (this.getCurrentCarrier() == null) {
 				this.setCurrentCarrier(Carrier.BEARER_3G);
 			}
 		}
@@ -247,9 +251,10 @@ public final class CarrierHelper {
 	 * @return true 3g is connected , otherwise false
 	 */
 	private boolean is3GAvailable() {
-		NetworkInfo networkInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+		NetworkInfo networkInfo = connectivityManager
+				.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
 
-		if((networkInfo != null) && networkInfo.isConnected()){
+		if ((networkInfo != null) && networkInfo.isConnected()) {
 			return true;
 		}
 		return false;
@@ -262,9 +267,10 @@ public final class CarrierHelper {
 	 */
 	private boolean isWifiAvailable() {
 
-		NetworkInfo networkInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+		NetworkInfo networkInfo = connectivityManager
+				.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
-		if((networkInfo != null) && networkInfo.isConnected()){
+		if ((networkInfo != null) && networkInfo.isConnected()) {
 			return true;
 		}
 		return false;
@@ -285,7 +291,8 @@ public final class CarrierHelper {
 	private void registerNetWorkChangeMonitorRecevier() {
 		IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-		intentFilter.addAction(ConnectivityManager.ACTION_BACKGROUND_DATA_SETTING_CHANGED);
+		intentFilter
+				.addAction(ConnectivityManager.ACTION_BACKGROUND_DATA_SETTING_CHANGED);
 		intentFilter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
 		intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
 
@@ -309,16 +316,16 @@ public final class CarrierHelper {
 		this.getAvailableCarrier().remove(Carrier.BEARER_WIFI);
 
 		boolean mobileAvailable = false;
-		for(Carrier bearer : this.getAvailableCarrier()){
-			if(bearer == Carrier.BEARER_3G){
+		for (Carrier bearer : this.getAvailableCarrier()) {
+			if (bearer == Carrier.BEARER_3G) {
 				mobileAvailable = true;
 				break;
 			}
 		}
 
-		if(mobileAvailable){
+		if (mobileAvailable) {
 			this.setCurrentCarrier(Carrier.BEARER_3G);
-		} else{
+		} else {
 			this.setCurrentCarrier(null);
 		}
 	}
@@ -329,7 +336,7 @@ public final class CarrierHelper {
 	 * 
 	 */
 	public void shutdownBearerHandler() {
-		if(context != null){
+		if (context != null) {
 			context.unregisterReceiver(networkChangeRecevier);
 		}
 		CarrierHelper.carrierHandler = null;

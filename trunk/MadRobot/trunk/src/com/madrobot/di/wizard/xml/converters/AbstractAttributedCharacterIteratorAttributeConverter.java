@@ -21,20 +21,23 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * An abstract converter implementation for constants of {@link AttributedCharacterIterator.Attribute} and derived
- * types.
+ * An abstract converter implementation for constants of
+ * {@link AttributedCharacterIterator.Attribute} and derived types.
  * 
  * @author J&ouml;rg Schaible
  * @since 1.2.2
  */
-public class AbstractAttributedCharacterIteratorAttributeConverter extends AbstractSingleValueConverter {
+public class AbstractAttributedCharacterIteratorAttributeConverter extends
+		AbstractSingleValueConverter {
 
 	private static final Method getName;
 	static {
 		try {
-			getName = AttributedCharacterIterator.Attribute.class.getDeclaredMethod("getName", (Class[]) null);
+			getName = AttributedCharacterIterator.Attribute.class
+					.getDeclaredMethod("getName", (Class[]) null);
 		} catch (NoSuchMethodException e) {
-			throw new ExceptionInInitializerError("Missing AttributedCharacterIterator.Attribute.getName()");
+			throw new ExceptionInInitializerError(
+					"Missing AttributedCharacterIterator.Attribute.getName()");
 		}
 	}
 
@@ -42,7 +45,8 @@ public class AbstractAttributedCharacterIteratorAttributeConverter extends Abstr
 	private transient FieldDictionary fieldDictionary;
 	private final Class type;
 
-	public AbstractAttributedCharacterIteratorAttributeConverter(final Class type) {
+	public AbstractAttributedCharacterIteratorAttributeConverter(
+			final Class type) {
 		super();
 		this.type = type;
 		readResolve();
@@ -61,14 +65,17 @@ public class AbstractAttributedCharacterIteratorAttributeConverter extends Abstr
 	private Object readResolve() {
 		fieldDictionary = new FieldDictionary();
 		attributeMap = new HashMap();
-		for (final Iterator iterator = fieldDictionary.fieldsFor(type); iterator.hasNext();) {
+		for (final Iterator iterator = fieldDictionary.fieldsFor(type); iterator
+				.hasNext();) {
 			final Field field = (Field) iterator.next();
-			if (field.getType() == type && Modifier.isStatic(field.getModifiers())) {
+			if (field.getType() == type
+					&& Modifier.isStatic(field.getModifiers())) {
 				try {
 					final Object attribute = field.get(null);
 					attributeMap.put(toString(attribute), attribute);
 				} catch (IllegalAccessException e) {
-					throw new ObjectAccessException("Cannot get object of " + field, e);
+					throw new ObjectAccessException("Cannot get object of "
+							+ field, e);
 				}
 			}
 		}
@@ -84,9 +91,12 @@ public class AbstractAttributedCharacterIteratorAttributeConverter extends Abstr
 			}
 			return (String) getName.invoke(attribute, (Object[]) null);
 		} catch (IllegalAccessException e) {
-			throw new ObjectAccessException("Cannot get name of AttributedCharacterIterator.Attribute", e);
+			throw new ObjectAccessException(
+					"Cannot get name of AttributedCharacterIterator.Attribute",
+					e);
 		} catch (InvocationTargetException e) {
-			throw new ObjectAccessException("Cannot get name of AttributedCharacterIterator.Attribute",
+			throw new ObjectAccessException(
+					"Cannot get name of AttributedCharacterIterator.Attribute",
 					e.getTargetException());
 		}
 	}

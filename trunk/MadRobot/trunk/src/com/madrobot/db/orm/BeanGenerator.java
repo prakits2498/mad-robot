@@ -33,8 +33,9 @@ import com.madrobot.reflect.ClassUtils;
 
 /**
  * Utility class to map a database cursor/resultset to a java bean
+ * 
  * @author elton.kent
- *
+ * 
  */
 public class BeanGenerator {
 	/**

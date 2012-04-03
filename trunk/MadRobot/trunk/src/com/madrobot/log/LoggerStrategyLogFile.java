@@ -30,7 +30,8 @@ import com.madrobot.io.file.SDCardUtils;
  */
 public class LoggerStrategyLogFile extends LogMethod implements LoggerStrategy {
 	private File currentLogFile;
-	private final String[] LEVELS = { "Verbose", "Debug", "Info", "Warn", "Error" };
+	private final String[] LEVELS = { "Verbose", "Debug", "Info", "Warn",
+			"Error" };
 	private File logDirectory;
 	private boolean noSdCard;
 	protected FileWriter writer;
@@ -45,25 +46,26 @@ public class LoggerStrategyLogFile extends LogMethod implements LoggerStrategy {
 	 * 
 	 */
 	public LoggerStrategyLogFile(String directory, String fileName) {
-		logDirectory = new File(Environment.getExternalStorageDirectory(), directory);
-		if(SDCardUtils.canWrite()){
-			try{
+		logDirectory = new File(Environment.getExternalStorageDirectory(),
+				directory);
+		if (SDCardUtils.canWrite()) {
+			try {
 				String fname = fileName;// "log_" + new Date().getTime() +
 				// ".txt";
-				if(logDirectory.isFile()){
+				if (logDirectory.isFile()) {
 					logDirectory.delete();
 				}
-				if(!logDirectory.exists()){
+				if (!logDirectory.exists()) {
 					logDirectory.mkdir();
 				}
 
 				currentLogFile = new File(logDirectory, fname);
 				writer = new FileWriter(currentLogFile, true);
-			} catch(IOException e){
+			} catch (IOException e) {
 				e.printStackTrace();
 				Log.e("Logger", e.getMessage());
 			}
-		} else{
+		} else {
 			noSdCard = true;
 
 		}
@@ -103,8 +105,8 @@ public class LoggerStrategyLogFile extends LogMethod implements LoggerStrategy {
 	public void removeOldLogFiles() {
 		// remove all files but the current file
 		File[] allfiles = logDirectory.listFiles();
-		for(int i = 0; i < allfiles.length; i++){
-			if(!currentLogFile.equals(allfiles[i])){
+		for (int i = 0; i < allfiles.length; i++) {
+			if (!currentLogFile.equals(allfiles[i])) {
 				allfiles[i].delete();
 			}
 		}
@@ -113,12 +115,12 @@ public class LoggerStrategyLogFile extends LogMethod implements LoggerStrategy {
 	@Override
 	void shutdown() {
 		Log.d("Logger", "Shutting down logger");
-		if(!noSdCard){
-			if(writer != null){
-				try{
+		if (!noSdCard) {
+			if (writer != null) {
+				try {
 					writer.close();
 					writer = null;
-				} catch(IOException e){
+				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}
@@ -142,12 +144,13 @@ public class LoggerStrategyLogFile extends LogMethod implements LoggerStrategy {
 	}
 
 	private void writeImpl(int level, String tag, String message) {
-		if(writer != null){
-			try{
-				writer.write("[" + formatDate(new Date()) + "] " + levelToString(level) + " [" + tag + "] "
-						+ message + "\r\n");
+		if (writer != null) {
+			try {
+				writer.write("[" + formatDate(new Date()) + "] "
+						+ levelToString(level) + " [" + tag + "] " + message
+						+ "\r\n");
 				writer.flush();
-			} catch(IOException e){
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}/* else { */

@@ -296,7 +296,8 @@ class Noise {
 	}
 
 	// /**
-	// * Returns the minimum and maximum of a number of random values of the given function. This is useful for making
+	// * Returns the minimum and maximum of a number of random values of the
+	// given function. This is useful for making
 	// * some stab at normalising the function.
 	// */
 	// public static float[] findRange(Function1D f, float[] minmax) {
@@ -315,7 +316,8 @@ class Noise {
 	// }
 
 	// /**
-	// * Returns the minimum and maximum of a number of random values of the given function. This is useful for making
+	// * Returns the minimum and maximum of a number of random values of the
+	// given function. This is useful for making
 	// * some stab at normalising the function.
 	// */
 	// public static float[] findRange(Function2D f, float[] minmax) {

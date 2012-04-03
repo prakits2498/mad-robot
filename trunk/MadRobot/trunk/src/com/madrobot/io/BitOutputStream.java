@@ -24,6 +24,7 @@ public class BitOutputStream extends OutputStream implements BinaryConstants {
 	private int bytesWritten = 0;
 
 	private final OutputStream os;
+
 	public BitOutputStream(OutputStream os, int byteOrder) {
 		this.byteOrder = byteOrder;
 		this.os = os;
@@ -35,15 +36,16 @@ public class BitOutputStream extends OutputStream implements BinaryConstants {
 	}
 
 	public void flushCache() throws IOException {
-		if(bitsInCache > 0){
+		if (bitsInCache > 0) {
 			int bitMask = (1 << bitsInCache) - 1;
 			int b = bitMask & bitCache;
 
-			if(byteOrder == BYTE_ORDER_NETWORK) // MSB, so write from left
+			if (byteOrder == BYTE_ORDER_NETWORK) // MSB, so write from left
 			{
 				b <<= 8 - bitsInCache; // left align fragment.
 				os.write(b);
-			} else if(byteOrder == BYTE_ORDER_INTEL) // LSB, so write from right
+			} else if (byteOrder == BYTE_ORDER_INTEL) // LSB, so write from
+														// right
 			{
 				os.write(b);
 			}
@@ -68,25 +70,26 @@ public class BitOutputStream extends OutputStream implements BinaryConstants {
 		int sampleMask = (1 << SampleBits) - 1;
 		value &= sampleMask;
 
-		if(byteOrder == BYTE_ORDER_NETWORK) // MSB, so add to right
+		if (byteOrder == BYTE_ORDER_NETWORK) // MSB, so add to right
 		{
 			bitCache = (bitCache << SampleBits) | value;
-		} else if(byteOrder == BYTE_ORDER_INTEL) // LSB, so add to left
+		} else if (byteOrder == BYTE_ORDER_INTEL) // LSB, so add to left
 		{
 			bitCache = bitCache | (value << bitsInCache);
-		} else{
+		} else {
 			throw new IOException("Unknown byte order: " + byteOrder);
 		}
 		bitsInCache += SampleBits;
 
-		while(bitsInCache >= 8){
-			if(byteOrder == BYTE_ORDER_NETWORK) // MSB, so write from left
+		while (bitsInCache >= 8) {
+			if (byteOrder == BYTE_ORDER_NETWORK) // MSB, so write from left
 			{
 				int b = 0xff & (bitCache >> (bitsInCache - 8));
 				actualWrite(b);
 
 				bitsInCache -= 8;
-			} else if(byteOrder == BYTE_ORDER_INTEL) // LSB, so write from right
+			} else if (byteOrder == BYTE_ORDER_INTEL) // LSB, so write from
+														// right
 			{
 				int b = 0xff & bitCache;
 				actualWrite(b);

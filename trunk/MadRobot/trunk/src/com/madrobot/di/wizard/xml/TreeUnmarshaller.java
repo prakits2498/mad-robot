@@ -36,7 +36,8 @@ class TreeUnmarshaller implements UnmarshallingContext {
 	private FastStack types = new FastStack(16);
 	private final PrioritizedList validationList = new PrioritizedList();
 
-	TreeUnmarshaller(Object root, HierarchicalStreamReader reader, ConverterLookup converterLookup, Mapper mapper) {
+	TreeUnmarshaller(Object root, HierarchicalStreamReader reader,
+			ConverterLookup converterLookup, Mapper mapper) {
 		this.root = root;
 		this.reader = reader;
 		this.converterLookup = converterLookup;
@@ -48,7 +49,8 @@ class TreeUnmarshaller implements UnmarshallingContext {
 		validationList.add(work, priority);
 	}
 
-	private void addInformationTo(ErrorWriter errorWriter, Class type, Converter converter, Object parent) {
+	private void addInformationTo(ErrorWriter errorWriter, Class type,
+			Converter converter, Object parent) {
 		errorWriter.add("class", type.getName());
 		errorWriter.add("required-type", getRequiredType().getName());
 		errorWriter.add("converter-type", converter.getClass().getName());
@@ -89,7 +91,8 @@ class TreeUnmarshaller implements UnmarshallingContext {
 			converter = converterLookup.lookupConverterForType(type);
 		} else {
 			if (!converter.canConvert(type)) {
-				ConversionException e = new ConversionException("Explicit selected converter cannot handle type");
+				ConversionException e = new ConversionException(
+						"Explicit selected converter cannot handle type");
 				e.add("item-type", type.getName());
 				e.add("converter-type", converter.getClass().getName());
 				throw e;

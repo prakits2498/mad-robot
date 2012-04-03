@@ -25,30 +25,30 @@ public class RectangleUtils {
 	 * @param r2Height
 	 * @return
 	 */
-	public static boolean isInside(final int r1X, final int r1Y, int r1Width, int r1Height, int r2X,
-			int r2Y, int r2Width, int r2Height) {
-		if((r2Width | r2Height | r1Width | r1Height) < 0){
+	public static boolean isInside(final int r1X, final int r1Y, int r1Width,
+			int r1Height, int r2X, int r2Y, int r2Width, int r2Height) {
+		if ((r2Width | r2Height | r1Width | r1Height) < 0) {
 			return false;
 		}
-		if((r1X < r2X) || (r1Y < r2Y)){
+		if ((r1X < r2X) || (r1Y < r2Y)) {
 			return false;
 		}
 		r2Width += r2X;
 		r1Width += r1X;
-		if(r1Width <= r1X){
-			if((r2Width >= r2X) || (r1Width > r2Width)){
+		if (r1Width <= r1X) {
+			if ((r2Width >= r2X) || (r1Width > r2Width)) {
 				return false;
 			}
-		} else if((r2Width >= r2X) && (r1Width > r2Width)){
+		} else if ((r2Width >= r2X) && (r1Width > r2Width)) {
 			return false;
 		}
 		r2Height += r2Y;
 		r1Height += r1Y;
-		if(r1Height <= r1Y){
-			if((r2Height >= r2Y) || (r1Height > r2Height)){
+		if (r1Height <= r1Y) {
+			if ((r2Height >= r2Y) || (r1Height > r2Height)) {
 				return false;
 			}
-		} else if((r2Height >= r2Y) && (r1Height > r2Height)){
+		} else if ((r2Height >= r2Y) && (r1Height > r2Height)) {
 			return false;
 		}
 		return true;
@@ -62,40 +62,40 @@ public class RectangleUtils {
 	 *            (inclusive)
 	 * @param x
 	 *            ,y Point to check.
-	 * @return True if the point is inside the rectangle,
-	 *         false otherwise.
+	 * @return True if the point is inside the rectangle, false otherwise.
 	 */
-	public static boolean isPointInsideRectangle(float x0, float y0, float x1, float y1, float x, float y) {
+	public static boolean isPointInsideRectangle(float x0, float y0, float x1,
+			float y1, float x, float y) {
 		return (x >= x0) && (x < x1) && (y >= y0) && (y < y1);
 	}
 
 	/**
-	 * Check if a specified polyline intersects a specified rectangle.
-	 * Integer domain.
+	 * Check if a specified polyline intersects a specified rectangle. Integer
+	 * domain.
 	 * 
 	 * @param x
 	 *            , y Polyline to check.
 	 * @param x0
 	 *            , y0, x1, y1 Upper left and lower left corner of rectangle
 	 *            (inclusive).
-	 * @return True if the polyline intersects the rectangle,
-	 *         false otherwise.
+	 * @return True if the polyline intersects the rectangle, false otherwise.
 	 */
-	public static boolean isPolylineIntersectingRectangle(float[] x, float[] y, float x0, float y0,
-			float x1, float y1) {
-		if(x.length == 0){
+	public static boolean isPolylineIntersectingRectangle(float[] x, float[] y,
+			float x0, float y0, float x1, float y1) {
+		if (x.length == 0) {
 			return false;
 		}
 
-		if(isPointInsideRectangle(x[0], y[0], x0, y0, x1, y1)){
+		if (isPointInsideRectangle(x[0], y[0], x0, y0, x1, y1)) {
 			return true;
-		} else if(x.length == 1){
+		} else if (x.length == 1) {
 			return false;
 		}
 
-		for(int i = 1; i < x.length; i++){
-			if((x[i - 1] != x[i]) || (y[i - 1] != y[i])){
-				if(LineUtils.isLineIntersectingRectangle(x[i - 1], y[i - 1], x[i], y[i], x0, y0, x1, y1)){
+		for (int i = 1; i < x.length; i++) {
+			if ((x[i - 1] != x[i]) || (y[i - 1] != y[i])) {
+				if (LineUtils.isLineIntersectingRectangle(x[i - 1], y[i - 1],
+						x[i], y[i], x0, y0, x1, y1)) {
 					return true;
 				}
 			}
@@ -121,17 +121,18 @@ public class RectangleUtils {
 	 *            of the rectangle
 	 * @return
 	 */
-	public static boolean withinBounds(final float px, final float py, final float x, final int y,
-			int width, int height) {
-		if((width | height) < 0){
+	public static boolean withinBounds(final float px, final float py,
+			final float x, final int y, int width, int height) {
+		if ((width | height) < 0) {
 			return false;
 		}
-		if((px < x) || (py < y)){
+		if ((px < x) || (py < y)) {
 			return false;
-		} else{
+		} else {
 			width += x;
 			height += y;
-			return ((width < x) || (width > px)) && ((height < y) || (height > py));
+			return ((width < x) || (width > px))
+					&& ((height < y) || (height > py));
 		}
 	}
 

@@ -11,8 +11,9 @@ import com.madrobot.net.client.oauth.signature.SigningStrategy;
 
 /**
  * <p>
- * Exposes a simple interface to sign HTTP requests using a given OAuth token and secret. Refer to {@link OAuthProvider}
- * how to retrieve a valid token and token secret.
+ * Exposes a simple interface to sign HTTP requests using a given OAuth token
+ * and secret. Refer to {@link OAuthProvider} how to retrieve a valid token and
+ * token secret.
  * </p>
  * <p>
  * HTTP messages are signed as follows:
@@ -41,10 +42,12 @@ public interface OAuthConsumer extends Serializable {
 	public String getConsumerSecret();
 
 	/**
-	 * Returns all parameters collected from the HTTP request during message signing (this means the return value may be
-	 * NULL before a call to {@link #sign}), plus all required OAuth parameters that were added because the request
-	 * didn't contain them beforehand. In other words, this is the exact set of parameters that were used for creating
-	 * the message signature.
+	 * Returns all parameters collected from the HTTP request during message
+	 * signing (this means the return value may be NULL before a call to
+	 * {@link #sign}), plus all required OAuth parameters that were added
+	 * because the request didn't contain them beforehand. In other words, this
+	 * is the exact set of parameters that were used for creating the message
+	 * signature.
 	 * 
 	 * @return the request parameters used for message signing
 	 */
@@ -55,10 +58,13 @@ public interface OAuthConsumer extends Serializable {
 	public String getTokenSecret();
 
 	/**
-	 * Allows you to add parameters (typically OAuth parameters such as oauth_callback or oauth_verifier) which will go
-	 * directly into the signer, i.e. you don't have to put them into the request first. The consumer's
-	 * {@link SigningStrategy} will then take care of writing them to the correct part of the request before it is sent.
-	 * Note that these parameters are expected to already be percent encoded -- they will be simply merged as-is.
+	 * Allows you to add parameters (typically OAuth parameters such as
+	 * oauth_callback or oauth_verifier) which will go directly into the signer,
+	 * i.e. you don't have to put them into the request first. The consumer's
+	 * {@link SigningStrategy} will then take care of writing them to the
+	 * correct part of the request before it is sent. Note that these parameters
+	 * are expected to already be percent encoded -- they will be simply merged
+	 * as-is.
 	 * 
 	 * @param additionalParameters
 	 *            the parameters
@@ -66,7 +72,8 @@ public interface OAuthConsumer extends Serializable {
 	public void setAdditionalParameters(HttpParameters additionalParameters);
 
 	/**
-	 * Sets the message signer that should be used to generate the OAuth signature.
+	 * Sets the message signer that should be used to generate the OAuth
+	 * signature.
 	 * 
 	 * @param messageSigner
 	 *            the signer
@@ -77,8 +84,9 @@ public interface OAuthConsumer extends Serializable {
 
 	/**
 	 * <p>
-	 * Causes the consumer to always include the oauth_token parameter to be sent, even if blank. If you're seeing 401s
-	 * during calls to {@link OAuthProvider#retrieveRequestToken}, try setting this to true.
+	 * Causes the consumer to always include the oauth_token parameter to be
+	 * sent, even if blank. If you're seeing 401s during calls to
+	 * {@link OAuthProvider#retrieveRequestToken}, try setting this to true.
 	 * </p>
 	 * 
 	 * @param enable
@@ -87,7 +95,8 @@ public interface OAuthConsumer extends Serializable {
 	public void setSendEmptyTokens(boolean enable);
 
 	/**
-	 * Defines which strategy should be used to write a signature to an HTTP request.
+	 * Defines which strategy should be used to write a signature to an HTTP
+	 * request.
 	 * 
 	 * @param signingStrategy
 	 *            the strategy
@@ -107,8 +116,9 @@ public interface OAuthConsumer extends Serializable {
 	public void setTokenWithSecret(String token, String tokenSecret);
 
 	/**
-	 * Signs the given HTTP request by writing an OAuth signature (and other required OAuth parameters) to it. Where
-	 * these parameters are written depends on the current {@link SigningStrategy}.
+	 * Signs the given HTTP request by writing an OAuth signature (and other
+	 * required OAuth parameters) to it. Where these parameters are written
+	 * depends on the current {@link SigningStrategy}.
 	 * 
 	 * @param request
 	 *            the request to sign
@@ -117,16 +127,19 @@ public interface OAuthConsumer extends Serializable {
 	 * @throws OAuthExpectationFailedException
 	 * @throws OAuthCommunicationException
 	 */
-	public HttpRequest sign(HttpRequest request) throws OAuthMessageSignerException, OAuthExpectationFailedException,
-			OAuthCommunicationException;
+	public HttpRequest sign(HttpRequest request)
+			throws OAuthMessageSignerException,
+			OAuthExpectationFailedException, OAuthCommunicationException;
 
 	/**
 	 * <p>
-	 * Signs the given HTTP request by writing an OAuth signature (and other required OAuth parameters) to it. Where
-	 * these parameters are written depends on the current {@link SigningStrategy}.
+	 * Signs the given HTTP request by writing an OAuth signature (and other
+	 * required OAuth parameters) to it. Where these parameters are written
+	 * depends on the current {@link SigningStrategy}.
 	 * </p>
-	 * This method accepts HTTP library specific request objects; the consumer implementation must ensure that only
-	 * those request types are passed which it supports.
+	 * This method accepts HTTP library specific request objects; the consumer
+	 * implementation must ensure that only those request types are passed which
+	 * it supports.
 	 * 
 	 * @param request
 	 *            the request to sign
@@ -135,25 +148,27 @@ public interface OAuthConsumer extends Serializable {
 	 * @throws OAuthExpectationFailedException
 	 * @throws OAuthCommunicationException
 	 */
-	public HttpRequest sign(Object request) throws OAuthMessageSignerException, OAuthExpectationFailedException,
-			OAuthCommunicationException;
+	public HttpRequest sign(Object request) throws OAuthMessageSignerException,
+			OAuthExpectationFailedException, OAuthCommunicationException;
 
 	/**
 	 * <p>
-	 * "Signs" the given URL by appending all OAuth parameters to it which are required for message signing. The assumed
-	 * HTTP method is GET. Essentially, this is equivalent to signing an HTTP GET request, but it can be useful if your
-	 * application requires clickable links to protected resources, i.e. when your application does not have access to
-	 * the actual request that is being sent.
+	 * "Signs" the given URL by appending all OAuth parameters to it which are
+	 * required for message signing. The assumed HTTP method is GET.
+	 * Essentially, this is equivalent to signing an HTTP GET request, but it
+	 * can be useful if your application requires clickable links to protected
+	 * resources, i.e. when your application does not have access to the actual
+	 * request that is being sent.
 	 * </p>
 	 * 
 	 * @param url
 	 *            the input URL. May have query parameters.
-	 * @return the input URL, with all necessary OAuth parameters attached as a query string. Existing query parameters
-	 *         are preserved.
+	 * @return the input URL, with all necessary OAuth parameters attached as a
+	 *         query string. Existing query parameters are preserved.
 	 * @throws OAuthMessageSignerException
 	 * @throws OAuthExpectationFailedException
 	 * @throws OAuthCommunicationException
 	 */
-	public String sign(String url) throws OAuthMessageSignerException, OAuthExpectationFailedException,
-			OAuthCommunicationException;
+	public String sign(String url) throws OAuthMessageSignerException,
+			OAuthExpectationFailedException, OAuthCommunicationException;
 }

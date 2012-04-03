@@ -23,7 +23,8 @@ import java.lang.reflect.Method;
  * <li>Class information of the field</li>
  * <li>Type of the field. See {@link FieldType}</li>
  * <li>Reference to the field. See {@link Field}</li>
- * <li>References to the methods to get or set the value, or add in case of a collection. See {@link Method}</li>
+ * <li>References to the methods to get or set the value, or add in case of a
+ * collection. See {@link Method}</li>
  * </ol>
  * <br/>
  * See {@link XMLDeserializer} for usage

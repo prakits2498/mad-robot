@@ -15,9 +15,9 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-
 /**
- * A {@link HierarchicalStreamDriver} using the XmlPullParserFactory to locate an XML Pull Parser.
+ * A {@link HierarchicalStreamDriver} using the XmlPullParserFactory to locate
+ * an XML Pull Parser.
  * 
  */
 public class XppDriver extends AbstractXppDriver {
@@ -37,7 +37,8 @@ public class XppDriver extends AbstractXppDriver {
 
 	/**
 	 * @since 1.2
-	 * @deprecated As of 1.4, use {@link XppDriver#XppDriver(NameCoder)} instead.
+	 * @deprecated As of 1.4, use {@link XppDriver#XppDriver(NameCoder)}
+	 *             instead.
 	 */
 	@Deprecated
 	public XppDriver(XmlFriendlyNameCoder replacer) {
@@ -48,7 +49,8 @@ public class XppDriver extends AbstractXppDriver {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected synchronized XmlPullParser createParser() throws XmlPullParserException {
+	protected synchronized XmlPullParser createParser()
+			throws XmlPullParserException {
 		if (factory == null) {
 			factory = XmlPullParserFactory.newInstance(null, XppDriver.class);
 		}

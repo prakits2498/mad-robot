@@ -16,8 +16,9 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * Mapper that resolves default implementations of classes. For example, mapper.serializedClass(ArrayList.class) will
- * return java.util.List. Calling mapper.defaultImplementationOf(List.class) will return ArrayList.
+ * Mapper that resolves default implementations of classes. For example,
+ * mapper.serializedClass(ArrayList.class) will return java.util.List. Calling
+ * mapper.defaultImplementationOf(List.class) will return ArrayList.
  * 
  */
 class DefaultImplementationsMapper extends MapperWrapper {
@@ -30,10 +31,13 @@ class DefaultImplementationsMapper extends MapperWrapper {
 		addDefaults();
 	}
 
-	public void addDefaultImplementation(Class defaultImplementation, Class ofType) {
-		if (defaultImplementation != null && defaultImplementation.isInterface()) {
-			throw new InitializationException("Default implementation is not a concrete class: "
-					+ defaultImplementation.getName());
+	public void addDefaultImplementation(Class defaultImplementation,
+			Class ofType) {
+		if (defaultImplementation != null
+				&& defaultImplementation.isInterface()) {
+			throw new InitializationException(
+					"Default implementation is not a concrete class: "
+							+ defaultImplementation.getName());
 		}
 		typeToImpl.put(ofType, defaultImplementation);
 		implToType.put(defaultImplementation, ofType);
@@ -64,7 +68,8 @@ class DefaultImplementationsMapper extends MapperWrapper {
 
 	private Object readResolve() {
 		implToType = new HashMap();
-		for (final Iterator iter = typeToImpl.keySet().iterator(); iter.hasNext();) {
+		for (final Iterator iter = typeToImpl.keySet().iterator(); iter
+				.hasNext();) {
 			final Object type = iter.next();
 			implToType.put(typeToImpl.get(type), type);
 		}
@@ -74,6 +79,7 @@ class DefaultImplementationsMapper extends MapperWrapper {
 	@Override
 	public String serializedClass(Class type) {
 		Class baseType = (Class) implToType.get(type);
-		return baseType == null ? super.serializedClass(type) : super.serializedClass(baseType);
+		return baseType == null ? super.serializedClass(type) : super
+				.serializedClass(baseType);
 	}
 }

@@ -14,7 +14,8 @@ package com.madrobot.di.wizard.xml.converters;
 import java.sql.Time;
 
 /**
- * Converts a java.sql.Time to text. Warning: Any granularity smaller than seconds is lost.
+ * Converts a java.sql.Time to text. Warning: Any granularity smaller than
+ * seconds is lost.
  * 
  * @author Jose A. Illescas
  */

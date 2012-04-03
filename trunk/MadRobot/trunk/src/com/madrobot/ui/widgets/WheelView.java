@@ -24,7 +24,7 @@ import com.madrobot.ui.adapters.WheelViewAdapter;
  * iPhone style wheel based selector
  * <p>
  * The following are the WheelView attributes (attrs.xml)
- * <table  cellspacing="1" cellpadding="3">
+ * <table cellspacing="1" cellpadding="3">
  * <tr>
  * <th><b>Attribute</b></td>
  * <td><b>Type</b></td>
@@ -35,7 +35,8 @@ import com.madrobot.ui.adapters.WheelViewAdapter;
  * <td><code>isCyclic</code></td>
  * <td>Boolean</td>
  * <td>false</td>
- * <td>If true, the wheelview's adapter is cyclic. (Snap's back to the first item after the last)</td>
+ * <td>If true, the wheelview's adapter is cyclic. (Snap's back to the first
+ * item after the last)</td>
  * </tr>
  * 
  * <tr>
@@ -44,7 +45,8 @@ import com.madrobot.ui.adapters.WheelViewAdapter;
  * <td>Black shadow</td>
  * <td>
  * <p>
- * Drawable to be used as a top shadow.Can be set to not be rendered using the <code>drawTopDrawable</code> attribute
+ * Drawable to be used as a top shadow.Can be set to not be rendered using the
+ * <code>drawTopDrawable</code> attribute
  * </p>
  * </td>
  * </tr>
@@ -54,8 +56,8 @@ import com.madrobot.ui.adapters.WheelViewAdapter;
  * <td>Black shadow</td>
  * <td>
  * <p>
- * Drawable to be used as a bottom shadow.Can be set to not be rendered using the <code>drawBottomDrawable</code>
- * attribute
+ * Drawable to be used as a bottom shadow.Can be set to not be rendered using
+ * the <code>drawBottomDrawable</code> attribute
  * </p>
  * </td>
  * </tr>
@@ -65,7 +67,8 @@ import com.madrobot.ui.adapters.WheelViewAdapter;
  * <td>Semi-transparent box</td>
  * <td>
  * <p>
- * Drawable used as the wheel's selector.Can be set not to be rendered using the <code>drawSelector</code>
+ * Drawable used as the wheel's selector.Can be set not to be rendered using the
+ * <code>drawSelector</code>
  * </p>
  * </td>
  * </tr>
@@ -91,7 +94,8 @@ import com.madrobot.ui.adapters.WheelViewAdapter;
  * </table>
  * <br/>
  * <b>Using the WheelView</b><br/>
- * A background needs to be set for the WheelView if the transparent look is not desired.<br/>
+ * A background needs to be set for the WheelView if the transparent look is not
+ * desired.<br/>
  * <code>
  * <pre>
  * 		&lt;com.madrobot.ui.widgets.WheelView 
@@ -112,7 +116,8 @@ public class WheelView extends View {
 	/**
 	 * Wheel changed listener interface.
 	 * <p>
-	 * The onChanged() method is called whenever current wheel positions is changed:
+	 * The onChanged() method is called whenever current wheel positions is
+	 * changed:
 	 * <li>New Wheel position is set
 	 * <li>Wheel view is scrolled
 	 */
@@ -179,7 +184,8 @@ public class WheelView extends View {
 	/** Left and right padding value */
 	private static final int PADDING = 10;
 	/** Top and bottom shadows colors */
-	private static final int[] SHADOWS_COLORS = new int[] { 0xFF111111, 0x00AAAAAA, 0x00AAAAAA };
+	private static final int[] SHADOWS_COLORS = new int[] { 0xFF111111,
+			0x00AAAAAA, 0x00AAAAAA };
 
 	private Drawable bottomDrawable;
 	private boolean canDrawBottomDrawable = true;
@@ -366,7 +372,8 @@ public class WheelView extends View {
 	private void buildViewForMeasuring() {
 		// clear all items
 		if (itemsLayout != null) {
-			recycle.recycleItems(itemsLayout, firstItem, new WheelViewItemsRange());
+			recycle.recycleItems(itemsLayout, firstItem,
+					new WheelViewItemsRange());
 		} else {
 			createItemsLayout();
 		}
@@ -391,9 +398,12 @@ public class WheelView extends View {
 	 */
 	private int calculateLayoutWidth(int widthSize, int mode) {
 
-		itemsLayout.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-		itemsLayout.measure(MeasureSpec.makeMeasureSpec(widthSize, MeasureSpec.UNSPECIFIED),
-				MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+		itemsLayout.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
+				LayoutParams.WRAP_CONTENT));
+		itemsLayout
+				.measure(MeasureSpec.makeMeasureSpec(widthSize,
+						MeasureSpec.UNSPECIFIED), MeasureSpec.makeMeasureSpec(
+						0, MeasureSpec.UNSPECIFIED));
 		int width = itemsLayout.getMeasuredWidth();
 
 		if (mode == MeasureSpec.EXACTLY) {
@@ -409,8 +419,9 @@ public class WheelView extends View {
 			}
 		}
 
-		itemsLayout.measure(MeasureSpec.makeMeasureSpec(width - 2 * PADDING, MeasureSpec.EXACTLY),
-				MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+		itemsLayout.measure(MeasureSpec.makeMeasureSpec(width - 2 * PADDING,
+				MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(0,
+				MeasureSpec.UNSPECIFIED));
 
 		return width;
 	}
@@ -497,7 +508,8 @@ public class WheelView extends View {
 	private void drawItems(Canvas canvas) {
 		canvas.save();
 
-		int top = (currentItem - firstItem) * getItemHeight() + (getItemHeight() - getHeight()) / 2;
+		int top = (currentItem - firstItem) * getItemHeight()
+				+ (getItemHeight() - getHeight()) / 2;
 		canvas.translate(PADDING, -top + scrollingOffset);
 
 		itemsLayout.draw(canvas);
@@ -514,7 +526,8 @@ public class WheelView extends View {
 	private void drawSelector(Canvas canvas) {
 		int center = getHeight() / 2;
 		int offset = (int) (getItemHeight() / 2 * 1.2);
-		selectorDrawable.setBounds(0, center - offset, getWidth(), center + offset);
+		selectorDrawable.setBounds(0, center - offset, getWidth(), center
+				+ offset);
 		selectorDrawable.draw(canvas);
 	}
 
@@ -531,7 +544,8 @@ public class WheelView extends View {
 			topDrawable.draw(canvas);
 		}
 		if (canDrawBottomDrawable) {
-			bottomDrawable.setBounds(0, getHeight() - height, getWidth(), getHeight() + 1);
+			bottomDrawable.setBounds(0, getHeight() - height, getWidth(),
+					getHeight() + 1);
 			bottomDrawable.draw(canvas);
 		}
 	}
@@ -557,7 +571,8 @@ public class WheelView extends View {
 			itemHeight = layout.getChildAt(0).getMeasuredHeight();
 		}
 
-		int desired = itemHeight * visibleItems - itemHeight * ITEM_OFFSET_PERCENT / 50;
+		int desired = itemHeight * visibleItems - itemHeight
+				* ITEM_OFFSET_PERCENT / 50;
 
 		return Math.max(desired, getSuggestedMinimumHeight());
 	}
@@ -625,7 +640,8 @@ public class WheelView extends View {
 		}
 		int count = viewAdapter.getItemsCount();
 		if (!isValidItemIndex(index)) {
-			return viewAdapter.getEmptyItem(recycle.getEmptyItem(), itemsLayout);
+			return viewAdapter
+					.getEmptyItem(recycle.getEmptyItem(), itemsLayout);
 		} else {
 			while (index < 0) {
 				index = count + index;
@@ -655,24 +671,34 @@ public class WheelView extends View {
 	}
 
 	private void initAttributes(Context context, AttributeSet attrs) {
-		TypedArray styledAttrs = context.obtainStyledAttributes(attrs, R.styleable.WheelView);
-		isCyclic = styledAttrs.getBoolean(R.styleable.WheelView_isCyclic, false);
-		canDrawTopDrawable = styledAttrs.getBoolean(R.styleable.WheelView_drawTopDrawable, true);
-		canDrawBottomDrawable = styledAttrs.getBoolean(R.styleable.WheelView_drawBottomDrawable, true);
-		canDrawSelector = styledAttrs.getBoolean(R.styleable.WheelView_drawSelector, true);
-		topDrawable = styledAttrs.getDrawable(R.styleable.WheelView_topDrawable);
+		TypedArray styledAttrs = context.obtainStyledAttributes(attrs,
+				R.styleable.WheelView);
+		isCyclic = styledAttrs
+				.getBoolean(R.styleable.WheelView_isCyclic, false);
+		canDrawTopDrawable = styledAttrs.getBoolean(
+				R.styleable.WheelView_drawTopDrawable, true);
+		canDrawBottomDrawable = styledAttrs.getBoolean(
+				R.styleable.WheelView_drawBottomDrawable, true);
+		canDrawSelector = styledAttrs.getBoolean(
+				R.styleable.WheelView_drawSelector, true);
+		topDrawable = styledAttrs
+				.getDrawable(R.styleable.WheelView_topDrawable);
 		if (topDrawable == null) {
-			topDrawable = new GradientDrawable(Orientation.TOP_BOTTOM, SHADOWS_COLORS);
+			topDrawable = new GradientDrawable(Orientation.TOP_BOTTOM,
+					SHADOWS_COLORS);
 		}
-		bottomDrawable = styledAttrs.getDrawable(R.styleable.WheelView_bottomDrawable);
+		bottomDrawable = styledAttrs
+				.getDrawable(R.styleable.WheelView_bottomDrawable);
 		if (bottomDrawable == null) {
-			bottomDrawable = new GradientDrawable(Orientation.BOTTOM_TOP, SHADOWS_COLORS);
+			bottomDrawable = new GradientDrawable(Orientation.BOTTOM_TOP,
+					SHADOWS_COLORS);
 		}
 
-		selectorDrawable = styledAttrs.getDrawable(R.styleable.WheelView_selectorDrawable);
+		selectorDrawable = styledAttrs
+				.getDrawable(R.styleable.WheelView_selectorDrawable);
 		if (selectorDrawable == null) {
-			selectorDrawable = new GradientDrawable(Orientation.BOTTOM_TOP, new int[] { 0x70222222, 0x70222222,
-					0x70EEEEEE });
+			selectorDrawable = new GradientDrawable(Orientation.BOTTOM_TOP,
+					new int[] { 0x70222222, 0x70222222, 0x70EEEEEE });
 		}
 	}
 
@@ -701,14 +727,16 @@ public class WheelView extends View {
 			scrollingOffset = 0;
 		} else if (itemsLayout != null) {
 			// cache all items
-			recycle.recycleItems(itemsLayout, firstItem, new WheelViewItemsRange());
+			recycle.recycleItems(itemsLayout, firstItem,
+					new WheelViewItemsRange());
 		}
 
 		invalidate();
 	}
 
 	/**
-	 * Tests if wheel is cyclic. That means before the 1st item there is shown the last one
+	 * Tests if wheel is cyclic. That means before the 1st item there is shown
+	 * the last one
 	 * 
 	 * @return true if wheel is cyclic
 	 */
@@ -724,8 +752,10 @@ public class WheelView extends View {
 	 * @return true if item index is not out of bounds or the wheel is cyclic
 	 */
 	private boolean isValidItemIndex(int index) {
-		return viewAdapter != null && viewAdapter.getItemsCount() > 0
-				&& (isCyclic || index >= 0 && index < viewAdapter.getItemsCount());
+		return viewAdapter != null
+				&& viewAdapter.getItemsCount() > 0
+				&& (isCyclic || index >= 0
+						&& index < viewAdapter.getItemsCount());
 	}
 
 	/**
@@ -878,7 +908,8 @@ public class WheelView extends View {
 		}
 
 		if (!updated) {
-			updated = firstItem != range.getFirst() || itemsLayout.getChildCount() != range.getCount();
+			updated = firstItem != range.getFirst()
+					|| itemsLayout.getChildCount() != range.getCount();
 		}
 
 		if (firstItem > range.getFirst() && firstItem <= range.getLast()) {
@@ -894,7 +925,8 @@ public class WheelView extends View {
 
 		int first = firstItem;
 		for (int i = itemsLayout.getChildCount(); i < range.getCount(); i++) {
-			if (!addViewItem(firstItem + i, false) && itemsLayout.getChildCount() == 0) {
+			if (!addViewItem(firstItem + i, false)
+					&& itemsLayout.getChildCount() == 0) {
 				first++;
 			}
 		}
@@ -984,7 +1016,8 @@ public class WheelView extends View {
 			if (animated) {
 				int itemsToScroll = index - currentItem;
 				if (isCyclic) {
-					int scroll = itemCount + Math.min(index, currentItem) - Math.max(index, currentItem);
+					int scroll = itemCount + Math.min(index, currentItem)
+							- Math.max(index, currentItem);
 					if (scroll < Math.abs(itemsToScroll)) {
 						itemsToScroll = itemsToScroll < 0 ? scroll : -scroll;
 					}
@@ -1025,8 +1058,8 @@ public class WheelView extends View {
 	}
 
 	/**
-	 * Sets view adapter. Usually new adapters contain different views, so it needs to rebuild view by calling
-	 * measure().
+	 * Sets view adapter. Usually new adapters contain different views, so it
+	 * needs to rebuild view by calling measure().
 	 * 
 	 * @param viewAdapter
 	 *            the view adapter
@@ -1044,8 +1077,9 @@ public class WheelView extends View {
 	}
 
 	/**
-	 * Sets the desired count of visible items. Actual amount of visible items depends on wheel layout parameters. To
-	 * apply changes and rebuild view call measure().
+	 * Sets the desired count of visible items. Actual amount of visible items
+	 * depends on wheel layout parameters. To apply changes and rebuild view
+	 * call measure().
 	 * 
 	 * @param count
 	 *            the desired count for visible items
@@ -1062,7 +1096,8 @@ public class WheelView extends View {
 	}
 
 	/**
-	 * Updates view. Rebuilds items and label if necessary, recalculate items sizes.
+	 * Updates view. Rebuilds items and label if necessary, recalculate items
+	 * sizes.
 	 */
 	private void updateView() {
 		if (rebuildItems()) {

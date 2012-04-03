@@ -11,11 +11,11 @@
 
 package com.madrobot.di.wizard.xml.converters;
 
-import android.util.Base64;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import android.util.Base64;
 
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamReader;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
@@ -26,7 +26,8 @@ import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
  * @author Joe Walnes
  * @author J&ouml;rg Schaible
  */
-public class EncodedByteArrayConverter implements Converter, SingleValueConverter {
+public class EncodedByteArrayConverter implements Converter,
+		SingleValueConverter {
 
 	// private static final Base64Encoder base64 = new Base64Encoder();
 	private static final ByteConverter byteConverter = new ByteConverter();
@@ -38,34 +39,42 @@ public class EncodedByteArrayConverter implements Converter, SingleValueConverte
 
 	@Override
 	public Object fromString(String str) {
-		return Base64.decode(str,Base64.DEFAULT);
+		return Base64.decode(str, Base64.DEFAULT);
 	}
 
 	@Override
-	public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
+	public void marshal(Object source, HierarchicalStreamWriter writer,
+			MarshallingContext context) {
 		writer.setValue(toString(source));
 	}
 
 	@Override
 	public String toString(Object obj) {
-		return new String(Base64.encode(((byte[]) obj),Base64.DEFAULT));
+		return new String(Base64.encode(((byte[]) obj), Base64.DEFAULT));
 	}
 
 	@Override
-	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
-		String data = reader.getValue(); // needs to be called before hasMoreChildren.
+	public Object unmarshal(HierarchicalStreamReader reader,
+			UnmarshallingContext context) {
+		String data = reader.getValue(); // needs to be called before
+											// hasMoreChildren.
 		if (!reader.hasMoreChildren()) {
 			return fromString(data);
 		} else {
-			// backwards compatibility ... try to unmarshal byte arrays that haven't been encoded
+			// backwards compatibility ... try to unmarshal byte arrays that
+			// haven't been encoded
 			return unmarshalIndividualByteElements(reader, context);
 		}
 	}
 
-	private Object unmarshalIndividualByteElements(HierarchicalStreamReader reader, UnmarshallingContext context) {
-		List bytes = new ArrayList(); // have to create a temporary list because don't know the size of the array
+	private Object unmarshalIndividualByteElements(
+			HierarchicalStreamReader reader, UnmarshallingContext context) {
+		List bytes = new ArrayList(); // have to create a temporary list because
+										// don't know the size of the array
 		boolean firstIteration = true;
-		while (firstIteration || reader.hasMoreChildren()) { // hangover from previous hasMoreChildren
+		while (firstIteration || reader.hasMoreChildren()) { // hangover from
+																// previous
+																// hasMoreChildren
 			reader.moveDown();
 			bytes.add(byteConverter.fromString(reader.getValue()));
 			reader.moveUp();

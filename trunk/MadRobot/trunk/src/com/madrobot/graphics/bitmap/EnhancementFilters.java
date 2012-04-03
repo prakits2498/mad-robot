@@ -20,23 +20,25 @@ import com.madrobot.graphics.bitmap.OutputConfiguration.BitmapMeta;
  * </table>
  * <br/>
  * <b>Gain and Bias</b><br/>
- * Gain and bias with each set to 0.10 . Adjustment applied to one half of the image. the remaining half is the normal
- * image<br/>
+ * Gain and bias with each set to 0.10 . Adjustment applied to one half of the
+ * image. the remaining half is the normal image<br/>
  * <img src="../../../../resources/gainbias.png" ><br/>
  * 
  * <b>Gamma</b><br/>
- * Gamma with all three channels set to 0.75. Adjustment applied to one half of the image. the remaining half is the
- * normal image<br/>
+ * Gamma with all three channels set to 0.75. Adjustment applied to one half of
+ * the image. the remaining half is the normal image<br/>
  * <img src="../../../../resources/gamma.png" ><br/>
  * <b>DeSpeckle</b><br/>
  * <img src="../../../../resources/despeckle.png" ><br/>
  * <b>HSB adjust</b><br/>
- * HSB adjusted with <code>hFactor</code> set to 0.5 and <code>sFactor</code> set to 0.5. . Adjustment applied to one
- * half of the image. the remaining half is the normal image<br/>
+ * HSB adjusted with <code>hFactor</code> set to 0.5 and <code>sFactor</code>
+ * set to 0.5. . Adjustment applied to one half of the image. the remaining half
+ * is the normal image<br/>
  * <img src="../../../../resources/hsbadjust.png" ><br/>
  * <b>RGB adjust</b><br/>
- * RGB adjusted with <code>rFactor</code> set to 0.5 and <code>gFactor</code> set to 0.5. . Adjustment applied to one
- * half of the image. the remaining half is the normal image<br/>
+ * RGB adjusted with <code>rFactor</code> set to 0.5 and <code>gFactor</code>
+ * set to 0.5. . Adjustment applied to one half of the image. the remaining half
+ * is the normal image<br/>
  * <img src="../../../../resources/rgbadjust.png" ><br/>
  * </p>
  */
@@ -47,19 +49,24 @@ public class EnhancementFilters {
 	 * 
 	 * @param src
 	 * @param edgeAction
-	 *            use the EdgeAction constants defined in {@link BitmapFilters} . Recommended:
-	 *            {@link BitmapFilters#CLAMP_EDGES}
+	 *            use the EdgeAction constants defined in {@link BitmapFilters}
+	 *            . Recommended: {@link BitmapFilters#CLAMP_EDGES}
 	 * @param processAlpha
 	 * @param premultiplyAlpha
 	 * @param outputConfig
 	 * @return
 	 */
-	public static Bitmap sharpen(Bitmap src, int edgeAction, boolean processAlpha, boolean premultiplyAlpha, Bitmap.Config outputConfig) {
-		float[] sharpenMatrix = { 0.0f, -0.2f, 0.0f, -0.2f, 1.8f, -0.2f, 0.0f, -0.2f, 0.0f };
-		return ConvolveUtils.doConvolve(sharpenMatrix, src, edgeAction, processAlpha, premultiplyAlpha, outputConfig);
+	public static Bitmap sharpen(Bitmap src, int edgeAction,
+			boolean processAlpha, boolean premultiplyAlpha,
+			Bitmap.Config outputConfig) {
+		float[] sharpenMatrix = { 0.0f, -0.2f, 0.0f, -0.2f, 1.8f, -0.2f, 0.0f,
+				-0.2f, 0.0f };
+		return ConvolveUtils.doConvolve(sharpenMatrix, src, edgeAction,
+				processAlpha, premultiplyAlpha, outputConfig);
 	}
 
-	private static float transferBiasGainFunction(float f, float gain, float bias) {
+	private static float transferBiasGainFunction(float f, float gain,
+			float bias) {
 		f = ImageMath.gain(f, gain);
 		f = ImageMath.bias(f, bias);
 		return f;
@@ -68,7 +75,8 @@ public class EnhancementFilters {
 	private static int[] makeGainBiasTable(float gain, float bias) {
 		int[] table = new int[256];
 		for (int i = 0; i < 256; i++)
-			table[i] = PixelUtils.clamp((int) (255 * transferBiasGainFunction(i / 255.0f, gain, bias)));
+			table[i] = PixelUtils.clamp((int) (255 * transferBiasGainFunction(
+					i / 255.0f, gain, bias)));
 		return table;
 	}
 
@@ -83,7 +91,8 @@ public class EnhancementFilters {
 	 * @param outputConfig
 	 * @return
 	 */
-	public static Bitmap setGainAndBias(Bitmap src, float gain, float bias, OutputConfiguration outputConfig) {
+	public static Bitmap setGainAndBias(Bitmap src, float gain, float bias,
+			OutputConfiguration outputConfig) {
 		BitmapMeta meta = outputConfig.getBitmapMeta(src);
 		int[] inPixels = BitmapUtils.getPixels(src);
 		int position, rgb, a, r, b, g;
@@ -104,7 +113,8 @@ public class EnhancementFilters {
 
 			}
 		}
-		return Bitmap.createBitmap(inPixels, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
+		return Bitmap.createBitmap(inPixels, meta.bitmapWidth,
+				meta.bitmapHeight, outputConfig.config);
 	}
 
 	/**
@@ -123,7 +133,8 @@ public class EnhancementFilters {
 	 * @param outputConfig
 	 * @return
 	 */
-	public static Bitmap correctGamma(Bitmap src, float rGamma, float gGamma, float bGamma, OutputConfiguration outputConfig) {
+	public static Bitmap correctGamma(Bitmap src, float rGamma, float gGamma,
+			float bGamma, OutputConfiguration outputConfig) {
 		int[] rTable, gTable, bTable;
 		rTable = makeGammaTable(rGamma);
 		if (gGamma == rGamma)
@@ -156,7 +167,8 @@ public class EnhancementFilters {
 
 			}
 		}
-		return Bitmap.createBitmap(inPixels, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
+		return Bitmap.createBitmap(inPixels, meta.bitmapWidth,
+				meta.bitmapHeight, outputConfig.config);
 	}
 
 	private static int[] makeGammaTable(float gamma) {
@@ -179,7 +191,8 @@ public class EnhancementFilters {
 	 * @param outputConfig
 	 * @return
 	 */
-	public static Bitmap setExposure(Bitmap src, float exposure, OutputConfiguration outputConfig) {
+	public static Bitmap setExposure(Bitmap src, float exposure,
+			OutputConfiguration outputConfig) {
 
 		BitmapMeta meta = outputConfig.getBitmapMeta(src);
 		int[] inPixels = BitmapUtils.getPixels(src);
@@ -205,14 +218,16 @@ public class EnhancementFilters {
 		if (outputConfig.canRecycleSrc) {
 			src.recycle();
 		}
-		return Bitmap.createBitmap(inPixels, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
+		return Bitmap.createBitmap(inPixels, meta.bitmapWidth,
+				meta.bitmapHeight, outputConfig.config);
 	}
 
 	private static int[] makeExposureTable(float exposure) {
 		int[] table = new int[256];
 		for (int i = 0; i < 256; i++)
-			table[i] = com.madrobot.graphics.bitmap.PixelUtils.clamp((int) (255 * exposureTransferFunction(i / 255.0f,
-					exposure)));
+			table[i] = com.madrobot.graphics.bitmap.PixelUtils
+					.clamp((int) (255 * exposureTransferFunction(i / 255.0f,
+							exposure)));
 		return table;
 	}
 
@@ -221,8 +236,9 @@ public class EnhancementFilters {
 	}
 
 	/**
-	 * A filter which performs reduces noise by looking at each pixel's 8 neighbours, and if it's a minimum or maximum,
-	 * replacing it by the next minimum or maximum of the neighbours.
+	 * A filter which performs reduces noise by looking at each pixel's 8
+	 * neighbours, and if it's a minimum or maximum, replacing it by the next
+	 * minimum or maximum of the neighbours.
 	 * 
 	 * @param src
 	 * @param outputConfig
@@ -271,11 +287,13 @@ public class EnhancementFilters {
 						}
 					}
 				}
-				outPixels[index] = (inPixels[index] & 0xff000000) | (smooth(r) << 16) | (smooth(g) << 8) | smooth(b);
+				outPixels[index] = (inPixels[index] & 0xff000000)
+						| (smooth(r) << 16) | (smooth(g) << 8) | smooth(b);
 				index++;
 			}
 		}
-		return Bitmap.createBitmap(outPixels, src.getWidth(), src.getHeight(), outputConfig);
+		return Bitmap.createBitmap(outPixels, src.getWidth(), src.getHeight(),
+				outputConfig);
 	}
 
 	private static int smooth(int[] v) {
@@ -301,7 +319,8 @@ public class EnhancementFilters {
 	}
 
 	/**
-	 * A filter which removes noise from an image using a "pepper and salt" algorithm.
+	 * A filter which removes noise from an image using a "pepper and salt"
+	 * algorithm.
 	 * 
 	 * @param src
 	 * @param outputConfig
@@ -365,7 +384,8 @@ public class EnhancementFilters {
 					ob = pepperAndSalt(ob, b[2][w], b[0][e]);
 				}
 
-				outPixels[index] = (inPixels[index] & 0xff000000) | (or << 16) | (og << 8) | ob;
+				outPixels[index] = (inPixels[index] & 0xff000000) | (or << 16)
+						| (og << 8) | ob;
 				index++;
 			}
 			short[] t;
@@ -383,7 +403,8 @@ public class EnhancementFilters {
 			b[2] = t;
 		}
 
-		return Bitmap.createBitmap(outPixels, src.getWidth(), src.getHeight(), outputConfig);
+		return Bitmap.createBitmap(outPixels, src.getWidth(), src.getHeight(),
+				outputConfig);
 	}
 
 	private static short pepperAndSalt(short c, short v1, short v2) {
@@ -409,11 +430,13 @@ public class EnhancementFilters {
 	 * @param outputConfig
 	 * @return
 	 */
-	public static Bitmap setBrightnessAndContrast(Bitmap src, float brightness, float contrast, OutputConfiguration outputConfig) {
+	public static Bitmap setBrightnessAndContrast(Bitmap src, float brightness,
+			float contrast, OutputConfiguration outputConfig) {
 		int[] argb = BitmapUtils.getPixels(src);
 		BitmapMeta meta = outputConfig.getBitmapMeta(src);
 		int[] rTable, gTable, bTable;
-		rTable = gTable = bTable = makeBrightnessContrastTable(brightness, contrast);
+		rTable = gTable = bTable = makeBrightnessContrastTable(brightness,
+				contrast);
 		int position, rgb, a, r, g, b;
 		for (int y = meta.y; y < meta.targetHeight; y++) {
 			for (int x = meta.x; x < meta.targetWidth; x++) {
@@ -432,18 +455,22 @@ public class EnhancementFilters {
 		if (outputConfig.canRecycleSrc) {
 			src.recycle();
 		}
-		return Bitmap.createBitmap(argb, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
+		return Bitmap.createBitmap(argb, meta.bitmapWidth, meta.bitmapHeight,
+				outputConfig.config);
 	}
 
-	private static int[] makeBrightnessContrastTable(float brightness, float contrast) {
+	private static int[] makeBrightnessContrastTable(float brightness,
+			float contrast) {
 		int[] table = new int[256];
 		for (int i = 0; i < 256; i++)
-			table[i] = PixelUtils.clamp((int) (255 * brightnessContrastTransferFunction(i / 255.0f, brightness,
-					contrast)));
+			table[i] = PixelUtils
+					.clamp((int) (255 * brightnessContrastTransferFunction(
+							i / 255.0f, brightness, contrast)));
 		return table;
 	}
 
-	private static float brightnessContrastTransferFunction(float f, float brightness, float contrast) {
+	private static float brightnessContrastTransferFunction(float f,
+			float brightness, float contrast) {
 		f = f * brightness;
 		f = (f - 0.5f) * contrast + 0.5f;
 		return f;
@@ -462,7 +489,8 @@ public class EnhancementFilters {
 	 * @param outputConfig
 	 * @return
 	 */
-	public static Bitmap adjustHSB(Bitmap src, float hFactor, float sFactor, float bFactor, OutputConfiguration outputConfig) {
+	public static Bitmap adjustHSB(Bitmap src, float hFactor, float sFactor,
+			float bFactor, OutputConfiguration outputConfig) {
 		int[] argb = BitmapUtils.getPixels(src);
 		BitmapMeta meta = outputConfig.getBitmapMeta(src);
 		int position, rgb;
@@ -475,7 +503,8 @@ public class EnhancementFilters {
 				int r = (rgb >> 16) & 0xff;
 				int g = (rgb >> 8) & 0xff;
 				int b = rgb & 0xff;
-				android.graphics.Color.RGBToHSV(r, g, b, hsb);// RGBtoHSB(r, g, b, hsb);
+				android.graphics.Color.RGBToHSV(r, g, b, hsb);// RGBtoHSB(r, g,
+																// b, hsb);
 				hsb[0] += hFactor;
 				while (hsb[0] < 0)
 					hsb[0] += Math.PI * 2;
@@ -489,14 +518,17 @@ public class EnhancementFilters {
 					hsb[2] = 0;
 				else if (hsb[2] > 1.0)
 					hsb[2] = 1.0f;
-				rgb = android.graphics.Color.HSVToColor(hsb);// HSBtoRGB(hsb[0], hsb[1], hsb[2]);
+				rgb = android.graphics.Color.HSVToColor(hsb);// HSBtoRGB(hsb[0],
+																// hsb[1],
+																// hsb[2]);
 				argb[position] = a | (rgb & 0xffffff);
 			}
 		}
 		if (outputConfig.canRecycleSrc) {
 			src.recycle();
 		}
-		return Bitmap.createBitmap(argb, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
+		return Bitmap.createBitmap(argb, meta.bitmapWidth, meta.bitmapHeight,
+				outputConfig.config);
 	}
 
 	/**
@@ -509,7 +541,8 @@ public class EnhancementFilters {
 	 * @param outputConfig
 	 * @return
 	 */
-	public static Bitmap adjustRGB(Bitmap src, float rFactor, float gFactor, float bFactor, OutputConfiguration outputConfig) {
+	public static Bitmap adjustRGB(Bitmap src, float rFactor, float gFactor,
+			float bFactor, OutputConfiguration outputConfig) {
 		rFactor = 1 + rFactor;
 		gFactor = 1 + gFactor;
 		bFactor = 1 + bFactor;
@@ -534,7 +567,8 @@ public class EnhancementFilters {
 		if (outputConfig.canRecycleSrc) {
 			src.recycle();
 		}
-		return Bitmap.createBitmap(argb, meta.bitmapWidth, meta.bitmapHeight, outputConfig.config);
+		return Bitmap.createBitmap(argb, meta.bitmapWidth, meta.bitmapHeight,
+				outputConfig.config);
 	}
 
 }

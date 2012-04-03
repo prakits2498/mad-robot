@@ -13,7 +13,6 @@ package com.madrobot.di.wizard.xml.io;
 
 import java.io.Writer;
 
-
 public class CompactWriter extends PrettyPrintWriter {
 
 	public CompactWriter(Writer writer) {
@@ -36,7 +35,9 @@ public class CompactWriter extends PrettyPrintWriter {
 
 	/**
 	 * @since 1.3
-	 * @deprecated As of 1.4 use {@link CompactWriter#CompactWriter(Writer, int, NameCoder)} instead.
+	 * @deprecated As of 1.4 use
+	 *             {@link CompactWriter#CompactWriter(Writer, int, NameCoder)}
+	 *             instead.
 	 */
 	@Deprecated
 	public CompactWriter(Writer writer, int mode, XmlFriendlyNameCoder replacer) {
@@ -51,7 +52,9 @@ public class CompactWriter extends PrettyPrintWriter {
 	}
 
 	/**
-	 * @deprecated As of 1.4 use {@link CompactWriter#CompactWriter(Writer, NameCoder)} instead.
+	 * @deprecated As of 1.4 use
+	 *             {@link CompactWriter#CompactWriter(Writer, NameCoder)}
+	 *             instead.
 	 */
 	@Deprecated
 	public CompactWriter(Writer writer, XmlFriendlyNameCoder replacer) {

@@ -14,32 +14,38 @@ import com.madrobot.di.wizard.xml.io.HierarchicalStreamReader;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
 
 /**
- * Converter implementations are responsible marshalling Java objects to/from textual data.
+ * Converter implementations are responsible marshalling Java objects to/from
+ * textual data.
  * <p/>
  * <p>
- * If an exception occurs during processing, a {@link ConversionException} should be thrown.
+ * If an exception occurs during processing, a {@link ConversionException}
+ * should be thrown.
  * </p>
  * <p/>
  * <p>
- * If working with the high level {@link com.madrobot.di.wizard.xml.XMLWizard} facade, you can register new converters
- * using the XStream.registerConverter() method.
+ * If working with the high level {@link com.madrobot.di.wizard.xml.XMLWizard}
+ * facade, you can register new converters using the XStream.registerConverter()
+ * method.
  * </p>
  * <p/>
  * <p>
- * If working with the lower level API, the {@link com.madrobot.di.wizard.xml.converters.ConverterLookup} implementation
+ * If working with the lower level API, the
+ * {@link com.madrobot.di.wizard.xml.converters.ConverterLookup} implementation
  * is responsible for looking up the appropriate converter.
  * </p>
  * <p/>
  * <p>
- * Converters for object that can store all information in a single value should implement
- * {@link com.madrobot.di.wizard.xml.converters.SingleValueConverter}.
+ * Converters for object that can store all information in a single value should
+ * implement {@link com.madrobot.di.wizard.xml.converters.SingleValueConverter}.
  * <p>
- * {@link com.madrobot.di.wizard.xml.converters.AbstractSingleValueConverter} provides a starting point.
+ * {@link com.madrobot.di.wizard.xml.converters.AbstractSingleValueConverter}
+ * provides a starting point.
  * </p>
  * <p/>
  * <p>
- * {@link com.madrobot.di.wizard.xml.converters.AbstractCollectionConverter} provides a starting point for objects that
- * hold a collection of other objects (such as Lists and Maps).
+ * {@link com.madrobot.di.wizard.xml.converters.AbstractCollectionConverter}
+ * provides a starting point for objects that hold a collection of other objects
+ * (such as Lists and Maps).
  * </p>
  * 
  * @author Joe Walnes
@@ -58,9 +64,11 @@ public interface Converter extends ConverterMatcher {
 	 * @param writer
 	 *            A stream to write to.
 	 * @param context
-	 *            A context that allows nested objects to be processed by XMLWizard.
+	 *            A context that allows nested objects to be processed by
+	 *            XMLWizard.
 	 */
-	void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context);
+	void marshal(Object source, HierarchicalStreamWriter writer,
+			MarshallingContext context);
 
 	/**
 	 * Convert textual data back into an object.
@@ -70,6 +78,7 @@ public interface Converter extends ConverterMatcher {
 	 * @param context
 	 * @return The resulting object.
 	 */
-	Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context);
+	Object unmarshal(HierarchicalStreamReader reader,
+			UnmarshallingContext context);
 
 }

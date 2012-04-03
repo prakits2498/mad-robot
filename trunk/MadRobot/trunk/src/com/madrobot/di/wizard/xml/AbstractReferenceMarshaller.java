@@ -29,7 +29,8 @@ import com.madrobot.di.wizard.xml.io.path.PathTrackingWriter;
  * 
  * @since 1.2
  */
-abstract class AbstractReferenceMarshaller extends TreeMarshaller implements MarshallingContext {
+abstract class AbstractReferenceMarshaller extends TreeMarshaller implements
+		MarshallingContext {
 
 	private static class Id {
 		private Object item;
@@ -48,13 +49,17 @@ abstract class AbstractReferenceMarshaller extends TreeMarshaller implements Mar
 			return this.path;
 		}
 	}
-	public static class ReferencedImplicitElementException extends ConversionException {
-		public ReferencedImplicitElementException(final Object item, final Path path) {
+
+	public static class ReferencedImplicitElementException extends
+			ConversionException {
+		public ReferencedImplicitElementException(final Object item,
+				final Path path) {
 			super("Cannot reference implicit element");
 			add("implicit-element", item.toString());
 			add("referencing-element", path.toString());
 		}
 	}
+
 	private ObjectIdDictionary implicitElements = new ObjectIdDictionary();
 	private Path lastPath;
 
@@ -62,7 +67,8 @@ abstract class AbstractReferenceMarshaller extends TreeMarshaller implements Mar
 
 	private ObjectIdDictionary references = new ObjectIdDictionary();
 
-	AbstractReferenceMarshaller(HierarchicalStreamWriter writer, ConverterLookup converterLookup, Mapper mapper) {
+	AbstractReferenceMarshaller(HierarchicalStreamWriter writer,
+			ConverterLookup converterLookup, Mapper mapper) {
 		super(writer, converterLookup, mapper);
 		this.writer = new PathTrackingWriter(writer, pathTracker);
 	}
@@ -75,79 +81,96 @@ abstract class AbstractReferenceMarshaller extends TreeMarshaller implements Mar
 		} else {
 			final Path currentPath = pathTracker.getPath();
 			Id existingReference = (Id) references.lookupId(item);
-			if (existingReference != null && existingReference.getPath() != currentPath) {
-				String attributeName = getMapper().aliasForSystemAttribute("reference");
+			if (existingReference != null
+					&& existingReference.getPath() != currentPath) {
+				String attributeName = getMapper().aliasForSystemAttribute(
+						"reference");
 				if (attributeName != null) {
-					writer.addAttribute(attributeName, createReference(currentPath, existingReference.getItem()));
+					writer.addAttribute(
+							attributeName,
+							createReference(currentPath,
+									existingReference.getItem()));
 				}
 			} else {
-				final Object newReferenceKey = existingReference == null ? createReferenceKey(currentPath, item)
-						: existingReference.getItem();
+				final Object newReferenceKey = existingReference == null ? createReferenceKey(
+						currentPath, item) : existingReference.getItem();
 				if (lastPath == null || !currentPath.isAncestor(lastPath)) {
 					fireValidReference(newReferenceKey);
 					lastPath = currentPath;
-					references.associateId(item, new Id(newReferenceKey, currentPath));
+					references.associateId(item, new Id(newReferenceKey,
+							currentPath));
 				}
-				converter.marshal(item, writer, new ReferencingMarshallingContext() {
+				converter.marshal(item, writer,
+						new ReferencingMarshallingContext() {
 
-					@Override
-					public void convertAnother(Object nextItem) {
-						AbstractReferenceMarshaller.this.convertAnother(nextItem);
-					}
+							@Override
+							public void convertAnother(Object nextItem) {
+								AbstractReferenceMarshaller.this
+										.convertAnother(nextItem);
+							}
 
-					@Override
-					public void convertAnother(Object nextItem, Converter converter) {
-						AbstractReferenceMarshaller.this.convertAnother(nextItem, converter);
-					}
+							@Override
+							public void convertAnother(Object nextItem,
+									Converter converter) {
+								AbstractReferenceMarshaller.this
+										.convertAnother(nextItem, converter);
+							}
 
-					/**
-					 * @deprecated As of 1.4.2
-					 */
-					@Deprecated
-					@Override
-					public Path currentPath() {
-						return pathTracker.getPath();
-					}
+							/**
+							 * @deprecated As of 1.4.2
+							 */
+							@Deprecated
+							@Override
+							public Path currentPath() {
+								return pathTracker.getPath();
+							}
 
-					@Override
-					public Object get(Object key) {
-						return AbstractReferenceMarshaller.this.get(key);
-					}
+							@Override
+							public Object get(Object key) {
+								return AbstractReferenceMarshaller.this
+										.get(key);
+							}
 
-					@Override
-					public Iterator keys() {
-						return AbstractReferenceMarshaller.this.keys();
-					}
+							@Override
+							public Iterator keys() {
+								return AbstractReferenceMarshaller.this.keys();
+							}
 
-					@Override
-					public Object lookupReference(Object item) {
-						Id id = (Id) references.lookupId(item);
-						return id.getItem();
-					}
+							@Override
+							public Object lookupReference(Object item) {
+								Id id = (Id) references.lookupId(item);
+								return id.getItem();
+							}
 
-					@Override
-					public void put(Object key, Object value) {
-						AbstractReferenceMarshaller.this.put(key, value);
-					}
+							@Override
+							public void put(Object key, Object value) {
+								AbstractReferenceMarshaller.this
+										.put(key, value);
+							}
 
-					@Override
-					public void registerImplicit(Object item) {
-						if (implicitElements.containsId(item)) {
-							throw new ReferencedImplicitElementException(item, currentPath);
-						}
-						implicitElements.associateId(item, newReferenceKey);
-					}
+							@Override
+							public void registerImplicit(Object item) {
+								if (implicitElements.containsId(item)) {
+									throw new ReferencedImplicitElementException(
+											item, currentPath);
+								}
+								implicitElements.associateId(item,
+										newReferenceKey);
+							}
 
-					@Override
-					public void replace(Object original, Object replacement) {
-						references.associateId(replacement, new Id(newReferenceKey, currentPath));
-					}
-				});
+							@Override
+							public void replace(Object original,
+									Object replacement) {
+								references.associateId(replacement, new Id(
+										newReferenceKey, currentPath));
+							}
+						});
 			}
 		}
 	}
 
-	protected abstract String createReference(Path currentPath, Object existingReferenceKey);
+	protected abstract String createReference(Path currentPath,
+			Object existingReferenceKey);
 
 	protected abstract Object createReferenceKey(Path currentPath, Object item);
 

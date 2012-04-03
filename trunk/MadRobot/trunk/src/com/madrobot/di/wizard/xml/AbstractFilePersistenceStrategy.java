@@ -42,6 +42,7 @@ abstract class AbstractFilePersistenceStrategy implements PersistenceStrategy {
 			return new File(dir, name).isFile() && isValid(dir, name);
 		}
 	}
+
 	protected class XmlMapEntriesIterator implements Iterator {
 
 		private File current = null;
@@ -71,7 +72,8 @@ abstract class AbstractFilePersistenceStrategy implements PersistenceStrategy {
 					Object key2 = e2.getKey();
 					Object value2 = e2.getValue();
 					return (key == null ? key2 == null : key.equals(key2))
-							&& (value == null ? value2 == null : getValue().equals(e2.getValue()));
+							&& (value == null ? value2 == null : getValue()
+									.equals(e2.getValue()));
 				}
 
 				@Override
@@ -100,6 +102,7 @@ abstract class AbstractFilePersistenceStrategy implements PersistenceStrategy {
 			current.delete();
 		}
 	}
+
 	private final File baseDirectory;
 	private final String encoding;
 
@@ -107,7 +110,8 @@ abstract class AbstractFilePersistenceStrategy implements PersistenceStrategy {
 
 	private final transient XMLWizard xstream;
 
-	AbstractFilePersistenceStrategy(final File baseDirectory, final XMLWizard xstream, final String encoding) {
+	AbstractFilePersistenceStrategy(final File baseDirectory,
+			final XMLWizard xstream, final String encoding) {
 		this.baseDirectory = baseDirectory;
 		this.xstream = xstream;
 		this.encoding = encoding;
@@ -121,7 +125,8 @@ abstract class AbstractFilePersistenceStrategy implements PersistenceStrategy {
 	}
 
 	/**
-	 * Given a filename, the unescape method returns the key which originated it.
+	 * Given a filename, the unescape method returns the key which originated
+	 * it.
 	 * 
 	 * @param name
 	 *            the filename
@@ -175,7 +180,8 @@ abstract class AbstractFilePersistenceStrategy implements PersistenceStrategy {
 	private Object readFile(final File file) {
 		try {
 			final FileInputStream in = new FileInputStream(file);
-			final Reader reader = encoding != null ? new InputStreamReader(in, encoding) : new InputStreamReader(in);
+			final Reader reader = encoding != null ? new InputStreamReader(in,
+					encoding) : new InputStreamReader(in);
 			try {
 				return xstream.fromXML(reader);
 			} finally {
@@ -209,8 +215,8 @@ abstract class AbstractFilePersistenceStrategy implements PersistenceStrategy {
 	private void writeFile(final File file, final Object value) {
 		try {
 			final FileOutputStream out = new FileOutputStream(file);
-			final Writer writer = encoding != null ? new OutputStreamWriter(out, encoding)
-					: new OutputStreamWriter(out);
+			final Writer writer = encoding != null ? new OutputStreamWriter(
+					out, encoding) : new OutputStreamWriter(out);
 			try {
 				xstream.toXML(value, writer);
 			} finally {

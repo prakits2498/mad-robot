@@ -25,116 +25,116 @@ import java.util.Set;
  */
 class RequestPropertiesMap implements Map<String, List<String>> {
 
-    private final URLConnection mConnection;
+	private final URLConnection mConnection;
 
-    public RequestPropertiesMap(URLConnection connection) {
-        mConnection = connection;
-    }
+	public RequestPropertiesMap(URLConnection connection) {
+		mConnection = connection;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public void clear() {
-        throw new UnsupportedOperationException();
-    }
+		throw new UnsupportedOperationException();
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public boolean containsKey(Object key) {
-        if (key instanceof String) {
-            String field = (String) key;
-            return mConnection.getRequestProperty(field) != null;
-        } else {
-            return false;
-        }
-    }
+		if (key instanceof String) {
+			String field = (String) key;
+			return mConnection.getRequestProperty(field) != null;
+		} else {
+			return false;
+		}
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public boolean containsValue(Object value) {
-        throw new UnsupportedOperationException();
-    }
+		throw new UnsupportedOperationException();
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public Set<Entry<String, List<String>>> entrySet() {
-        throw new UnsupportedOperationException();
-    }
+		throw new UnsupportedOperationException();
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public List<String> get(Object key) {
-        if (key instanceof String) {
-            String field = (String) key;
-            String value = mConnection.getRequestProperty(field);
-            return value != null ? Collections.singletonList(value) : null;
-        } else {
-            return null;
-        }
-    }
+		if (key instanceof String) {
+			String field = (String) key;
+			String value = mConnection.getRequestProperty(field);
+			return value != null ? Collections.singletonList(value) : null;
+		} else {
+			return null;
+		}
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public boolean isEmpty() {
-        throw new UnsupportedOperationException();
-    }
+		throw new UnsupportedOperationException();
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public Set<String> keySet() {
-        throw new UnsupportedOperationException();
-    }
+		throw new UnsupportedOperationException();
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public List<String> put(String key, List<String> value) {
-        throw new UnsupportedOperationException();
-    }
+		throw new UnsupportedOperationException();
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public void putAll(Map<? extends String, ? extends List<String>> value) {
-        throw new UnsupportedOperationException();
-    }
+		throw new UnsupportedOperationException();
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public List<String> remove(Object key) {
-        throw new UnsupportedOperationException();
-    }
+		throw new UnsupportedOperationException();
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public int size() {
-        throw new UnsupportedOperationException();
-    }
+		throw new UnsupportedOperationException();
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public Collection<List<String>> values() {
-        throw new UnsupportedOperationException();
-    }
+		throw new UnsupportedOperationException();
+	}
 }

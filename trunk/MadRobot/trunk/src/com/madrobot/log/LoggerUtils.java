@@ -19,12 +19,13 @@ public class LoggerUtils {
 	/**
 	 * 
 	 * @return Buffered reader instance, null if the operation failed.
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public static BufferedReader getLogcatOutput() throws IOException {
 		Process process = getLogcatProcess();
-		if(process != null)
-			return new BufferedReader(new InputStreamReader(process.getInputStream()), 1024);
+		if (process != null)
+			return new BufferedReader(new InputStreamReader(
+					process.getInputStream()), 1024);
 		else
 			return null;
 	}
@@ -33,7 +34,7 @@ public class LoggerUtils {
 	 * Get the handle to the logcat process
 	 * 
 	 * @return
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 
 	public static Process getLogcatProcess() throws IOException {

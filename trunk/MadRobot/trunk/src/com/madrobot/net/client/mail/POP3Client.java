@@ -17,12 +17,11 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Enumeration;
 import java.util.StringTokenizer;
 
-
 /***
- * The POP3Client class implements the client side of the Internet POP3
- * Protocol defined in RFC 1939. All commands are supported, including
- * the APOP command which requires MD5 encryption. See RFC 1939 for
- * more details on the POP3 protocol.
+ * The POP3Client class implements the client side of the Internet POP3 Protocol
+ * defined in RFC 1939. All commands are supported, including the APOP command
+ * which requires MD5 encryption. See RFC 1939 for more details on the POP3
+ * protocol.
  * <p>
  * Rather than list it separately for each method, we mention here that every
  * method communicating with the server and throwing an IOException can also
@@ -30,8 +29,7 @@ import java.util.StringTokenizer;
  * which is a subclass of IOException. A MalformedServerReplyException will be
  * thrown when the reply received from the server deviates enough from the
  * protocol specification that it cannot be interpreted in a useful manner
- * despite attempts to be as lenient as possible.
- * <code>
+ * despite attempts to be as lenient as possible. <code>
  * POP3Client popClient=new POP3Client();
  * popClient.connect(mailhost);
  * popClient.login(username,password);
@@ -40,7 +38,7 @@ import java.util.StringTokenizer;
  * //delete the first message
  * popClient.deleteMessage(1);
  * </code>
- *</p>
+ * </p>
  * 
  * @see POP3MessageInfo
  * @see com.madrobot.net.client.mail.net.client.DotTerminatedMessageReader
@@ -55,21 +53,21 @@ public class POP3Client extends POP3 {
 
 		tokenizer = new StringTokenizer(line);
 
-		if(!tokenizer.hasMoreElements()){
+		if (!tokenizer.hasMoreElements()) {
 			return null;
 		}
 
 		num = size = 0;
 
-		try{
+		try {
 			num = Integer.parseInt(tokenizer.nextToken());
 
-			if(!tokenizer.hasMoreElements()){
+			if (!tokenizer.hasMoreElements()) {
 				return null;
 			}
 
 			size = Integer.parseInt(tokenizer.nextToken());
-		} catch(NumberFormatException e){
+		} catch (NumberFormatException e) {
 			return null;
 		}
 
@@ -82,21 +80,21 @@ public class POP3Client extends POP3 {
 
 		tokenizer = new StringTokenizer(line);
 
-		if(!tokenizer.hasMoreElements()){
+		if (!tokenizer.hasMoreElements()) {
 			return null;
 		}
 
 		num = 0;
 
-		try{
+		try {
 			num = Integer.parseInt(tokenizer.nextToken());
 
-			if(!tokenizer.hasMoreElements()){
+			if (!tokenizer.hasMoreElements()) {
 				return null;
 			}
 
 			line = tokenizer.nextToken();
-		} catch(NumberFormatException e){
+		} catch (NumberFormatException e) {
 			return null;
 		}
 
@@ -104,11 +102,11 @@ public class POP3Client extends POP3 {
 	}
 
 	/***
-	 * Delete a message from the POP3 server. The message is only marked
-	 * for deletion by the server. If you decide to unmark the message, you
-	 * must issuse a {@link #reset reset } command. Messages marked
-	 * for deletion are only deleted by the server on {@link #logout logout }.
-	 * A delete attempt can only succeed if the client is in the
+	 * Delete a message from the POP3 server. The message is only marked for
+	 * deletion by the server. If you decide to unmark the message, you must
+	 * issuse a {@link #reset reset } command. Messages marked for deletion are
+	 * only deleted by the server on {@link #logout logout }. A delete attempt
+	 * can only succeed if the client is in the
 	 * {@link com.madrobot.net.client.mail.POP3#TRANSACTION_STATE
 	 * TRANSACTION_STATE } .
 	 * <p>
@@ -117,75 +115,71 @@ public class POP3Client extends POP3 {
 	 *            The message number to delete.
 	 * @return True if the deletion attempt was successful, false if not.
 	 * @exception IOException
-	 *                If a network I/O error occurs in the process of
-	 *                sending the delete command.
+	 *                If a network I/O error occurs in the process of sending
+	 *                the delete command.
 	 ***/
 	public boolean deleteMessage(int messageId) throws IOException {
-		if(getState() == TRANSACTION_STATE){
+		if (getState() == TRANSACTION_STATE) {
 			return (sendCommand(POP3Command.DELE, Integer.toString(messageId)) == POP3Reply.OK);
 		}
 		return false;
 	}
 
 	/***
-	 * List an individual message. A list attempt can only
-	 * succeed if the client is in the
-	 * {@link com.madrobot.net.client.mail.POP3#TRANSACTION_STATE
-	 * TRANSACTION_STATE } . Returns a POP3MessageInfo instance
-	 * containing the number of the listed message and the
-	 * size of the message in bytes. Returns null if the list
-	 * attempt fails (e.g., if the specified message number does
-	 * not exist).
+	 * List an individual message. A list attempt can only succeed if the client
+	 * is in the {@link com.madrobot.net.client.mail.POP3#TRANSACTION_STATE
+	 * TRANSACTION_STATE } . Returns a POP3MessageInfo instance containing the
+	 * number of the listed message and the size of the message in bytes.
+	 * Returns null if the list attempt fails (e.g., if the specified message
+	 * number does not exist).
 	 * <p>
 	 * 
 	 * @param messageId
 	 *            The number of the message list.
-	 * @return A POP3MessageInfo instance containing the number of the
-	 *         listed message and the size of the message in bytes. Returns
-	 *         null if the list attempt fails.
+	 * @return A POP3MessageInfo instance containing the number of the listed
+	 *         message and the size of the message in bytes. Returns null if the
+	 *         list attempt fails.
 	 * @exception IOException
-	 *                If a network I/O error occurs in the process of
-	 *                sending the list command.
+	 *                If a network I/O error occurs in the process of sending
+	 *                the list command.
 	 ***/
 	public POP3MessageInfo listMessage(int messageId) throws IOException {
-		if(getState() != TRANSACTION_STATE){
+		if (getState() != TRANSACTION_STATE) {
 			return null;
 		}
-		if(sendCommand(POP3Command.LIST, Integer.toString(messageId)) != POP3Reply.OK){
+		if (sendCommand(POP3Command.LIST, Integer.toString(messageId)) != POP3Reply.OK) {
 			return null;
 		}
 		return __parseStatus(_lastReplyLine.substring(3));
 	}
 
 	/***
-	 * List all messages. A list attempt can only
-	 * succeed if the client is in the
-	 * {@link com.madrobot.net.client.mail.POP3#TRANSACTION_STATE
-	 * TRANSACTION_STATE } . Returns an array of POP3MessageInfo instances,
-	 * each containing the number of a message and its size in bytes.
-	 * If there are no messages, this method returns a zero length array.
-	 * If the list attempt fails, it returns null.
+	 * List all messages. A list attempt can only succeed if the client is in
+	 * the {@link com.madrobot.net.client.mail.POP3#TRANSACTION_STATE
+	 * TRANSACTION_STATE } . Returns an array of POP3MessageInfo instances, each
+	 * containing the number of a message and its size in bytes. If there are no
+	 * messages, this method returns a zero length array. If the list attempt
+	 * fails, it returns null.
 	 * <p>
 	 * 
 	 * @return An array of POP3MessageInfo instances representing all messages
-	 *         in the order they appear in the mailbox,
-	 *         each containing the number of a message and its size in bytes.
-	 *         If there are no messages, this method returns a zero length
-	 *         array.
-	 *         If the list attempt fails, it returns null.
+	 *         in the order they appear in the mailbox, each containing the
+	 *         number of a message and its size in bytes. If there are no
+	 *         messages, this method returns a zero length array. If the list
+	 *         attempt fails, it returns null.
 	 * @exception IOException
-	 *                If a network I/O error occurs in the process of
-	 *                sending the list command.
+	 *                If a network I/O error occurs in the process of sending
+	 *                the list command.
 	 ***/
 	public POP3MessageInfo[] listMessages() throws IOException {
 		POP3MessageInfo[] messages;
 		Enumeration<String> en;
 		int line;
 
-		if(getState() != TRANSACTION_STATE){
+		if (getState() != TRANSACTION_STATE) {
 			return null;
 		}
-		if(sendCommand(POP3Command.LIST) != POP3Reply.OK){
+		if (sendCommand(POP3Command.LIST) != POP3Reply.OK) {
 			return null;
 		}
 		getAdditionalReply();
@@ -198,7 +192,7 @@ public class POP3Client extends POP3 {
 		en.nextElement();
 
 		// Fetch lines.
-		for(line = 0; line < messages.length; line++){
+		for (line = 0; line < messages.length; line++) {
 			messages[line] = __parseStatus(en.nextElement());
 		}
 
@@ -206,30 +200,30 @@ public class POP3Client extends POP3 {
 	}
 
 	/***
-	 * List the unique identifier for a message. A list attempt can only
-	 * succeed if the client is in the
+	 * List the unique identifier for a message. A list attempt can only succeed
+	 * if the client is in the
 	 * {@link com.madrobot.net.client.mail.POP3#TRANSACTION_STATE
-	 * TRANSACTION_STATE } . Returns a POP3MessageInfo instance
-	 * containing the number of the listed message and the
-	 * unique identifier for that message. Returns null if the list
-	 * attempt fails (e.g., if the specified message number does
-	 * not exist).
+	 * TRANSACTION_STATE } . Returns a POP3MessageInfo instance containing the
+	 * number of the listed message and the unique identifier for that message.
+	 * Returns null if the list attempt fails (e.g., if the specified message
+	 * number does not exist).
 	 * <p>
 	 * 
 	 * @param messageId
 	 *            The number of the message list.
-	 * @return A POP3MessageInfo instance containing the number of the
-	 *         listed message and the unique identifier for that message.
-	 *         Returns null if the list attempt fails.
+	 * @return A POP3MessageInfo instance containing the number of the listed
+	 *         message and the unique identifier for that message. Returns null
+	 *         if the list attempt fails.
 	 * @exception IOException
-	 *                If a network I/O error occurs in the process of
-	 *                sending the list unique identifier command.
+	 *                If a network I/O error occurs in the process of sending
+	 *                the list unique identifier command.
 	 ***/
-	public POP3MessageInfo listUniqueIdentifier(int messageId) throws IOException {
-		if(getState() != TRANSACTION_STATE){
+	public POP3MessageInfo listUniqueIdentifier(int messageId)
+			throws IOException {
+		if (getState() != TRANSACTION_STATE) {
 			return null;
 		}
-		if(sendCommand(POP3Command.UIDL, Integer.toString(messageId)) != POP3Reply.OK){
+		if (sendCommand(POP3Command.UIDL, Integer.toString(messageId)) != POP3Reply.OK) {
 			return null;
 		}
 		return __parseUID(_lastReplyLine.substring(3));
@@ -239,31 +233,30 @@ public class POP3Client extends POP3 {
 	 * List the unique identifiers for all messages. A list attempt can only
 	 * succeed if the client is in the
 	 * {@link com.madrobot.net.client.mail.POP3#TRANSACTION_STATE
-	 * TRANSACTION_STATE } . Returns an array of POP3MessageInfo instances,
-	 * each containing the number of a message and its unique identifier.
-	 * If there are no messages, this method returns a zero length array.
-	 * If the list attempt fails, it returns null.
+	 * TRANSACTION_STATE } . Returns an array of POP3MessageInfo instances, each
+	 * containing the number of a message and its unique identifier. If there
+	 * are no messages, this method returns a zero length array. If the list
+	 * attempt fails, it returns null.
 	 * <p>
 	 * 
 	 * @return An array of POP3MessageInfo instances representing all messages
-	 *         in the order they appear in the mailbox,
-	 *         each containing the number of a message and its unique identifier
-	 *         If there are no messages, this method returns a zero length
-	 *         array.
-	 *         If the list attempt fails, it returns null.
+	 *         in the order they appear in the mailbox, each containing the
+	 *         number of a message and its unique identifier If there are no
+	 *         messages, this method returns a zero length array. If the list
+	 *         attempt fails, it returns null.
 	 * @exception IOException
-	 *                If a network I/O error occurs in the process of
-	 *                sending the list unique identifier command.
+	 *                If a network I/O error occurs in the process of sending
+	 *                the list unique identifier command.
 	 ***/
 	public POP3MessageInfo[] listUniqueIdentifiers() throws IOException {
 		POP3MessageInfo[] messages;
 		Enumeration<String> en;
 		int line;
 
-		if(getState() != TRANSACTION_STATE){
+		if (getState() != TRANSACTION_STATE) {
 			return null;
 		}
-		if(sendCommand(POP3Command.UIDL) != POP3Reply.OK){
+		if (sendCommand(POP3Command.UIDL) != POP3Reply.OK) {
 			return null;
 		}
 		getAdditionalReply();
@@ -276,7 +269,7 @@ public class POP3Client extends POP3 {
 		en.nextElement();
 
 		// Fetch lines.
-		for(line = 0; line < messages.length; line++){
+		for (line = 0; line < messages.length; line++) {
 			messages[line] = __parseUID(en.nextElement());
 		}
 
@@ -284,12 +277,11 @@ public class POP3Client extends POP3 {
 	}
 
 	/***
-	 * Login to the POP3 server with the given username and password. You
-	 * must first connect to the server with
+	 * Login to the POP3 server with the given username and password. You must
+	 * first connect to the server with
 	 * {@link org.apache.commons.net.SocketClient#connect connect } before
-	 * attempting to login. A login attempt is only valid if
-	 * the client is in the
-	 * {@link com.madrobot.net.client.mail.POP3#AUTHORIZATION_STATE
+	 * attempting to login. A login attempt is only valid if the client is in
+	 * the {@link com.madrobot.net.client.mail.POP3#AUTHORIZATION_STATE
 	 * AUTHORIZATION_STATE } . After logging in, the client enters the
 	 * {@link com.madrobot.net.client.mail.POP3#TRANSACTION_STATE
 	 * TRANSACTION_STATE } .
@@ -301,19 +293,19 @@ public class POP3Client extends POP3 {
 	 *            The plain text password of the account.
 	 * @return True if the login attempt was successful, false if not.
 	 * @exception IOException
-	 *                If a network I/O error occurs in the process of
-	 *                logging in.
+	 *                If a network I/O error occurs in the process of logging
+	 *                in.
 	 ***/
 	public boolean login(String username, String password) throws IOException {
-		if(getState() != AUTHORIZATION_STATE){
+		if (getState() != AUTHORIZATION_STATE) {
 			return false;
 		}
 
-		if(sendCommand(POP3Command.USER, username) != POP3Reply.OK){
+		if (sendCommand(POP3Command.USER, username) != POP3Reply.OK) {
 			return false;
 		}
 
-		if(sendCommand(POP3Command.PASS, password) != POP3Reply.OK){
+		if (sendCommand(POP3Command.PASS, password) != POP3Reply.OK) {
 			return false;
 		}
 
@@ -325,10 +317,10 @@ public class POP3Client extends POP3 {
 	/***
 	 * Login to the POP3 server with the given username and authentication
 	 * information. Use this method when connecting to a server requiring
-	 * authentication using the APOP command. Because the timestamp
-	 * produced in the greeting banner varies from server to server, it is
-	 * not possible to consistently extract the information. Therefore,
-	 * after connecting to the server, you must call
+	 * authentication using the APOP command. Because the timestamp produced in
+	 * the greeting banner varies from server to server, it is not possible to
+	 * consistently extract the information. Therefore, after connecting to the
+	 * server, you must call
 	 * {@link com.madrobot.net.client.mail.POP3#getReplyString getReplyString }
 	 * and parse out the timestamp information yourself.
 	 * <p>
@@ -349,24 +341,24 @@ public class POP3Client extends POP3 {
 	 * @param timestamp
 	 *            The timestamp string to combine with the secret.
 	 * @param secret
-	 *            The shared secret which produces the MD5 digest when
-	 *            combined with the timestamp.
+	 *            The shared secret which produces the MD5 digest when combined
+	 *            with the timestamp.
 	 * @return True if the login attempt was successful, false if not.
 	 * @exception IOException
-	 *                If a network I/O error occurs in the process of
-	 *                logging in.
+	 *                If a network I/O error occurs in the process of logging
+	 *                in.
 	 * @exception NoSuchAlgorithmException
-	 *                If the MD5 encryption algorithm
-	 *                cannot be instantiated by the Java runtime system.
+	 *                If the MD5 encryption algorithm cannot be instantiated by
+	 *                the Java runtime system.
 	 ***/
-	public boolean login(String username, String timestamp, String secret) throws IOException,
-			NoSuchAlgorithmException {
+	public boolean login(String username, String timestamp, String secret)
+			throws IOException, NoSuchAlgorithmException {
 		int i;
 		byte[] digest;
 		StringBuilder buffer, digestBuffer;
 		MessageDigest md5;
 
-		if(getState() != AUTHORIZATION_STATE){
+		if (getState() != AUTHORIZATION_STATE) {
 			return false;
 		}
 
@@ -375,7 +367,7 @@ public class POP3Client extends POP3 {
 		digest = md5.digest(timestamp.getBytes());
 		digestBuffer = new StringBuilder(128);
 
-		for(i = 0; i < digest.length; i++){
+		for (i = 0; i < digest.length; i++) {
 			digestBuffer.append(Integer.toHexString(digest[i] & 0xff));
 		}
 
@@ -384,7 +376,7 @@ public class POP3Client extends POP3 {
 		buffer.append(' ');
 		buffer.append(digestBuffer.toString());
 
-		if(sendCommand(POP3Command.APOP, buffer.toString()) != POP3Reply.OK){
+		if (sendCommand(POP3Command.APOP, buffer.toString()) != POP3Reply.OK) {
 			return false;
 		}
 
@@ -394,11 +386,9 @@ public class POP3Client extends POP3 {
 	}
 
 	/***
-	 * Logout of the POP3 server. To fully disconnect from the server
-	 * you must call {@link com.madrobot.net.client.mail.POP3#disconnect
-	 * disconnect }.
-	 * A logout attempt is valid in any state. If
-	 * the client is in the
+	 * Logout of the POP3 server. To fully disconnect from the server you must
+	 * call {@link com.madrobot.net.client.mail.POP3#disconnect disconnect }. A
+	 * logout attempt is valid in any state. If the client is in the
 	 * {@link com.madrobot.net.client.mail.POP3#TRANSACTION_STATE
 	 * TRANSACTION_STATE } , it enters the
 	 * {@link com.madrobot.net.client.mail.POP3#UPDATE_STATE UPDATE_STATE } on a
@@ -407,11 +397,11 @@ public class POP3Client extends POP3 {
 	 * 
 	 * @return True if the logout attempt was successful, false if not.
 	 * @exception IOException
-	 *                If a network I/O error occurs in the process
-	 *                of logging out.
+	 *                If a network I/O error occurs in the process of logging
+	 *                out.
 	 ***/
 	public boolean logout() throws IOException {
-		if(getState() == TRANSACTION_STATE){
+		if (getState() == TRANSACTION_STATE) {
 			setState(UPDATE_STATE);
 		}
 		sendCommand(POP3Command.QUIT);
@@ -419,54 +409,52 @@ public class POP3Client extends POP3 {
 	}
 
 	/***
-	 * Send a NOOP command to the POP3 server. This is useful for keeping
-	 * a connection alive since most POP3 servers will timeout after 10
-	 * minutes of inactivity. A noop attempt will only succeed if
-	 * the client is in the
+	 * Send a NOOP command to the POP3 server. This is useful for keeping a
+	 * connection alive since most POP3 servers will timeout after 10 minutes of
+	 * inactivity. A noop attempt will only succeed if the client is in the
 	 * {@link com.madrobot.net.client.mail.POP3#TRANSACTION_STATE
 	 * TRANSACTION_STATE } .
 	 * <p>
 	 * 
 	 * @return True if the noop attempt was successful, false if not.
 	 * @exception IOException
-	 *                If a network I/O error occurs in the process of
-	 *                sending the NOOP command.
+	 *                If a network I/O error occurs in the process of sending
+	 *                the NOOP command.
 	 ***/
 	public boolean noop() throws IOException {
-		if(getState() == TRANSACTION_STATE){
+		if (getState() == TRANSACTION_STATE) {
 			return (sendCommand(POP3Command.NOOP) == POP3Reply.OK);
 		}
 		return false;
 	}
 
 	/***
-	 * Reset the POP3 session. This is useful for undoing any message
-	 * deletions that may have been performed. A reset attempt can only
-	 * succeed if the client is in the
+	 * Reset the POP3 session. This is useful for undoing any message deletions
+	 * that may have been performed. A reset attempt can only succeed if the
+	 * client is in the
 	 * {@link com.madrobot.net.client.mail.POP3#TRANSACTION_STATE
 	 * TRANSACTION_STATE } .
 	 * <p>
 	 * 
 	 * @return True if the reset attempt was successful, false if not.
 	 * @exception IOException
-	 *                If a network I/O error occurs in the process of
-	 *                sending the reset command.
+	 *                If a network I/O error occurs in the process of sending
+	 *                the reset command.
 	 ***/
 	public boolean reset() throws IOException {
-		if(getState() == TRANSACTION_STATE){
+		if (getState() == TRANSACTION_STATE) {
 			return (sendCommand(POP3Command.RSET) == POP3Reply.OK);
 		}
 		return false;
 	}
 
 	/***
-	 * Retrieve a message from the POP3 server. A retrieve message attempt
-	 * can only succeed if the client is in the
+	 * Retrieve a message from the POP3 server. A retrieve message attempt can
+	 * only succeed if the client is in the
 	 * {@link com.madrobot.net.client.mail.POP3#TRANSACTION_STATE
-	 * TRANSACTION_STATE } . Returns a DotTerminatedMessageReader instance
-	 * from which the entire message can be read.
-	 * Returns null if the retrieval attempt fails (e.g., if the specified
-	 * message number does not exist).
+	 * TRANSACTION_STATE } . Returns a DotTerminatedMessageReader instance from
+	 * which the entire message can be read. Returns null if the retrieval
+	 * attempt fails (e.g., if the specified message number does not exist).
 	 * <p>
 	 * You must not issue any commands to the POP3 server (i.e., call any other
 	 * methods) until you finish reading the message from the returned Reader
@@ -479,20 +467,18 @@ public class POP3Client extends POP3 {
 	 * 
 	 * @param messageId
 	 *            The number of the message to fetch.
-	 * @return A DotTerminatedMessageReader instance
-	 *         from which the entire message can be read.
-	 *         Returns null if the retrieval attempt fails (e.g., if the
-	 *         specified
-	 *         message number does not exist).
+	 * @return A DotTerminatedMessageReader instance from which the entire
+	 *         message can be read. Returns null if the retrieval attempt fails
+	 *         (e.g., if the specified message number does not exist).
 	 * @exception IOException
-	 *                If a network I/O error occurs in the process of
-	 *                sending the retrieve message command.
+	 *                If a network I/O error occurs in the process of sending
+	 *                the retrieve message command.
 	 ***/
 	public Reader retrieveMessage(int messageId) throws IOException {
-		if(getState() != TRANSACTION_STATE){
+		if (getState() != TRANSACTION_STATE) {
 			return null;
 		}
-		if(sendCommand(POP3Command.RETR, Integer.toString(messageId)) != POP3Reply.OK){
+		if (sendCommand(POP3Command.RETR, Integer.toString(messageId)) != POP3Reply.OK) {
 			return null;
 		}
 
@@ -501,12 +487,10 @@ public class POP3Client extends POP3 {
 
 	/***
 	 * Retrieve only the specified top number of lines of a message from the
-	 * POP3 server. A retrieve top lines attempt
-	 * can only succeed if the client is in the
-	 * {@link com.madrobot.net.client.mail.POP3#TRANSACTION_STATE
-	 * TRANSACTION_STATE } . Returns a DotTerminatedMessageReader instance
-	 * from which the specified top number of lines of the message can be
-	 * read.
+	 * POP3 server. A retrieve top lines attempt can only succeed if the client
+	 * is in the {@link com.madrobot.net.client.mail.POP3#TRANSACTION_STATE
+	 * TRANSACTION_STATE } . Returns a DotTerminatedMessageReader instance from
+	 * which the specified top number of lines of the message can be read.
 	 * Returns null if the retrieval attempt fails (e.g., if the specified
 	 * message number does not exist).
 	 * <p>
@@ -523,22 +507,21 @@ public class POP3Client extends POP3 {
 	 *            The number of the message to fetch.
 	 * @param numLines
 	 *            The top number of lines to fetch. This must be >= 0.
-	 * @return A DotTerminatedMessageReader instance
-	 *         from which the specified top number of lines of the message can
-	 *         be
-	 *         read.
-	 *         Returns null if the retrieval attempt fails (e.g., if the
-	 *         specified
-	 *         message number does not exist).
+	 * @return A DotTerminatedMessageReader instance from which the specified
+	 *         top number of lines of the message can be read. Returns null if
+	 *         the retrieval attempt fails (e.g., if the specified message
+	 *         number does not exist).
 	 * @exception IOException
-	 *                If a network I/O error occurs in the process of
-	 *                sending the top command.
+	 *                If a network I/O error occurs in the process of sending
+	 *                the top command.
 	 ***/
-	public Reader retrieveMessageTop(int messageId, int numLines) throws IOException {
-		if((numLines < 0) || (getState() != TRANSACTION_STATE)){
+	public Reader retrieveMessageTop(int messageId, int numLines)
+			throws IOException {
+		if ((numLines < 0) || (getState() != TRANSACTION_STATE)) {
 			return null;
 		}
-		if(sendCommand(POP3Command.TOP, Integer.toString(messageId) + " " + Integer.toString(numLines)) != POP3Reply.OK){
+		if (sendCommand(POP3Command.TOP, Integer.toString(messageId) + " "
+				+ Integer.toString(numLines)) != POP3Reply.OK) {
 			return null;
 		}
 
@@ -546,27 +529,25 @@ public class POP3Client extends POP3 {
 	}
 
 	/***
-	 * Get the mailbox status. A status attempt can only
-	 * succeed if the client is in the
-	 * {@link com.madrobot.net.client.mail.POP3#TRANSACTION_STATE
-	 * TRANSACTION_STATE } . Returns a POP3MessageInfo instance
-	 * containing the number of messages in the mailbox and the total
-	 * size of the messages in bytes. Returns null if the status the
-	 * attempt fails.
+	 * Get the mailbox status. A status attempt can only succeed if the client
+	 * is in the {@link com.madrobot.net.client.mail.POP3#TRANSACTION_STATE
+	 * TRANSACTION_STATE } . Returns a POP3MessageInfo instance containing the
+	 * number of messages in the mailbox and the total size of the messages in
+	 * bytes. Returns null if the status the attempt fails.
 	 * <p>
 	 * 
-	 * @return A POP3MessageInfo instance containing the number of
-	 *         messages in the mailbox and the total size of the messages
-	 *         in bytes. Returns null if the status the attempt fails.
+	 * @return A POP3MessageInfo instance containing the number of messages in
+	 *         the mailbox and the total size of the messages in bytes. Returns
+	 *         null if the status the attempt fails.
 	 * @exception IOException
-	 *                If a network I/O error occurs in the process of
-	 *                sending the status command.
+	 *                If a network I/O error occurs in the process of sending
+	 *                the status command.
 	 ***/
 	public POP3MessageInfo status() throws IOException {
-		if(getState() != TRANSACTION_STATE){
+		if (getState() != TRANSACTION_STATE) {
 			return null;
 		}
-		if(sendCommand(POP3Command.STAT) != POP3Reply.OK){
+		if (sendCommand(POP3Command.STAT) != POP3Reply.OK) {
 			return null;
 		}
 		return __parseStatus(_lastReplyLine.substring(3));

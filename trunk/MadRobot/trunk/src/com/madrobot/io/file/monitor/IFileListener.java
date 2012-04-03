@@ -17,8 +17,8 @@ public interface IFileListener {
 	 * 
 	 * 
 	 * @param status
-	 *            The integer describing the event. As defined in {@code
-	 *            android.os.FileObserver}
+	 *            The integer describing the event. As defined in
+	 *            {@code android.os.FileObserver}
 	 * @param file
 	 *            The file which the event has occured
 	 */

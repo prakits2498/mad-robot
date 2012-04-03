@@ -45,13 +45,13 @@ abstract class AbstractTask extends AsyncTask<Object, Object, Object> {
 		/*
 		 * if null is received then it indicates that the task has just started
 		 */
-		if(objects == null){
+		if (objects == null) {
 			notifier.onTaskStarted();
-		} else{
+		} else {
 			DataResponse response = (DataResponse) objects[0];
-			if(response.getResponseStatus() > 0){
+			if (response.getResponseStatus() > 0) {
 				notifier.onSuccess(response);
-			} else{
+			} else {
 				notifier.onError(response.getT());
 			}
 		}
@@ -60,12 +60,12 @@ abstract class AbstractTask extends AsyncTask<Object, Object, Object> {
 	public void setAppContext(Context appContext) {
 		this.appContext = appContext;
 	}
-	
+
 	public void setNotifier(TaskNotifier notifier) {
 		this.notifier = notifier;
 	}
-	
-	protected void taskStarted(){
+
+	protected void taskStarted() {
 		notifier.onTaskStarted();
 	}
 }

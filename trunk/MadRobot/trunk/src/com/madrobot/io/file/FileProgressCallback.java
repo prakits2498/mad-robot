@@ -10,6 +10,7 @@ public interface FileProgressCallback {
 
 	/**
 	 * When a directory is found in the given path
+	 * 
 	 * @param totalFilesContained
 	 *            Total number of files/directories in the discovered directory.
 	 */

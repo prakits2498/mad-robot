@@ -1,8 +1,6 @@
 package com.madrobot.io.file.filters;
 
 import java.io.File;
-import java.io.FileFilter;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -663,11 +661,6 @@ public class FileFilterUtils {
 				false);
 		return new AndFileFilter(minimumFilter, maximumFilter);
 	}
-
-
-
-
-
 
 	// -----------------------------------------------------------------------
 	/* Constructed on demand and then cached */

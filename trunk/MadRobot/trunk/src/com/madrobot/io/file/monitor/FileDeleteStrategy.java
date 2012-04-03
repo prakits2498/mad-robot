@@ -58,7 +58,7 @@ public class FileDeleteStrategy {
 		 * Deletes the file object.
 		 * <p>
 		 * This implementation uses <code>FileUtils.forceDelete() <code>
-         * if the file exists.
+		 * if the file exists.
 		 * 
 		 * @param fileToDelete
 		 *            the file to delete, not null
@@ -74,6 +74,7 @@ public class FileDeleteStrategy {
 			return true;
 		}
 	}
+
 	/**
 	 * The singleton instance for forced file deletion, which always deletes,
 	 * even if the file represents a non-empty directory.
@@ -84,7 +85,8 @@ public class FileDeleteStrategy {
 	 * The singleton instance for normal file deletion, which does not permit
 	 * the deletion of directories that are not empty.
 	 */
-	public static final FileDeleteStrategy NORMAL = new FileDeleteStrategy("Normal");
+	public static final FileDeleteStrategy NORMAL = new FileDeleteStrategy(
+			"Normal");
 
 	/** The name of the strategy. */
 	private final String name;
@@ -101,8 +103,8 @@ public class FileDeleteStrategy {
 	}
 
 	/**
-	 * Deletes the file object, which may be a file or a directory.
-	 * If the file does not exist, the method just returns.
+	 * Deletes the file object, which may be a file or a directory. If the file
+	 * does not exist, the method just returns.
 	 * <p>
 	 * Subclass writers should override {@link #doDelete(File)}, not this
 	 * method.
@@ -115,16 +117,16 @@ public class FileDeleteStrategy {
 	 *             if an error occurs during file deletion
 	 */
 	public void delete(File fileToDelete) throws IOException {
-		if(fileToDelete.exists() && (doDelete(fileToDelete) == false)){
+		if (fileToDelete.exists() && (doDelete(fileToDelete) == false)) {
 			throw new IOException("Deletion failed: " + fileToDelete);
 		}
 	}
 
 	// -----------------------------------------------------------------------
 	/**
-	 * Deletes the file object, which may be a file or a directory.
-	 * All <code>IOException</code>s are caught and false returned instead.
-	 * If the file does not exist or is null, true is returned.
+	 * Deletes the file object, which may be a file or a directory. All
+	 * <code>IOException</code>s are caught and false returned instead. If the
+	 * file does not exist or is null, true is returned.
 	 * <p>
 	 * Subclass writers should override {@link #doDelete(File)}, not this
 	 * method.
@@ -134,12 +136,12 @@ public class FileDeleteStrategy {
 	 * @return true if the file was deleted, or there was no such file
 	 */
 	public boolean deleteQuietly(File fileToDelete) {
-		if((fileToDelete == null) || (fileToDelete.exists() == false)){
+		if ((fileToDelete == null) || (fileToDelete.exists() == false)) {
 			return true;
 		}
-		try{
+		try {
 			return doDelete(fileToDelete);
-		} catch(IOException ex){
+		} catch (IOException ex) {
 			return false;
 		}
 	}

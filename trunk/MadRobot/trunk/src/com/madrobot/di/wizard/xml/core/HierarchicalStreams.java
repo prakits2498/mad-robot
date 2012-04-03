@@ -15,15 +15,18 @@ import com.madrobot.di.wizard.xml.io.HierarchicalStreamReader;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
 
 /**
- * Helper methods for {@link HierarchicalStreamReader} and {@link HierarchicalStreamWriter}.
+ * Helper methods for {@link HierarchicalStreamReader} and
+ * {@link HierarchicalStreamWriter}.
  * 
  * @since 1.3.1
  */
 public class HierarchicalStreams {
 
-	public static String readClassAttribute(HierarchicalStreamReader reader, Mapper mapper) {
+	public static String readClassAttribute(HierarchicalStreamReader reader,
+			Mapper mapper) {
 		String attributeName = mapper.aliasForSystemAttribute("resolves-to");
-		String classAttribute = attributeName == null ? null : reader.getAttribute(attributeName);
+		String classAttribute = attributeName == null ? null : reader
+				.getAttribute(attributeName);
 		if (classAttribute == null) {
 			attributeName = mapper.aliasForSystemAttribute("class");
 			if (attributeName != null) {
@@ -33,7 +36,8 @@ public class HierarchicalStreams {
 		return classAttribute;
 	}
 
-	public static Class readClassType(HierarchicalStreamReader reader, Mapper mapper) {
+	public static Class readClassType(HierarchicalStreamReader reader,
+			Mapper mapper) {
 		String classAttribute = readClassAttribute(reader, mapper);
 		Class type;
 		if (classAttribute == null) {

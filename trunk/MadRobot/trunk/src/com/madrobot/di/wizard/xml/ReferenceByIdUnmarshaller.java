@@ -16,10 +16,8 @@ import com.madrobot.di.wizard.xml.io.HierarchicalStreamReader;
 
 class ReferenceByIdUnmarshaller extends AbstractReferenceUnmarshaller {
 
-	public ReferenceByIdUnmarshaller(
-			Object root,
-			HierarchicalStreamReader reader,
-			ConverterLookup converterLookup,
+	public ReferenceByIdUnmarshaller(Object root,
+			HierarchicalStreamReader reader, ConverterLookup converterLookup,
 			Mapper mapper) {
 		super(root, reader, converterLookup, mapper);
 	}
@@ -27,7 +25,8 @@ class ReferenceByIdUnmarshaller extends AbstractReferenceUnmarshaller {
 	@Override
 	protected Object getCurrentReferenceKey() {
 		String attributeName = getMapper().aliasForSystemAttribute("id");
-		return attributeName == null ? null : reader.getAttribute(attributeName);
+		return attributeName == null ? null : reader
+				.getAttribute(attributeName);
 	}
 
 	@Override

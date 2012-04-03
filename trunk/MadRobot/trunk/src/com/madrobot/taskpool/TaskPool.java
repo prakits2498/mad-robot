@@ -25,10 +25,11 @@ import com.madrobot.taskpool.TaskPoolManagerImpl.ManagedServiceTask;
  * 
  */
 class TaskPool extends ThreadPoolExecutor {
-//	public static final int QUEUE_SIZE = 250;
-//	public static final int MAX_THREADS_COUNT = 2;
+	// public static final int QUEUE_SIZE = 250;
+	// public static final int MAX_THREADS_COUNT = 2;
 
-	private static LinkedBlockingQueue<Runnable> blockingQueue = new LinkedBlockingQueue<Runnable>(250);
+	private static LinkedBlockingQueue<Runnable> blockingQueue = new LinkedBlockingQueue<Runnable>(
+			250);
 	private static final long serialVersionUID = 1L;
 
 	private static ThreadFactory threadFactory = new ThreadFactory() {
@@ -37,7 +38,8 @@ class TaskPool extends ThreadPoolExecutor {
 
 		@Override
 		public Thread newThread(Runnable runnable) {
-			String threadName = "SessionThread=" + atomicInteger.getAndIncrement();
+			String threadName = "SessionThread="
+					+ atomicInteger.getAndIncrement();
 			return new Thread(runnable, threadName);
 		}
 	};
@@ -46,7 +48,9 @@ class TaskPool extends ThreadPoolExecutor {
 	 * Creates a new TaskThreadPool with the initial parameters.
 	 */
 	protected TaskPool() {
-		super(TaskPoolConstants.MAX_THREADS_COUNT, TaskPoolConstants.MAX_THREADS_COUNT, 0L, TimeUnit.MILLISECONDS, blockingQueue, threadFactory);
+		super(TaskPoolConstants.MAX_THREADS_COUNT,
+				TaskPoolConstants.MAX_THREADS_COUNT, 0L, TimeUnit.MILLISECONDS,
+				blockingQueue, threadFactory);
 	}
 
 	/**

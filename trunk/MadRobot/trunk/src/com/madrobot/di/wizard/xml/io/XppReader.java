@@ -20,7 +20,8 @@ import org.xmlpull.v1.XmlPullParserException;
 import com.madrobot.di.wizard.xml.converters.ErrorWriter;
 
 /**
- * XStream reader that pulls directly from the stream using the XmlPullParser API.
+ * XStream reader that pulls directly from the stream using the XmlPullParser
+ * API.
  * 
  */
 public class XppReader extends AbstractPullReader {
@@ -29,7 +30,8 @@ public class XppReader extends AbstractPullReader {
 	private final Reader reader;
 
 	/**
-	 * @deprecated As of 1.4, use {@link #XppReader(Reader, XmlPullParser)} instead
+	 * @deprecated As of 1.4, use {@link #XppReader(Reader, XmlPullParser)}
+	 *             instead
 	 */
 	@Deprecated
 	public XppReader(Reader reader) {
@@ -38,7 +40,8 @@ public class XppReader extends AbstractPullReader {
 
 	/**
 	 * @since 1.2
-	 * @deprecated As of 1.4, use {@link #XppReader(Reader, XmlPullParser, NameCoder)} instead
+	 * @deprecated As of 1.4, use
+	 *             {@link #XppReader(Reader, XmlPullParser, NameCoder)} instead
 	 */
 	@Deprecated
 	public XppReader(Reader reader, XmlFriendlyNameCoder replacer) {
@@ -104,16 +107,18 @@ public class XppReader extends AbstractPullReader {
 	}
 
 	/**
-	 * To use another implementation of org.xmlpull.v1.XmlPullParser, override this method.
+	 * To use another implementation of org.xmlpull.v1.XmlPullParser, override
+	 * this method.
 	 * 
-	 * @deprecated As of 1.4, use {@link #XppReader(Reader, XmlPullParser)} instead
+	 * @deprecated As of 1.4, use {@link #XppReader(Reader, XmlPullParser)}
+	 *             instead
 	 */
 	@Deprecated
 	protected XmlPullParser createParser() {
 		Exception exception = null;
 		try {
-			return (XmlPullParser) Class.forName("org.xmlpull.mxp1.MXParser", true,
-					XmlPullParser.class.getClassLoader()).newInstance();
+			return (XmlPullParser) Class.forName("org.xmlpull.mxp1.MXParser",
+					true, XmlPullParser.class.getClassLoader()).newInstance();
 		} catch (InstantiationException e) {
 			exception = e;
 		} catch (IllegalAccessException e) {
@@ -121,7 +126,8 @@ public class XppReader extends AbstractPullReader {
 		} catch (ClassNotFoundException e) {
 			exception = e;
 		}
-		throw new StreamException("Cannot create Xpp3 parser instance.", exception);
+		throw new StreamException("Cannot create Xpp3 parser instance.",
+				exception);
 	}
 
 	@Override

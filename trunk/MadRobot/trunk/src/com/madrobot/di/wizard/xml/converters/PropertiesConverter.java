@@ -22,15 +22,17 @@ import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
 import com.madrobot.reflect.FieldUtils;
 
 /**
- * Special converter for java.util.Properties that stores properties in a more compact form than java.util.Map.
+ * Special converter for java.util.Properties that stores properties in a more
+ * compact form than java.util.Map.
  * <p>
- * Because all entries of a Properties instance are Strings, a single element is used for each property with two
- * attributes; one for key and one for value.
+ * Because all entries of a Properties instance are Strings, a single element is
+ * used for each property with two attributes; one for key and one for value.
  * </p>
  * <p>
- * Additionally, default properties are also serialized, if they are present or if a SecurityManager is set, and it has
- * permissions for SecurityManager.checkPackageAccess, SecurityManager.checkMemberAccess(this, EnumSet.MEMBER) and
- * ReflectPermission("suppressAccessChecks").
+ * Additionally, default properties are also serialized, if they are present or
+ * if a SecurityManager is set, and it has permissions for
+ * SecurityManager.checkPackageAccess, SecurityManager.checkMemberAccess(this,
+ * EnumSet.MEMBER) and ReflectPermission("suppressAccessChecks").
  * </p>
  * 
  */
@@ -44,7 +46,8 @@ public class PropertiesConverter implements Converter {
 		} catch (SecurityException ex) {
 			// ignore, no access possible with current SecurityManager
 		} catch (RuntimeException ex) {
-			throw new ExceptionInInitializerError("No field 'defaults' in type Properties found");
+			throw new ExceptionInInitializerError(
+					"No field 'defaults' in type Properties found");
 		}
 		defaultsField = field;
 	}
@@ -64,7 +67,8 @@ public class PropertiesConverter implements Converter {
 	}
 
 	@Override
-	public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
+	public void marshal(Object source, HierarchicalStreamWriter writer,
+			MarshallingContext context) {
 		final Properties properties = (Properties) source;
 		Map map = sort ? (Map) new TreeMap(properties) : (Map) properties;
 		for (Iterator iterator = map.entrySet().iterator(); iterator.hasNext();) {
@@ -77,7 +81,8 @@ public class PropertiesConverter implements Converter {
 		if (defaultsField != null) {
 			Properties defaults = null;
 			try {
-				defaults = (Properties) FieldUtils.readField(defaultsField, properties);
+				defaults = (Properties) FieldUtils.readField(defaultsField,
+						properties);
 			} catch (IllegalAccessException e) {
 				e.printStackTrace();
 			}
@@ -90,7 +95,8 @@ public class PropertiesConverter implements Converter {
 	}
 
 	@Override
-	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+	public Object unmarshal(HierarchicalStreamReader reader,
+			UnmarshallingContext context) {
 		Properties properties = new Properties();
 		Properties defaults = null;
 		while (reader.hasMoreChildren()) {

@@ -22,10 +22,10 @@ import java.util.Vector;
 import com.madrobot.net.client.SocketClient;
 
 /***
- * The POP3 class is not meant to be used by itself and is provided
- * only so that you may easily implement your own POP3 client if
- * you so desire. If you have no need to perform your own implementation,
- * you should use {@link com.madrobot.net.client.mail.POP3Client}.
+ * The POP3 class is not meant to be used by itself and is provided only so that
+ * you may easily implement your own POP3 client if you so desire. If you have
+ * no need to perform your own implementation, you should use
+ * {@link com.madrobot.net.client.mail.POP3Client}.
  * <p>
  * Rather than list it separately for each method, we mention here that every
  * method communicating with the server and throwing an IOException can also
@@ -80,8 +80,8 @@ public class POP3 extends SocketClient {
 	Vector<String> _replyLines;
 
 	/***
-	 * The default POP3Client constructor. Initializes the state
-	 * to <code>DISCONNECTED_STATE</code>.
+	 * The default POP3Client constructor. Initializes the state to
+	 * <code>DISCONNECTED_STATE</code>.
 	 ***/
 	public POP3() {
 		setDefaultPort(DEFAULT_PORT);
@@ -99,22 +99,23 @@ public class POP3 extends SocketClient {
 		_replyLines.setSize(0);
 		line = _reader.readLine();
 
-		if(line == null){
+		if (line == null) {
 			throw new EOFException("Connection closed without indication.");
 		}
 
-		if(line.startsWith(_OK)){
+		if (line.startsWith(_OK)) {
 			_replyCode = POP3Reply.OK;
-		} else if(line.startsWith(_ERROR)){
+		} else if (line.startsWith(_ERROR)) {
 			_replyCode = POP3Reply.ERROR;
-		} else{
-			throw new MalformedServerReplyException("Received invalid POP3 protocol response from server.");
+		} else {
+			throw new MalformedServerReplyException(
+					"Received invalid POP3 protocol response from server.");
 		}
 
 		_replyLines.addElement(line);
 		_lastReplyLine = line;
 
-		if(_commandSupport_.getListenerCount() > 0){
+		if (_commandSupport_.getListenerCount() > 0) {
 			_commandSupport_.fireReplyReceived(_replyCode, getReplyString());
 		}
 	}
@@ -126,8 +127,10 @@ public class POP3 extends SocketClient {
 	@Override
 	protected void _connectAction_() throws IOException {
 		super._connectAction_();
-		_reader = new BufferedReader(new InputStreamReader(_input_, __DEFAULT_ENCODING));
-		__writer = new BufferedWriter(new OutputStreamWriter(_output_, __DEFAULT_ENCODING));
+		_reader = new BufferedReader(new InputStreamReader(_input_,
+				__DEFAULT_ENCODING));
+		__writer = new BufferedWriter(new OutputStreamWriter(_output_,
+				__DEFAULT_ENCODING));
 		__getReply();
 		setState(AUTHORIZATION_STATE);
 	}
@@ -146,9 +149,9 @@ public class POP3 extends SocketClient {
 
 	/***
 	 * Disconnects the client from the server, and sets the state to
-	 * <code> DISCONNECTED_STATE </code>. The reply text information
-	 * from the last issued command is voided to allow garbage collection
-	 * of the memory used to store that information.
+	 * <code> DISCONNECTED_STATE </code>. The reply text information from the
+	 * last issued command is voided to allow garbage collection of the memory
+	 * used to store that information.
 	 * <p>
 	 * 
 	 * @exception IOException
@@ -171,9 +174,9 @@ public class POP3 extends SocketClient {
 		String line;
 
 		line = _reader.readLine();
-		while(line != null){
+		while (line != null) {
 			_replyLines.addElement(line);
-			if(line.equals(".")){
+			if (line.equals(".")) {
 				break;
 			}
 			line = _reader.readLine();
@@ -181,14 +184,14 @@ public class POP3 extends SocketClient {
 	}
 
 	/***
-	 * Returns the reply to the last command sent to the server.
-	 * The value is a single string containing all the reply lines including
-	 * newlines. If the reply is a single line, but its format ndicates it
-	 * should be a multiline reply, then you must call
-	 * {@link #getAdditionalReply getAdditionalReply() } to
-	 * fetch the rest of the reply, and then call <code>getReplyString</code>
-	 * again. You only have to worry about this if you are implementing
-	 * your own client using the {@link #sendCommand sendCommand } methods.
+	 * Returns the reply to the last command sent to the server. The value is a
+	 * single string containing all the reply lines including newlines. If the
+	 * reply is a single line, but its format ndicates it should be a multiline
+	 * reply, then you must call {@link #getAdditionalReply getAdditionalReply()
+	 * } to fetch the rest of the reply, and then call
+	 * <code>getReplyString</code> again. You only have to worry about this if
+	 * you are implementing your own client using the {@link #sendCommand
+	 * sendCommand } methods.
 	 * <p>
 	 * 
 	 * @return The last server response.
@@ -198,7 +201,7 @@ public class POP3 extends SocketClient {
 		StringBuilder buffer = new StringBuilder(256);
 
 		en = _replyLines.elements();
-		while(en.hasMoreElements()){
+		while (en.hasMoreElements()) {
 			buffer.append(en.nextElement());
 			buffer.append(SocketClient.NETASCII_EOL);
 		}
@@ -207,14 +210,13 @@ public class POP3 extends SocketClient {
 	}
 
 	/***
-	 * Returns an array of lines received as a reply to the last command
-	 * sent to the server. The lines have end of lines truncated. If
-	 * the reply is a single line, but its format ndicates it should be
-	 * a multiline reply, then you must call {@link #getAdditionalReply
-	 * getAdditionalReply() } to
-	 * fetch the rest of the reply, and then call <code>getReplyStrings</code>
-	 * again. You only have to worry about this if you are implementing
-	 * your own client using the {@link #sendCommand sendCommand } methods.
+	 * Returns an array of lines received as a reply to the last command sent to
+	 * the server. The lines have end of lines truncated. If the reply is a
+	 * single line, but its format ndicates it should be a multiline reply, then
+	 * you must call {@link #getAdditionalReply getAdditionalReply() } to fetch
+	 * the rest of the reply, and then call <code>getReplyStrings</code> again.
+	 * You only have to worry about this if you are implementing your own client
+	 * using the {@link #sendCommand sendCommand } methods.
 	 * <p>
 	 * 
 	 * @return The last server response.
@@ -249,13 +251,12 @@ public class POP3 extends SocketClient {
 	}
 
 	/***
-	 * Sends a command with no arguments to the server and returns the
-	 * reply code.
+	 * Sends a command with no arguments to the server and returns the reply
+	 * code.
 	 * <p>
 	 * 
 	 * @param command
-	 *            The POP3 command to send
-	 *            (one of the POP3Command constants).
+	 *            The POP3 command to send (one of the POP3Command constants).
 	 * @return The server reply code (either POP3Reply.OK or POP3Reply.ERROR).
 	 ***/
 	public int sendCommand(int command) throws IOException {
@@ -267,8 +268,7 @@ public class POP3 extends SocketClient {
 	 * <p>
 	 * 
 	 * @param command
-	 *            The POP3 command to send
-	 *            (one of the POP3Command constants).
+	 *            The POP3 command to send (one of the POP3Command constants).
 	 * @param args
 	 *            The command arguments.
 	 * @return The server reply code (either POP3Reply.OK or POP3Reply.ERROR).
@@ -278,8 +278,8 @@ public class POP3 extends SocketClient {
 	}
 
 	/***
-	 * Sends a command with no arguments to the server and returns the
-	 * reply code.
+	 * Sends a command with no arguments to the server and returns the reply
+	 * code.
 	 * <p>
 	 * 
 	 * @param command
@@ -306,7 +306,7 @@ public class POP3 extends SocketClient {
 		__commandBuffer.setLength(0);
 		__commandBuffer.append(command);
 
-		if(args != null){
+		if (args != null) {
 			__commandBuffer.append(' ');
 			__commandBuffer.append(args);
 		}
@@ -315,7 +315,7 @@ public class POP3 extends SocketClient {
 		__writer.write(message = __commandBuffer.toString());
 		__writer.flush();
 
-		if(_commandSupport_.getListenerCount() > 0){
+		if (_commandSupport_.getListenerCount() > 0) {
 			_commandSupport_.fireCommandSent(command, message);
 		}
 

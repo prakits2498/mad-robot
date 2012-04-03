@@ -16,7 +16,8 @@ import java.util.Iterator;
 import com.madrobot.di.wizard.xml.converters.ErrorWriter;
 
 /**
- * Base class to make it easy to create wrappers (decorators) for HierarchicalStreamReader.
+ * Base class to make it easy to create wrappers (decorators) for
+ * HierarchicalStreamReader.
  * 
  * @author Joe Walnes
  */

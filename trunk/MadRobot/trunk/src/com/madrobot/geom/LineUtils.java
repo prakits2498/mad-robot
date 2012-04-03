@@ -30,16 +30,20 @@ public class LineUtils {
 	 *            the second line
 	 * @return returns true if the lines are parallel, false otherwise
 	 */
-	public static boolean areParallel(PointF line1Start, PointF line1End, PointF line2Start, PointF line2End) {
+	public static boolean areParallel(PointF line1Start, PointF line1End,
+			PointF line2Start, PointF line2End) {
 		// If both lines are vertical, they are parallel
-		if(isVertical(line1Start, line1End) && isVertical(line2Start, line2End)){
+		if (isVertical(line1Start, line1End)
+				&& isVertical(line2Start, line2End)) {
 			return true;
 		} else // If one of them is vertical, they are not parallel
-		if(isVertical(line1Start, line1End) || isVertical(line2Start, line2End)){
+		if (isVertical(line1Start, line1End)
+				|| isVertical(line2Start, line2End)) {
 			return false;
 		} else // General case. If their slopes are the same, they are parallel
 		{
-			return (Math.abs(getSlope(line1Start, line1End) - getSlope(line2Start, line2End)) < VERY_SMALL_DISTANCE);
+			return (Math.abs(getSlope(line1Start, line1End)
+					- getSlope(line2Start, line2End)) < VERY_SMALL_DISTANCE);
 		}
 	}
 
@@ -54,7 +58,8 @@ public class LineUtils {
 	 * @param fractionFromP0
 	 *            Point we are looking for coordinates of
 	 */
-	public static PointF computePointOnLine(PointF lineStart, PointF lineEnd, float fractionFromP0) {
+	public static PointF computePointOnLine(PointF lineStart, PointF lineEnd,
+			float fractionFromP0) {
 		PointF point = new PointF();
 
 		point.x = lineStart.x + fractionFromP0 * (lineEnd.x - lineStart.x);
@@ -90,13 +95,14 @@ public class LineUtils {
 	 * @param input
 	 *            in x,y,x,y format
 	 * @param maxD
-	 *            The maximum distance a point from the input set will
-	 *            be from the output shape
+	 *            The maximum distance a point from the input set will be from
+	 *            the output shape
 	 * @param loop
 	 *            <code>true</code> for a line loop rather than a strip
 	 * @return a decimated vertex array, in x,y,x,y... format
 	 */
-	public static float[] decimate(final float[] input, final float maxD, final boolean loop) {
+	public static float[] decimate(final float[] input, final float maxD,
+			final boolean loop) {
 		boolean[] marked = new boolean[input.length / 2];
 		Arrays.fill(marked, false);
 
@@ -106,16 +112,16 @@ public class LineUtils {
 
 		// build output list
 		int count = 0;
-		for(int i = 0; i < marked.length; i++){
-			if(marked[i]){
+		for (int i = 0; i < marked.length; i++) {
+			if (marked[i]) {
 				count++;
 			}
 		}
 
 		float[] output = new float[count * 2];
 		int index = 0;
-		for(int i = 0; i < marked.length; i++){
-			if(marked[i]){
+		for (int i = 0; i < marked.length; i++) {
+			if (marked[i]) {
 				output[index++] = input[2 * i];
 				output[index++] = input[2 * i + 1];
 			}
@@ -132,7 +138,8 @@ public class LineUtils {
 	 * @param py
 	 * @return The distance from p to the line segment a-b
 	 */
-	public static float distanceToSegment(float ax, float ay, float bx, float by, float px, float py) {
+	public static float distanceToSegment(float ax, float ay, float bx,
+			float by, float px, float py) {
 		float vx = bx - ax;
 		float vy = by - ay;
 		float wx = px - ax;
@@ -141,10 +148,10 @@ public class LineUtils {
 		double c1 = wx * vx + wy * vy;
 		double c2 = vx * vx + vy * vy;
 
-		if(c1 <= 0){
+		if (c1 <= 0) {
 			return (float) Math.hypot((ax - px), (ay - py));
 		}
-		if(c1 >= c2){
+		if (c1 >= c2) {
 			return (float) Math.hypot(bx - px, (by - py));
 		}
 
@@ -158,14 +165,16 @@ public class LineUtils {
 		return (float) Math.hypot((vx - px), (vy - py));
 	}
 
-	public static float distanceToSegment(PointF pointStart, PointF pointEnd, PointF point) {
-		return distanceToSegment(pointStart.x, pointStart.y, pointEnd.x, pointEnd.y, point.x, point.y);
+	public static float distanceToSegment(PointF pointStart, PointF pointEnd,
+			PointF point) {
+		return distanceToSegment(pointStart.x, pointStart.y, pointEnd.x,
+				pointEnd.y, point.x, point.y);
 
 	}
 
 	/**
-	 * Check if two double precision numbers are "equal", i.e. close enough
-	 * to a prespecified limit.
+	 * Check if two double precision numbers are "equal", i.e. close enough to a
+	 * prespecified limit.
 	 * 
 	 * @param a
 	 *            First number to check
@@ -178,8 +187,8 @@ public class LineUtils {
 	}
 
 	/**
-	 * Check if two double precision numbers are "equal", i.e. close enough
-	 * to a given limit.
+	 * Check if two double precision numbers are "equal", i.e. close enough to a
+	 * given limit.
 	 * 
 	 * @param a
 	 *            First number to check
@@ -193,7 +202,8 @@ public class LineUtils {
 		return Math.abs(a - b) < limit;
 	}
 
-	public static PointF extendLine(float ax, float ay, float bx, float by, float toLength) {
+	public static PointF extendLine(float ax, float ay, float bx, float by,
+			float toLength) {
 		float oldLength = length(ax, ay, bx, by);
 		float lengthFraction = oldLength != 0.0f ? toLength / oldLength : 0.0f;
 		PointF newEnd = new PointF();
@@ -203,8 +213,8 @@ public class LineUtils {
 	}
 
 	/**
-	 * Extend a given line segment to a given length and holding the first
-	 * point of the line as fixed.
+	 * Extend a given line segment to a given length and holding the first point
+	 * of the line as fixed.
 	 * 
 	 * @param lineStart
 	 * @param lineEnd
@@ -214,13 +224,15 @@ public class LineUtils {
 	 * @param The
 	 *            new end point of the line.
 	 */
-	public static PointF extendLine(PointF lineStart, PointF lineEnd, float toLength) {
-		return extendLine(lineStart.x, lineStart.y, lineEnd.x, lineEnd.y, toLength);
+	public static PointF extendLine(PointF lineStart, PointF lineEnd,
+			float toLength) {
+		return extendLine(lineStart.x, lineStart.y, lineEnd.x, lineEnd.y,
+				toLength);
 	}
 
 	/**
-	 * Compute the intersection between two line segments, or two lines
-	 * of infinite length.
+	 * Compute the intersection between two line segments, or two lines of
+	 * infinite length.
 	 * 
 	 * @param x0
 	 *            X coordinate first end point first line segment.
@@ -240,13 +252,13 @@ public class LineUtils {
 	 *            Y coordinate second end point second line segment.
 	 * @param intersection
 	 *            [2] Preallocated by caller to double[2]
-	 * @return -1 if lines are parallel (x,y unset),
-	 *         -2 if lines are parallel and overlapping (x, y center)
-	 *         0 if intesrection outside segments (x,y set)
-	 *         +1 if segments intersect (x,y set)
+	 * @return -1 if lines are parallel (x,y unset), -2 if lines are parallel
+	 *         and overlapping (x, y center) 0 if intesrection outside segments
+	 *         (x,y set) +1 if segments intersect (x,y set)
 	 */
-	public static int findLineSegmentIntersection(float x0, float y0, float x1, float y1, float x2,
-			float y2, float x3, float y3, float[] intersection) {
+	public static int findLineSegmentIntersection(float x0, float y0, float x1,
+			float y1, float x2, float y2, float x3, float y3,
+			float[] intersection) {
 		// TODO: Make limit depend on input domain
 		final float LIMIT = 1e-5f;
 		final float INFINITY = 1e10f;
@@ -265,24 +277,28 @@ public class LineUtils {
 		float b1 = y2 - a1 * x2;
 
 		// Check if lines are parallel
-		if(equals(a0, a1)){
-			if(!equals(b0, b1)){
+		if (equals(a0, a1)) {
+			if (!equals(b0, b1)) {
 				return -1; // Parallell non-overlapping
-			} else{
-				if(equals(x0, x1)){
-					if((Math.min(y0, y1) < Math.max(y2, y3)) || (Math.max(y0, y1) > Math.min(y2, y3))){
-						float twoMiddle = y0 + y1 + y2 + y3 - min(y0, y1, y2, y3) - max(y0, y1, y2, y3);
+			} else {
+				if (equals(x0, x1)) {
+					if ((Math.min(y0, y1) < Math.max(y2, y3))
+							|| (Math.max(y0, y1) > Math.min(y2, y3))) {
+						float twoMiddle = y0 + y1 + y2 + y3
+								- min(y0, y1, y2, y3) - max(y0, y1, y2, y3);
 						y = (twoMiddle) / 2.0f;
 						x = (y - b0) / a0;
-					} else{
+					} else {
 						return -1; // Parallell non-overlapping
 					}
-				} else{
-					if((Math.min(x0, x1) < Math.max(x2, x3)) || (Math.max(x0, x1) > Math.min(x2, x3))){
-						float twoMiddle = x0 + x1 + x2 + x3 - min(x0, x1, x2, x3) - max(x0, x1, x2, x3);
+				} else {
+					if ((Math.min(x0, x1) < Math.max(x2, x3))
+							|| (Math.max(x0, x1) > Math.min(x2, x3))) {
+						float twoMiddle = x0 + x1 + x2 + x3
+								- min(x0, x1, x2, x3) - max(x0, x1, x2, x3);
 						x = (twoMiddle) / 2.0f;
 						y = a0 * x + b0;
-					} else{
+					} else {
 						return -1;
 					}
 				}
@@ -294,13 +310,13 @@ public class LineUtils {
 		}
 
 		// Find correct intersection point
-		if(equals(a0, INFINITY)){
+		if (equals(a0, INFINITY)) {
 			x = x0;
 			y = a1 * x + b1;
-		} else if(equals(a1, INFINITY)){
+		} else if (equals(a1, INFINITY)) {
 			x = x2;
 			y = a0 * x + b0;
-		} else{
+		} else {
 			x = -(b0 - b1) / (a0 - a1);
 			y = a0 * x + b0;
 		}
@@ -310,44 +326,53 @@ public class LineUtils {
 
 		// Then check if intersection is within line segments
 		float distanceFrom1;
-		if(equals(x0, x1)){
-			if(y0 < y1){
-				distanceFrom1 = y < y0 ? length(new PointF(x, y), new PointF(x0, y0)) : y > y1 ? length(
-						new PointF(x, y), new PointF(x1, y1)) : 0.0f;
-			} else{
-				distanceFrom1 = y < y1 ? length(new PointF(x, y), new PointF(x1, y1)) : y > y0 ? length(
-						new PointF(x, y), new PointF(x0, y0)) : 0.0f;
+		if (equals(x0, x1)) {
+			if (y0 < y1) {
+				distanceFrom1 = y < y0 ? length(new PointF(x, y), new PointF(
+						x0, y0)) : y > y1 ? length(new PointF(x, y),
+						new PointF(x1, y1)) : 0.0f;
+			} else {
+				distanceFrom1 = y < y1 ? length(new PointF(x, y), new PointF(
+						x1, y1)) : y > y0 ? length(new PointF(x, y),
+						new PointF(x0, y0)) : 0.0f;
 			}
-		} else{
-			if(x0 < x1){
-				distanceFrom1 = x < x0 ? length(new PointF(x, y), new PointF(x0, y0)) : x > x1 ? length(
-						new PointF(x, y), new PointF(x1, y1)) : 0.0f;
-			} else{
-				distanceFrom1 = x < x1 ? length(new PointF(x, y), new PointF(x1, y1)) : x > x0 ? length(
-						new PointF(x, y), new PointF(x0, y0)) : 0.0f;
+		} else {
+			if (x0 < x1) {
+				distanceFrom1 = x < x0 ? length(new PointF(x, y), new PointF(
+						x0, y0)) : x > x1 ? length(new PointF(x, y),
+						new PointF(x1, y1)) : 0.0f;
+			} else {
+				distanceFrom1 = x < x1 ? length(new PointF(x, y), new PointF(
+						x1, y1)) : x > x0 ? length(new PointF(x, y),
+						new PointF(x0, y0)) : 0.0f;
 			}
 		}
 
 		float distanceFrom2;
-		if(equals(x2, x3)){
-			if(y2 < y3){
-				distanceFrom2 = y < y2 ? length(new PointF(x, y), new PointF(x2, y2)) : y > y3 ? length(
-						new PointF(x, y), new PointF(x3, y3)) : 0.0f;
-			} else{
-				distanceFrom2 = y < y3 ? length(new PointF(x, y), new PointF(x3, y3)) : y > y2 ? length(
-						new PointF(x, y), new PointF(x2, y2)) : 0.0f;
+		if (equals(x2, x3)) {
+			if (y2 < y3) {
+				distanceFrom2 = y < y2 ? length(new PointF(x, y), new PointF(
+						x2, y2)) : y > y3 ? length(new PointF(x, y),
+						new PointF(x3, y3)) : 0.0f;
+			} else {
+				distanceFrom2 = y < y3 ? length(new PointF(x, y), new PointF(
+						x3, y3)) : y > y2 ? length(new PointF(x, y),
+						new PointF(x2, y2)) : 0.0f;
 			}
-		} else{
-			if(x2 < x3){
-				distanceFrom2 = x < x2 ? length(new PointF(x, y), new PointF(x2, y2)) : x > x3 ? length(
-						new PointF(x, y), new PointF(x3, y3)) : 0.0f;
-			} else{
-				distanceFrom2 = x < x3 ? length(new PointF(x, y), new PointF(x3, y3)) : x > x2 ? length(
-						new PointF(x, y), new PointF(x2, y2)) : 0.0f;
+		} else {
+			if (x2 < x3) {
+				distanceFrom2 = x < x2 ? length(new PointF(x, y), new PointF(
+						x2, y2)) : x > x3 ? length(new PointF(x, y),
+						new PointF(x3, y3)) : 0.0f;
+			} else {
+				distanceFrom2 = x < x3 ? length(new PointF(x, y), new PointF(
+						x3, y3)) : x > x2 ? length(new PointF(x, y),
+						new PointF(x2, y2)) : 0.0f;
 			}
 		}
 
-		return equals(distanceFrom1, 0.0f) && equals(distanceFrom2, 0.0f) ? 1 : 0;
+		return equals(distanceFrom1, 0.0f) && equals(distanceFrom2, 0.0f) ? 1
+				: 0;
 	}
 
 	/**
@@ -377,8 +402,8 @@ public class LineUtils {
 	 *            , yy, x3, y3 End points of second line to check.
 	 * @return True if the two lines intersects.
 	 */
-	public static boolean isLineIntersectingLine(float x0, float y0, float x1, float y1, float x2,
-			float y2, float x3, float y3) {
+	public static boolean isLineIntersectingLine(float x0, float y0, float x1,
+			float y1, float x2, float y2, float x3, float y3) {
 		float s1 = sameSide(x0, y0, x1, y1, x2, y2, x3, y3);
 		float s2 = sameSide(x2, y2, x3, y3, x0, y0, x1, y1);
 
@@ -386,8 +411,8 @@ public class LineUtils {
 	}
 
 	/**
-	 * Check if a specified line intersects a specified rectangle.
-	 * Integer domain.
+	 * Check if a specified line intersects a specified rectangle. Integer
+	 * domain.
 	 * 
 	 * @param lx0
 	 *            , ly0 1st end point of line
@@ -396,31 +421,31 @@ public class LineUtils {
 	 * @param x0
 	 *            , y0, x1, y1 Upper left and lower right corner of rectangle
 	 *            (inclusive).
-	 * @return True if the line intersects the rectangle,
-	 *         false otherwise.
+	 * @return True if the line intersects the rectangle, false otherwise.
 	 */
-	public static boolean isLineIntersectingRectangle(float lx0, float ly0, float lx1, float ly1, float x0,
-			float y0, float x1, float y1) {
+	public static boolean isLineIntersectingRectangle(float lx0, float ly0,
+			float lx1, float ly1, float x0, float y0, float x1, float y1) {
 		// Is one of the line endpoints inside the rectangle
-		if(RectangleUtils.isPointInsideRectangle(x0, y0, x1, y1, lx0, ly0)
-				|| RectangleUtils.isPointInsideRectangle(x0, y0, x1, y1, lx1, ly1)){
+		if (RectangleUtils.isPointInsideRectangle(x0, y0, x1, y1, lx0, ly0)
+				|| RectangleUtils.isPointInsideRectangle(x0, y0, x1, y1, lx1,
+						ly1)) {
 			return true;
 		}
 
 		// If it intersects it goes through. Need to check three sides only.
 
 		// Check against top rectangle line
-		if(isLineIntersectingLine(lx0, ly0, lx1, ly1, x0, y0, x1, y0)){
+		if (isLineIntersectingLine(lx0, ly0, lx1, ly1, x0, y0, x1, y0)) {
 			return true;
 		}
 
 		// Check against left rectangle line
-		if(isLineIntersectingLine(lx0, ly0, lx1, ly1, x0, y0, x0, y1)){
+		if (isLineIntersectingLine(lx0, ly0, lx1, ly1, x0, y0, x0, y1)) {
 			return true;
 		}
 
 		// Check against bottom rectangle line
-		if(isLineIntersectingLine(lx0, ly0, lx1, ly1, x0, y1, x1, y1)){
+		if (isLineIntersectingLine(lx0, ly0, lx1, ly1, x0, y1, x1, y1)) {
 			return true;
 		}
 
@@ -508,9 +533,8 @@ public class LineUtils {
 	}
 
 	/**
-	 * Recursive step. Finds the point furthest from the start-end
-	 * segment, divide and conquer on that vertex if it is outside the
-	 * tolerance value
+	 * Recursive step. Finds the point furthest from the start-end segment,
+	 * divide and conquer on that vertex if it is outside the tolerance value
 	 * 
 	 * @param verts
 	 * @param marked
@@ -518,8 +542,8 @@ public class LineUtils {
 	 * @param start
 	 * @param end
 	 */
-	private static void rdp(final float[] verts, final boolean[] marked, final float maxD, final int start,
-			final int end) {
+	private static void rdp(final float[] verts, final boolean[] marked,
+			final float maxD, final int start, final int end) {
 		marked[start % marked.length] = true;
 		marked[end % marked.length] = true;
 
@@ -532,19 +556,19 @@ public class LineUtils {
 		float bx = verts[2 * end % verts.length];
 		float by = verts[(2 * end + 1) % verts.length];
 
-		for(int i = start + 1; i < end; i++){
+		for (int i = start + 1; i < end; i++) {
 			float px = verts[2 * i % verts.length];
 			float py = verts[(2 * i + 1) % verts.length];
 
 			float d = distanceToSegment(ax, ay, bx, by, px, py);
 
-			if((d > maxD) && (d > maxDistance)){
+			if ((d > maxD) && (d > maxDistance)) {
 				maxDistance = d;
 				maxIndex = i;
 			}
 		}
 
-		if(maxIndex != -1){
+		if (maxIndex != -1) {
 			// recurse
 			rdp(verts, marked, maxD, start, maxIndex);
 			rdp(verts, marked, maxD, maxIndex, end);
@@ -560,11 +584,11 @@ public class LineUtils {
 	 * @param by
 	 * @param px
 	 * @param py
-	 * @return -1 if the point is on the left of the line, 1 if the
-	 *         point is on the right of the line, 0 if the point lies
-	 *         on the line
+	 * @return -1 if the point is on the left of the line, 1 if the point is on
+	 *         the right of the line, 0 if the point lies on the line
 	 */
-	public static int relativeCCW(float ax, float ay, float bx, float by, float px, float py) {
+	public static int relativeCCW(float ax, float ay, float bx, float by,
+			float px, float py) {
 		bx -= ax;
 		by -= ay;
 		px -= ax;
@@ -586,7 +610,8 @@ public class LineUtils {
 	 * @return
 	 */
 	public static int relativeCCW(PointF lineStart, PointF lineEnd, PointF point) {
-		return relativeCCW(lineStart.x, lineStart.y, lineEnd.x, lineEnd.y, point.x, point.y);
+		return relativeCCW(lineStart.x, lineStart.y, lineEnd.x, lineEnd.y,
+				point.x, point.y);
 	}
 
 	/**
@@ -599,7 +624,8 @@ public class LineUtils {
 	 * @param angle
 	 *            the angle (in degrees) of rotation
 	 */
-	public static void rotate(PointF lineStart, PointF lineEnd, PointF origin, double angle) {
+	public static void rotate(PointF lineStart, PointF lineEnd, PointF origin,
+			double angle) {
 		float cos = (float) Math.cos((Math.PI * angle) / 180);
 		float sin = (float) Math.sin((Math.PI * angle) / 180);
 		rotate(lineStart, lineEnd, origin, cos, sin);
@@ -617,7 +643,8 @@ public class LineUtils {
 	 * @param sin
 	 *            the sine of the rotation angle
 	 */
-	private static void rotate(PointF lineStart, PointF lineEnd, PointF origin, float cos, float sin) {
+	private static void rotate(PointF lineStart, PointF lineEnd, PointF origin,
+			float cos, float sin) {
 		PointF test = PointUtils.rotate(lineStart, origin, cos, sin);
 		lineStart.x = test.x;
 		lineStart.y = test.y;
@@ -627,8 +654,8 @@ public class LineUtils {
 	}
 
 	/**
-	 * Check if two points are on the same side of a given line.
-	 * Algorithm from Sedgewick page 350.
+	 * Check if two points are on the same side of a given line. Algorithm from
+	 * Sedgewick page 350.
 	 * 
 	 * @param x0
 	 *            , y0, x1, y1 The line.
@@ -636,12 +663,11 @@ public class LineUtils {
 	 *            , py0 First point.
 	 * @param px1
 	 *            , py1 Second point.
-	 * @return <0 if points on opposite sides.
-	 *         =0 if one of the points is exactly on the line
-	 *         >0 if points on same side.
+	 * @return <0 if points on opposite sides. =0 if one of the points is
+	 *         exactly on the line >0 if points on same side.
 	 */
-	private static int sameSide(float x0, float y0, float x1, float y1, float px0, float py0, float px1,
-			float py1) {
+	private static int sameSide(float x0, float y0, float x1, float y1,
+			float px0, float py0, float px1, float py1) {
 		int sameSide = 0;
 
 		float dx = x1 - x0;
@@ -656,19 +682,19 @@ public class LineUtils {
 		float c1 = dx * dy1 - dy * dx1;
 		float c2 = dx * dy2 - dy * dx2;
 
-		if((c1 != 0) && (c2 != 0)){
+		if ((c1 != 0) && (c2 != 0)) {
 			sameSide = (c1 < 0) != (c2 < 0) ? -1 : 1;
-		} else if((dx == 0) && (dx1 == 0) && (dx2 == 0)){
-			sameSide = !isBetween(y0, y1, py0) && !isBetween(y0, y1, py1) ? 1 : 0;
-		} else if((dy == 0) && (dy1 == 0) && (dy2 == 0)){
-			sameSide = !isBetween(x0, x1, px0) && !isBetween(x0, x1, px1) ? 1 : 0;
+		} else if ((dx == 0) && (dx1 == 0) && (dx2 == 0)) {
+			sameSide = !isBetween(y0, y1, py0) && !isBetween(y0, y1, py1) ? 1
+					: 0;
+		} else if ((dy == 0) && (dy1 == 0) && (dy2 == 0)) {
+			sameSide = !isBetween(x0, x1, px0) && !isBetween(x0, x1, px1) ? 1
+					: 0;
 		}
 
 		return sameSide;
 	}
 
-	
-	
 	/**
 	 * Translate (move) a Line2D object on the X and Y axes.
 	 * 
@@ -679,7 +705,8 @@ public class LineUtils {
 	 * @param dy
 	 *            the Y-axis offset
 	 */
-	public static void translate(PointF lineStart, PointF lineEnd, double dx, double dy) {
+	public static void translate(PointF lineStart, PointF lineEnd, double dx,
+			double dy) {
 		lineStart.x += dx;
 		lineStart.y += dy;
 		lineEnd.x += dx;

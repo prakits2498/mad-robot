@@ -24,10 +24,12 @@ public class StackTraceElementConverter extends AbstractSingleValueConverter {
 	//
 	// Example: com.blah.MyClass.doStuff(MyClass.java:123)
 	// |-------1------| |--2--| |----3-----| |4|
-	// (Note group 4 is optional is optional and only present if a colon char exists.)
+	// (Note group 4 is optional is optional and only present if a colon char
+	// exists.)
 
 	private static final StackTraceElementFactory FACTORY = new StackTraceElementFactory();
-	private static final Pattern PATTERN = Pattern.compile("^(.+)\\.([^\\(]+)\\(([^:]*)(:(\\d+))?\\)$");
+	private static final Pattern PATTERN = Pattern
+			.compile("^(.+)\\.([^\\(]+)\\(([^:]*)(:(\\d+))?\\)$");
 
 	@Override
 	public boolean canConvert(Class type) {
@@ -48,13 +50,16 @@ public class StackTraceElementConverter extends AbstractSingleValueConverter {
 			} else {
 				if (matcher.group(4) != null) {
 					int lineNumber = Integer.parseInt(matcher.group(5));
-					return FACTORY.element(declaringClass, methodName, fileName, lineNumber);
+					return FACTORY.element(declaringClass, methodName,
+							fileName, lineNumber);
 				} else {
-					return FACTORY.element(declaringClass, methodName, fileName);
+					return FACTORY
+							.element(declaringClass, methodName, fileName);
 				}
 			}
 		} else {
-			throw new ConversionException("Could not parse StackTraceElement : " + str);
+			throw new ConversionException(
+					"Could not parse StackTraceElement : " + str);
 		}
 	}
 

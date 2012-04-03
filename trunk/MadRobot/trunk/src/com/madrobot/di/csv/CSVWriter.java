@@ -34,7 +34,8 @@ public class CSVWriter implements Closeable {
 	public static final String DEFAULT_LINE_END = "\n";
 
 	/**
-	 * The default quote character to use if none is supplied to the constructor.
+	 * The default quote character to use if none is supplied to the
+	 * constructor.
 	 */
 	public static final char DEFAULT_QUOTE_CHARACTER = '"';
 
@@ -111,12 +112,14 @@ public class CSVWriter implements Closeable {
 	 * @param escapechar
 	 *            the character to use for escaping quotechars or escapechars
 	 */
-	public CSVWriter(Writer writer, char separator, char quotechar, char escapechar) {
+	public CSVWriter(Writer writer, char separator, char quotechar,
+			char escapechar) {
 		this(writer, separator, quotechar, escapechar, DEFAULT_LINE_END);
 	}
 
 	/**
-	 * Constructs CSVWriter with supplied separator, quote char, escape char and line ending.
+	 * Constructs CSVWriter with supplied separator, quote char, escape char and
+	 * line ending.
 	 * 
 	 * @param writer
 	 *            the writer to an underlying CSV source.
@@ -129,7 +132,8 @@ public class CSVWriter implements Closeable {
 	 * @param lineEnd
 	 *            the line feed terminator to use
 	 */
-	public CSVWriter(Writer writer, char separator, char quotechar, char escapechar, String lineEnd) {
+	public CSVWriter(Writer writer, char separator, char quotechar,
+			char escapechar, String lineEnd) {
 		this.rawWriter = writer;
 		this.pw = new PrintWriter(writer);
 		this.separator = separator;
@@ -150,7 +154,8 @@ public class CSVWriter implements Closeable {
 	 * @param lineEnd
 	 *            the line feed terminator to use
 	 */
-	public CSVWriter(Writer writer, char separator, char quotechar, String lineEnd) {
+	public CSVWriter(Writer writer, char separator, char quotechar,
+			String lineEnd) {
 		this(writer, separator, quotechar, DEFAULT_ESCAPE_CHARACTER, lineEnd);
 	}
 
@@ -193,7 +198,8 @@ public class CSVWriter implements Closeable {
 			char nextChar = nextElement.charAt(j);
 			if (escapechar != NO_ESCAPE_CHARACTER && nextChar == quotechar) {
 				sb.append(escapechar).append(nextChar);
-			} else if (escapechar != NO_ESCAPE_CHARACTER && nextChar == escapechar) {
+			} else if (escapechar != NO_ESCAPE_CHARACTER
+					&& nextChar == escapechar) {
 				sb.append(escapechar).append(nextChar);
 			} else {
 				sb.append(nextChar);
@@ -226,7 +232,8 @@ public class CSVWriter implements Closeable {
 	 * @throws java.sql.SQLException
 	 *             thrown by getColumnValue
 	 */
-	public void writeAll(java.sql.ResultSet rs, boolean includeColumnNames) throws SQLException, IOException {
+	public void writeAll(java.sql.ResultSet rs, boolean includeColumnNames)
+			throws SQLException, IOException {
 
 		if (includeColumnNames) {
 			writeColumnNames(rs);
@@ -238,10 +245,12 @@ public class CSVWriter implements Closeable {
 	}
 
 	/**
-	 * Writes the entire list to a CSV file. The list is assumed to be a String[]
+	 * Writes the entire list to a CSV file. The list is assumed to be a
+	 * String[]
 	 * 
 	 * @param allLines
-	 *            a List of String[], with each String[] representing a line of the file.
+	 *            a List of String[], with each String[] representing a line of
+	 *            the file.
 	 */
 	public void writeAll(List<String[]> allLines) {
 		for (String[] line : allLines) {
@@ -258,7 +267,8 @@ public class CSVWriter implements Closeable {
 	 * Writes the next line to the file.
 	 * 
 	 * @param nextLine
-	 *            a string array with each comma-separated element as a separate entry.
+	 *            a string array with each comma-separated element as a separate
+	 *            entry.
 	 */
 	public void writeNext(String[] nextLine) {
 
@@ -278,7 +288,8 @@ public class CSVWriter implements Closeable {
 			if (quotechar != NO_QUOTE_CHARACTER)
 				sb.append(quotechar);
 
-			sb.append(stringContainsSpecialCharacters(nextElement) ? processLine(nextElement) : nextElement);
+			sb.append(stringContainsSpecialCharacters(nextElement) ? processLine(nextElement)
+					: nextElement);
 
 			if (quotechar != NO_QUOTE_CHARACTER)
 				sb.append(quotechar);

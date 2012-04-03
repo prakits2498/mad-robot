@@ -14,8 +14,9 @@ package com.madrobot.di.wizard.xml;
 import java.lang.reflect.Proxy;
 
 /**
- * Mapper for handling special cases of aliasing dynamic proxies. The alias property specifies the name an instance of a
- * dynamic proxy should be serialized with.
+ * Mapper for handling special cases of aliasing dynamic proxies. The alias
+ * property specifies the name an instance of a dynamic proxy should be
+ * serialized with.
  * 
  */
 public class DynamicProxyMapper extends MapperWrapper {

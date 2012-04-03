@@ -19,18 +19,20 @@ class ReferenceByXPathMarshaller extends AbstractReferenceMarshaller {
 
 	private final int mode;
 
-	ReferenceByXPathMarshaller(HierarchicalStreamWriter writer, ConverterLookup converterLookup, Mapper mapper, int mode) {
+	ReferenceByXPathMarshaller(HierarchicalStreamWriter writer,
+			ConverterLookup converterLookup, Mapper mapper, int mode) {
 		super(writer, converterLookup, mapper);
 		this.mode = mode;
 	}
 
 	@Override
-	protected String createReference(Path currentPath, Object existingReferenceKey) {
+	protected String createReference(Path currentPath,
+			Object existingReferenceKey) {
 		Path existingPath = (Path) existingReferenceKey;
-		Path referencePath = (mode & ReferenceByXPathMarshallingStrategy.ABSOLUTE) > 0 ? existingPath : currentPath
-				.relativeTo(existingPath);
-		return (mode & ReferenceByXPathMarshallingStrategy.SINGLE_NODE) > 0 ? referencePath.explicit() : referencePath
-				.toString();
+		Path referencePath = (mode & ReferenceByXPathMarshallingStrategy.ABSOLUTE) > 0 ? existingPath
+				: currentPath.relativeTo(existingPath);
+		return (mode & ReferenceByXPathMarshallingStrategy.SINGLE_NODE) > 0 ? referencePath
+				.explicit() : referencePath.toString();
 	}
 
 	@Override

@@ -43,8 +43,9 @@ public interface ReferencingMarshallingContext extends MarshallingContext {
 	Object lookupReference(Object item);
 
 	/**
-	 * Register an implicit element. This is typically some kind of collection. Note, that this object may not be
-	 * referenced anywhere else in the object stream.
+	 * Register an implicit element. This is typically some kind of collection.
+	 * Note, that this object may not be referenced anywhere else in the object
+	 * stream.
 	 * 
 	 * @param item
 	 *            the object that is implicit
@@ -56,8 +57,9 @@ public interface ReferencingMarshallingContext extends MarshallingContext {
 	 * Replace the currently marshalled item.
 	 * 
 	 * <p>
-	 * <strong>Use this method only, if you know exactly what you do!</strong> It is a special solution for Serializable
-	 * types that make usage of the writeReplace method where the replacing object itself is referenced.
+	 * <strong>Use this method only, if you know exactly what you do!</strong>
+	 * It is a special solution for Serializable types that make usage of the
+	 * writeReplace method where the replacing object itself is referenced.
 	 * </p>
 	 * 
 	 * @param original

@@ -47,10 +47,10 @@ public class FeatureDescriptor {
 	 */
 	static Reference createReference(Object obj, boolean soft) {
 		Reference ref = null;
-		if(obj != null){
-			if(soft){
+		if (obj != null) {
+			if (soft) {
 				ref = new SoftReference(obj);
-			} else{
+			} else {
 				ref = new WeakReference(obj);
 			}
 		}
@@ -89,8 +89,8 @@ public class FeatureDescriptor {
 	}
 
 	/*
-	 * Package-private dup constructor
-	 * This must isolate the new object from any changes to the old object.
+	 * Package-private dup constructor This must isolate the new object from any
+	 * changes to the old object.
 	 */
 	FeatureDescriptor(FeatureDescriptor old) {
 		expert = old.expert;
@@ -105,11 +105,10 @@ public class FeatureDescriptor {
 	}
 
 	/**
-	 * Package-private constructor,
-	 * Merge information from two FeatureDescriptors.
-	 * The merged hidden and expert flags are formed by or-ing the values.
-	 * In the event of other conflicts, the second argument (y) is
-	 * given priority over the first argument (x).
+	 * Package-private constructor, Merge information from two
+	 * FeatureDescriptors. The merged hidden and expert flags are formed by
+	 * or-ing the values. In the event of other conflicts, the second argument
+	 * (y) is given priority over the first argument (x).
 	 * 
 	 * @param x
 	 *            The first (lower priority) MethodDescriptor
@@ -122,15 +121,15 @@ public class FeatureDescriptor {
 		preferred = x.preferred | y.preferred;
 		name = y.name;
 		shortDescription = x.shortDescription;
-		if(y.shortDescription != null){
+		if (y.shortDescription != null) {
 			shortDescription = y.shortDescription;
 		}
 		displayName = x.displayName;
-		if(y.displayName != null){
+		if (y.displayName != null) {
 			displayName = y.displayName;
 		}
 		classRef = x.classRef;
-		if(y.classRef != null){
+		if (y.classRef != null) {
 			classRef = y.classRef;
 		}
 		addTable(x.table);
@@ -138,11 +137,11 @@ public class FeatureDescriptor {
 	}
 
 	private void addTable(java.util.Hashtable t) {
-		if(t == null){
+		if (t == null) {
 			return;
 		}
 		java.util.Enumeration keys = t.keys();
-		while(keys.hasMoreElements()){
+		while (keys.hasMoreElements()) {
 			String key = (String) keys.nextElement();
 			Object value = t.get(key);
 			setValue(key, value);
@@ -150,14 +149,13 @@ public class FeatureDescriptor {
 	}
 
 	/**
-	 * Gets an enumeration of the locale-independent names of this
-	 * feature.
+	 * Gets an enumeration of the locale-independent names of this feature.
 	 * 
-	 * @return An enumeration of the locale-independent names of any
-	 *         attributes that have been registered with setValue.
+	 * @return An enumeration of the locale-independent names of any attributes
+	 *         that have been registered with setValue.
 	 */
 	public java.util.Enumeration<String> attributeNames() {
-		if(table == null){
+		if (table == null) {
 			table = new java.util.Hashtable();
 		}
 		return table.keys();
@@ -170,11 +168,11 @@ public class FeatureDescriptor {
 	/**
 	 * Gets the localized display name of this feature.
 	 * 
-	 * @return The localized display name for the property/method/event.
-	 *         This defaults to the same as its programmatic name from getName.
+	 * @return The localized display name for the property/method/event. This
+	 *         defaults to the same as its programmatic name from getName.
 	 */
 	public String getDisplayName() {
-		if(displayName == null){
+		if (displayName == null) {
 			return getName();
 		}
 		return displayName;
@@ -198,7 +196,7 @@ public class FeatureDescriptor {
 	 *         property/method/event. This defaults to be the display name.
 	 */
 	public String getShortDescription() {
-		if(shortDescription == null){
+		if (shortDescription == null) {
 			return getDisplayName();
 		}
 		return shortDescription;
@@ -209,11 +207,11 @@ public class FeatureDescriptor {
 	 * 
 	 * @param attributeName
 	 *            The locale-independent name of the attribute
-	 * @return The value of the attribute. May be null if
-	 *         the attribute is unknown.
+	 * @return The value of the attribute. May be null if the attribute is
+	 *         unknown.
 	 */
 	public Object getValue(String attributeName) {
-		if(table == null){
+		if (table == null) {
 			return null;
 		}
 		return table.get(attributeName);
@@ -230,8 +228,8 @@ public class FeatureDescriptor {
 	}
 
 	/**
-	 * The "hidden" flag is used to identify features that are intended only
-	 * for tool use, and which should not be exposed to humans.
+	 * The "hidden" flag is used to identify features that are intended only for
+	 * tool use, and which should not be exposed to humans.
 	 * 
 	 * @return True if this feature should be hidden from human users.
 	 */
@@ -258,12 +256,12 @@ public class FeatureDescriptor {
 	 * Sets the localized display name of this feature.
 	 * 
 	 * @param displayName
-	 *            The localized display name for the
-	 *            property/method/event.
+	 *            The localized display name for the property/method/event.
 	 */
 	public void setDisplayName(String displayName) {
 		this.displayName = displayName;
 	}
+
 	/**
 	 * The "expert" flag is used to distinguish between features that are
 	 * intended for expert users from those that are intended for normal users.
@@ -274,9 +272,10 @@ public class FeatureDescriptor {
 	public void setExpert(boolean expert) {
 		this.expert = expert;
 	}
+
 	/**
-	 * The "hidden" flag is used to identify features that are intended only
-	 * for tool use, and which should not be exposed to humans.
+	 * The "hidden" flag is used to identify features that are intended only for
+	 * tool use, and which should not be exposed to humans.
 	 * 
 	 * @param hidden
 	 *            True if this feature should be hidden from human users.
@@ -284,6 +283,7 @@ public class FeatureDescriptor {
 	public void setHidden(boolean hidden) {
 		this.hidden = hidden;
 	}
+
 	/**
 	 * Sets the programmatic name of this feature.
 	 * 
@@ -293,28 +293,31 @@ public class FeatureDescriptor {
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	/**
 	 * The "preferred" flag is used to identify features that are particularly
 	 * important for presenting to humans.
 	 * 
 	 * @param preferred
-	 *            True if this feature should be preferentially shown
-	 *            to human users.
+	 *            True if this feature should be preferentially shown to human
+	 *            users.
 	 */
 	public void setPreferred(boolean preferred) {
 		this.preferred = preferred;
 	}
+
 	/**
 	 * You can associate a short descriptive string with a feature. Normally
 	 * these descriptive strings should be less than about 40 characters.
 	 * 
 	 * @param text
-	 *            A (localized) short description to be associated with
-	 *            this property/method/event.
+	 *            A (localized) short description to be associated with this
+	 *            property/method/event.
 	 */
 	public void setShortDescription(String text) {
 		shortDescription = text;
 	}
+
 	/**
 	 * Associate a named attribute with this feature.
 	 * 
@@ -324,7 +327,7 @@ public class FeatureDescriptor {
 	 *            The value.
 	 */
 	public void setValue(String attributeName, Object value) {
-		if(table == null){
+		if (table == null) {
 			table = new java.util.Hashtable();
 		}
 		table.put(attributeName, value);

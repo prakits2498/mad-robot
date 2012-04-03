@@ -16,8 +16,7 @@ package com.madrobot.taskpool;
  * If these settings are to be modified, It should be done before the very first
  * call to <code>TaskPoolManagerImpl.getTaskPool()</code>
  * 
- * @see TaskPoolManagerImpl
- *      </p>
+ * @see TaskPoolManagerImpl </p>
  */
 public class TaskPoolConstants {
 

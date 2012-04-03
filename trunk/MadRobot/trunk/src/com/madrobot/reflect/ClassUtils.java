@@ -56,21 +56,20 @@ import com.madrobot.text.StringUtils;
 public class ClassUtils {
 
 	private static class TypedValue {
-        final Class type;
-        final Object value;
+		final Class type;
+		final Object value;
 
-        public TypedValue(final Class type, final Object value) {
-            super();
-            this.type = type;
-            this.value = value;
-        }
+		public TypedValue(final Class type, final Object value) {
+			super();
+			this.type = type;
+			this.value = value;
+		}
 
-        @Override
-		public String toString()
-        {
-                return type.getName() + ":" + value;
-        }
-    }
+		@Override
+		public String toString() {
+			return type.getName() + ":" + value;
+		}
+	}
 
 	/**
 	 * Maps a primitive class name to its corresponding abbreviation used in
@@ -242,8 +241,8 @@ public class ClassUtils {
 		}
 		return classes;
 	}
-	
-    /**
+
+	/**
 	 * <p>
 	 * Gets a <code>List</code> of all interfaces implemented by the given class
 	 * and its superclasses.
@@ -271,8 +270,8 @@ public class ClassUtils {
 
 		return new ArrayList<Class<?>>(interfacesFound);
 	}
-    
-    /**
+
+	/**
 	 * Get the interfaces for the specified class.
 	 * 
 	 * @param cls
@@ -295,7 +294,7 @@ public class ClassUtils {
 		}
 	}
 
-    // Superclasses/Superinterfaces
+	// Superclasses/Superinterfaces
 	// ----------------------------------------------------------------------
 	/**
 	 * <p>
@@ -1286,186 +1285,214 @@ public class ClassUtils {
 	}
 
 	/**
-     * Create an instance with dependency injection. The given dependencies are used to match the parameters of the
-     * constructors of the type. Constructors with most parameters are examined first. A parameter type sequence
-     * matching the sequence of the dependencies' types match first. Otherwise all the types of the dependencies must
-     * match one of the the parameters although no dependency is used twice. Use a {@link TypedNull} instance to inject
-     * <code>null</code> as parameter.
-     * 
-     * @param type the type to create an instance of
-     * @param dependencies the possible dependencies
-     * @return the instantiated object
-     * @throws ObjectAccessException if no instance can be generated
-     * @since 1.2.2
-     */
-    public static Object newInstance(final Class type, final Object[] dependencies) {
-        return newInstance(type, dependencies, new BitSet());
-    }
+	 * Create an instance with dependency injection. The given dependencies are
+	 * used to match the parameters of the constructors of the type.
+	 * Constructors with most parameters are examined first. A parameter type
+	 * sequence matching the sequence of the dependencies' types match first.
+	 * Otherwise all the types of the dependencies must match one of the the
+	 * parameters although no dependency is used twice. Use a {@link TypedNull}
+	 * instance to inject <code>null</code> as parameter.
+	 * 
+	 * @param type
+	 *            the type to create an instance of
+	 * @param dependencies
+	 *            the possible dependencies
+	 * @return the instantiated object
+	 * @throws ObjectAccessException
+	 *             if no instance can be generated
+	 * @since 1.2.2
+	 */
+	public static Object newInstance(final Class type,
+			final Object[] dependencies) {
+		return newInstance(type, dependencies, new BitSet());
+	}
 
 	/**
-     * Create an instance with dependency injection. The given dependencies are used to match the parameters of the
-     * constructors of the type. Constructors with most parameters are examined first. A parameter type sequence
-     * matching the sequence of the dependencies' types match first. Otherwise all the types of the dependencies must
-     * match one of the the parameters although no dependency is used twice. Use a {@link TypedNull} instance to inject
-     * <code>null</code> as parameter.
-     * 
-     * @param type the type to create an instance of
-     * @param dependencies the possible dependencies
-     * @param usedDependencies bit mask set by the method for all used dependencies (may be <code>null</code>)
-     * @return the instantiated object
-     * @throws ObjectAccessException if no instance can be generated
-     * @since 1.4
-     */
-    public static Object newInstance(final Class type, final Object[] dependencies, final BitSet usedDependencies) {
-        Constructor bestMatchingCtor = null;
-        final List matchingDependencies = new ArrayList();
+	 * Create an instance with dependency injection. The given dependencies are
+	 * used to match the parameters of the constructors of the type.
+	 * Constructors with most parameters are examined first. A parameter type
+	 * sequence matching the sequence of the dependencies' types match first.
+	 * Otherwise all the types of the dependencies must match one of the the
+	 * parameters although no dependency is used twice. Use a {@link TypedNull}
+	 * instance to inject <code>null</code> as parameter.
+	 * 
+	 * @param type
+	 *            the type to create an instance of
+	 * @param dependencies
+	 *            the possible dependencies
+	 * @param usedDependencies
+	 *            bit mask set by the method for all used dependencies (may be
+	 *            <code>null</code>)
+	 * @return the instantiated object
+	 * @throws ObjectAccessException
+	 *             if no instance can be generated
+	 * @since 1.4
+	 */
+	public static Object newInstance(final Class type,
+			final Object[] dependencies, final BitSet usedDependencies) {
+		Constructor bestMatchingCtor = null;
+		final List matchingDependencies = new ArrayList();
 
-        if (dependencies != null && dependencies.length > 0) {
-            // sort available ctors according their arity
-            final Constructor[] ctors = type.getConstructors();
-            if (ctors.length > 1) {
-                Arrays.sort(ctors, new Comparator() {
-                    @Override
+		if (dependencies != null && dependencies.length > 0) {
+			// sort available ctors according their arity
+			final Constructor[] ctors = type.getConstructors();
+			if (ctors.length > 1) {
+				Arrays.sort(ctors, new Comparator() {
+					@Override
 					public int compare(final Object o1, final Object o2) {
-                        return ((Constructor)o2).getParameterTypes().length
-                            - ((Constructor)o1).getParameterTypes().length;
-                    }
-                });
-            }
+						return ((Constructor) o2).getParameterTypes().length
+								- ((Constructor) o1).getParameterTypes().length;
+					}
+				});
+			}
 
-            final TypedValue[] typedDependencies = new TypedValue[dependencies.length];
-            for (int i = 0; i < dependencies.length; i++ ) {
-                Object dependency = dependencies[i];
-                Class depType = dependency.getClass();
-                if (depType.isPrimitive()) {
-                    depType = PrimitiveUtils.box(depType);
-                } else if (depType == TypedNull.class) {
-                    depType = ((TypedNull)dependency).getType();
-                    dependency = null;
-                }
+			final TypedValue[] typedDependencies = new TypedValue[dependencies.length];
+			for (int i = 0; i < dependencies.length; i++) {
+				Object dependency = dependencies[i];
+				Class depType = dependency.getClass();
+				if (depType.isPrimitive()) {
+					depType = PrimitiveUtils.box(depType);
+				} else if (depType == TypedNull.class) {
+					depType = ((TypedNull) dependency).getType();
+					dependency = null;
+				}
 
-                typedDependencies[i] = new TypedValue(depType, dependency);
-            }
+				typedDependencies[i] = new TypedValue(depType, dependency);
+			}
 
-            Constructor possibleCtor = null;
-            int arity = Integer.MAX_VALUE;
-            for (int i = 0; bestMatchingCtor == null && i < ctors.length; i++ ) {
-                final Constructor constructor = ctors[i];
-                final Class[] parameterTypes = constructor.getParameterTypes();
-                if (parameterTypes.length > dependencies.length) {
-                    continue;
-                } else if (parameterTypes.length == 0) {
-                    if (possibleCtor == null) {
-                        bestMatchingCtor = constructor;
-                    }
-                    break;
-                }
-                if (arity > parameterTypes.length) {
-                    if (possibleCtor != null) {
-                        bestMatchingCtor = possibleCtor;
-                        continue;
-                    }
-                    arity = parameterTypes.length;
-                }
+			Constructor possibleCtor = null;
+			int arity = Integer.MAX_VALUE;
+			for (int i = 0; bestMatchingCtor == null && i < ctors.length; i++) {
+				final Constructor constructor = ctors[i];
+				final Class[] parameterTypes = constructor.getParameterTypes();
+				if (parameterTypes.length > dependencies.length) {
+					continue;
+				} else if (parameterTypes.length == 0) {
+					if (possibleCtor == null) {
+						bestMatchingCtor = constructor;
+					}
+					break;
+				}
+				if (arity > parameterTypes.length) {
+					if (possibleCtor != null) {
+						bestMatchingCtor = possibleCtor;
+						continue;
+					}
+					arity = parameterTypes.length;
+				}
 
-                for (int j = 0; j < parameterTypes.length; j++ ) {
-                    if (parameterTypes[j].isPrimitive()) {
-                        parameterTypes[j] = PrimitiveUtils.box(parameterTypes[j]);
-                    }
-                }
+				for (int j = 0; j < parameterTypes.length; j++) {
+					if (parameterTypes[j].isPrimitive()) {
+						parameterTypes[j] = PrimitiveUtils
+								.box(parameterTypes[j]);
+					}
+				}
 
-                // first approach: test the ctor params against the dependencies in the sequence
-                // of the parameter
-                // declaration
-                matchingDependencies.clear();
-                for (int j = usedDependencies.length(); j-- > 0;) {
-                    usedDependencies.clear(j); // JDK 1.3, BitSet.clear() is JDK 1.4
-                }
-                for (int j = 0, k = 0; j < parameterTypes.length
-                    && parameterTypes.length + k - j <= typedDependencies.length; k++ ) {
-                    if (parameterTypes[j].isAssignableFrom(typedDependencies[k].type)) {
-                        matchingDependencies.add(typedDependencies[k].value);
-                        usedDependencies.set(k);
-                        if ( ++j == parameterTypes.length) {
-                            bestMatchingCtor = constructor;
-                            break;
-                        }
-                    }
-                }
+				// first approach: test the ctor params against the dependencies
+				// in the sequence
+				// of the parameter
+				// declaration
+				matchingDependencies.clear();
+				for (int j = usedDependencies.length(); j-- > 0;) {
+					usedDependencies.clear(j); // JDK 1.3, BitSet.clear() is JDK
+												// 1.4
+				}
+				for (int j = 0, k = 0; j < parameterTypes.length
+						&& parameterTypes.length + k - j <= typedDependencies.length; k++) {
+					if (parameterTypes[j]
+							.isAssignableFrom(typedDependencies[k].type)) {
+						matchingDependencies.add(typedDependencies[k].value);
+						usedDependencies.set(k);
+						if (++j == parameterTypes.length) {
+							bestMatchingCtor = constructor;
+							break;
+						}
+					}
+				}
 
-                if (bestMatchingCtor == null && possibleCtor == null) {
-                    possibleCtor = constructor; // assumption
+				if (bestMatchingCtor == null && possibleCtor == null) {
+					possibleCtor = constructor; // assumption
 
-                    // try to match all dependencies in the sequence of the parameter
-                    // declaration
-                    final TypedValue[] deps = new TypedValue[typedDependencies.length];
-                    System.arraycopy(typedDependencies, 0, deps, 0, deps.length);
-                    matchingDependencies.clear();
-                    for (int j = usedDependencies.length(); j-- > 0;) {
-                        usedDependencies.clear(j); // JDK 1.3, BitSet.clear() is JDK 1.4
-                    }
-                    for (int j = 0; j < parameterTypes.length; j++ ) {
-                        int assignable = -1;
-                        for (int k = 0; k < deps.length; k++ ) {
-                            if (deps[k] == null) {
-                                continue;
-                            }
-                            if (deps[k].type == parameterTypes[j]) {
-                                assignable = k;
-                                // optimal match
-                                break;
-                            } else if (parameterTypes[j].isAssignableFrom(deps[k].type)) {
-                                // use most specific type
-                                if (assignable < 0
-                                    || (deps[assignable].type != deps[k].type && deps[assignable].type
-                                        .isAssignableFrom(deps[k].type))) {
-                                    assignable = k;
-                                }
-                            }
-                        }
+					// try to match all dependencies in the sequence of the
+					// parameter
+					// declaration
+					final TypedValue[] deps = new TypedValue[typedDependencies.length];
+					System.arraycopy(typedDependencies, 0, deps, 0, deps.length);
+					matchingDependencies.clear();
+					for (int j = usedDependencies.length(); j-- > 0;) {
+						usedDependencies.clear(j); // JDK 1.3, BitSet.clear() is
+													// JDK 1.4
+					}
+					for (int j = 0; j < parameterTypes.length; j++) {
+						int assignable = -1;
+						for (int k = 0; k < deps.length; k++) {
+							if (deps[k] == null) {
+								continue;
+							}
+							if (deps[k].type == parameterTypes[j]) {
+								assignable = k;
+								// optimal match
+								break;
+							} else if (parameterTypes[j]
+									.isAssignableFrom(deps[k].type)) {
+								// use most specific type
+								if (assignable < 0
+										|| (deps[assignable].type != deps[k].type && deps[assignable].type
+												.isAssignableFrom(deps[k].type))) {
+									assignable = k;
+								}
+							}
+						}
 
-                        if (assignable >= 0) {
-                            matchingDependencies.add(deps[assignable].value);
-                            usedDependencies.set(assignable);
-                            deps[assignable] = null; // do not match same dep twice
-                        } else {
-                            possibleCtor = null;
-                            break;
-                        }
-                    }
-                }
-            }
+						if (assignable >= 0) {
+							matchingDependencies.add(deps[assignable].value);
+							usedDependencies.set(assignable);
+							deps[assignable] = null; // do not match same dep
+														// twice
+						} else {
+							possibleCtor = null;
+							break;
+						}
+					}
+				}
+			}
 
-            if (bestMatchingCtor == null) {
-                if (possibleCtor == null) {
-                    for (int j = usedDependencies.length(); j-- > 0;) {
-                        usedDependencies.clear(j); // JDK 1.3, BitSet.clear() is JDK 1.4
-                    }
-                    throw new ObjectAccessException("Cannot construct "
-                        + type.getName()
-                        + ", none of the dependencies match any constructor's parameters");
-                } else {
-                    bestMatchingCtor = possibleCtor;
-                }
-            }
-        }
+			if (bestMatchingCtor == null) {
+				if (possibleCtor == null) {
+					for (int j = usedDependencies.length(); j-- > 0;) {
+						usedDependencies.clear(j); // JDK 1.3, BitSet.clear() is
+													// JDK 1.4
+					}
+					throw new ObjectAccessException(
+							"Cannot construct "
+									+ type.getName()
+									+ ", none of the dependencies match any constructor's parameters");
+				} else {
+					bestMatchingCtor = possibleCtor;
+				}
+			}
+		}
 
-        try {
-            final Object instance;
-            if (bestMatchingCtor == null) {
-                instance = type.newInstance();
-            } else {
-                instance = bestMatchingCtor.newInstance(matchingDependencies.toArray());
-            }
-            return instance;
-        } catch (final InstantiationException e) {
-            throw new ObjectAccessException("Cannot construct " + type.getName(), e);
-        } catch (final IllegalAccessException e) {
-            throw new ObjectAccessException("Cannot construct " + type.getName(), e);
-        } catch (final InvocationTargetException e) {
-            throw new ObjectAccessException("Cannot construct " + type.getName(), e);
-        }
-    }
+		try {
+			final Object instance;
+			if (bestMatchingCtor == null) {
+				instance = type.newInstance();
+			} else {
+				instance = bestMatchingCtor.newInstance(matchingDependencies
+						.toArray());
+			}
+			return instance;
+		} catch (final InstantiationException e) {
+			throw new ObjectAccessException("Cannot construct "
+					+ type.getName(), e);
+		} catch (final IllegalAccessException e) {
+			throw new ObjectAccessException("Cannot construct "
+					+ type.getName(), e);
+		} catch (final InvocationTargetException e) {
+			throw new ObjectAccessException("Cannot construct "
+					+ type.getName(), e);
+		}
+	}
 
 	/**
 	 * Factory method that returns a new instance of the given Class. This is

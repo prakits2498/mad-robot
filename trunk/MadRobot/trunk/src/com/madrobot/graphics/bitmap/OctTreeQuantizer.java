@@ -192,7 +192,7 @@ class OctTreeQuantizer {
 			ArrayList<OctTreeNode> v = colorList[level];
 			if (v != null && v.size() > 0) {
 				for (int j = 0; j < v.size(); j++) {
-					OctTreeNode node = v.get(j);//(OctTreeNode) v.elementAt(j);
+					OctTreeNode node = v.get(j);// (OctTreeNode) v.elementAt(j);
 					if (node.children > 0) {
 						for (int i = 0; i < 8; i++) {
 							OctTreeNode child = node.leaf[i];
@@ -207,7 +207,7 @@ class OctTreeQuantizer {
 								node.children--;
 								colors--;
 								nodes--;
-								colorList[level + 1].remove(child);//removeElement(child);
+								colorList[level + 1].remove(child);// removeElement(child);
 							}
 						}
 						node.isLeaf = true;

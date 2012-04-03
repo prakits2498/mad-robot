@@ -753,7 +753,6 @@ public class WordUtils {
 		return buffer.toString();
 	}
 
-	
 	/**
 	 * Utility method to take a string and convert it to normal Java variable
 	 * name capitalization. This normally means converting the first character

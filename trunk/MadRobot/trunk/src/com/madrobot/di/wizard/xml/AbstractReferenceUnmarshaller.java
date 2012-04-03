@@ -31,11 +31,8 @@ abstract class AbstractReferenceUnmarshaller extends TreeUnmarshaller {
 	private FastStack parentStack = new FastStack(16);
 	private Map values = new HashMap();
 
-	AbstractReferenceUnmarshaller(
-			Object root,
-			HierarchicalStreamReader reader,
-			ConverterLookup converterLookup,
-			Mapper mapper) {
+	AbstractReferenceUnmarshaller(Object root, HierarchicalStreamReader reader,
+			ConverterLookup converterLookup, Mapper mapper) {
 		super(root, reader, converterLookup, mapper);
 	}
 
@@ -52,11 +49,13 @@ abstract class AbstractReferenceUnmarshaller extends TreeUnmarshaller {
 		}
 		final Object result;
 		String attributeName = getMapper().aliasForSystemAttribute("reference");
-		String reference = attributeName == null ? null : reader.getAttribute(attributeName);
+		String reference = attributeName == null ? null : reader
+				.getAttribute(attributeName);
 		if (reference != null) {
 			Object cache = values.get(getReferenceKey(reference));
 			if (cache == null) {
-				final ConversionException ex = new ConversionException("Invalid reference");
+				final ConversionException ex = new ConversionException(
+						"Invalid reference");
 				ex.add("reference", reference);
 				throw ex;
 			}

@@ -12,30 +12,27 @@ package com.madrobot.math;
 
 import java.text.NumberFormat;
 
-public class RationalNumber extends Number
-{
+public class RationalNumber extends Number {
 	private static final NumberFormat nf = NumberFormat.getInstance();
 
 	private static final long serialVersionUID = -1;
-	public static final RationalNumber factoryMethod(long n, long d)
-	{
+
+	public static final RationalNumber factoryMethod(long n, long d) {
 		// safer than constructor - handles values outside min/max range.
 		// also does some simple finding of common denominators.
 
 		if ((n > Integer.MAX_VALUE) || (n < Integer.MIN_VALUE)
-				|| (d > Integer.MAX_VALUE) || (d < Integer.MIN_VALUE))
-		{
+				|| (d > Integer.MAX_VALUE) || (d < Integer.MIN_VALUE)) {
 			while (((n > Integer.MAX_VALUE) || (n < Integer.MIN_VALUE)
 					|| (d > Integer.MAX_VALUE) || (d < Integer.MIN_VALUE))
-					&& (Math.abs(n) > 1) && (Math.abs(d) > 1))
-			{
+					&& (Math.abs(n) > 1) && (Math.abs(d) > 1)) {
 				// brutal, inprecise truncation =(
 				// use the sign-preserving right shift operator.
 				n >>= 1;
 				d >>= 1;
 			}
 
-			if (d == 0){
+			if (d == 0) {
 				throw new NumberFormatException("Invalid value, numerator: "
 						+ n + ", divisor: " + d);
 			}
@@ -51,12 +48,11 @@ public class RationalNumber extends Number
 	/**
 	 * Return the greatest common divisor
 	 */
-	private static long gcd(long a, long b)
-	{
+	private static long gcd(long a, long b) {
 
-		if (b == 0){
+		if (b == 0) {
 			return a;
-		} else{
+		} else {
 			return gcd(b, a % b);
 		}
 	}
@@ -65,49 +61,41 @@ public class RationalNumber extends Number
 
 	public final int numerator;
 
-	public RationalNumber(int numerator, int divisor)
-	{
+	public RationalNumber(int numerator, int divisor) {
 		this.numerator = numerator;
 		this.divisor = divisor;
 	}
 
 	@Override
-	public double doubleValue()
-	{
+	public double doubleValue() {
 		return (double) numerator / (double) divisor;
 	}
 
 	@Override
-	public float floatValue()
-	{
+	public float floatValue() {
 		return (float) numerator / (float) divisor;
 	}
 
 	@Override
-	public int intValue()
-	{
+	public int intValue() {
 		return numerator / divisor;
 	}
 
-	public boolean isValid()
-	{
+	public boolean isValid() {
 		return divisor != 0;
 	}
 
 	@Override
-	public long longValue()
-	{
+	public long longValue() {
 		return (long) numerator / (long) divisor;
 	}
 
-	public RationalNumber negate()
-	{
+	public RationalNumber negate() {
 		return new RationalNumber(-numerator, divisor);
 	}
 
-	public String toDisplayString()
-	{
-		if ((numerator % divisor) == 0){
+	public String toDisplayString() {
+		if ((numerator % divisor) == 0) {
 			return "" + (numerator / divisor);
 		}
 		NumberFormat nf = NumberFormat.getInstance();
@@ -116,12 +104,11 @@ public class RationalNumber extends Number
 	}
 
 	@Override
-	public String toString()
-	{
-		if (divisor == 0){
+	public String toString() {
+		if (divisor == 0) {
 			return "Invalid rational (" + numerator + "/" + divisor + ")";
 		}
-		if ((numerator % divisor) == 0){
+		if ((numerator % divisor) == 0) {
 			return nf.format(numerator / divisor);
 		}
 		return numerator + "/" + divisor + " ("

@@ -16,7 +16,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Declares a field to be omitted. The result is the same as invoking the method omitField in a XStream instance.
+ * Declares a field to be omitted. The result is the same as invoking the method
+ * omitField in a XStream instance.
  * 
  * @since 1.2.2
  */

@@ -14,10 +14,11 @@ import java.util.zip.Adler32;
 
 /**
  * Various CRC implementations
+ * 
  * @author elton.kent
- *
+ * 
  */
-public final  class CRC {
+public final class CRC {
 
 	/**
 	 * BSD Checksum implementation
@@ -27,7 +28,7 @@ public final  class CRC {
 	 */
 	public static int BSD(byte[] data) {
 		int checksum = 0;
-		for(int i = 0; i < data.length; i++){
+		for (int i = 0; i < data.length; i++) {
 			checksum = (checksum >> 1) + ((checksum & 1) << 15);
 			checksum += i;
 			checksum &= 0xffff;
@@ -61,12 +62,12 @@ public final  class CRC {
 		/* CRC32 calculations */
 		final int CRC32_POLYNOMIAL = 0xEDB88320;
 		int crc = 0xFFFFFFFF;
-		while(count-- != 0){
+		while (count-- != 0) {
 			int t = (crc ^ data[offset++]) & 0xFF;
-			for(int i = 8; i > 0; i--){
-				if((t & 1) == 1){
+			for (int i = 8; i > 0; i--) {
+				if ((t & 1) == 1) {
 					t = (t >>> 1) ^ CRC32_POLYNOMIAL;
-				} else{
+				} else {
 					t >>>= 1;
 				}
 			}
@@ -139,10 +140,11 @@ public final  class CRC {
 	 * @return true if the checksum passes (ie) Result%10 ==0 ||Result%5==0.
 	 */
 	public static boolean luhnMod10(String number) {
-		final int[][] sumTable = { { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, { 0, 2, 4, 6, 8, 1, 3, 5, 7, 9 } };
+		final int[][] sumTable = { { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 },
+				{ 0, 2, 4, 6, 8, 1, 3, 5, 7, 9 } };
 		int sum = 0, flip = 0;
 
-		for(int i = number.length() - 1; i >= 0; i--, flip++)
+		for (int i = number.length() - 1; i >= 0; i--, flip++)
 			sum += sumTable[flip & 0x1][number.charAt(i) - '0'];
 		System.out.println("Luhn Sum " + sum + " Result " + (sum % 10 == 0));
 		return (sum % 10 == 0) || (sum % 5 == 0);

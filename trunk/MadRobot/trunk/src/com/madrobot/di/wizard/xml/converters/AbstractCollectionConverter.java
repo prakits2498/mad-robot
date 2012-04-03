@@ -18,11 +18,13 @@ import com.madrobot.di.wizard.xml.io.HierarchicalStreamReader;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
 
 /**
- * Base helper class for converters that need to handle collections of items (arrays, Lists, Maps, etc).
+ * Base helper class for converters that need to handle collections of items
+ * (arrays, Lists, Maps, etc).
  * <p/>
  * <p>
- * Typically, subclasses of this will converter the outer structure of the collection, loop through the contents and
- * call readItem() or writeItem() for each item.
+ * Typically, subclasses of this will converter the outer structure of the
+ * collection, loop through the contents and call readItem() or writeItem() for
+ * each item.
  * </p>
  * 
  * @author Joe Walnes
@@ -43,9 +45,11 @@ public abstract class AbstractCollectionConverter implements Converter {
 		try {
 			return defaultType.newInstance();
 		} catch (InstantiationException e) {
-			throw new ConversionException("Cannot instantiate " + defaultType.getName(), e);
+			throw new ConversionException("Cannot instantiate "
+					+ defaultType.getName(), e);
 		} catch (IllegalAccessException e) {
-			throw new ConversionException("Cannot instantiate " + defaultType.getName(), e);
+			throw new ConversionException("Cannot instantiate "
+					+ defaultType.getName(), e);
 		}
 	}
 
@@ -54,26 +58,33 @@ public abstract class AbstractCollectionConverter implements Converter {
 	}
 
 	@Override
-	public abstract void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context);
+	public abstract void marshal(Object source,
+			HierarchicalStreamWriter writer, MarshallingContext context);
 
-	protected Object readItem(HierarchicalStreamReader reader, UnmarshallingContext context, Object current) {
+	protected Object readItem(HierarchicalStreamReader reader,
+			UnmarshallingContext context, Object current) {
 		Class type = HierarchicalStreams.readClassType(reader, mapper());
 		return context.convertAnother(current, type);
 	}
 
 	@Override
-	public abstract Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context);
+	public abstract Object unmarshal(HierarchicalStreamReader reader,
+			UnmarshallingContext context);
 
-	protected void writeItem(Object item, MarshallingContext context, HierarchicalStreamWriter writer) {
-		// PUBLISHED API METHOD! If changing signature, ensure backwards compatibility.
+	protected void writeItem(Object item, MarshallingContext context,
+			HierarchicalStreamWriter writer) {
+		// PUBLISHED API METHOD! If changing signature, ensure backwards
+		// compatibility.
 		if (item == null) {
 			// todo: this is duplicated in TreeMarshaller.start()
 			String name = mapper().serializedClass(null);
-			ExtendedHierarchicalStreamWriterHelper.startNode(writer, name, Mapper.Null.class);
+			ExtendedHierarchicalStreamWriterHelper.startNode(writer, name,
+					Mapper.Null.class);
 			writer.endNode();
 		} else {
 			String name = mapper().serializedClass(item.getClass());
-			ExtendedHierarchicalStreamWriterHelper.startNode(writer, name, item.getClass());
+			ExtendedHierarchicalStreamWriterHelper.startNode(writer, name,
+					item.getClass());
 			context.convertAnother(item);
 			writer.endNode();
 		}

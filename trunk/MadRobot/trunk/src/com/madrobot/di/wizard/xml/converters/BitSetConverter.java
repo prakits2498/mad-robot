@@ -17,7 +17,8 @@ import com.madrobot.di.wizard.xml.io.HierarchicalStreamReader;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
 
 /**
- * Converts a java.util.BitSet to XML, as a compact comma delimited list of ones and zeros.
+ * Converts a java.util.BitSet to XML, as a compact comma delimited list of ones
+ * and zeros.
  * 
  * @author Joe Walnes
  */
@@ -29,7 +30,8 @@ public class BitSetConverter implements Converter {
 	}
 
 	@Override
-	public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
+	public void marshal(Object source, HierarchicalStreamWriter writer,
+			MarshallingContext context) {
 		BitSet bitSet = (BitSet) source;
 		StringBuffer buffer = new StringBuffer();
 		boolean seenFirst = false;
@@ -47,9 +49,11 @@ public class BitSetConverter implements Converter {
 	}
 
 	@Override
-	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+	public Object unmarshal(HierarchicalStreamReader reader,
+			UnmarshallingContext context) {
 		BitSet result = new BitSet();
-		StringTokenizer tokenizer = new StringTokenizer(reader.getValue(), ",", false);
+		StringTokenizer tokenizer = new StringTokenizer(reader.getValue(), ",",
+				false);
 		while (tokenizer.hasMoreTokens()) {
 			int index = Integer.parseInt(tokenizer.nextToken());
 			result.set(index);

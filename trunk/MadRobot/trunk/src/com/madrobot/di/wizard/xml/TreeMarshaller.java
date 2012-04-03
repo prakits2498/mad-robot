@@ -31,6 +31,7 @@ class TreeMarshaller implements MarshallingContext {
 			super(msg);
 		}
 	}
+
 	protected ConverterLookup converterLookup;
 	private DataHolder dataHolder;
 	private Mapper mapper;
@@ -38,7 +39,8 @@ class TreeMarshaller implements MarshallingContext {
 
 	protected HierarchicalStreamWriter writer;
 
-	TreeMarshaller(HierarchicalStreamWriter writer, ConverterLookup converterLookup, Mapper mapper) {
+	TreeMarshaller(HierarchicalStreamWriter writer,
+			ConverterLookup converterLookup, Mapper mapper) {
 		this.writer = writer;
 		this.converterLookup = converterLookup;
 		this.mapper = mapper;
@@ -46,7 +48,8 @@ class TreeMarshaller implements MarshallingContext {
 
 	protected void convert(Object item, Converter converter) {
 		if (parentObjects.containsId(item)) {
-			ConversionException e = new CircularReferenceException("Recursive reference to parent object");
+			ConversionException e = new CircularReferenceException(
+					"Recursive reference to parent object");
 			e.add("item-type", item.getClass().getName());
 			e.add("converter-type", converter.getClass().getName());
 			throw e;
@@ -67,7 +70,8 @@ class TreeMarshaller implements MarshallingContext {
 			converter = converterLookup.lookupConverterForType(item.getClass());
 		} else {
 			if (!converter.canConvert(item.getClass())) {
-				ConversionException e = new ConversionException("Explicit selected converter cannot handle item");
+				ConversionException e = new ConversionException(
+						"Explicit selected converter cannot handle item");
 				e.add("item-type", item.getClass().getName());
 				e.add("converter-type", converter.getClass().getName());
 				throw e;
@@ -110,8 +114,8 @@ class TreeMarshaller implements MarshallingContext {
 			writer.startNode(mapper.serializedClass(null));
 			writer.endNode();
 		} else {
-			ExtendedHierarchicalStreamWriterHelper.startNode(writer, mapper.serializedClass(item.getClass()),
-					item.getClass());
+			ExtendedHierarchicalStreamWriterHelper.startNode(writer,
+					mapper.serializedClass(item.getClass()), item.getClass());
 			convertAnother(item);
 			writer.endNode();
 		}

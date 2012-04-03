@@ -12,7 +12,8 @@
 package com.madrobot.di.wizard.xml;
 
 /**
- * Exception thrown if a mapper cannot locate the appropriate class for an element.
+ * Exception thrown if a mapper cannot locate the appropriate class for an
+ * element.
  * 
  * @since 1.2
  */

@@ -39,10 +39,11 @@ public class EnumUtils {
 	 *            the enum name
 	 * @return the enum or null if not found
 	 */
-	public static <E extends Enum<E>> E getEnum(Class<E> enumClass, String enumName) {
-		try{
+	public static <E extends Enum<E>> E getEnum(Class<E> enumClass,
+			String enumName) {
+		try {
 			return Enum.valueOf(enumClass, enumName);
-		} catch(IllegalArgumentException ex){
+		} catch (IllegalArgumentException ex) {
 			return null;
 		}
 	}
@@ -69,9 +70,10 @@ public class EnumUtils {
 	 *            the class of the <code>enum</code> to get, not null
 	 * @return the modifiable map of enum names to enums, never null
 	 */
-	public static <E extends Enum<E>> Map<String, E> getEnumMap(Class<E> enumClass) {
+	public static <E extends Enum<E>> Map<String, E> getEnumMap(
+			Class<E> enumClass) {
 		Map<String, E> map = new LinkedHashMap<String, E>();
-		for(E e : enumClass.getEnumConstants()){
+		for (E e : enumClass.getEnumConstants()) {
 			map.put(e.name(), e);
 		}
 		return map;
@@ -89,11 +91,12 @@ public class EnumUtils {
 	 *            the enum name
 	 * @return true if the enum name is valid, otherwise false
 	 */
-	public static <E extends Enum<E>> boolean isValidEnum(Class<E> enumClass, String enumName) {
-		try{
+	public static <E extends Enum<E>> boolean isValidEnum(Class<E> enumClass,
+			String enumName) {
+		try {
 			Enum.valueOf(enumClass, enumName);
 			return true;
-		} catch(IllegalArgumentException ex){
+		} catch (IllegalArgumentException ex) {
 			return false;
 		}
 	}

@@ -40,7 +40,8 @@ public interface Mapper {
 	 *            the field name
 	 * @return the alias for this field or its own name if no alias was defined
 	 * @since 1.2.2
-	 * @deprecated As of 1.3, use combination of {@link #serializedMember(Class, String)} and
+	 * @deprecated As of 1.3, use combination of
+	 *             {@link #serializedMember(Class, String)} and
 	 *             {@link #getConverterFromItemType(String, Class, Class)}
 	 */
 	@Deprecated
@@ -75,7 +76,8 @@ public interface Mapper {
 	 *            the alias
 	 * @return the original attribute name
 	 * @since 1.2.2
-	 * @deprecated As of 1.3, use combination of {@link #realMember(Class, String)} and
+	 * @deprecated As of 1.3, use combination of
+	 *             {@link #realMember(Class, String)} and
 	 *             {@link #getConverterFromItemType(String, Class, Class)}
 	 */
 	@Deprecated
@@ -100,10 +102,12 @@ public interface Mapper {
 	 *            the field's parent
 	 * @param attribute
 	 *            the attribute name
-	 * @deprecated As of 1.3.1, use {@link #getConverterFromAttribute(Class, String, Class)}
+	 * @deprecated As of 1.3.1, use
+	 *             {@link #getConverterFromAttribute(Class, String, Class)}
 	 */
 	@Deprecated
-	SingleValueConverter getConverterFromAttribute(Class definedIn, String attribute);
+	SingleValueConverter getConverterFromAttribute(Class definedIn,
+			String attribute);
 
 	/**
 	 * Returns which converter to use for an specific attribute in a type.
@@ -116,22 +120,26 @@ public interface Mapper {
 	 *            the type the converter should create
 	 * @since 1.3.1
 	 */
-	SingleValueConverter getConverterFromAttribute(Class definedIn, String attribute, Class type);
+	SingleValueConverter getConverterFromAttribute(Class definedIn,
+			String attribute, Class type);
 
 	/**
-	 * @deprecated As of 1.3, use {@link #getConverterFromAttribute(Class, String, Class)}
+	 * @deprecated As of 1.3, use
+	 *             {@link #getConverterFromAttribute(Class, String, Class)}
 	 */
 	@Deprecated
 	SingleValueConverter getConverterFromAttribute(String name);
 
 	/**
-	 * @deprecated As of 1.3, use {@link #getConverterFromItemType(String, Class, Class)}
+	 * @deprecated As of 1.3, use
+	 *             {@link #getConverterFromItemType(String, Class, Class)}
 	 */
 	@Deprecated
 	SingleValueConverter getConverterFromItemType(Class type);
 
 	/**
-	 * @deprecated As of 1.3, use {@link #getConverterFromItemType(String, Class, Class)}
+	 * @deprecated As of 1.3, use
+	 *             {@link #getConverterFromItemType(String, Class, Class)}
 	 */
 	@Deprecated
 	SingleValueConverter getConverterFromItemType(String fieldName, Class type);
@@ -145,13 +153,16 @@ public interface Mapper {
 	 *            the field type
 	 * @param definedIn
 	 *            the type which defines this field
-	 * @return a SingleValueConverter or null if there no such converter should be used for this field.
+	 * @return a SingleValueConverter or null if there no such converter should
+	 *         be used for this field.
 	 * @since 1.2.2
 	 */
-	SingleValueConverter getConverterFromItemType(String fieldName, Class type, Class definedIn);
+	SingleValueConverter getConverterFromItemType(String fieldName, Class type,
+			Class definedIn);
 
 	/**
-	 * Get the name of the field that acts as the default collection for an object, or return null if there is none.
+	 * Get the name of the field that acts as the default collection for an
+	 * object, or return null if there is none.
 	 * 
 	 * @param definedIn
 	 *            owning type
@@ -160,29 +171,34 @@ public interface Mapper {
 	 * @param itemFieldName
 	 *            optional item element name
 	 */
-	String getFieldNameForItemTypeAndName(Class definedIn, Class itemType, String itemFieldName);
+	String getFieldNameForItemTypeAndName(Class definedIn, Class itemType,
+			String itemFieldName);
 
-	ImplicitCollectionMapping getImplicitCollectionDefForFieldName(Class itemType, String fieldName);
+	ImplicitCollectionMapping getImplicitCollectionDefForFieldName(
+			Class itemType, String fieldName);
 
 	Class getItemTypeForItemFieldName(Class definedIn, String itemFieldName);
 
 	Converter getLocalConverter(Class definedIn, String fieldName);
 
 	/**
-	 * Whether this type is a simple immutable value (int, boolean, String, URL, etc. Immutable types will be repeatedly
-	 * written in the serialized stream, instead of using object references.
+	 * Whether this type is a simple immutable value (int, boolean, String, URL,
+	 * etc. Immutable types will be repeatedly written in the serialized stream,
+	 * instead of using object references.
 	 */
 	boolean isImmutableValueType(Class type);
 
 	Mapper lookupMapperOfType(Class type);
 
 	/**
-	 * How a serialized class representation should be mapped back to a real class.
+	 * How a serialized class representation should be mapped back to a real
+	 * class.
 	 */
 	Class realClass(String elementName);
 
 	/**
-	 * How a serialized member representation should be mapped back to a real member.
+	 * How a serialized member representation should be mapped back to a real
+	 * member.
 	 */
 	String realMember(Class type, String serialized);
 

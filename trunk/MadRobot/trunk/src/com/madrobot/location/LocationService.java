@@ -15,9 +15,10 @@ import android.os.RemoteException;
  * <p>
  * 
  * </p>
+ * 
  * @see com.madrobot.device.ServiceBinder
  * @author elton.stephen.kent
- *
+ * 
  */
 public class LocationService extends Service {
 
@@ -27,7 +28,7 @@ public class LocationService extends Service {
 
 		@Override
 		public void onLocationChanged(Location location) {
-			if(LocationUtils.isBetterLocation(location, mBestLocation)){
+			if (LocationUtils.isBetterLocation(location, mBestLocation)) {
 				mBestLocation = location;
 			}
 
@@ -53,7 +54,6 @@ public class LocationService extends Service {
 	};
 	private LocationManager mLocationManager;
 
-
 	ILocationService.Stub mService = new ILocationService.Stub() {
 
 		@Override
@@ -71,17 +71,23 @@ public class LocationService extends Service {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-		mBestLocation = null; //mLocationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
-		if(mBestLocation == null) {
-			mBestLocation = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+		mLocationManager = (LocationManager) this
+				.getSystemService(Context.LOCATION_SERVICE);
+		mBestLocation = null; // mLocationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+		if (mBestLocation == null) {
+			mBestLocation = mLocationManager
+					.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 		}
-		if(mBestLocation == null) {
-			mBestLocation = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+		if (mBestLocation == null) {
+			mBestLocation = mLocationManager
+					.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 		}
-		mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, mLocationListener);
-		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocationListener);
-		//mLocationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 0, 0, mLocationListener);
+		mLocationManager.requestLocationUpdates(
+				LocationManager.NETWORK_PROVIDER, 0, 0, mLocationListener);
+		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+				0, 0, mLocationListener);
+		// mLocationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER,
+		// 0, 0, mLocationListener);
 	}
 
 	@Override
@@ -90,5 +96,4 @@ public class LocationService extends Service {
 		mLocationManager.removeUpdates(mLocationListener);
 	}
 
-
-	}
+}

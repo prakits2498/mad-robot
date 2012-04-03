@@ -19,7 +19,7 @@ import java.util.Map;
  * 
  * @since 1.3.1
  * @exclude
- * @hide 
+ * @hide
  */
 abstract class AbstractAttributeAliasingMapper extends MapperWrapper {
 
@@ -37,7 +37,8 @@ abstract class AbstractAttributeAliasingMapper extends MapperWrapper {
 
 	private Object readResolve() {
 		nameToAlias = new HashMap();
-		for (final Iterator iter = aliasToName.keySet().iterator(); iter.hasNext();) {
+		for (final Iterator iter = aliasToName.keySet().iterator(); iter
+				.hasNext();) {
 			final Object alias = iter.next();
 			nameToAlias.put(aliasToName.get(alias), alias);
 		}

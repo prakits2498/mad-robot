@@ -20,22 +20,28 @@ import com.madrobot.util.collections.WeakCache;
 /**
  * Encode and decode tag and attribute names in XML drivers.
  * <p>
- * This NameCoder is designed to ensure the correct encoding and decoding of names used for Java types and fields to XML
- * tags and attribute names.
+ * This NameCoder is designed to ensure the correct encoding and decoding of
+ * names used for Java types and fields to XML tags and attribute names.
  * </p>
  * <p>
  * The default replacements are:
  * </p>
  * <ul>
- * <li><b>$</b> (dollar) chars are replaced with <b>_-</b> (underscore dash) string.</li>
- * <li><b>_</b> (underscore) chars are replaced with <b>__</b> (double underscore) string.</li>
- * <li>other characters that are invalid in XML names are encoded with <b>_.XXXX</b> (underscore dot followed by hex
- * representation of character).</li>
+ * <li><b>$</b> (dollar) chars are replaced with <b>_-</b> (underscore dash)
+ * string.</li>
+ * <li><b>_</b> (underscore) chars are replaced with <b>__</b> (double
+ * underscore) string.</li>
+ * <li>other characters that are invalid in XML names are encoded with
+ * <b>_.XXXX</b> (underscore dot followed by hex representation of character).</li>
  * </ul>
  * 
- * @see <a href="http://www.w3.org/TR/REC-xml/#dt-name">XML 1.0 name definition</a>
- * @see <a href="http://www.w3.org/TR/xml11/#dt-name">XML 1.1 name definition</a>
- * @see <a href="http://java.sun.com/docs/books/jls/third_edition/html/lexical.html#3.8">Java identifier definition</a>
+ * @see <a href="http://www.w3.org/TR/REC-xml/#dt-name">XML 1.0 name
+ *      definition</a>
+ * @see <a href="http://www.w3.org/TR/xml11/#dt-name">XML 1.1 name
+ *      definition</a>
+ * @see <a
+ *      href="http://java.sun.com/docs/books/jls/third_edition/html/lexical.html#3.8">Java
+ *      identifier definition</a>
  * @since 1.4
  */
 public class XmlFriendlyNameCoder implements NameCoder, Cloneable {
@@ -48,6 +54,7 @@ public class XmlFriendlyNameCoder implements NameCoder, Cloneable {
 			this.max = max;
 		}
 	}
+
 	private static final IntPair[] XML_NAME_CHAR_EXTRA_BOUNDS;
 	private static final IntPair[] XML_NAME_START_CHAR_BOUNDS;
 
@@ -84,7 +91,8 @@ public class XmlFriendlyNameCoder implements NameCoder, Cloneable {
 		list.add(0xF900, 0xFDCF);
 		list.add(0xFDF0, 0xFFFD);
 		list.add(0x10000, 0xEFFFF);
-		XML_NAME_START_CHAR_BOUNDS = (IntPair[]) list.toArray(new IntPair[list.size()]);
+		XML_NAME_START_CHAR_BOUNDS = (IntPair[]) list.toArray(new IntPair[list
+				.size()]);
 
 		list.clear();
 		list.add('-');
@@ -93,8 +101,10 @@ public class XmlFriendlyNameCoder implements NameCoder, Cloneable {
 		list.add('\u00b7');
 		list.add(0x0300, 0x036F);
 		list.add(0x203F, 0x2040);
-		XML_NAME_CHAR_EXTRA_BOUNDS = (IntPair[]) list.toArray(new IntPair[list.size()]);
+		XML_NAME_CHAR_EXTRA_BOUNDS = (IntPair[]) list.toArray(new IntPair[list
+				.size()]);
 	}
+
 	private static boolean isInNameCharBounds(int cp, IntPair[] nameCharBounds) {
 		for (int i = 0; i < nameCharBounds.length; ++i) {
 			IntPair p = nameCharBounds[i];
@@ -104,15 +114,18 @@ public class XmlFriendlyNameCoder implements NameCoder, Cloneable {
 		}
 		return false;
 	}
+
 	private static boolean isXmlNameChar(int cp) {
 		if (isXmlNameStartChar(cp)) {
 			return true;
 		}
 		return isInNameCharBounds(cp, XML_NAME_CHAR_EXTRA_BOUNDS);
 	}
+
 	private static boolean isXmlNameStartChar(int cp) {
 		return isInNameCharBounds(cp, XML_NAME_START_CHAR_BOUNDS);
 	}
+
 	private final String dollarReplacement;
 
 	private transient Map escapeCache;
@@ -133,25 +146,29 @@ public class XmlFriendlyNameCoder implements NameCoder, Cloneable {
 	}
 
 	/**
-	 * Construct a new XmlFriendlyNameCoder with custom replacement strings for dollar and the escape character.
+	 * Construct a new XmlFriendlyNameCoder with custom replacement strings for
+	 * dollar and the escape character.
 	 * 
 	 * @param dollarReplacement
 	 * @param escapeCharReplacement
 	 * @since 1.4
 	 */
-	public XmlFriendlyNameCoder(String dollarReplacement, String escapeCharReplacement) {
+	public XmlFriendlyNameCoder(String dollarReplacement,
+			String escapeCharReplacement) {
 		this(dollarReplacement, escapeCharReplacement, "_.");
 	}
 
 	/**
-	 * Construct a new XmlFriendlyNameCoder with custom replacement strings for dollar, the escape character and the
-	 * prefix for hexadecimal encoding of invalid characters in XML names.
+	 * Construct a new XmlFriendlyNameCoder with custom replacement strings for
+	 * dollar, the escape character and the prefix for hexadecimal encoding of
+	 * invalid characters in XML names.
 	 * 
 	 * @param dollarReplacement
 	 * @param escapeCharReplacement
 	 * @since 1.4
 	 */
-	public XmlFriendlyNameCoder(String dollarReplacement, String escapeCharReplacement, String hexPrefix) {
+	public XmlFriendlyNameCoder(String dollarReplacement,
+			String escapeCharReplacement, String hexPrefix) {
 		this.dollarReplacement = dollarReplacement;
 		this.escapeCharReplacement = escapeCharReplacement;
 		this.hexPrefix = hexPrefix;
@@ -166,7 +183,8 @@ public class XmlFriendlyNameCoder implements NameCoder, Cloneable {
 			return coder;
 
 		} catch (CloneNotSupportedException e) {
-			throw new ObjectAccessException("Cannot clone XmlFriendlyNameCoder", e);
+			throw new ObjectAccessException(
+					"Cannot clone XmlFriendlyNameCoder", e);
 		}
 	}
 
@@ -182,7 +200,8 @@ public class XmlFriendlyNameCoder implements NameCoder, Cloneable {
 		String s = (String) unescapeCache.get(name);
 		if (s == null) {
 			final char dollarReplacementFirstChar = dollarReplacement.charAt(0);
-			final char escapeReplacementFirstChar = escapeCharReplacement.charAt(0);
+			final char escapeReplacementFirstChar = escapeCharReplacement
+					.charAt(0);
 			final char hexPrefixFirstChar = hexPrefix.charAt(0);
 			final int length = name.length();
 
@@ -192,8 +211,11 @@ public class XmlFriendlyNameCoder implements NameCoder, Cloneable {
 			for (; i < length; i++) {
 				char c = name.charAt(i);
 				// We'll do a quick check for potential match
-				if (c == dollarReplacementFirstChar || c == escapeReplacementFirstChar || c == hexPrefixFirstChar) {
-					// and if it might be a match, just quit, will check later on
+				if (c == dollarReplacementFirstChar
+						|| c == escapeReplacementFirstChar
+						|| c == hexPrefixFirstChar) {
+					// and if it might be a match, just quit, will check later
+					// on
 					break;
 				}
 			}
@@ -212,15 +234,18 @@ public class XmlFriendlyNameCoder implements NameCoder, Cloneable {
 
 			for (; i < length; i++) {
 				char c = name.charAt(i);
-				if (c == dollarReplacementFirstChar && name.startsWith(dollarReplacement, i)) {
+				if (c == dollarReplacementFirstChar
+						&& name.startsWith(dollarReplacement, i)) {
 					i += dollarReplacement.length() - 1;
 					result.append('$');
-				} else if (c == hexPrefixFirstChar && name.startsWith(hexPrefix, i)) {
+				} else if (c == hexPrefixFirstChar
+						&& name.startsWith(hexPrefix, i)) {
 					i += hexPrefix.length();
 					c = (char) Integer.parseInt(name.substring(i, i + 4), 16);
 					i += 3;
 					result.append(c);
-				} else if (c == escapeReplacementFirstChar && name.startsWith(escapeCharReplacement, i)) {
+				} else if (c == escapeReplacementFirstChar
+						&& name.startsWith(escapeCharReplacement, i)) {
 					i += escapeCharReplacement.length() - 1;
 					result.append('_');
 				} else {
@@ -283,7 +308,8 @@ public class XmlFriendlyNameCoder implements NameCoder, Cloneable {
 					result.append(dollarReplacement);
 				} else if (c == '_') {
 					result.append(escapeCharReplacement);
-				} else if ((i == 0 && !isXmlNameStartChar(c)) || (i > 0 && !isXmlNameChar(c))) {
+				} else if ((i == 0 && !isXmlNameStartChar(c))
+						|| (i > 0 && !isXmlNameChar(c))) {
 					result.append(hexPrefix);
 					if (c < 16)
 						result.append("000");

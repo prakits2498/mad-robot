@@ -15,7 +15,6 @@ import java.util.Date;
 
 import android.util.Log;
 
-
 final class LoggerStrategyHTMLFile extends LoggerStrategyLogFile {
 
 	LoggerStrategyHTMLFile(String directory, String fileName) {
@@ -26,21 +25,18 @@ final class LoggerStrategyHTMLFile extends LoggerStrategyLogFile {
 	private void initHTMLLogger() {
 		if (writer != null) {
 			try {
-				writer
-						.write("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n");
+				writer.write("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n");
 				writer.write("<html>\n");
 				writer.write("<head>");
 				writer.write("<title></title>");
 				writer.write("<script type=\"text/javascript\">");
 				writer.flush();
 				writer.write("function filter (phrase, _id){\n");
-				writer
-						.write("var words = phrase.value.toLowerCase().split(\" \");\n");
+				writer.write("var words = phrase.value.toLowerCase().split(\" \");\n");
 				writer.write("var table = document.getElementById(_id);\n");
 				writer.write("var ele;\n");
 				writer.write("for (var r = 1; r < table.rows.length; r++){\n");
-				writer
-						.write("ele = table.rows[r].innerHTML.replace(/<[^>]+>/g,\"\");\n");
+				writer.write("ele = table.rows[r].innerHTML.replace(/<[^>]+>/g,\"\");\n");
 				writer.write("var displayStyle = 'none';\n");
 				writer.write("for (var i = 0; i < words.length; i++) {\n");
 				writer.write("if (ele.toLowerCase().indexOf(words[i])>=0)\n");
@@ -55,12 +51,9 @@ final class LoggerStrategyHTMLFile extends LoggerStrategyLogFile {
 				writer.write("}\n");
 				writer.flush();
 				writer.write("</script>\n");
-				writer
-						.write("<form><b>Search:</b><input name=\"filt\"onkeyup=\"filter(this, 'sf')\" type=\"text\"></form>");
-				writer
-						.write("<table id=\"sf\" WIDTH=\"100%\" border=\"0\" cellspacing=\"5\" cellpadding=\"5\"");
-				writer
-						.write("<tr><th><b>Date</b></th><th><b>Level</b></th><th><b>Tag</b></th><th><b>Message</b></th></tr>");
+				writer.write("<form><b>Search:</b><input name=\"filt\"onkeyup=\"filter(this, 'sf')\" type=\"text\"></form>");
+				writer.write("<table id=\"sf\" WIDTH=\"100%\" border=\"0\" cellspacing=\"5\" cellpadding=\"5\"");
+				writer.write("<tr><th><b>Date</b></th><th><b>Level</b></th><th><b>Tag</b></th><th><b>Message</b></th></tr>");
 				writer.flush();
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -69,7 +62,7 @@ final class LoggerStrategyHTMLFile extends LoggerStrategyLogFile {
 	}
 
 	@Override
-	 void shutdown() {
+	void shutdown() {
 		if (writer != null) {
 			try {
 				writer.write("</table></body></html>");
@@ -81,7 +74,7 @@ final class LoggerStrategyHTMLFile extends LoggerStrategyLogFile {
 	}
 
 	@Override
-	 void write(int level, String tag, String message) {
+	void write(int level, String tag, String message) {
 
 		if (writer != null) {
 			String color = null;

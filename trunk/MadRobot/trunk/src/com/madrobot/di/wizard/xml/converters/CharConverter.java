@@ -14,7 +14,8 @@ import com.madrobot.di.wizard.xml.io.HierarchicalStreamReader;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
 
 /**
- * Converts a char primitive or java.lang.Character wrapper to a String. If char is \0 the representing String is empty.
+ * Converts a char primitive or java.lang.Character wrapper to a String. If char
+ * is \0 the representing String is empty.
  * 
  */
 public class CharConverter implements Converter, SingleValueConverter {
@@ -34,7 +35,8 @@ public class CharConverter implements Converter, SingleValueConverter {
 	}
 
 	@Override
-	public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
+	public void marshal(Object source, HierarchicalStreamWriter writer,
+			MarshallingContext context) {
 		writer.setValue(toString(source));
 	}
 
@@ -45,7 +47,8 @@ public class CharConverter implements Converter, SingleValueConverter {
 	}
 
 	@Override
-	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+	public Object unmarshal(HierarchicalStreamReader reader,
+			UnmarshallingContext context) {
 		String nullAttribute = reader.getAttribute("null");
 		if (nullAttribute != null && nullAttribute.equals("true")) {
 			return new Character('\0');

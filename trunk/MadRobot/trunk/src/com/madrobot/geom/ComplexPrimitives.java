@@ -12,40 +12,31 @@ package com.madrobot.geom;
 
 public class ComplexPrimitives {
 	/**
-	 * Create the geometry of an arrow. The arrow is positioned at the
-	 * end (last point) of the specified polyline, as follows:
+	 * Create the geometry of an arrow. The arrow is positioned at the end (last
+	 * point) of the specified polyline, as follows:
 	 * 
-	 * 0,4--,
-	 * \ --,
-	 * \ --,
-	 * \ --,
-	 * \ --,
-	 * -------------------------3-----------1
-	 * / --'
-	 * / --'
-	 * / --'
-	 * / --'
-	 * 2--'
+	 * 0,4--, \ --, \ --, \ --, \ --, -------------------------3-----------1 /
+	 * --' / --' / --' / --' 2--'
 	 * 
 	 * @param x
-	 *            X coordinates of polyline of where arrow is positioned
-	 *            in the end. Must contain at least two points.
+	 *            X coordinates of polyline of where arrow is positioned in the
+	 *            end. Must contain at least two points.
 	 * @param y
-	 *            Y coordinates of polyline of where arrow is positioned
-	 *            in the end.
+	 *            Y coordinates of polyline of where arrow is positioned in the
+	 *            end.
 	 * @param length
-	 *            Length along the main axis from point 1 to the
-	 *            projection of point 0.
+	 *            Length along the main axis from point 1 to the projection of
+	 *            point 0.
 	 * @param angle
-	 *            Angle between the main axis and the line 1,0
-	 *            (and 1,2) in radians.
+	 *            Angle between the main axis and the line 1,0 (and 1,2) in
+	 *            radians.
 	 * @param inset
-	 *            Specification of point 3 [0.0-1.0], 1.0 will put
-	 *            point 3 at distance length from 1, 0.0 will put it
-	 *            at point 1.
+	 *            Specification of point 3 [0.0-1.0], 1.0 will put point 3 at
+	 *            distance length from 1, 0.0 will put it at point 1.
 	 * @return Array of the five coordinates [x,y,...].
 	 */
-	public static int[] createArrow(int[] x, int[] y, double length, double angle, double inset) {
+	public static int[] createArrow(int[] x, int[] y, double length,
+			double angle, double inset) {
 		int[] arrow = new int[10];
 
 		int x0 = x[x.length - 1];
@@ -65,8 +56,10 @@ public class ComplexPrimitives {
 		// Polyline angle
 		double v = dx == 0.0 ? Math.PI / 2.0 : Math.atan(Math.abs(dy / dx));
 
-		v = (dx > 0.0) && (dy <= 0.0) ? Math.PI + v : (dx > 0.0) && (dy >= 0.0) ? Math.PI - v : (dx <= 0.0)
-				&& (dy < 0.0) ? -v : (dx <= 0.0) && (dy > 0.0) ? +v : 0.0;
+		v = (dx > 0.0) && (dy <= 0.0) ? Math.PI + v
+				: (dx > 0.0) && (dy >= 0.0) ? Math.PI - v : (dx <= 0.0)
+						&& (dy < 0.0) ? -v : (dx <= 0.0) && (dy > 0.0) ? +v
+						: 0.0;
 
 		double v0 = v + angle;
 		double v1 = v - angle;
@@ -108,7 +101,8 @@ public class ComplexPrimitives {
 	 *            Second angle of sector (in radians).
 	 * @return Geometry of secor [x,y,...]
 	 */
-	public static int[] createSector(int x0, int y0, int dx, int dy, double angle0, double angle1) {
+	public static int[] createSector(int x0, int y0, int dx, int dy,
+			double angle0, double angle1) {
 		// Determine a sensible number of points for arc
 		double angleSpan = Math.abs(angle1 - angle0);
 		double arcDistance = Math.max(dx, dy) * angleSpan;
@@ -118,7 +112,7 @@ public class ComplexPrimitives {
 		int[] xy = new int[nPoints * 2 + 4];
 
 		int index = 0;
-		for(int i = 0; i < nPoints; i++){
+		for (int i = 0; i < nPoints; i++) {
 			double angle = angle0 + angleStep * i;
 			double x = dx * Math.cos(angle);
 			double y = dy * Math.sin(angle);
@@ -154,14 +148,15 @@ public class ComplexPrimitives {
 	 *            Number of arms.
 	 * @return Geometry of star [x,y,x,y,...].
 	 */
-	public static int[] createStar(int x0, int y0, int innerRadius, int outerRadius, int nArms) {
+	public static int[] createStar(int x0, int y0, int innerRadius,
+			int outerRadius, int nArms) {
 		int nPoints = nArms * 2 + 1;
 
 		int[] xy = new int[nPoints * 2];
 
 		double angleStep = 2.0 * Math.PI / nArms / 2.0;
 
-		for(int i = 0; i < nArms * 2; i++){
+		for (int i = 0; i < nArms * 2; i++) {
 			double angle = i * angleStep;
 			double radius = (i % 2) == 0 ? innerRadius : outerRadius;
 

@@ -2,8 +2,9 @@ package com.madrobot.io;
 
 /**
  * Tracks the progress of an I/O operation
+ * 
  * @author elton.stephen.kent
- *
+ * 
  */
 public interface IOProgressCallback {
 	/**
@@ -13,13 +14,16 @@ public interface IOProgressCallback {
 
 	/**
 	 * Called when an I/O error has occurred.
+	 * 
 	 * @param t
 	 */
 	public void onError(Throwable t);
 
 	/**
-	 * Called during the  I/O operation.
-	 * @param bytesWritten number of bytes read/written
+	 * Called during the I/O operation.
+	 * 
+	 * @param bytesWritten
+	 *            number of bytes read/written
 	 */
 	public void onProgress(int bytes);
 }

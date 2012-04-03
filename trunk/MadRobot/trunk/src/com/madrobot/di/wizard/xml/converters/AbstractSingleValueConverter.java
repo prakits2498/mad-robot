@@ -11,10 +11,12 @@
 package com.madrobot.di.wizard.xml.converters;
 
 /**
- * Base abstract implementation of {@link com.madrobot.di.wizard.xml.converters.SingleValueConverter}.
+ * Base abstract implementation of
+ * {@link com.madrobot.di.wizard.xml.converters.SingleValueConverter}.
  * <p/>
  * <p>
- * Subclasses should implement methods canConvert(Class) and fromString(String) for the conversion.
+ * Subclasses should implement methods canConvert(Class) and fromString(String)
+ * for the conversion.
  * </p>
  * 
  * @author Joe Walnes
@@ -22,7 +24,8 @@ package com.madrobot.di.wizard.xml.converters;
  * @author Mauro Talevi
  * @see com.madrobot.di.wizard.xml.converters.SingleValueConverter
  */
-public abstract class AbstractSingleValueConverter implements SingleValueConverter {
+public abstract class AbstractSingleValueConverter implements
+		SingleValueConverter {
 
 	@Override
 	public abstract boolean canConvert(Class type);

@@ -66,10 +66,10 @@ public class UTMCoordinate {
 	 */
 	@Override
 	public boolean equals(Object o) {
-		if(this == o){
+		if (this == o) {
 			return true;
 		}
-		if(o instanceof UTMCoordinate){
+		if (o instanceof UTMCoordinate) {
 			UTMCoordinate that = (UTMCoordinate) o;
 			return (this.x == that.x) && (this.y == that.y);
 		}

@@ -47,6 +47,7 @@ public class ObjectIdDictionary {
 			return obj.toString();
 		}
 	}
+
 	private class WeakIdWrapper extends WeakReference implements Wrapper {
 
 		private final int hashCode;

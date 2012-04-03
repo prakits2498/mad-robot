@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 /**
  * XML-RPC method call
- *
+ * 
  * @author Elton Kent
  */
 public class MethodCall {
@@ -22,14 +22,24 @@ public class MethodCall {
 	private static final int TOPIC = 1;
 	String methodName;
 	ArrayList<Object> params = new ArrayList<Object>();
-	
-	public String getMethodName() { return methodName; }
-	public ArrayList<Object> getParams() { return params; }
+
+	public String getMethodName() {
+		return methodName;
+	}
+
+	public ArrayList<Object> getParams() {
+		return params;
+	}
 
 	public String getTopic() {
-		return (String)params.get(TOPIC);
+		return (String) params.get(TOPIC);
 	}
-	void setMethodName(String methodName) { this.methodName = methodName; }
 
-	void setParams(ArrayList<Object> params) { this.params = params; }
+	void setMethodName(String methodName) {
+		this.methodName = methodName;
+	}
+
+	void setParams(ArrayList<Object> params) {
+		this.params = params;
+	}
 }

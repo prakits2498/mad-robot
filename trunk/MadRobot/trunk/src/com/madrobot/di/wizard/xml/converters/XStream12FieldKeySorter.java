@@ -16,8 +16,8 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * Sort the fields in the order of XStream 1.2.x. Fields are returned in their declaration order, fields of base classes
- * last.
+ * Sort the fields in the order of XStream 1.2.x. Fields are returned in their
+ * declaration order, fields of base classes last.
  * 
  * @since 1.3
  */

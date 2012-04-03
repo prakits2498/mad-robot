@@ -14,11 +14,12 @@ package com.madrobot.di.wizard.xml.io;
 /**
  * @since 1.4.2
  */
-public interface ExtendedHierarchicalStreamReader extends HierarchicalStreamReader {
+public interface ExtendedHierarchicalStreamReader extends
+		HierarchicalStreamReader {
 
 	/**
-	 * Peek the name of the next child. In situation where {@link #hasMoreChildren()} returns true, peek the tag name of
-	 * the child.
+	 * Peek the name of the next child. In situation where
+	 * {@link #hasMoreChildren()} returns true, peek the tag name of the child.
 	 * 
 	 * @since 1.4.2
 	 */

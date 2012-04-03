@@ -10,81 +10,80 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.client.methods.HttpUriRequest;
 
-
 public class HttpRequestAdapter implements HttpRequest {
 
-    private HttpEntity entity;
+	private HttpEntity entity;
 
-    private HttpUriRequest request;
+	private HttpUriRequest request;
 
-    public HttpRequestAdapter(HttpUriRequest request) {
-        this.request = request;
-        if (request instanceof HttpEntityEnclosingRequest) {
-            entity = ((HttpEntityEnclosingRequest) request).getEntity();
-        }
-    }
+	public HttpRequestAdapter(HttpUriRequest request) {
+		this.request = request;
+		if (request instanceof HttpEntityEnclosingRequest) {
+			entity = ((HttpEntityEnclosingRequest) request).getEntity();
+		}
+	}
 
-    @Override
+	@Override
 	public Map<String, String> getAllHeaders() {
-        Header[] origHeaders = request.getAllHeaders();
-        HashMap<String, String> headers = new HashMap<String, String>();
-        for (Header h : origHeaders) {
-            headers.put(h.getName(), h.getValue());
-        }
-        return headers;
-    }
+		Header[] origHeaders = request.getAllHeaders();
+		HashMap<String, String> headers = new HashMap<String, String>();
+		for (Header h : origHeaders) {
+			headers.put(h.getName(), h.getValue());
+		}
+		return headers;
+	}
 
-    @Override
+	@Override
 	public String getContentType() {
-        if (entity == null) {
-            return null;
-        }
-        Header header = entity.getContentType();
-        if (header == null) {
-            return null;
-        }
-        return header.getValue();
-    }
+		if (entity == null) {
+			return null;
+		}
+		Header header = entity.getContentType();
+		if (header == null) {
+			return null;
+		}
+		return header.getValue();
+	}
 
-    @Override
+	@Override
 	public String getHeader(String name) {
-        Header header = request.getFirstHeader(name);
-        if (header == null) {
-            return null;
-        }
-        return header.getValue();
-    }
+		Header header = request.getFirstHeader(name);
+		if (header == null) {
+			return null;
+		}
+		return header.getValue();
+	}
 
-    @Override
+	@Override
 	public InputStream getMessagePayload() throws IOException {
-        if (entity == null) {
-            return null;
-        }
-        return entity.getContent();
-    }
+		if (entity == null) {
+			return null;
+		}
+		return entity.getContent();
+	}
 
-    @Override
+	@Override
 	public String getMethod() {
-        return request.getRequestLine().getMethod();
-    }
+		return request.getRequestLine().getMethod();
+	}
 
-    @Override
+	@Override
 	public String getRequestUrl() {
-        return request.getURI().toString();
-    }
+		return request.getURI().toString();
+	}
 
-    @Override
+	@Override
 	public void setHeader(String name, String value) {
-        request.setHeader(name, value);
-    }
+		request.setHeader(name, value);
+	}
 
-    @Override
+	@Override
 	public void setRequestUrl(String url) {
-        throw new RuntimeException(new UnsupportedOperationException());
-    }
+		throw new RuntimeException(new UnsupportedOperationException());
+	}
 
-    @Override
+	@Override
 	public Object unwrap() {
-        return request;
-    }
+		return request;
+	}
 }

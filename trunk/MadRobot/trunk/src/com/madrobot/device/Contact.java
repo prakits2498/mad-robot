@@ -11,8 +11,8 @@
 package com.madrobot.device;
 
 /**
- * Contact information 
- *
+ * Contact information
+ * 
  */
 public class Contact {
 	private String _id;
@@ -22,56 +22,71 @@ public class Contact {
 	private String last_time_contacted;
 	private String lookup;
 	private int times_contacted;
-	
+
 	public String getCustomRingtone() {
 		return custom_ringtone;
 	}
+
 	public String getDisplayName() {
 		return display_name;
 	}
+
 	public String getID() {
 		return _id;
 	}
+
 	public String getLastTimeContacted() {
 		return last_time_contacted;
 	}
+
 	public String getLookup() {
 		return lookup;
 	}
+
 	public int getTimesContacted() {
 		return times_contacted;
 	}
+
 	public int hasPhoneNumber() {
 		return has_phone_number;
 	}
+
 	public void setCustomRingtone(String customRingtone) {
 		custom_ringtone = customRingtone;
 	}
+
 	public void setDisplayName(String displayName) {
 		display_name = displayName;
 	}
+
 	public void setHasPhoneNumber(int hasPhoneNumber) {
 		has_phone_number = hasPhoneNumber;
 	}
+
 	public void setID(String id) {
 		_id = id;
 	}
+
 	public void setLastTimeContacted(String lastTimeContacted) {
 		last_time_contacted = lastTimeContacted;
-		
+
 	}
+
 	public void setLookup(String lookup) {
 		this.lookup = lookup;
 	}
+
 	public void setTimesContacted(int timesContacted) {
 		times_contacted = timesContacted;
 	}
+
 	@Override
 	public String toString() {
-		return "Contact [_id=" + _id + ", custom_ringtone=" + custom_ringtone + ", display_name="
-				+ display_name + ", has_phone_number=" + has_phone_number + ", last_time_contacted="
-				+ last_time_contacted + ", lookup=" + lookup + ", times_contacted=" + times_contacted + "]";
+		return "Contact [_id=" + _id + ", custom_ringtone=" + custom_ringtone
+				+ ", display_name=" + display_name + ", has_phone_number="
+				+ has_phone_number + ", last_time_contacted="
+				+ last_time_contacted + ", lookup=" + lookup
+				+ ", times_contacted=" + times_contacted + "]";
 	}
-	
-	
+
 }

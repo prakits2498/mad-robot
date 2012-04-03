@@ -16,13 +16,12 @@ import java.net.InetAddress;
 
 /***
  * The DiscardUDPClient class is a UDP implementation of a client for the
- * Discard protocol described in RFC 863. To use the class,
- * just open a local UDP port
- * with {@link com.madrobot.net.client.DatagramSocketClient#open open } and
- * call {@link #send send } to send datagrams to the server
- * After you're done sending discard data, call
- * {@link com.madrobot.net.client.DatagramSocketClient#close close() } to
- * clean up properly.
+ * Discard protocol described in RFC 863. To use the class, just open a local
+ * UDP port with {@link com.madrobot.net.client.DatagramSocketClient#open open }
+ * and call {@link #send send } to send datagrams to the server After you're
+ * done sending discard data, call
+ * {@link com.madrobot.net.client.DatagramSocketClient#close close() } to clean
+ * up properly.
  * <p>
  * <p>
  * 
@@ -52,7 +51,8 @@ public class DiscardUDPClient extends DatagramSocketClient {
 	 * Same as
 	 * <code>send(data, length, host. DiscardUDPClient.DEFAULT_PORT)</code>.
 	 ***/
-	public void send(byte[] data, int length, InetAddress host) throws IOException {
+	public void send(byte[] data, int length, InetAddress host)
+			throws IOException {
 		send(data, length, host, DEFAULT_PORT);
 	}
 
@@ -63,17 +63,17 @@ public class DiscardUDPClient extends DatagramSocketClient {
 	 * @param data
 	 *            The discard data to send.
 	 * @param length
-	 *            The length of the data to send. Should be less than
-	 *            or equal to the length of the data byte array.
+	 *            The length of the data to send. Should be less than or equal
+	 *            to the length of the data byte array.
 	 * @param host
 	 *            The address of the server.
 	 * @param port
 	 *            The service port.
 	 * @exception IOException
-	 *                If an error occurs during the datagram send
-	 *                operation.
+	 *                If an error occurs during the datagram send operation.
 	 ***/
-	public void send(byte[] data, int length, InetAddress host, int port) throws IOException {
+	public void send(byte[] data, int length, InetAddress host, int port)
+			throws IOException {
 		_sendPacket.setData(data);
 		_sendPacket.setLength(length);
 		_sendPacket.setAddress(host);

@@ -15,12 +15,11 @@ import java.io.PushbackReader;
 import java.io.Reader;
 
 /**
- * DotTerminatedMessageReader is a class used to read messages from a
- * server that are terminated by a single dot followed by a
- * &lt;CR&gt;&lt;LF&gt;
- * sequence and with double dots appearing at the begining of lines which
- * do not signal end of message yet start with a dot. Various Internet
- * protocols such as NNTP and POP3 produce messages of this type.
+ * DotTerminatedMessageReader is a class used to read messages from a server
+ * that are terminated by a single dot followed by a &lt;CR&gt;&lt;LF&gt;
+ * sequence and with double dots appearing at the begining of lines which do not
+ * signal end of message yet start with a dot. Various Internet protocols such
+ * as NNTP and POP3 produce messages of this type.
  * <p>
  * This class handles stripping of the duplicate period at the beginning of
  * lines starting with a period, converts NETASCII newlines to the local line
@@ -41,8 +40,8 @@ public final class DotTerminatedMessageReader extends Reader {
 	private int pos;
 
 	/**
-	 * Creates a DotTerminatedMessageReader that wraps an existing Reader
-	 * input source.
+	 * Creates a DotTerminatedMessageReader that wraps an existing Reader input
+	 * source.
 	 * 
 	 * @param reader
 	 *            The Reader input source containing the message.
@@ -70,18 +69,17 @@ public final class DotTerminatedMessageReader extends Reader {
 	 * otherwise your program will likely hang or behave improperly.
 	 * 
 	 * @exception IOException
-	 *                If an error occurs while reading the
-	 *                underlying stream.
+	 *                If an error occurs while reading the underlying stream.
 	 */
 	@Override
 	public void close() throws IOException {
-		synchronized(lock){
-			if(internalReader == null){
+		synchronized (lock) {
+			if (internalReader == null) {
 				return;
 			}
 
-			if(!eof){
-				while(read() != -1){
+			if (!eof) {
+				while (read() != -1) {
 					// read to EOF
 				}
 			}
@@ -94,78 +92,77 @@ public final class DotTerminatedMessageReader extends Reader {
 
 	/**
 	 * Reads and returns the next character in the message. If the end of the
-	 * message has been reached, returns -1. Note that a call to this method
-	 * may result in multiple reads from the underlying input stream to decode
-	 * the message properly (removing doubled dots and so on). All of
-	 * this is transparent to the programmer and is only mentioned for
-	 * completeness.
+	 * message has been reached, returns -1. Note that a call to this method may
+	 * result in multiple reads from the underlying input stream to decode the
+	 * message properly (removing doubled dots and so on). All of this is
+	 * transparent to the programmer and is only mentioned for completeness.
 	 * 
 	 * @return The next character in the message. Returns -1 if the end of the
 	 *         message has been reached.
 	 * @exception IOException
-	 *                If an error occurs while reading the underlying
-	 *                stream.
+	 *                If an error occurs while reading the underlying stream.
 	 */
 	@Override
 	public int read() throws IOException {
 		int ch;
 
-		synchronized(lock){
-			if(pos < internalBuffer.length){
+		synchronized (lock) {
+			if (pos < internalBuffer.length) {
 				return internalBuffer[pos++];
 			}
 
-			if(eof){
+			if (eof) {
 				return -1;
 			}
 
-			if((ch = internalReader.read()) == -1){
+			if ((ch = internalReader.read()) == -1) {
 				eof = true;
 				return -1;
 			}
 
-			if(atBeginning){
+			if (atBeginning) {
 				atBeginning = false;
-				if(ch == '.'){
+				if (ch == '.') {
 					ch = internalReader.read();
 
-					if(ch != '.'){
+					if (ch != '.') {
 						// read newline
 						eof = true;
 						internalReader.read();
 						return -1;
-					} else{
+					} else {
 						return '.';
 					}
 				}
 			}
 
-			if(ch == '\r'){
+			if (ch == '\r') {
 				ch = internalReader.read();
 
-				if(ch == '\n'){
+				if (ch == '\n') {
 					ch = internalReader.read();
 
-					if(ch == '.'){
+					if (ch == '.') {
 						ch = internalReader.read();
 
-						if(ch != '.'){
+						if (ch != '.') {
 							// read newline and indicate end of file
 							internalReader.read();
 							eof = true;
-						} else{
+						} else {
 							internalBuffer[--pos] = (char) ch;
 						}
-					} else{
+					} else {
 						internalReader.unread(ch);
 					}
 
 					pos -= LS_CHARS.length;
-					System.arraycopy(LS_CHARS, 0, internalBuffer, pos, LS_CHARS.length);
+					System.arraycopy(LS_CHARS, 0, internalBuffer, pos,
+							LS_CHARS.length);
 					ch = internalBuffer[pos++];
-				} else if(ch == '\r'){
+				} else if (ch == '\r') {
 					internalReader.unread(ch);
-				} else{
+				} else {
 					internalBuffer[--pos] = (char) ch;
 					return '\r';
 				}
@@ -176,17 +173,16 @@ public final class DotTerminatedMessageReader extends Reader {
 	}
 
 	/**
-	 * Reads the next characters from the message into an array and
-	 * returns the number of characters read. Returns -1 if the end of the
-	 * message has been reached.
+	 * Reads the next characters from the message into an array and returns the
+	 * number of characters read. Returns -1 if the end of the message has been
+	 * reached.
 	 * 
 	 * @param buffer
 	 *            The character array in which to store the characters.
-	 * @return The number of characters read. Returns -1 if the
-	 *         end of the message has been reached.
+	 * @return The number of characters read. Returns -1 if the end of the
+	 *         message has been reached.
 	 * @exception IOException
-	 *                If an error occurs in reading the underlying
-	 *                stream.
+	 *                If an error occurs in reading the underlying stream.
 	 */
 	@Override
 	public int read(char[] buffer) throws IOException {
@@ -194,10 +190,10 @@ public final class DotTerminatedMessageReader extends Reader {
 	}
 
 	/**
-	 * Reads the next characters from the message into an array and
-	 * returns the number of characters read. Returns -1 if the end of the
-	 * message has been reached. The characters are stored in the array
-	 * starting from the given offset and up to the length specified.
+	 * Reads the next characters from the message into an array and returns the
+	 * number of characters read. Returns -1 if the end of the message has been
+	 * reached. The characters are stored in the array starting from the given
+	 * offset and up to the length specified.
 	 * 
 	 * @param buffer
 	 *            The character array in which to store the characters.
@@ -206,27 +202,26 @@ public final class DotTerminatedMessageReader extends Reader {
 	 *            characters.
 	 * @param length
 	 *            The number of characters to read.
-	 * @return The number of characters read. Returns -1 if the
-	 *         end of the message has been reached.
+	 * @return The number of characters read. Returns -1 if the end of the
+	 *         message has been reached.
 	 * @exception IOException
-	 *                If an error occurs in reading the underlying
-	 *                stream.
+	 *                If an error occurs in reading the underlying stream.
 	 */
 	@Override
 	public int read(char[] buffer, int offset, int length) throws IOException {
 		int ch, off;
-		synchronized(lock){
-			if(length < 1){
+		synchronized (lock) {
+			if (length < 1) {
 				return 0;
 			}
-			if((ch = read()) == -1){
+			if ((ch = read()) == -1) {
 				return -1;
 			}
 			off = offset;
 
-			do{
+			do {
 				buffer[offset++] = (char) ch;
-			} while((--length > 0) && ((ch = read()) != -1));
+			} while ((--length > 0) && ((ch = read()) != -1));
 
 			return (offset - off);
 		}
@@ -237,12 +232,11 @@ public final class DotTerminatedMessageReader extends Reader {
 	 * 
 	 * @return True if the message is ready to be read, false if not.
 	 * @exception IOException
-	 *                If an error occurs while checking the underlying
-	 *                stream.
+	 *                If an error occurs while checking the underlying stream.
 	 */
 	@Override
 	public boolean ready() throws IOException {
-		synchronized(lock){
+		synchronized (lock) {
 			return ((pos < internalBuffer.length) || internalReader.ready());
 		}
 	}

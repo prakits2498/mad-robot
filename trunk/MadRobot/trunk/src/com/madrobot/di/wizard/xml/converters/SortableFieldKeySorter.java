@@ -21,8 +21,8 @@ import com.madrobot.di.wizard.xml.io.StreamException;
 import com.madrobot.util.collections.OrderRetainingMap;
 
 /**
- * The default implementation for sorting fields. Invoke registerFieldOrder in order to set the field order for an
- * specific type.
+ * The default implementation for sorting fields. Invoke registerFieldOrder in
+ * order to set the field order for an specific type.
  * 
  * @since 1.2.2
  */
@@ -54,7 +54,8 @@ public class SortableFieldKeySorter implements FieldKeySorter, Caching {
 			}
 			if (firstPosition == -1 || secondPosition == -1) {
 				// field not defined!!!
-				throw new StreamException("You have not given XStream a list of all fields to be serialized.");
+				throw new StreamException(
+						"You have not given XStream a list of all fields to be serialized.");
 			}
 			return firstPosition - secondPosition;
 		}
@@ -69,8 +70,9 @@ public class SortableFieldKeySorter implements FieldKeySorter, Caching {
 	}
 
 	/**
-	 * Registers the field order to use for a specific type. This will not affect any of the type's super or sub
-	 * classes. If you skip a field which will be serialized, XStream will thrown an StreamException during the
+	 * Registers the field order to use for a specific type. This will not
+	 * affect any of the type's super or sub classes. If you skip a field which
+	 * will be serialized, XStream will thrown an StreamException during the
 	 * serialization process.
 	 * 
 	 * @param type
@@ -86,7 +88,8 @@ public class SortableFieldKeySorter implements FieldKeySorter, Caching {
 	public Map sort(Class type, Map keyedByFieldKey) {
 		if (map.containsKey(type)) {
 			Map result = new OrderRetainingMap();
-			FieldKey[] fieldKeys = (FieldKey[]) keyedByFieldKey.keySet().toArray(new FieldKey[keyedByFieldKey.size()]);
+			FieldKey[] fieldKeys = (FieldKey[]) keyedByFieldKey.keySet()
+					.toArray(new FieldKey[keyedByFieldKey.size()]);
 			Arrays.sort(fieldKeys, (Comparator) map.get(type));
 			for (int i = 0; i < fieldKeys.length; i++) {
 				result.put(fieldKeys[i], keyedByFieldKey.get(fieldKeys[i]));

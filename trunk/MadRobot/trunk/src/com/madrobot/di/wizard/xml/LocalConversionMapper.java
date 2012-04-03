@@ -40,24 +40,34 @@ class LocalConversionMapper extends MapperWrapper {
 	}
 
 	@Override
-	public SingleValueConverter getConverterFromAttribute(Class definedIn, String attribute, Class type) {
-		SingleValueConverter converter = getLocalSingleValueConverter(definedIn, attribute, type);
-		return converter == null ? super.getConverterFromAttribute(definedIn, attribute, type) : converter;
+	public SingleValueConverter getConverterFromAttribute(Class definedIn,
+			String attribute, Class type) {
+		SingleValueConverter converter = getLocalSingleValueConverter(
+				definedIn, attribute, type);
+		return converter == null ? super.getConverterFromAttribute(definedIn,
+				attribute, type) : converter;
 	}
 
 	@Override
-	public SingleValueConverter getConverterFromItemType(String fieldName, Class type, Class definedIn) {
-		SingleValueConverter converter = getLocalSingleValueConverter(definedIn, fieldName, type);
-		return converter == null ? super.getConverterFromItemType(fieldName, type, definedIn) : converter;
+	public SingleValueConverter getConverterFromItemType(String fieldName,
+			Class type, Class definedIn) {
+		SingleValueConverter converter = getLocalSingleValueConverter(
+				definedIn, fieldName, type);
+		return converter == null ? super.getConverterFromItemType(fieldName,
+				type, definedIn) : converter;
 	}
 
 	@Override
 	public Converter getLocalConverter(Class definedIn, String fieldName) {
-		return (Converter) localConverters.get(new FastField(definedIn, fieldName));
+		return (Converter) localConverters.get(new FastField(definedIn,
+				fieldName));
 	}
 
-	private SingleValueConverter getLocalSingleValueConverter(Class definedIn, String fieldName, Class type) {
-		if (attributeMapper != null && attributeMapper.shouldLookForSingleValueConverter(fieldName, type, definedIn)) {
+	private SingleValueConverter getLocalSingleValueConverter(Class definedIn,
+			String fieldName, Class type) {
+		if (attributeMapper != null
+				&& attributeMapper.shouldLookForSingleValueConverter(fieldName,
+						type, definedIn)) {
 			Converter converter = getLocalConverter(definedIn, fieldName);
 			if (converter != null && converter instanceof SingleValueConverter) {
 				return (SingleValueConverter) converter;
@@ -71,7 +81,8 @@ class LocalConversionMapper extends MapperWrapper {
 		return this;
 	}
 
-	public void registerLocalConverter(Class definedIn, String fieldName, Converter converter) {
+	public void registerLocalConverter(Class definedIn, String fieldName,
+			Converter converter) {
 		localConverters.put(new FastField(definedIn, fieldName), converter);
 	}
 }

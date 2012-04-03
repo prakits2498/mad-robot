@@ -17,10 +17,12 @@ import com.madrobot.ui.widgets.EditTexts.DigitsLengthFilter.MaxDigitsGetter;
 
 /**
  * An EditText that formats text like credit card numbers
+ * 
  * @author elton.stephen.kent
- *
+ * 
  */
-public class CreditCardEditText extends com.madrobot.ui.widgets.EditTexts.FormattedEditText<String> {
+public class CreditCardEditText extends
+		com.madrobot.ui.widgets.EditTexts.FormattedEditText<String> {
 	public static final String AMEX_CREDIT = "AMEX_CREDIT";
 	public static final String AMEX_DEBIT = "AMEX_DEBIT";
 
@@ -34,10 +36,10 @@ public class CreditCardEditText extends com.madrobot.ui.widgets.EditTexts.Format
 	private static final int LENGTH_AMEX = 15;
 	public static final String MASTERCARD_CREDIT = "MASTERCARD_CREDIT";
 	public static final String MASTERCARD_DEBIT = "MASTERCARD_DEBIT";
-	
+
 	public static final String REVOLUTIONCARD = "REVOLUTIONCARD";
 	public static final String VISA_CREDIT = "VISA_CREDIT";
-	
+
 	public static final String VISA_DEBIT = "VISA_DEBIT";
 	static {
 		cardTypes.put(4, VISA_CREDIT);
@@ -75,9 +77,9 @@ public class CreditCardEditText extends com.madrobot.ui.widgets.EditTexts.Format
 				return source;
 			}
 		} });
-//		setHint("Card Number");
+		// setHint("Card Number");
 		// setHint("xxxx xxxx xxxx xxxx");
-//		setTag("Card Number");
+		// setTag("Card Number");
 		super.doCustomize(context);
 		addTextChangedListener(new FormattedTextWatcher() {
 			@Override
@@ -139,8 +141,7 @@ public class CreditCardEditText extends com.madrobot.ui.widgets.EditTexts.Format
 		String regex = "(\\d{0,4})(\\d{0,4})(\\d{0,4})(\\d{0,4})";
 		String replace = "$1 $2 $3 $4";
 		if (getCardType() != null
-				&& getCardType()
-						.equalsIgnoreCase(AMEX_CREDIT)) {
+				&& getCardType().equalsIgnoreCase(AMEX_CREDIT)) {
 			regex = "(\\d{0,4})(\\d{0,6})(\\d{0,5})";
 			replace = "$1 $2 $3";
 		}
@@ -153,10 +154,8 @@ public class CreditCardEditText extends com.madrobot.ui.widgets.EditTexts.Format
 	}
 
 	protected int getMaxLength(boolean padded, boolean isCredit) {
-		if (isCredit
-				&& getCardType() != null
-				&& getCardType()
-						.equalsIgnoreCase(AMEX_CREDIT))
+		if (isCredit && getCardType() != null
+				&& getCardType().equalsIgnoreCase(AMEX_CREDIT))
 			return LENGTH_AMEX + (padded ? 2 : 0);
 		else
 			return LENGTH + (padded ? 3 : 0);
@@ -180,8 +179,10 @@ public class CreditCardEditText extends com.madrobot.ui.widgets.EditTexts.Format
 	}
 
 	public boolean validate(boolean isCredit) {
-		return getValue().length() == getMaxLength(false, isCredit) && getValue().matches("\\d{13,16}");//check if the card number is all numeric
-		}
+		return getValue().length() == getMaxLength(false, isCredit)
+				&& getValue().matches("\\d{13,16}");// check if the card number
+													// is all numeric
+	}
 
 	public boolean validateCardType(boolean isCredit) {
 		String cardType = getCardType();
@@ -189,8 +190,7 @@ public class CreditCardEditText extends com.madrobot.ui.widgets.EditTexts.Format
 			return false;
 		if (!isCredit)
 			return cardType.equalsIgnoreCase(VISA_CREDIT)
-					|| cardType
-							.equalsIgnoreCase(MASTERCARD_CREDIT);
+					|| cardType.equalsIgnoreCase(MASTERCARD_CREDIT);
 		return true;
 	}
 }

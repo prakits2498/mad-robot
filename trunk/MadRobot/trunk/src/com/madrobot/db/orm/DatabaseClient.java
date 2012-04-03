@@ -26,6 +26,7 @@ import com.madrobot.text.WordUtils;
 
 /**
  * Base class for tables entities
+ * 
  * @see Database
  * 
  */
@@ -44,6 +45,7 @@ public class DatabaseClient {
 	public static DatabaseClient createInstance(Database db) {
 		return new DatabaseClient(db);
 	}
+
 	/**
 	 * Creates and opens new ActiveRecord object instance and underlying
 	 * database. Returned ActiveRecord object is fully ready for use.
@@ -53,8 +55,8 @@ public class DatabaseClient {
 	 * @return
 	 * @throws DBException
 	 */
-	static public DatabaseClient open(Context ctx, String dbName,
-			int dbVersion) throws DBException {
+	static public DatabaseClient open(Context ctx, String dbName, int dbVersion)
+			throws DBException {
 		Database db = Database.createInstance(ctx, dbName, dbVersion);
 		db.open();
 		return DatabaseClient.createInstance(db);
@@ -141,8 +143,7 @@ public class DatabaseClient {
 	 * @throws InstantiationException
 	 */
 	public <T extends DatabaseClient> int delete(Class<T> type,
-			String whereClause, String[] whereArgs)
-			throws DBException {
+			String whereClause, String[] whereArgs) throws DBException {
 		if (m_Database == null)
 			throw new DBException("Set database first");
 		T entity;
@@ -243,9 +244,11 @@ public class DatabaseClient {
 	 * whereClause to specify condition, using reqular SQL syntax for WHERE
 	 * clause.
 	 * <p>
-	 * For example selecting all JOHNs born in 2001 from USERS table may look like:
+	 * For example selecting all JOHNs born in 2001 from USERS table may look
+	 * like:
+	 * 
 	 * <pre>
-	 * users.find(Users.class, "NAME='?' and YEAR=?", new String[] {"John", "2001"});
+	 * users.find(Users.class, &quot;NAME='?' and YEAR=?&quot;, new String[] { &quot;John&quot;, &quot;2001&quot; });
 	 * </pre>
 	 * 
 	 * @param <T>
@@ -262,8 +265,7 @@ public class DatabaseClient {
 	 * @throws InstantiationException
 	 */
 	public <T extends DatabaseClient> List<T> find(Class<T> type,
-			String whereClause, String[] whereArgs)
-			throws DBException {
+			String whereClause, String[] whereArgs) throws DBException {
 		if (m_Database == null)
 			throw new DBException("Set database first");
 		T entity = null;
@@ -451,6 +453,7 @@ public class DatabaseClient {
 
 	/**
 	 * Returns underlying database object for direct manipulations
+	 * 
 	 * @return
 	 */
 	public Database getDatabase() {
@@ -569,8 +572,8 @@ public class DatabaseClient {
 					values.put(
 							WordUtils.toSQLName(column.getName()),
 							column.get(this) != null ? String
-									.valueOf(((DatabaseClient) column
-											.get(this))._id) : "0");
+									.valueOf(((DatabaseClient) column.get(this))._id)
+									: "0");
 				else
 					values.put(WordUtils.toSQLName(column.getName()),
 							String.valueOf(column.get(this)));
@@ -609,11 +612,9 @@ public class DatabaseClient {
 			entity = type.newInstance();
 			entity.setDatabase(m_Database);
 		} catch (IllegalAccessException e) {
-			throw new DBException("Can't instantiate "
-					+ type.getClass());
+			throw new DBException("Can't instantiate " + type.getClass());
 		} catch (InstantiationException e) {
-			throw new DBException("Can't instantiate "
-					+ type.getClass());
+			throw new DBException("Can't instantiate " + type.getClass());
 		}
 		return entity;
 	}
@@ -674,8 +675,8 @@ public class DatabaseClient {
 					values.put(
 							WordUtils.toSQLName(column.getName()),
 							column.get(this) != null ? String
-									.valueOf(((DatabaseClient) column
-											.get(this))._id) : "0");
+									.valueOf(((DatabaseClient) column.get(this))._id)
+									: "0");
 				else
 					values.put(WordUtils.toSQLName(column.getName()),
 							String.valueOf(column.get(this)));

@@ -94,6 +94,7 @@ public class CustomObjectInputStream extends ObjectInputStream {
 		}
 
 	}
+
 	public static interface StreamCallback {
 		void close() throws IOException;
 
@@ -103,25 +104,33 @@ public class CustomObjectInputStream extends ObjectInputStream {
 
 		Object readFromStream() throws IOException;
 
-		void registerValidation(ObjectInputValidation validation, int priority) throws NotActiveException,
-				InvalidObjectException;
+		void registerValidation(ObjectInputValidation validation, int priority)
+				throws NotActiveException, InvalidObjectException;
 	}
 
-	private static final String DATA_HOLDER_KEY = CustomObjectInputStream.class.getName();
+	private static final String DATA_HOLDER_KEY = CustomObjectInputStream.class
+			.getName();
 
 	/**
-	 * @deprecated As of 1.4 use {@link #getInstance(DataHolder, StreamCallback, ClassLoader)}
+	 * @deprecated As of 1.4 use
+	 *             {@link #getInstance(DataHolder, StreamCallback, ClassLoader)}
 	 */
 	@Deprecated
-	public static CustomObjectInputStream getInstance(DataHolder whereFrom, CustomObjectInputStream.StreamCallback callback) {
+	public static CustomObjectInputStream getInstance(DataHolder whereFrom,
+			CustomObjectInputStream.StreamCallback callback) {
 		return getInstance(whereFrom, callback, null);
 	}
 
-	public static synchronized CustomObjectInputStream getInstance(DataHolder whereFrom, CustomObjectInputStream.StreamCallback callback, ClassLoader classLoaderReference) {
+	public static synchronized CustomObjectInputStream getInstance(
+			DataHolder whereFrom,
+			CustomObjectInputStream.StreamCallback callback,
+			ClassLoader classLoaderReference) {
 		try {
-			CustomObjectInputStream result = (CustomObjectInputStream) whereFrom.get(DATA_HOLDER_KEY);
+			CustomObjectInputStream result = (CustomObjectInputStream) whereFrom
+					.get(DATA_HOLDER_KEY);
 			if (result == null) {
-				result = new CustomObjectInputStream(callback, classLoaderReference);
+				result = new CustomObjectInputStream(callback,
+						classLoaderReference);
 				whereFrom.put(DATA_HOLDER_KEY, result);
 			} else {
 				result.pushCallback(callback);
@@ -137,14 +146,14 @@ public class CustomObjectInputStream extends ObjectInputStream {
 	private final ClassLoader classLoader;
 
 	/**
-	 * Warning, this object is expensive to create (due to functionality inherited from superclass). Use the static
-	 * fetch() method instead, wherever possible.
+	 * Warning, this object is expensive to create (due to functionality
+	 * inherited from superclass). Use the static fetch() method instead,
+	 * wherever possible.
 	 * 
 	 * @see #getInstance(DataHolder, StreamCallback, ClassLoader)
 	 */
-	public CustomObjectInputStream(StreamCallback callback, ClassLoader classLoader)
-			throws IOException,
-			SecurityException {
+	public CustomObjectInputStream(StreamCallback callback,
+			ClassLoader classLoader) throws IOException, SecurityException {
 		super();
 		this.callbacks.push(callback);
 		this.classLoader = classLoader;
@@ -186,7 +195,8 @@ public class CustomObjectInputStream extends ObjectInputStream {
 	}
 
 	/**
-	 * Allows the CustomObjectInputStream (which is expensive to create) to be reused.
+	 * Allows the CustomObjectInputStream (which is expensive to create) to be
+	 * reused.
 	 */
 	public void pushCallback(StreamCallback callback) {
 		this.callbacks.push(callback);
@@ -206,7 +216,8 @@ public class CustomObjectInputStream extends ObjectInputStream {
 	public int read(byte[] buf, int off, int len) throws IOException {
 		byte[] b = (byte[]) peekCallback().readFromStream();
 		if (b.length != len) {
-			throw new StreamCorruptedException("Expected " + len + " bytes from stream, got " + b.length);
+			throw new StreamCorruptedException("Expected " + len
+					+ " bytes from stream, got " + b.length);
 		}
 		System.arraycopy(b, 0, buf, off, len);
 		return len;
@@ -307,8 +318,8 @@ public class CustomObjectInputStream extends ObjectInputStream {
 	}
 
 	@Override
-	public void registerValidation(ObjectInputValidation validation, int priority) throws NotActiveException,
-			InvalidObjectException {
+	public void registerValidation(ObjectInputValidation validation,
+			int priority) throws NotActiveException, InvalidObjectException {
 		peekCallback().registerValidation(validation, priority);
 	}
 
@@ -318,7 +329,8 @@ public class CustomObjectInputStream extends ObjectInputStream {
 	}
 
 	@Override
-	protected Class resolveClass(ObjectStreamClass desc) throws IOException, ClassNotFoundException {
+	protected Class resolveClass(ObjectStreamClass desc) throws IOException,
+			ClassNotFoundException {
 		if (classLoader == null) {
 			return super.resolveClass(desc);
 		} else {

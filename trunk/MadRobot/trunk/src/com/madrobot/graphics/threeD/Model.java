@@ -32,6 +32,7 @@ public class Model {
 		}
 		return f;
 	}
+
 	ArrayList<ModelPart> parts;
 	ArrayList<Float> v;
 	FloatBuffer vertexBuffer;

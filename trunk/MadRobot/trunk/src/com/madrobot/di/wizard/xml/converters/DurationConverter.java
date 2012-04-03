@@ -15,10 +15,12 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.Duration;
 
 /**
- * A Converter for the XML Schema datatype <a href="http://www.w3.org/TR/xmlschema-2/#duration">duration</a> and the
- * Java type {@link Duration}. The implementation uses a {@link DatatypeFactory} to create Duration objects. If no
- * factory is provided and the instantiation of the internal factory fails with a {@link DatatypeConfigurationException}
- * , the converter will not claim the responsibility for Duration objects.
+ * A Converter for the XML Schema datatype <a
+ * href="http://www.w3.org/TR/xmlschema-2/#duration">duration</a> and the Java
+ * type {@link Duration}. The implementation uses a {@link DatatypeFactory} to
+ * create Duration objects. If no factory is provided and the instantiation of
+ * the internal factory fails with a {@link DatatypeConfigurationException} ,
+ * the converter will not claim the responsibility for Duration objects.
  * 
  * @author John Kristian
  * @author J&ouml;rg Schaible

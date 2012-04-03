@@ -21,7 +21,7 @@ public interface IXMLRPCSerializer {
 	String TAG_DATA = "data";
 	String TAG_MEMBER = "member";
 	String TAG_NAME = "name";
-	
+
 	String TAG_VALUE = "value";
 	String TYPE_ARRAY = "array";
 	String TYPE_BASE64 = "base64";
@@ -34,9 +34,11 @@ public interface IXMLRPCSerializer {
 	// This added by mattias.ellback as part of issue #19
 	String TYPE_NULL = "nil";
 	String TYPE_STRING = "string";
-	
+
 	String TYPE_STRUCT = "struct";
 
-	Object deserialize(XmlPullParser parser) throws XmlPullParserException, IOException;
+	Object deserialize(XmlPullParser parser) throws XmlPullParserException,
+			IOException;
+
 	void serialize(XmlSerializer serializer, Object object) throws IOException;
 }

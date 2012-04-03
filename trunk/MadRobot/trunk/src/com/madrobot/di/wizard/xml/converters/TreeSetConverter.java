@@ -27,8 +27,9 @@ import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
 import com.madrobot.util.collections.PresortedSet;
 
 /**
- * Converts a java.util.TreeSet to XML, and serializes the associated java.util.Comparator. The converter assumes that
- * the elements in the XML are already sorted according the comparator.
+ * Converts a java.util.TreeSet to XML, and serializes the associated
+ * java.util.Comparator. The converter assumes that the elements in the XML are
+ * already sorted according the comparator.
  * 
  */
 public class TreeSetConverter extends CollectionConverter {
@@ -47,7 +48,8 @@ public class TreeSetConverter extends CollectionConverter {
 					}
 				}
 				if (smField == null) {
-					throw new ExceptionInInitializerError("Cannot detect field of backing map of TreeSet");
+					throw new ExceptionInInitializerError(
+							"Cannot detect field of backing map of TreeSet");
 				}
 
 			} catch (SecurityException ex) {
@@ -69,9 +71,11 @@ public class TreeSetConverter extends CollectionConverter {
 	}
 
 	@Override
-	public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
+	public void marshal(Object source, HierarchicalStreamWriter writer,
+			MarshallingContext context) {
 		SortedSet sortedSet = (SortedSet) source;
-		treeMapConverter.marshalComparator(sortedSet.comparator(), writer, context);
+		treeMapConverter.marshalComparator(sortedSet.comparator(), writer,
+				context);
 		super.marshal(source, writer, context);
 	}
 
@@ -79,7 +83,8 @@ public class TreeSetConverter extends CollectionConverter {
 		treeMapConverter = new TreeMapConverter(mapper()) {
 
 			@Override
-			protected void populateMap(HierarchicalStreamReader reader, UnmarshallingContext context, Map map, final Map target) {
+			protected void populateMap(HierarchicalStreamReader reader,
+					UnmarshallingContext context, Map map, final Map target) {
 				populateCollection(reader, context, new AbstractList() {
 					@Override
 					public boolean add(Object object) {
@@ -99,7 +104,9 @@ public class TreeSetConverter extends CollectionConverter {
 			}
 
 			@Override
-			protected void putCurrentEntryIntoMap(HierarchicalStreamReader reader, UnmarshallingContext context, Map map, Map target) {
+			protected void putCurrentEntryIntoMap(
+					HierarchicalStreamReader reader,
+					UnmarshallingContext context, Map map, Map target) {
 				Object key = readItem(reader, context, map);
 				target.put(key, key);
 			}
@@ -108,19 +115,23 @@ public class TreeSetConverter extends CollectionConverter {
 	}
 
 	@Override
-	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+	public Object unmarshal(HierarchicalStreamReader reader,
+			UnmarshallingContext context) {
 		TreeSet result = null;
 		final TreeMap treeMap;
-		Comparator unmarshalledComparator = treeMapConverter.unmarshalComparator(reader, context, null);
+		Comparator unmarshalledComparator = treeMapConverter
+				.unmarshalComparator(reader, context, null);
 		boolean inFirstElement = unmarshalledComparator instanceof Mapper.Null;
 		Comparator comparator = inFirstElement ? null : unmarshalledComparator;
 		if (sortedMapField != null) {
-			TreeSet possibleResult = comparator == null ? new TreeSet() : new TreeSet(comparator);
+			TreeSet possibleResult = comparator == null ? new TreeSet()
+					: new TreeSet(comparator);
 			Object backingMap = null;
 			try {
 				backingMap = sortedMapField.get(possibleResult);
 			} catch (IllegalAccessException e) {
-				throw new ConversionException("Cannot get backing map of TreeSet", e);
+				throw new ConversionException(
+						"Cannot get backing map of TreeSet", e);
 			}
 			if (backingMap instanceof TreeMap) {
 				treeMap = (TreeMap) backingMap;
@@ -133,7 +144,8 @@ public class TreeSetConverter extends CollectionConverter {
 		}
 		if (treeMap == null) {
 			final PresortedSet set = new PresortedSet(comparator);
-			result = comparator == null ? new TreeSet() : new TreeSet(comparator);
+			result = comparator == null ? new TreeSet() : new TreeSet(
+					comparator);
 			if (inFirstElement) {
 				// we are already within the first element
 				addCurrentElementToCollection(reader, context, result, set);
@@ -141,10 +153,12 @@ public class TreeSetConverter extends CollectionConverter {
 			}
 			populateCollection(reader, context, result, set);
 			if (set.size() > 0) {
-				result.addAll(set); // comparator will not be called if internally optimized
+				result.addAll(set); // comparator will not be called if
+									// internally optimized
 			}
 		} else {
-			treeMapConverter.populateTreeMap(reader, context, treeMap, unmarshalledComparator);
+			treeMapConverter.populateTreeMap(reader, context, treeMap,
+					unmarshalledComparator);
 		}
 		return result;
 	}

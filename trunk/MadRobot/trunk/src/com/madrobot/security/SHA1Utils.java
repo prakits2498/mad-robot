@@ -33,13 +33,13 @@ public class SHA1Utils {
 	 * @return
 	 */
 	public static String byteArrayToHexString(byte[] b) {
-		if(b == null)
+		if (b == null)
 			return null;
 
 		StringBuffer sb = new StringBuffer(b.length * 2);
-		for(int i = 0; i < b.length; i++){
+		for (int i = 0; i < b.length; i++) {
 			int v = b[i] & 0xff;
-			if(v < 16){
+			if (v < 16) {
 				sb.append('0');
 			}
 			sb.append(Integer.toHexString(v));
@@ -77,13 +77,13 @@ public class SHA1Utils {
 	 */
 	public static byte[] generateSHA1(byte[] bytes) {
 		byte[] encryted = null;
-		try{
+		try {
 			MessageDigest digest = MessageDigest.getInstance("SHA-1");
 			digest.reset();
 			digest.update(bytes);
 			encryted = digest.digest();
 
-		} catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return encryted;
@@ -101,18 +101,18 @@ public class SHA1Utils {
 	 * @return
 	 */
 	public static byte[] generateSHA1(File file) {
-		try{
+		try {
 			return generateSHA1(new FileInputStream(file));
-		} catch(Exception e){
+		} catch (Exception e) {
 			return null;
 		}
 	}
 
 	// Genera SHA-1 de un InputStream
 	public static byte[] generateSHA1(InputStream is) {
-		try{
+		try {
 			return generateSHA1(IOUtils.toByteArray(is));
-		} catch(Exception e){
+		} catch (Exception e) {
 			return null;
 		}
 	}
@@ -129,9 +129,10 @@ public class SHA1Utils {
 	 * @return
 	 */
 	public static String generateSHA1toString(InputStream is) {
-		try{
-			return new String((generateSHA1(IOUtils.toByteArray(is))),"ISO-8859-1");
-		} catch(Exception e){
+		try {
+			return new String((generateSHA1(IOUtils.toByteArray(is))),
+					"ISO-8859-1");
+		} catch (Exception e) {
 			return null;
 		}
 	}
@@ -144,11 +145,11 @@ public class SHA1Utils {
 	 * @return
 	 */
 	public static String generateSHA1toString(String str) {
-		try{
+		try {
 			byte[] datos = generateSHA1(str.getBytes());
 			return byteArrayToHexString(datos);
 
-		} catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
@@ -161,11 +162,11 @@ public class SHA1Utils {
 	 * @return
 	 */
 	public static byte[] hexStringToByteArray(String s) {
-		if(s == null)
+		if (s == null)
 			return null;
 
 		byte[] b = new byte[s.length() / 2];
-		for(int i = 0; i < b.length; i++){
+		for (int i = 0; i < b.length; i++) {
 			int index = i * 2;
 			int v = Integer.parseInt(s.substring(index, index + 2), 16);
 			b[i] = (byte) v;

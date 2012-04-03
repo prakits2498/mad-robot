@@ -18,9 +18,10 @@ import java.util.Map;
  * Maintains the current {@link Path} as a stream is moved through.
  * 
  * <p>
- * Can be linked to a {@link com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter} or
- * {@link com.madrobot.di.wizard.xml.io.HierarchicalStreamReader} by wrapping them with a {@link PathTrackingWriter} or
- * {@link PathTrackingReader}.
+ * Can be linked to a
+ * {@link com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter} or
+ * {@link com.madrobot.di.wizard.xml.io.HierarchicalStreamReader} by wrapping
+ * them with a {@link PathTrackingWriter} or {@link PathTrackingReader}.
  * </p>
  * 
  * <h3>Example</h3>
@@ -60,9 +61,10 @@ public class PathTracker {
 
 	/**
 	 * @param initialCapacity
-	 *            Size of the initial stack of nodes (one level per depth in the tree). Note that this is only for
-	 *            optimizations - the stack will resize itself if it exceeds its capacity. If in doubt, use the other
-	 *            constructor.
+	 *            Size of the initial stack of nodes (one level per depth in the
+	 *            tree). Note that this is only for optimizations - the stack
+	 *            will resize itself if it exceeds its capacity. If in doubt,
+	 *            use the other constructor.
 	 */
 	public PathTracker(int initialCapacity) {
 		this.capacity = Math.max(1, initialCapacity);
@@ -161,7 +163,8 @@ public class PathTracker {
 			indexMapStack[pointer] = indexMap;
 		}
 		if (indexMap.containsKey(name)) {
-			indexMap.put(name, new Integer(((Integer) indexMap.get(name)).intValue() + 1));
+			indexMap.put(name,
+					new Integer(((Integer) indexMap.get(name)).intValue() + 1));
 		} else {
 			indexMap.put(name, new Integer(1));
 		}

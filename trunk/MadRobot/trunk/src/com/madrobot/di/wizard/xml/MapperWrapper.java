@@ -23,7 +23,8 @@ abstract class MapperWrapper implements Mapper {
 	}
 
 	/**
-	 * @deprecated As of 1.3, use combination of {@link #serializedMember(Class, String)} and
+	 * @deprecated As of 1.3, use combination of
+	 *             {@link #serializedMember(Class, String)} and
 	 *             {@link #getConverterFromItemType(String, Class, Class)}
 	 */
 	@Deprecated
@@ -43,7 +44,8 @@ abstract class MapperWrapper implements Mapper {
 	}
 
 	/**
-	 * @deprecated As of 1.3, use combination of {@link #realMember(Class, String)} and
+	 * @deprecated As of 1.3, use combination of
+	 *             {@link #realMember(Class, String)} and
 	 *             {@link #getConverterFromItemType(String, Class, Class)}
 	 */
 	@Deprecated
@@ -63,21 +65,25 @@ abstract class MapperWrapper implements Mapper {
 	}
 
 	/**
-	 * @deprecated As of 1.3.1, use {@link #getConverterFromAttribute(Class, String, Class)}
+	 * @deprecated As of 1.3.1, use
+	 *             {@link #getConverterFromAttribute(Class, String, Class)}
 	 */
 	@Deprecated
 	@Override
-	public SingleValueConverter getConverterFromAttribute(Class type, String attribute) {
+	public SingleValueConverter getConverterFromAttribute(Class type,
+			String attribute) {
 		return wrapped.getConverterFromAttribute(type, attribute);
 	}
 
 	@Override
-	public SingleValueConverter getConverterFromAttribute(Class definedIn, String attribute, Class type) {
+	public SingleValueConverter getConverterFromAttribute(Class definedIn,
+			String attribute, Class type) {
 		return wrapped.getConverterFromAttribute(definedIn, attribute, type);
 	}
 
 	/**
-	 * @deprecated As of 1.3, use {@link #getConverterFromAttribute(Class, String, Class)}
+	 * @deprecated As of 1.3, use
+	 *             {@link #getConverterFromAttribute(Class, String, Class)}
 	 */
 	@Deprecated
 	@Override
@@ -86,7 +92,8 @@ abstract class MapperWrapper implements Mapper {
 	}
 
 	/**
-	 * @deprecated As of 1.3, use {@link #getConverterFromItemType(String, Class, Class)}
+	 * @deprecated As of 1.3, use
+	 *             {@link #getConverterFromItemType(String, Class, Class)}
 	 */
 	@Deprecated
 	@Override
@@ -95,31 +102,39 @@ abstract class MapperWrapper implements Mapper {
 	}
 
 	/**
-	 * @deprecated As of 1.3, use {@link #getConverterFromItemType(String, Class, Class)}
+	 * @deprecated As of 1.3, use
+	 *             {@link #getConverterFromItemType(String, Class, Class)}
 	 */
 	@Deprecated
 	@Override
-	public SingleValueConverter getConverterFromItemType(String fieldName, Class type) {
+	public SingleValueConverter getConverterFromItemType(String fieldName,
+			Class type) {
 		return wrapped.getConverterFromItemType(fieldName, type);
 	}
 
 	@Override
-	public SingleValueConverter getConverterFromItemType(String fieldName, Class type, Class definedIn) {
+	public SingleValueConverter getConverterFromItemType(String fieldName,
+			Class type, Class definedIn) {
 		return wrapped.getConverterFromItemType(fieldName, type, definedIn);
 	}
 
 	@Override
-	public String getFieldNameForItemTypeAndName(Class definedIn, Class itemType, String itemFieldName) {
-		return wrapped.getFieldNameForItemTypeAndName(definedIn, itemType, itemFieldName);
+	public String getFieldNameForItemTypeAndName(Class definedIn,
+			Class itemType, String itemFieldName) {
+		return wrapped.getFieldNameForItemTypeAndName(definedIn, itemType,
+				itemFieldName);
 	}
 
 	@Override
-	public ImplicitCollectionMapping getImplicitCollectionDefForFieldName(Class itemType, String fieldName) {
-		return wrapped.getImplicitCollectionDefForFieldName(itemType, fieldName);
+	public ImplicitCollectionMapping getImplicitCollectionDefForFieldName(
+			Class itemType, String fieldName) {
+		return wrapped
+				.getImplicitCollectionDefForFieldName(itemType, fieldName);
 	}
 
 	@Override
-	public Class getItemTypeForItemFieldName(Class definedIn, String itemFieldName) {
+	public Class getItemTypeForItemFieldName(Class definedIn,
+			String itemFieldName) {
 		return wrapped.getItemTypeForItemFieldName(definedIn, itemFieldName);
 	}
 
@@ -135,7 +150,8 @@ abstract class MapperWrapper implements Mapper {
 
 	@Override
 	public Mapper lookupMapperOfType(Class type) {
-		return type.isAssignableFrom(getClass()) ? this : wrapped.lookupMapperOfType(type);
+		return type.isAssignableFrom(getClass()) ? this : wrapped
+				.lookupMapperOfType(type);
 	}
 
 	@Override

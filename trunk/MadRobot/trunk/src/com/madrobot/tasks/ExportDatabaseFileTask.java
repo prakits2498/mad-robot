@@ -19,8 +19,8 @@ import android.util.Log;
 import com.madrobot.io.file.FileUtils;
 
 /**
- * Task to back the application's database file to the sdcard
- * Parameters
+ * Task to back the application's database file to the sdcard Parameters
+ * 
  * <pre>
  * Object[] param = new Object[4];
  * // database package
@@ -51,12 +51,12 @@ public class ExportDatabaseFileTask extends AbstractTask {// AsyncTask<String,
 	@Override
 	protected Object doInBackground(Object... params) {
 		taskStarted();
-		String dbPackage=(String)params[0];
-		String dbName=(String)params[1];
-		String dbPath=(String)params[2];
+		String dbPackage = (String) params[0];
+		String dbName = (String) params[1];
+		String dbPath = (String) params[2];
 		File dbFile = new File(dbPath + dbName);
 		// path on sd by convention
-		File exportDir =(File) params[3];
+		File exportDir = (File) params[3];
 		if (!exportDir.exists()) {
 			// boolean result =
 			exportDir.mkdirs();
@@ -75,7 +75,6 @@ public class ExportDatabaseFileTask extends AbstractTask {// AsyncTask<String,
 			return false;
 		}
 	}
-
 
 	@Override
 	protected void onPostExecute(Object result) {

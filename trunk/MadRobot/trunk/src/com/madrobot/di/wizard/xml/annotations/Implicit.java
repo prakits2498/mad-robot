@@ -30,7 +30,8 @@ public @interface Implicit {
 	String itemFieldName() default "";
 
 	/**
-	 * Field name of map entries that are used as key for the element in the implicit map.
+	 * Field name of map entries that are used as key for the element in the
+	 * implicit map.
 	 * 
 	 * @since 1.4
 	 */

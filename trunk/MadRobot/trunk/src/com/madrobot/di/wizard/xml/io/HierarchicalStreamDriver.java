@@ -25,10 +25,11 @@ import java.net.URL;
 public interface HierarchicalStreamDriver {
 
 	/**
-	 * Create the HierarchicalStreamReader with the stream parser reading from a File.
+	 * Create the HierarchicalStreamReader with the stream parser reading from a
+	 * File.
 	 * 
-	 * Depending on the parser implementation, some might take the file path as SystemId to resolve additional
-	 * references.
+	 * Depending on the parser implementation, some might take the file path as
+	 * SystemId to resolve additional references.
 	 * 
 	 * @param in
 	 *            the {@link URL} defining the location with the data to parse
@@ -38,7 +39,8 @@ public interface HierarchicalStreamDriver {
 	HierarchicalStreamReader createReader(File in);
 
 	/**
-	 * Create the HierarchicalStreamReader with the stream parser reading from the input stream.
+	 * Create the HierarchicalStreamReader with the stream parser reading from
+	 * the input stream.
 	 * 
 	 * @param in
 	 *            the {@link InputStream} with the data to parse
@@ -47,7 +49,8 @@ public interface HierarchicalStreamDriver {
 	HierarchicalStreamReader createReader(InputStream in);
 
 	/**
-	 * Create the HierarchicalStreamReader with the stream parser reading from the IO reader.
+	 * Create the HierarchicalStreamReader with the stream parser reading from
+	 * the IO reader.
 	 * 
 	 * @param in
 	 *            the {@link Reader} with the data to parse
@@ -56,9 +59,11 @@ public interface HierarchicalStreamDriver {
 	HierarchicalStreamReader createReader(Reader in);
 
 	/**
-	 * Create the HierarchicalStreamReader with the stream parser reading from a URL.
+	 * Create the HierarchicalStreamReader with the stream parser reading from a
+	 * URL.
 	 * 
-	 * Depending on the parser implementation, some might take the URL as SystemId to resolve additional references.
+	 * Depending on the parser implementation, some might take the URL as
+	 * SystemId to resolve additional references.
 	 * 
 	 * @param in
 	 *            the {@link URL} defining the location with the data to parse

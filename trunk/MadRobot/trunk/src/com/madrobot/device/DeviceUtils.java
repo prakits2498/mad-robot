@@ -15,13 +15,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.madrobot.net.CarrierHelper;
 
 import android.content.Context;
 import android.content.res.Configuration;
@@ -34,6 +31,8 @@ import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 
+import com.madrobot.net.CarrierHelper;
+
 /**
  * Utility to obtain all device related information
  * <p>
@@ -45,12 +44,14 @@ public class DeviceUtils {
 
 	private static final CharSequence FLASH_FILE_SYSTEM = "yaffs";
 	private static final String KERNEL_FORMAT_REGEXP = "\\w+\\s+" + /*
-																	 * ignore: Linux
+																	 * ignore:
+																	 * Linux
 																	 */
 	"\\w+\\s+" + /* ignore: version */
 	"([^\\s]+)\\s+" + /* group 1: 2.6.22-omap1 */
 	"\\(([^\\s@]+(?:@[^\\s.]+)?)[^)]*\\)\\s+" + /*
-												 * group 2: (xxxxxx@xxxxx.constant)
+												 * group 2:
+												 * (xxxxxx@xxxxx.constant)
 												 */
 	"\\((?:[^(]*\\([^)]*\\))?[^)]*\\)\\s+" + /* ignore: (gcc ..) */
 	"([^\\s]+)\\s+" + /* group 3: #26 */
@@ -74,21 +75,26 @@ public class DeviceUtils {
 					Log.d(TAG, "Regex did not match on /proc/version: " + raw);
 					return raw;
 				} else if (m.groupCount() < 4) {
-					Log.d(TAG, "Regex returned only " + m.groupCount() + "groups");
+					Log.d(TAG, "Regex returned only " + m.groupCount()
+							+ "groups");
 					return raw;
 				} else {
-					return (new StringBuilder(m.group(1)).append("\n").append(m.group(2)).append(" ")
-							.append(m.group(3)).append("\n").append(m.group(4))).toString();
+					return (new StringBuilder(m.group(1)).append("\n")
+							.append(m.group(2)).append(" ").append(m.group(3))
+							.append("\n").append(m.group(4))).toString();
 				}
 			} catch (Throwable t) {
-				Log.e(TAG, "Error formatting raw kernel version: " + t.getMessage(), t);
+				Log.e(TAG,
+						"Error formatting raw kernel version: "
+								+ t.getMessage(), t);
 			}
 		}
 		return raw;
 	}
 
 	public static Display[] getAllDisplays(Context context) {
-		WindowManager winMgr = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+		WindowManager winMgr = (WindowManager) context
+				.getSystemService(Context.WINDOW_SERVICE);
 		Display[] displays = new Display[1];
 		displays[0] = winMgr.getDefaultDisplay();
 		return displays;
@@ -99,14 +105,17 @@ public class DeviceUtils {
 		try {
 			final StringBuffer s = new StringBuffer();
 			final Process p = Runtime.getRuntime().exec("cat /proc/cpuinfo");
-			final BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			final BufferedReader input = new BufferedReader(
+					new InputStreamReader(p.getInputStream()));
 			String line = "";
-			while ((line = input.readLine()) != null && s.toString().length() == 0) {
+			while ((line = input.readLine()) != null
+					&& s.toString().length() == 0) {
 				if (line.startsWith("BogoMIPS")) {
 					s.append(line + "\n");
 				}
 			}
-			final String cpuclockstr = s.substring(s.indexOf(":") + 2, s.length());
+			final String cpuclockstr = s.substring(s.indexOf(":") + 2,
+					s.length());
 			cpuclock = Float.parseFloat(cpuclockstr);
 		} catch (final Exception err) {
 			// if ANYTHING goes wrong, just report 0 since this is only used for
@@ -140,7 +149,8 @@ public class DeviceUtils {
 		DisplayMetrics outMetrics = new DisplayMetrics();
 		display.getMetrics(outMetrics);
 		DisplayInfo info = new DisplayInfo();
-		double diagonalSizeInInch = Math.sqrt(Math.pow(outMetrics.widthPixels / outMetrics.xdpi, 2)
+		double diagonalSizeInInch = Math.sqrt(Math.pow(outMetrics.widthPixels
+				/ outMetrics.xdpi, 2)
 				+ Math.pow(outMetrics.heightPixels / outMetrics.ydpi, 2));
 		info.setDiagonalSizeInInch(diagonalSizeInInch);
 		info.setWidthInPixels(outMetrics.widthPixels);
@@ -152,7 +162,8 @@ public class DeviceUtils {
 		info.setVerticalDensity(outMetrics.ydpi);
 		Configuration c = context.getResources().getConfiguration();
 		int touchMethod = c.touchscreen;
-		if (touchMethod == Configuration.TOUCHSCREEN_UNDEFINED || touchMethod == Configuration.TOUCHSCREEN_NOTOUCH)
+		if (touchMethod == Configuration.TOUCHSCREEN_UNDEFINED
+				|| touchMethod == Configuration.TOUCHSCREEN_NOTOUCH)
 			info.setTouchEnabled(false);
 		else
 			info.setTouchEnabled(true);
@@ -177,9 +188,11 @@ public class DeviceUtils {
 		try {
 			final StringBuffer s = new StringBuffer();
 			final Process p = Runtime.getRuntime().exec("cat /proc/cpuinfo");
-			final BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			final BufferedReader input = new BufferedReader(
+					new InputStreamReader(p.getInputStream()));
 			String line = "";
-			while ((line = input.readLine()) != null && s.toString().length() == 0) {
+			while ((line = input.readLine()) != null
+					&& s.toString().length() == 0) {
 				if (line.startsWith("Hardware")) {
 					s.append(line + "\n");
 				}
@@ -221,11 +234,13 @@ public class DeviceUtils {
 		try {
 			buf = new BufferedReader(new InputStreamReader(pr.getInputStream()));
 			while ((line = buf.readLine()) != null) {
-				if (line.contains(FLASH_FILE_SYSTEM) || line.contains(UBI_FILE_SYSTEM)) {
+				if (line.contains(FLASH_FILE_SYSTEM)
+						|| line.contains(UBI_FILE_SYSTEM)) {
 					StringTokenizer token = new StringTokenizer(line, " ");
 					while (token.hasMoreElements()) {
 						String mntPoint = token.nextToken();
-						if (mntPoint != null && mntPoint.length() > 0 && !mntPoint.startsWith("/dev/block")
+						if (mntPoint != null && mntPoint.length() > 0
+								&& !mntPoint.startsWith("/dev/block")
 								&& mntPoint.startsWith("/")) {
 							mountPts.add(mntPoint);
 							break;
@@ -328,14 +343,16 @@ public class DeviceUtils {
 
 	/**
 	 * 
-	 * Get network related information. ACCESS_NETWORK_STATE permission needs to be set before using this method.
+	 * Get network related information. ACCESS_NETWORK_STATE permission needs to
+	 * be set before using this method.
 	 * 
 	 * @param context
 	 * @return
 	 * @see NetworkInfo
 	 */
 	public static NetworkInfo getNetworkInfo(Context context) {
-		TelephonyManager teleManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+		TelephonyManager teleManager = (TelephonyManager) context
+				.getSystemService(Context.TELEPHONY_SERVICE);
 		if (teleManager != null) {
 			NetworkInfo info = new NetworkInfo();
 			info.setDataState(teleManager.getDataState());
@@ -345,7 +362,8 @@ public class DeviceUtils {
 			info.setVoicemailNumber(teleManager.getVoiceMailNumber());
 			info.setPhoneType(teleManager.getPhoneType());
 			info.setHasTelephoneSupport(teleManager.getDeviceId() != null);
-			info.setHasDataConnection(CarrierHelper.getInstance(context).getCurrentCarrier() != null);
+			info.setHasDataConnection(CarrierHelper.getInstance(context)
+					.getCurrentCarrier() != null);
 		}
 		return null;
 
@@ -390,23 +408,33 @@ public class DeviceUtils {
 	}
 
 	public static SensorInfo getSensorInfo(Context context) {
-		SensorManager sensorMgr = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+		SensorManager sensorMgr = (SensorManager) context
+				.getSystemService(Context.SENSOR_SERVICE);
 		SensorInfo info = new SensorInfo();
-		info.setHasAccelerometer(!sensorMgr.getSensorList(Sensor.TYPE_ACCELEROMETER).isEmpty());
-		info.setHasGyroscope(!sensorMgr.getSensorList(Sensor.TYPE_GYROSCOPE).isEmpty());
-		info.setHasLightSensor(!sensorMgr.getSensorList(Sensor.TYPE_LIGHT).isEmpty());
-		info.setHasMagneticSensor(!sensorMgr.getSensorList(Sensor.TYPE_MAGNETIC_FIELD).isEmpty());
-		info.setHasOrientationSensor(!sensorMgr.getSensorList(Sensor.TYPE_ORIENTATION).isEmpty());
-		info.setHasPressureSensor(!sensorMgr.getSensorList(Sensor.TYPE_PRESSURE).isEmpty());
-		info.setHasProximitySensor(!sensorMgr.getSensorList(Sensor.TYPE_PROXIMITY).isEmpty());
-		info.setHasTemperatureSensor(!sensorMgr.getSensorList(Sensor.TYPE_TEMPERATURE).isEmpty());
+		info.setHasAccelerometer(!sensorMgr.getSensorList(
+				Sensor.TYPE_ACCELEROMETER).isEmpty());
+		info.setHasGyroscope(!sensorMgr.getSensorList(Sensor.TYPE_GYROSCOPE)
+				.isEmpty());
+		info.setHasLightSensor(!sensorMgr.getSensorList(Sensor.TYPE_LIGHT)
+				.isEmpty());
+		info.setHasMagneticSensor(!sensorMgr.getSensorList(
+				Sensor.TYPE_MAGNETIC_FIELD).isEmpty());
+		info.setHasOrientationSensor(!sensorMgr.getSensorList(
+				Sensor.TYPE_ORIENTATION).isEmpty());
+		info.setHasPressureSensor(!sensorMgr
+				.getSensorList(Sensor.TYPE_PRESSURE).isEmpty());
+		info.setHasProximitySensor(!sensorMgr.getSensorList(
+				Sensor.TYPE_PROXIMITY).isEmpty());
+		info.setHasTemperatureSensor(!sensorMgr.getSensorList(
+				Sensor.TYPE_TEMPERATURE).isEmpty());
 		return info;
 	}
 
 	private static String readKernelVersionRaw() {
 		String kernelVersionRaw = null;
 		try {
-			BufferedReader bReader = new BufferedReader(new FileReader(KERNEL_SOURCE), 256);
+			BufferedReader bReader = new BufferedReader(new FileReader(
+					KERNEL_SOURCE), 256);
 			try {
 				kernelVersionRaw = bReader.readLine();
 			} finally {

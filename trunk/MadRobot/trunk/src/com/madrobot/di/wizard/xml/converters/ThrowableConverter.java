@@ -14,7 +14,8 @@ import com.madrobot.di.wizard.xml.io.HierarchicalStreamReader;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
 
 /**
- * Converter for Throwable (and Exception) that retains stack trace, for JDK1.4 only.
+ * Converter for Throwable (and Exception) that retains stack trace, for JDK1.4
+ * only.
  * 
  */
 public class ThrowableConverter implements Converter {
@@ -31,7 +32,8 @@ public class ThrowableConverter implements Converter {
 	}
 
 	@Override
-	public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
+	public void marshal(Object source, HierarchicalStreamWriter writer,
+			MarshallingContext context) {
 		Throwable throwable = (Throwable) source;
 		if (throwable.getCause() == null) {
 			try {
@@ -40,13 +42,15 @@ public class ThrowableConverter implements Converter {
 				// ignore, initCause failed, cause was already set
 			}
 		}
-		throwable.getStackTrace(); // Force stackTrace field to be lazy loaded by special JVM native witchcraft (outside
+		throwable.getStackTrace(); // Force stackTrace field to be lazy loaded
+									// by special JVM native witchcraft (outside
 									// our control).
 		defaultConverter.marshal(throwable, writer, context);
 	}
 
 	@Override
-	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+	public Object unmarshal(HierarchicalStreamReader reader,
+			UnmarshallingContext context) {
 		return defaultConverter.unmarshal(reader, context);
 	}
 }

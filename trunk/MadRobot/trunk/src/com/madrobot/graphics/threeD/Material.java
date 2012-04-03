@@ -14,25 +14,25 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
-
 /**
  * @see MTLFileLoader
  * @author elton.kent
- *
+ * 
  */
 public class Material {
 	float alpha;
-	float[] ambientColor; //ambient color
+	float[] ambientColor; // ambient color
 	float[] diffuseColor;
 	int illum;
 	String name;
 	float shine;
 	float[] specularColor;
 	String textureFile;
-	
-	public Material(String name){
-		this.name=name;
+
+	public Material(String name) {
+		this.name = name;
 	}
+
 	public float getAlpha() {
 		return alpha;
 	}
@@ -41,7 +41,7 @@ public class Material {
 		return ambientColor;
 	}
 
-	public FloatBuffer getAmbientColorBuffer(){
+	public FloatBuffer getAmbientColorBuffer() {
 		FloatBuffer f;
 		ByteBuffer b = ByteBuffer.allocateDirect(12);
 		b.order(ByteOrder.nativeOrder());
@@ -50,10 +50,12 @@ public class Material {
 		f.position(0);
 		return f;
 	}
+
 	public float[] getDiffuseColor() {
 		return diffuseColor;
 	}
-	public FloatBuffer getDiffuseColorBuffer(){
+
+	public FloatBuffer getDiffuseColorBuffer() {
 		FloatBuffer f;
 		ByteBuffer b = ByteBuffer.allocateDirect(12);
 		b.order(ByteOrder.nativeOrder());
@@ -66,6 +68,7 @@ public class Material {
 	public int getIllum() {
 		return illum;
 	}
+
 	public String getName() {
 		return name;
 	}
@@ -77,7 +80,8 @@ public class Material {
 	public float[] getSpecularColor() {
 		return specularColor;
 	}
-	public FloatBuffer getSpecularColorBuffer(){
+
+	public FloatBuffer getSpecularColorBuffer() {
 		FloatBuffer f;
 		ByteBuffer b = ByteBuffer.allocateDirect(12);
 		b.order(ByteOrder.nativeOrder());
@@ -97,16 +101,16 @@ public class Material {
 
 	public void setAmbientColor(float r, float g, float b) {
 		ambientColor = new float[3];
-		ambientColor[0]=r;
-		ambientColor[1]=g;
-		ambientColor[2]=b;
+		ambientColor[0] = r;
+		ambientColor[1] = g;
+		ambientColor[2] = b;
 	}
 
 	public void setDiffuseColor(float r, float g, float b) {
 		diffuseColor = new float[3];
-		diffuseColor[0]=r;
-		diffuseColor[1]=g;
-		diffuseColor[2]=b;
+		diffuseColor[0] = r;
+		diffuseColor[1] = g;
+		diffuseColor[2] = b;
 	}
 
 	public void setIllum(int illum) {
@@ -123,23 +127,24 @@ public class Material {
 
 	public void setSpecularColor(float r, float g, float b) {
 		specularColor = new float[3];
-		specularColor[0]=r;
-		specularColor[1]=g;
-		specularColor[2]=b;
+		specularColor[0] = r;
+		specularColor[1] = g;
+		specularColor[2] = b;
 	}
 
 	public void setTextureFile(String textureFile) {
 		this.textureFile = textureFile;
 	}
+
 	@Override
-	public String toString(){
-		String str=new String();
-		str+="Material name: "+name;	
-		str+="\nAmbient color: "+ambientColor.toString();
-		str+="\nDiffuse color: "+diffuseColor.toString();	
-		str+="\nSpecular color: "+specularColor.toString();
-		str+="\nAlpha: "+alpha;
-		str+="\nShine: "+shine;
+	public String toString() {
+		String str = new String();
+		str += "Material name: " + name;
+		str += "\nAmbient color: " + ambientColor.toString();
+		str += "\nDiffuse color: " + diffuseColor.toString();
+		str += "\nSpecular color: " + specularColor.toString();
+		str += "\nAlpha: " + alpha;
+		str += "\nShine: " + shine;
 		return str;
 	}
 }
