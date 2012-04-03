@@ -38,6 +38,7 @@ public class TrueFileFilter implements IOFileFilter, Serializable {
 	 *            the file to check (ignored)
 	 * @return true
 	 */
+	@Override
 	public boolean accept(File file) {
 		return true;
 	}
@@ -51,6 +52,7 @@ public class TrueFileFilter implements IOFileFilter, Serializable {
 	 *            the filename (ignored)
 	 * @return true
 	 */
+	@Override
 	public boolean accept(File dir, String name) {
 		return true;
 	}

@@ -13,8 +13,9 @@ package com.madrobot.di.wizard.xml.converters;
 import java.util.Iterator;
 
 /**
- * To aid debugging, some components are passed an ErrorWriter when things go wrong, allowing them to add information to
- * the error message that may be helpful to diagnose problems.
+ * To aid debugging, some components are passed an ErrorWriter when things go
+ * wrong, allowing them to add information to the error message that may be
+ * helpful to diagnose problems.
  * 
  * @author Joe Walnes
  * @author J&ouml;rg Schaible
@@ -22,8 +23,8 @@ import java.util.Iterator;
 public interface ErrorWriter {
 
 	/**
-	 * Add some information to the error message. The information will be added even if the identifier is already in
-	 * use.
+	 * Add some information to the error message. The information will be added
+	 * even if the identifier is already in use.
 	 * 
 	 * @param name
 	 *            something to identify the type of information (e.g. 'XPath').
@@ -51,8 +52,8 @@ public interface ErrorWriter {
 	Iterator keys();
 
 	/**
-	 * Set some information to the error message. If the identifier is already in use, the new information will replace
-	 * the old one.
+	 * Set some information to the error message. If the identifier is already
+	 * in use, the new information will replace the old one.
 	 * 
 	 * @param name
 	 *            something to identify the type of information (e.g. 'XPath').

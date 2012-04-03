@@ -42,9 +42,9 @@ public class Vector {
 	}
 
 	public boolean equals(Vector v) {
-		if((vPoint.x == v.vPoint.x) && (vPoint.y == v.vPoint.y)){
+		if ((vPoint.x == v.vPoint.x) && (vPoint.y == v.vPoint.y)) {
 			return true;
-		} else{
+		} else {
 			return false;
 		}
 	}

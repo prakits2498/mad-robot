@@ -24,14 +24,15 @@ import com.madrobot.R;
 /**
  * A ViewGroup that arranges Views/ViewGroups horizontally.
  * <p>
- * The difference between the native horizontal scroll view is that the width each page can be set.
- * <b>Styled Attributes</b>
+ * The difference between the native horizontal scroll view is that the width
+ * each page can be set. <b>Styled Attributes</b>
  * <ul>
- * <li><b>pageWidth</b>(dip):</li> Width of each horizontal page in dip. If not specified, the value mentioned in the
- * layout_height is used.
- * <li><b>snapVelocity</b>(integer):The velocity at which a fling gesture will cause us to snap to the next page. The
- * default is 1000</li>
- * <li><b>screenAnimationDuration</b>(integer):Duration to animate each page.The default is 600ms.
+ * <li><b>pageWidth</b>(dip):</li> Width of each horizontal page in dip. If not
+ * specified, the value mentioned in the layout_height is used.
+ * <li><b>snapVelocity</b>(integer):The velocity at which a fling gesture will
+ * cause us to snap to the next page. The default is 1000</li>
+ * <li><b>screenAnimationDuration</b>(integer):Duration to animate each page.The
+ * default is 600ms.
  * </ul>
  * <br/>
  * <b>Example Usage:</b><br/>
@@ -64,9 +65,11 @@ public class HorizontalScrollView extends ViewGroup {
 	 */
 	public static interface OnScrollListener {
 		/**
-		 * Receives the current scroll X value. This value will be adjusted to assume the left edge of the first page
-		 * has a scroll position of 0. Note that values less than 0 and greater than the right edge of the last page are
-		 * possible due to touch events scrolling beyond the edges.
+		 * Receives the current scroll X value. This value will be adjusted to
+		 * assume the left edge of the first page has a scroll position of 0.
+		 * Note that values less than 0 and greater than the right edge of the
+		 * last page are possible due to touch events scrolling beyond the
+		 * edges.
 		 * 
 		 * @param scrollX
 		 *            Scroll X value
@@ -81,8 +84,6 @@ public class HorizontalScrollView extends ViewGroup {
 		 */
 		void onViewScrollFinished(int currentPage);
 	}
-
-	
 
 	private static final int INVALID_PAGE = -1;
 
@@ -122,7 +123,8 @@ public class HorizontalScrollView extends ViewGroup {
 	private int pageWidthSpec, pageWidth;
 
 	/**
-	 * The velocity at which a fling gesture will cause us to snap to the next screen
+	 * The velocity at which a fling gesture will cause us to snap to the next
+	 * screen
 	 */
 	private int snapVelocity;
 
@@ -132,7 +134,8 @@ public class HorizontalScrollView extends ViewGroup {
 	 * @param context
 	 *            The application's context.
 	 * @param attrs
-	 *            The attribtues set containing the Workspace's customization values.
+	 *            The attribtues set containing the Workspace's customization
+	 *            values.
 	 */
 	public HorizontalScrollView(Context context, AttributeSet attrs) {
 		this(context, attrs, 0);
@@ -144,17 +147,23 @@ public class HorizontalScrollView extends ViewGroup {
 	 * @param context
 	 *            The application's context.
 	 * @param attrs
-	 *            The attribtues set containing the Workspace's customization values.
+	 *            The attribtues set containing the Workspace's customization
+	 *            values.
 	 * @param defStyle
 	 *            Unused.
 	 */
-	public HorizontalScrollView(Context context, AttributeSet attrs, int defStyle) {
+	public HorizontalScrollView(Context context, AttributeSet attrs,
+			int defStyle) {
 		super(context, attrs, defStyle);
 
-		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.HorizontalScrollView);
-		pageWidthSpec = a.getDimensionPixelSize(R.styleable.HorizontalScrollView_pageWidth, SPEC_UNDEFINED);
-		snapVelocity = a.getInt(R.styleable.HorizontalScrollView_snapVelocity, 1000);
-		pageAnimationDuration = a.getInt(R.styleable.HorizontalScrollView_pageAnimationDuration, 600);
+		TypedArray a = context.obtainStyledAttributes(attrs,
+				R.styleable.HorizontalScrollView);
+		pageWidthSpec = a.getDimensionPixelSize(
+				R.styleable.HorizontalScrollView_pageWidth, SPEC_UNDEFINED);
+		snapVelocity = a.getInt(R.styleable.HorizontalScrollView_snapVelocity,
+				1000);
+		pageAnimationDuration = a.getInt(
+				R.styleable.HorizontalScrollView_pageAnimationDuration, 600);
 		a.recycle();
 
 		init();
@@ -187,7 +196,8 @@ public class HorizontalScrollView extends ViewGroup {
 
 	private void checkStartScroll(float x, float y) {
 		/*
-		 * Locally do absolute value. mLastMotionX is set to the y value of the down event.
+		 * Locally do absolute value. mLastMotionX is set to the y value of the
+		 * down event.
 		 */
 		final int xDiff = (int) Math.abs(x - mLastMotionX);
 		final int yDiff = (int) Math.abs(y - mLastMotionY);
@@ -205,8 +215,10 @@ public class HorizontalScrollView extends ViewGroup {
 			// Either way, cancel any pending longpress
 			if (mAllowLongPress) {
 				mAllowLongPress = false;
-				// Try canceling the long press. It could also have been scheduled
-				// by a distant descendant, so use the mAllowLongPress flag to block
+				// Try canceling the long press. It could also have been
+				// scheduled
+				// by a distant descendant, so use the mAllowLongPress flag to
+				// block
 				// everything
 				final View currentPage = getChildAt(mCurrentPage);
 				currentPage.cancelLongPress();
@@ -293,8 +305,9 @@ public class HorizontalScrollView extends ViewGroup {
 	}
 
 	/**
-	 * Gets the value that getScrollX() should return if the specified page is the current page (and no other scrolling
-	 * is occurring). Use this to pass a value to scrollTo(), for example.
+	 * Gets the value that getScrollX() should return if the specified page is
+	 * the current page (and no other scrolling is occurring). Use this to pass
+	 * a value to scrollTo(), for example.
 	 * 
 	 * @param whichPage
 	 * @return
@@ -309,7 +322,8 @@ public class HorizontalScrollView extends ViewGroup {
 	private void init() {
 		mScroller = new Scroller(getContext());
 		mCurrentPage = 0;
-		final ViewConfiguration configuration = ViewConfiguration.get(getContext());
+		final ViewConfiguration configuration = ViewConfiguration
+				.get(getContext());
 		mTouchSlop = configuration.getScaledTouchSlop();
 		mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
 	}
@@ -331,13 +345,14 @@ public class HorizontalScrollView extends ViewGroup {
 		// Log.d(TAG, "onInterceptTouchEvent::action=" + ev.getAction());
 
 		/*
-		 * This method JUST determines whether we want to intercept the motion. If we return true, onTouchEvent will be
-		 * called and we do the actual scrolling there.
+		 * This method JUST determines whether we want to intercept the motion.
+		 * If we return true, onTouchEvent will be called and we do the actual
+		 * scrolling there.
 		 */
 
 		/*
-		 * Shortcut the most recurring case: the user is in the dragging state and he is moving his finger. We want to
-		 * intercept this motion.
+		 * Shortcut the most recurring case: the user is in the dragging state
+		 * and he is moving his finger. We want to intercept this motion.
 		 */
 		final int action = ev.getAction();
 		final float x = ev.getX();
@@ -347,25 +362,29 @@ public class HorizontalScrollView extends ViewGroup {
 		switch (action) {
 		case MotionEvent.ACTION_MOVE:
 			/*
-			 * If we're in a horizontal scroll event, take it (intercept further events). But if we're
-			 * mid-vertical-scroll, don't even try; let the children deal with it. If we haven't found a scroll event
+			 * If we're in a horizontal scroll event, take it (intercept further
+			 * events). But if we're mid-vertical-scroll, don't even try; let
+			 * the children deal with it. If we haven't found a scroll event
 			 * yet, check for one.
 			 */
 			if (mTouchState == TOUCH_STATE_HORIZONTAL_SCROLLING) {
 				/*
-				 * We've already started a horizontal scroll; set intercept to true so we can take the remainder of all
-				 * touch events in onTouchEvent.
+				 * We've already started a horizontal scroll; set intercept to
+				 * true so we can take the remainder of all touch events in
+				 * onTouchEvent.
 				 */
 				intercept = true;
 			} else if (mTouchState == TOUCH_STATE_VERTICAL_SCROLLING) {
-				// Let children handle the events for the duration of the scroll event.
+				// Let children handle the events for the duration of the scroll
+				// event.
 				intercept = false;
 			} else { // We haven't picked up a scroll event yet; check for one.
 
 				/*
-				 * If we detected a horizontal scroll event, start stealing touch events (mark as scrolling). Otherwise,
-				 * see if we had a vertical scroll event -- if so, let the children handle it and don't look to
-				 * intercept again until the motion is done.
+				 * If we detected a horizontal scroll event, start stealing
+				 * touch events (mark as scrolling). Otherwise, see if we had a
+				 * vertical scroll event -- if so, let the children handle it
+				 * and don't look to intercept again until the motion is done.
 				 */
 
 				// final float x = ev.getX();
@@ -394,7 +413,8 @@ public class HorizontalScrollView extends ViewGroup {
 			break;
 		case MotionEvent.ACTION_DOWN:
 			/*
-			 * No motion yet, but register the coordinates so we can check for intercept at the next MOVE event.
+			 * No motion yet, but register the coordinates so we can check for
+			 * intercept at the next MOVE event.
 			 */
 			mLastMotionY = ev.getY();
 			mLastMotionX = ev.getX();
@@ -407,7 +427,8 @@ public class HorizontalScrollView extends ViewGroup {
 	}
 
 	@Override
-	protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+	protected void onLayout(boolean changed, int left, int top, int right,
+			int bottom) {
 		int childLeft = 0;
 
 		final int count = getChildCount();
@@ -415,7 +436,8 @@ public class HorizontalScrollView extends ViewGroup {
 			final View child = getChildAt(i);
 			if (child.getVisibility() != View.GONE) {
 				final int childWidth = child.getMeasuredWidth();
-				child.layout(childLeft, 0, childLeft + childWidth, child.getMeasuredHeight());
+				child.layout(childLeft, 0, childLeft + childWidth,
+						child.getMeasuredHeight());
 				childLeft += childWidth;
 			}
 		}
@@ -425,12 +447,16 @@ public class HorizontalScrollView extends ViewGroup {
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 		final int width = MeasureSpec.getSize(widthMeasureSpec);
-		pageWidth = pageWidthSpec == SPEC_UNDEFINED ? getMeasuredWidth() : pageWidthSpec;
+		pageWidth = pageWidthSpec == SPEC_UNDEFINED ? getMeasuredWidth()
+				: pageWidthSpec;
 		pageWidth = Math.min(pageWidth, getMeasuredWidth());
 
 		final int count = getChildCount();
 		for (int i = 0; i < count; i++) {
-			getChildAt(i).measure(MeasureSpec.makeMeasureSpec(pageWidth, MeasureSpec.EXACTLY), heightMeasureSpec);
+			getChildAt(i)
+					.measure(
+							MeasureSpec.makeMeasureSpec(pageWidth,
+									MeasureSpec.EXACTLY), heightMeasureSpec);
 		}
 
 		if (mFirstLayout) {
@@ -438,15 +464,17 @@ public class HorizontalScrollView extends ViewGroup {
 			mFirstLayout = false;
 		} else if (width != mLastSeenLayoutWidth) { // Width has changed
 			/*
-			 * Recalculate the width and scroll to the right position to be sure we're in the right place in the event
-			 * that we had a rotation that didn't result in an activity restart (code by aveyD). Without this you can
-			 * end up between two pages after a rotation.
+			 * Recalculate the width and scroll to the right position to be sure
+			 * we're in the right place in the event that we had a rotation that
+			 * didn't result in an activity restart (code by aveyD). Without
+			 * this you can end up between two pages after a rotation.
 			 */
-			Display display = ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE))
-					.getDefaultDisplay();
+			Display display = ((WindowManager) getContext().getSystemService(
+					Context.WINDOW_SERVICE)).getDefaultDisplay();
 			int displayWidth = display.getWidth();
 
-			mNextPage = Math.max(0, Math.min(mCurrentPage, getChildCount() - 1));
+			mNextPage = Math
+					.max(0, Math.min(mCurrentPage, getChildCount() - 1));
 			final int newX = mNextPage * displayWidth;
 			final int delta = newX - getScrollX();
 			mScroller.startScroll(getScrollX(), 0, delta, 0, 0);
@@ -456,14 +484,16 @@ public class HorizontalScrollView extends ViewGroup {
 	}
 
 	@Override
-	protected boolean onRequestFocusInDescendants(int direction, Rect previouslyFocusedRect) {
+	protected boolean onRequestFocusInDescendants(int direction,
+			Rect previouslyFocusedRect) {
 		int focusablePage;
 		if (mNextPage != INVALID_PAGE) {
 			focusablePage = mNextPage;
 		} else {
 			focusablePage = mCurrentPage;
 		}
-		getChildAt(focusablePage).requestFocus(direction, previouslyFocusedRect);
+		getChildAt(focusablePage)
+				.requestFocus(direction, previouslyFocusedRect);
 		return false;
 	}
 
@@ -478,7 +508,8 @@ public class HorizontalScrollView extends ViewGroup {
 
 	@Override
 	protected Parcelable onSaveInstanceState() {
-		final HorizontalScrollViewSavedState state = new HorizontalScrollViewSavedState(super.onSaveInstanceState());
+		final HorizontalScrollViewSavedState state = new HorizontalScrollViewSavedState(
+				super.onSaveInstanceState());
 		state.currentPage = mCurrentPage;
 		return state;
 	}
@@ -498,7 +529,8 @@ public class HorizontalScrollView extends ViewGroup {
 		case MotionEvent.ACTION_DOWN:
 
 			/*
-			 * If being flinged and user touches, stop the fling. isFinished will be false if being flinged.
+			 * If being flinged and user touches, stop the fling. isFinished
+			 * will be false if being flinged.
 			 */
 			if (!mScroller.isFinished()) {
 				mScroller.abortAnimation();
@@ -537,7 +569,9 @@ public class HorizontalScrollView extends ViewGroup {
 					}
 				}
 
-				else if (getScrollX() < 0 || getScrollX() > getChildAt(getChildCount() - 1).getLeft()) {
+				else if (getScrollX() < 0
+						|| getScrollX() > getChildAt(getChildCount() - 1)
+								.getLeft()) {
 					deltaX /= 2;
 				}
 
@@ -555,7 +589,8 @@ public class HorizontalScrollView extends ViewGroup {
 				if (velocityX > snapVelocity && mCurrentPage > 0) {
 					// Fling hard enough to move left
 					snapToPage(mCurrentPage - 1);
-				} else if (velocityX < -snapVelocity && mCurrentPage < getChildCount() - 1) {
+				} else if (velocityX < -snapVelocity
+						&& mCurrentPage < getChildCount() - 1) {
 					// Fling hard enough to move right
 					snapToPage(mCurrentPage + 1);
 				} else {
@@ -585,7 +620,8 @@ public class HorizontalScrollView extends ViewGroup {
 	}
 
 	@Override
-	public boolean requestChildRectangleOnScreen(View child, Rect rectangle, boolean immediate) {
+	public boolean requestChildRectangleOnScreen(View child, Rect rectangle,
+			boolean immediate) {
 		int screen = indexOfChild(child);
 		if (screen != mCurrentPage || !mScroller.isFinished()) {
 			return true;
@@ -644,7 +680,8 @@ public class HorizontalScrollView extends ViewGroup {
 		mNextPage = whichPage;
 
 		View focusedChild = getFocusedChild();
-		if (focusedChild != null && changingPages && focusedChild == getChildAt(mCurrentPage)) {
+		if (focusedChild != null && changingPages
+				&& focusedChild == getChildAt(mCurrentPage)) {
 			focusedChild.clearFocus();
 			getChildAt(mNextPage).requestFocus();
 		}

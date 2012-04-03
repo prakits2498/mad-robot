@@ -15,8 +15,7 @@ import java.io.InputStream;
 
 import com.madrobot.math.BinaryConstants;
 
-public class BitInputStream extends InputStream implements BinaryConstants
-{
+public class BitInputStream extends InputStream implements BinaryConstants {
 	private int bitCache = 0;
 	private int bitsInCache = 0;
 	private final int byteOrder;
@@ -26,38 +25,32 @@ public class BitInputStream extends InputStream implements BinaryConstants
 	private final InputStream is;
 
 	private boolean tiffLZWMode = false;
-	public BitInputStream(InputStream is, int byteOrder)
-	{
+
+	public BitInputStream(InputStream is, int byteOrder) {
 		this.byteOrder = byteOrder;
 		this.is = is;
 	}
-	public void flushCache()
-	{
+
+	public void flushCache() {
 		bitsInCache = 0;
 		bitCache = 0;
 	}
 
-	public long getBytesRead()
-	{
+	public long getBytesRead() {
 		return bytesRead;
 	}
 
 	@Override
-	public int read() throws IOException
-	{
+	public int read() throws IOException {
 		return readBits(8);
 	}
 
-	public int readBits(int SampleBits) throws IOException
-	{
-		while (bitsInCache < SampleBits)
-		{
+	public int readBits(int SampleBits) throws IOException {
+		while (bitsInCache < SampleBits) {
 			int next = is.read();
 
-			if (next < 0)
-			{
-				if (tiffLZWMode)
-				{
+			if (next < 0) {
+				if (tiffLZWMode) {
 					// pernicious special case!
 					return 257;
 				}
@@ -66,11 +59,11 @@ public class BitInputStream extends InputStream implements BinaryConstants
 
 			int newByte = (0xff & next);
 
-			if (byteOrder == BYTE_ORDER_NETWORK){
+			if (byteOrder == BYTE_ORDER_NETWORK) {
 				bitCache = (bitCache << 8) | newByte;
-			} else if (byteOrder == BYTE_ORDER_INTEL){
+			} else if (byteOrder == BYTE_ORDER_INTEL) {
 				bitCache = (newByte << bitsInCache) | bitCache;
-			} else{
+			} else {
 				throw new IOException("Unknown byte order: " + byteOrder);
 			}
 
@@ -84,12 +77,11 @@ public class BitInputStream extends InputStream implements BinaryConstants
 		if (byteOrder == BYTE_ORDER_NETWORK) // MSB, so read from left
 		{
 			sample = sampleMask & (bitCache >> (bitsInCache - SampleBits));
-		}
-		else if (byteOrder == BYTE_ORDER_INTEL) // LSB, so read from right
+		} else if (byteOrder == BYTE_ORDER_INTEL) // LSB, so read from right
 		{
 			sample = sampleMask & bitCache;
 			bitCache >>= SampleBits;
-		} else{
+		} else {
 			throw new IOException("Unknown byte order: " + byteOrder);
 		}
 
@@ -102,8 +94,7 @@ public class BitInputStream extends InputStream implements BinaryConstants
 		return result;
 	}
 
-	public void setTiffLZWMode()
-	{
+	public void setTiffLZWMode() {
 		tiffLZWMode = true;
 	}
 

@@ -12,8 +12,8 @@
 package com.madrobot.di.wizard.xml.converters;
 
 /**
- * To aid debugging, some components expose themselves as ErrorReporter indicating that they can add information in case
- * of an error..
+ * To aid debugging, some components expose themselves as ErrorReporter
+ * indicating that they can add information in case of an error..
  * 
  * @author Joerg Schaible
  * 

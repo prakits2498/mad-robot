@@ -1,6 +1,4 @@
-
 package com.madrobot.graphics.bitmap;
-
 
 /**
  * A Bitmap histogram.
@@ -40,12 +38,12 @@ public class Histogram {
 		maxFrequency = new int[3];
 		mean = new float[3];
 
-		numSamples = w*h;
+		numSamples = w * h;
 		isGray = true;
 
 		int index = 0;
 		for (int y = 0; y < h; y++) {
-			index = offset+y*stride;
+			index = offset + y * stride;
 			for (int x = 0; x < w; x++) {
 				int rgb = pixels[index++];
 				int r = (rgb >> 16) & 0xff;
@@ -58,7 +56,8 @@ public class Histogram {
 		}
 
 		for (int i = 0; i < 256; i++) {
-			if (histogram[RED][i] != histogram[GREEN][i] || histogram[GREEN][i] != histogram[BLUE][i]) {
+			if (histogram[RED][i] != histogram[GREEN][i]
+					|| histogram[GREEN][i] != histogram[BLUE][i]) {
 				isGray = false;
 				break;
 			}
@@ -84,12 +83,14 @@ public class Histogram {
 			for (int j = 0; j < 256; j++) {
 				minFrequency[i] = Math.min(minFrequency[i], histogram[i][j]);
 				maxFrequency[i] = Math.max(maxFrequency[i], histogram[i][j]);
-				mean[i] += (float)(j*histogram[i][j]);
+				mean[i] += (j * histogram[i][j]);
 			}
-			mean[i] /= (float)numSamples;
+			mean[i] /= numSamples;
 		}
-		minValue[GRAY] = Math.min(Math.min(minValue[RED], minValue[GREEN]), minValue[BLUE]);
-		maxValue[GRAY] = Math.max(Math.max(maxValue[RED], maxValue[GREEN]), maxValue[BLUE]);
+		minValue[GRAY] = Math.min(Math.min(minValue[RED], minValue[GREEN]),
+				minValue[BLUE]);
+		maxValue[GRAY] = Math.max(Math.max(maxValue[RED], maxValue[GREEN]),
+				maxValue[BLUE]);
 	}
 
 	public boolean isGray() {
@@ -107,8 +108,8 @@ public class Histogram {
 	}
 
 	public int getFrequency(int channel, int value) {
-		if (numSamples < 1 || channel < 0 || channel > 2 ||
-		 value < 0 || value > 255)
+		if (numSamples < 1 || channel < 0 || channel > 2 || value < 0
+				|| value > 255)
 			return -1;
 		return histogram[channel][value];
 	}
@@ -125,7 +126,6 @@ public class Histogram {
 		return minFrequency[channel];
 	}
 
-
 	public int getMaxFrequency() {
 		if (numSamples > 0 && isGray)
 			return maxFrequency[0];
@@ -137,7 +137,6 @@ public class Histogram {
 			return -1;
 		return maxFrequency[channel];
 	}
-
 
 	public int getMinValue() {
 		if (numSamples > 0 && isGray)
@@ -170,6 +169,5 @@ public class Histogram {
 			return mean[channel];
 		return -1.0F;
 	}
-
 
 }

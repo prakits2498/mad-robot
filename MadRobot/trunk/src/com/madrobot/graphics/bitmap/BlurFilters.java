@@ -4,7 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.PointF;
 
 import com.madrobot.geom.AffineTransform;
-import com.madrobot.graphics.bitmap.OutputConfiguration.BitmapMeta;
 
 /**
  * Collection of various blur filters
@@ -17,7 +16,8 @@ import com.madrobot.graphics.bitmap.OutputConfiguration.BitmapMeta;
  * Motion blur with <code>angle</code> 1.0f and <code>distance</code> 5.0f.<br/>
  * <img src="../../../../resources/motionBlur.png"><br/>
  * <b>Box Blur</b><br/>
- * Box blur with <code>hRadius</code> and <code>vRadius</code> of 5.0f. with 1 <code>iteration</code><br/>
+ * Box blur with <code>hRadius</code> and <code>vRadius</code> of 5.0f. with 1
+ * <code>iteration</code><br/>
  * <img src="../../../../resources/boxblur.png"><br/>
  * <b>Maximum</b><br/>
  * <img src="../../../../resources/maximum.png"><br/>
@@ -54,9 +54,11 @@ public class BlurFilters {
 	 * @param outputConfig
 	 *            Bitmap configuration of the output bitmap
 	 */
-	public static final Bitmap fastGaussianBlur(Bitmap bitmap, int brightness, Bitmap.Config outputConfig) {
+	public static final Bitmap fastGaussianBlur(Bitmap bitmap, int brightness,
+			Bitmap.Config outputConfig) {
 		byte[][] filter = { { 1, 2, 1 }, { 2, 4, 2 }, { 1, 2, 1 } };
-		return BitmapFilters.applyFilter(bitmap, brightness, filter, outputConfig);
+		return BitmapFilters.applyFilter(bitmap, brightness, filter,
+				outputConfig);
 	}
 
 	/**
@@ -70,19 +72,25 @@ public class BlurFilters {
 	 * @param outputConfig
 	 * @return
 	 */
-	public static Bitmap gaussianBlur(Bitmap src, int radius, boolean convolveAlpha, boolean premultiplyAlpha, Bitmap.Config outputConfig) {
+	public static Bitmap gaussianBlur(Bitmap src, int radius,
+			boolean convolveAlpha, boolean premultiplyAlpha,
+			Bitmap.Config outputConfig) {
 		int width = src.getWidth();
 		int height = src.getHeight();
 		int[] inPixels = BitmapUtils.getPixels(src);
 		int[] outPixels = new int[inPixels.length];
 		Kernel kernel = GaussianUtils.makeKernel(radius);
 		if (radius > 0) {
-			GaussianUtils.convolveAndTranspose(kernel, inPixels, outPixels, width, height, convolveAlpha, convolveAlpha
-					&& premultiplyAlpha, false, BitmapFilters.CLAMP_EDGES);
-			GaussianUtils.convolveAndTranspose(kernel, outPixels, inPixels, height, width, convolveAlpha, false,
-					convolveAlpha && premultiplyAlpha, BitmapFilters.CLAMP_EDGES);
+			GaussianUtils.convolveAndTranspose(kernel, inPixels, outPixels,
+					width, height, convolveAlpha, convolveAlpha
+							&& premultiplyAlpha, false,
+					BitmapFilters.CLAMP_EDGES);
+			GaussianUtils.convolveAndTranspose(kernel, outPixels, inPixels,
+					height, width, convolveAlpha, false, convolveAlpha
+							&& premultiplyAlpha, BitmapFilters.CLAMP_EDGES);
 		}
-		return Bitmap.createBitmap(inPixels, src.getWidth(), src.getHeight(), outputConfig);
+		return Bitmap.createBitmap(inPixels, src.getWidth(), src.getHeight(),
+				outputConfig);
 	}
 
 	/**
@@ -104,7 +112,9 @@ public class BlurFilters {
 	 * @param outputConfig
 	 * @return
 	 */
-	public static Bitmap motionBlur(Bitmap src, float angle, float distance, float rotation, float zoom, boolean premultiplyAlpha, boolean wrapEdges, Bitmap.Config outputConfig) {
+	public static Bitmap motionBlur(Bitmap src, float angle, float distance,
+			float rotation, float zoom, boolean premultiplyAlpha,
+			boolean wrapEdges, Bitmap.Config outputConfig) {
 		int width = src.getWidth();
 		int height = src.getHeight();
 		int[] inPixels = BitmapUtils.getPixels(src);
@@ -117,7 +127,8 @@ public class BlurFilters {
 		float imageRadius = (float) Math.sqrt(cx * cx + cy * cy);
 		float translateX = (float) (distance * Math.cos(angle));
 		float translateY = (float) (distance * -Math.sin(angle));
-		float maxDistance = distance + Math.abs(rotation * imageRadius) + zoom * imageRadius;
+		float maxDistance = distance + Math.abs(rotation * imageRadius) + zoom
+				* imageRadius;
 		int repetitions = (int) maxDistance;
 		AffineTransform t = new AffineTransform();
 		PointF p = new PointF();
@@ -168,10 +179,10 @@ public class BlurFilters {
 				if (count == 0) {
 					outPixels[index] = inPixels[index];
 				} else {
-					a = PixelUtils.clamp((int) (a / count));
-					r = PixelUtils.clamp((int) (r / count));
-					g = PixelUtils.clamp((int) (g / count));
-					b = PixelUtils.clamp((int) (b / count));
+					a = PixelUtils.clamp((a / count));
+					r = PixelUtils.clamp((r / count));
+					g = PixelUtils.clamp((g / count));
+					b = PixelUtils.clamp((b / count));
 					outPixels[index] = (a << 24) | (r << 16) | (g << 8) | b;
 				}
 				index++;
@@ -180,7 +191,8 @@ public class BlurFilters {
 		if (premultiplyAlpha)
 			ImageMath.unpremultiply(outPixels, 0, inPixels.length);
 
-		return Bitmap.createBitmap(outPixels, src.getWidth(), src.getHeight(), outputConfig);
+		return Bitmap.createBitmap(outPixels, src.getWidth(), src.getHeight(),
+				outputConfig);
 	}
 
 	/**
@@ -202,8 +214,9 @@ public class BlurFilters {
 	/**
 	 * performs a box blur on an image.
 	 * <p>
-	 * The horizontal and vertical blurs can be specified separately and a number of iterations can be given which
-	 * allows an approximation to Gaussian blur.
+	 * The horizontal and vertical blurs can be specified separately and a
+	 * number of iterations can be given which allows an approximation to
+	 * Gaussian blur.
 	 * </p>
 	 * 
 	 * @param bitmap
@@ -212,13 +225,15 @@ public class BlurFilters {
 	 * @param vRadius
 	 *            min:0 max:100
 	 * @param iterations
-	 *            the number of iterations the blur is performed. min:0 max:10. Recommended:1.
+	 *            the number of iterations the blur is performed. min:0 max:10.
+	 *            Recommended:1.
 	 * @param premultiplyAlpha
 	 *            whether to premultiply the alpha channel. Recommended:true
 	 * @param outputConfig
 	 * @return
 	 */
-	public static Bitmap boxBlur(Bitmap bitmap, float hRadius, float vRadius, int iterations, boolean premultiplyAlpha, Bitmap.Config outputConfig) {
+	public static Bitmap boxBlur(Bitmap bitmap, float hRadius, float vRadius,
+			int iterations, boolean premultiplyAlpha, Bitmap.Config outputConfig) {
 
 		int width = bitmap.getWidth();
 		int height = bitmap.getHeight();
@@ -254,7 +269,8 @@ public class BlurFilters {
 	 * @param radius
 	 *            the radius of blur
 	 */
-	public static void blur(int[] in, int[] out, int width, int height, float radius) {
+	public static void blur(int[] in, int[] out, int width, int height,
+			float radius) {
 		int widthMinus1 = width - 1;
 		int r = (int) radius;
 		int tableSize = 2 * r + 1;
@@ -278,7 +294,8 @@ public class BlurFilters {
 			}
 
 			for (int x = 0; x < width; x++) {
-				out[outIndex] = (divide[ta] << 24) | (divide[tr] << 16) | (divide[tg] << 8) | divide[tb];
+				out[outIndex] = (divide[ta] << 24) | (divide[tr] << 16)
+						| (divide[tg] << 8) | divide[tb];
 
 				int i1 = x + r + 1;
 				if (i1 > widthMinus1)
@@ -299,7 +316,8 @@ public class BlurFilters {
 		}
 	}
 
-	public static void blurFractional(int[] in, int[] out, int width, int height, float radius) {
+	public static void blurFractional(int[] in, int[] out, int width,
+			int height, float radius) {
 		radius -= (int) radius;
 		float f = 1.0f / (1 + 2 * radius);
 		int inIndex = 0;
@@ -344,7 +362,8 @@ public class BlurFilters {
 	}
 
 	/**
-	 * A filter which replcaes each pixel by the maximum of itself and its eight neightbours.
+	 * A filter which replcaes each pixel by the maximum of itself and its eight
+	 * neightbours.
 	 * 
 	 * @param src
 	 * @param outputConfig
@@ -367,7 +386,8 @@ public class BlurFilters {
 						for (int dx = -1; dx <= 1; dx++) {
 							int ix = x + dx;
 							if (0 <= ix && ix < width) {
-								pixel = PixelUtils.combinePixels(pixel, inPixels[ioffset + ix], PixelUtils.MAX);
+								pixel = PixelUtils.combinePixels(pixel,
+										inPixels[ioffset + ix], PixelUtils.MAX);
 							}
 						}
 					}
@@ -380,7 +400,8 @@ public class BlurFilters {
 	}
 
 	/**
-	 * A filter which replcaes each pixel by the mimimum of itself and its eight neightbours.
+	 * A filter which replcaes each pixel by the mimimum of itself and its eight
+	 * neightbours.
 	 * 
 	 * @param src
 	 * @param outputConfig
@@ -403,7 +424,8 @@ public class BlurFilters {
 						for (int dx = -1; dx <= 1; dx++) {
 							int ix = x + dx;
 							if (0 <= ix && ix < width) {
-								pixel = PixelUtils.combinePixels(pixel, inPixels[ioffset + ix], PixelUtils.MIN);
+								pixel = PixelUtils.combinePixels(pixel,
+										inPixels[ioffset + ix], PixelUtils.MIN);
 							}
 						}
 					}
@@ -416,7 +438,8 @@ public class BlurFilters {
 	}
 
 	/**
-	 * A filter which performs a 3x3 median operation. Useful for removing dust and noise.
+	 * A filter which performs a 3x3 median operation. Useful for removing dust
+	 * and noise.
 	 * 
 	 * @param src
 	 * @param outputConfig

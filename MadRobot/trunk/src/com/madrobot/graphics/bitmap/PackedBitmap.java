@@ -10,7 +10,6 @@
  ******************************************************************************/
 package com.madrobot.graphics.bitmap;
 
-
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -21,8 +20,8 @@ import android.graphics.Paint;
  * </p>
  * This image allows very images with low color counts to occupy as little as
  * one byte per pixel.<br/>
- * <b>Warning!: Drawing operation of a PackedImage is
- * slower than a regular Image </b>
+ * <b>Warning!: Drawing operation of a PackedImage is slower than a regular
+ * Image </b>
  * <table border="0">
  * <tr>
  * <td><b>Regular Image</b></td>
@@ -43,8 +42,8 @@ import android.graphics.Paint;
 public class PackedBitmap {
 
 	private static boolean contains(int array[], int length, int value) {
-		for(int iter = 0; iter < length; iter++){
-			if(array[iter] == value){
+		for (int iter = 0; iter < length; iter++) {
+			if (array[iter] == value) {
 				return true;
 			}
 		}
@@ -60,20 +59,20 @@ public class PackedBitmap {
 	 * @return newly created packed image
 	 */
 	public static PackedBitmap load(byte data[]) {
-		try{
-			java.io.DataInputStream input = new java.io.DataInputStream(new java.io.ByteArrayInputStream(
-					data));
+		try {
+			java.io.DataInputStream input = new java.io.DataInputStream(
+					new java.io.ByteArrayInputStream(data));
 			int width = input.readShort();
 			int height = input.readShort();
 			int[] palette = new int[input.readByte() & 0xff];
-			for(int iter = 0; iter < palette.length; iter++){
+			for (int iter = 0; iter < palette.length; iter++) {
 				palette[iter] = input.readInt();
 			}
 
 			byte[] arr = new byte[width * height];
 			input.readFully(arr);
 			return new PackedBitmap(width, height, palette, arr);
-		} catch(java.io.IOException e){
+		} catch (java.io.IOException e) {
 			e.printStackTrace();
 			return null;
 		}
@@ -102,19 +101,19 @@ public class PackedBitmap {
 		int arrayLength = width * height;
 		int tempPalette[] = new int[256];
 		int paletteLocation = 0;
-		for(int iter = 0; iter < arrayLength; iter++){
+		for (int iter = 0; iter < arrayLength; iter++) {
 			int current = rgb[iter];
-			if(contains(tempPalette, paletteLocation, current)){
+			if (contains(tempPalette, paletteLocation, current)) {
 				continue;
 			}
-			if(paletteLocation > 255){
+			if (paletteLocation > 255) {
 				return null;
 			}
 			tempPalette[paletteLocation] = current;
 			paletteLocation++;
 		}
 
-		if(paletteLocation != tempPalette.length){
+		if (paletteLocation != tempPalette.length) {
 			int newArray[] = new int[paletteLocation];
 			System.arraycopy(tempPalette, 0, newArray, 0, paletteLocation);
 			tempPalette = newArray;
@@ -148,40 +147,42 @@ public class PackedBitmap {
 		this.height = height;
 		this.palette = palette;
 		imageDataByte = new byte[width * height];
-		for(int iter = 0; iter < imageDataByte.length; iter++){
+		for (int iter = 0; iter < imageDataByte.length; iter++) {
 			imageDataByte[iter] = (byte) paletteOffset(rgb[iter]);
 		}
-		if(lineCache == null){
+		if (lineCache == null) {
 			System.out.println("lineCache is null");
 		}
-		System.out.println("[PackedImage]Packing done! rgb data len " + imageDataByte.length + " bytes");
+		System.out.println("[PackedImage]Packing done! rgb data len "
+				+ imageDataByte.length + " bytes");
 	}
 
 	public void drawImage(Canvas canvas, int x, int y) {
-		if((lineCache == null) || (lineCache.length < width * 3)){
+		if ((lineCache == null) || (lineCache.length < width * 3)) {
 			lineCache = new int[width * 3];
 		}
 		int clipY = canvas.getClipBounds().top;
 		int clipBottomY = canvas.getClipBounds().height() + clipY;
 		int firstLine = 0;
 		int lastLine = height;
-		if(clipY > y){
+		if (clipY > y) {
 			firstLine = clipY - y;
 		}
-		if(clipBottomY < y + height){
+		if (clipBottomY < y + height) {
 			lastLine = clipBottomY - y;
 		}
 		Paint paint = new Paint();
 		paint.setAntiAlias(true);
-		for(int line = firstLine; line < lastLine; line += 3){
+		for (int line = firstLine; line < lastLine; line += 3) {
 			int currentPos = line * width;
 			int rowsToDraw = Math.min(3, height - line);
 			int amount = width * rowsToDraw;
-			for(int position = 0; position < amount; position++){
+			for (int position = 0; position < amount; position++) {
 				int i = imageDataByte[position + currentPos] & 0xff;
 				lineCache[position] = palette[i];
 			}
-			canvas.drawBitmap(lineCache, 0, width, x, y + line, width, rowsToDraw, true, paint);
+			canvas.drawBitmap(lineCache, 0, width, x, y + line, width,
+					rowsToDraw, true, paint);
 		}
 
 	}
@@ -192,7 +193,7 @@ public class PackedBitmap {
 
 	public int[] getRGB() {
 		int rgb[] = new int[width * height];
-		for(int iter = 0; iter < rgb.length; iter++){
+		for (int iter = 0; iter < rgb.length; iter++) {
 			int i = imageDataByte[iter] & 0xff;
 			rgb[iter] = palette[i];
 		}
@@ -212,12 +213,13 @@ public class PackedBitmap {
 	}
 
 	private int paletteOffset(int rgb) {
-		for(int iter = 0; iter < palette.length; iter++){
-			if(rgb == palette[iter]){
+		for (int iter = 0; iter < palette.length; iter++) {
+			if (rgb == palette[iter]) {
 				return iter;
 			}
 		}
-		throw new IllegalStateException("Invalid palette request in paletteOffset");
+		throw new IllegalStateException(
+				"Invalid palette request in paletteOffset");
 	}
 
 	/**
@@ -227,20 +229,20 @@ public class PackedBitmap {
 	 * @return a byte array that can be loaded using the load method
 	 */
 	public byte[] toByteArray() {
-		try{
+		try {
 			java.io.ByteArrayOutputStream array = new java.io.ByteArrayOutputStream();
 			java.io.DataOutputStream out = new java.io.DataOutputStream(array);
 			out.writeShort(width);
 			out.writeShort(height);
 			out.writeByte(palette.length);
-			for(int iter = 0; iter < palette.length; iter++){
+			for (int iter = 0; iter < palette.length; iter++) {
 				out.writeInt(palette[iter]);
 			}
 
 			out.write(imageDataByte);
 			out.close();
 			return array.toByteArray();
-		} catch(java.io.IOException e){
+		} catch (java.io.IOException e) {
 			e.printStackTrace();
 			return null;
 		}

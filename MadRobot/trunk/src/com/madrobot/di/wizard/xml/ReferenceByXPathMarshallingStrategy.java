@@ -15,7 +15,8 @@ import com.madrobot.di.wizard.xml.converters.ConverterLookup;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamReader;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
 
-class ReferenceByXPathMarshallingStrategy extends AbstractTreeMarshallingStrategy {
+class ReferenceByXPathMarshallingStrategy extends
+		AbstractTreeMarshallingStrategy {
 
 	public static int ABSOLUTE = 1;
 	public static int RELATIVE = 0;
@@ -27,12 +28,18 @@ class ReferenceByXPathMarshallingStrategy extends AbstractTreeMarshallingStrateg
 	}
 
 	@Override
-	protected TreeMarshaller createMarshallingContext(HierarchicalStreamWriter writer, ConverterLookup converterLookup, Mapper mapper) {
-		return new ReferenceByXPathMarshaller(writer, converterLookup, mapper, mode);
+	protected TreeMarshaller createMarshallingContext(
+			HierarchicalStreamWriter writer, ConverterLookup converterLookup,
+			Mapper mapper) {
+		return new ReferenceByXPathMarshaller(writer, converterLookup, mapper,
+				mode);
 	}
 
 	@Override
-	protected TreeUnmarshaller createUnmarshallingContext(Object root, HierarchicalStreamReader reader, ConverterLookup converterLookup, Mapper mapper) {
-		return new ReferenceByXPathUnmarshaller(root, reader, converterLookup, mapper);
+	protected TreeUnmarshaller createUnmarshallingContext(Object root,
+			HierarchicalStreamReader reader, ConverterLookup converterLookup,
+			Mapper mapper) {
+		return new ReferenceByXPathUnmarshaller(root, reader, converterLookup,
+				mapper);
 	}
 }

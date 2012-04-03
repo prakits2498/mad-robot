@@ -24,7 +24,7 @@ public class ClassLoaderUtils {
 	 */
 	public static ClassLoader getClassLoader(Class clazz) {
 		ClassLoader callersLoader = clazz.getClassLoader();
-		if(callersLoader == null){
+		if (callersLoader == null) {
 			callersLoader = ClassLoader.getSystemClassLoader();
 		}
 		return callersLoader;
@@ -41,14 +41,15 @@ public class ClassLoaderUtils {
 	 * <li>The System class loader.
 	 * </ul>
 	 */
-	public static ClassLoader getClassLoader(ClassLoader specifiedLoader, boolean useContextClassLoader,
-			Class callingClass) {
-		if(specifiedLoader != null){
+	public static ClassLoader getClassLoader(ClassLoader specifiedLoader,
+			boolean useContextClassLoader, Class callingClass) {
+		if (specifiedLoader != null) {
 			return specifiedLoader;
 		}
-		if(useContextClassLoader){
-			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-			if(classLoader != null){
+		if (useContextClassLoader) {
+			ClassLoader classLoader = Thread.currentThread()
+					.getContextClassLoader();
+			if (classLoader != null) {
 				return classLoader;
 			}
 		}
@@ -65,8 +66,9 @@ public class ClassLoaderUtils {
 	 * <li>The System class loader.
 	 * </ul>
 	 */
-	public static ClassLoader getClassLoader(ClassLoader specifiedLoader, Class callingClass) {
-		if(specifiedLoader != null){
+	public static ClassLoader getClassLoader(ClassLoader specifiedLoader,
+			Class callingClass) {
+		if (specifiedLoader != null) {
 			return specifiedLoader;
 		}
 		return getClassLoader(callingClass);
@@ -74,8 +76,7 @@ public class ClassLoaderUtils {
 
 	/**
 	 * Loads the given class using the current Thread's context class loader
-	 * first
-	 * otherwise use the class loader which loaded this class.
+	 * first otherwise use the class loader which loaded this class.
 	 * 
 	 * @param className
 	 *            The class to be loaded
@@ -83,11 +84,12 @@ public class ClassLoaderUtils {
 	 *            The class which is calling this method
 	 * @return The Loaded class
 	 */
-	public static Class loadClass(String className, Class callingClass) throws ClassNotFoundException {
+	public static Class loadClass(String className, Class callingClass)
+			throws ClassNotFoundException {
 		ClassLoader loader = Thread.currentThread().getContextClassLoader();
-		if(loader == null){
+		if (loader == null) {
 			return getClassLoader(callingClass).loadClass(className);
-		} else{
+		} else {
 			return loader.loadClass(className);
 		}
 	}
@@ -100,27 +102,29 @@ public class ClassLoaderUtils {
 	 * <li>otherwise use the class loader which loaded this class.</li>
 	 * </ol>
 	 */
-	public static Class loadClass(String className, ClassLoader specifiedLoader, boolean useContextLoader,
+	public static Class loadClass(String className,
+			ClassLoader specifiedLoader, boolean useContextLoader,
 			Class callingClass) throws ClassNotFoundException {
 		Class clazz = null;
-		if(specifiedLoader != null){
-			try{
+		if (specifiedLoader != null) {
+			try {
 				clazz = specifiedLoader.loadClass(className);
-			} catch(ClassNotFoundException e){
+			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
 		}
-		if(clazz == null && useContextLoader){
-			ClassLoader contextLoader = Thread.currentThread().getContextClassLoader();
-			if(contextLoader != null){
-				try{
+		if (clazz == null && useContextLoader) {
+			ClassLoader contextLoader = Thread.currentThread()
+					.getContextClassLoader();
+			if (contextLoader != null) {
+				try {
 					clazz = contextLoader.loadClass(className);
-				} catch(ClassNotFoundException e){
+				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
 				}
 			}
 		}
-		if(clazz == null){
+		if (clazz == null) {
 			ClassLoader loader = getClassLoader(callingClass);
 			clazz = loader.loadClass(className);
 		}

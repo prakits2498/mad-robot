@@ -22,13 +22,15 @@ class ClassInfo {
 	private Class<?> type;
 
 	/**
-	 * Creates an intance of {@link ClassInfo} with unitialized element name and type.
+	 * Creates an intance of {@link ClassInfo} with unitialized element name and
+	 * type.
 	 */
 	ClassInfo() {
 	}
 
 	/**
-	 * Creates an intance of {@link ClassInfo} with specified element name and type.
+	 * Creates an intance of {@link ClassInfo} with specified element name and
+	 * type.
 	 * 
 	 * @param type
 	 *            Class to which the element maps

@@ -10,14 +10,13 @@
  ******************************************************************************/
 package com.madrobot.graphics.threeD;
 
-import com.madrobot.graphics.bitmap.PixelUtils;
-
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
+import com.madrobot.graphics.bitmap.PixelUtils;
+
 /**
- * Helper class to draw 3D primitives on a 2D surface
- * Graphics3DUtil.java
+ * Helper class to draw 3D primitives on a 2D surface Graphics3DUtil.java
  * 
  */
 public class Graphics3DUtil {
@@ -57,8 +56,9 @@ public class Graphics3DUtil {
 	 * @param height
 	 *            of the 3D rect
 	 */
-	public final static void draw3DRect(final Canvas canvas, int highLightColor, int shadowColor,
-			final boolean isRaised, int lineWidth, float x, float y, final int width, final int height) {
+	public final static void draw3DRect(final Canvas canvas,
+			int highLightColor, int shadowColor, final boolean isRaised,
+			int lineWidth, float x, float y, final int width, final int height) {
 		Paint paint = new Paint();
 		paint.setAntiAlias(true);
 
@@ -73,7 +73,7 @@ public class Graphics3DUtil {
 		boolean bBevelled = (isRaised ? 0x1000 : 0x2000 & nBevel) != 0;
 		int nHalfWidth = lineWidth / 2;
 
-		while(lineWidth > 0){
+		while (lineWidth > 0) {
 			paint.setColor(bLowered ? shadowColor : highLightColor);
 
 			canvas.drawLine(x, y, x, y2, paint);
@@ -87,11 +87,12 @@ public class Graphics3DUtil {
 			x2--;
 			y2--;
 			lineWidth--;
-			if(bBevelled){
+			if (bBevelled) {
 				// soften the bevel by slightly fading the colors
-				highLightColor = PixelUtils.adjustBrightness(highLightColor, 10);
+				highLightColor = PixelUtils
+						.adjustBrightness(highLightColor, 10);
 				shadowColor = PixelUtils.adjustBrightness(shadowColor, 10);
-			} else if(lineWidth == nHalfWidth){
+			} else if (lineWidth == nHalfWidth) {
 				int tmp = highLightColor;
 
 				highLightColor = shadowColor;

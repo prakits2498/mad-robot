@@ -12,7 +12,8 @@
 package com.madrobot.di.wizard.xml;
 
 /**
- * Mapper that uses a more meaningful alias for the field in an inner class (this$0) that refers to the outer class.
+ * Mapper that uses a more meaningful alias for the field in an inner class
+ * (this$0) that refers to the outer class.
  * 
  */
 class OuterClassMapper extends MapperWrapper {

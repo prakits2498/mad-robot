@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.view.View.BaseSavedState;
 
- class HorizontalScrollViewSavedState extends BaseSavedState {
+class HorizontalScrollViewSavedState extends BaseSavedState {
 	public static final Parcelable.Creator<HorizontalScrollViewSavedState> CREATOR = new Parcelable.Creator<HorizontalScrollViewSavedState>() {
 		@Override
 		public HorizontalScrollViewSavedState createFromParcel(Parcel in) {

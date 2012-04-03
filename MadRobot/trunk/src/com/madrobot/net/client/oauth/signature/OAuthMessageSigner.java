@@ -21,7 +21,7 @@ public abstract class OAuthMessageSigner implements Serializable {
 	}
 
 	protected String base64Encode(byte[] b) {
-		return new String(Base64.encode(b,Base64.DEFAULT));
+		return new String(Base64.encode(b, Base64.DEFAULT));
 	}
 
 	protected byte[] decodeBase64(String s) {
@@ -38,7 +38,8 @@ public abstract class OAuthMessageSigner implements Serializable {
 		return tokenSecret;
 	}
 
-	private void readObject(java.io.ObjectInputStream stream) throws IOException, ClassNotFoundException {
+	private void readObject(java.io.ObjectInputStream stream)
+			throws IOException, ClassNotFoundException {
 		stream.defaultReadObject();
 	}
 
@@ -50,6 +51,7 @@ public abstract class OAuthMessageSigner implements Serializable {
 		this.tokenSecret = tokenSecret;
 	}
 
-	public abstract String sign(HttpRequest request, HttpParameters requestParameters)
+	public abstract String sign(HttpRequest request,
+			HttpParameters requestParameters)
 			throws OAuthMessageSignerException;
 }

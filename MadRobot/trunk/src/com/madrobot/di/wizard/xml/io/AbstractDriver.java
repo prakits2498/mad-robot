@@ -19,8 +19,9 @@ import java.io.InputStream;
 import java.net.URL;
 
 /**
- * Abstract base class for all HierarchicalStreamDriver implementations. Implementations of
- * {@link HierarchicalStreamDriver} should rather be derived from this class then implementing the interface directly.
+ * Abstract base class for all HierarchicalStreamDriver implementations.
+ * Implementations of {@link HierarchicalStreamDriver} should rather be derived
+ * from this class then implementing the interface directly.
  * 
  * @since 1.4
  */

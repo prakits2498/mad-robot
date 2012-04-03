@@ -82,6 +82,7 @@ public class CustomObjectOutputStream extends ObjectOutputStream {
 		}
 
 	}
+
 	public static interface StreamCallback {
 		void close() throws IOException;
 
@@ -94,11 +95,14 @@ public class CustomObjectOutputStream extends ObjectOutputStream {
 		void writeToStream(Object object) throws IOException;
 	}
 
-	private static final String DATA_HOLDER_KEY = CustomObjectOutputStream.class.getName();
+	private static final String DATA_HOLDER_KEY = CustomObjectOutputStream.class
+			.getName();
 
-	public static synchronized CustomObjectOutputStream getInstance(DataHolder whereFrom, StreamCallback callback) {
+	public static synchronized CustomObjectOutputStream getInstance(
+			DataHolder whereFrom, StreamCallback callback) {
 		try {
-			CustomObjectOutputStream result = (CustomObjectOutputStream) whereFrom.get(DATA_HOLDER_KEY);
+			CustomObjectOutputStream result = (CustomObjectOutputStream) whereFrom
+					.get(DATA_HOLDER_KEY);
 			if (result == null) {
 				result = new CustomObjectOutputStream(callback);
 				whereFrom.put(DATA_HOLDER_KEY, result);
@@ -116,13 +120,15 @@ public class CustomObjectOutputStream extends ObjectOutputStream {
 	private FastStack customFields = new FastStack(1);
 
 	/**
-	 * Warning, this object is expensive to create (due to functionality inherited from superclass). Use the static
-	 * fetch() method instead, wherever possible.
+	 * Warning, this object is expensive to create (due to functionality
+	 * inherited from superclass). Use the static fetch() method instead,
+	 * wherever possible.
 	 * 
 	 * @see #getInstance(com.madrobot.di.wizard.xml.converters.DataHolder,
 	 *      com.madrobot.di.xml.core.thoughtworks.xstream.core.util.CustomObjectOutputStream.StreamCallback)
 	 */
-	public CustomObjectOutputStream(StreamCallback callback) throws IOException, SecurityException {
+	public CustomObjectOutputStream(StreamCallback callback)
+			throws IOException, SecurityException {
 		this.callbacks.push(callback);
 	}
 
@@ -152,7 +158,8 @@ public class CustomObjectOutputStream extends ObjectOutputStream {
 	}
 
 	/**
-	 * Allows the CustomObjectOutputStream (which is expensive to create) to be reused.
+	 * Allows the CustomObjectOutputStream (which is expensive to create) to be
+	 * reused.
 	 */
 	public void pushCallback(StreamCallback callback) {
 		this.callbacks.push(callback);
@@ -196,7 +203,9 @@ public class CustomObjectOutputStream extends ObjectOutputStream {
 
 	@Override
 	public void writeBoolean(boolean val) throws IOException {
-		peekCallback().writeToStream(val ? Boolean.TRUE : Boolean.FALSE); // JDK 1.3 friendly
+		peekCallback().writeToStream(val ? Boolean.TRUE : Boolean.FALSE); // JDK
+																			// 1.3
+																			// friendly
 	}
 
 	@Override

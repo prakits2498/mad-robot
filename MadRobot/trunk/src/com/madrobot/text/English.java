@@ -11,6 +11,7 @@
 package com.madrobot.text;
 
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 public final class English {
 
@@ -22,9 +23,7 @@ public final class English {
 	public static String hours = "Hours";
 	public static String second = "Second";
 	public static String seconds = "Seconds";
-	
-	
-	
+
 	/**
 	 * Convert a long value to the corresponding english
 	 * <p>
@@ -183,7 +182,7 @@ public final class English {
 		}
 	}
 
-	public static String timeToString(long l) {
+	public static String timeToEnglish(long l) {
 
 		StringBuilder stringbuilder = new StringBuilder();
 		long l1 = l;
@@ -191,9 +190,9 @@ public final class English {
 		if (l2 > 0L) {
 			l1 -= l2 * 0x5265c00L;
 			if (l2 == 1L)
-				stringbuilder.append( Long.valueOf(l2)+day);
+				stringbuilder.append(Long.valueOf(l2) + day);
 			else
-				stringbuilder.append(Long.valueOf(l2)+days);
+				stringbuilder.append(Long.valueOf(l2) + days);
 		}
 		long l3 = l1 / 0x36ee80L;
 		if (l3 > 0L) {
@@ -201,9 +200,9 @@ public final class English {
 			if (stringbuilder.length() > 0)
 				stringbuilder.append(", ");
 			if (l3 == 1L)
-				stringbuilder.append(Long.valueOf(l3)+hour);
+				stringbuilder.append(Long.valueOf(l3) + hour);
 			else
-				stringbuilder.append(Long.valueOf(l3)+hours);
+				stringbuilder.append(Long.valueOf(l3) + hours);
 		}
 		long l4 = l1 / 60000L;
 		if (l4 > 0L) {
@@ -211,28 +210,67 @@ public final class English {
 			if (stringbuilder.length() > 0)
 				stringbuilder.append(", ");
 			if (l4 == 1L)
-				stringbuilder.append(Long.valueOf(l4)+minute);
+				stringbuilder.append(Long.valueOf(l4) + minute);
 			else
-				stringbuilder.append(Long.valueOf(l4)+minutes);
+				stringbuilder.append(Long.valueOf(l4) + minutes);
 		}
 		if (l1 == 1000L) {
 			if (stringbuilder.length() > 0)
 				stringbuilder.append(", ");
-			stringbuilder.append(Integer.valueOf(1)+second );
+			stringbuilder.append(Integer.valueOf(1) + second);
 		} else if (l1 > 0L || stringbuilder.length() == 0) {
 			if (stringbuilder.length() > 0)
 				stringbuilder.append(", ");
 			long l5 = l1 / 1000L;
 			l1 -= l5 * 1000L;
 			if (l1 % 1000L != 0L) {
-				double d = (double) l5 + (double) l1 / 1000D;
+				double d = l5 + l1 / 1000D;
 				DecimalFormat decimalformat = new DecimalFormat("0.000");
-				stringbuilder.append(decimalformat.format(d)+seconds);
+				stringbuilder.append(decimalformat.format(d) + seconds);
 			} else {
-				stringbuilder.append(Long.valueOf(l5)+seconds);
+				stringbuilder.append(Long.valueOf(l5) + seconds);
 			}
 		}
 		return stringbuilder.toString();
+	}
+
+	private static long[] TIME_FACTOR = { 60 * 60 * 1000, 60 * 1000, 1000 };
+
+	/**
+	 * Calculate the elapsed time between two times specified in milliseconds.
+	 * <p>
+	 * returns the elapsed time in XhYmZs format.
+	 * </p>
+	 * 
+	 * @param start
+	 *            The start of the time period
+	 * @param end
+	 *            The end of the time period
+	 * @return a string of the form "XhYmZs" when the elapsed time is X hours, Y
+	 *         minutes and Z seconds or null if start > end.
+	 */
+	public static String elapsedTimeToEnglish(long start, long end) {
+		if (start > end) {
+			return null;
+		}
+
+		long[] elapsedTime = new long[TIME_FACTOR.length];
+
+		for (int i = 0; i < TIME_FACTOR.length; i++) {
+			elapsedTime[i] = start > end ? -1 : (end - start) / TIME_FACTOR[i];
+			start += TIME_FACTOR[i] * elapsedTime[i];
+		}
+
+		NumberFormat nf = NumberFormat.getInstance();
+		nf.setMinimumIntegerDigits(2);
+		StringBuffer buf = new StringBuffer();
+		for (int i = 0; i < elapsedTime.length; i++) {
+			if (i > 0) {
+				buf.append(":");
+			}
+			buf.append(nf.format(elapsedTime[i]));
+		}
+		return buf.toString();
 	}
 
 	private English() {

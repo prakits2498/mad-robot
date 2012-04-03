@@ -20,22 +20,27 @@ import com.madrobot.util.collections.FastStack;
  * Represents a path to a single node in the tree.
  * 
  * <p>
- * Two absolute paths can also be compared to calculate the relative path between them. A relative path can be applied
- * to an absolute path to calculate another absolute path.
+ * Two absolute paths can also be compared to calculate the relative path
+ * between them. A relative path can be applied to an absolute path to calculate
+ * another absolute path.
  * </p>
  * 
  * <p>
- * Note that the paths are normally XPath compliant, so can be read by other XPath engines. However, {@link #toString()}
- * will select a node list while {@link #explicit()} will always select an individual node. If the return type of the
- * XPath evaluation is a node, the result will be the same, because XPath will then use the first element of the list.
- * The following are examples of path expressions that the Path object supports:
+ * Note that the paths are normally XPath compliant, so can be read by other
+ * XPath engines. However, {@link #toString()} will select a node list while
+ * {@link #explicit()} will always select an individual node. If the return type
+ * of the XPath evaluation is a node, the result will be the same, because XPath
+ * will then use the first element of the list. The following are examples of
+ * path expressions that the Path object supports:
  * </p>
  * 
  * <p>
- * Note that the implementation does not take care if the paths are XPath compliant, it simply manages the values
- * between the path separator. However, it normalizes the path if a path element ends with a selector for the first
- * element (i.e. "[1]"). Those will be handled transparent i.e. two Paths are treated equal if one was created with path
- * elements containing this selector and the other one without.
+ * Note that the implementation does not take care if the paths are XPath
+ * compliant, it simply manages the values between the path separator. However,
+ * it normalizes the path if a path element ends with a selector for the first
+ * element (i.e. "[1]"). Those will be handled transparent i.e. two Paths are
+ * treated equal if one was created with path elements containing this selector
+ * and the other one without.
  * </p>
  * 
  * <p>
@@ -187,7 +192,8 @@ public class Path {
 	}
 
 	private String normalize(String s, int start, int end) {
-		if (end - start > 3 && s.charAt(end - 3) == '[' && s.charAt(end - 2) == '1' && s.charAt(end - 1) == ']') {
+		if (end - start > 3 && s.charAt(end - 3) == '['
+				&& s.charAt(end - 2) == '1' && s.charAt(end - 1) == ']') {
 			this.pathAsString = null;
 			return s.substring(start, end - 3);
 		} else {
@@ -198,7 +204,8 @@ public class Path {
 
 	public Path relativeTo(Path that) {
 		int depthOfPathDivergence = depthOfPathDivergence(chunks, that.chunks);
-		String[] result = new String[chunks.length + that.chunks.length - 2 * depthOfPathDivergence];
+		String[] result = new String[chunks.length + that.chunks.length - 2
+				* depthOfPathDivergence];
 		int count = 0;
 
 		for (int i = depthOfPathDivergence; i < chunks.length; i++) {

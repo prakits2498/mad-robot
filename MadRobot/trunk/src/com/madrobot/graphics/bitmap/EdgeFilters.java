@@ -346,7 +346,7 @@ public class EdgeFilters {
 		return Bitmap.createBitmap(inPixels, width, height, outputConfig);
 	}
 
-//	public static Bitmap chrome(Bitmap src, Config outputConfig) {
-//
-//	}
+	// public static Bitmap chrome(Bitmap src, Config outputConfig) {
+	//
+	// }
 }

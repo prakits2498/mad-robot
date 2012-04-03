@@ -56,11 +56,14 @@ public class FieldDictionary implements Caching {
 				}
 				Map lastKeyedByFieldName = Collections.EMPTY_MAP;
 				Map lastKeyedByFieldKey = Collections.EMPTY_MAP;
-				for (final Iterator iter = superClasses.iterator(); iter.hasNext();) {
+				for (final Iterator iter = superClasses.iterator(); iter
+						.hasNext();) {
 					cls = (Class) iter.next();
 					if (!keyedByFieldNameCache.containsKey(cls)) {
-						final Map keyedByFieldName = new HashMap(lastKeyedByFieldName);
-						final Map keyedByFieldKey = new OrderRetainingMap(lastKeyedByFieldKey);
+						final Map keyedByFieldName = new HashMap(
+								lastKeyedByFieldName);
+						final Map keyedByFieldKey = new OrderRetainingMap(
+								lastKeyedByFieldKey);
 						Field[] fields = cls.getDeclaredFields();
 						if (JVM.reverseFieldDefinition()) {
 							for (int i = fields.length >> 1; i-- > 0;) {
@@ -75,46 +78,58 @@ public class FieldDictionary implements Caching {
 							if (!field.isAccessible()) {
 								field.setAccessible(true);
 							}
-							FieldKey fieldKey = new FieldKey(field.getName(), field.getDeclaringClass(), i);
-							Field existent = (Field) keyedByFieldName.get(field.getName());
+							FieldKey fieldKey = new FieldKey(field.getName(),
+									field.getDeclaringClass(), i);
+							Field existent = (Field) keyedByFieldName.get(field
+									.getName());
 							if (existent == null
 							// do overwrite statics
 									|| ((existent.getModifiers() & Modifier.STATIC) != 0)
-									// overwrite non-statics with non-statics only
-									|| (existent != null && ((field.getModifiers() & Modifier.STATIC) == 0))) {
+									// overwrite non-statics with non-statics
+									// only
+									|| (existent != null && ((field
+											.getModifiers() & Modifier.STATIC) == 0))) {
 								keyedByFieldName.put(field.getName(), field);
 							}
 							keyedByFieldKey.put(fieldKey, field);
 						}
-						final Map sortedFieldKeys = sorter.sort(type, keyedByFieldKey);
+						final Map sortedFieldKeys = sorter.sort(type,
+								keyedByFieldKey);
 						keyedByFieldNameCache.put(cls, keyedByFieldName);
 						keyedByFieldKeyCache.put(cls, sortedFieldKeys);
 						lastKeyedByFieldName = keyedByFieldName;
 						lastKeyedByFieldKey = sortedFieldKeys;
 					} else {
-						lastKeyedByFieldName = (Map) keyedByFieldNameCache.get(cls);
-						lastKeyedByFieldKey = (Map) keyedByFieldKeyCache.get(cls);
+						lastKeyedByFieldName = (Map) keyedByFieldNameCache
+								.get(cls);
+						lastKeyedByFieldKey = (Map) keyedByFieldKeyCache
+								.get(cls);
 					}
 				}
-				result = tupleKeyed ? lastKeyedByFieldKey : lastKeyedByFieldName;
+				result = tupleKeyed ? lastKeyedByFieldKey
+						: lastKeyedByFieldName;
 			} else {
-				result = (Map) (tupleKeyed ? keyedByFieldKeyCache.get(type) : keyedByFieldNameCache.get(type));
+				result = (Map) (tupleKeyed ? keyedByFieldKeyCache.get(type)
+						: keyedByFieldNameCache.get(type));
 			}
 		}
 		return result;
 	}
 
 	/**
-	 * Returns an specific field of some class. If definedIn is null, it searches for the field named 'name' inside the
-	 * class cls. If definedIn is different than null, tries to find the specified field name in the specified class cls
-	 * which should be defined in class definedIn (either equals cls or a one of it's superclasses)
+	 * Returns an specific field of some class. If definedIn is null, it
+	 * searches for the field named 'name' inside the class cls. If definedIn is
+	 * different than null, tries to find the specified field name in the
+	 * specified class cls which should be defined in class definedIn (either
+	 * equals cls or a one of it's superclasses)
 	 * 
 	 * @param cls
 	 *            the class where the field is to be searched
 	 * @param name
 	 *            the field name
 	 * @param definedIn
-	 *            the superclass (or the class itself) of cls where the field was defined
+	 *            the superclass (or the class itself) of cls where the field
+	 *            was defined
 	 * @return the field itself
 	 * @throws ObjectAccessException
 	 *             if no field can be found
@@ -129,22 +144,27 @@ public class FieldDictionary implements Caching {
 	}
 
 	/**
-	 * Returns an specific field of some class. If definedIn is null, it searches for the field named 'name' inside the
-	 * class cls. If definedIn is different than null, tries to find the specified field name in the specified class cls
-	 * which should be defined in class definedIn (either equals cls or a one of it's superclasses)
+	 * Returns an specific field of some class. If definedIn is null, it
+	 * searches for the field named 'name' inside the class cls. If definedIn is
+	 * different than null, tries to find the specified field name in the
+	 * specified class cls which should be defined in class definedIn (either
+	 * equals cls or a one of it's superclasses)
 	 * 
 	 * @param cls
 	 *            the class where the field is to be searched
 	 * @param name
 	 *            the field name
 	 * @param definedIn
-	 *            the superclass (or the class itself) of cls where the field was defined
+	 *            the superclass (or the class itself) of cls where the field
+	 *            was defined
 	 * @return the field itself or <code>null</code>
 	 * @since 1.4
 	 */
 	public Field fieldOrNull(Class cls, String name, Class definedIn) {
 		Map fields = buildMap(cls, definedIn != null);
-		Field field = (Field) fields.get(definedIn != null ? (Object) new FieldKey(name, definedIn, 0) : (Object) name);
+		Field field = (Field) fields
+				.get(definedIn != null ? (Object) new FieldKey(name, definedIn,
+						0) : (Object) name);
 		return field;
 	}
 

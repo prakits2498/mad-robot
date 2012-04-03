@@ -15,9 +15,9 @@ import java.net.InetAddress;
 import java.net.SocketException;
 
 /***
- * DefaultDatagramSocketFactory implements the DatagramSocketFactory
- * interface by simply wrapping the java.net.DatagramSocket
- * constructors. It is the default DatagramSocketFactory used by
+ * DefaultDatagramSocketFactory implements the DatagramSocketFactory interface
+ * by simply wrapping the java.net.DatagramSocket constructors. It is the
+ * default DatagramSocketFactory used by
  * {@link com.madrobot.net.client.DatagramSocketClient} implementations.
  * <p>
  * <p>
@@ -56,8 +56,8 @@ public class DefaultDatagramSocketFactory implements IDatagramSocketFactory {
 	}
 
 	/***
-	 * Creates a DatagramSocket at the specified address on the local host
-	 * at a specified port.
+	 * Creates a DatagramSocket at the specified address on the local host at a
+	 * specified port.
 	 * <p>
 	 * 
 	 * @param port
@@ -68,7 +68,8 @@ public class DefaultDatagramSocketFactory implements IDatagramSocketFactory {
 	 *                If the socket could not be created.
 	 ***/
 	@Override
-	public DatagramSocket createDatagramSocket(int port, InetAddress laddr) throws SocketException {
+	public DatagramSocket createDatagramSocket(int port, InetAddress laddr)
+			throws SocketException {
 		return new DatagramSocket(port, laddr);
 	}
 }

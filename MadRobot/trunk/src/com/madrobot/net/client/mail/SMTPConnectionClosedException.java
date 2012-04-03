@@ -13,12 +13,12 @@ package com.madrobot.net.client.mail;
 import java.io.IOException;
 
 /***
- * SMTPConnectionClosedException is used to indicate the premature or
- * unexpected closing of an SMTP connection resulting from a
+ * SMTPConnectionClosedException is used to indicate the premature or unexpected
+ * closing of an SMTP connection resulting from a
  * {@link com.madrobot.net.client.mail.SMTPReply#SERVICE_NOT_AVAILABLE
- * SMTPReply.SERVICE_NOT_AVAILABLE } response (SMTP reply code 421) to a
- * failed SMTP command. This exception is derived from IOException and
- * therefore may be caught either as an IOException or specifically as an
+ * SMTPReply.SERVICE_NOT_AVAILABLE } response (SMTP reply code 421) to a failed
+ * SMTP command. This exception is derived from IOException and therefore may be
+ * caught either as an IOException or specifically as an
  * SMTPConnectionClosedException.
  * <p>
  * <p>
@@ -30,9 +30,9 @@ import java.io.IOException;
 public final class SMTPConnectionClosedException extends IOException {
 
 	/**
-	 * Provide a brief description of serialVersionUID.
-	 * Specify the purpose of this field.
-	 *
+	 * Provide a brief description of serialVersionUID. Specify the purpose of
+	 * this field.
+	 * 
 	 */
 	private static final long serialVersionUID = -3552263612970518360L;
 

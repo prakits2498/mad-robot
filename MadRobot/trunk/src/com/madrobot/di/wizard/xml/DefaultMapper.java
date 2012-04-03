@@ -15,8 +15,8 @@ import com.madrobot.di.wizard.xml.converters.Converter;
 import com.madrobot.di.wizard.xml.converters.SingleValueConverter;
 
 /**
- * Default mapper implementation with 'vanilla' functionality. To build up the functionality required, wrap this mapper
- * with other mapper implementations.
+ * Default mapper implementation with 'vanilla' functionality. To build up the
+ * functionality required, wrap this mapper with other mapper implementations.
  * 
  */
 class DefaultMapper implements Mapper {
@@ -25,7 +25,8 @@ class DefaultMapper implements Mapper {
 	static {
 		String packageName = DefaultMapper.class.getName();
 		int idx = packageName.indexOf(".xml.");
-		XMLWIZARD_PACKAGE_ROOT = idx > 0 ? packageName.substring(0, idx + 9) : null;
+		XMLWIZARD_PACKAGE_ROOT = idx > 0 ? packageName.substring(0, idx + 9)
+				: null;
 	}
 
 	private final ClassLoader classLoader;
@@ -35,7 +36,8 @@ class DefaultMapper implements Mapper {
 	}
 
 	/**
-	 * @deprecated As of 1.3, use combination of {@link #serializedMember(Class, String)} and
+	 * @deprecated As of 1.3, use combination of
+	 *             {@link #serializedMember(Class, String)} and
 	 *             {@link #getConverterFromItemType(String, Class, Class)}
 	 */
 	@Deprecated
@@ -55,7 +57,8 @@ class DefaultMapper implements Mapper {
 	}
 
 	/**
-	 * @deprecated As of 1.3, use combination of {@link #realMember(Class, String)} and
+	 * @deprecated As of 1.3, use combination of
+	 *             {@link #realMember(Class, String)} and
 	 *             {@link #getConverterFromItemType(String, Class, Class)}
 	 */
 	@Deprecated
@@ -75,21 +78,25 @@ class DefaultMapper implements Mapper {
 	}
 
 	/**
-	 * @deprecated As of 1.3.1, use {@link #getConverterFromAttribute(Class, String, Class)}
+	 * @deprecated As of 1.3.1, use
+	 *             {@link #getConverterFromAttribute(Class, String, Class)}
 	 */
 	@Deprecated
 	@Override
-	public SingleValueConverter getConverterFromAttribute(Class definedIn, String attribute) {
+	public SingleValueConverter getConverterFromAttribute(Class definedIn,
+			String attribute) {
 		return null;
 	}
 
 	@Override
-	public SingleValueConverter getConverterFromAttribute(Class definedIn, String attribute, Class type) {
+	public SingleValueConverter getConverterFromAttribute(Class definedIn,
+			String attribute, Class type) {
 		return null;
 	}
 
 	/**
-	 * @deprecated As of 1.3, use {@link #getConverterFromAttribute(Class, String, Class)}
+	 * @deprecated As of 1.3, use
+	 *             {@link #getConverterFromAttribute(Class, String, Class)}
 	 */
 	@Deprecated
 	@Override
@@ -98,7 +105,8 @@ class DefaultMapper implements Mapper {
 	}
 
 	/**
-	 * @deprecated As of 1.3, use {@link #getConverterFromItemType(String, Class, Class)}
+	 * @deprecated As of 1.3, use
+	 *             {@link #getConverterFromItemType(String, Class, Class)}
 	 */
 	@Deprecated
 	@Override
@@ -107,31 +115,37 @@ class DefaultMapper implements Mapper {
 	}
 
 	/**
-	 * @deprecated As of 1.3, use {@link #getConverterFromItemType(String, Class, Class)}
+	 * @deprecated As of 1.3, use
+	 *             {@link #getConverterFromItemType(String, Class, Class)}
 	 */
 	@Deprecated
 	@Override
-	public SingleValueConverter getConverterFromItemType(String fieldName, Class type) {
+	public SingleValueConverter getConverterFromItemType(String fieldName,
+			Class type) {
 		return null;
 	}
 
 	@Override
-	public SingleValueConverter getConverterFromItemType(String fieldName, Class type, Class definedIn) {
+	public SingleValueConverter getConverterFromItemType(String fieldName,
+			Class type, Class definedIn) {
 		return null;
 	}
 
 	@Override
-	public String getFieldNameForItemTypeAndName(Class definedIn, Class itemType, String itemFieldName) {
+	public String getFieldNameForItemTypeAndName(Class definedIn,
+			Class itemType, String itemFieldName) {
 		return null;
 	}
 
 	@Override
-	public ImplicitCollectionMapping getImplicitCollectionDefForFieldName(Class itemType, String fieldName) {
+	public ImplicitCollectionMapping getImplicitCollectionDefForFieldName(
+			Class itemType, String fieldName) {
 		return null;
 	}
 
 	@Override
-	public Class getItemTypeForItemFieldName(Class definedIn, String itemFieldName) {
+	public Class getItemTypeForItemFieldName(Class definedIn,
+			String itemFieldName) {
 		return null;
 	}
 
@@ -162,11 +176,13 @@ class DefaultMapper implements Mapper {
 	public Class realClass(String elementName) {
 		try {
 			if (elementName.startsWith(XMLWIZARD_PACKAGE_ROOT)) {
-				return DefaultMapper.class.getClassLoader().loadClass(elementName);
+				return DefaultMapper.class.getClassLoader().loadClass(
+						elementName);
 			} else if (elementName.charAt(0) != '[') {
 				return classLoader.loadClass(elementName);
 			} else if (elementName.endsWith(";")) {
-				return Class.forName(elementName.toString(), false, classLoader);
+				return Class
+						.forName(elementName.toString(), false, classLoader);
 			} else {
 				return Class.forName(elementName.toString());
 			}

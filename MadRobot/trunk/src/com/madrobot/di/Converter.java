@@ -22,10 +22,10 @@ import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
+
 import com.madrobot.di.wizard.json.JSONDeserializer;
 import com.madrobot.di.wizard.json.annotations.BooleanFormat;
-
-import android.util.Log;
 
 /**
  * Primitive mapper for XML and JSON serialization classes
@@ -59,7 +59,8 @@ public final class Converter {
 		clzTypeKeyMap.put(Date.class, TYPE_DATE);
 	}
 
-	public static Object convertTo(final JSONObject jsonObject, final String fieldName, final Class<?> clz, final Field field) {
+	public static Object convertTo(final JSONObject jsonObject,
+			final String fieldName, final Class<?> clz, final Field field) {
 
 		Object value = null;
 
@@ -71,7 +72,8 @@ public final class Converter {
 					value = jsonObject.optString(fieldName);
 					break;
 				case TYPE_SHORT:
-					value = Short.parseShort(jsonObject.optString(fieldName, "0"));
+					value = Short.parseShort(jsonObject.optString(fieldName,
+							"0"));
 					break;
 				case TYPE_INT:
 					value = jsonObject.optInt(fieldName);
@@ -88,7 +90,8 @@ public final class Converter {
 					}
 					break;
 				case TYPE_FLOAT:
-					value = Float.parseFloat(jsonObject.optString(fieldName, "0.0f"));
+					value = Float.parseFloat(jsonObject.optString(fieldName,
+							"0.0f"));
 					break;
 				case TYPE_DOUBLE:
 					value = jsonObject.optDouble(fieldName);
@@ -96,7 +99,8 @@ public final class Converter {
 				case TYPE_BOOLEAN:
 					value = jsonObject.optString(fieldName);
 					if (field.isAnnotationPresent(BooleanFormat.class)) {
-						BooleanFormat formatAnnotation = field.getAnnotation(BooleanFormat.class);
+						BooleanFormat formatAnnotation = field
+								.getAnnotation(BooleanFormat.class);
 						String trueFormat = formatAnnotation.trueFormat();
 						String falseFormat = formatAnnotation.falseFormat();
 						if (trueFormat.equals(value)) {
@@ -104,15 +108,17 @@ public final class Converter {
 						} else if (falseFormat.equals(value)) {
 							value = false;
 						} else {
-							Log.e(JSONDeserializer.TAG, "Expecting " + trueFormat + " / " + falseFormat + " but its "
-									+ value);
+							Log.e(JSONDeserializer.TAG, "Expecting "
+									+ trueFormat + " / " + falseFormat
+									+ " but its " + value);
 						}
 					} else {
 						value = Boolean.parseBoolean((String) value);
 					}
 					break;
 				case TYPE_DATE:
-					value = DateFormat.getDateInstance().parse(jsonObject.optString(fieldName));
+					value = DateFormat.getDateInstance().parse(
+							jsonObject.optString(fieldName));
 					break;
 				}
 			} catch (NumberFormatException e) {
@@ -133,9 +139,11 @@ public final class Converter {
 	 *            Target type to be converted to
 	 * @return Converted value, if converstion was possible, null otherwise
 	 * @throws NumberFormatException
-	 *             If the value was not in correct format, while converting to numeric type
+	 *             If the value was not in correct format, while converting to
+	 *             numeric type
 	 * @throws RuntimeException
-	 *             If the value was not in correct format, while converting to Date or Boolean type
+	 *             If the value was not in correct format, while converting to
+	 *             Date or Boolean type
 	 */
 	public static Object convertTo(final String raw, final Class<?> clz) {
 		Object value = null;
@@ -189,14 +197,16 @@ public final class Converter {
 	}
 
 	public static boolean isCollectionType(Class<?> type) {
-		return Collection.class.isAssignableFrom(type) || Map.class.isAssignableFrom(type);
+		return Collection.class.isAssignableFrom(type)
+				|| Map.class.isAssignableFrom(type);
 	}
 
 	public static boolean isPseudoPrimitive(final Class<?> clz) {
 		return clzTypeKeyMap.containsKey(clz);
 	}
 
-	public static void storeValue(final JSONObject jsonObject, final String key, Object value, final Field field)
+	public static void storeValue(final JSONObject jsonObject,
+			final String key, Object value, final Field field)
 			throws JSONException {
 
 		Class<?> classType = field.getType();
@@ -215,7 +225,8 @@ public final class Converter {
 			case TYPE_BOOLEAN:
 				Boolean userValue = (Boolean) value;
 				if (field.isAnnotationPresent(BooleanFormat.class)) {
-					BooleanFormat formatAnnotation = field.getAnnotation(BooleanFormat.class);
+					BooleanFormat formatAnnotation = field
+							.getAnnotation(BooleanFormat.class);
 					String trueFormat = formatAnnotation.trueFormat();
 					String falseFormat = formatAnnotation.falseFormat();
 					if (userValue) {
@@ -230,7 +241,8 @@ public final class Converter {
 			case TYPE_DATE:
 				Date date = (Date) value;
 				SimpleDateFormat simpleDateFormat = null;
-				if (field.isAnnotationPresent(com.madrobot.di.wizard.json.annotations.DateFormat.class)) {
+				if (field
+						.isAnnotationPresent(com.madrobot.di.wizard.json.annotations.DateFormat.class)) {
 					com.madrobot.di.wizard.json.annotations.DateFormat formatAnnotation = field
 							.getAnnotation(com.madrobot.di.wizard.json.annotations.DateFormat.class);
 					String dateFormat = formatAnnotation.format();

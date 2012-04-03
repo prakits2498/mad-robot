@@ -19,7 +19,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
-
 /**
  * Keeps track of files awaiting deletion, and deletes them when an associated
  * marker object is reclaimed by the garbage collector.
@@ -30,7 +29,7 @@ import java.util.List;
  * <p>
  * In an environment with multiple class loaders (a servlet container, for
  * example), you should consider stopping the background thread if it is no
- * longer needed. 
+ * longer needed.
  * 
  */
 public class FileCleaningTracker {
@@ -54,22 +53,23 @@ public class FileCleaningTracker {
 		public void run() {
 			// thread exits when exitWhenFinished is true and there are no more
 			// tracked objects
-			while((exitWhenFinished == false) || (trackers.size() > 0)){
-				try{
+			while ((exitWhenFinished == false) || (trackers.size() > 0)) {
+				try {
 					// Wait for a tracker to remove.
 					Tracker tracker = (Tracker) q.remove(); // cannot return
 					// null
 					trackers.remove(tracker);
-					if(!tracker.delete()){
+					if (!tracker.delete()) {
 						deleteFailures.add(tracker.getPath());
 					}
 					tracker.clear();
-				} catch(InterruptedException e){
+				} catch (InterruptedException e) {
 					continue;
 				}
 			}
 		}
 	}
+
 	// -----------------------------------------------------------------------
 	/**
 	 * Inner class which acts as the reference for a file pending deletion.
@@ -101,7 +101,8 @@ public class FileCleaningTracker {
 				ReferenceQueue<? super Object> queue) {
 			super(marker, queue);
 			this.path = path;
-			this.deleteStrategy = (deleteStrategy == null ? FileDeleteStrategy.NORMAL : deleteStrategy);
+			this.deleteStrategy = (deleteStrategy == null ? FileDeleteStrategy.NORMAL
+					: deleteStrategy);
 		}
 
 		/**
@@ -123,10 +124,12 @@ public class FileCleaningTracker {
 			return path;
 		}
 	}
+
 	/**
 	 * Collection of File paths that failed to delete.
 	 */
-	final List<String> deleteFailures = Collections.synchronizedList(new ArrayList<String>());
+	final List<String> deleteFailures = Collections
+			.synchronizedList(new ArrayList<String>());
 	/**
 	 * Whether to terminate the thread when the tracking is complete.
 	 */
@@ -144,7 +147,8 @@ public class FileCleaningTracker {
 	/**
 	 * Collection of <code>Tracker</code> instances in existence.
 	 */
-	final Collection<Tracker> trackers = Collections.synchronizedSet(new HashSet<Tracker>()); // synchronized
+	final Collection<Tracker> trackers = Collections
+			.synchronizedSet(new HashSet<Tracker>()); // synchronized
 
 	/**
 	 * Adds a tracker to the list of trackers.
@@ -156,13 +160,14 @@ public class FileCleaningTracker {
 	 * @param deleteStrategy
 	 *            the strategy to delete the file, null means normal
 	 */
-	private synchronized void addTracker(String path, Object marker, FileDeleteStrategy deleteStrategy) {
+	private synchronized void addTracker(String path, Object marker,
+			FileDeleteStrategy deleteStrategy) {
 		// synchronized block protects reaper
-		if(exitWhenFinished){
+		if (exitWhenFinished) {
 			throw new IllegalStateException(
 					"No new trackers can be added once exitWhenFinished() is called");
 		}
-		if(reaper == null){
+		if (reaper == null) {
 			reaper = new Reaper();
 			reaper.start();
 		}
@@ -170,8 +175,8 @@ public class FileCleaningTracker {
 	}
 
 	/**
-	 * Call this method to cause the file cleaner thread to terminate when
-	 * there are no more objects being tracked for deletion.
+	 * Call this method to cause the file cleaner thread to terminate when there
+	 * are no more objects being tracked for deletion.
 	 * <p>
 	 * In a simple environment, you don't need this method as the file cleaner
 	 * thread will simply exit when the JVM exits. In a more complex
@@ -194,8 +199,8 @@ public class FileCleaningTracker {
 	public synchronized void exitWhenFinished() {
 		// synchronized block protects reaper
 		exitWhenFinished = true;
-		if(reaper != null){
-			synchronized(reaper){
+		if (reaper != null) {
+			synchronized (reaper) {
 				reaper.interrupt();
 			}
 		}
@@ -225,9 +230,8 @@ public class FileCleaningTracker {
 	// -----------------------------------------------------------------------
 	/**
 	 * Track the specified file, using the provided marker, deleting the file
-	 * when the marker instance is garbage collected.
-	 * The {@link FileDeleteStrategy#NORMAL normal} deletion strategy will be
-	 * used.
+	 * when the marker instance is garbage collected. The
+	 * {@link FileDeleteStrategy#NORMAL normal} deletion strategy will be used.
 	 * 
 	 * @param file
 	 *            the file to be tracked, not null
@@ -242,8 +246,8 @@ public class FileCleaningTracker {
 
 	/**
 	 * Track the specified file, using the provided marker, deleting the file
-	 * when the marker instance is garbage collected.
-	 * The speified deletion strategy is used.
+	 * when the marker instance is garbage collected. The speified deletion
+	 * strategy is used.
 	 * 
 	 * @param file
 	 *            the file to be tracked, not null
@@ -254,8 +258,9 @@ public class FileCleaningTracker {
 	 * @throws NullPointerException
 	 *             if the file is null
 	 */
-	public void track(File file, Object marker, FileDeleteStrategy deleteStrategy) {
-		if(file == null){
+	public void track(File file, Object marker,
+			FileDeleteStrategy deleteStrategy) {
+		if (file == null) {
 			throw new NullPointerException("The file must not be null");
 		}
 		addTracker(file.getPath(), marker, deleteStrategy);
@@ -263,9 +268,8 @@ public class FileCleaningTracker {
 
 	/**
 	 * Track the specified file, using the provided marker, deleting the file
-	 * when the marker instance is garbage collected.
-	 * The {@link FileDeleteStrategy#NORMAL normal} deletion strategy will be
-	 * used.
+	 * when the marker instance is garbage collected. The
+	 * {@link FileDeleteStrategy#NORMAL normal} deletion strategy will be used.
 	 * 
 	 * @param path
 	 *            the full path to the file to be tracked, not null
@@ -280,8 +284,8 @@ public class FileCleaningTracker {
 
 	/**
 	 * Track the specified file, using the provided marker, deleting the file
-	 * when the marker instance is garbage collected.
-	 * The speified deletion strategy is used.
+	 * when the marker instance is garbage collected. The speified deletion
+	 * strategy is used.
 	 * 
 	 * @param path
 	 *            the full path to the file to be tracked, not null
@@ -292,8 +296,9 @@ public class FileCleaningTracker {
 	 * @throws NullPointerException
 	 *             if the path is null
 	 */
-	public void track(String path, Object marker, FileDeleteStrategy deleteStrategy) {
-		if(path == null){
+	public void track(String path, Object marker,
+			FileDeleteStrategy deleteStrategy) {
+		if (path == null) {
 			throw new NullPointerException("The path must not be null");
 		}
 		addTracker(path, marker, deleteStrategy);

@@ -56,8 +56,8 @@ public interface ReflectionProvider {
 	Class getFieldType(Object object, String fieldName, Class definedIn);
 
 	/**
-	 * Creates a new instance of the specified type. It is in the responsibility of the implementation how such an
-	 * instance is created.
+	 * Creates a new instance of the specified type. It is in the responsibility
+	 * of the implementation how such an instance is created.
 	 * 
 	 * @param type
 	 *            the type to instantiate
@@ -67,6 +67,7 @@ public interface ReflectionProvider {
 
 	void visitSerializableFields(Object object, Visitor visitor);
 
-	void writeField(Object object, String fieldName, Object value, Class definedIn);
+	void writeField(Object object, String fieldName, Object value,
+			Class definedIn);
 
 }

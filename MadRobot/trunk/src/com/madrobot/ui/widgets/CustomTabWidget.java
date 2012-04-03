@@ -392,4 +392,4 @@
 //	public void setTextColor(int color) {
 //		textColor = color;
 //	}
-//}
+// }

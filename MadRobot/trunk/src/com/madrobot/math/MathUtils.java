@@ -14,7 +14,8 @@ public class MathUtils {
 	/**
 	 * Equivalent to Math.max(low, Math.min(high, amount));
 	 */
-	public static float constrain(final float amount, final float low, final float high) {
+	public static float constrain(final float amount, final float low,
+			final float high) {
 		return amount < low ? low : amount > high ? high : amount;
 	}
 
@@ -77,7 +78,8 @@ public class MathUtils {
 		}
 
 		if (exp >= 128) {
-			return (mant > 0) ? Float.POSITIVE_INFINITY : Float.NEGATIVE_INFINITY;
+			return (mant > 0) ? Float.POSITIVE_INFINITY
+					: Float.NEGATIVE_INFINITY;
 		}
 
 		if (exp == 0) {
@@ -92,7 +94,8 @@ public class MathUtils {
 	}
 
 	/**
-	 * Array of powers of ten. Using double instead of float gives a tiny bit more precision.
+	 * Array of powers of ten. Using double instead of float gives a tiny bit
+	 * more precision.
 	 */
 	private static final double[] pow10 = new double[128];
 	static {

@@ -11,10 +11,10 @@
 package com.madrobot.beans;
 
 /**
- * A bean implementor who wishes to provide explicit information about
- * their bean may provide a BeanInfo class that implements this BeanInfo
- * interface and provides explicit information about the methods,
- * properties, events, etc, of their bean.
+ * A bean implementor who wishes to provide explicit information about their
+ * bean may provide a BeanInfo class that implements this BeanInfo interface and
+ * provides explicit information about the methods, properties, events, etc, of
+ * their bean.
  * <p>
  * A bean implementor doesn't need to provide a complete set of explicit
  * information. You can pick and choose which information you want to provide
@@ -37,9 +37,9 @@ package com.madrobot.beans;
 public interface BeanInfo {
 
 	/**
-	 * This method allows a BeanInfo object to return an arbitrary collection
-	 * of other BeanInfo objects that provide additional information on the
-	 * current bean.
+	 * This method allows a BeanInfo object to return an arbitrary collection of
+	 * other BeanInfo objects that provide additional information on the current
+	 * bean.
 	 * <P>
 	 * If there are conflicts or overlaps between the information provided by
 	 * different BeanInfo objects, then the current BeanInfo takes precedence
@@ -53,19 +53,18 @@ public interface BeanInfo {
 	/**
 	 * Gets the beans <code>BeanDescriptor</code>.
 	 * 
-	 * @return A BeanDescriptor providing overall information about
-	 *         the bean, such as its displayName, its customizer, etc. May
-	 *         return null if the information should be obtained by automatic
-	 *         analysis.
+	 * @return A BeanDescriptor providing overall information about the bean,
+	 *         such as its displayName, its customizer, etc. May return null if
+	 *         the information should be obtained by automatic analysis.
 	 */
 	BeanDescriptor getBeanDescriptor();
 
 	/**
-	 * A bean may have a "default" event that is the event that will
-	 * mostly commonly be used by humans when using the bean.
+	 * A bean may have a "default" event that is the event that will mostly
+	 * commonly be used by humans when using the bean.
 	 * 
-	 * @return Index of default event in the EventSetDescriptor array
-	 *         returned by getEventSetDescriptors.
+	 * @return Index of default event in the EventSetDescriptor array returned
+	 *         by getEventSetDescriptors.
 	 *         <P>
 	 *         Returns -1 if there is no default event.
 	 */
@@ -86,18 +85,18 @@ public interface BeanInfo {
 	/**
 	 * Gets the beans <code>EventSetDescriptor</code>s.
 	 * 
-	 * @return An array of EventSetDescriptors describing the kinds of
-	 *         events fired by this bean. May return null if the information
-	 *         should be obtained by automatic analysis.
+	 * @return An array of EventSetDescriptors describing the kinds of events
+	 *         fired by this bean. May return null if the information should be
+	 *         obtained by automatic analysis.
 	 */
 	EventSetDescriptor[] getEventSetDescriptors();
 
 	/**
 	 * Gets the beans <code>MethodDescriptor</code>s.
 	 * 
-	 * @return An array of MethodDescriptors describing the externally
-	 *         visible methods supported by this bean. May return null if
-	 *         the information should be obtained by automatic analysis.
+	 * @return An array of MethodDescriptors describing the externally visible
+	 *         methods supported by this bean. May return null if the
+	 *         information should be obtained by automatic analysis.
 	 */
 	MethodDescriptor[] getMethodDescriptors();
 

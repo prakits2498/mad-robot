@@ -9,7 +9,7 @@ import android.widget.LinearLayout;
 /**
  * Recycle stores wheel items to reuse.
  */
- class WheelViewRecycler {
+class WheelViewRecycler {
 	// Cached empty items
 	private List<View> emptyItems;
 
@@ -94,8 +94,9 @@ import android.widget.LinearLayout;
 	}
 
 	/**
-	 * Recycles items from specified layout. There are saved only items not included to specified range. All the
-	 * cached items are removed from original layout.
+	 * Recycles items from specified layout. There are saved only items not
+	 * included to specified range. All the cached items are removed from
+	 * original layout.
 	 * 
 	 * @param layout
 	 *            the layout containing items to be cached
@@ -105,7 +106,8 @@ import android.widget.LinearLayout;
 	 *            the range of current wheel items
 	 * @return the new value of first item number
 	 */
-	int recycleItems(LinearLayout layout, int firstItem, WheelViewItemsRange range) {
+	int recycleItems(LinearLayout layout, int firstItem,
+			WheelViewItemsRange range) {
 		int index = firstItem;
 		for (int i = 0; i < layout.getChildCount();) {
 			if (!range.contains(index)) {
@@ -123,7 +125,8 @@ import android.widget.LinearLayout;
 	}
 
 	/**
-	 * Adds view to cache. Determines view type (item view or empty one) by index.
+	 * Adds view to cache. Determines view type (item view or empty one) by
+	 * index.
 	 * 
 	 * @param view
 	 *            the view to be cached

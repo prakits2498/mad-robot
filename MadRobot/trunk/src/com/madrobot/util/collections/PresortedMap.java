@@ -12,174 +12,178 @@ import java.util.SortedMap;
  */
 public class PresortedMap implements SortedMap {
 
-    private static class ArraySet extends ArrayList implements Set {
-    }
+	private static class ArraySet extends ArrayList implements Set {
+	}
 
-    private static class ArraySetComparator implements Comparator {
+	private static class ArraySetComparator implements Comparator {
 
-        private Map.Entry[] array;
-        private final ArrayList list;
+		private Map.Entry[] array;
+		private final ArrayList list;
 
-        ArraySetComparator(ArrayList list) {
-            this.list = list;
-        }
-        
-        @Override
+		ArraySetComparator(ArrayList list) {
+			this.list = list;
+		}
+
+		@Override
 		public int compare(Object object1, Object object2) {
-            if (array == null || list.size() != array.length) {
-                Map.Entry[] a = new Map.Entry[list.size()];
-                if (array != null) {
-                    System.arraycopy(array, 0, a, 0, array.length);
-                }
-                for (int i = array == null ? 0 : array.length; i < list.size(); ++i) {
-                    a[i] = (Map.Entry)list.get(i);
-                }
-                array = a;
-            }
-            int idx1 = Integer.MAX_VALUE, idx2 = Integer.MAX_VALUE;
-            for(int i = 0; i < array.length && !(idx1 < Integer.MAX_VALUE && idx2 < Integer.MAX_VALUE); ++i) {
-                if (idx1 == Integer.MAX_VALUE && object1 == array[i].getKey()) {
-                    idx1 = i;
-                }
-                if (idx2 == Integer.MAX_VALUE && object2 == array[i].getKey()) {
-                    idx2 = i;
-                }
-            }
-            return idx1 - idx2;
-        }
-    }
-    private final Comparator comparator;
-    
-    private final PresortedMap.ArraySet set;
+			if (array == null || list.size() != array.length) {
+				Map.Entry[] a = new Map.Entry[list.size()];
+				if (array != null) {
+					System.arraycopy(array, 0, a, 0, array.length);
+				}
+				for (int i = array == null ? 0 : array.length; i < list.size(); ++i) {
+					a[i] = (Map.Entry) list.get(i);
+				}
+				array = a;
+			}
+			int idx1 = Integer.MAX_VALUE, idx2 = Integer.MAX_VALUE;
+			for (int i = 0; i < array.length
+					&& !(idx1 < Integer.MAX_VALUE && idx2 < Integer.MAX_VALUE); ++i) {
+				if (idx1 == Integer.MAX_VALUE && object1 == array[i].getKey()) {
+					idx1 = i;
+				}
+				if (idx2 == Integer.MAX_VALUE && object2 == array[i].getKey()) {
+					idx2 = i;
+				}
+			}
+			return idx1 - idx2;
+		}
+	}
 
-    public PresortedMap() {
-        this(null, new ArraySet());
-    }
+	private final Comparator comparator;
 
-    public PresortedMap(Comparator comparator) {
-        this(comparator, new ArraySet());
-    }
+	private final PresortedMap.ArraySet set;
 
-    private PresortedMap(Comparator comparator, PresortedMap.ArraySet set) {
-        this.comparator = comparator != null ? comparator : new ArraySetComparator(set);
-        this.set = set;
-    }
+	public PresortedMap() {
+		this(null, new ArraySet());
+	}
 
-    @Override
+	public PresortedMap(Comparator comparator) {
+		this(comparator, new ArraySet());
+	}
+
+	private PresortedMap(Comparator comparator, PresortedMap.ArraySet set) {
+		this.comparator = comparator != null ? comparator
+				: new ArraySetComparator(set);
+		this.set = set;
+	}
+
+	@Override
 	public void clear() {
-        throw new UnsupportedOperationException();
-    }
+		throw new UnsupportedOperationException();
+	}
 
-    @Override
+	@Override
 	public Comparator comparator() {
-        return comparator;
-    }
+		return comparator;
+	}
 
-    @Override
+	@Override
 	public boolean containsKey(Object key) {
-        return false;
-    }
+		return false;
+	}
 
-    @Override
+	@Override
 	public boolean containsValue(Object value) {
-        throw new UnsupportedOperationException();
-    }
+		throw new UnsupportedOperationException();
+	}
 
-    @Override
+	@Override
 	public Set entrySet() {
-        return set;
-    }
+		return set;
+	}
 
-    @Override
+	@Override
 	public Object firstKey() {
-        throw new UnsupportedOperationException();
-    }
+		throw new UnsupportedOperationException();
+	}
 
-    @Override
+	@Override
 	public Object get(Object key) {
-        throw new UnsupportedOperationException();
-    }
+		throw new UnsupportedOperationException();
+	}
 
-    @Override
+	@Override
 	public SortedMap headMap(Object toKey) {
-        throw new UnsupportedOperationException();
-    }
+		throw new UnsupportedOperationException();
+	}
 
-    @Override
+	@Override
 	public boolean isEmpty() {
-        return set.isEmpty();
-    }
+		return set.isEmpty();
+	}
 
-    @Override
+	@Override
 	public Set keySet() {
-        Set keySet = new ArraySet();
-        for (final Iterator iterator = set.iterator(); iterator.hasNext();) {
-            final Entry entry = (Entry)iterator.next();
-            keySet.add(entry.getKey());
-        }
-        return keySet;
-    }
+		Set keySet = new ArraySet();
+		for (final Iterator iterator = set.iterator(); iterator.hasNext();) {
+			final Entry entry = (Entry) iterator.next();
+			keySet.add(entry.getKey());
+		}
+		return keySet;
+	}
 
-    @Override
+	@Override
 	public Object lastKey() {
-        throw new UnsupportedOperationException();
-    }
+		throw new UnsupportedOperationException();
+	}
 
-    @Override
+	@Override
 	public Object put(final Object key, final Object value) {
-        set.add(new Entry(){
+		set.add(new Entry() {
 
-            @Override
+			@Override
 			public Object getKey() {
-                return key;
-            }
+				return key;
+			}
 
-            @Override
+			@Override
 			public Object getValue() {
-                return value;
-            }
+				return value;
+			}
 
-            @Override
+			@Override
 			public Object setValue(Object value) {
-                throw new UnsupportedOperationException();
-            }});
-        return null;
-    }
+				throw new UnsupportedOperationException();
+			}
+		});
+		return null;
+	}
 
-    @Override
+	@Override
 	public void putAll(Map m) {
-        for (final Iterator iter = m.entrySet().iterator(); iter.hasNext();) {
-            set.add(iter.next());
-        }
-    }
+		for (final Iterator iter = m.entrySet().iterator(); iter.hasNext();) {
+			set.add(iter.next());
+		}
+	}
 
-    @Override
+	@Override
 	public Object remove(Object key) {
-        throw new UnsupportedOperationException();
-    }
+		throw new UnsupportedOperationException();
+	}
 
-    @Override
+	@Override
 	public int size() {
-        return set.size();
-    }
+		return set.size();
+	}
 
-    @Override
+	@Override
 	public SortedMap subMap(Object fromKey, Object toKey) {
-        throw new UnsupportedOperationException();
-    }
+		throw new UnsupportedOperationException();
+	}
 
-    @Override
+	@Override
 	public SortedMap tailMap(Object fromKey) {
-        throw new UnsupportedOperationException();
-    }
-    
-    @Override
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public Collection values() {
-        Set values = new ArraySet();
-        for (final Iterator iterator = set.iterator(); iterator.hasNext();) {
-            final Entry entry = (Entry)iterator.next();
-            values.add(entry.getValue());
-        }
-        return values;
-    }
+		Set values = new ArraySet();
+		for (final Iterator iterator = set.iterator(); iterator.hasNext();) {
+			final Entry entry = (Entry) iterator.next();
+			values.add(entry.getValue());
+		}
+		return values;
+	}
 }

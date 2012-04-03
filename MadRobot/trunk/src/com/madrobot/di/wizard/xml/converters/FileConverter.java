@@ -14,8 +14,8 @@ package com.madrobot.di.wizard.xml.converters;
 import java.io.File;
 
 /**
- * This converter will take care of storing and retrieving File with either an absolute path OR a relative path
- * depending on how they were created.
+ * This converter will take care of storing and retrieving File with either an
+ * absolute path OR a relative path depending on how they were created.
  * 
  * @author Joe Walnes
  */

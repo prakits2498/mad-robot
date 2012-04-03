@@ -19,22 +19,21 @@ import java.io.InputStreamReader;
 
 /***
  * The FingerClient class implements the client side of the Internet Finger
- * Protocol defined in RFC 1288. To finger a host you create a
- * FingerClient instance, connect to the host, query the host, and finally
- * disconnect from the host. If the finger service you want to query is on
- * a non-standard port, connect to the host at that port.
- * Here's a sample use:
+ * Protocol defined in RFC 1288. To finger a host you create a FingerClient
+ * instance, connect to the host, query the host, and finally disconnect from
+ * the host. If the finger service you want to query is on a non-standard port,
+ * connect to the host at that port. Here's a sample use:
  * 
  * <pre>
  * FingerClient finger;
  * 
  * finger = new FingerClient();
  * 
- * try{
+ * try {
  * 	finger.connect(&quot;foo.bar.com&quot;);
  * 	System.out.println(finger.query(&quot;foobar&quot;, false));
  * 	finger.disconnect();
- * } catch(IOException e){
+ * } catch (IOException e) {
  * 	System.err.println(&quot;Error I/O exception: &quot; + e.getMessage());
  * 	return;
  * }
@@ -55,19 +54,19 @@ public class FingerClient extends SocketClient {
 	private transient char[] __buffer = new char[1024];
 
 	/***
-	 * The default FingerClient constructor. Initializes the
-	 * default port to <code> DEFAULT_PORT </code>.
+	 * The default FingerClient constructor. Initializes the default port to
+	 * <code> DEFAULT_PORT </code>.
 	 ***/
 	public FingerClient() {
 		setDefaultPort(DEFAULT_PORT);
 	}
 
 	/***
-	 * Fingers the connected host and returns the input stream from
-	 * the network connection of the finger query. This is equivalent to
-	 * calling getInputStream(longOutput, ""). You must first connect to a
-	 * finger server before calling this method, and you should disconnect
-	 * after finishing reading the stream.
+	 * Fingers the connected host and returns the input stream from the network
+	 * connection of the finger query. This is equivalent to calling
+	 * getInputStream(longOutput, ""). You must first connect to a finger server
+	 * before calling this method, and you should disconnect after finishing
+	 * reading the stream.
 	 * <p>
 	 * 
 	 * @param longOutput
@@ -97,7 +96,8 @@ public class FingerClient extends SocketClient {
 	 * @exception IOException
 	 *                If an I/O error during the operation.
 	 ***/
-	public InputStream getInputStream(boolean longOutput, String username) throws IOException {
+	public InputStream getInputStream(boolean longOutput, String username)
+			throws IOException {
 		return getInputStream(longOutput, username, null);
 	}
 
@@ -113,25 +113,25 @@ public class FingerClient extends SocketClient {
 	 * @param username
 	 *            The name of the user to finger.
 	 * @param encoding
-	 *            the character encoding that should be used for the query,
-	 *            null for the platform's default encoding
+	 *            the character encoding that should be used for the query, null
+	 *            for the platform's default encoding
 	 * @return The InputStream of the network connection of the finger query.
 	 *         Can be read to obtain finger results.
 	 * @exception IOException
 	 *                If an I/O error during the operation.
 	 ***/
-	public InputStream getInputStream(boolean longOutput, String username, String encoding)
-			throws IOException {
+	public InputStream getInputStream(boolean longOutput, String username,
+			String encoding) throws IOException {
 		DataOutputStream output;
 		StringBuilder buffer = new StringBuilder(64);
-		if(longOutput){
+		if (longOutput) {
 			buffer.append(__LONG_FLAG);
 		}
 		buffer.append(username);
 		buffer.append(SocketClient.NETASCII_EOL);
 
-		byte[] encodedQuery = (encoding == null ? buffer.toString().getBytes() : buffer.toString()
-				.getBytes(encoding));
+		byte[] encodedQuery = (encoding == null ? buffer.toString().getBytes()
+				: buffer.toString().getBytes(encoding));
 
 		output = new DataOutputStream(new BufferedOutputStream(_output_, 1024));
 		output.write(encodedQuery, 0, encodedQuery.length);
@@ -141,10 +141,10 @@ public class FingerClient extends SocketClient {
 	}
 
 	/***
-	 * Fingers the connected host and returns the output
-	 * as a String. You must first connect to a finger server before
-	 * calling this method, and you should disconnect afterward.
-	 * This is equivalent to calling <code> query(longOutput, "") </code>.
+	 * Fingers the connected host and returns the output as a String. You must
+	 * first connect to a finger server before calling this method, and you
+	 * should disconnect afterward. This is equivalent to calling
+	 * <code> query(longOutput, "") </code>.
 	 * <p>
 	 * 
 	 * @param longOutput
@@ -158,9 +158,9 @@ public class FingerClient extends SocketClient {
 	}
 
 	/***
-	 * Fingers a user at the connected host and returns the output
-	 * as a String. You must first connect to a finger server before
-	 * calling this method, and you should disconnect afterward.
+	 * Fingers a user at the connected host and returns the output as a String.
+	 * You must first connect to a finger server before calling this method, and
+	 * you should disconnect afterward.
 	 * <p>
 	 * 
 	 * @param longOutput
@@ -176,17 +176,18 @@ public class FingerClient extends SocketClient {
 		StringBuilder result = new StringBuilder(__buffer.length);
 		BufferedReader input;
 
-		input = new BufferedReader(new InputStreamReader(getInputStream(longOutput, username)));
+		input = new BufferedReader(new InputStreamReader(getInputStream(
+				longOutput, username)));
 
-		try{
-			while(true){
+		try {
+			while (true) {
 				read = input.read(__buffer, 0, __buffer.length);
-				if(read <= 0){
+				if (read <= 0) {
 					break;
 				}
 				result.append(__buffer, 0, read);
 			}
-		} finally{
+		} finally {
 			input.close();
 		}
 

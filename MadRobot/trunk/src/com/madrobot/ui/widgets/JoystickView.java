@@ -20,7 +20,7 @@ import com.madrobot.R;
  * Requires the vibrate permission to be set (android.permission.VIBRATE).<br/>
  * <img src="../../../../resources/JoystickView.png"><br/>
  * The following are the JoystickView attributes (attrs.xml)
- * <table  cellspacing="1" cellpadding="3">
+ * <table cellspacing="1" cellpadding="3">
  * <tr>
  * <th><b>Attribute</b></td>
  * <td><b>Type</b></td>
@@ -114,9 +114,13 @@ public class JoystickView extends View {
 	public final static int CONSTRAIN_BOX = 0;
 
 	public final static int CONSTRAIN_CIRCLE = 1;
-	public final static int COORDINATE_CARTESIAN = 0; // Regular cartesian coordinates
+	public final static int COORDINATE_CARTESIAN = 0; // Regular cartesian
+														// coordinates
 
-	public final static int COORDINATE_DIFFERENTIAL = 1; // Uses polar rotation of 45 degrees to calc differential drive
+	public final static int COORDINATE_DIFFERENTIAL = 1; // Uses polar rotation
+															// of 45 degrees to
+															// calc differential
+															// drive
 	public static final int INVALID_POINTER_ID = -1;
 
 	private double angle;
@@ -166,7 +170,8 @@ public class JoystickView extends View {
 	// # of pixels movement required between reporting to the listener
 	private float moveResolution = 1.0f;
 
-	// Offset co-ordinates (used when touch events are received from parent's coordinate origin)
+	// Offset co-ordinates (used when touch events are received from parent's
+	// coordinate origin)
 	private int offsetX;
 
 	private int offsetY;
@@ -176,7 +181,8 @@ public class JoystickView extends View {
 	// Polar coordinates of the touch point from joystick center
 	private double radial;
 
-	// Last reported position in view coordinates (allows different reporting sensitivities)
+	// Last reported position in view coordinates (allows different reporting
+	// sensitivities)
 	private float reportX, reportY;
 
 	String TAG = "JoystickView";
@@ -294,30 +300,44 @@ public class JoystickView extends View {
 	}
 
 	private void initAttributes(Context context, AttributeSet attrs) {
-		TypedArray styledAttrs = context.obtainStyledAttributes(attrs, R.styleable.JoystickView);
-		bgColor = styledAttrs.getColor(R.styleable.JoystickView_bgColor, bgColor);
-		int alpha = styledAttrs.getInt(R.styleable.JoystickView_bgAlpha, bgAlpha);
+		TypedArray styledAttrs = context.obtainStyledAttributes(attrs,
+				R.styleable.JoystickView);
+		bgColor = styledAttrs.getColor(R.styleable.JoystickView_bgColor,
+				bgColor);
+		int alpha = styledAttrs.getInt(R.styleable.JoystickView_bgAlpha,
+				bgAlpha);
 		if (alpha < 0 || alpha > 255) {
 			alpha = 255;
 		}
 		bgAlpha = alpha;
-		handleColor = styledAttrs.getColor(R.styleable.JoystickView_handleColor, handleColor);
-		float clickThresh = styledAttrs.getFloat(R.styleable.JoystickView_clickThreshold, clickThreshold);
+		handleColor = styledAttrs.getColor(
+				R.styleable.JoystickView_handleColor, handleColor);
+		float clickThresh = styledAttrs.getFloat(
+				R.styleable.JoystickView_clickThreshold, clickThreshold);
 		if (clickThresh < 0 || clickThresh > 1.0f) {
 			clickThresh = clickThreshold;
 		}
 		clickThreshold = clickThresh;
-		autoReturnToCenter = styledAttrs.getBoolean(R.styleable.JoystickView_autoReturnToCenter, autoReturnToCenter);
-		userCoordinateSystem = styledAttrs.getInt(R.styleable.JoystickView_coordinateSystem, COORDINATE_CARTESIAN);
-		yAxisInverted = styledAttrs.getBoolean(R.styleable.JoystickView_yAxisInverted, true);
-		moveResolution = styledAttrs.getFloat(R.styleable.JoystickView_moveResolution, moveResolution);
-		canVibrate = styledAttrs.getBoolean(R.styleable.JoystickView_vibrate, false);
-		vibrateDuration = styledAttrs.getInt(R.styleable.JoystickView_vibrateDuration, 300);
+		autoReturnToCenter = styledAttrs
+				.getBoolean(R.styleable.JoystickView_autoReturnToCenter,
+						autoReturnToCenter);
+		userCoordinateSystem = styledAttrs
+				.getInt(R.styleable.JoystickView_coordinateSystem,
+						COORDINATE_CARTESIAN);
+		yAxisInverted = styledAttrs.getBoolean(
+				R.styleable.JoystickView_yAxisInverted, true);
+		moveResolution = styledAttrs.getFloat(
+				R.styleable.JoystickView_moveResolution, moveResolution);
+		canVibrate = styledAttrs.getBoolean(R.styleable.JoystickView_vibrate,
+				false);
+		vibrateDuration = styledAttrs.getInt(
+				R.styleable.JoystickView_vibrateDuration, 300);
 
 	}
 
 	private void initJoystickView() {
-		vibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
+		vibrator = (Vibrator) getContext().getSystemService(
+				Context.VIBRATOR_SERVICE);
 		setFocusable(true);
 
 		dbgPaint1 = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -387,23 +407,29 @@ public class JoystickView extends View {
 		canvas.drawCircle(handleX, handleY, handleRadius, handlePaint);
 
 		if (D) {
-			canvas.drawRect(1, 1, getMeasuredWidth() - 1, getMeasuredHeight() - 1, dbgPaint1);
+			canvas.drawRect(1, 1, getMeasuredWidth() - 1,
+					getMeasuredHeight() - 1, dbgPaint1);
 
 			canvas.drawCircle(handleX, handleY, 3, dbgPaint1);
 
 			if (movementConstraint == CONSTRAIN_CIRCLE) {
 				canvas.drawCircle(cX, cY, this.movementRadius, dbgPaint1);
 			} else {
-				canvas.drawRect(cX - movementRadius, cY - movementRadius, cX + movementRadius, cY + movementRadius,
-						dbgPaint1);
+				canvas.drawRect(cX - movementRadius, cY - movementRadius, cX
+						+ movementRadius, cY + movementRadius, dbgPaint1);
 			}
 
 			// Origin to touch point
 			canvas.drawLine(cX, cY, handleX, handleY, dbgPaint2);
 
 			int baseY = (touchY < 0 ? cY + handleRadius : cY - handleRadius);
-			canvas.drawText(String.format("%s (%.0f,%.0f)", TAG, touchX, touchY), handleX - 20, baseY - 7, dbgPaint2);
-			canvas.drawText("(" + String.format("%.0f, %.1f", radial, angle * 57.2957795) + (char) 0x00B0 + ")",
+			canvas.drawText(
+					String.format("%s (%.0f,%.0f)", TAG, touchX, touchY),
+					handleX - 20, baseY - 7, dbgPaint2);
+			canvas.drawText(
+					"("
+							+ String.format("%.0f, %.1f", radial,
+									angle * 57.2957795) + (char) 0x00B0 + ")",
 					handleX - 20, baseY + 15, dbgPaint2);
 		}
 
@@ -413,7 +439,8 @@ public class JoystickView extends View {
 	}
 
 	@Override
-	protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+	protected void onLayout(boolean changed, int left, int top, int right,
+			int bottom) {
 		super.onLayout(changed, left, top, right, bottom);
 
 		int d = Math.min(getMeasuredWidth(), getMeasuredHeight());
@@ -513,7 +540,9 @@ public class JoystickView extends View {
 			float y = ev.getY(pointerIndex);
 			touchY = y - cY - offsetY;
 
-			// Log.d(TAG, String.format("ACTION_MOVE: (%03.0f, %03.0f) => (%03.0f, %03.0f)", x, y, touchX, touchY));
+			// Log.d(TAG,
+			// String.format("ACTION_MOVE: (%03.0f, %03.0f) => (%03.0f, %03.0f)",
+			// x, y, touchX, touchY));
 
 			reportOnMoved();
 			invalidate();
@@ -541,7 +570,8 @@ public class JoystickView extends View {
 				this.reportX = touchX;
 				this.reportY = touchY;
 
-				// Log.d(TAG, String.format("moveListener.OnMoved(%d,%d)", (int)userX, (int)userY));
+				// Log.d(TAG, String.format("moveListener.OnMoved(%d,%d)",
+				// (int)userX, (int)userY));
 				moveListener.OnMoved(userX, userY);
 			}
 		}
@@ -608,7 +638,8 @@ public class JoystickView extends View {
 	 * Set the pressure sensitivity for registering a click
 	 * 
 	 * @param clickThreshold
-	 *            threshold 0...1.0f inclusive. 0 will cause clicks to never be reported, 1.0 is a very hard click
+	 *            threshold 0...1.0f inclusive. 0 will cause clicks to never be
+	 *            reported, 1.0 is a very hard click
 	 */
 	public void setClickThreshold(float clickThreshold) {
 		if (clickThreshold < 0 || clickThreshold > 1.0f)
@@ -618,7 +649,8 @@ public class JoystickView extends View {
 	}
 
 	public void setMovementConstraint(int movementConstraint) {
-		if (movementConstraint < CONSTRAIN_BOX || movementConstraint > CONSTRAIN_CIRCLE)
+		if (movementConstraint < CONSTRAIN_BOX
+				|| movementConstraint > CONSTRAIN_CIRCLE)
 			Log.e(TAG, "invalid value for movementConstraint");
 		else
 			this.movementConstraint = movementConstraint;
@@ -650,7 +682,8 @@ public class JoystickView extends View {
 	}
 
 	public void setUserCoordinateSystem(int userCoordinateSystem) {
-		if (userCoordinateSystem < COORDINATE_CARTESIAN || movementConstraint > COORDINATE_DIFFERENTIAL)
+		if (userCoordinateSystem < COORDINATE_CARTESIAN
+				|| movementConstraint > COORDINATE_DIFFERENTIAL)
 			Log.e(TAG, "invalid value for userCoordinateSystem");
 		else
 			this.userCoordinateSystem = userCoordinateSystem;

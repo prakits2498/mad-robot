@@ -21,15 +21,18 @@ import com.madrobot.di.wizard.xml.core.JVM;
 import com.madrobot.util.ThreadSafeSimpleDateFormat;
 
 /**
- * Converts a java.util.Date to a String as a date format, retaining precision down to milliseconds. The formatted
- * string is by default in UTC. You can provide a different {@link TimeZone} that is used for serialization or
- * <code>null</code> to use always the current TimeZone. Note, that the default format uses 3-letter time zones that can
- * be ambiguous and may cause wrong results at deserialization.
+ * Converts a java.util.Date to a String as a date format, retaining precision
+ * down to milliseconds. The formatted string is by default in UTC. You can
+ * provide a different {@link TimeZone} that is used for serialization or
+ * <code>null</code> to use always the current TimeZone. Note, that the default
+ * format uses 3-letter time zones that can be ambiguous and may cause wrong
+ * results at deserialization.
  * 
  * @author Joe Walnes
  * @author J&ouml;rg Schaible
  */
-public class DateConverter extends AbstractSingleValueConverter implements ErrorReporter {
+public class DateConverter extends AbstractSingleValueConverter implements
+		ErrorReporter {
 
 	private static final String[] DEFAULT_ACCEPTABLE_FORMATS;
 	private static final String DEFAULT_PATTERN;
@@ -38,7 +41,8 @@ public class DateConverter extends AbstractSingleValueConverter implements Error
 		final String defaultPattern = "yyyy-MM-dd HH:mm:ss.S z";
 		final List acceptablePatterns = new ArrayList();
 		final boolean utcSupported = JVM.canParseUTCDateFormat();
-		DEFAULT_PATTERN = utcSupported ? defaultPattern : "yyyy-MM-dd HH:mm:ss.S 'UTC'";
+		DEFAULT_PATTERN = utcSupported ? defaultPattern
+				: "yyyy-MM-dd HH:mm:ss.S 'UTC'";
 		if (!utcSupported) {
 			acceptablePatterns.add(defaultPattern);
 		}
@@ -51,7 +55,8 @@ public class DateConverter extends AbstractSingleValueConverter implements Error
 		}
 		// backwards compatibility
 		acceptablePatterns.add("yyyy-MM-dd HH:mm:ssa");
-		DEFAULT_ACCEPTABLE_FORMATS = (String[]) acceptablePatterns.toArray(new String[acceptablePatterns.size()]);
+		DEFAULT_ACCEPTABLE_FORMATS = (String[]) acceptablePatterns
+				.toArray(new String[acceptablePatterns.size()]);
 	}
 	private final ThreadSafeSimpleDateFormat[] acceptableFormats;
 	private final ThreadSafeSimpleDateFormat defaultFormat;
@@ -67,7 +72,8 @@ public class DateConverter extends AbstractSingleValueConverter implements Error
 	 * Construct a DateConverter with standard formats and using UTC.
 	 * 
 	 * @param lenient
-	 *            the lenient setting of {@link SimpleDateFormat#setLenient(boolean)}
+	 *            the lenient setting of
+	 *            {@link SimpleDateFormat#setLenient(boolean)}
 	 * @since 1.3
 	 */
 	public DateConverter(boolean lenient) {
@@ -94,10 +100,12 @@ public class DateConverter extends AbstractSingleValueConverter implements Error
 	 * @param acceptableFormats
 	 *            fallback formats
 	 * @param lenient
-	 *            the lenient setting of {@link SimpleDateFormat#setLenient(boolean)}
+	 *            the lenient setting of
+	 *            {@link SimpleDateFormat#setLenient(boolean)}
 	 * @since 1.3
 	 */
-	public DateConverter(String defaultFormat, String[] acceptableFormats, boolean lenient) {
+	public DateConverter(String defaultFormat, String[] acceptableFormats,
+			boolean lenient) {
 		this(defaultFormat, acceptableFormats, UTC, lenient);
 	}
 
@@ -110,7 +118,8 @@ public class DateConverter extends AbstractSingleValueConverter implements Error
 	 *            fallback formats
 	 * @since 1.4
 	 */
-	public DateConverter(String defaultFormat, String[] acceptableFormats, TimeZone timeZone) {
+	public DateConverter(String defaultFormat, String[] acceptableFormats,
+			TimeZone timeZone) {
 		this(defaultFormat, acceptableFormats, timeZone, false);
 	}
 
@@ -124,20 +133,25 @@ public class DateConverter extends AbstractSingleValueConverter implements Error
 	 * @param timeZone
 	 *            the TimeZone used to serialize the Date
 	 * @param lenient
-	 *            the lenient setting of {@link SimpleDateFormat#setLenient(boolean)}
+	 *            the lenient setting of
+	 *            {@link SimpleDateFormat#setLenient(boolean)}
 	 * @since 1.4
 	 */
-	public DateConverter(String defaultFormat, String[] acceptableFormats, TimeZone timeZone, boolean lenient) {
-		this.defaultFormat = new ThreadSafeSimpleDateFormat(defaultFormat, timeZone, 4, 20, lenient);
+	public DateConverter(String defaultFormat, String[] acceptableFormats,
+			TimeZone timeZone, boolean lenient) {
+		this.defaultFormat = new ThreadSafeSimpleDateFormat(defaultFormat,
+				timeZone, 4, 20, lenient);
 		this.acceptableFormats = acceptableFormats != null ? new ThreadSafeSimpleDateFormat[acceptableFormats.length]
 				: new ThreadSafeSimpleDateFormat[0];
 		for (int i = 0; i < this.acceptableFormats.length; i++) {
-			this.acceptableFormats[i] = new ThreadSafeSimpleDateFormat(acceptableFormats[i], timeZone, 1, 20, lenient);
+			this.acceptableFormats[i] = new ThreadSafeSimpleDateFormat(
+					acceptableFormats[i], timeZone, 1, 20, lenient);
 		}
 	}
 
 	/**
-	 * Construct a DateConverter with standard formats, lenient set off and uses a given TimeZone for serialization.
+	 * Construct a DateConverter with standard formats, lenient set off and uses
+	 * a given TimeZone for serialization.
 	 * 
 	 * @param timeZone
 	 *            the TimeZone used to serialize the Date
@@ -151,7 +165,8 @@ public class DateConverter extends AbstractSingleValueConverter implements Error
 	public void appendErrors(ErrorWriter errorWriter) {
 		errorWriter.add("Default date pattern", defaultFormat.toString());
 		for (int i = 0; i < acceptableFormats.length; i++) {
-			errorWriter.add("Alternative date pattern", acceptableFormats[i].toString());
+			errorWriter.add("Alternative date pattern",
+					acceptableFormats[i].toString());
 		}
 	}
 

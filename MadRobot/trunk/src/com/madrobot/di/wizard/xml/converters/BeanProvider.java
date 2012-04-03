@@ -27,20 +27,23 @@ public class BeanProvider implements JavaBeanProvider {
 	protected PropertyDictionary propertyDictionary;
 
 	/**
-	 * Construct a BeanProvider that will process the bean properties in their natural order.
+	 * Construct a BeanProvider that will process the bean properties in their
+	 * natural order.
 	 */
 	public BeanProvider() {
 		this(new PropertyDictionary(new NativePropertySorter()));
 	}
 
 	/**
-	 * Construct a BeanProvider with a comparator to sort the bean properties by name in the dictionary.
+	 * Construct a BeanProvider with a comparator to sort the bean properties by
+	 * name in the dictionary.
 	 * 
 	 * @param propertyNameComparator
 	 *            the comparator
 	 */
 	public BeanProvider(final Comparator propertyNameComparator) {
-		this(new PropertyDictionary(new ComparingPropertySorter(propertyNameComparator)));
+		this(new PropertyDictionary(new ComparingPropertySorter(
+				propertyNameComparator)));
 	}
 
 	/**
@@ -63,7 +66,8 @@ public class BeanProvider implements JavaBeanProvider {
 	}
 
 	protected boolean canStreamProperty(PropertyDescriptor descriptor) {
-		return descriptor.getReadMethod() != null && descriptor.getWriteMethod() != null;
+		return descriptor.getReadMethod() != null
+				&& descriptor.getWriteMethod() != null;
 	}
 
 	/**
@@ -75,7 +79,8 @@ public class BeanProvider implements JavaBeanProvider {
 		Constructor[] constructors = type.getConstructors();
 		for (int i = 0; i < constructors.length; i++) {
 			Constructor c = constructors[i];
-			if (c.getParameterTypes().length == 0 && Modifier.isPublic(c.getModifiers()))
+			if (c.getParameterTypes().length == 0
+					&& Modifier.isPublic(c.getModifiers()))
 				return c;
 		}
 		return null;
@@ -92,13 +97,16 @@ public class BeanProvider implements JavaBeanProvider {
 
 	protected PropertyDescriptor[] getSerializableProperties(Object object) {
 		List result = new ArrayList();
-		for (final Iterator iter = propertyDictionary.propertiesFor(object.getClass()); iter.hasNext();) {
-			final PropertyDescriptor descriptor = (PropertyDescriptor) iter.next();
+		for (final Iterator iter = propertyDictionary.propertiesFor(object
+				.getClass()); iter.hasNext();) {
+			final PropertyDescriptor descriptor = (PropertyDescriptor) iter
+					.next();
 			if (canStreamProperty(descriptor)) {
 				result.add(descriptor);
 			}
 		}
-		return (PropertyDescriptor[]) result.toArray(new PropertyDescriptor[result.size()]);
+		return (PropertyDescriptor[]) result
+				.toArray(new PropertyDescriptor[result.size()]);
 	}
 
 	@Override
@@ -106,16 +114,19 @@ public class BeanProvider implements JavaBeanProvider {
 		try {
 			return getDefaultConstrutor(type).newInstance(NO_PARAMS);
 		} catch (InstantiationException e) {
-			throw new ObjectAccessException("Cannot construct " + type.getName(), e);
+			throw new ObjectAccessException("Cannot construct "
+					+ type.getName(), e);
 		} catch (IllegalAccessException e) {
-			throw new ObjectAccessException("Cannot construct " + type.getName(), e);
+			throw new ObjectAccessException("Cannot construct "
+					+ type.getName(), e);
 		} catch (InvocationTargetException e) {
 			if (e.getTargetException() instanceof RuntimeException) {
 				throw (RuntimeException) e.getTargetException();
 			} else if (e.getTargetException() instanceof Error) {
 				throw (Error) e.getTargetException();
 			} else {
-				throw new ObjectAccessException("Constructor for " + type.getName() + " threw an exception", e);
+				throw new ObjectAccessException("Constructor for "
+						+ type.getName() + " threw an exception", e);
 			}
 		}
 	}
@@ -131,7 +142,8 @@ public class BeanProvider implements JavaBeanProvider {
 	}
 
 	@Override
-	public void visitSerializableProperties(Object object, JavaBeanProvider.Visitor visitor) {
+	public void visitSerializableProperties(Object object,
+			JavaBeanProvider.Visitor visitor) {
 		PropertyDescriptor[] propertyDescriptors = getSerializableProperties(object);
 		for (int i = 0; i < propertyDescriptors.length; i++) {
 			PropertyDescriptor property = propertyDescriptors[i];
@@ -141,32 +153,37 @@ public class BeanProvider implements JavaBeanProvider {
 				Class definedIn = readMethod.getDeclaringClass();
 				if (visitor.shouldVisit(name, definedIn)) {
 					Object value = readMethod.invoke(object, new Object[0]);
-					visitor.visit(name, property.getPropertyType(), definedIn, value);
+					visitor.visit(name, property.getPropertyType(), definedIn,
+							value);
 				}
 			} catch (IllegalArgumentException e) {
-				throw new ObjectAccessException("Could not get property " + object.getClass() + "."
-						+ property.getName(), e);
+				throw new ObjectAccessException("Could not get property "
+						+ object.getClass() + "." + property.getName(), e);
 			} catch (IllegalAccessException e) {
-				throw new ObjectAccessException("Could not get property " + object.getClass() + "."
-						+ property.getName(), e);
+				throw new ObjectAccessException("Could not get property "
+						+ object.getClass() + "." + property.getName(), e);
 			} catch (InvocationTargetException e) {
-				throw new ObjectAccessException("Could not get property " + object.getClass() + "."
-						+ property.getName(), e);
+				throw new ObjectAccessException("Could not get property "
+						+ object.getClass() + "." + property.getName(), e);
 			}
 		}
 	}
 
 	@Override
 	public void writeProperty(Object object, String propertyName, Object value) {
-		PropertyDescriptor property = getProperty(propertyName, object.getClass());
+		PropertyDescriptor property = getProperty(propertyName,
+				object.getClass());
 		try {
 			property.getWriteMethod().invoke(object, new Object[] { value });
 		} catch (IllegalArgumentException e) {
-			throw new ObjectAccessException("Could not set property " + object.getClass() + "." + property.getName(), e);
+			throw new ObjectAccessException("Could not set property "
+					+ object.getClass() + "." + property.getName(), e);
 		} catch (IllegalAccessException e) {
-			throw new ObjectAccessException("Could not set property " + object.getClass() + "." + property.getName(), e);
+			throw new ObjectAccessException("Could not set property "
+					+ object.getClass() + "." + property.getName(), e);
 		} catch (InvocationTargetException e) {
-			throw new ObjectAccessException("Could not set property " + object.getClass() + "." + property.getName(), e);
+			throw new ObjectAccessException("Could not set property "
+					+ object.getClass() + "." + property.getName(), e);
 		}
 	}
 

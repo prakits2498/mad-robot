@@ -18,10 +18,11 @@ import java.util.Set;
 import com.madrobot.util.collections.FastStack;
 
 /**
- * An wrapper for all {@link HierarchicalStreamWriter} implementations, that keeps the state. Writing in a wrong state
- * will throw a {@link StreamException}, that wraps either an {@link IOException} (writing to a closed writer) or an
- * {@link IllegalStateException}. The implementation will also track unbalanced nodes or multiple attributes with the
- * same name.
+ * An wrapper for all {@link HierarchicalStreamWriter} implementations, that
+ * keeps the state. Writing in a wrong state will throw a
+ * {@link StreamException}, that wraps either an {@link IOException} (writing to
+ * a closed writer) or an {@link IllegalStateException}. The implementation will
+ * also track unbalanced nodes or multiple attributes with the same name.
  * 
  * @since 1.2
  */
@@ -40,7 +41,8 @@ public class StatefulWriter extends WriterWrapper {
 	 */
 	public static int STATE_NODE_END = 3;
 	/**
-	 * <code>STATE_NODE_START</code> is the state of a new node has been started.
+	 * <code>STATE_NODE_START</code> is the state of a new node has been
+	 * started.
 	 * 
 	 * @since 1.2
 	 */
@@ -52,7 +54,8 @@ public class StatefulWriter extends WriterWrapper {
 	 */
 	public static int STATE_OPEN = 0;
 	/**
-	 * <code>STATE_VALUE</code> is the state if the value of a node has been written.
+	 * <code>STATE_VALUE</code> is the state if the value of a node has been
+	 * written.
 	 * 
 	 * @since 1.2
 	 */
@@ -78,12 +81,13 @@ public class StatefulWriter extends WriterWrapper {
 	public void addAttribute(String name, String value) {
 		checkClosed();
 		if (state != STATE_NODE_START) {
-			throw new StreamException(new IllegalStateException("Writing attribute '" + name
-					+ "' without an opened node"));
+			throw new StreamException(new IllegalStateException(
+					"Writing attribute '" + name + "' without an opened node"));
 		}
 		Set currentAttributes = (Set) attributes.peek();
 		if (currentAttributes.contains(name)) {
-			throw new StreamException(new IllegalStateException("Writing attribute '" + name + "' twice"));
+			throw new StreamException(new IllegalStateException(
+					"Writing attribute '" + name + "' twice"));
 		}
 		currentAttributes.add(name);
 		super.addAttribute(name, value);
@@ -91,7 +95,8 @@ public class StatefulWriter extends WriterWrapper {
 
 	private void checkClosed() {
 		if (state == STATE_CLOSED) {
-			throw new StreamException(new IOException("Writing on a closed stream"));
+			throw new StreamException(new IOException(
+					"Writing on a closed stream"));
 		}
 	}
 
@@ -99,7 +104,8 @@ public class StatefulWriter extends WriterWrapper {
 	public void close() {
 		if (state != STATE_NODE_END && state != STATE_OPEN) {
 			// calling close in a finally block should not throw again
-			// throw new StreamException(new IllegalStateException("Closing with unbalanced tag"));
+			// throw new StreamException(new
+			// IllegalStateException("Closing with unbalanced tag"));
 		}
 		state = STATE_CLOSED;
 		super.close();
@@ -109,7 +115,8 @@ public class StatefulWriter extends WriterWrapper {
 	public void endNode() {
 		checkClosed();
 		if (balance-- == 0) {
-			throw new StreamException(new IllegalStateException("Unbalanced node"));
+			throw new StreamException(new IllegalStateException(
+					"Unbalanced node"));
 		}
 		attributes.popSilently();
 		state = STATE_NODE_END;
@@ -132,7 +139,8 @@ public class StatefulWriter extends WriterWrapper {
 		checkClosed();
 		if (state != STATE_NODE_START) {
 			// STATE_NODE_END is legal XML, but not in XStream ... ?
-			throw new StreamException(new IllegalStateException("Writing text without an opened node"));
+			throw new StreamException(new IllegalStateException(
+					"Writing text without an opened node"));
 		}
 		state = STATE_VALUE;
 		super.setValue(text);
@@ -154,7 +162,8 @@ public class StatefulWriter extends WriterWrapper {
 		checkClosed();
 		if (state == STATE_VALUE) {
 			// legal XML, but not in XStream ... ?
-			throw new StreamException(new IllegalStateException("Opening node after writing text"));
+			throw new StreamException(new IllegalStateException(
+					"Opening node after writing text"));
 		}
 		state = STATE_NODE_START;
 		++balance;

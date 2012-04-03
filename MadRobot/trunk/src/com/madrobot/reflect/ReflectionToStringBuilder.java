@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-
 /**
  * <p>
  * Assists in implementing {@link Object#toString()} methods using reflection.
@@ -49,7 +48,8 @@ import java.util.List;
  * </p>
  * 
  * <pre>
- * System.out.println(&quot;An object: &quot; + ReflectionToStringBuilder.toString(anObject));
+ * System.out
+ * 		.println(&quot;An object: &quot; + ReflectionToStringBuilder.toString(anObject));
  * </pre>
  * 
  * 
@@ -89,15 +89,14 @@ class ReflectionToStringBuilder extends ToStringBuilder {
 	 * Converts the given Collection into an array of Strings. The returned
 	 * array does not contain <code>null</code> entries. Note that
 	 * {@link Arrays#sort(Object[])} will throw an {@link NullPointerException}
-	 * if an array element
-	 * is <code>null</code>.
+	 * if an array element is <code>null</code>.
 	 * 
 	 * @param collection
 	 *            The collection to convert
 	 * @return A new array of Strings.
 	 */
 	static String[] toNoNullStringArray(Collection<String> collection) {
-		if(collection == null){
+		if (collection == null) {
 			return ArrayUtils.EMPTY_STRING_ARRAY;
 		}
 		return toNoNullStringArray(collection.toArray());
@@ -105,10 +104,9 @@ class ReflectionToStringBuilder extends ToStringBuilder {
 
 	/**
 	 * Returns a new array of Strings without null elements. Internal method
-	 * used to normalize exclude lists
-	 * (arrays and collections). Note that {@link Arrays#sort(Object[])} will
-	 * throw an {@link NullPointerException} if an array element is
-	 * <code>null</code>.
+	 * used to normalize exclude lists (arrays and collections). Note that
+	 * {@link Arrays#sort(Object[])} will throw an {@link NullPointerException}
+	 * if an array element is <code>null</code>.
 	 * 
 	 * @param array
 	 *            The array to check
@@ -116,8 +114,8 @@ class ReflectionToStringBuilder extends ToStringBuilder {
 	 */
 	static String[] toNoNullStringArray(Object[] array) {
 		List<String> list = new ArrayList<String>(array.length);
-		for(Object e : array){
-			if(e != null){
+		for (Object e : array) {
+			if (e != null) {
 				list.add(e.toString());
 			}
 		}
@@ -226,7 +224,8 @@ class ReflectionToStringBuilder extends ToStringBuilder {
 	 * @throws IllegalArgumentException
 	 *             if the Object is <code>null</code>
 	 */
-	public static String toString(Object object, ToStringStyle style, boolean outputTransients) {
+	public static String toString(Object object, ToStringStyle style,
+			boolean outputTransients) {
 		return toString(object, style, outputTransients, false, null);
 	}
 
@@ -276,8 +275,8 @@ class ReflectionToStringBuilder extends ToStringBuilder {
 	 *             if the Object is <code>null</code>
 	 * @since 2.1
 	 */
-	public static String toString(Object object, ToStringStyle style, boolean outputTransients,
-			boolean outputStatics) {
+	public static String toString(Object object, ToStringStyle style,
+			boolean outputTransients, boolean outputStatics) {
 		return toString(object, style, outputTransients, outputStatics, null);
 	}
 
@@ -332,10 +331,11 @@ class ReflectionToStringBuilder extends ToStringBuilder {
 	 *             if the Object is <code>null</code>
 	 * @since 2.1
 	 */
-	public static <T> String toString(T object, ToStringStyle style, boolean outputTransients,
-			boolean outputStatics, Class<? super T> reflectUpToClass) {
-		return new ReflectionToStringBuilder(object, style, null, reflectUpToClass, outputTransients,
-				outputStatics).toString();
+	public static <T> String toString(T object, ToStringStyle style,
+			boolean outputTransients, boolean outputStatics,
+			Class<? super T> reflectUpToClass) {
+		return new ReflectionToStringBuilder(object, style, null,
+				reflectUpToClass, outputTransients, outputStatics).toString();
 	}
 
 	/**
@@ -347,7 +347,8 @@ class ReflectionToStringBuilder extends ToStringBuilder {
 	 *            The field names to exclude. Null excludes nothing.
 	 * @return The toString value.
 	 */
-	public static String toStringExclude(Object object, Collection<String> excludeFieldNames) {
+	public static String toStringExclude(Object object,
+			Collection<String> excludeFieldNames) {
 		return toStringExclude(object, toNoNullStringArray(excludeFieldNames));
 	}
 
@@ -360,7 +361,8 @@ class ReflectionToStringBuilder extends ToStringBuilder {
 	 *            The field name to exclude
 	 * @return The toString value.
 	 */
-	public static String toStringExclude(Object object, final String excludeFieldName) {
+	public static String toStringExclude(Object object,
+			final String excludeFieldName) {
 		return toStringExclude(object, new String[] { excludeFieldName });
 	}
 
@@ -373,8 +375,10 @@ class ReflectionToStringBuilder extends ToStringBuilder {
 	 *            The field names to exclude
 	 * @return The toString value.
 	 */
-	public static String toStringExclude(Object object, String[] excludeFieldNames) {
-		return new ReflectionToStringBuilder(object).setExcludeFieldNames(excludeFieldNames).toString();
+	public static String toStringExclude(Object object,
+			String[] excludeFieldNames) {
+		return new ReflectionToStringBuilder(object).setExcludeFieldNames(
+				excludeFieldNames).toString();
 	}
 
 	/**
@@ -464,7 +468,8 @@ class ReflectionToStringBuilder extends ToStringBuilder {
 	 * @throws IllegalArgumentException
 	 *             if the Object passed in is <code>null</code>
 	 */
-	public ReflectionToStringBuilder(Object object, ToStringStyle style, StringBuffer buffer) {
+	public ReflectionToStringBuilder(Object object, ToStringStyle style,
+			StringBuffer buffer) {
 		super(object, style, buffer);
 	}
 
@@ -488,8 +493,9 @@ class ReflectionToStringBuilder extends ToStringBuilder {
 	 *            whether to include static fields
 	 * @since 2.1
 	 */
-	public <T> ReflectionToStringBuilder(T object, ToStringStyle style, StringBuffer buffer,
-			Class<? super T> reflectUpToClass, boolean outputTransients, boolean outputStatics) {
+	public <T> ReflectionToStringBuilder(T object, ToStringStyle style,
+			StringBuffer buffer, Class<? super T> reflectUpToClass,
+			boolean outputTransients, boolean outputStatics) {
 		super(object, style, buffer);
 		this.setUpToClass(reflectUpToClass);
 		this.setAppendTransients(outputTransients);
@@ -511,20 +517,21 @@ class ReflectionToStringBuilder extends ToStringBuilder {
 	 * @return Whether or not to append the given <code>Field</code>.
 	 */
 	protected boolean accept(Field field) {
-		if(field.getName().indexOf(ClassUtils.INNER_CLASS_SEPARATOR_CHAR) != -1){
+		if (field.getName().indexOf(ClassUtils.INNER_CLASS_SEPARATOR_CHAR) != -1) {
 			// Reject field from inner class.
 			return false;
 		}
-		if(Modifier.isTransient(field.getModifiers()) && !this.isAppendTransients()){
+		if (Modifier.isTransient(field.getModifiers())
+				&& !this.isAppendTransients()) {
 			// Reject transient fields.
 			return false;
 		}
-		if(Modifier.isStatic(field.getModifiers()) && !this.isAppendStatics()){
+		if (Modifier.isStatic(field.getModifiers()) && !this.isAppendStatics()) {
 			// Reject static fields.
 			return false;
 		}
-		if(this.excludeFieldNames != null
-				&& Arrays.binarySearch(this.excludeFieldNames, field.getName()) >= 0){
+		if (this.excludeFieldNames != null
+				&& Arrays.binarySearch(this.excludeFieldNames, field.getName()) >= 0) {
 			// Reject fields from the getExcludeFieldNames list.
 			return false;
 		}
@@ -547,26 +554,28 @@ class ReflectionToStringBuilder extends ToStringBuilder {
 	 *            The class of object parameter
 	 */
 	protected void appendFieldsIn(Class<?> clazz) {
-		if(clazz.isArray()){
+		if (clazz.isArray()) {
 			this.reflectionAppendArray(this.getObject());
 			return;
 		}
 		Field[] fields = clazz.getDeclaredFields();
 		AccessibleObject.setAccessible(fields, true);
-		for(Field field : fields){
+		for (Field field : fields) {
 			String fieldName = field.getName();
-			if(this.accept(field)){
-				try{
+			if (this.accept(field)) {
+				try {
 					// Warning: Field.get(Object) creates wrappers objects
 					// for primitive types.
 					Object fieldValue = this.getValue(field);
 					this.append(fieldName, fieldValue);
-				} catch(IllegalAccessException ex){
+				} catch (IllegalAccessException ex) {
 					// this can't happen. Would get a Security exception
 					// instead
 					// throw a runtime exception in case the impossible
 					// happens.
-					throw new InternalError("Unexpected IllegalAccessException: " + ex.getMessage());
+					throw new InternalError(
+							"Unexpected IllegalAccessException: "
+									+ ex.getMessage());
 				}
 			}
 		}
@@ -606,7 +615,8 @@ class ReflectionToStringBuilder extends ToStringBuilder {
 	 * 
 	 * @see java.lang.reflect.Field#get(Object)
 	 */
-	protected Object getValue(Field field) throws IllegalArgumentException, IllegalAccessException {
+	protected Object getValue(Field field) throws IllegalArgumentException,
+			IllegalAccessException {
 		return field.get(this.getObject());
 	}
 
@@ -643,7 +653,8 @@ class ReflectionToStringBuilder extends ToStringBuilder {
 	 * @return this
 	 */
 	public ReflectionToStringBuilder reflectionAppendArray(Object array) {
-		this.getStyle().reflectionAppendArrayDetail(this.getStringBuffer(), null, array);
+		this.getStyle().reflectionAppendArrayDetail(this.getStringBuffer(),
+				null, array);
 		return this;
 	}
 
@@ -680,10 +691,11 @@ class ReflectionToStringBuilder extends ToStringBuilder {
 	 *            <code>null</code>.
 	 * @return <code>this</code>
 	 */
-	public ReflectionToStringBuilder setExcludeFieldNames(String[] excludeFieldNamesParam) {
-		if(excludeFieldNamesParam == null){
+	public ReflectionToStringBuilder setExcludeFieldNames(
+			String[] excludeFieldNamesParam) {
+		if (excludeFieldNamesParam == null) {
 			this.excludeFieldNames = null;
-		} else{
+		} else {
 			this.excludeFieldNames = toNoNullStringArray(excludeFieldNamesParam);
 			Arrays.sort(this.excludeFieldNames);
 		}
@@ -699,10 +711,11 @@ class ReflectionToStringBuilder extends ToStringBuilder {
 	 *            The last super class to stop appending fields for.
 	 */
 	public void setUpToClass(Class<?> clazz) {
-		if(clazz != null){
+		if (clazz != null) {
 			Object object = getObject();
-			if(object != null && clazz.isInstance(object) == false){
-				throw new IllegalArgumentException("Specified class is not a superclass of the object");
+			if (object != null && clazz.isInstance(object) == false) {
+				throw new IllegalArgumentException(
+						"Specified class is not a superclass of the object");
 			}
 		}
 		this.upToClass = clazz;
@@ -717,12 +730,12 @@ class ReflectionToStringBuilder extends ToStringBuilder {
 	 */
 	@Override
 	public String toString() {
-		if(this.getObject() == null){
+		if (this.getObject() == null) {
 			return this.getStyle().getNullText();
 		}
 		Class<?> clazz = this.getObject().getClass();
 		this.appendFieldsIn(clazz);
-		while(clazz.getSuperclass() != null && clazz != this.getUpToClass()){
+		while (clazz.getSuperclass() != null && clazz != this.getUpToClass()) {
 			clazz = clazz.getSuperclass();
 			this.appendFieldsIn(clazz);
 		}

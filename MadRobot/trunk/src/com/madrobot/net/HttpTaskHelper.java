@@ -48,7 +48,7 @@ import android.util.Log;
  * requestParameter.add(param);
  * // set the parameters
  * httpTask.setRequestParameter(requestParameter);
- * //set the http method. The default is Http GET.
+ * // set the http method. The default is Http GET.
  * httpTask.getHttpSettings().setHttpMethod(HttpTaskHelper.HttpMethod.HTTP_GET);
  * 
  * 
@@ -65,12 +65,13 @@ public class HttpTaskHelper {
 
 	public HttpResponse httpResponse;
 
-	private HttpSettings httpSettings=new HttpSettings();
+	private HttpSettings httpSettings = new HttpSettings();
 
 	private Map<String, String> requestHeader;
 	private List<NameValuePair> requestParameter;
 	private URI requestUrl;
 	private Map<String, String> responseHeader;
+
 	/**
 	 * 
 	 * Parameterized constructor to initialize the request details.
@@ -89,8 +90,9 @@ public class HttpTaskHelper {
 	 *             if request url syntax is wrong
 	 */
 	private void addQueryParameter() throws URISyntaxException {
-		this.requestUrl = URIUtils.createURI(this.requestUrl.getScheme(), this.requestUrl.getAuthority(),
-				-1, this.requestUrl.getPath(), URLEncodedUtils.format(requestParameter, HTTP.UTF_8), null);
+		this.requestUrl = URIUtils.createURI(this.requestUrl.getScheme(),
+				this.requestUrl.getAuthority(), -1, this.requestUrl.getPath(),
+				URLEncodedUtils.format(requestParameter, HTTP.UTF_8), null);
 	}
 
 	/**
@@ -100,7 +102,7 @@ public class HttpTaskHelper {
 	 *            - http headers
 	 */
 	private void addResponseHeaders(Header[] responseHeader) {
-		for(Header header : responseHeader){
+		for (Header header : responseHeader) {
 			getResponseHeader().put(header.getName(), header.getValue());
 
 		}
@@ -111,7 +113,7 @@ public class HttpTaskHelper {
 	 * called
 	 */
 	public void cancel() {
-		if(getHttpClient() != null){
+		if (getHttpClient() != null) {
 			getHttpClient().getConnectionManager().shutdown();
 		}
 	}
@@ -131,13 +133,13 @@ public class HttpTaskHelper {
 	 */
 	public HttpEntity execute() throws IOException, URISyntaxException {
 
-		switch(httpSettings.getHttpMethod()) {
-			case HTTP_GET:
-				return handleHttpGet();
-			case HTTP_POST:
-				return handleHttpPost();
-			case HTTP_DELETE:
-				return handleHttpDelete();
+		switch (httpSettings.getHttpMethod()) {
+		case HTTP_GET:
+			return handleHttpGet();
+		case HTTP_POST:
+			return handleHttpPost();
+		case HTTP_DELETE:
+			return handleHttpDelete();
 		}
 		throw new UnsupportedOperationException();
 	}
@@ -150,12 +152,19 @@ public class HttpTaskHelper {
 	 * @see {@link HttpTaskHelper.HTTP_SOCKET_TIME_OUT_PARAM}
 	 */
 	private HttpClient getHttpClient() {
-		if(httpClient == null){
+		if (httpClient == null) {
 			httpClient = new DefaultHttpClient();
-			httpClient.getParams().setParameter(HttpSettings.HTTP_SOCKET_TIME_OUT_PARAM, httpSettings.getSocketTimeout());
-			httpClient.getParams().setParameter("http.protocol.version", HttpVersion.HTTP_1_1);
-			httpClient.getParams().setParameter(HttpSettings.HTTP_SINGLE_COOKIE_PARAM,httpSettings.isSingleCookieHeader());
-			httpClient.getParams().setParameter(HttpSettings.HTTP_EXPECT_CONTINUE_PARAM, httpSettings.isExpectContinue());
+			httpClient.getParams().setParameter(
+					HttpSettings.HTTP_SOCKET_TIME_OUT_PARAM,
+					httpSettings.getSocketTimeout());
+			httpClient.getParams().setParameter("http.protocol.version",
+					HttpVersion.HTTP_1_1);
+			httpClient.getParams().setParameter(
+					HttpSettings.HTTP_SINGLE_COOKIE_PARAM,
+					httpSettings.isSingleCookieHeader());
+			httpClient.getParams().setParameter(
+					HttpSettings.HTTP_EXPECT_CONTINUE_PARAM,
+					httpSettings.isExpectContinue());
 		}
 		return httpClient;
 	}
@@ -176,8 +185,6 @@ public class HttpTaskHelper {
 	// ////////////////////////////////////////////////////////////////////
 	// Private Method's
 
-	
-
 	/**
 	 * 
 	 * Private access point to get the http request parameter
@@ -194,7 +201,7 @@ public class HttpTaskHelper {
 	 * @return http response headers
 	 */
 	public Map<String, String> getResponseHeader() {
-		if(responseHeader == null){
+		if (responseHeader == null) {
 			responseHeader = new HashMap<String, String>();
 		}
 		return responseHeader;
@@ -213,9 +220,10 @@ public class HttpTaskHelper {
 	 * @throws URISyntaxException
 	 *             in case of request url syntax error
 	 */
-	private HttpEntity handleHttpDelete() throws IOException, URISyntaxException {
+	private HttpEntity handleHttpDelete() throws IOException,
+			URISyntaxException {
 
-		if(hasRequestParameter()){
+		if (hasRequestParameter()) {
 			addQueryParameter();
 		}
 		Log.d(TAG, "Request URL:[GET] " + requestUrl);
@@ -240,7 +248,7 @@ public class HttpTaskHelper {
 	 */
 	private HttpEntity handleHttpGet() throws IOException, URISyntaxException {
 
-		if(hasRequestParameter()){
+		if (hasRequestParameter()) {
 			addQueryParameter();
 		}
 		Log.d(TAG, "Request URL:[GET] " + requestUrl);
@@ -267,11 +275,12 @@ public class HttpTaskHelper {
 
 		HttpPost httpPost = new HttpPost(requestUrl);
 		this.initRequest(httpPost);
-		try{
-			if(hasRequestParameter()){
-				httpPost.setEntity(new UrlEncodedFormEntity(getRequestParameter(), "UTF-8"));
+		try {
+			if (hasRequestParameter()) {
+				httpPost.setEntity(new UrlEncodedFormEntity(
+						getRequestParameter(), "UTF-8"));
 			}
-		} catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		Log.d(TAG, "Request URL:[POST] " + requestUrl);
@@ -306,10 +315,10 @@ public class HttpTaskHelper {
 	 *            Represents the http base
 	 */
 	private void initRequest(HttpRequestBase httpRequestBase) {
-		if(hasRequestHeader()){
+		if (hasRequestHeader()) {
 			setDefaultRequestHeaders(httpRequestBase);
 			setRequestHeaders(httpRequestBase);
-		} else{
+		} else {
 			setDefaultRequestHeaders(httpRequestBase);
 		}
 	}
@@ -322,7 +331,7 @@ public class HttpTaskHelper {
 	 */
 	private void setDefaultRequestHeaders(HttpRequestBase httpRequestBase) {
 		// httpRequestBase.setHeader("Accept", "*/*");
-				
+
 	}
 
 	public void setHttpSettings(HttpSettings httpSettings) {
@@ -346,7 +355,7 @@ public class HttpTaskHelper {
 	 *            - base object for http methods
 	 */
 	private void setRequestHeaders(HttpRequestBase httpRequestBase) {
-		for(String headerName : requestHeader.keySet()){
+		for (String headerName : requestHeader.keySet()) {
 			String headerValue = requestHeader.get(headerName);
 			httpRequestBase.setHeader(headerName, headerValue);
 		}

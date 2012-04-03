@@ -24,22 +24,20 @@ import javax.net.ServerSocketFactory;
 import javax.net.SocketFactory;
 
 /**
- * The SocketClient provides the basic operations that are required of
- * client objects accessing sockets. It is meant to be
- * subclassed to avoid having to rewrite the same code over and over again
- * to open a socket, close a socket, set timeouts, etc. Of special note
- * is the {@link #setSocketFactory setSocketFactory } method, which allows you
- * to control the type of Socket the SocketClient
- * creates for initiating network connections. This is especially useful
- * for adding SSL or proxy support as well as better support for applets. For
- * example, you could create a {@link javax.net.SocketFactory} that
- * requests browser security capabilities before creating a socket.
- * All classes derived from SocketClient should use the {@link #_socketFactory_
- * _socketFactory_ } member variable to
- * create Socket and ServerSocket instances rather than instanting
- * them by directly invoking a constructor. By honoring this contract
- * you guarantee that a user will always be able to provide his own
- * Socket implementations by substituting his own SocketFactory.
+ * The SocketClient provides the basic operations that are required of client
+ * objects accessing sockets. It is meant to be subclassed to avoid having to
+ * rewrite the same code over and over again to open a socket, close a socket,
+ * set timeouts, etc. Of special note is the {@link #setSocketFactory
+ * setSocketFactory } method, which allows you to control the type of Socket the
+ * SocketClient creates for initiating network connections. This is especially
+ * useful for adding SSL or proxy support as well as better support for applets.
+ * For example, you could create a {@link javax.net.SocketFactory} that requests
+ * browser security capabilities before creating a socket. All classes derived
+ * from SocketClient should use the {@link #_socketFactory_ _socketFactory_ }
+ * member variable to create Socket and ServerSocket instances rather than
+ * instanting them by directly invoking a constructor. By honoring this contract
+ * you guarantee that a user will always be able to provide his own Socket
+ * implementations by substituting his own SocketFactory.
  * 
  */
 public abstract class SocketClient {
@@ -48,14 +46,15 @@ public abstract class SocketClient {
 			.getDefault();
 
 	/** The default SocketFactory shared by all SocketClient instances. */
-	private static final SocketFactory __DEFAULT_SOCKET_FACTORY = SocketFactory.getDefault();
+	private static final SocketFactory __DEFAULT_SOCKET_FACTORY = SocketFactory
+			.getDefault();
 
 	/** The socket's connect timeout (0 = infinite timeout) */
 	private static final int DEFAULT_CONNECT_TIMEOUT = 0;
 
 	/**
-	 * The end of line character sequence used by most IETF protocols. That
-	 * is a carriage return followed by a newline: "\r\n"
+	 * The end of line character sequence used by most IETF protocols. That is a
+	 * carriage return followed by a newline: "\r\n"
 	 */
 	public static final String NETASCII_EOL = "\r\n";
 
@@ -88,9 +87,9 @@ public abstract class SocketClient {
 	int sendBufferSize = -1;
 
 	/**
-	 * Default constructor for SocketClient. Initializes
-	 * _socket_ to null, _timeout_ to 0, _defaultPort to 0,
-	 * _isConnected_ to false, and _socketFactory_ to a shared instance of
+	 * Default constructor for SocketClient. Initializes _socket_ to null,
+	 * _timeout_ to 0, _defaultPort to 0, _isConnected_ to false, and
+	 * _socketFactory_ to a shared instance of
 	 * {@link com.madrobot.net.client.DefaultSocketFactory}.
 	 */
 	public SocketClient() {
@@ -104,11 +103,11 @@ public abstract class SocketClient {
 	}
 
 	/**
-	 * Because there are so many connect() methods, the _connectAction_()
-	 * method is provided as a means of performing some action immediately
-	 * after establishing a connection, rather than reimplementing all
-	 * of the connect() methods. The last action performed by every
-	 * connect() method after opening a socket is to call this method.
+	 * Because there are so many connect() methods, the _connectAction_() method
+	 * is provided as a means of performing some action immediately after
+	 * establishing a connection, rather than reimplementing all of the
+	 * connect() methods. The last action performed by every connect() method
+	 * after opening a socket is to call this method.
 	 * <p>
 	 * This method sets the timeout on the just opened socket to the default
 	 * timeout set by {@link #setDefaultTimeout setDefaultTimeout() }, sets
@@ -126,28 +125,28 @@ public abstract class SocketClient {
 	}
 
 	private void closeQuietly(Closeable close) {
-		if(close != null){
-			try{
+		if (close != null) {
+			try {
 				close.close();
-			} catch(IOException e){
+			} catch (IOException e) {
 			}
 		}
 	}
 
 	private void closeQuietly(Socket socket) {
-		if(socket != null){
-			try{
+		if (socket != null) {
+			try {
 				socket.close();
-			} catch(IOException e){
+			} catch (IOException e) {
 			}
 		}
 	}
 
 	/**
-	 * Opens a Socket connected to a remote host at the current default port
-	 * and originating from the current host at a system assigned port.
-	 * Before returning, {@link #_connectAction_ _connectAction_() } is called
-	 * to perform connection initialization actions.
+	 * Opens a Socket connected to a remote host at the current default port and
+	 * originating from the current host at a system assigned port. Before
+	 * returning, {@link #_connectAction_ _connectAction_() } is called to
+	 * perform connection initialization actions.
 	 * <p>
 	 * 
 	 * @param host
@@ -155,9 +154,8 @@ public abstract class SocketClient {
 	 * @exception SocketException
 	 *                If the socket timeout could not be set.
 	 * @exception IOException
-	 *                If the socket could not be opened. In most
-	 *                cases you will only want to catch IOException since
-	 *                SocketException is
+	 *                If the socket could not be opened. In most cases you will
+	 *                only want to catch IOException since SocketException is
 	 *                derived from it.
 	 */
 	public void connect(InetAddress host) throws SocketException, IOException {
@@ -166,9 +164,9 @@ public abstract class SocketClient {
 
 	/**
 	 * Opens a Socket connected to a remote host at the specified port and
-	 * originating from the current host at a system assigned port.
-	 * Before returning, {@link #_connectAction_ _connectAction_() } is called
-	 * to perform connection initialization actions.
+	 * originating from the current host at a system assigned port. Before
+	 * returning, {@link #_connectAction_ _connectAction_() } is called to
+	 * perform connection initialization actions.
 	 * <p>
 	 * 
 	 * @param host
@@ -178,17 +176,17 @@ public abstract class SocketClient {
 	 * @exception SocketException
 	 *                If the socket timeout could not be set.
 	 * @exception IOException
-	 *                If the socket could not be opened. In most
-	 *                cases you will only want to catch IOException since
-	 *                SocketException is
+	 *                If the socket could not be opened. In most cases you will
+	 *                only want to catch IOException since SocketException is
 	 *                derived from it.
 	 */
-	public void connect(InetAddress host, int port) throws SocketException, IOException {
+	public void connect(InetAddress host, int port) throws SocketException,
+			IOException {
 		_socket_ = _socketFactory_.createSocket();
-		if(receiveBufferSize != -1){
+		if (receiveBufferSize != -1) {
 			_socket_.setReceiveBufferSize(receiveBufferSize);
 		}
-		if(sendBufferSize != -1){
+		if (sendBufferSize != -1) {
 			_socket_.setSendBufferSize(sendBufferSize);
 		}
 		_socket_.connect(new InetSocketAddress(host, port), connectTimeout);
@@ -197,9 +195,9 @@ public abstract class SocketClient {
 
 	/**
 	 * Opens a Socket connected to a remote host at the specified port and
-	 * originating from the specified local address and port.
-	 * Before returning, {@link #_connectAction_ _connectAction_() } is called
-	 * to perform connection initialization actions.
+	 * originating from the specified local address and port. Before returning,
+	 * {@link #_connectAction_ _connectAction_() } is called to perform
+	 * connection initialization actions.
 	 * <p>
 	 * 
 	 * @param host
@@ -213,18 +211,17 @@ public abstract class SocketClient {
 	 * @exception SocketException
 	 *                If the socket timeout could not be set.
 	 * @exception IOException
-	 *                If the socket could not be opened. In most
-	 *                cases you will only want to catch IOException since
-	 *                SocketException is
+	 *                If the socket could not be opened. In most cases you will
+	 *                only want to catch IOException since SocketException is
 	 *                derived from it.
 	 */
-	public void connect(InetAddress host, int port, InetAddress localAddr, int localPort)
-			throws SocketException, IOException {
+	public void connect(InetAddress host, int port, InetAddress localAddr,
+			int localPort) throws SocketException, IOException {
 		_socket_ = _socketFactory_.createSocket();
-		if(receiveBufferSize != -1){
+		if (receiveBufferSize != -1) {
 			_socket_.setReceiveBufferSize(receiveBufferSize);
 		}
-		if(sendBufferSize != -1){
+		if (sendBufferSize != -1) {
 			_socket_.setSendBufferSize(sendBufferSize);
 		}
 		_socket_.bind(new InetSocketAddress(localAddr, localPort));
@@ -233,10 +230,10 @@ public abstract class SocketClient {
 	}
 
 	/**
-	 * Opens a Socket connected to a remote host at the current default
-	 * port and originating from the current host at a system assigned port.
-	 * Before returning, {@link #_connectAction_ _connectAction_() } is called
-	 * to perform connection initialization actions.
+	 * Opens a Socket connected to a remote host at the current default port and
+	 * originating from the current host at a system assigned port. Before
+	 * returning, {@link #_connectAction_ _connectAction_() } is called to
+	 * perform connection initialization actions.
 	 * <p>
 	 * 
 	 * @param hostname
@@ -244,9 +241,8 @@ public abstract class SocketClient {
 	 * @exception SocketException
 	 *                If the socket timeout could not be set.
 	 * @exception IOException
-	 *                If the socket could not be opened. In most
-	 *                cases you will only want to catch IOException since
-	 *                SocketException is
+	 *                If the socket could not be opened. In most cases you will
+	 *                only want to catch IOException since SocketException is
 	 *                derived from it.
 	 * @exception UnknownHostException
 	 *                If the hostname cannot be resolved.
@@ -257,9 +253,9 @@ public abstract class SocketClient {
 
 	/**
 	 * Opens a Socket connected to a remote host at the specified port and
-	 * originating from the current host at a system assigned port.
-	 * Before returning, {@link #_connectAction_ _connectAction_() } is called
-	 * to perform connection initialization actions.
+	 * originating from the current host at a system assigned port. Before
+	 * returning, {@link #_connectAction_ _connectAction_() } is called to
+	 * perform connection initialization actions.
 	 * <p>
 	 * 
 	 * @param hostname
@@ -269,22 +265,22 @@ public abstract class SocketClient {
 	 * @exception SocketException
 	 *                If the socket timeout could not be set.
 	 * @exception IOException
-	 *                If the socket could not be opened. In most
-	 *                cases you will only want to catch IOException since
-	 *                SocketException is
+	 *                If the socket could not be opened. In most cases you will
+	 *                only want to catch IOException since SocketException is
 	 *                derived from it.
 	 * @exception UnknownHostException
 	 *                If the hostname cannot be resolved.
 	 */
-	public void connect(String hostname, int port) throws SocketException, IOException {
+	public void connect(String hostname, int port) throws SocketException,
+			IOException {
 		connect(InetAddress.getByName(hostname), port);
 	}
 
 	/**
 	 * Opens a Socket connected to a remote host at the specified port and
-	 * originating from the specified local address and port.
-	 * Before returning, {@link #_connectAction_ _connectAction_() } is called
-	 * to perform connection initialization actions.
+	 * originating from the specified local address and port. Before returning,
+	 * {@link #_connectAction_ _connectAction_() } is called to perform
+	 * connection initialization actions.
 	 * <p>
 	 * 
 	 * @param hostname
@@ -298,24 +294,23 @@ public abstract class SocketClient {
 	 * @exception SocketException
 	 *                If the socket timeout could not be set.
 	 * @exception IOException
-	 *                If the socket could not be opened. In most
-	 *                cases you will only want to catch IOException since
-	 *                SocketException is
+	 *                If the socket could not be opened. In most cases you will
+	 *                only want to catch IOException since SocketException is
 	 *                derived from it.
 	 * @exception UnknownHostException
 	 *                If the hostname cannot be resolved.
 	 */
-	public void connect(String hostname, int port, InetAddress localAddr, int localPort)
-			throws SocketException, IOException {
+	public void connect(String hostname, int port, InetAddress localAddr,
+			int localPort) throws SocketException, IOException {
 		connect(InetAddress.getByName(hostname), port, localAddr, localPort);
 	}
 
 	/**
-	 * Disconnects the socket connection.
-	 * You should call this method after you've finished using the class
-	 * instance and also before you call {@link #connect connect() } again.
-	 * _isConnected_ is set to false, _socket_ is set to null,
-	 * _input_ is set to null, and _output_ is set to null.
+	 * Disconnects the socket connection. You should call this method after
+	 * you've finished using the class instance and also before you call
+	 * {@link #connect connect() } again. _isConnected_ is set to false,
+	 * _socket_ is set to null, _input_ is set to null, and _output_ is set to
+	 * null.
 	 * <p>
 	 * 
 	 * @exception IOException
@@ -352,12 +347,12 @@ public abstract class SocketClient {
 	}
 
 	/**
-	 * Returns the default timeout in milliseconds that is used when
-	 * opening a socket.
+	 * Returns the default timeout in milliseconds that is used when opening a
+	 * socket.
 	 * <p>
 	 * 
-	 * @return The default timeout in milliseconds that is used when
-	 *         opening a socket.
+	 * @return The default timeout in milliseconds that is used when opening a
+	 *         socket.
 	 */
 	public int getDefaultTimeout() {
 		return _timeout_;
@@ -386,12 +381,12 @@ public abstract class SocketClient {
 	}
 
 	/**
-	 * Returns the port number of the open socket on the local host used
-	 * for the connection.
+	 * Returns the port number of the open socket on the local host used for the
+	 * connection.
 	 * <p>
 	 * 
-	 * @return The port number of the open socket on the local host used
-	 *         for the connection.
+	 * @return The port number of the open socket on the local host used for the
+	 *         connection.
 	 */
 	public int getLocalPort() {
 		return _socket_.getLocalPort();
@@ -469,11 +464,11 @@ public abstract class SocketClient {
 	 * Returns true if the client is currently connected to a server.
 	 * <p>
 	 * 
-	 * @return True if the client is currently connected to a server,
-	 *         false otherwise.
+	 * @return True if the client is currently connected to a server, false
+	 *         otherwise.
 	 */
 	public boolean isConnected() {
-		if(_socket_ == null){
+		if (_socket_ == null) {
 			return false;
 		}
 
@@ -482,8 +477,7 @@ public abstract class SocketClient {
 
 	/**
 	 * Sets the connection timeout in milliseconds, which will be passed to the
-	 * {@link Socket} object's
-	 * connect() method.
+	 * {@link Socket} object's connect() method.
 	 * 
 	 * @param connectTimeout
 	 *            The connection timeout to use (in ms)
@@ -494,10 +488,9 @@ public abstract class SocketClient {
 	}
 
 	/**
-	 * Sets the default port the SocketClient should connect to when a port
-	 * is not specified. The {@link #_defaultPort_ _defaultPort_ } variable
-	 * stores this value. If never set, the default port is equal
-	 * to zero.
+	 * Sets the default port the SocketClient should connect to when a port is
+	 * not specified. The {@link #_defaultPort_ _defaultPort_ } variable stores
+	 * this value. If never set, the default port is equal to zero.
 	 * <p>
 	 * 
 	 * @param port
@@ -511,13 +504,12 @@ public abstract class SocketClient {
 	 * Set the default timeout in milliseconds to use when opening a socket.
 	 * This value is only used previous to a call to {@link #connect connect()}
 	 * and should not be confused with {@link #setSoTimeout setSoTimeout()}
-	 * which operates on an the currently opened socket. _timeout_ contains
-	 * the new timeout value.
+	 * which operates on an the currently opened socket. _timeout_ contains the
+	 * new timeout value.
 	 * <p>
 	 * 
 	 * @param timeout
-	 *            The timeout in milliseconds to use for the socket
-	 *            connection.
+	 *            The timeout in milliseconds to use for the socket connection.
 	 */
 	public void setDefaultTimeout(int timeout) {
 		_timeout_ = timeout;
@@ -527,12 +519,9 @@ public abstract class SocketClient {
 	 * Sets the SO_KEEPALIVE flag on the currently opened socket.
 	 * 
 	 * From the Javadocs, the default keepalive time is 2 hours (although this
-	 * is
-	 * implementation dependent). It looks as though the Windows WSA sockets
-	 * implementation
-	 * allows a specific keepalive value to be set, although this seems not to
-	 * be the case on
-	 * other systems.
+	 * is implementation dependent). It looks as though the Windows WSA sockets
+	 * implementation allows a specific keepalive value to be set, although this
+	 * seems not to be the case on other systems.
 	 * 
 	 * @param keepAlive
 	 *            If true, keepAlive is turned on
@@ -571,8 +560,7 @@ public abstract class SocketClient {
 
 	/**
 	 * Sets the ServerSocketFactory used by the SocketClient to open
-	 * ServerSocket
-	 * connections. If the factory value is null, then a default
+	 * ServerSocket connections. If the factory value is null, then a default
 	 * factory is used (only do this to reset the factory after having
 	 * previously altered it).
 	 * <p>
@@ -582,27 +570,26 @@ public abstract class SocketClient {
 	 * @since 2.0
 	 */
 	public void setServerSocketFactory(ServerSocketFactory factory) {
-		if(factory == null){
+		if (factory == null) {
 			_serverSocketFactory_ = __DEFAULT_SERVER_SOCKET_FACTORY;
-		} else{
+		} else {
 			_serverSocketFactory_ = factory;
 		}
 	}
 
 	/**
 	 * Sets the SocketFactory used by the SocketClient to open socket
-	 * connections. If the factory value is null, then a default
-	 * factory is used (only do this to reset the factory after having
-	 * previously altered it).
+	 * connections. If the factory value is null, then a default factory is used
+	 * (only do this to reset the factory after having previously altered it).
 	 * <p>
 	 * 
 	 * @param factory
 	 *            The new SocketFactory the SocketClient should use.
 	 */
 	public void setSocketFactory(SocketFactory factory) {
-		if(factory == null){
+		if (factory == null) {
 			_socketFactory_ = __DEFAULT_SOCKET_FACTORY;
-		} else{
+		} else {
 			_socketFactory_ = factory;
 		}
 	}
@@ -623,14 +610,14 @@ public abstract class SocketClient {
 	}
 
 	/**
-	 * Set the timeout in milliseconds of a currently open connection.
-	 * Only call this method after a connection has been opened
-	 * by {@link #connect connect()}.
+	 * Set the timeout in milliseconds of a currently open connection. Only call
+	 * this method after a connection has been opened by {@link #connect
+	 * connect()}.
 	 * <p>
 	 * 
 	 * @param timeout
-	 *            The timeout in milliseconds to use for the currently
-	 *            open socket connection.
+	 *            The timeout in milliseconds to use for the currently open
+	 *            socket connection.
 	 * @exception SocketException
 	 *                If the operation fails.
 	 */
@@ -639,8 +626,8 @@ public abstract class SocketClient {
 	}
 
 	/**
-	 * Enables or disables the Nagle's algorithm (TCP_NODELAY) on the
-	 * currently opened socket.
+	 * Enables or disables the Nagle's algorithm (TCP_NODELAY) on the currently
+	 * opened socket.
 	 * <p>
 	 * 
 	 * @param on
@@ -653,11 +640,11 @@ public abstract class SocketClient {
 	}
 
 	/**
-	 * Verifies that the remote end of the given socket is connected to the
-	 * the same host that the SocketClient is currently connected to. This
-	 * is useful for doing a quick security check when a client needs to
-	 * accept a connection from a server, such as an FTP data connection or
-	 * a BSD R command standard error stream.
+	 * Verifies that the remote end of the given socket is connected to the the
+	 * same host that the SocketClient is currently connected to. This is useful
+	 * for doing a quick security check when a client needs to accept a
+	 * connection from a server, such as an FTP data connection or a BSD R
+	 * command standard error stream.
 	 * <p>
 	 * 
 	 * @return True if the remote hosts are the same, false if not.

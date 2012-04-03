@@ -13,7 +13,8 @@ package com.madrobot.di.wizard.xml.io;
 
 /**
  */
-public interface ExtendedHierarchicalStreamWriter extends HierarchicalStreamWriter {
+public interface ExtendedHierarchicalStreamWriter extends
+		HierarchicalStreamWriter {
 
 	void startNode(String name, Class clazz);
 

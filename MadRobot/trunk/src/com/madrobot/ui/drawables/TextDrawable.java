@@ -1,9 +1,14 @@
 package com.madrobot.ui.drawables;
 
-import android.graphics.*;
-import android.graphics.drawable.Drawable;
 import java.util.ArrayList;
 import java.util.List;
+
+import android.graphics.Canvas;
+import android.graphics.ColorFilter;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
 
 public class TextDrawable extends Drawable
 
@@ -79,7 +84,8 @@ public class TextDrawable extends Drawable
 	}
 
 	protected void computeTextHeight() {
-		mHeight = (int) Math.max(getTextSize(), (float) getNumLines() * getTextSize());
+		mHeight = (int) Math.max(getTextSize(), getNumLines()
+				* getTextSize());
 	}
 
 	protected void computeTextWidth() {
@@ -91,7 +97,8 @@ public class TextDrawable extends Drawable
 				int start = 0;
 				for (int i = 0; i < linesBreak.size(); i++) {
 					int nextBreak = ((Integer) linesBreak.get(i)).intValue();
-					maxWidth = (int) Math.max(maxWidth, getTextWidth(start, nextBreak));
+					maxWidth = (int) Math.max(maxWidth,
+							getTextWidth(start, nextBreak));
 					start = nextBreak + 1;
 				}
 
@@ -109,6 +116,7 @@ public class TextDrawable extends Drawable
 		rect.set(mBoundsF);
 	}
 
+	@Override
 	public void draw(Canvas canvas) {
 		RectF dstRect = new RectF();
 		copyBounds(dstRect);
@@ -117,8 +125,10 @@ public class TextDrawable extends Drawable
 		getFontMetrics(metrics);
 		if (numLines == 1) {
 			if (!mTextHint)
-				canvas.drawText(mText, dstRect.left, dstRect.top - metrics.top - metrics.bottom, mStrokePaint);
-			canvas.drawText(mText, dstRect.left, dstRect.top - metrics.top - metrics.bottom, mPaint);
+				canvas.drawText(mText, dstRect.left, dstRect.top - metrics.top
+						- metrics.bottom, mStrokePaint);
+			canvas.drawText(mText, dstRect.left, dstRect.top - metrics.top
+					- metrics.bottom, mPaint);
 		} else {
 			int start = 0;
 			float top = dstRect.top;
@@ -143,10 +153,11 @@ public class TextDrawable extends Drawable
 			if (mShowCursor) {
 				Rect lastRect = new Rect();
 				getLineBounds(getNumLines() - 1, lastRect);
-				float left = dstRect.left + (float) lastRect.width() + 2.0F;
+				float left = dstRect.left + lastRect.width() + 2.0F;
 				float top = dstRect.top;
-				float right = dstRect.left + (float) lastRect.width() + 4F;
-				float bottom = dstRect.top - metrics.top * (float) (numLines - 1) - metrics.top - metrics.bottom;
+				float right = dstRect.left + lastRect.width() + 4F;
+				float bottom = dstRect.top - metrics.top
+						* (numLines - 1) - metrics.top - metrics.bottom;
 				canvas.drawRect(left, top, right, bottom, mStrokePaint);
 				canvas.drawRect(left, top, right, bottom, mPaint);
 			}
@@ -161,10 +172,12 @@ public class TextDrawable extends Drawable
 		mEditing = false;
 	}
 
+	@Override
 	public int getIntrinsicHeight() {
 		return mHeight;
 	}
 
+	@Override
 	public int getIntrinsicWidth() {
 		return mWidth;
 	}
@@ -176,10 +189,12 @@ public class TextDrawable extends Drawable
 				outBounds.left = 0;
 				outBounds.right = (int) getTextWidth(0, mText.length());
 			} else {
-				mPaint.getTextBounds(mText, ((Integer) linesBreak.get(line - 1)).intValue() + 1,
+				mPaint.getTextBounds(mText,
+						((Integer) linesBreak.get(line - 1)).intValue() + 1,
 						((Integer) linesBreak.get(line)).intValue(), outBounds);
 				outBounds.left = 0;
-				outBounds.right = (int) getTextWidth(((Integer) linesBreak.get(line - 1)).intValue() + 1,
+				outBounds.right = (int) getTextWidth(
+						((Integer) linesBreak.get(line - 1)).intValue() + 1,
 						((Integer) linesBreak.get(line)).intValue());
 			}
 		} else {
@@ -189,13 +204,14 @@ public class TextDrawable extends Drawable
 		}
 		if (outBounds.width() < mMinTextWidth)
 			outBounds.right = mMinTextWidth;
-		outBounds.offset(0, (int) (getTextSize() * (float) getNumLines()));
+		outBounds.offset(0, (int) (getTextSize() * getNumLines()));
 	}
 
 	protected int getNumLines() {
 		return Math.max(linesBreak.size(), 1);
 	}
 
+	@Override
 	public int getOpacity() {
 		return mPaint.getAlpha();
 	}
@@ -236,22 +252,26 @@ public class TextDrawable extends Drawable
 		return mEditing;
 	}
 
+	@Override
 	public void setAlpha(int alpha) {
 		mPaint.setAlpha(alpha);
 	}
 
 	public void setBounds(float left, float top, float right, float bottom) {
-		if (left != mBoundsF.left || top != mBoundsF.top || right != mBoundsF.right || bottom != mBoundsF.bottom) {
+		if (left != mBoundsF.left || top != mBoundsF.top
+				|| right != mBoundsF.right || bottom != mBoundsF.bottom) {
 			mBoundsF.set(left, top, right, bottom);
 			setTextSize(bottom - top);
 		}
 	}
 
+	@Override
 	public void setBounds(int left, int top, int right, int bottom) {
 		super.setBounds(left, top, right, bottom);
 		setBounds(left, top, right, bottom);
 	}
 
+	@Override
 	public void setColorFilter(ColorFilter cf) {
 		mPaint.setColorFilter(cf);
 		mStrokePaint.setColorFilter(cf);
@@ -276,17 +296,17 @@ public class TextDrawable extends Drawable
 	}
 
 	public void setTextSize(float size) {
-		if (size / (float) getNumLines() != mPaint.getTextSize()) {
+		if (size / getNumLines() != mPaint.getTextSize()) {
 			int lines = getNumLines();
-			mPaint.setTextSize(size / (float) lines);
-			mStrokePaint.setTextSize(size / (float) lines);
-			mStrokePaint.setStrokeWidth(size / (float) lines / 10F);
+			mPaint.setTextSize(size / lines);
+			mStrokePaint.setTextSize(size / lines);
+			mStrokePaint.setStrokeWidth(size / lines / 10F);
 		}
 	}
 
 	public boolean validateSize(RectF rect) {
 		float h = rect.height();
-		return h / (float) getNumLines() >= mMinHeight && mText.length() >= 1;
+		return h / getNumLines() >= mMinHeight && mText.length() >= 1;
 	}
 
 	public void setMinSize(float f, float f1) {

@@ -33,13 +33,16 @@ public class RegexPatternConverter implements Converter {
 	}
 
 	@Override
-	public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
+	public void marshal(Object source, HierarchicalStreamWriter writer,
+			MarshallingContext context) {
 		defaultConverter.marshal(source, writer, context);
 	}
 
 	@Override
-	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
-		Pattern notCompiled = (Pattern) defaultConverter.unmarshal(reader, context);
+	public Object unmarshal(HierarchicalStreamReader reader,
+			UnmarshallingContext context) {
+		Pattern notCompiled = (Pattern) defaultConverter.unmarshal(reader,
+				context);
 		return Pattern.compile(notCompiled.pattern(), notCompiled.flags());
 	}
 

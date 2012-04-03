@@ -70,6 +70,7 @@ public class OrFileFilter extends AbstractFileFilter implements
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void addFileFilter(final IOFileFilter ioFileFilter) {
 		this.fileFilters.add(ioFileFilter);
 	}
@@ -77,6 +78,7 @@ public class OrFileFilter extends AbstractFileFilter implements
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public List<IOFileFilter> getFileFilters() {
 		return Collections.unmodifiableList(this.fileFilters);
 	}
@@ -84,6 +86,7 @@ public class OrFileFilter extends AbstractFileFilter implements
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public boolean removeFileFilter(IOFileFilter ioFileFilter) {
 		return this.fileFilters.remove(ioFileFilter);
 	}
@@ -91,6 +94,7 @@ public class OrFileFilter extends AbstractFileFilter implements
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void setFileFilters(final List<IOFileFilter> fileFilters) {
 		this.fileFilters.clear();
 		this.fileFilters.addAll(fileFilters);

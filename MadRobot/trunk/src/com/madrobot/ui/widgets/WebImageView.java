@@ -16,23 +16,23 @@ import android.widget.ProgressBar;
 import android.widget.ViewSwitcher;
 
 import com.madrobot.R;
-import com.madrobot.taskpool.TaskPoolManagerImpl;
 import com.madrobot.tasks.DataResponse;
 import com.madrobot.tasks.DownloadBitmapTask;
 import com.madrobot.tasks.TaskNotifier;
 
 /**
- * An image view that fetches its image off the web using the supplied URL. While the image is being downloaded, a
- * progress indicator will be shown.
+ * An image view that fetches its image off the web using the supplied URL.
+ * While the image is being downloaded, a progress indicator will be shown.
  * <p>
  * <b>Styled Attributes</b><br/>
  * <ul>
  * <li><b>imageUrl</b>(string): URL for the image to be downloaded</li>
- * <li><b>autoLoad</b>(boolean): Flag to indicate if the image should be downloaded automatically or should be user
- * initiated {@link #loadImage()}</li>
- * <li><b>progressDrawable</b>(drawable): Drawable to be used while the image is loaded. if the ProgressBar is not
- * desired.</li>
- * <li><b>errorDrawable</b>(drawable):Drawable to be used if the image could not be loaded.
+ * <li><b>autoLoad</b>(boolean): Flag to indicate if the image should be
+ * downloaded automatically or should be user initiated {@link #loadImage()}</li>
+ * <li><b>progressDrawable</b>(drawable): Drawable to be used while the image is
+ * loaded. if the ProgressBar is not desired.</li>
+ * <li><b>errorDrawable</b>(drawable):Drawable to be used if the image could not
+ * be loaded.
  * </ul>
  * </p>
  */
@@ -52,27 +52,34 @@ public class WebImageView extends ViewSwitcher implements TaskNotifier {
 
 	private ScaleType scaleType = ScaleType.CENTER_CROP;
 
-//	public WebImageView(Context context, AttributeSet attributes,int defStyle) {
-//		this(context,attributes,0);
-//	}
-	
+	// public WebImageView(Context context, AttributeSet attributes,int
+	// defStyle) {
+	// this(context,attributes,0);
+	// }
+
 	public WebImageView(Context context, AttributeSet attributes) {
 		super(context, attributes);
-		TypedArray styledAttrs = context.obtainStyledAttributes(attributes, R.styleable.WebImageView);
+		TypedArray styledAttrs = context.obtainStyledAttributes(attributes,
+				R.styleable.WebImageView);
 
-		int progressDrawableId = styledAttrs.getInt(R.styleable.WebImageView_progressDrawable, 0);
+		int progressDrawableId = styledAttrs.getInt(
+				R.styleable.WebImageView_progressDrawable, 0);
 
-		int errorDrawableId = styledAttrs.getInt(R.styleable.WebImageView_errorDrawable, 0);
+		int errorDrawableId = styledAttrs.getInt(
+				R.styleable.WebImageView_errorDrawable, 0);
 
 		Drawable progressDrawable = null;
 		if (progressDrawableId > 0) {
-			progressDrawable = context.getResources().getDrawable(progressDrawableId);
+			progressDrawable = context.getResources().getDrawable(
+					progressDrawableId);
 		}
 		Drawable errorDrawable = null;
 		if (errorDrawableId > 0) {
 			errorDrawable = context.getResources().getDrawable(errorDrawableId);
 		}
-		initialize(context, styledAttrs.getString(R.styleable.WebImageView_imageUrl), progressDrawable, errorDrawable,
+		initialize(context,
+				styledAttrs.getString(R.styleable.WebImageView_imageUrl),
+				progressDrawable, errorDrawable,
 				styledAttrs.getBoolean(R.styleable.WebImageView_autoLoad, true));
 		// styles.recycle();
 	}
@@ -83,7 +90,8 @@ public class WebImageView extends ViewSwitcher implements TaskNotifier {
 	// * @param imageUrl
 	// * the URL of the image to download and show
 	// * @param autoLoad
-	// * Whether the download should start immediately after creating the view. If set to false, use
+	// * Whether the download should start immediately after creating the view.
+	// If set to false, use
 	// * {@link #loadImage()} to manually trigger the image download.
 	// */
 	// public WebImageView(Context context, String imageUrl, boolean autoLoad) {
@@ -97,12 +105,15 @@ public class WebImageView extends ViewSwitcher implements TaskNotifier {
 	// * @param imageUrl
 	// * the URL of the image to download and show
 	// * @param progressDrawable
-	// * the drawable to be used for the {@link ProgressBar} which is displayed while the image is loading
+	// * the drawable to be used for the {@link ProgressBar} which is displayed
+	// while the image is loading
 	// * @param autoLoad
-	// * Whether the download should start immediately after creating the view. If set to false, use
+	// * Whether the download should start immediately after creating the view.
+	// If set to false, use
 	// * {@link #loadImage()} to manually trigger the image download.
 	// */
-	// public WebImageView(Context context, String imageUrl, Drawable progressDrawable, boolean autoLoad) {
+	// public WebImageView(Context context, String imageUrl, Drawable
+	// progressDrawable, boolean autoLoad) {
 	// super(context);
 	// initialize(context, imageUrl, progressDrawable, null, autoLoad);
 	// }
@@ -113,11 +124,13 @@ public class WebImageView extends ViewSwitcher implements TaskNotifier {
 	// * @param imageUrl
 	// * the URL of the image to download and show
 	// * @param progressDrawable
-	// * the drawable to be used for the {@link ProgressBar} which is displayed while the image is loading
+	// * the drawable to be used for the {@link ProgressBar} which is displayed
+	// while the image is loading
 	// * @param errorDrawable
 	// * the drawable to be used if a download error occurs
 	// * @param autoLoad
-	// * Whether the download should start immediately after creating the view. If set to false, use
+	// * Whether the download should start immediately after creating the view.
+	// If set to false, use
 	// * {@link #loadImage()} to manually trigger the image download.
 	// */
 	// public WebImageView(
@@ -133,7 +146,8 @@ public class WebImageView extends ViewSwitcher implements TaskNotifier {
 	private void addImageView(Context context) {
 		imageView = new ImageView(context);
 		imageView.setScaleType(scaleType);
-		LayoutParams lp = new LayoutParams(android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
+		LayoutParams lp = new LayoutParams(
+				android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
 				android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
 		lp.gravity = Gravity.CENTER;
 		addView(imageView, 1, lp);
@@ -150,7 +164,9 @@ public class WebImageView extends ViewSwitcher implements TaskNotifier {
 				((AnimationDrawable) progressDrawable).start();
 			}
 		}
-		LayoutParams lp = new LayoutParams(progressDrawable.getIntrinsicWidth(), progressDrawable.getIntrinsicHeight());
+		LayoutParams lp = new LayoutParams(
+				progressDrawable.getIntrinsicWidth(),
+				progressDrawable.getIntrinsicHeight());
 		lp.gravity = Gravity.CENTER;
 		addView(loadingSpinner, 0, lp);
 	}
@@ -164,7 +180,8 @@ public class WebImageView extends ViewSwitcher implements TaskNotifier {
 		return imageUrl;
 	}
 
-	private void initialize(Context context, String imageUrl, Drawable progressDrawable, Drawable errorDrawable, boolean autoLoad) {
+	private void initialize(Context context, String imageUrl,
+			Drawable progressDrawable, Drawable errorDrawable, boolean autoLoad) {
 		this.imageUrl = imageUrl;
 		this.progressDrawable = progressDrawable;
 		this.errorDrawable = errorDrawable;
@@ -182,11 +199,13 @@ public class WebImageView extends ViewSwitcher implements TaskNotifier {
 	}
 
 	/**
-	 * Use this method to trigger the image download if you had previously set autoLoad to false.
+	 * Use this method to trigger the image download if you had previously set
+	 * autoLoad to false.
 	 */
 	public void loadImage() {
 		if (imageUrl == null) {
-			throw new IllegalStateException("image URL is null; did you forget to set it for this view?");
+			throw new IllegalStateException(
+					"image URL is null; did you forget to set it for this view?");
 		}
 		DownloadBitmapTask task = new DownloadBitmapTask(getContext(), this);
 		Object[] param = new Object[2];
@@ -262,14 +281,16 @@ public class WebImageView extends ViewSwitcher implements TaskNotifier {
 	}
 
 	/**
-	 * Often you have resources which usually have an image, but some don't. For these cases, use this method to supply
-	 * a placeholder drawable which will be loaded instead of a web image.
+	 * Often you have resources which usually have an image, but some don't. For
+	 * these cases, use this method to supply a placeholder drawable which will
+	 * be loaded instead of a web image.
 	 * 
 	 * @param imageResourceId
 	 *            the resource of the placeholder image drawable
 	 */
 	public void setNoImageDrawable(int imageResourceId) {
-		imageView.setImageDrawable(getContext().getResources().getDrawable(imageResourceId));
+		imageView.setImageDrawable(getContext().getResources().getDrawable(
+				imageResourceId));
 		setDisplayedChild(1);
 	}
 }

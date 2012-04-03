@@ -10,8 +10,7 @@
  ******************************************************************************/
 package com.madrobot.math;
 
-public interface BinaryConstants
-{
+public interface BinaryConstants {
 	public static final int BYTE_ORDER_MOTOROLA = 'M';
 	public static final int BYTE_ORDER_BIG_ENDIAN = BYTE_ORDER_MOTOROLA;
 	public static final int BYTE_ORDER_INTEL = 'I';

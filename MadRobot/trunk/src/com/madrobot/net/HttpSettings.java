@@ -1,6 +1,5 @@
 package com.madrobot.net;
 
-import java.io.File;
 
 public class HttpSettings {
 
@@ -27,7 +26,7 @@ public class HttpSettings {
 	}
 
 	public static final String HTTP_EXPECT_CONTINUE_PARAM = "http.protocol.expect-continue";
-	public static final String HTTP_SINGLE_COOKIE_PARAM="http.protocol.single-cookie-header";
+	public static final String HTTP_SINGLE_COOKIE_PARAM = "http.protocol.single-cookie-header";
 	/**
 	 * HTTP session socket time-out key
 	 */
@@ -35,11 +34,10 @@ public class HttpSettings {
 	private int defaultBufferSize = 1042 * 4;
 
 	private boolean expectContinue = true;
-	
+
 	private HttpMethod httpMethod = HttpMethod.HTTP_GET;
 
-	
-	private boolean isSingleCookieHeader=false;
+	private boolean isSingleCookieHeader = false;
 
 	/**
 	 * HTTP session timeout. Default is 30 seconds
@@ -86,7 +84,6 @@ public class HttpSettings {
 		this.httpMethod = httpMethod;
 	}
 
-	
 	public void setSingleCookieHeader(boolean isSingleCookieHeader) {
 		this.isSingleCookieHeader = isSingleCookieHeader;
 	}
@@ -100,5 +97,4 @@ public class HttpSettings {
 		this.socketTimeout = timeout;
 	}
 
-	
 }

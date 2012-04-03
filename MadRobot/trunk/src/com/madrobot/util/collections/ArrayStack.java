@@ -19,9 +19,9 @@ import com.madrobot.util.Buffer;
 /**
  * An implementation of the {@link java.util.Stack} API that is based on an
  * <code>ArrayList</code> instead of a <code>Vector</code>, so it is not
- * synchronized to protect against multi-threaded access. The implementation
- * is therefore operates faster in environments where you do not need to
- * worry about multiple thread contention.
+ * synchronized to protect against multi-threaded access. The implementation is
+ * therefore operates faster in environments where you do not need to worry
+ * about multiple thread contention.
  * <p>
  * The removal order of an <code>ArrayStack</code> is based on insertion order:
  * The most recently added element is removed first. The iteration order is
@@ -38,8 +38,8 @@ public class ArrayStack extends ArrayList implements Buffer {
 	private static final long serialVersionUID = 2130079159931574599L;
 
 	/**
-	 * Constructs a new empty <code>ArrayStack</code>. The initial size
-	 * is controlled by <code>ArrayList</code> and is currently 10.
+	 * Constructs a new empty <code>ArrayStack</code>. The initial size is
+	 * controlled by <code>ArrayList</code> and is currently 10.
 	 */
 	public ArrayStack() {
 		super();
@@ -51,8 +51,7 @@ public class ArrayStack extends ArrayList implements Buffer {
 	 * @param initialSize
 	 *            the initial size to use
 	 * @throws IllegalArgumentException
-	 *             if the specified initial size
-	 *             is negative
+	 *             if the specified initial size is negative
 	 */
 	public ArrayStack(int initialSize) {
 		super(initialSize);
@@ -80,7 +79,7 @@ public class ArrayStack extends ArrayList implements Buffer {
 	@Override
 	public Object get() {
 		int size = size();
-		if(size == 0){
+		if (size == 0) {
 			throw new BufferUnderflowException();
 		}
 		return get(size - 1);
@@ -95,29 +94,29 @@ public class ArrayStack extends ArrayList implements Buffer {
 	 */
 	public Object peek() throws EmptyStackException {
 		int n = size();
-		if(n <= 0){
+		if (n <= 0) {
 			throw new EmptyStackException();
-		} else{
+		} else {
 			return get(n - 1);
 		}
 	}
 
 	/**
-	 * Returns the n'th item down (zero-relative) from the top of this
-	 * stack without removing it.
+	 * Returns the n'th item down (zero-relative) from the top of this stack
+	 * without removing it.
 	 * 
 	 * @param n
 	 *            the number of items down to go
 	 * @return the n'th item on the stack, zero relative
 	 * @throws EmptyStackException
-	 *             if there are not enough items on the
-	 *             stack to satisfy this request
+	 *             if there are not enough items on the stack to satisfy this
+	 *             request
 	 */
 	public Object peek(int n) throws EmptyStackException {
 		int m = (size() - n) - 1;
-		if(m < 0){
+		if (m < 0) {
 			throw new EmptyStackException();
-		} else{
+		} else {
 			return get(m);
 		}
 	}
@@ -131,9 +130,9 @@ public class ArrayStack extends ArrayList implements Buffer {
 	 */
 	public Object pop() throws EmptyStackException {
 		int n = size();
-		if(n <= 0){
+		if (n <= 0) {
 			throw new EmptyStackException();
-		} else{
+		} else {
 			return remove(n - 1);
 		}
 	}
@@ -161,7 +160,7 @@ public class ArrayStack extends ArrayList implements Buffer {
 	@Override
 	public Object remove() {
 		int size = size();
-		if(size == 0){
+		if (size == 0) {
 			throw new BufferUnderflowException();
 		}
 		return remove(size - 1);
@@ -170,10 +169,9 @@ public class ArrayStack extends ArrayList implements Buffer {
 	/**
 	 * Returns the one-based position of the distance from the top that the
 	 * specified object exists on this stack, where the top-most element is
-	 * considered to be at distance <code>1</code>. If the object is not
-	 * present on the stack, return <code>-1</code> instead. The
-	 * <code>equals()</code> method is used to compare to the items
-	 * in this stack.
+	 * considered to be at distance <code>1</code>. If the object is not present
+	 * on the stack, return <code>-1</code> instead. The <code>equals()</code>
+	 * method is used to compare to the items in this stack.
 	 * 
 	 * @param object
 	 *            the object to be searched for
@@ -183,9 +181,10 @@ public class ArrayStack extends ArrayList implements Buffer {
 	public int search(Object object) {
 		int i = size() - 1; // Current index
 		int n = 1; // Current distance
-		while(i >= 0){
+		while (i >= 0) {
 			Object current = get(i);
-			if(((object == null) && (current == null)) || ((object != null) && object.equals(current))){
+			if (((object == null) && (current == null))
+					|| ((object != null) && object.equals(current))) {
 				return n;
 			}
 			i--;

@@ -14,7 +14,6 @@ import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
 
@@ -860,7 +859,8 @@ public final class StringUtils {
 	 */
 	public static String random(int count, int start, int end, boolean letters,
 			boolean numbers, char[] chars, Random random) {
-		return RandomString.random(count, start, end, letters, numbers, chars, random);
+		return RandomString.random(count, start, end, letters, numbers, chars,
+				random);
 	}
 
 	/**
@@ -1218,7 +1218,6 @@ public final class StringUtils {
 		return buf.toString();
 	}
 
-	
 	/**
 	 * Replace the last occurance of the <code>search</code> string
 	 * 
@@ -1354,7 +1353,6 @@ public final class StringUtils {
 		return str.concat(padding(pads, padChar));
 	}
 
-
 	/**
 	 * <p>
 	 * Right pad a String with a specified String.
@@ -1416,172 +1414,174 @@ public final class StringUtils {
 		}
 	}
 
-//	/**
-//	 * Splits the provided text into an array, using whitespace as the
-//	 * separator.
-//	 * 
-//	 * @param str
-//	 *            the String to parse, may be null.
-//	 * @return an array of parsed Strings, null if null String input
-//	 */
-//	public static String[] split(final String str) {
-//		return split(str, null, -1);
-//	}
+	// /**
+	// * Splits the provided text into an array, using whitespace as the
+	// * separator.
+	// *
+	// * @param str
+	// * the String to parse, may be null.
+	// * @return an array of parsed Strings, null if null String input
+	// */
+	// public static String[] split(final String str) {
+	// return split(str, null, -1);
+	// }
 
-//	/**
-//	 * Split a string into an array of string
-//	 * 
-//	 * @param toSplit
-//	 *            string to split
-//	 * @param delimiter
-//	 *            character
-//	 * @param ignoreEmpty
-//	 *            flag to ignore empty spaces
-//	 * @return array of string that is split at the given delimiter
-//	 */
-//	public static String[] split(String toSplit, char delimiter,
-//			boolean ignoreEmpty) {
-//		StringBuilder buffer = new StringBuilder();
-//		java.util.Stack<String> stringStack = new java.util.Stack<String>();
-//		try {
-//			for (int i = 0; i < toSplit.length(); i++) {
-//				if (toSplit.charAt(i) != delimiter) {
-//
-//					buffer.append(toSplit.charAt(i));
-//				} else {
-//					if ((buffer.toString().trim().length() == 0) && ignoreEmpty) {
-//
-//					} else {
-//						stringStack.addElement(buffer.toString());
-//					}
-//					buffer = new StringBuilder();
-//				}
-//			}
-//		} catch (StringIndexOutOfBoundsException e) {
-//			System.out.println("[StringUtil.split] " + e.toString());
-//		}
-//		if (buffer.length() != 0) {
-//			stringStack.addElement(buffer.toString());
-//		}
-//
-//		String[] split = new String[stringStack.size()];
-//		for (int i = 0; i < split.length; i++) {
-//			split[split.length - 1 - i] = stringStack.pop();
-//		}
-//		stringStack = null;
-//		buffer = null;
-//		return split;
-//	}
-//
-//	/**
-//	 * Splits the provided text into an array with a maximum length, separators
-//	 * specified.
-//	 * 
-//	 * @param str
-//	 *            the String to parse, may be null.
-//	 * @param separatorChars
-//	 *            the characters used as the delimiters, null splits on
-//	 *            whitespace
-//	 * @param max
-//	 *            the maximum number of elements to include in the array. A zero
-//	 *            or negative value implies no limit
-//	 * 
-//	 * @return an array of parsed Strings, null if null String input.
-//	 */
-//	public static String[] split(final String str, final String separatorChars,
-//			final int max) {
-//		return splitWorker(str, separatorChars, max, false);
-//	}
-//
-//	private static String[] splitWorker(final String str,
-//			final String separatorChars, final int max,
-//			final boolean preserveAllTokens) {
-//
-//		String[] result = null;
-//
-//		if ((str != null) && (str.length() == 0)) {
-//			result = new String[0];
-//		} else if (str != null) {
-//			int len = str.length();
-//			ArrayList<String> list = new ArrayList<String>();
-//			int sizePlus1 = 1;
-//			int i = 0, start = 0;
-//			boolean match = false;
-//			boolean lastMatch = false;
-//			if (separatorChars == null) {
-//				// Null separator means use whitespace
-//				while (i < len) {
-//					if (SPACE == str.charAt(i)) {
-//						if (match || preserveAllTokens) {
-//							lastMatch = true;
-//							if (sizePlus1++ == max) {
-//								i = len;
-//								lastMatch = false;
-//							}
-//							list.add(str.substring(start, i));
-//							match = false;
-//						}
-//						start = ++i;
-//						continue;
-//					}
-//					lastMatch = false;
-//					match = true;
-//					i++;
-//				}
-//			} else if (separatorChars.length() == 1) {
-//				// Optimise 1 character case
-//				char sep = separatorChars.charAt(0);
-//				while (i < len) {
-//					if (str.charAt(i) == sep) {
-//						if (match || preserveAllTokens) {
-//							lastMatch = true;
-//							if (sizePlus1++ == max) {
-//								i = len;
-//								lastMatch = false;
-//							}
-//							list.add(str.substring(start, i));
-//							match = false;
-//						}
-//						start = ++i;
-//						continue;
-//					}
-//					lastMatch = false;
-//					match = true;
-//					i++;
-//				}
-//			} else {
-//				// standard case
-//				while (i < len) {
-//					if (separatorChars.indexOf(str.charAt(i)) >= 0) {
-//						if (match || preserveAllTokens) {
-//							lastMatch = true;
-//							if (sizePlus1++ == max) {
-//								i = len;
-//								lastMatch = false;
-//							}
-//							list.add(str.substring(start, i));
-//							match = false;
-//						}
-//						start = ++i;
-//						continue;
-//					}
-//					lastMatch = false;
-//					match = true;
-//					i++;
-//				}
-//			}
-//			if (match || (preserveAllTokens && lastMatch)) {
-//				list.add(str.substring(start, i));
-//			}
-//
-//			result = new String[list.size()];
-//			for (int j = 0; j < list.size(); j++) {
-//				result[j] = list.get(j);
-//			}
-//		}
-//		return result;
-//
-//	}
+	// /**
+	// * Split a string into an array of string
+	// *
+	// * @param toSplit
+	// * string to split
+	// * @param delimiter
+	// * character
+	// * @param ignoreEmpty
+	// * flag to ignore empty spaces
+	// * @return array of string that is split at the given delimiter
+	// */
+	// public static String[] split(String toSplit, char delimiter,
+	// boolean ignoreEmpty) {
+	// StringBuilder buffer = new StringBuilder();
+	// java.util.Stack<String> stringStack = new java.util.Stack<String>();
+	// try {
+	// for (int i = 0; i < toSplit.length(); i++) {
+	// if (toSplit.charAt(i) != delimiter) {
+	//
+	// buffer.append(toSplit.charAt(i));
+	// } else {
+	// if ((buffer.toString().trim().length() == 0) && ignoreEmpty) {
+	//
+	// } else {
+	// stringStack.addElement(buffer.toString());
+	// }
+	// buffer = new StringBuilder();
+	// }
+	// }
+	// } catch (StringIndexOutOfBoundsException e) {
+	// System.out.println("[StringUtil.split] " + e.toString());
+	// }
+	// if (buffer.length() != 0) {
+	// stringStack.addElement(buffer.toString());
+	// }
+	//
+	// String[] split = new String[stringStack.size()];
+	// for (int i = 0; i < split.length; i++) {
+	// split[split.length - 1 - i] = stringStack.pop();
+	// }
+	// stringStack = null;
+	// buffer = null;
+	// return split;
+	// }
+	//
+	// /**
+	// * Splits the provided text into an array with a maximum length,
+	// separators
+	// * specified.
+	// *
+	// * @param str
+	// * the String to parse, may be null.
+	// * @param separatorChars
+	// * the characters used as the delimiters, null splits on
+	// * whitespace
+	// * @param max
+	// * the maximum number of elements to include in the array. A zero
+	// * or negative value implies no limit
+	// *
+	// * @return an array of parsed Strings, null if null String input.
+	// */
+	// public static String[] split(final String str, final String
+	// separatorChars,
+	// final int max) {
+	// return splitWorker(str, separatorChars, max, false);
+	// }
+	//
+	// private static String[] splitWorker(final String str,
+	// final String separatorChars, final int max,
+	// final boolean preserveAllTokens) {
+	//
+	// String[] result = null;
+	//
+	// if ((str != null) && (str.length() == 0)) {
+	// result = new String[0];
+	// } else if (str != null) {
+	// int len = str.length();
+	// ArrayList<String> list = new ArrayList<String>();
+	// int sizePlus1 = 1;
+	// int i = 0, start = 0;
+	// boolean match = false;
+	// boolean lastMatch = false;
+	// if (separatorChars == null) {
+	// // Null separator means use whitespace
+	// while (i < len) {
+	// if (SPACE == str.charAt(i)) {
+	// if (match || preserveAllTokens) {
+	// lastMatch = true;
+	// if (sizePlus1++ == max) {
+	// i = len;
+	// lastMatch = false;
+	// }
+	// list.add(str.substring(start, i));
+	// match = false;
+	// }
+	// start = ++i;
+	// continue;
+	// }
+	// lastMatch = false;
+	// match = true;
+	// i++;
+	// }
+	// } else if (separatorChars.length() == 1) {
+	// // Optimise 1 character case
+	// char sep = separatorChars.charAt(0);
+	// while (i < len) {
+	// if (str.charAt(i) == sep) {
+	// if (match || preserveAllTokens) {
+	// lastMatch = true;
+	// if (sizePlus1++ == max) {
+	// i = len;
+	// lastMatch = false;
+	// }
+	// list.add(str.substring(start, i));
+	// match = false;
+	// }
+	// start = ++i;
+	// continue;
+	// }
+	// lastMatch = false;
+	// match = true;
+	// i++;
+	// }
+	// } else {
+	// // standard case
+	// while (i < len) {
+	// if (separatorChars.indexOf(str.charAt(i)) >= 0) {
+	// if (match || preserveAllTokens) {
+	// lastMatch = true;
+	// if (sizePlus1++ == max) {
+	// i = len;
+	// lastMatch = false;
+	// }
+	// list.add(str.substring(start, i));
+	// match = false;
+	// }
+	// start = ++i;
+	// continue;
+	// }
+	// lastMatch = false;
+	// match = true;
+	// i++;
+	// }
+	// }
+	// if (match || (preserveAllTokens && lastMatch)) {
+	// list.add(str.substring(start, i));
+	// }
+	//
+	// result = new String[list.size()];
+	// for (int j = 0; j < list.size(); j++) {
+	// result[j] = list.get(j);
+	// }
+	// }
+	// return result;
+	//
+	// }
 
 	/**
 	 * 

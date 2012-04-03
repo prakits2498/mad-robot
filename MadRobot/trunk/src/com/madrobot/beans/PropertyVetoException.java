@@ -20,9 +20,9 @@ import java.beans.PropertyChangeEvent;
 public class PropertyVetoException extends Exception {
 
 	/**
-	 * Provide a brief description of serialVersionUID.
-	 * Specify the purpose of this field.
-	 *
+	 * Provide a brief description of serialVersionUID. Specify the purpose of
+	 * this field.
+	 * 
 	 */
 	private static final long serialVersionUID = -2206020012556077235L;
 
@@ -34,8 +34,7 @@ public class PropertyVetoException extends Exception {
 	private PropertyChangeEvent evt;
 
 	/**
-	 * Constructs a <code>PropertyVetoException</code> with a
-	 * detailed message.
+	 * Constructs a <code>PropertyVetoException</code> with a detailed message.
 	 * 
 	 * @param mess
 	 *            Descriptive message

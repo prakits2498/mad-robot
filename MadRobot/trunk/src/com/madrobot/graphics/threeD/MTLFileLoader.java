@@ -18,8 +18,9 @@ import java.util.ArrayList;
 
 /**
  * Material File loader (Wavefront format material file)
+ * 
  * @author elton.kent
- *
+ * 
  */
 public final class MTLFileLoader {
 

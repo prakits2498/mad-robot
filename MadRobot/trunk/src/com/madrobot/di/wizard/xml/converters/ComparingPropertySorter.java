@@ -16,7 +16,8 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * A sorter that uses a comparator to determine the order of the bean properties.
+ * A sorter that uses a comparator to determine the order of the bean
+ * properties.
  * 
  * @since 1.4
  */

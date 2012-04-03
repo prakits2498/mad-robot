@@ -10,130 +10,130 @@ import java.util.SortedSet;
 /**
  */
 public class PresortedSet implements SortedSet {
-    private final Comparator comparator;
-    private final List list = new ArrayList();
+	private final Comparator comparator;
+	private final List list = new ArrayList();
 
-    public PresortedSet() {
-        this(null);
-    }
+	public PresortedSet() {
+		this(null);
+	}
 
-    public PresortedSet(Comparator comparator) {
-        this(comparator, null);
-    }
+	public PresortedSet(Comparator comparator) {
+		this(comparator, null);
+	}
 
-    public PresortedSet(Comparator comparator, Collection c) {
-        this.comparator = comparator;
-        if (c != null) {
-            addAll(c);
-        }
-    }
+	public PresortedSet(Comparator comparator, Collection c) {
+		this.comparator = comparator;
+		if (c != null) {
+			addAll(c);
+		}
+	}
 
-    @Override
+	@Override
 	public boolean add(Object e) {
-        return this.list.add(e);
-    }
+		return this.list.add(e);
+	}
 
-    @Override
+	@Override
 	public boolean addAll(Collection c) {
-        return this.list.addAll(c);
-    }
+		return this.list.addAll(c);
+	}
 
-    @Override
+	@Override
 	public void clear() {
-        this.list.clear();
-    }
+		this.list.clear();
+	}
 
-    @Override
+	@Override
 	public Comparator comparator() {
-        return comparator;
-    }
+		return comparator;
+	}
 
-    @Override
+	@Override
 	public boolean contains(Object o) {
-        return this.list.contains(o);
-    }
+		return this.list.contains(o);
+	}
 
-    @Override
+	@Override
 	public boolean containsAll(Collection c) {
-        return this.list.containsAll(c);
-    }
+		return this.list.containsAll(c);
+	}
 
-    @Override
+	@Override
 	public boolean equals(Object o) {
-        return this.list.equals(o);
-    }
+		return this.list.equals(o);
+	}
 
-    @Override
+	@Override
 	public Object first() {
-        return list.isEmpty() ? null : list.get(0);
-    }
+		return list.isEmpty() ? null : list.get(0);
+	}
 
-    @Override
+	@Override
 	public int hashCode() {
-        return this.list.hashCode();
-    }
+		return this.list.hashCode();
+	}
 
-    @Override
+	@Override
 	public SortedSet headSet(Object toElement) {
-        throw new UnsupportedOperationException();
-    }
+		throw new UnsupportedOperationException();
+	}
 
-    @Override
+	@Override
 	public boolean isEmpty() {
-        return this.list.isEmpty();
-    }
+		return this.list.isEmpty();
+	}
 
-    @Override
+	@Override
 	public Iterator iterator() {
-        return this.list.iterator();
-    }
+		return this.list.iterator();
+	}
 
-    @Override
+	@Override
 	public Object last() {
-        return list.isEmpty() ? null : list.get(list.size() - 1);
-    }
+		return list.isEmpty() ? null : list.get(list.size() - 1);
+	}
 
-    @Override
+	@Override
 	public boolean remove(Object o) {
-        return this.list.remove(o);
-    }
+		return this.list.remove(o);
+	}
 
-    @Override
+	@Override
 	public boolean removeAll(Collection c) {
-        return this.list.removeAll(c);
-    }
+		return this.list.removeAll(c);
+	}
 
-    @Override
+	@Override
 	public boolean retainAll(Collection c) {
-        return this.list.retainAll(c);
-    }
+		return this.list.retainAll(c);
+	}
 
-    @Override
+	@Override
 	public int size() {
-        return this.list.size();
-    }
+		return this.list.size();
+	}
 
-    public List subList(int fromIndex, int toIndex) {
-        return this.list.subList(fromIndex, toIndex);
-    }
+	public List subList(int fromIndex, int toIndex) {
+		return this.list.subList(fromIndex, toIndex);
+	}
 
-    @Override
+	@Override
 	public SortedSet subSet(Object fromElement, Object toElement) {
-        throw new UnsupportedOperationException();
-    }
+		throw new UnsupportedOperationException();
+	}
 
-    @Override
+	@Override
 	public SortedSet tailSet(Object fromElement) {
-        throw new UnsupportedOperationException();
-    }
+		throw new UnsupportedOperationException();
+	}
 
-    @Override
+	@Override
 	public Object[] toArray() {
-        return this.list.toArray();
-    }
+		return this.list.toArray();
+	}
 
-    @Override
+	@Override
 	public Object[] toArray(Object[] a) {
-        return this.list.toArray(a);
-    }
+		return this.list.toArray(a);
+	}
 }

@@ -14,12 +14,14 @@ package com.madrobot.di.wizard.xml.io;
 import com.madrobot.reflect.ObjectUtils;
 
 /**
- * Abstract base class for all HierarchicalStreamWriter implementations. Implementations of
- * {@link HierarchicalStreamWriter} should rather be derived from this class then implementing the interface directly.
+ * Abstract base class for all HierarchicalStreamWriter implementations.
+ * Implementations of {@link HierarchicalStreamWriter} should rather be derived
+ * from this class then implementing the interface directly.
  * 
  * @since 1.4
  */
-public abstract class AbstractWriter implements ExtendedHierarchicalStreamWriter {
+public abstract class AbstractWriter implements
+		ExtendedHierarchicalStreamWriter {
 
 	private NameCoder nameCoder;
 

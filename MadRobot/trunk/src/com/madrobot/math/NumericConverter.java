@@ -22,19 +22,19 @@ public final class NumericConverter {
 	 */
 	public static int hexToByte(char c1, char c2) {
 		int b;
-		if((c1 >= 'a')){
+		if ((c1 >= 'a')) {
 			b = c1 - 'a' + 10;
-		} else if(c1 >= 'A'){
+		} else if (c1 >= 'A') {
 			b = c1 - 'A' + 10;
-		} else{
+		} else {
 			b = c1 - '0';
 		}
 		b <<= 4;
-		if((c2 >= 'a')){
+		if ((c2 >= 'a')) {
 			b |= c2 - 'a' + 10;
-		} else if(c2 >= 'A'){
+		} else if (c2 >= 'A') {
 			b |= c2 - 'A' + 10;
-		} else{
+		} else {
 			b |= c2 - '0';
 		}
 		return b;
@@ -65,9 +65,9 @@ public final class NumericConverter {
 	 * @return Byte warpper for the primitive
 	 */
 	public static Byte toByte(String str) {
-		try{
+		try {
 			return (str != null) ? new Byte(Byte.parseByte(str.trim())) : null;
-		} catch(NumberFormatException ex){
+		} catch (NumberFormatException ex) {
 			return null;
 		}
 	}
@@ -107,7 +107,7 @@ public final class NumericConverter {
 	 * @return Array of byte representing <code> value</code>
 	 */
 	public static void toBytes(short value, byte[] buffer, int offset) {
-		if(buffer.length - offset < 2){
+		if (buffer.length - offset < 2) {
 			throw new ArrayIndexOutOfBoundsException();
 		}
 
@@ -125,8 +125,8 @@ public final class NumericConverter {
 	 */
 	public static int toInt(byte[] bytes, int offset) {
 		int value = 0;
-		if((bytes != null) && (bytes.length >= 4)){
-			for(int i = 0; i < 4; ++i){
+		if ((bytes != null) && (bytes.length >= 4)) {
+			for (int i = 0; i < 4; ++i) {
 				value += (0x000000FF & bytes[offset + i]) << ((3 - i) * 8);
 			}
 		}
@@ -143,8 +143,8 @@ public final class NumericConverter {
 	 */
 	public static long toLong(byte[] bytes, int offset) {
 		int value = 0;
-		if((bytes != null) && (bytes.length >= 8)){
-			for(int i = 0; i < 8; ++i){
+		if ((bytes != null) && (bytes.length >= 8)) {
+			for (int i = 0; i < 8; ++i) {
 				value += (0x000000FF & bytes[offset + i]) << ((7 - i) * 8);
 			}
 		}
@@ -161,7 +161,7 @@ public final class NumericConverter {
 	 */
 	public static short toShort(byte[] bytes, int offset) {
 		short value = 0;
-		if((bytes != null) && (bytes.length >= 2)){
+		if ((bytes != null) && (bytes.length >= 2)) {
 			value += (0x000000FF & bytes[offset]) << 8;
 			value += (0x000000FF & bytes[offset + 1]);
 		}

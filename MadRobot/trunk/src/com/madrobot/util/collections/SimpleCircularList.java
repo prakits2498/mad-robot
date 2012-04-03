@@ -12,8 +12,9 @@ package com.madrobot.util.collections;
 
 /**
  * Circular list using a simple object array
+ * 
  * @author elton.stephen.kent
- *
+ * 
  */
 public class SimpleCircularList {
 	int currentIndex;
@@ -38,9 +39,9 @@ public class SimpleCircularList {
 
 	public Object poll() {
 		int temp = pollIndex + 1;
-		if(temp > (size - 1)){
+		if (temp > (size - 1)) {
 			pollIndex = 0;
-		} else{
+		} else {
 			pollIndex++;
 		}
 		return list[pollIndex];

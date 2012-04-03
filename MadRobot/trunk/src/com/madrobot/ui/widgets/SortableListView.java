@@ -1,7 +1,5 @@
 package com.madrobot.ui.widgets;
 
-import com.madrobot.R;
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -23,6 +21,8 @@ import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
+import com.madrobot.R;
+
 /**
  * ListView that can be sorted using touch gestures.
  * 
@@ -32,7 +32,7 @@ import android.widget.ListView;
  * <li>The adapter should be an instance of an array adapter.</li>
  * <li>List header and footer cannot be added for this ListView.</li>
  * </ul>
- * <table  cellspacing="1" cellpadding="3">
+ * <table cellspacing="1" cellpadding="3">
  * <tr>
  * <th><b>Attribute</b></td>
  * <td width="50"><b>Type</b></td>
@@ -108,16 +108,19 @@ public class SortableListView extends ListView {
 		void onDropped(int from, int to);
 	}
 
-	private class GestureListener extends GestureDetector.SimpleOnGestureListener {
+	private class GestureListener extends
+			GestureDetector.SimpleOnGestureListener {
 
 		@Override
-		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+				float velocityY) {
 			if (mDragView != null) {
 				if (velocityX > 1000) {
 					Rect r = mTempRect;
 					mDragView.getDrawingRect(r);
 					if (e2.getX() > r.right * 2 / 3) {
-						// fast fling right with release near the right edge of the screen
+						// fast fling right with release near the right edge of
+						// the screen
 						stopDragging();
 						if (mRemoveListener != null) {
 							mRemoveListener.onRemoved(mFirstDragPos);
@@ -133,7 +136,8 @@ public class SortableListView extends ListView {
 	}
 
 	/**
-	 * A RemoveListener recieves notifications when an item is removed from the list
+	 * A RemoveListener recieves notifications when an item is removed from the
+	 * list
 	 * 
 	 * @author elton.stephen.kent
 	 * 
@@ -166,10 +170,12 @@ public class SortableListView extends ListView {
 
 	private Drawable dragBackgroundDrawable;// = 0x00000000;
 	private int grabberId = -1;
-	private int mCoordOffset; // the difference between screen coordinates and coordinates in this view
+	private int mCoordOffset; // the difference between screen coordinates and
+								// coordinates in this view
 	private Bitmap mDragBitmap;
 	private DragListener mDragListener;
-	private int mDragPoint; // at what offset inside the item did the user grab it
+	private int mDragPoint; // at what offset inside the item did the user grab
+							// it
 
 	private int mDragPos; // which item is being dragged
 	private ImageView mDragView;
@@ -200,15 +206,22 @@ public class SortableListView extends ListView {
 		super(context, attrs, defStyle);
 
 		mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
-		mGestureDetector = new GestureDetector(getContext(), new GestureListener());
+		mGestureDetector = new GestureDetector(getContext(),
+				new GestureListener());
 
 		if (attrs != null) {
-			TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.SortableListView, 0, 0);
+			TypedArray a = getContext().obtainStyledAttributes(attrs,
+					R.styleable.SortableListView, 0, 0);
 
-			mItemHeightNormal = a.getDimensionPixelSize(R.styleable.SortableListView_normalHeight, 64);
-			mItemHeightExpanded = a.getDimensionPixelSize(R.styleable.SortableListView_expandedHeight, mItemHeightNormal);
-			grabberId = a.getResourceId(R.styleable.SortableListView_grabberView, -1);
-			dragBackgroundDrawable = a.getDrawable(R.styleable.SortableListView_draggingBackgroundDrawable);
+			mItemHeightNormal = a.getDimensionPixelSize(
+					R.styleable.SortableListView_normalHeight, 64);
+			mItemHeightExpanded = a.getDimensionPixelSize(
+					R.styleable.SortableListView_expandedHeight,
+					mItemHeightNormal);
+			grabberId = a.getResourceId(
+					R.styleable.SortableListView_grabberView, -1);
+			dragBackgroundDrawable = a
+					.getDrawable(R.styleable.SortableListView_draggingBackgroundDrawable);
 			if (dragBackgroundDrawable == null) {
 				dragBackgroundDrawable = new ColorDrawable(0x00000000);
 			}
@@ -220,26 +233,32 @@ public class SortableListView extends ListView {
 
 	@Override
 	final public void addFooterView(View v) {
-		if (mRemoveMode == REMOVE_MODE_SLIDE_LEFT || mRemoveMode == REMOVE_MODE_SLIDE_RIGHT) {
-			throw new RuntimeException("Footers are not supported with TouchListView in conjunction with remove_mode");
+		if (mRemoveMode == REMOVE_MODE_SLIDE_LEFT
+				|| mRemoveMode == REMOVE_MODE_SLIDE_RIGHT) {
+			throw new RuntimeException(
+					"Footers are not supported with TouchListView in conjunction with remove_mode");
 		}
 	}
 
 	@Override
 	final public void addFooterView(View v, Object data, boolean isSelectable) {
-		if (mRemoveMode == REMOVE_MODE_SLIDE_LEFT || mRemoveMode == REMOVE_MODE_SLIDE_RIGHT) {
-			throw new RuntimeException("Footers are not supported with TouchListView in conjunction with remove_mode");
+		if (mRemoveMode == REMOVE_MODE_SLIDE_LEFT
+				|| mRemoveMode == REMOVE_MODE_SLIDE_RIGHT) {
+			throw new RuntimeException(
+					"Footers are not supported with TouchListView in conjunction with remove_mode");
 		}
 	}
 
 	@Override
 	final public void addHeaderView(View v) {
-		throw new RuntimeException("Headers are not supported with TouchListView");
+		throw new RuntimeException(
+				"Headers are not supported with TouchListView");
 	}
 
 	@Override
 	final public void addHeaderView(View v, Object data, boolean isSelectable) {
-		throw new RuntimeException("Headers are not supported with TouchListView");
+		throw new RuntimeException(
+				"Headers are not supported with TouchListView");
 	}
 
 	private void adjustScrollBounds(int y) {
@@ -252,11 +271,13 @@ public class SortableListView extends ListView {
 	}
 
 	/*
-	 * Adjust visibility and size to make it appear as though an item is being dragged around and other items are making
-	 * room for it: If dropping the item would result in it still being in the same place, then make the dragged
-	 * listitem's size normal, but make the item invisible. Otherwise, if the dragged listitem is still on screen, make
-	 * it as small as possible and expand the item below the insert point. If the dragged item is not on screen, only
-	 * expand the item below the current insertpoint.
+	 * Adjust visibility and size to make it appear as though an item is being
+	 * dragged around and other items are making room for it: If dropping the
+	 * item would result in it still being in the same place, then make the
+	 * dragged listitem's size normal, but make the item invisible. Otherwise,
+	 * if the dragged listitem is still on screen, make it as small as possible
+	 * and expand the item below the insert point. If the dragged item is not on
+	 * screen, only expand the item below the current insertpoint.
 	 */
 	private void doExpansion() {
 		int childnum = mDragPos - getFirstVisiblePosition();
@@ -338,7 +359,8 @@ public class SortableListView extends ListView {
 	}
 
 	/*
-	 * pointToPosition() doesn't consider invisible views, but we need to, so implement a slightly different version.
+	 * pointToPosition() doesn't consider invisible views, but we need to, so
+	 * implement a slightly different version.
 	 */
 	private int myPointToPosition(int x, int y) {
 		Rect frame = mTempRect;
@@ -386,7 +408,8 @@ public class SortableListView extends ListView {
 
 				if ((r.left < x) && (x < r.right)) {
 					item.setDrawingCacheEnabled(true);
-					// Create a copy of the drawing cache so that it does not get recycled
+					// Create a copy of the drawing cache so that it does not
+					// get recycled
 					// by the framework when the list tries to clean up memory
 					Bitmap bitmap = Bitmap.createBitmap(item.getDrawingCache());
 					item.setDrawingCacheEnabled(false);
@@ -428,14 +451,16 @@ public class SortableListView extends ListView {
 				mDragView.getDrawingRect(r);
 				stopDragging();
 
-				if (mRemoveMode == REMOVE_MODE_SLIDE_RIGHT && ev.getX() > r.left + (r.width() * 3 / 4)) {
+				if (mRemoveMode == REMOVE_MODE_SLIDE_RIGHT
+						&& ev.getX() > r.left + (r.width() * 3 / 4)) {
 					ArrayAdapter adapter = (ArrayAdapter) getAdapter();
 					adapter.remove(adapter.getItem(mFirstDragPos));
 					if (mRemoveListener != null) {
 						mRemoveListener.onRemoved(mFirstDragPos);
 					}
 					unExpandViews(true);
-				} else if (mRemoveMode == REMOVE_MODE_SLIDE_LEFT && ev.getX() < r.left + (r.width() / 4)) {
+				} else if (mRemoveMode == REMOVE_MODE_SLIDE_LEFT
+						&& ev.getX() < r.left + (r.width() / 4)) {
 					ArrayAdapter adapter = (ArrayAdapter) getAdapter();
 					adapter.remove(adapter.getItem(mFirstDragPos));
 					if (mRemoveListener != null) {
@@ -463,7 +488,8 @@ public class SortableListView extends ListView {
 				dragView(x, y);
 				int itemnum = getItemForPosition(y);
 				if (itemnum >= 0) {
-					if (action == MotionEvent.ACTION_DOWN || itemnum != mDragPos) {
+					if (action == MotionEvent.ACTION_DOWN
+							|| itemnum != mDragPos) {
 						if (mDragListener != null) {
 							mDragListener.onDragged(mDragPos, itemnum);
 						}
@@ -482,8 +508,10 @@ public class SortableListView extends ListView {
 					if (speed != 0) {
 						int ref = pointToPosition(0, mHeight / 2);
 						if (ref == AdapterView.INVALID_POSITION) {
-							// we hit a divider or an invisible view, check somewhere else
-							ref = pointToPosition(0, mHeight / 2 + getDividerHeight() + 64);
+							// we hit a divider or an invisible view, check
+							// somewhere else
+							ref = pointToPosition(0, mHeight / 2
+									+ getDividerHeight() + 64);
 						}
 						View v = getChildAt(ref - getFirstVisiblePosition());
 						if (v != null) {
@@ -508,7 +536,8 @@ public class SortableListView extends ListView {
 	@Override
 	public void setAdapter(ListAdapter adapter) {
 		if (!(adapter instanceof ArrayAdapter)) {
-			throw new RuntimeException("Adapter not an instance of ArrayAdapter");
+			throw new RuntimeException(
+					"Adapter not an instance of ArrayAdapter");
 		}
 		super.setAdapter(adapter);
 	}
@@ -554,25 +583,29 @@ public class SortableListView extends ListView {
 		mWindowParams.height = android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 		mWindowParams.width = android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 		mWindowParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-				| WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+				| WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+				| WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
 				| WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
 		mWindowParams.format = PixelFormat.TRANSLUCENT;
 		mWindowParams.windowAnimations = 0;
 
 		ImageView v = new ImageView(getContext());
-		// int backGroundColor = getContext().getResources().getColor(R.color.dragndrop_background);
+		// int backGroundColor =
+		// getContext().getResources().getColor(R.color.dragndrop_background);
 		v.setBackgroundDrawable(dragBackgroundDrawable);
 		v.setImageBitmap(bm);
 		mDragBitmap = bm;
 
-		mWindowManager = (WindowManager) getContext().getSystemService("window");
+		mWindowManager = (WindowManager) getContext()
+				.getSystemService("window");
 		mWindowManager.addView(v, mWindowParams);
 		mDragView = v;
 	}
 
 	private void stopDragging() {
 		if (mDragView != null) {
-			WindowManager wm = (WindowManager) getContext().getSystemService("window");
+			WindowManager wm = (WindowManager) getContext().getSystemService(
+					"window");
 			wm.removeView(mDragView);
 			mDragView.setImageDrawable(null);
 			mDragView = null;

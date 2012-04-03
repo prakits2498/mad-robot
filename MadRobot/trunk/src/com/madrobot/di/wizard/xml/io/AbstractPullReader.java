@@ -16,8 +16,8 @@ import java.util.Iterator;
 import com.madrobot.util.collections.FastStack;
 
 /**
- * Base class that contains common functionality across HierarchicalStreamReader implementations that need to read from
- * a pull parser.
+ * Base class that contains common functionality across HierarchicalStreamReader
+ * implementations that need to read from a pull parser.
  * 
  */
 public abstract class AbstractPullReader extends AbstractReader {
@@ -26,6 +26,7 @@ public abstract class AbstractPullReader extends AbstractReader {
 		int type;
 		String value;
 	}
+
 	protected static final int COMMENT = 4;
 	protected static final int END_NODE = 2;
 	protected static final int OTHER = 0;
@@ -49,7 +50,9 @@ public abstract class AbstractPullReader extends AbstractReader {
 
 	/**
 	 * @since 1.2
-	 * @deprecated As of 1.4 use {@link AbstractPullReader#AbstractPullReader(NameCoder)} instead
+	 * @deprecated As of 1.4 use
+	 *             {@link AbstractPullReader#AbstractPullReader(NameCoder)}
+	 *             instead
 	 */
 	@Deprecated
 	protected AbstractPullReader(XmlFriendlyNameCoder replacer) {
@@ -184,13 +187,14 @@ public abstract class AbstractPullReader extends AbstractReader {
 	 * Pull the next event from the stream.
 	 * 
 	 * <p>
-	 * This MUST return {@link #START_NODE}, {@link #END_NODE}, {@link #TEXT}, {@link #COMMENT}, {@link #OTHER} or throw
+	 * This MUST return {@link #START_NODE}, {@link #END_NODE}, {@link #TEXT},
+	 * {@link #COMMENT}, {@link #OTHER} or throw
 	 * {@link com.madrobot.di.wizard.xml.io.StreamException}.
 	 * </p>
 	 * 
 	 * <p>
-	 * The underlying pull parser will most likely return its own event types. These must be mapped to the appropriate
-	 * events.
+	 * The underlying pull parser will most likely return its own event types.
+	 * These must be mapped to the appropriate events.
 	 * </p>
 	 */
 	protected abstract int pullNextEvent();

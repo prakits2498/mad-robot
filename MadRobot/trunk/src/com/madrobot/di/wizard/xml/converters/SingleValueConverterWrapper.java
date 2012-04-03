@@ -15,13 +15,15 @@ import com.madrobot.di.wizard.xml.io.HierarchicalStreamReader;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
 
 /**
- * Wrapper to convert a {@link com.madrobot.di.wizard.xml.converters.SingleValueConverter} into a
+ * Wrapper to convert a
+ * {@link com.madrobot.di.wizard.xml.converters.SingleValueConverter} into a
  * {@link com.madrobot.di.wizard.xml.converters.Converter}.
  * 
  * @see com.madrobot.di.wizard.xml.converters.Converter
  * @see com.madrobot.di.wizard.xml.converters.SingleValueConverter
  */
-public class SingleValueConverterWrapper implements Converter, SingleValueConverter, ErrorReporter {
+public class SingleValueConverterWrapper implements Converter,
+		SingleValueConverter, ErrorReporter {
 
 	private final SingleValueConverter wrapped;
 
@@ -48,7 +50,8 @@ public class SingleValueConverterWrapper implements Converter, SingleValueConver
 	}
 
 	@Override
-	public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
+	public void marshal(Object source, HierarchicalStreamWriter writer,
+			MarshallingContext context) {
 		writer.setValue(toString(source));
 	}
 
@@ -58,7 +61,8 @@ public class SingleValueConverterWrapper implements Converter, SingleValueConver
 	}
 
 	@Override
-	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+	public Object unmarshal(HierarchicalStreamReader reader,
+			UnmarshallingContext context) {
 		return fromString(reader.getValue());
 	}
 }

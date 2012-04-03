@@ -14,12 +14,14 @@ package com.madrobot.di.wizard.xml.io;
 import com.madrobot.reflect.ObjectUtils;
 
 /**
- * Abstract base class for all HierarchicalStreamReader implementations. Implementations of
- * {@link HierarchicalStreamReader} should rather be derived from this class then implementing the interface directly.
+ * Abstract base class for all HierarchicalStreamReader implementations.
+ * Implementations of {@link HierarchicalStreamReader} should rather be derived
+ * from this class then implementing the interface directly.
  * 
  * @since 1.4
  */
-public abstract class AbstractReader implements ExtendedHierarchicalStreamReader {
+public abstract class AbstractReader implements
+		ExtendedHierarchicalStreamReader {
 
 	private NameCoder nameCoder;
 
@@ -68,7 +70,8 @@ public abstract class AbstractReader implements ExtendedHierarchicalStreamReader
 	}
 
 	/**
-	 * Encode the attribute name again into the name of the target format. Internally used.
+	 * Encode the attribute name again into the name of the target format.
+	 * Internally used.
 	 * 
 	 * @param name
 	 *            the original name
@@ -80,7 +83,8 @@ public abstract class AbstractReader implements ExtendedHierarchicalStreamReader
 	}
 
 	/**
-	 * Encode the node name again into the name of the target format. Internally used.
+	 * Encode the node name again into the name of the target format. Internally
+	 * used.
 	 * 
 	 * @param name
 	 *            the original name

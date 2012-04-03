@@ -12,7 +12,8 @@
 package com.madrobot.di.xml.simpledeserializer;
 
 /**
- * Possible field types, during deserialization See {@link XMLDeserializer} for more details on its usage
+ * Possible field types, during deserialization See {@link XMLDeserializer} for
+ * more details on its usage
  * 
  * @see XMLDeserializer
  */

@@ -23,11 +23,11 @@ public class XMLRPCFault extends XMLRPCException {
 		this.faultString = faultString;
 		this.faultCode = faultCode;
 	}
-	
+
 	public int getFaultCode() {
 		return faultCode;
 	}
-	
+
 	public String getFaultString() {
 		return faultString;
 	}

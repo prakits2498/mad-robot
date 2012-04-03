@@ -70,7 +70,8 @@ public class PixelUtils {
 		int r2 = (rgb2 >> 16) & 0xff;
 		int g2 = (rgb2 >> 8) & 0xff;
 		int b2 = rgb2 & 0xff;
-		return Math.abs(r1 - r2) <= tolerance && Math.abs(g1 - g2) <= tolerance && Math.abs(b1 - b2) <= tolerance;
+		return Math.abs(r1 - r2) <= tolerance && Math.abs(g1 - g2) <= tolerance
+				&& Math.abs(b1 - b2) <= tolerance;
 	}
 
 	private final static float hsb1[] = new float[3];// FIXME-not thread safe
@@ -81,8 +82,10 @@ public class PixelUtils {
 		return combinePixels(rgb1, rgb2, op, 0xff);
 	}
 
-	public static int combinePixels(int rgb1, int rgb2, int op, int extraAlpha, int channelMask) {
-		return (rgb2 & ~channelMask) | combinePixels(rgb1 & channelMask, rgb2, op, extraAlpha);
+	public static int combinePixels(int rgb1, int rgb2, int op, int extraAlpha,
+			int channelMask) {
+		return (rgb2 & ~channelMask)
+				| combinePixels(rgb1 & channelMask, rgb2, op, extraAlpha);
 	}
 
 	/**
@@ -93,15 +96,19 @@ public class PixelUtils {
 	 * @param rgb2
 	 *            second pixel to combine
 	 * @param operation
-	 *            see {@link PixelUtils#NORMAL} , {@link PixelUtils#MIN}, {@link PixelUtils#MAX}, {@link PixelUtils#MAX}
-	 *            ,{@link PixelUtils#ADD},{@link PixelUtils#SUBTRACT} , {@link PixelUtils#DIFFERENCE},
-	 *            {@link PixelUtils#DISSOLVE} , {@link PixelUtils#DST_IN}, {@link PixelUtils#MULTIPLY},
-	 *            {@link PixelUtils#AVERAGE},{@link PixelUtils#ALPHA_TO_GRAY} and so on.
+	 *            see {@link PixelUtils#NORMAL} , {@link PixelUtils#MIN},
+	 *            {@link PixelUtils#MAX}, {@link PixelUtils#MAX} ,
+	 *            {@link PixelUtils#ADD},{@link PixelUtils#SUBTRACT} ,
+	 *            {@link PixelUtils#DIFFERENCE}, {@link PixelUtils#DISSOLVE} ,
+	 *            {@link PixelUtils#DST_IN}, {@link PixelUtils#MULTIPLY},
+	 *            {@link PixelUtils#AVERAGE},{@link PixelUtils#ALPHA_TO_GRAY}
+	 *            and so on.
 	 * @param extraAlpha
 	 *            level of alpha to extract. Maximum value: 255, Min Value:0
 	 * @return
 	 */
-	public static int combinePixels(int rgb1, int rgb2, int operation, int extraAlpha) {
+	public static int combinePixels(int rgb1, int rgb2, int operation,
+			int extraAlpha) {
 		if (operation == REPLACE)
 			return rgb1;
 		int a1 = (rgb1 >> 24) & 0xff;
@@ -234,7 +241,8 @@ public class PixelUtils {
 	 * 
 	 * @param color
 	 * @param percent
-	 *            to increase brightness. Negative value indicates decrease brightness
+	 *            to increase brightness. Negative value indicates decrease
+	 *            brightness
 	 * @return Hex color with the adjusted brightness
 	 */
 	public static int adjustBrightness(int color, int percent) {
@@ -289,8 +297,10 @@ public class PixelUtils {
 	 * @return Blended color
 	 */
 	public static int blend(int color1, int color2, float f) {
-		return mix(color1 >>> 24, color2 >>> 24, f) << 24 | mix((color1 >> 16) & 0xff, (color2 >> 16) & 0xff, f) << 16
-				| mix((color1 >> 8) & 0xff, (color2 >> 8) & 0xff, f) << 8 | mix(color1 & 0xff, color2 & 0xff, f);
+		return mix(color1 >>> 24, color2 >>> 24, f) << 24
+				| mix((color1 >> 16) & 0xff, (color2 >> 16) & 0xff, f) << 16
+				| mix((color1 >> 8) & 0xff, (color2 >> 8) & 0xff, f) << 8
+				| mix(color1 & 0xff, color2 & 0xff, f);
 	}
 
 	/**
@@ -356,13 +366,17 @@ public class PixelUtils {
 			if (nMax > Byte.MIN_VALUE) {
 				if (nMax == nMin) {
 					// color is gray. Hue, saturation are 0.
-					argb[i] = Color.rgb(Byte.MIN_VALUE, Byte.MIN_VALUE, (byte) nMax);
+					argb[i] = Color.rgb(Byte.MIN_VALUE, Byte.MIN_VALUE,
+							(byte) nMax);
 				} else {
 					// compute hue scaled from 0-240.
-					int nHue = Math.min(239, nHueOffset + (40 * (nMid - nMin)) / (nMax - nMin));
+					int nHue = Math.min(239, nHueOffset + (40 * (nMid - nMin))
+							/ (nMax - nMin));
 					// compute saturation scaled from 0-255.
-					int nSat = Math.min(255, (256 * (nMax - nMin)) / (nMax - Byte.MIN_VALUE));
-					argb[i] = Color.rgb((byte) (nHue + Byte.MIN_VALUE), (byte) (nSat + Byte.MIN_VALUE), (byte) nMax);
+					int nSat = Math.min(255, (256 * (nMax - nMin))
+							/ (nMax - Byte.MIN_VALUE));
+					argb[i] = Color.rgb((byte) (nHue + Byte.MIN_VALUE),
+							(byte) (nSat + Byte.MIN_VALUE), (byte) nMax);
 				}
 			}
 		}
@@ -415,7 +429,8 @@ public class PixelUtils {
 			k = byte0;
 		}
 		return toRGB(255, Math.min((int) (i / 0.69999999999999996D), 255),
-				Math.min((int) (j / 0.69999999999999996D), 255), Math.min((int) (k / 0.69999999999999996D), 255));
+				Math.min((int) (j / 0.69999999999999996D), 255),
+				Math.min((int) (k / 0.69999999999999996D), 255));
 
 	}
 
@@ -439,7 +454,8 @@ public class PixelUtils {
 	 * @return
 	 */
 	public static int getDarkerColor(int color) {
-		return toRGB(255, Math.max((int) (getRed(color) * 0.69999999999999996D), 0),
+		return toRGB(255,
+				Math.max((int) (getRed(color) * 0.69999999999999996D), 0),
 				Math.max((int) (getGreen(color) * 0.69999999999999996D), 0),
 				Math.max((int) (getBlue(color) * 0.69999999999999996D), 0));
 
@@ -476,7 +492,8 @@ public class PixelUtils {
 	 *            Blue component of the second color
 	 * @return Distance bwetween colors
 	 */
-	public static double getDistance(int r1, int g1, int b1, int r2, int g2, int b2) {
+	public static double getDistance(int r1, int g1, int b1, int r2, int g2,
+			int b2) {
 		double a = r2 - r1;
 		double b = g2 - g1;
 		double c = b2 - b1;
@@ -485,39 +502,43 @@ public class PixelUtils {
 	}
 
 	/**
-	 * Creates a gradient of colors. This method is highly optimized and only uses bit-shifting and additions (no
-	 * multitplication nor devision), but it will create a new integer array in each call.
+	 * Creates a gradient of colors. This method is highly optimized and only
+	 * uses bit-shifting and additions (no multitplication nor devision), but it
+	 * will create a new integer array in each call.
 	 * 
 	 * @param startColor
 	 *            the first color
 	 * @param endColor
 	 *            the last color
 	 * @param steps
-	 *            the number of colors in the gradient, when 2 is given, the first one will be the startColor and the
-	 *            second one will the endColor.
+	 *            the number of colors in the gradient, when 2 is given, the
+	 *            first one will be the startColor and the second one will the
+	 *            endColor.
 	 * @return an int array with the gradient.
 	 * 
 	 */
-	public static final int[] getGradient(int startColor, int endColor, int steps) {
+	public static final int[] getGradient(int startColor, int endColor,
+			int steps) {
 		int[] gradient = new int[steps];
 		getGradient(startColor, endColor, gradient);
 		return gradient;
 	}
 
 	/**
-	 * Creates a gradient of colors. This method is highly optimized and only uses bit-shifting and additions (no
-	 * multitplication nor devision).
+	 * Creates a gradient of colors. This method is highly optimized and only
+	 * uses bit-shifting and additions (no multitplication nor devision).
 	 * 
 	 * @param startColor
 	 *            The first color
 	 * @param endColor
 	 *            The last color
 	 * @param gradient
-	 *            The array in which the gradient colors are stored. length of the array is the number of steps used in
-	 *            the gradient
+	 *            The array in which the gradient colors are stored. length of
+	 *            the array is the number of steps used in the gradient
 	 * 
 	 */
-	public static final void getGradient(final int startColor, final int endColor, final int[] gradient) {
+	public static final void getGradient(final int startColor,
+			final int endColor, final int[] gradient) {
 		int steps = gradient.length;
 		if (steps == 0) {
 			return;
@@ -551,7 +572,8 @@ public class PixelUtils {
 			startGreen += stepGreen;
 			startBlue += stepBlue;
 
-			gradient[i] = ((startAlpha << 16) & 0xFF000000) | ((startRed << 8) & 0x00FF0000)
+			gradient[i] = ((startAlpha << 16) & 0xFF000000)
+					| ((startRed << 8) & 0x00FF0000)
 					| (startGreen & 0x0000FF00) | (startBlue >>> 8);
 			// | (( startBlue >>> 8) & 0x000000FF);
 		}
@@ -577,7 +599,8 @@ public class PixelUtils {
 		String gHex = Integer.toString(g, 16);
 		String bHex = Integer.toString(b, 16);
 
-		return (rHex.length() == 2 ? "" + rHex : "0" + rHex) + (gHex.length() == 2 ? "" + gHex : "0" + gHex)
+		return (rHex.length() == 2 ? "" + rHex : "0" + rHex)
+				+ (gHex.length() == 2 ? "" + gHex : "0" + gHex)
 				+ (bHex.length() == 2 ? "" + bHex : "0" + bHex);
 	}
 
@@ -594,7 +617,8 @@ public class PixelUtils {
 	 * @param brightness
 	 * @return RGB value of given hue, saturation, brightness.
 	 */
-	public static int HSBtoRGB(final float hue, final float saturation, final float brightness) {
+	public static int HSBtoRGB(final float hue, final float saturation,
+			final float brightness) {
 		int i = 0;
 		int j = 0;
 		int k = 0;
@@ -666,8 +690,9 @@ public class PixelUtils {
 	}
 
 	/**
-	 * Check if a color is more dark than light. Useful if an entity of this color is to be labeled: Use white label on
-	 * a "dark" color and black label on a "light" color.
+	 * Check if a color is more dark than light. Useful if an entity of this
+	 * color is to be labeled: Use white label on a "dark" color and black label
+	 * on a "light" color.
 	 * 
 	 * @param color
 	 *            Color to check.
@@ -682,8 +707,9 @@ public class PixelUtils {
 	}
 
 	/**
-	 * Check if a color is more dark than light. Useful if an entity of this color is to be labeled: Use white label on
-	 * a "dark" color and black label on a "light" color.
+	 * Check if a color is more dark than light. Useful if an entity of this
+	 * color is to be labeled: Use white label on a "dark" color and black label
+	 * on a "light" color.
 	 * 
 	 * @param r
 	 *            ,g,b Color to check.
@@ -708,10 +734,17 @@ public class PixelUtils {
 	 * @param max
 	 * @return Middle color
 	 */
-	public static final int middleColor(int color1, int color2, int prop, int max) {
-		int red = (((color1 >> 16) & 0xff) * prop + ((color2 >> 16) & 0xff) * (max - prop)) / max;
-		int green = (((color1 >> 8) & 0xff) * prop + ((color2 >> 8) & 0xff) * (max - prop)) / max;
-		int blue = (((color1 >> 0) & 0xff) * prop + ((color2 >> 0) & 0xff) * (max - prop)) / max;
+	public static final int middleColor(int color1, int color2, int prop,
+			int max) {
+		int red = (((color1 >> 16) & 0xff) * prop + ((color2 >> 16) & 0xff)
+				* (max - prop))
+				/ max;
+		int green = (((color1 >> 8) & 0xff) * prop + ((color2 >> 8) & 0xff)
+				* (max - prop))
+				/ max;
+		int blue = (((color1 >> 0) & 0xff) * prop + ((color2 >> 0) & 0xff)
+				* (max - prop))
+				/ max;
 		int color = red << 16 | green << 8 | blue;
 		return color;
 	}
@@ -832,9 +865,11 @@ public class PixelUtils {
 	/**
 	 * Set the saturation for a given color
 	 * <p>
-	 * The saturation of a color is determined by a combination of light intensity and how much it is distributed across
-	 * the spectrum of different wavelengths.<br/>
-	 * <img src="../../../resources/saturation.png"> <small>Scale of saturation (0% at bottom).</small>
+	 * The saturation of a color is determined by a combination of light
+	 * intensity and how much it is distributed across the spectrum of different
+	 * wavelengths.<br/>
+	 * <img src="../../../resources/saturation.png"> <small>Scale of saturation
+	 * (0% at bottom).</small>
 	 * </p>
 	 * 
 	 * @param color
@@ -884,7 +919,8 @@ public class PixelUtils {
 	 * @return
 	 */
 	public static int toRGB(int alpha, int red, int green, int blue) {
-		return (alpha & 0xff) << 24 | (red & 0xff) << 16 | (green & 0xff) << 8 | (blue & 0xff) << 0;
+		return (alpha & 0xff) << 24 | (red & 0xff) << 16 | (green & 0xff) << 8
+				| (blue & 0xff) << 0;
 	}
 
 	/**
@@ -957,7 +993,8 @@ public class PixelUtils {
 		return argb[nRow + x];
 	}
 
-	public static void setPixel(int pixel, int x, int y, int width, int height, int[] argb) {
+	public static void setPixel(int pixel, int x, int y, int width, int height,
+			int[] argb) {
 		int nRow = y * width;
 		argb[nRow + x] = pixel;
 	}
@@ -985,29 +1022,42 @@ public class PixelUtils {
 			else
 				end = m;
 		}
-		return (float) m * 100F + 1000F;
+		return m * 100F + 1000F;
 	}
 
-	static float blackBodyRGB[] = { 1.0F, 0.0337F, 0.0F, 1.0F, 0.0592F, 0.0F, 1.0F, 0.0846F, 0.0F, 1.0F, 0.1096F, 0.0F,
-			1.0F, 0.1341F, 0.0F, 1.0F, 0.1578F, 0.0F, 1.0F, 0.1806F, 0.0F, 1.0F, 0.2025F, 0.0F, 1.0F, 0.2235F, 0.0F,
-			1.0F, 0.2434F, 0.0F, 1.0F, 0.2647F, 0.0033F, 1.0F, 0.2889F, 0.012F, 1.0F, 0.3126F, 0.0219F, 1.0F, 0.336F,
-			0.0331F, 1.0F, 0.3589F, 0.0454F, 1.0F, 0.3814F, 0.0588F, 1.0F, 0.4034F, 0.0734F, 1.0F, 0.425F, 0.0889F,
-			1.0F, 0.4461F, 0.1054F, 1.0F, 0.4668F, 0.1229F, 1.0F, 0.487F, 0.1411F, 1.0F, 0.5067F, 0.1602F, 1.0F,
-			0.5259F, 0.18F, 1.0F, 0.5447F, 0.2005F, 1.0F, 0.563F, 0.2216F, 1.0F, 0.5809F, 0.2433F, 1.0F, 0.5983F,
-			0.2655F, 1.0F, 0.6153F, 0.2881F, 1.0F, 0.6318F, 0.3112F, 1.0F, 0.648F, 0.3346F, 1.0F, 0.6636F, 0.3583F,
-			1.0F, 0.6789F, 0.3823F, 1.0F, 0.6938F, 0.4066F, 1.0F, 0.7083F, 0.431F, 1.0F, 0.7223F, 0.4556F, 1.0F,
-			0.736F, 0.4803F, 1.0F, 0.7494F, 0.5051F, 1.0F, 0.7623F, 0.5299F, 1.0F, 0.775F, 0.5548F, 1.0F, 0.7872F,
-			0.5797F, 1.0F, 0.7992F, 0.6045F, 1.0F, 0.8108F, 0.6293F, 1.0F, 0.8221F, 0.6541F, 1.0F, 0.833F, 0.6787F,
-			1.0F, 0.8437F, 0.7032F, 1.0F, 0.8541F, 0.7277F, 1.0F, 0.8642F, 0.7519F, 1.0F, 0.874F, 0.776F, 1.0F,
-			0.8836F, 0.8F, 1.0F, 0.8929F, 0.8238F, 1.0F, 0.9019F, 0.8473F, 1.0F, 0.9107F, 0.8707F, 1.0F, 0.9193F,
-			0.8939F, 1.0F, 0.9276F, 0.9168F, 1.0F, 0.9357F, 0.9396F, 1.0F, 0.9436F, 0.9621F, 1.0F, 0.9513F, 0.9844F,
-			0.9937F, 0.9526F, 1.0F, 0.9726F, 0.9395F, 1.0F, 0.9526F, 0.927F, 1.0F, 0.9337F, 0.915F, 1.0F, 0.9157F,
-			0.9035F, 1.0F, 0.8986F, 0.8925F, 1.0F, 0.8823F, 0.8819F, 1.0F, 0.8668F, 0.8718F, 1.0F, 0.852F, 0.8621F,
-			1.0F, 0.8379F, 0.8527F, 1.0F, 0.8244F, 0.8437F, 1.0F, 0.8115F, 0.8351F, 1.0F, 0.7992F, 0.8268F, 1.0F,
-			0.7874F, 0.8187F, 1.0F, 0.7761F, 0.811F, 1.0F, 0.7652F, 0.8035F, 1.0F, 0.7548F, 0.7963F, 1.0F, 0.7449F,
-			0.7894F, 1.0F, 0.7353F, 0.7827F, 1.0F, 0.726F, 0.7762F, 1.0F, 0.7172F, 0.7699F, 1.0F, 0.7086F, 0.7638F,
-			1.0F, 0.7004F, 0.7579F, 1.0F, 0.6925F, 0.7522F, 1.0F, 0.6848F, 0.7467F, 1.0F, 0.6774F, 0.7414F, 1.0F,
-			0.6703F, 0.7362F, 1.0F, 0.6635F, 0.7311F, 1.0F, 0.6568F, 0.7263F, 1.0F, 0.6504F, 0.7215F, 1.0F, 0.6442F,
-			0.7169F, 1.0F, 0.6382F, 0.7124F, 1.0F, 0.6324F, 0.7081F, 1.0F, 0.6268F, 0.7039F, 1.0F };
+	static float blackBodyRGB[] = { 1.0F, 0.0337F, 0.0F, 1.0F, 0.0592F, 0.0F,
+			1.0F, 0.0846F, 0.0F, 1.0F, 0.1096F, 0.0F, 1.0F, 0.1341F, 0.0F,
+			1.0F, 0.1578F, 0.0F, 1.0F, 0.1806F, 0.0F, 1.0F, 0.2025F, 0.0F,
+			1.0F, 0.2235F, 0.0F, 1.0F, 0.2434F, 0.0F, 1.0F, 0.2647F, 0.0033F,
+			1.0F, 0.2889F, 0.012F, 1.0F, 0.3126F, 0.0219F, 1.0F, 0.336F,
+			0.0331F, 1.0F, 0.3589F, 0.0454F, 1.0F, 0.3814F, 0.0588F, 1.0F,
+			0.4034F, 0.0734F, 1.0F, 0.425F, 0.0889F, 1.0F, 0.4461F, 0.1054F,
+			1.0F, 0.4668F, 0.1229F, 1.0F, 0.487F, 0.1411F, 1.0F, 0.5067F,
+			0.1602F, 1.0F, 0.5259F, 0.18F, 1.0F, 0.5447F, 0.2005F, 1.0F,
+			0.563F, 0.2216F, 1.0F, 0.5809F, 0.2433F, 1.0F, 0.5983F, 0.2655F,
+			1.0F, 0.6153F, 0.2881F, 1.0F, 0.6318F, 0.3112F, 1.0F, 0.648F,
+			0.3346F, 1.0F, 0.6636F, 0.3583F, 1.0F, 0.6789F, 0.3823F, 1.0F,
+			0.6938F, 0.4066F, 1.0F, 0.7083F, 0.431F, 1.0F, 0.7223F, 0.4556F,
+			1.0F, 0.736F, 0.4803F, 1.0F, 0.7494F, 0.5051F, 1.0F, 0.7623F,
+			0.5299F, 1.0F, 0.775F, 0.5548F, 1.0F, 0.7872F, 0.5797F, 1.0F,
+			0.7992F, 0.6045F, 1.0F, 0.8108F, 0.6293F, 1.0F, 0.8221F, 0.6541F,
+			1.0F, 0.833F, 0.6787F, 1.0F, 0.8437F, 0.7032F, 1.0F, 0.8541F,
+			0.7277F, 1.0F, 0.8642F, 0.7519F, 1.0F, 0.874F, 0.776F, 1.0F,
+			0.8836F, 0.8F, 1.0F, 0.8929F, 0.8238F, 1.0F, 0.9019F, 0.8473F,
+			1.0F, 0.9107F, 0.8707F, 1.0F, 0.9193F, 0.8939F, 1.0F, 0.9276F,
+			0.9168F, 1.0F, 0.9357F, 0.9396F, 1.0F, 0.9436F, 0.9621F, 1.0F,
+			0.9513F, 0.9844F, 0.9937F, 0.9526F, 1.0F, 0.9726F, 0.9395F, 1.0F,
+			0.9526F, 0.927F, 1.0F, 0.9337F, 0.915F, 1.0F, 0.9157F, 0.9035F,
+			1.0F, 0.8986F, 0.8925F, 1.0F, 0.8823F, 0.8819F, 1.0F, 0.8668F,
+			0.8718F, 1.0F, 0.852F, 0.8621F, 1.0F, 0.8379F, 0.8527F, 1.0F,
+			0.8244F, 0.8437F, 1.0F, 0.8115F, 0.8351F, 1.0F, 0.7992F, 0.8268F,
+			1.0F, 0.7874F, 0.8187F, 1.0F, 0.7761F, 0.811F, 1.0F, 0.7652F,
+			0.8035F, 1.0F, 0.7548F, 0.7963F, 1.0F, 0.7449F, 0.7894F, 1.0F,
+			0.7353F, 0.7827F, 1.0F, 0.726F, 0.7762F, 1.0F, 0.7172F, 0.7699F,
+			1.0F, 0.7086F, 0.7638F, 1.0F, 0.7004F, 0.7579F, 1.0F, 0.6925F,
+			0.7522F, 1.0F, 0.6848F, 0.7467F, 1.0F, 0.6774F, 0.7414F, 1.0F,
+			0.6703F, 0.7362F, 1.0F, 0.6635F, 0.7311F, 1.0F, 0.6568F, 0.7263F,
+			1.0F, 0.6504F, 0.7215F, 1.0F, 0.6442F, 0.7169F, 1.0F, 0.6382F,
+			0.7124F, 1.0F, 0.6324F, 0.7081F, 1.0F, 0.6268F, 0.7039F, 1.0F };
 
 }

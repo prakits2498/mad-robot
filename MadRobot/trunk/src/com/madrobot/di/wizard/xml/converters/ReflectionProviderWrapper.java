@@ -52,7 +52,8 @@ public class ReflectionProviderWrapper implements ReflectionProvider {
 	}
 
 	@Override
-	public void writeField(Object object, String fieldName, Object value, Class definedIn) {
+	public void writeField(Object object, String fieldName, Object value,
+			Class definedIn) {
 		this.wrapped.writeField(object, fieldName, value, definedIn);
 	}
 

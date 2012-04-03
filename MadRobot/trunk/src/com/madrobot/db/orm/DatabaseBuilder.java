@@ -25,7 +25,9 @@ import com.madrobot.text.WordUtils;
  * application life cycle. Once instantiated it is used by underlying
  * SQLDatabaseHelper and provides SQL statements for create or upgrade of DB
  * schema. <br/>
- * <br/><b>Building a database from java classes</b>
+ * <br/>
+ * <b>Building a database from java classes</b>
+ * 
  * <pre>
  * <code>
  *  DatabaseBuilder builder = new DatabaseBuilder("Test.db");
@@ -37,7 +39,7 @@ import com.madrobot.text.WordUtils;
  *                                         "dbVersion");
  *  // purge Table1 table
  *  _db.delete(Table1.class, null, null);
- *
+ * 
  *  }catch(DBException e){
  *  }
  *  </code>

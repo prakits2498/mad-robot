@@ -10,8 +10,9 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 /**
- * Workaround for an android <a href="http://code.google.com/p/android/issues/detail?id=2254">bug</a>. Ellipsize
- * settings are not respected!
+ * Workaround for an android <a
+ * href="http://code.google.com/p/android/issues/detail?id=2254">bug</a>.
+ * Ellipsize settings are not respected!
  */
 public class EllipsizingTextView extends TextView {
 
@@ -41,7 +42,8 @@ public class EllipsizingTextView extends TextView {
 		super(context, attrs);
 	}
 
-	public EllipsizingTextView(final Context context, final AttributeSet attrs, final int defStyle) {
+	public EllipsizingTextView(final Context context, final AttributeSet attrs,
+			final int defStyle) {
 		super(context, attrs, defStyle);
 	}
 
@@ -68,7 +70,8 @@ public class EllipsizingTextView extends TextView {
 	}
 
 	@Override
-	protected void onTextChanged(final CharSequence text, final int start, final int before, final int after) {
+	protected void onTextChanged(final CharSequence text, final int start,
+			final int before, final int after) {
 		super.onTextChanged(text, start, before, after);
 		if (!programmaticChange) {
 			fullText = text.toString();
@@ -92,8 +95,10 @@ public class EllipsizingTextView extends TextView {
 		if (maxLines != -1) {
 			final Layout layout = createWorkingLayout(workingText);
 			if (layout.getLineCount() > maxLines) {
-				workingText = fullText.substring(0, layout.getLineEnd(maxLines - 1)).trim();
-				while (createWorkingLayout(workingText + ELLIPSIS).getLineCount() > maxLines) {
+				workingText = fullText.substring(0,
+						layout.getLineEnd(maxLines - 1)).trim();
+				while (createWorkingLayout(workingText + ELLIPSIS)
+						.getLineCount() > maxLines) {
 					final int lastSpace = workingText.lastIndexOf(' ');
 					if (lastSpace == -1) {
 						break;
@@ -121,8 +126,9 @@ public class EllipsizingTextView extends TextView {
 
 	private Layout createWorkingLayout(final String workingText) {
 		final int width = getWidth() - getPaddingLeft() - getPaddingRight();
-		return new StaticLayout(workingText, getPaint(), width > 0 ? width : 0, Alignment.ALIGN_NORMAL,
-				lineSpacingMultiplier, lineAdditionalVerticalPadding, false);
+		return new StaticLayout(workingText, getPaint(), width > 0 ? width : 0,
+				Alignment.ALIGN_NORMAL, lineSpacingMultiplier,
+				lineAdditionalVerticalPadding, false);
 	}
 
 	@Override

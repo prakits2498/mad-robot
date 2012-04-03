@@ -13,13 +13,13 @@ package com.madrobot.net.client.mail;
 import java.util.EventObject;
 
 /***
- * There exists a large class of IETF protocols that work by sending an
- * ASCII text command and arguments to a server, and then receiving an
- * ASCII text reply. For debugging and other purposes, it is extremely
- * useful to log or keep track of the contents of the protocol messages.
- * The ProtocolCommandEvent class coupled with the
- * {@link com.madrobot.net.client.mail.ProtocolCommandListener} interface facilitate
- * this process.
+ * There exists a large class of IETF protocols that work by sending an ASCII
+ * text command and arguments to a server, and then receiving an ASCII text
+ * reply. For debugging and other purposes, it is extremely useful to log or
+ * keep track of the contents of the protocol messages. The ProtocolCommandEvent
+ * class coupled with the
+ * {@link com.madrobot.net.client.mail.ProtocolCommandListener} interface
+ * facilitate this process.
  * <p>
  * <p>
  * 
@@ -29,9 +29,9 @@ import java.util.EventObject;
 
 public class ProtocolCommandEvent extends EventObject {
 	/**
-	 * Provide a brief description of serialVersionUID.
-	 * Specify the purpose of this field.
-	 *
+	 * Provide a brief description of serialVersionUID. Specify the purpose of
+	 * this field.
+	 * 
 	 */
 	private static final long serialVersionUID = 558718268755145726L;
 	private final boolean __isCommand;
@@ -40,19 +40,18 @@ public class ProtocolCommandEvent extends EventObject {
 
 	/***
 	 * Creates a ProtocolCommandEvent signalling a reply to a command was
-	 * received. ProtocolCommandEvents created with this constructor
-	 * should only be sent after a complete command reply has been received
-	 * fromt a server.
+	 * received. ProtocolCommandEvents created with this constructor should only
+	 * be sent after a complete command reply has been received fromt a server.
 	 * <p>
 	 * 
 	 * @param source
 	 *            The source of the event.
 	 * @param replyCode
-	 *            The integer code indicating the natureof the reply.
-	 *            This will be the protocol integer value for protocols
-	 *            that use integer reply codes, or the reply class constant
-	 *            corresponding to the reply for protocols like POP3 that use
-	 *            strings like OK rather than integer codes (i.e., POP3Repy.OK).
+	 *            The integer code indicating the natureof the reply. This will
+	 *            be the protocol integer value for protocols that use integer
+	 *            reply codes, or the reply class constant corresponding to the
+	 *            reply for protocols like POP3 that use strings like OK rather
+	 *            than integer codes (i.e., POP3Repy.OK).
 	 * @param message
 	 *            The entire reply as received from the server.
 	 ***/
@@ -65,10 +64,10 @@ public class ProtocolCommandEvent extends EventObject {
 	}
 
 	/***
-	 * Creates a ProtocolCommandEvent signalling a command was sent to
-	 * the server. ProtocolCommandEvents created with this constructor
-	 * should only be sent after a command has been sent, but before the
-	 * reply has been received.
+	 * Creates a ProtocolCommandEvent signalling a command was sent to the
+	 * server. ProtocolCommandEvents created with this constructor should only
+	 * be sent after a command has been sent, but before the reply has been
+	 * received.
 	 * <p>
 	 * 
 	 * @param source
@@ -90,12 +89,12 @@ public class ProtocolCommandEvent extends EventObject {
 
 	/***
 	 * Returns the string representation of the command type sent (e.g., "STAT"
-	 * or "GET"). If the ProtocolCommandEvent is a reply event, then null
-	 * is returned.
+	 * or "GET"). If the ProtocolCommandEvent is a reply event, then null is
+	 * returned.
 	 * <p>
 	 * 
-	 * @return The string representation of the command type sent, or null
-	 *         if this is a reply event.
+	 * @return The string representation of the command type sent, or null if
+	 *         this is a reply event.
 	 ***/
 	public String getCommand() {
 		return __command;
@@ -112,36 +111,36 @@ public class ProtocolCommandEvent extends EventObject {
 	}
 
 	/***
-	 * Returns the reply code of the received server reply. Undefined if
-	 * this is not a reply event.
+	 * Returns the reply code of the received server reply. Undefined if this is
+	 * not a reply event.
 	 * <p>
 	 * 
-	 * @return The reply code of the received server reply. Undefined if
-	 *         not a reply event.
+	 * @return The reply code of the received server reply. Undefined if not a
+	 *         reply event.
 	 ***/
 	public int getReplyCode() {
 		return __replyCode;
 	}
 
 	/***
-	 * Returns true if the ProtocolCommandEvent was generated as a result
-	 * of sending a command.
+	 * Returns true if the ProtocolCommandEvent was generated as a result of
+	 * sending a command.
 	 * <p>
 	 * 
-	 * @return true If the ProtocolCommandEvent was generated as a result
-	 *         of sending a command. False otherwise.
+	 * @return true If the ProtocolCommandEvent was generated as a result of
+	 *         sending a command. False otherwise.
 	 ***/
 	public boolean isCommand() {
 		return __isCommand;
 	}
 
 	/***
-	 * Returns true if the ProtocolCommandEvent was generated as a result
-	 * of receiving a reply.
+	 * Returns true if the ProtocolCommandEvent was generated as a result of
+	 * receiving a reply.
 	 * <p>
 	 * 
-	 * @return true If the ProtocolCommandEvent was generated as a result
-	 *         of receiving a reply. False otherwise.
+	 * @return true If the ProtocolCommandEvent was generated as a result of
+	 *         receiving a reply. False otherwise.
 	 ***/
 	public boolean isReply() {
 		return !isCommand();

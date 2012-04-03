@@ -11,9 +11,9 @@
 package com.madrobot.net.client.mail;
 
 /***
- * POP3MessageInfo is used to return information about messages stored on
- * a POP3 server. Its fields are used to mean slightly different things
- * depending on the information being returned.
+ * POP3MessageInfo is used to return information about messages stored on a POP3
+ * server. Its fields are used to mean slightly different things depending on
+ * the information being returned.
  * <p>
  * In response to a status command, <code> number </code> contains the number of
  * messages in the mailbox, <code> size </code> contains the size of the mailbox
@@ -38,8 +38,7 @@ public final class POP3MessageInfo {
 
 	/***
 	 * Creates a POP3MessageInfo instance with <code>number</code> and
-	 * <code> size </code> set to 0, and <code>identifier</code> set to
-	 * null.
+	 * <code> size </code> set to 0, and <code>identifier</code> set to null.
 	 ***/
 	public POP3MessageInfo() {
 		number = size = 0;
@@ -47,9 +46,9 @@ public final class POP3MessageInfo {
 	}
 
 	/***
-	 * Creates a POP3MessageInfo instance with <code>number</code> set
-	 * to <code> num </code>, <code> size </code> set to <code> octets </code>,
-	 * and <code>identifier</code> set to null.
+	 * Creates a POP3MessageInfo instance with <code>number</code> set to
+	 * <code> num </code>, <code> size </code> set to <code> octets </code>, and
+	 * <code>identifier</code> set to null.
 	 ***/
 	public POP3MessageInfo(int num, int octets) {
 		number = num;
@@ -58,9 +57,9 @@ public final class POP3MessageInfo {
 	}
 
 	/***
-	 * Creates a POP3MessageInfo instance with <code>number</code> set
-	 * to <code> num </code>, <code> size </code> undefined,
-	 * and <code>identifier</code> set to <code>uid</code>.
+	 * Creates a POP3MessageInfo instance with <code>number</code> set to
+	 * <code> num </code>, <code> size </code> undefined, and
+	 * <code>identifier</code> set to <code>uid</code>.
 	 ***/
 	public POP3MessageInfo(int num, String uid) {
 		number = num;

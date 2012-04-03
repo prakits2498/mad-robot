@@ -20,8 +20,9 @@ import com.madrobot.di.wizard.xml.io.HierarchicalStreamReader;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
 
 /**
- * Converts a java.util.GregorianCalendar to XML. Note that although it currently only contains one field, it nests it
- * inside a child element, to allow for other fields to be stored in the future.
+ * Converts a java.util.GregorianCalendar to XML. Note that although it
+ * currently only contains one field, it nests it inside a child element, to
+ * allow for other fields to be stored in the future.
  */
 public class GregorianCalendarConverter implements Converter {
 
@@ -31,19 +32,25 @@ public class GregorianCalendarConverter implements Converter {
 	}
 
 	@Override
-	public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
+	public void marshal(Object source, HierarchicalStreamWriter writer,
+			MarshallingContext context) {
 		GregorianCalendar calendar = (GregorianCalendar) source;
-		ExtendedHierarchicalStreamWriterHelper.startNode(writer, "time", long.class);
-		long timeInMillis = calendar.getTime().getTime(); // calendar.getTimeInMillis() not available under JDK 1.3
+		ExtendedHierarchicalStreamWriterHelper.startNode(writer, "time",
+				long.class);
+		long timeInMillis = calendar.getTime().getTime(); // calendar.getTimeInMillis()
+															// not available
+															// under JDK 1.3
 		writer.setValue(String.valueOf(timeInMillis));
 		writer.endNode();
-		ExtendedHierarchicalStreamWriterHelper.startNode(writer, "timezone", String.class);
+		ExtendedHierarchicalStreamWriterHelper.startNode(writer, "timezone",
+				String.class);
 		writer.setValue(calendar.getTimeZone().getID());
 		writer.endNode();
 	}
 
 	@Override
-	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+	public Object unmarshal(HierarchicalStreamReader reader,
+			UnmarshallingContext context) {
 		reader.moveDown();
 		long timeInMillis = Long.parseLong(reader.getValue());
 		reader.moveUp();
@@ -58,7 +65,8 @@ public class GregorianCalendarConverter implements Converter {
 
 		GregorianCalendar result = new GregorianCalendar();
 		result.setTimeZone(TimeZone.getTimeZone(timeZone));
-		result.setTime(new Date(timeInMillis)); // calendar.setTimeInMillis() not available under JDK 1.3
+		result.setTime(new Date(timeInMillis)); // calendar.setTimeInMillis()
+												// not available under JDK 1.3
 
 		return result;
 	}

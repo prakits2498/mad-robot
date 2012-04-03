@@ -27,7 +27,8 @@ public class IntentUtils {
 	public static boolean isIntentAvailable(Context context, String action) {
 		final PackageManager packageManager = context.getPackageManager();
 		final Intent intent = new Intent(action);
-		List<ResolveInfo> resolveInfo = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+		List<ResolveInfo> resolveInfo = packageManager.queryIntentActivities(
+				intent, PackageManager.MATCH_DEFAULT_ONLY);
 		if (resolveInfo.size() > 0) {
 			return true;
 		}
@@ -41,8 +42,8 @@ public class IntentUtils {
 	 *            application context
 	 */
 	public static void openMarketPage(Context context) {
-		Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id="
-				+ context.getPackageName()));
+		Intent marketIntent = new Intent(Intent.ACTION_VIEW,
+				Uri.parse("market://details?id=" + context.getPackageName()));
 		context.startActivity(marketIntent);
 	}
 
@@ -55,14 +56,16 @@ public class IntentUtils {
 	 *            application context
 	 */
 	public static void searchMarket(String query, Context context) {
-		Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://search?q=" + query));
+		Intent marketIntent = new Intent(Intent.ACTION_VIEW,
+				Uri.parse("market://search?q=" + query));
 		context.startActivity(marketIntent);
 	}
 
 	/**
 	 * Install the APK at the given file path.
 	 * <p>
-	 * Launches the package installer activity after setting the given APK file to be installed.
+	 * Launches the package installer activity after setting the given APK file
+	 * to be installed.
 	 * </p>
 	 * 
 	 * @param context
@@ -70,9 +73,11 @@ public class IntentUtils {
 	 */
 	public static void installAPK(Context context, final String filePath) {
 		Intent intent = new Intent(Intent.ACTION_VIEW);
-		intent.setDataAndType(Uri.fromFile(new File(filePath)), "application/vnd.android.package-archive");
+		intent.setDataAndType(Uri.fromFile(new File(filePath)),
+				"application/vnd.android.package-archive");
 		intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-		intent.setClassName("com.android.packageinstaller", "com.android.packageinstaller.PackageInstallerActivity");
+		intent.setClassName("com.android.packageinstaller",
+				"com.android.packageinstaller.PackageInstallerActivity");
 		context.startActivity(intent);
 	}
 
@@ -82,9 +87,11 @@ public class IntentUtils {
 	 * Similar to <code>intent.getChooser</code>
 	 * </p>
 	 */
-	public static List<ResolveInfo> getCompatibleActivities(Context context, Intent intent) {
+	public static List<ResolveInfo> getCompatibleActivities(Context context,
+			Intent intent) {
 		PackageManager packMan = context.getPackageManager();
-		List<ResolveInfo> resolved = packMan.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+		List<ResolveInfo> resolved = packMan.queryIntentActivities(intent,
+				PackageManager.MATCH_DEFAULT_ONLY);
 		return resolved;
 	}
 
@@ -98,7 +105,8 @@ public class IntentUtils {
 	 * @param intent
 	 */
 	public static void logIntent(final String tag, final Intent intent) {
-		android.util.Log.d(tag, "========================================================");
+		android.util.Log.d(tag,
+				"========================================================");
 		android.util.Log.d(tag, "action=" + intent.getAction());
 		android.util.Log.d(tag, "data=" + intent.getData());
 		android.util.Log.d(tag, "type=" + intent.getType());
@@ -109,7 +117,9 @@ public class IntentUtils {
 		if (extras != null) {
 			for (final String key : extras.keySet()) {
 				final Object o = intent.getExtras().get(key);
-				android.util.Log.d(tag, "  " + key + "=" + (o != null ? o.getClass() : null) + "/" + o);
+				android.util.Log.d(tag,
+						"  " + key + "=" + (o != null ? o.getClass() : null)
+								+ "/" + o);
 			}
 		}
 	}
@@ -124,7 +134,8 @@ public class IntentUtils {
 	public static boolean isStartedFromLauncher(final android.app.Activity a) {
 		final Intent intent = a.getIntent();
 		final String intentAction = intent.getAction();
-		return intent.hasCategory(Intent.CATEGORY_LAUNCHER) && intentAction != null
+		return intent.hasCategory(Intent.CATEGORY_LAUNCHER)
+				&& intentAction != null
 				&& intentAction.equals(Intent.ACTION_MAIN);
 	}
 }

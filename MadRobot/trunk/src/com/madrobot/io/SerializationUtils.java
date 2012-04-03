@@ -60,12 +60,13 @@ public class SerializationUtils {
 	 * @param object
 	 *            the <code>Serializable</code> object to clone
 	 * @return the cloned object
-	 * @throws IOException 
-	 * @throws ClassNotFoundException 
+	 * @throws IOException
+	 * @throws ClassNotFoundException
 	 * @throws SerializationException
 	 *             (runtime) if the serialization fails
 	 */
-	public static Object clone(Serializable object) throws ClassNotFoundException, IOException {
+	public static Object clone(Serializable object)
+			throws ClassNotFoundException, IOException {
 		return deserialize(serialize(object));
 	}
 
@@ -77,15 +78,16 @@ public class SerializationUtils {
 	 * @param objectData
 	 *            the serialized object, must not be null
 	 * @return the deserialized object
-	 * @throws IOException 
-	 * @throws ClassNotFoundException 
+	 * @throws IOException
+	 * @throws ClassNotFoundException
 	 * @throws IllegalArgumentException
 	 *             if <code>objectData</code> is <code>null</code>
 	 * @throws SerializationException
 	 *             (runtime) if the serialization fails
 	 */
-	public static Object deserialize(byte[] objectData) throws ClassNotFoundException, IOException {
-		if(objectData == null){
+	public static Object deserialize(byte[] objectData)
+			throws ClassNotFoundException, IOException {
+		if (objectData == null) {
 			throw new IllegalArgumentException("The byte[] must not be null");
 		}
 		ByteArrayInputStream bais = new ByteArrayInputStream(objectData);
@@ -113,33 +115,35 @@ public class SerializationUtils {
 	 * @param inputStream
 	 *            the serialized object input stream, must not be null
 	 * @return the deserialized object
-	 * @throws ClassNotFoundException 
-	 * @throws IOException 
+	 * @throws ClassNotFoundException
+	 * @throws IOException
 	 * @throws IllegalArgumentException
 	 *             if <code>inputStream</code> is <code>null</code>
 	 * @throws SerializationException
 	 *             (runtime) if the serialization fails
 	 */
-	public static Object deserialize(InputStream inputStream) throws ClassNotFoundException, IOException {
-		if(inputStream == null){
-			throw new IllegalArgumentException("The InputStream must not be null");
+	public static Object deserialize(InputStream inputStream)
+			throws ClassNotFoundException, IOException {
+		if (inputStream == null) {
+			throw new IllegalArgumentException(
+					"The InputStream must not be null");
 		}
 		ObjectInputStream in = null;
-		try{
+		try {
 			// stream closed in the finally
 			in = new ObjectInputStream(inputStream);
 			return in.readObject();
 
-		} catch(ClassNotFoundException ex){
+		} catch (ClassNotFoundException ex) {
 			throw new ClassNotFoundException(ex.getMessage());
-		} catch(IOException ex){
+		} catch (IOException ex) {
 			throw new IOException(ex.getMessage());
-		} finally{
-			try{
-				if(in != null){
+		} finally {
+			try {
+				if (in != null) {
 					in.close();
 				}
-			} catch(IOException ex){
+			} catch (IOException ex) {
 				// ignore close exception
 			}
 		}
@@ -191,29 +195,28 @@ public class SerializationUtils {
 	 *             (runtime) if the serialization fails
 	 */
 	public static void serialize(Serializable obj, OutputStream outputStream) {
-		if(outputStream == null){
-			throw new IllegalArgumentException("The OutputStream must not be null");
+		if (outputStream == null) {
+			throw new IllegalArgumentException(
+					"The OutputStream must not be null");
 		}
 		ObjectOutputStream out = null;
-		try{
+		try {
 			// stream closed in the finally
 			out = new ObjectOutputStream(outputStream);
 			out.writeObject(obj);
 
-		} catch(IOException ex){
+		} catch (IOException ex) {
 			ex.printStackTrace();
-		} finally{
-			try{
-				if(out != null){
+		} finally {
+			try {
+				if (out != null) {
 					out.close();
 				}
-			} catch(IOException ex){
+			} catch (IOException ex) {
 				ex.printStackTrace();
 			}
 		}
 	}
-	
-	
 
 	/**
 	 * <p>

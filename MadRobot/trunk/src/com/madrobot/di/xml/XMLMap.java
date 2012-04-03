@@ -19,8 +19,9 @@ import java.util.Set;
 import com.madrobot.di.wizard.xml.core.PersistenceStrategy;
 
 /**
- * A persistent map. Its values are actually serialized as xml files. If you need an application-wide synchronized
- * version of this map, try the respective Collections methods.
+ * A persistent map. Its values are actually serialized as xml files. If you
+ * need an application-wide synchronized version of this map, try the respective
+ * Collections methods.
  * 
  */
 public class XMLMap extends AbstractMap {

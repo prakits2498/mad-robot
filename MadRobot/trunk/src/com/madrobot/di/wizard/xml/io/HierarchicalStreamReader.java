@@ -21,8 +21,9 @@ import com.madrobot.di.wizard.xml.converters.ErrorWriter;
 public interface HierarchicalStreamReader extends ErrorReporter {
 
 	/**
-	 * If any errors are detected, allow the reader to add any additional information that can aid debugging (such as
-	 * line numbers, XPath expressions, etc).
+	 * If any errors are detected, allow the reader to add any additional
+	 * information that can aid debugging (such as line numbers, XPath
+	 * expressions, etc).
 	 */
 	@Override
 	void appendErrors(ErrorWriter errorWriter);
@@ -68,13 +69,14 @@ public interface HierarchicalStreamReader extends ErrorReporter {
 	String getValue();
 
 	/**
-	 * Does the node have any more children remaining that have not yet been read?
+	 * Does the node have any more children remaining that have not yet been
+	 * read?
 	 */
 	boolean hasMoreChildren();
 
 	/**
-	 * Select the current child as current node. A call to this function must be balanced with a call to
-	 * {@link #moveUp()}.
+	 * Select the current child as current node. A call to this function must be
+	 * balanced with a call to {@link #moveUp()}.
 	 */
 	void moveDown();
 
@@ -87,10 +89,12 @@ public interface HierarchicalStreamReader extends ErrorReporter {
 	 * Return the underlying HierarchicalStreamReader implementation.
 	 * 
 	 * <p>
-	 * If a Converter needs to access methods of a specific HierarchicalStreamReader implementation that are not defined
-	 * in the HierarchicalStreamReader interface, it should call this method before casting. This is because the reader
-	 * passed to the Converter is often wrapped/decorated by another implementation to provide additional functionality
-	 * (such as XPath tracking).
+	 * If a Converter needs to access methods of a specific
+	 * HierarchicalStreamReader implementation that are not defined in the
+	 * HierarchicalStreamReader interface, it should call this method before
+	 * casting. This is because the reader passed to the Converter is often
+	 * wrapped/decorated by another implementation to provide additional
+	 * functionality (such as XPath tracking).
 	 * </p>
 	 * 
 	 * <p>
@@ -108,8 +112,9 @@ public interface HierarchicalStreamReader extends ErrorReporter {
 	 * </pre>
 	 * 
 	 * <p>
-	 * Implementations of HierarchicalStreamReader should return 'this', unless they are a decorator, in which case they
-	 * should delegate to whatever they are wrapping.
+	 * Implementations of HierarchicalStreamReader should return 'this', unless
+	 * they are a decorator, in which case they should delegate to whatever they
+	 * are wrapping.
 	 * </p>
 	 */
 	HierarchicalStreamReader underlyingReader();

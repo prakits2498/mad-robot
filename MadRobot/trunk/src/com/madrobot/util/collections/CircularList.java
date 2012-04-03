@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 /**
  * Cyclic list implementation. Based on a ArrayList.
- *
+ * 
  */
 public class CircularList extends ArrayList {
 

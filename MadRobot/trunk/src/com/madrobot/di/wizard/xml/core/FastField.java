@@ -39,7 +39,8 @@ public final class FastField {
 				return false;
 			}
 			return name.equals(field.getName())
-					&& (declaringClass == null || declaringClass.equals(field.getDeclaringClass()));
+					&& (declaringClass == null || declaringClass.equals(field
+							.getDeclaringClass()));
 		}
 		return false;
 	}
@@ -54,7 +55,8 @@ public final class FastField {
 
 	@Override
 	public int hashCode() {
-		return name.hashCode() ^ (declaringClass == null ? 0 : declaringClass.hashCode());
+		return name.hashCode()
+				^ (declaringClass == null ? 0 : declaringClass.hashCode());
 	}
 
 	@Override

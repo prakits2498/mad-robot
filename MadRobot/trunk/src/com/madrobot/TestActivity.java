@@ -35,35 +35,41 @@ public class TestActivity extends Activity {
 		// Bitmap.Config outputConfig = Bitmap.Config.ARGB_8888;
 		long time = System.currentTimeMillis();
 		outputConfig = new OutputConfiguration();
-		outputConfig.setAffectedArea(new Rectangle(0, 0, src.getWidth() / 2, src.getHeight()));
+		outputConfig.setAffectedArea(new Rectangle(0, 0, src.getWidth() / 2,
+				src.getHeight()));
 		img = (ImageView) findViewById(R.id.text);
-		System.out.println("Time->"+English.timeToString(System.currentTimeMillis()));
-//		try {
-//			Method method = Surface.class.getMethod("screenshot", new Class[] { Integer.class, Integer.class });
-//			Bitmap bitmap=(Bitmap) method.invoke(null, 50,50);
-//			img.setImageBitmap(bitmap);
-//		} catch (IllegalArgumentException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (IllegalAccessException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (InvocationTargetException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (SecurityException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (NoSuchMethodException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		Bitmap bitmap2 =AestheticTransformFilters.sketch(src, outputConfig.getConfig());  
+		System.out.println("Time->"
+				+ English.timeToEnglish(System.currentTimeMillis()));
+		// try {
+		// Method method = Surface.class.getMethod("screenshot", new Class[] {
+		// Integer.class, Integer.class });
+		// Bitmap bitmap=(Bitmap) method.invoke(null, 50,50);
+		// img.setImageBitmap(bitmap);
+		// } catch (IllegalArgumentException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// } catch (IllegalAccessException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// } catch (InvocationTargetException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// } catch (SecurityException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// } catch (NoSuchMethodException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+		Bitmap bitmap2 = AestheticTransformFilters.sketch(src,
+				outputConfig.getConfig());
 
 		// 96, 0, 64, 96, 0, 64 }, outputConfig);
-		System.out.println("============================== DONE ====================");
+		System.out
+				.println("============================== DONE ====================");
 		// + (System.currentTimeMillis() - time));
-		// SimpleBitmapFilters.motionBlur(src, 1.0f, 5.0f, 0.0f, 0.0f, true, false, outputConfig);// (src,
+		// SimpleBitmapFilters.motionBlur(src, 1.0f, 5.0f, 0.0f, 0.0f, true,
+		// false, outputConfig);// (src,
 		// outputConfig);//(src,
 		// outputConfig);//(bitmap,
 		// 3, 256,

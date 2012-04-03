@@ -24,8 +24,9 @@ import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
 import com.madrobot.reflect.FieldUtils;
 
 /**
- * Serializes an Java 5 EnumMap, including the type of Enum it's for. If a SecurityManager is set, the converter will
- * only work with permissions for SecurityManager.checkPackageAccess, SecurityManager.checkMemberAccess(this,
+ * Serializes an Java 5 EnumMap, including the type of Enum it's for. If a
+ * SecurityManager is set, the converter will only work with permissions for
+ * SecurityManager.checkPackageAccess, SecurityManager.checkMemberAccess(this,
  * EnumSet.MEMBER) and ReflectPermission("suppressAccessChecks").
  * 
  * @author Joe Walnes
@@ -47,7 +48,8 @@ public class EnumMapConverter extends MapConverter {
 				}
 			}
 			if (assumedTypeField == null) {
-				throw new ExceptionInInitializerError("Cannot detect key type of EnumMap");
+				throw new ExceptionInInitializerError(
+						"Cannot detect key type of EnumMap");
 			}
 
 		} catch (SecurityException ex) {
@@ -66,7 +68,8 @@ public class EnumMapConverter extends MapConverter {
 	}
 
 	@Override
-	public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
+	public void marshal(Object source, HierarchicalStreamWriter writer,
+			MarshallingContext context) {
 		Class type = null;
 		try {
 			type = (Class) FieldUtils.readField(typeField, source);
@@ -83,7 +86,8 @@ public class EnumMapConverter extends MapConverter {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+	public Object unmarshal(HierarchicalStreamReader reader,
+			UnmarshallingContext context) {
 		String attributeName = mapper().aliasForSystemAttribute("enum-type");
 		if (attributeName == null) {
 			throw new ConversionException("No EnumType specified for EnumMap");

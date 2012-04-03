@@ -1,10 +1,8 @@
 package com.madrobot.net.client.oauth;
 
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
-
 
 /**
  * A concise description of an HTTP request. Contains methods to access all
@@ -17,26 +15,26 @@ import java.util.Map;
  */
 public interface HttpRequest {
 
-    Map<String, String> getAllHeaders();
+	Map<String, String> getAllHeaders();
 
-    String getContentType();
+	String getContentType();
 
-    String getHeader(String name);
+	String getHeader(String name);
 
-    InputStream getMessagePayload() throws IOException;
+	InputStream getMessagePayload() throws IOException;
 
-    String getMethod();
+	String getMethod();
 
-    String getRequestUrl();
+	String getRequestUrl();
 
-    void setHeader(String name, String value);
+	void setHeader(String name, String value);
 
-    void setRequestUrl(String url);
+	void setRequestUrl(String url);
 
-    /**
-     * Returns the wrapped request object, in case you must work directly on it.
-     * 
-     * @return the wrapped request object
-     */
-    Object unwrap();
+	/**
+	 * Returns the wrapped request object, in case you must work directly on it.
+	 * 
+	 * @return the wrapped request object
+	 */
+	Object unwrap();
 }

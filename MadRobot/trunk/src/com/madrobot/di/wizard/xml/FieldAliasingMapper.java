@@ -19,7 +19,8 @@ import java.util.Set;
 import com.madrobot.di.wizard.xml.core.FastField;
 
 /**
- * Mapper that allows a field of a specific class to be replaced with a shorter alias, or omitted entirely.
+ * Mapper that allows a field of a specific class to be replaced with a shorter
+ * alias, or omitted entirely.
  * 
  */
 class FieldAliasingMapper extends MapperWrapper {
@@ -39,7 +40,8 @@ class FieldAliasingMapper extends MapperWrapper {
 
 	private String getMember(Class type, String name, Map map) {
 		String member = null;
-		for (Class declaringType = type; member == null && declaringType != Object.class; declaringType = declaringType
+		for (Class declaringType = type; member == null
+				&& declaringType != Object.class; declaringType = declaringType
 				.getSuperclass()) {
 			member = (String) map.get(key(declaringType, name));
 		}

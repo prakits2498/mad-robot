@@ -1,8 +1,8 @@
 package com.madrobot.security;
 
 public class HexDump {
-	private final static char[] HEX_DIGITS = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D',
-			'E', 'F' };
+	private final static char[] HEX_DIGITS = { '0', '1', '2', '3', '4', '5',
+			'6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
 	public static String dumpHexString(byte[] array) {
 		return dumpHexString(array, 0, array.length);
@@ -125,7 +125,8 @@ public class HexDump {
 		byte[] buffer = new byte[length / 2];
 
 		for (int i = 0; i < length; i += 2) {
-			buffer[i / 2] = (byte) ((parseHex(hexString.charAt(i)) << 4) | parseHex(hexString.charAt(i + 1)));
+			buffer[i / 2] = (byte) ((parseHex(hexString.charAt(i)) << 4) | parseHex(hexString
+					.charAt(i + 1)));
 		}
 
 		return buffer;

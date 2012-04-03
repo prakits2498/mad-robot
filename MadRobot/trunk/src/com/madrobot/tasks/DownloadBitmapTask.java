@@ -10,12 +10,6 @@
  ******************************************************************************/
 package com.madrobot.tasks;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.BitmapFactory.Options;
-import android.util.Log;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -23,11 +17,17 @@ import java.net.URISyntaxException;
 
 import org.apache.http.HttpEntity;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
+import android.util.Log;
+
 import com.madrobot.net.HttpTaskHelper;
 
 /**
  * Async task to download a list of bitmaps
- *<p>
+ * <p>
  * This task takes a list of java.net.URI instances that point to bitmaps. The
  * bitmaps are downloaded(using Http GET) sequentially and sent to the UI using
  * the {@link TaskNotifier#onSuccess(DataResponse)} method .<br/>
@@ -56,28 +56,28 @@ public class DownloadBitmapTask extends AbstractTask {
 
 	@Override
 	protected Object doInBackground(Object... params) {
-		/*sending*/
+		/* sending */
 		taskStarted();
 		URI[] uri = (URI[]) params[0];
 		BitmapFactory.Options opt = (Options) params[1];
-		for(int i = 0; i < uri.length; i++){
+		for (int i = 0; i < uri.length; i++) {
 			DataResponse response = new DataResponse();
 			response.setResponseId(i);
 			HttpTaskHelper helper = new HttpTaskHelper(uri[i]);
-			try{
-				Log.d("BitmapTask","Downloading Bitmap->"+uri[i]);
+			try {
+				Log.d("BitmapTask", "Downloading Bitmap->" + uri[i]);
 				HttpEntity entity = helper.execute();
 				InputStream is = entity.getContent();
 				Bitmap bitmap = BitmapFactory.decodeStream(is, null, opt);
 				response.setData(bitmap);
 				response.setResponseStatus(1);
-				Log.d("BitmapTask","Complete!");
+				Log.d("BitmapTask", "Complete!");
 				publishProgress(response);
-			} catch(IOException e){
+			} catch (IOException e) {
 				response.setResponseStatus(-1);
 				response.setT(e);
 				e.printStackTrace();
-			} catch(URISyntaxException e){
+			} catch (URISyntaxException e) {
 				response.setResponseStatus(-1);
 				response.setT(e);
 				e.printStackTrace();
@@ -86,7 +86,6 @@ public class DownloadBitmapTask extends AbstractTask {
 		return null;
 
 	}
-
 
 	@Override
 	protected void onPostExecute(Object result) {

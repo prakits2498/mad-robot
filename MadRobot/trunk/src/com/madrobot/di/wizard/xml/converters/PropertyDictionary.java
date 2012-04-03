@@ -28,7 +28,8 @@ import com.madrobot.util.collections.OrderRetainingMap;
  * 
  */
 public class PropertyDictionary implements Caching {
-	private transient Map propertyNameCache = Collections.synchronizedMap(new HashMap());
+	private transient Map propertyNameCache = Collections
+			.synchronizedMap(new HashMap());
 	private final PropertySorter sorter;
 
 	public PropertyDictionary() {
@@ -47,8 +48,10 @@ public class PropertyDictionary implements Caching {
 	// Collection descriptors = buildMap(type).values();
 	// for (Iterator iter = descriptors.iterator(); iter.hasNext();) {
 	// PropertyDescriptor descriptor = (PropertyDescriptor)iter.next();
-	// if (descriptor.getReadMethod() != null && descriptor.getWriteMethod() != null) {
-	// beanProperties.add(new BeanProperty(type, descriptor.getName(), descriptor
+	// if (descriptor.getReadMethod() != null && descriptor.getWriteMethod() !=
+	// null) {
+	// beanProperties.add(new BeanProperty(type, descriptor.getName(),
+	// descriptor
 	// .getPropertyType()));
 	// }
 	// }
@@ -60,15 +63,18 @@ public class PropertyDictionary implements Caching {
 	// *
 	// * @param cls
 	// * @param name
-	// * @deprecated As of 1.3.1, use {@link #propertyDescriptor(Class, String)} instead
+	// * @deprecated As of 1.3.1, use {@link #propertyDescriptor(Class, String)}
+	// instead
 	// */
 	// public BeanProperty property(Class cls, String name) {
 	// BeanProperty beanProperty = null;
-	// PropertyDescriptor descriptor = (PropertyDescriptor)buildMap(cls).get(name);
+	// PropertyDescriptor descriptor =
+	// (PropertyDescriptor)buildMap(cls).get(name);
 	// if (descriptor == null) {
 	// throw new MissingFieldException(cls.getName(), name);
 	// }
-	// if (descriptor.getReadMethod() != null && descriptor.getWriteMethod() != null) {
+	// if (descriptor.getReadMethod() != null && descriptor.getWriteMethod() !=
+	// null) {
 	// beanProperty = new BeanProperty(
 	// cls, descriptor.getName(), descriptor.getPropertyType());
 	// }
@@ -82,10 +88,12 @@ public class PropertyDictionary implements Caching {
 			try {
 				beanInfo = Introspector.getBeanInfo(type, Object.class);
 			} catch (IntrospectionException e) {
-				throw new ObjectAccessException("Cannot get BeanInfo of type " + type.getName(), e);
+				throw new ObjectAccessException("Cannot get BeanInfo of type "
+						+ type.getName(), e);
 			}
 			nameMap = new OrderRetainingMap();
-			PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
+			PropertyDescriptor[] propertyDescriptors = beanInfo
+					.getPropertyDescriptors();
 			for (int i = 0; i < propertyDescriptors.length; i++) {
 				PropertyDescriptor descriptor = propertyDescriptors[i];
 				nameMap.put(descriptor.getName(), descriptor);
@@ -112,7 +120,8 @@ public class PropertyDictionary implements Caching {
 	 * @param name
 	 */
 	public PropertyDescriptor propertyDescriptor(Class type, String name) {
-		PropertyDescriptor descriptor = (PropertyDescriptor) buildMap(type).get(name);
+		PropertyDescriptor descriptor = (PropertyDescriptor) buildMap(type)
+				.get(name);
 		if (descriptor == null) {
 			throw new MissingFieldException(type.getName(), name);
 		}

@@ -12,10 +12,12 @@
 package com.madrobot.di.wizard.xml.io;
 
 /**
- * Tool for copying the contents of one HierarichalStreamReader to a HierarichalStreamWriter.
+ * Tool for copying the contents of one HierarichalStreamReader to a
+ * HierarichalStreamWriter.
  * <p/>
- * This is useful for transforming the output of one format to another (e.g. binary to XML) without needing to know
- * details about the classes and avoiding the overhead of serialization.
+ * This is useful for transforming the output of one format to another (e.g.
+ * binary to XML) without needing to know details about the classes and avoiding
+ * the overhead of serialization.
  * 
  * <h3>Example</h3>
  * 
@@ -29,11 +31,13 @@ package com.madrobot.di.wizard.xml.io;
  * @since 1.2
  */
 public class HierarchicalStreamCopier {
-	public void copy(HierarchicalStreamReader source, HierarchicalStreamWriter destination) {
+	public void copy(HierarchicalStreamReader source,
+			HierarchicalStreamWriter destination) {
 		destination.startNode(source.getNodeName());
 		int attributeCount = source.getAttributeCount();
 		for (int i = 0; i < attributeCount; i++) {
-			destination.addAttribute(source.getAttributeName(i), source.getAttribute(i));
+			destination.addAttribute(source.getAttributeName(i),
+					source.getAttribute(i));
 		}
 		String value = source.getValue();
 		if (value != null && value.length() > 0) {

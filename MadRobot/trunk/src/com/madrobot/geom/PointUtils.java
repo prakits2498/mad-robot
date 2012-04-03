@@ -34,7 +34,8 @@ public class PointUtils {
 		return new PointF(newX, newY);
 	}
 
-	public static PointF rotate(float px, float py, float ox, float oy, float cos, float sin) {
+	public static PointF rotate(float px, float py, float ox, float oy,
+			float cos, float sin) {
 		float x = px - ox;
 		float y = py - oy;
 		px = ((x * cos) - (y * sin));
@@ -87,7 +88,8 @@ public class PointUtils {
 	 *            the sine of the rotation angle
 	 * @return The new coordinate of <code>point</code>
 	 */
-	public static PointF rotate(PointF point, PointF origin, float cos, float sin) {
+	public static PointF rotate(PointF point, PointF origin, float cos,
+			float sin) {
 		return rotate(point.x, point.y, origin.x, origin.y, cos, sin);
 	}
 
@@ -115,13 +117,20 @@ public class PointUtils {
 
 	/**
 	 * convert an x,y point to degrees.
+	 * 
 	 * @param x
 	 * @param y
 	 * @return
 	 */
 	public static float xyToDegrees(float x, float y) {
 		float distanceFromCenter = PointF.length((x - 0.5f), (y - 0.5f));
-		if (distanceFromCenter < 0.1f || distanceFromCenter > 0.5f) { // ignore center and out of bounds events
+		if (distanceFromCenter < 0.1f || distanceFromCenter > 0.5f) { // ignore
+																		// center
+																		// and
+																		// out
+																		// of
+																		// bounds
+																		// events
 			return Float.NaN;
 		} else {
 			return (float) Math.toDegrees(Math.atan2(x - 0.5f, y - 0.5f));

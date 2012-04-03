@@ -12,7 +12,8 @@
 package com.madrobot.di.wizard.xml.converters;
 
 /**
- * A single value converter for arbitrary enums. Converter is internally automatically instantiated for enum types.
+ * A single value converter for arbitrary enums. Converter is internally
+ * automatically instantiated for enum types.
  * 
  * @author J&ouml;rg Schaible
  * @since 1.3
@@ -23,7 +24,8 @@ public class EnumSingleValueConverter extends AbstractSingleValueConverter {
 
 	public EnumSingleValueConverter(Class<? extends Enum> type) {
 		if (!Enum.class.isAssignableFrom(type) && type != Enum.class) {
-			throw new IllegalArgumentException("Converter can only handle defined enums");
+			throw new IllegalArgumentException(
+					"Converter can only handle defined enums");
 		}
 		enumType = type;
 	}

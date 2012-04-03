@@ -17,10 +17,12 @@ import com.madrobot.di.wizard.xml.Mapper;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamReader;
 
 /**
- * Converts a singleton map to XML, specifying an 'entry' element with 'key' and 'value' children.
+ * Converts a singleton map to XML, specifying an 'entry' element with 'key' and
+ * 'value' children.
  * <p>
- * Note: 'key' and 'value' is not the name of the generated tag. The children are serialized as normal elements and the
- * implementation expects them in the order 'key'/'value'.
+ * Note: 'key' and 'value' is not the name of the generated tag. The children
+ * are serialized as normal elements and the implementation expects them in the
+ * order 'key'/'value'.
  * </p>
  * <p>
  * Supports Collections.singletonMap.
@@ -30,7 +32,8 @@ import com.madrobot.di.wizard.xml.io.HierarchicalStreamReader;
  */
 public class SingletonMapConverter extends MapConverter {
 
-	private static final Class MAP = Collections.singletonMap(Boolean.TRUE, null).getClass();
+	private static final Class MAP = Collections.singletonMap(Boolean.TRUE,
+			null).getClass();
 
 	/**
 	 * Construct a SingletonMapConverter.
@@ -48,7 +51,8 @@ public class SingletonMapConverter extends MapConverter {
 	}
 
 	@Override
-	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+	public Object unmarshal(HierarchicalStreamReader reader,
+			UnmarshallingContext context) {
 		reader.moveDown();
 		reader.moveDown();
 		Object key = readItem(reader, context, null);

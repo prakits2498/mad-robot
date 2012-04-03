@@ -16,7 +16,6 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import android.text.SpannedString;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.method.MovementMethod;
@@ -26,11 +25,6 @@ import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.Animation.AnimationListener;
-import android.view.animation.ScaleAnimation;
-import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.widget.TextView.BufferType;
@@ -53,7 +47,8 @@ public class UIUtils {
 	 *            Text in the textview that needs to be made clickable.
 	 * @param span
 	 */
-	public static void clickify(TextView view, final String clickableText, final ClickSpan span) {
+	public static void clickify(TextView view, final String clickableText,
+			final ClickSpan span) {
 
 		CharSequence text = view.getText();
 		String string = text.toString();
@@ -64,7 +59,8 @@ public class UIUtils {
 			return;
 
 		if (text instanceof Spannable) {
-			((Spannable) text).setSpan(span, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+			((Spannable) text).setSpan(span, start, end,
+					Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 		} else {
 			SpannableString s = SpannableString.valueOf(text);
 			s.setSpan(span, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -110,7 +106,8 @@ public class UIUtils {
 	 * @param gravity
 	 *            the gravity
 	 */
-	public static void showCustomToast(Context mContext, int viewResId, int duration, int gravity) {
+	public static void showCustomToast(Context mContext, int viewResId,
+			int duration, int gravity) {
 		View layout = getLayoutInflater(mContext).inflate(viewResId, null);
 
 		Toast toast = new Toast(mContext.getApplicationContext());
@@ -122,7 +119,8 @@ public class UIUtils {
 	}
 
 	public static LayoutInflater getLayoutInflater(Context mContext) {
-		return (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		return (LayoutInflater) mContext
+				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
 	}
 
@@ -133,7 +131,8 @@ public class UIUtils {
 	 *            the drawable_width in dip
 	 * @return the screen optimal columns
 	 */
-	public static int getScreenOptimalColumns(Context mContext, int drawable_width) {
+	public static int getScreenOptimalColumns(Context mContext,
+			int drawable_width) {
 		DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
 		double a = (double) metrics.widthPixels / (double) metrics.densityDpi; // 2.25
 		int b = (int) Math.ceil(a * 2.0); // 5
@@ -147,8 +146,10 @@ public class UIUtils {
 
 	/**
 	 * Get the optimal number of rows for the given height of an item
+	 * 
 	 * @param mContext
-	 * @param drawable_height in dip
+	 * @param drawable_height
+	 *            in dip
 	 * @return
 	 */
 	public static int getScreenOptimalRows(Context mContext, int drawable_height) {
@@ -191,12 +192,15 @@ public class UIUtils {
 	 * @param insertionIndex
 	 *            index in the string at which to insert the <code>bitmap</code>
 	 */
-	public static void insertBitmapIntoTextView(TextView tv, String string, Bitmap bitmap, int insertionIndex) {
+	public static void insertBitmapIntoTextView(TextView tv, String string,
+			Bitmap bitmap, int insertionIndex) {
 		StringBuilder appender = new StringBuilder(string);
 		appender.insert(insertionIndex, ' ');
-		SpannableStringBuilder builder = new SpannableStringBuilder(appender.toString());
+		SpannableStringBuilder builder = new SpannableStringBuilder(
+				appender.toString());
 		ImageSpan imageSpan = new ImageSpan(bitmap);
-		builder.setSpan(imageSpan, insertionIndex, insertionIndex + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+		builder.setSpan(imageSpan, insertionIndex, insertionIndex + 1,
+				Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 		tv.setText(builder, BufferType.SPANNABLE);
 	}
 
@@ -208,8 +212,8 @@ public class UIUtils {
 	 * @return
 	 */
 	public static int fromDip(Context context, int dips) {
-		return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dips, context.getResources()
-				.getDisplayMetrics());
+		return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+				dips, context.getResources().getDisplayMetrics());
 	}
 
 	/**
@@ -220,8 +224,9 @@ public class UIUtils {
 	 */
 	public static void hideSoftInput(final View textView) {
 		try {
-			final InputMethodManager imm = (InputMethodManager) textView.getContext().getSystemService(
-					Context.INPUT_METHOD_SERVICE);
+			final InputMethodManager imm = (InputMethodManager) textView
+					.getContext()
+					.getSystemService(Context.INPUT_METHOD_SERVICE);
 			imm.hideSoftInputFromWindow(textView.getWindowToken(), 0);
 		} catch (final Exception e) {
 			e.printStackTrace();
@@ -236,8 +241,9 @@ public class UIUtils {
 	 */
 	public static void showSoftInput(final View textView) {
 		try {
-			final InputMethodManager imm = (InputMethodManager) textView.getContext().getSystemService(
-					Context.INPUT_METHOD_SERVICE);
+			final InputMethodManager imm = (InputMethodManager) textView
+					.getContext()
+					.getSystemService(Context.INPUT_METHOD_SERVICE);
 			imm.showSoftInput(textView, InputMethodManager.SHOW_FORCED);
 		} catch (final Exception e) {
 			e.printStackTrace();
@@ -252,8 +258,9 @@ public class UIUtils {
 	 */
 	public static void toggleSoftInput(final View textView) {
 		try {
-			final InputMethodManager imm = (InputMethodManager) textView.getContext().getSystemService(
-					Context.INPUT_METHOD_SERVICE);
+			final InputMethodManager imm = (InputMethodManager) textView
+					.getContext()
+					.getSystemService(Context.INPUT_METHOD_SERVICE);
 			imm.toggleSoftInputFromWindow(textView.getWindowToken(), 0, 0);
 		} catch (final Exception e) {
 			e.printStackTrace();
@@ -270,7 +277,8 @@ public class UIUtils {
 	 * @param hvisibility
 	 *            visibility value
 	 */
-	public static void setTextOrHide(final TextView view, final CharSequence text, final int hvisibility) {
+	public static void setTextOrHide(final TextView view,
+			final CharSequence text, final int hvisibility) {
 		if (TextUtils.isEmpty(text)) {
 			view.setVisibility(hvisibility);
 		} else {
@@ -288,7 +296,8 @@ public class UIUtils {
 	 * @return
 	 */
 	public static Bitmap getSnap(View view, Bitmap.Config outputConfig) {
-		Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), outputConfig);
+		Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(),
+				outputConfig);
 		android.graphics.Canvas canvas = new android.graphics.Canvas(bitmap);
 		view.draw(canvas);
 		return bitmap;

@@ -10,9 +10,7 @@
  ******************************************************************************/
 package com.madrobot.net;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -33,7 +31,7 @@ import java.util.List;
  * for(Peer p : peers)
  * System.out.println("\t" + p);
  * </p>
- * *
+ * *
  */
 public class PeerDiscovery {
 	/**
@@ -85,51 +83,47 @@ public class PeerDiscovery {
 		b[index + 3] = (byte) (i & 0xff);
 	}
 
-	
-	
-
 	/**
 	 * @param args
 	 */
-//	public static void main(String[] args) {
-//		try{
-//			int group = 6969;
-//
-//			PeerDiscovery mp = new PeerDiscovery(group, 6969);
-//
-//			boolean stop = false;
-//
-//			BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-//
-//			while(!stop){
-//				System.out.println("enter \"q\" to quit, or anything else to query peers");
-//				String s = br.readLine();
-//
-//				if(s.equals("q")){
-//					System.out.print("Closing down...");
-//					mp.disconnect();
-//					System.out.println(" done");
-//					stop = true;
-//				} else{
-//					System.out.println("Querying");
-//
-//					Peer[] peers = mp.getPeers(100, (byte) 0);
-//
-//					System.out.println(peers.length + " peers found");
-//					for(Peer p : peers){
-//						System.out.println("\t" + p);
-//					}
-//				}
-//			}
-//		} catch(Exception e){
-//			e.printStackTrace();
-//		}
-//	}
+	// public static void main(String[] args) {
+	// try{
+	// int group = 6969;
+	//
+	// PeerDiscovery mp = new PeerDiscovery(group, 6969);
+	//
+	// boolean stop = false;
+	//
+	// BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	//
+	// while(!stop){
+	// System.out.println("enter \"q\" to quit, or anything else to query peers");
+	// String s = br.readLine();
+	//
+	// if(s.equals("q")){
+	// System.out.print("Closing down...");
+	// mp.disconnect();
+	// System.out.println(" done");
+	// stop = true;
+	// } else{
+	// System.out.println("Querying");
+	//
+	// Peer[] peers = mp.getPeers(100, (byte) 0);
+	//
+	// System.out.println(peers.length + " peers found");
+	// for(Peer p : peers){
+	// System.out.println("\t" + p);
+	// }
+	// }
+	// }
+	// } catch(Exception e){
+	// e.printStackTrace();
+	// }
+	// }
 
 	/**
-	 * Redefine this to be notified of exceptions on the listen thread.
-	 * Default behaviour is to print to stdout. Can be left as null for
-	 * no-op
+	 * Redefine this to be notified of exceptions on the listen thread. Default
+	 * behaviour is to print to stdout. Can be left as null for no-op
 	 */
 	// public ExceptionHandler rxExceptionHandler = new ExceptionHandler();
 
@@ -137,43 +131,47 @@ public class PeerDiscovery {
 			+ " broadcast listen thread") {
 		@Override
 		public void run() {
-			try{
+			try {
 				byte[] buffy = new byte[5];
 				DatagramPacket rx = new DatagramPacket(buffy, buffy.length);
 
-				while(!shouldStop){
-					try{
+				while (!shouldStop) {
+					try {
 						buffy[0] = 0;
 
 						bcastSocket.receive(rx);
 
 						int recData = decode(buffy, 1);
 
-						if((buffy[0] == QUERY_PACKET) && (recData == group)){
+						if ((buffy[0] == QUERY_PACKET) && (recData == group)) {
 							byte[] data = new byte[5];
 							data[0] = RESPONSE_PACKET;
 							encode(peerData, data, 1);
 
-							DatagramPacket tx = new DatagramPacket(data, data.length, rx.getAddress(), port);
+							DatagramPacket tx = new DatagramPacket(data,
+									data.length, rx.getAddress(), port);
 
 							lastResponseDestination = rx.getAddress();
 
 							bcastSocket.send(tx);
-						} else if(buffy[0] == RESPONSE_PACKET){
-							if((responseList != null) && !rx.getAddress().equals(lastResponseDestination)){
-								synchronized(responseList){
-									responseList.add(new Peer(rx.getAddress(), recData));
+						} else if (buffy[0] == RESPONSE_PACKET) {
+							if ((responseList != null)
+									&& !rx.getAddress().equals(
+											lastResponseDestination)) {
+								synchronized (responseList) {
+									responseList.add(new Peer(rx.getAddress(),
+											recData));
 								}
 							}
 						}
-					} catch(SocketException se){
+					} catch (SocketException se) {
 						// someone may have called disconnect()
 					}
 				}
 
 				bcastSocket.disconnect();
 				bcastSocket.close();
-			} catch(Exception e){
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		};
@@ -184,16 +182,16 @@ public class PeerDiscovery {
 	private final InetSocketAddress broadcastAddress;
 
 	/**
-	 * The group identifier. Determines the set of peers that are able
-	 * to discover each other
+	 * The group identifier. Determines the set of peers that are able to
+	 * discover each other
 	 */
-	 private final int group;
+	private final int group;
 
 	/**
-	 * Used to detect and ignore this peers response to it's own query.
-	 * When we send a response packet, we set this to the destination.
-	 * When we receive a response, if this matches the source, we know
-	 * that we're talking to ourselves and we can ignore the response.
+	 * Used to detect and ignore this peers response to it's own query. When we
+	 * send a response packet, we set this to the destination. When we receive a
+	 * response, if this matches the source, we know that we're talking to
+	 * ourselves and we can ignore the response.
 	 */
 	private InetAddress lastResponseDestination = null;
 
@@ -215,11 +213,9 @@ public class PeerDiscovery {
 	 * Constructs a UDP broadcast-based peer
 	 * 
 	 * @param group
-	 *            The identifier shared by the peers that will be
-	 *            discovered.
+	 *            The identifier shared by the peers that will be discovered.
 	 * @param port
-	 *            a valid port, i.e.: in the range 1025 to 65535
-	 *            inclusive
+	 *            a valid port, i.e.: in the range 1025 to 65535 inclusive
 	 * @throws IOException
 	 */
 	public PeerDiscovery(int group, int port) throws IOException {
@@ -234,8 +230,8 @@ public class PeerDiscovery {
 	}
 
 	/**
-	 * Signals this {@link PeerDiscovery} to shut down. This call will
-	 * block until everything's timed out and closed etc.
+	 * Signals this {@link PeerDiscovery} to shut down. This call will block
+	 * until everything's timed out and closed etc.
 	 */
 	public void disconnect() {
 		shouldStop = true;
@@ -243,20 +239,20 @@ public class PeerDiscovery {
 		bcastSocket.close();
 		bcastSocket.disconnect();
 
-		try{
+		try {
 			bcastListen.join();
-		} catch(InterruptedException e){
+		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
 
 	/**
-	 * Queries the network and finds the addresses of other peers in
-	 * the same group
+	 * Queries the network and finds the addresses of other peers in the same
+	 * group
 	 * 
 	 * @param timeout
-	 *            How long to wait for responses, in milliseconds. Call
-	 *            will block for this long, although you can
+	 *            How long to wait for responses, in milliseconds. Call will
+	 *            block for this long, although you can
 	 *            {@link Thread#interrupt()} to cut the wait short
 	 * @param peerType
 	 *            The type flag of the peers to look for
@@ -272,18 +268,19 @@ public class PeerDiscovery {
 		data[0] = QUERY_PACKET;
 		encode(group, data, 1);
 
-		DatagramPacket tx = new DatagramPacket(data, data.length, broadcastAddress);
+		DatagramPacket tx = new DatagramPacket(data, data.length,
+				broadcastAddress);
 
 		bcastSocket.send(tx);
 
 		// wait for the listen thread to do its thing
-		try{
+		try {
 			Thread.sleep(timeout);
-		} catch(InterruptedException e){
+		} catch (InterruptedException e) {
 		}
 
 		Peer[] peers;
-		synchronized(responseList){
+		synchronized (responseList) {
 			peers = responseList.toArray(new Peer[responseList.size()]);
 		}
 

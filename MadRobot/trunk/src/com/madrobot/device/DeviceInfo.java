@@ -17,6 +17,7 @@ public final class DeviceInfo {
 	private String firmwareVersion;
 	private String kernelVersion;
 	private String manufacturer;
+
 	DeviceInfo() {
 	}
 

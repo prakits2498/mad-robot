@@ -26,20 +26,21 @@ import android.util.AttributeSet;
 import android.util.Xml;
 
 /**
- * XML helper utilities
- * XMLUtility.java
+ * XML helper utilities XMLUtility.java
  * 
  * @author Elton Kent
  */
 public final class XMLUtils {
 	/**
 	 * Get the xml as a AttributeSet
-	 *
-	 * @param is XML InputStream
-	 * @return AttributeSet representation of the xml stream 
+	 * 
+	 * @param is
+	 *            XML InputStream
+	 * @return AttributeSet representation of the xml stream
 	 * @throws XmlPullParserException
 	 */
-	public static AttributeSet getAttributeSet(InputStream is) throws XmlPullParserException {
+	public static AttributeSet getAttributeSet(InputStream is)
+			throws XmlPullParserException {
 		XmlPullParser parser = Xml.newPullParser();
 		parser.setInput(is, null);
 		AttributeSet set = Xml.asAttributeSet(parser);
@@ -56,8 +57,8 @@ public final class XMLUtils {
 	 * @throws SAXException
 	 * @throws IOException
 	 */
-	public static Document loadDoc(InputStream is) throws ParserConfigurationException, SAXException,
-			IOException {
+	public static Document loadDoc(InputStream is)
+			throws ParserConfigurationException, SAXException, IOException {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = factory.newDocumentBuilder();
 		return builder.parse(is);

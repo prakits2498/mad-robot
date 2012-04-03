@@ -119,7 +119,8 @@ public final class NetworkInfo {
 	 * Get the phone type
 	 * 
 	 * 
-	 * @return TelephonyManager.PHONETYPE_XXX , 0 if phone type cannot be established.
+	 * @return TelephonyManager.PHONETYPE_XXX , 0 if phone type cannot be
+	 *         established.
 	 */
 	void setPhoneType(int phoneType) {
 		this.phoneType = phoneType;

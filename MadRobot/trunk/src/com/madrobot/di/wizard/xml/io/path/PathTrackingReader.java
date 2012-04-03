@@ -16,7 +16,8 @@ import com.madrobot.di.wizard.xml.io.HierarchicalStreamReader;
 import com.madrobot.di.wizard.xml.io.ReaderWrapper;
 
 /**
- * Wrapper for HierarchicalStreamReader that tracks the path (a subset of XPath) of the current node that is being read.
+ * Wrapper for HierarchicalStreamReader that tracks the path (a subset of XPath)
+ * of the current node that is being read.
  * 
  * @see PathTracker
  * @see Path
@@ -27,7 +28,8 @@ public class PathTrackingReader extends ReaderWrapper {
 
 	private final PathTracker pathTracker;
 
-	public PathTrackingReader(HierarchicalStreamReader reader, PathTracker pathTracker) {
+	public PathTrackingReader(HierarchicalStreamReader reader,
+			PathTracker pathTracker) {
 		super(reader);
 		this.pathTracker = pathTracker;
 		pathTracker.pushElement(getNodeName());

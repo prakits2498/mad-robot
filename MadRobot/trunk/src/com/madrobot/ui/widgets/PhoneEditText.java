@@ -14,8 +14,9 @@ import com.madrobot.ui.widgets.EditTexts.CustomEditText;
 
 /**
  * EditText that formats the text entered like phone numbers
+ * 
  * @author elton.stephen.kent
- *
+ * 
  */
 public class PhoneEditText extends CustomEditText<String> {
 	private class LeadingOnesLengthFilter extends EditTexts.DigitsLengthFilter {
@@ -23,18 +24,18 @@ public class PhoneEditText extends CustomEditText<String> {
 		public LeadingOnesLengthFilter(int max) {
 			super(max);
 		}
-		
+
 		@Override
 		protected String getFormattedDigits(Spanned dest) {
 			return getValue();
 		}
-		
+
 		@Override
 		protected boolean isEdgeCase(CharSequence source) {
 			return "".equals(EditTexts.extractNumber(source.toString()));
 		}
 	}
-	
+
 	private static final int LENGTH = 10;
 
 	protected static String extractWithoutLeadingOne(TextView tv) {
@@ -53,17 +54,17 @@ public class PhoneEditText extends CustomEditText<String> {
 	@Override
 	protected void doCustomize(Context context) {
 		setInputType(InputType.TYPE_CLASS_PHONE);
-//		setTag("Phone");
-//		setHint("Phone #");
-		setFilters(new InputFilter[] {new LeadingOnesLengthFilter(LENGTH)});
+		// setTag("Phone");
+		// setHint("Phone #");
+		setFilters(new InputFilter[] { new LeadingOnesLengthFilter(LENGTH) });
 		addTextChangedListener(new PhoneNumberFormattingTextWatcher());
 	}
-	
+
 	@Override
 	public String getValue() {
 		return extractWithoutLeadingOne(this);
 	}
-	
+
 	@Override
 	public boolean validate() {
 		return LENGTH == getValue().length();

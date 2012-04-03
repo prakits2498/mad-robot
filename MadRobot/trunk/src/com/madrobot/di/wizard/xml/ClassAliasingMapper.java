@@ -70,7 +70,8 @@ class ClassAliasingMapper extends MapperWrapper {
 		if (alias != null) {
 			return alias;
 		} else {
-			for (final Iterator iter = typeToName.keySet().iterator(); iter.hasNext();) {
+			for (final Iterator iter = typeToName.keySet().iterator(); iter
+					.hasNext();) {
 				final Class compatibleType = (Class) iter.next();
 				if (compatibleType.isAssignableFrom(type)) {
 					return (String) typeToName.get(compatibleType);
@@ -80,16 +81,18 @@ class ClassAliasingMapper extends MapperWrapper {
 		}
 	}
 
-//	private Object readResolve() {
-//		nameToType = new HashMap();
-//		for (final Iterator iter = classToName.keySet().iterator(); iter.hasNext();) {
-//			final Object type = iter.next();
-//			nameToType.put(classToName.get(type), type);
-//		}
-//		for (final Iterator iter = typeToName.keySet().iterator(); iter.hasNext();) {
-//			final Class type = (Class) iter.next();
-//			nameToType.put(typeToName.get(type), type.getName());
-//		}
-//		return this;
-//	}
+	// private Object readResolve() {
+	// nameToType = new HashMap();
+	// for (final Iterator iter = classToName.keySet().iterator();
+	// iter.hasNext();) {
+	// final Object type = iter.next();
+	// nameToType.put(classToName.get(type), type);
+	// }
+	// for (final Iterator iter = typeToName.keySet().iterator();
+	// iter.hasNext();) {
+	// final Class type = (Class) iter.next();
+	// nameToType.put(typeToName.get(type), type.getName());
+	// }
+	// return this;
+	// }
 }

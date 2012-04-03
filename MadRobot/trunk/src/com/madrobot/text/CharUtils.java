@@ -11,16 +11,20 @@
 package com.madrobot.text;
 
 public final class CharUtils {
-	private static final byte[] CHAR_CLASSES = { 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-			15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 12, 23, 23, 23, 25, 23,
-			23, 23, 20, 21, 23, 24, 23, 19, 23, 23, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 23, 23, 24, 24, 24, 23,
-			23, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 20, 23, 21,
-			26, 22, 26, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 20,
-			24, 21, 24, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-			15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 12, 23, 25, 25, 25, 25, 27, 27, 26, 27, 2, 28,
-			24, 16, 27, 26, 27, 24, 11, 11, 26, 2, 27, 23, 26, 11, 2, 29, 11, 11, 11, 23, 1, 1, 1, 1, 1, 1,
-			1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 24, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2,
-			2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 24, 2, 2, 2, 2, 2, 2, 2, 2 };
+	private static final byte[] CHAR_CLASSES = { 15, 15, 15, 15, 15, 15, 15,
+			15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+			15, 15, 15, 15, 15, 15, 15, 15, 12, 23, 23, 23, 25, 23, 23, 23, 20,
+			21, 23, 24, 23, 19, 23, 23, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 23, 23,
+			24, 24, 24, 23, 23, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+			1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 20, 23, 21, 26, 22, 26, 2, 2, 2, 2,
+			2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+			20, 24, 21, 24, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+			15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+			15, 15, 15, 12, 23, 25, 25, 25, 25, 27, 27, 26, 27, 2, 28, 24, 16,
+			27, 26, 27, 24, 11, 11, 26, 2, 27, 23, 26, 11, 2, 29, 11, 11, 11,
+			23, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+			1, 1, 24, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+			2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 24, 2, 2, 2, 2, 2, 2, 2, 2 };
 
 	/**
 	 * General category "Mc" in the Unicode specification.
@@ -168,7 +172,7 @@ public final class CharUtils {
 		// # }
 		// # }
 		// #else
-		if(c < CHAR_CLASSES.length){
+		if (c < CHAR_CLASSES.length) {
 			return CHAR_CLASSES[c];
 		}
 		// #endif
@@ -253,10 +257,11 @@ public final class CharUtils {
 	}
 
 	public static boolean isEnglishChar(char chr) {
-		if(chr < 128
-				&& (chr >= 'a' && chr <= 'z' || chr >= 'A' && chr <= 'Z' || chr >= '0' && chr <= '9' || chr == '+')){
+		if (chr < 128
+				&& (chr >= 'a' && chr <= 'z' || chr >= 'A' && chr <= 'Z'
+						|| chr >= '0' && chr <= '9' || chr == '+')) {
 			return true;
-		} else{
+		} else {
 			return false;
 		}
 	}
@@ -271,7 +276,8 @@ public final class CharUtils {
 
 	public static boolean isJavaIdentifierStart(char c) {
 		byte type = getType(c);
-		return isLetter(c) || (type == LETTER_NUMBER) || (c == '$') || (c == '_');
+		return isLetter(c) || (type == LETTER_NUMBER) || (c == '$')
+				|| (c == '_');
 	}
 
 	/**
@@ -283,8 +289,8 @@ public final class CharUtils {
 	 */
 	public static boolean isLetter(char c) {
 		byte type = getType(c);
-		return (type == LOWERCASE_LETTER) || (type == UPPERCASE_LETTER) || (type == TITLECASE_LETTER)
-				|| (type == OTHER_LETTER);
+		return (type == LOWERCASE_LETTER) || (type == UPPERCASE_LETTER)
+				|| (type == TITLECASE_LETTER) || (type == OTHER_LETTER);
 	}
 
 	public static boolean isLetterOrDigit(char c) {
@@ -293,7 +299,8 @@ public final class CharUtils {
 
 	public static boolean isSpaceChar(char c) {
 		byte type = getType(c);
-		return (type == SPACE_SEPARATOR) || (type == LINE_SEPARATOR) || (type == PARAGRAPH_SEPARATOR);
+		return (type == SPACE_SEPARATOR) || (type == LINE_SEPARATOR)
+				|| (type == PARAGRAPH_SEPARATOR);
 	}
 
 	/**
@@ -330,7 +337,11 @@ public final class CharUtils {
 				|| (c == 0x000B)
 				|| (c == 0x000C)
 				|| (c == 0x000D)
-				|| (c == 0x0009) || (c == 0x001C) || (c == 0x001D) || (c == 0x001E) || (c == 0x001F);
+				|| (c == 0x0009)
+				|| (c == 0x001C)
+				|| (c == 0x001D)
+				|| (c == 0x001E)
+				|| (c == 0x001F);
 	}
 
 	/**
@@ -351,10 +362,10 @@ public final class CharUtils {
 	 * @return Character representing the given integer
 	 */
 	public static char toHexChar(int digitValue) {
-		if(digitValue < 10){
+		if (digitValue < 10) {
 			// Convert value 0-9 to char 0-9 hex char
 			return (char) ('0' + digitValue);
-		} else{
+		} else {
 			// Convert value 10-15 to A-F hex char
 			return (char) ('A' + (digitValue - 10));
 		}

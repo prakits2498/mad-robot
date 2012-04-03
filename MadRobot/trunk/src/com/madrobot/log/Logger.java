@@ -21,7 +21,7 @@ public class Logger {
 	private static LogMethod logger = new LoggerStrategyDDMSLog();
 
 	/**
-	 *Logs a debug message
+	 * Logs a debug message
 	 * 
 	 * @param tag
 	 *            Log tag
@@ -57,9 +57,9 @@ public class Logger {
 	}
 
 	/**
-	 *Any class that implements <code>ILoggerStrategy</code> can be used
+	 * Any class that implements <code>ILoggerStrategy</code> can be used
 	 * 
-	 *@see LoggerStrategy
+	 * @see LoggerStrategy
 	 */
 	public static final void setLoggerStragtegy(LoggerStrategy loggerStrategy) {
 		logger = (LogMethod) loggerStrategy;

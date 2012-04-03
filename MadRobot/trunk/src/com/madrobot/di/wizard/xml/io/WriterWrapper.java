@@ -12,7 +12,8 @@
 package com.madrobot.di.wizard.xml.io;
 
 /**
- * Base class to make it easy to create wrappers (decorators) for HierarchicalStreamWriter.
+ * Base class to make it easy to create wrappers (decorators) for
+ * HierarchicalStreamWriter.
  * 
  * @author Joe Walnes
  */

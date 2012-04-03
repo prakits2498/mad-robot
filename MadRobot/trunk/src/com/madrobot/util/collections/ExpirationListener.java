@@ -12,8 +12,8 @@ package com.madrobot.util.collections;
 
 /**
  * A listener for expired object events.
- *
+ * 
  */
 public interface ExpirationListener<E> {
-    void expired(E expiredObject);
+	void expired(E expiredObject);
 }

@@ -16,23 +16,24 @@ import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
 
-
 public class ModelPart {
-	private static short[] toPrimitiveArrayS(ArrayList<Short> vector){
+	private static short[] toPrimitiveArrayS(ArrayList<Short> vector) {
 		short[] s;
-		s=new short[vector.size()];
-		for (int i=0; i<vector.size(); i++){
-			s[i]=vector.get(i);
+		s = new short[vector.size()];
+		for (int i = 0; i < vector.size(); i++) {
+			s[i] = vector.get(i);
 		}
 		return s;
 	}
+
 	ShortBuffer faceBuffer;
 	ArrayList<Short> faces;
 	Material material;
 	private FloatBuffer normalBuffer;
 	ArrayList<Short> vnPointer;
-	
+
 	ArrayList<Short> vtPointer;
+
 	public ModelPart(ArrayList<Short> faces, ArrayList<Short> vtPointer,
 			ArrayList<Short> vnPointer, Material material, ArrayList<Float> vn) {
 		super();
@@ -40,20 +41,20 @@ public class ModelPart {
 		this.vtPointer = vtPointer;
 		this.vnPointer = vnPointer;
 		this.material = material;
-		
-		ByteBuffer byteBuf = ByteBuffer.allocateDirect(vnPointer.size() * 4*3);
+
+		ByteBuffer byteBuf = ByteBuffer
+				.allocateDirect(vnPointer.size() * 4 * 3);
 		byteBuf.order(ByteOrder.nativeOrder());
 		normalBuffer = byteBuf.asFloatBuffer();
-		for(int i=0; i<vnPointer.size(); i++){
-			float x=vn.get(vnPointer.get(i)*3);
-			float y=vn.get(vnPointer.get(i)*3+1);
-			float z=vn.get(vnPointer.get(i)*3+2);
+		for (int i = 0; i < vnPointer.size(); i++) {
+			float x = vn.get(vnPointer.get(i) * 3);
+			float y = vn.get(vnPointer.get(i) * 3 + 1);
+			float z = vn.get(vnPointer.get(i) * 3 + 2);
 			normalBuffer.put(x);
 			normalBuffer.put(y);
 			normalBuffer.put(z);
 		}
 		normalBuffer.position(0);
-		
 
 		ByteBuffer fBuf = ByteBuffer.allocateDirect(faces.size() * 2);
 		fBuf.order(ByteOrder.nativeOrder());
@@ -61,30 +62,34 @@ public class ModelPart {
 		faceBuffer.put(toPrimitiveArrayS(faces));
 		faceBuffer.position(0);
 	}
-	public ShortBuffer getFaceBuffer(){
+
+	public ShortBuffer getFaceBuffer() {
 		return faceBuffer;
 	}
-	public int getFacesCount(){
+
+	public int getFacesCount() {
 		return faces.size();
 	}
-	public Material getMaterial(){
+
+	public Material getMaterial() {
 		return material;
 	}
-	public FloatBuffer getNormalBuffer(){
+
+	public FloatBuffer getNormalBuffer() {
 		return normalBuffer;
 	}
+
 	@Override
-	public String toString(){
-		String str=new String();
-		if(material!=null)
-			str+="Material name:"+material.getName();
+	public String toString() {
+		String str = new String();
+		if (material != null)
+			str += "Material name:" + material.getName();
 		else
-			str+="Material not defined!";
-		str+="\nNumber of faces:"+faces.size();
-		str+="\nNumber of vnPointers:"+vnPointer.size();
-		str+="\nNumber of vtPointers:"+vtPointer.size();
+			str += "Material not defined!";
+		str += "\nNumber of faces:" + faces.size();
+		str += "\nNumber of vnPointers:" + vnPointer.size();
+		str += "\nNumber of vtPointers:" + vtPointer.size();
 		return str;
 	}
-	
-	
+
 }

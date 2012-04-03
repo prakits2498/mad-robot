@@ -13,12 +13,11 @@ package com.madrobot.net.client.mail;
 import java.util.Enumeration;
 import java.util.Vector;
 
-
 /***
- * A class used to represent forward and reverse relay paths. The
- * SMTP MAIL command requires a reverse relay path while the SMTP RCPT
- * command requires a forward relay path. See RFC 821 for more details.
- * In general, you will not have to deal with relay paths.
+ * A class used to represent forward and reverse relay paths. The SMTP MAIL
+ * command requires a reverse relay path while the SMTP RCPT command requires a
+ * forward relay path. See RFC 821 for more details. In general, you will not
+ * have to deal with relay paths.
  * <p>
  * <p>
  * 
@@ -43,8 +42,8 @@ public final class RelayPath {
 	}
 
 	/***
-	 * Add a mail relay host to the relay path. Hosts are added left to
-	 * right. For example, the following will create the path
+	 * Add a mail relay host to the relay path. Hosts are added left to right.
+	 * For example, the following will create the path
 	 * <code><b> &lt @bar.com,@foo.com:foobar@foo.com &gt </b></code>
 	 * 
 	 * <pre>
@@ -76,11 +75,11 @@ public final class RelayPath {
 
 		hosts = _path.elements();
 
-		if(hosts.hasMoreElements()){
+		if (hosts.hasMoreElements()) {
 			buffer.append('@');
 			buffer.append(hosts.nextElement());
 
-			while(hosts.hasMoreElements()){
+			while (hosts.hasMoreElements()) {
 				buffer.append(",@");
 				buffer.append(hosts.nextElement());
 			}

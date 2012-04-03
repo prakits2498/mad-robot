@@ -11,7 +11,6 @@
 package com.madrobot.db;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -35,7 +34,8 @@ public final class DBUtils {
 	/**
 	 * Compares two cursors to see if they contain the same data.
 	 * 
-	 * @return Returns true of the cursors contain the same data and are not null, false otherwise
+	 * @return Returns true of the cursors contain the same data and are not
+	 *         null, false otherwise
 	 */
 	public static boolean compareCursors(Cursor c1, Cursor c2) {
 		if (c1 == null || c2 == null)
@@ -71,7 +71,8 @@ public final class DBUtils {
 		MethodUtils.flushCaches();
 	}
 
-	public static List<String> getColumns(final SQLiteDatabase db, final String tableName) {
+	public static List<String> getColumns(final SQLiteDatabase db,
+			final String tableName) {
 		List<String> ar = null;
 		Cursor c = null;
 		try {
@@ -110,7 +111,8 @@ public final class DBUtils {
 		final int numcolumns = cursor.getColumnCount();
 		for (int column = 0; column < numcolumns; column++) {
 			String columnName = cursor.getColumnName(column);
-			retval.append(String.format("%-20s |", columnName.substring(0, Math.min(20, columnName.length()))));
+			retval.append(String.format("%-20s |",
+					columnName.substring(0, Math.min(20, columnName.length()))));
 		}
 		retval.append("\n|");
 		for (int column = 0; column < numcolumns; column++) {
@@ -125,7 +127,8 @@ public final class DBUtils {
 			for (int column = 0; column < numcolumns; column++) {
 				String columnValue = cursor.getString(column);
 				if (columnValue != null) {
-					columnValue = columnValue.substring(0, Math.min(20, columnValue.length()));
+					columnValue = columnValue.substring(0,
+							Math.min(20, columnValue.length()));
 				}
 				retval.append(String.format("%-20s |", columnValue));
 			}
@@ -136,9 +139,10 @@ public final class DBUtils {
 	}
 
 	/**
-	 * Convert a <code>ResultSet</code> row into an <code>Object[]</code>. This implementation copies column values into
-	 * the array in the same order they're returned from the <code>ResultSet</code>. Array elements will be set to
-	 * <code>null</code> if the column was SQL NULL.
+	 * Convert a <code>ResultSet</code> row into an <code>Object[]</code>. This
+	 * implementation copies column values into the array in the same order
+	 * they're returned from the <code>ResultSet</code>. Array elements will be
+	 * set to <code>null</code> if the column was SQL NULL.
 	 * 
 	 * @param rs
 	 *            ResultSet that supplies the array data
@@ -158,13 +162,15 @@ public final class DBUtils {
 		return result;
 	}
 
-	public static void copyDataBaseFromAssets(Context context, String dbName) throws IOException {
+	public static void copyDataBaseFromAssets(Context context, String dbName)
+			throws IOException {
 
 		// Path to the just created empty db
-		File dbDir = new File("data/data/" + context.getPackageName() + "/databases/");
+		File dbDir = new File("data/data/" + context.getPackageName()
+				+ "/databases/");
 		dbDir.mkdirs();
 		String outFileName = dbDir.getAbsolutePath() + dbName;
-		IOUtils.copy( context.getAssets().open(dbName),new File(outFileName));
+		IOUtils.copy(context.getAssets().open(dbName), new File(outFileName));
 
 	}
 
