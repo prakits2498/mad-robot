@@ -26,12 +26,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 
 /**
- * Simple HTTP server
+ * Lightweight HTTP server
  * 
  * <p>
  * Creating a server is as simple specifying the port and the root directory.
  * <pre>
  * HTTPServer server=new HttpServer(8090,new File("/sdcard/myhtmlfiles/");
+ * server.start();
  * </pre>
  * 
  * </p>
@@ -176,10 +177,10 @@ public class HTTPServer {
 	 */
 	public HTTPServer(int port, File wwwroot) {
 		myTcpPort = port;
-		if (wwwroot != null) {
+		if (wwwroot != null||wwwroot.isDirectory()) {
 			this.myRootDir = wwwroot;
 		} else {
-			throw new IllegalArgumentException("Invalid file root");
+			throw new IllegalArgumentException("Invalid www root");
 		}
 
 	}
