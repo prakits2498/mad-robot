@@ -10,6 +10,9 @@
  ******************************************************************************/
 package com.madrobot;
 
+import java.io.File;
+import java.io.IOException;
+
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,6 +22,8 @@ import android.widget.ImageView;
 import com.madrobot.geom.Rectangle;
 import com.madrobot.graphics.bitmap.AestheticTransformFilters;
 import com.madrobot.graphics.bitmap.OutputConfiguration;
+import com.madrobot.io.file.SDCardUtils;
+import com.madrobot.net.server.HTTPServer;
 import com.madrobot.text.English;
 
 public class TestActivity extends Activity {
@@ -31,6 +36,13 @@ public class TestActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+		try {
+			HTTPServer server=new HTTPServer(8090, getFilesDir());
+			server.start();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		src = BitmapFactory.decodeResource(getResources(), R.drawable.two);
 		// Bitmap.Config outputConfig = Bitmap.Config.ARGB_8888;
 		long time = System.currentTimeMillis();
