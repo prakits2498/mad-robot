@@ -18,6 +18,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import com.madrobot.lang.ArrayUtils;
+
 /**
  * <p>
  * Assists in implementing {@link Object#toString()} methods using reflection.
@@ -97,7 +99,7 @@ class ReflectionToStringBuilder extends ToStringBuilder {
 	 */
 	static String[] toNoNullStringArray(Collection<String> collection) {
 		if (collection == null) {
-			return ArrayUtils.EMPTY_STRING_ARRAY;
+			return new String[0];//ArrayUtils.EMPTY_STRING_ARRAY;
 		}
 		return toNoNullStringArray(collection.toArray());
 	}
@@ -119,7 +121,7 @@ class ReflectionToStringBuilder extends ToStringBuilder {
 				list.add(e.toString());
 			}
 		}
-		return list.toArray(ArrayUtils.EMPTY_STRING_ARRAY);
+		return list.toArray( new String[0]/*ArrayUtils.EMPTY_STRING_ARRAY*/);
 	}
 
 	/**

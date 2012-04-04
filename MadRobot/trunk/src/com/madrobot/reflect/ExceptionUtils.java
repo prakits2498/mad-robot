@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import com.madrobot.lang.ArrayUtils;
 import com.madrobot.text.StringUtils;
 
 /**
@@ -175,7 +176,7 @@ public class ExceptionUtils {
 				&& Throwable.class.isAssignableFrom(method.getReturnType())) {
 			try {
 				return (Throwable) method.invoke(throwable,
-						ArrayUtils.EMPTY_OBJECT_ARRAY);
+						new Class[0]/*ArrayUtils.EMPTY_OBJECT_ARRAY*/);
 			} catch (IllegalAccessException ignored) {
 				// exception ignored
 			} catch (IllegalArgumentException ignored) {
@@ -297,7 +298,7 @@ public class ExceptionUtils {
 	 */
 	public static String[] getRootCauseStackTrace(Throwable throwable) {
 		if (throwable == null) {
-			return ArrayUtils.EMPTY_STRING_ARRAY;
+			return  new String[0];//ArrayUtils.EMPTY_STRING_ARRAY;
 		}
 		Throwable throwables[] = getThrowables(throwable);
 		int count = throwables.length;
@@ -403,7 +404,7 @@ public class ExceptionUtils {
 	 */
 	public static String[] getStackFrames(Throwable throwable) {
 		if (throwable == null) {
-			return ArrayUtils.EMPTY_STRING_ARRAY;
+			return  new String[0];// ArrayUtils.EMPTY_STRING_ARRAY;
 		}
 		return getStackFrames(getStackTrace(throwable));
 	}

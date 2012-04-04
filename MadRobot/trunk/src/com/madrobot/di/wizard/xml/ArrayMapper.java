@@ -11,7 +11,7 @@
 
 package com.madrobot.di.wizard.xml;
 
-import com.madrobot.reflect.PrimitiveUtils;
+import com.madrobot.lang.PrimitiveUtils;
 
 /**
  * Mapper that detects arrays and changes the name so it can identified as an

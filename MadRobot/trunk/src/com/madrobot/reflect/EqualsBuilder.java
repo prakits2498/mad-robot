@@ -17,6 +17,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.madrobot.lang.ArrayUtils;
+
 import android.util.Pair;
 
 /**
@@ -85,17 +87,10 @@ import android.util.Pair;
  * 	return EqualsBuilder.reflectionEquals(this, obj);
  * }
  * </pre>
+ * @hide
  * 
- * @author Apache Software Foundation
- * @author <a href="mailto:steve.downey@netfolio.com">Steve Downey</a>
- * @author Gary Gregory
- * @author Pete Gieser
- * @author Arun Mammen Thomas
- * @author Oliver Sauder
- * @since 1.0
- * @version $Id: EqualsBuilder.java 925674 2010-03-20 20:20:26Z bayard $
  */
-class EqualsBuilder implements Builder<Boolean> {
+public class EqualsBuilder implements Builder<Boolean> {
 
 	/**
 	 * <p>

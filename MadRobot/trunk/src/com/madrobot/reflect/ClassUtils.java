@@ -35,6 +35,8 @@ import java.util.WeakHashMap;
 
 import com.madrobot.di.wizard.xml.converters.ObjectAccessException;
 import com.madrobot.di.wizard.xml.core.TypedNull;
+import com.madrobot.lang.ArrayUtils;
+import com.madrobot.lang.PrimitiveUtils;
 import com.madrobot.text.StringUtils;
 
 /**
@@ -1217,10 +1219,10 @@ public class ClassUtils {
 			return false;
 		}
 		if (classArray == null) {
-			classArray = ArrayUtils.EMPTY_CLASS_ARRAY;
+			classArray =new Class[0];// ArrayUtils.EMPTY_CLASS_ARRAY;
 		}
 		if (toClassArray == null) {
-			toClassArray = ArrayUtils.EMPTY_CLASS_ARRAY;
+			toClassArray =new Class[0];// ArrayUtils.EMPTY_CLASS_ARRAY;
 		}
 		for (int i = 0; i < classArray.length; i++) {
 			if (isAssignable(classArray[i], toClassArray[i], autoboxing) == false) {
@@ -1655,7 +1657,7 @@ public class ClassUtils {
 		if (array == null) {
 			return null;
 		} else if (array.length == 0) {
-			return ArrayUtils.EMPTY_CLASS_ARRAY;
+			return new Class[0];//ArrayUtils.EMPTY_CLASS_ARRAY;
 		}
 		Class<?>[] classes = new Class[array.length];
 		for (int i = 0; i < array.length; i++) {

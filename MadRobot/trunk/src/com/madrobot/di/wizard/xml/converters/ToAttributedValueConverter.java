@@ -25,7 +25,7 @@ import com.madrobot.di.wizard.xml.core.FastField;
 import com.madrobot.di.wizard.xml.core.HierarchicalStreams;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamReader;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
-import com.madrobot.reflect.PrimitiveUtils;
+import com.madrobot.lang.PrimitiveUtils;
 
 /**
  * Converter that supports the definition of one field member that will be

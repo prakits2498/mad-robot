@@ -21,6 +21,8 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import com.madrobot.lang.ArrayUtils;
+
 /**
  * <p>
  * Utility reflection methods focused on methods, originally from Commons
@@ -423,7 +425,7 @@ public class MethodUtils {
 			Object... args) throws NoSuchMethodException,
 			IllegalAccessException, InvocationTargetException {
 		if (args == null) {
-			args = ArrayUtils.EMPTY_OBJECT_ARRAY;
+			args =  new Object[0];//ArrayUtils.EMPTY_OBJECT_ARRAY;
 		}
 		int arguments = args.length;
 		Class<?>[] parameterTypes = new Class[arguments];
@@ -466,10 +468,10 @@ public class MethodUtils {
 			throws NoSuchMethodException, IllegalAccessException,
 			InvocationTargetException {
 		if (args == null) {
-			args = ArrayUtils.EMPTY_OBJECT_ARRAY;
+			args =  new Object[0];//ArrayUtils.EMPTY_OBJECT_ARRAY;
 		}
 		if (parameterTypes == null) {
-			parameterTypes = ArrayUtils.EMPTY_CLASS_ARRAY;
+			parameterTypes = new Class[0];//ArrayUtils.EMPTY_CLASS_ARRAY;
 		}
 		Method method = getAccessibleMethod(object.getClass(), methodName,
 				parameterTypes);
@@ -511,7 +513,7 @@ public class MethodUtils {
 			String methodName, Object... args) throws NoSuchMethodException,
 			IllegalAccessException, InvocationTargetException {
 		if (args == null) {
-			args = ArrayUtils.EMPTY_OBJECT_ARRAY;
+			args = new Object[0];//ArrayUtils.EMPTY_OBJECT_ARRAY;
 		}
 		int arguments = args.length;
 		Class<?>[] parameterTypes = new Class[arguments];
@@ -554,10 +556,10 @@ public class MethodUtils {
 			throws NoSuchMethodException, IllegalAccessException,
 			InvocationTargetException {
 		if (args == null) {
-			args = ArrayUtils.EMPTY_OBJECT_ARRAY;
+			args = new Object[0];//ArrayUtils.EMPTY_OBJECT_ARRAY;
 		}
 		if (parameterTypes == null) {
-			parameterTypes = ArrayUtils.EMPTY_CLASS_ARRAY;
+			parameterTypes = new Class[0];//ArrayUtils.EMPTY_CLASS_ARRAY;
 		}
 		Method method = getAccessibleMethod(cls, methodName, parameterTypes);
 		if (method == null) {
@@ -608,7 +610,7 @@ public class MethodUtils {
 			Object... args) throws NoSuchMethodException,
 			IllegalAccessException, InvocationTargetException {
 		if (args == null) {
-			args = ArrayUtils.EMPTY_OBJECT_ARRAY;
+			args = new Object[0];//ArrayUtils.EMPTY_OBJECT_ARRAY;
 		}
 		int arguments = args.length;
 		Class<?>[] parameterTypes = new Class[arguments];
@@ -656,10 +658,10 @@ public class MethodUtils {
 			throws NoSuchMethodException, IllegalAccessException,
 			InvocationTargetException {
 		if (parameterTypes == null) {
-			parameterTypes = ArrayUtils.EMPTY_CLASS_ARRAY;
+			parameterTypes = new Class[0];//ArrayUtils.EMPTY_CLASS_ARRAY;
 		}
 		if (args == null) {
-			args = ArrayUtils.EMPTY_OBJECT_ARRAY;
+			args = new Object[0];//ArrayUtils.EMPTY_OBJECT_ARRAY;
 		}
 		Method method = findAccessibleMethod(object.getClass(), methodName,
 				parameterTypes);
@@ -713,7 +715,7 @@ public class MethodUtils {
 			Object... args) throws NoSuchMethodException,
 			IllegalAccessException, InvocationTargetException {
 		if (args == null) {
-			args = ArrayUtils.EMPTY_OBJECT_ARRAY;
+			args = new Object[0];//ArrayUtils.EMPTY_OBJECT_ARRAY;
 		}
 		int arguments = args.length;
 		Class<?>[] parameterTypes = new Class[arguments];
@@ -763,10 +765,10 @@ public class MethodUtils {
 			throws NoSuchMethodException, IllegalAccessException,
 			InvocationTargetException {
 		if (parameterTypes == null) {
-			parameterTypes = ArrayUtils.EMPTY_CLASS_ARRAY;
+			parameterTypes = new Class[0];//ArrayUtils.EMPTY_CLASS_ARRAY;
 		}
 		if (args == null) {
-			args = ArrayUtils.EMPTY_OBJECT_ARRAY;
+			args =new Object[0];// ArrayUtils.EMPTY_OBJECT_ARRAY;
 		}
 		Method method = findAccessibleMethod(cls, methodName, parameterTypes);
 		if (method == null) {

@@ -33,7 +33,7 @@ import com.madrobot.di.wizard.xml.core.HierarchicalStreams;
 import com.madrobot.di.wizard.xml.io.ExtendedHierarchicalStreamWriterHelper;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamReader;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
-import com.madrobot.reflect.PrimitiveUtils;
+import com.madrobot.lang.PrimitiveUtils;
 
 public abstract class AbstractReflectionConverter implements Converter, Caching {
 
