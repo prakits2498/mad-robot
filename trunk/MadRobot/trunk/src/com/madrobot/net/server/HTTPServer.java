@@ -29,14 +29,15 @@ import java.io.FileOutputStream;
  * Simple HTTP server
  * 
  * <p>
- * Creating a server is as simple
+ * Creating a server is as simple specifying the port and the root directory.
+ * <pre>
+ * HTTPServer server=new HttpServer(8090,new File("/sdcard/myhtmlfiles/");
+ * </pre>
+ * 
  * </p>
  * 
  */
 public class HTTPServer {
-	// ==================================================
-	// API parts
-	// ==================================================
 
 	/**
 	 * Override this to customize the server.
@@ -56,7 +57,7 @@ public class HTTPServer {
 	 *            Header entries, percent decoded
 	 * @return HTTP response, see class Response for details
 	 */
-	public Response serve(String uri, String method, Properties header,
+	protected Response serve(String uri, String method, Properties header,
 			Properties parms, Properties files) {
 		myOut.println(method + " '" + uri + "' ");
 
@@ -85,7 +86,7 @@ public class HTTPServer {
 	/**
 	 * HTTP response. Return one of these from serve().
 	 */
-	public class Response {
+	protected class Response {
 		/**
 		 * Default constructor: response = HTTP_OK, data = mime = 'null'
 		 */
@@ -147,14 +148,14 @@ public class HTTPServer {
 	 * Some HTTP response status codes
 	 */
 	public static final String HTTP_OK = "200 OK",
-			HTTP_PARTIALCONTENT = "206 Partial Content",
-			HTTP_RANGE_NOT_SATISFIABLE = "416 Requested Range Not Satisfiable",
-			HTTP_REDIRECT = "301 Moved Permanently",
-			HTTP_NOTMODIFIED = "304 Not Modified",
-			HTTP_FORBIDDEN = "403 Forbidden", HTTP_NOTFOUND = "404 Not Found",
-			HTTP_BADREQUEST = "400 Bad Request",
-			HTTP_INTERNALERROR = "500 Internal Server Error",
-			HTTP_NOTIMPLEMENTED = "501 Not Implemented";
+			HTTP_PARTIALCONTENT = "MadRobot-HttpServer: 206 Partial Content",
+			HTTP_RANGE_NOT_SATISFIABLE = "MadRobot-HttpServer: 416 Requested Range Not Satisfiable",
+			HTTP_REDIRECT = "MadRobot-HttpServer: 301 Moved Permanently",
+			HTTP_NOTMODIFIED = "MadRobot-HttpServer: 304 Not Modified",
+			HTTP_FORBIDDEN = "MadRobot-HttpServer: 403 Forbidden", HTTP_NOTFOUND = "MadRobot-HttpServer: 404 Not Found",
+			HTTP_BADREQUEST = "MadRobot-HttpServer: 400 Bad Request",
+			HTTP_INTERNALERROR = "MadRobot-HttpServer: 500 Internal Server Error",
+			HTTP_NOTIMPLEMENTED = "MadRobot-HttpServer: 501 Not Implemented";
 
 	/**
 	 * Common mime types for dynamic content
@@ -183,6 +184,10 @@ public class HTTPServer {
 
 	}
 
+	/**
+	 * Start the http server
+	 * @throws IOException
+	 */
 	public void start() throws IOException {
 		myServerSocket = new ServerSocket(myTcpPort);
 		myThread = new Thread(new Runnable() {
