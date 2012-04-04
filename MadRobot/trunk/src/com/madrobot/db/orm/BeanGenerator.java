@@ -29,7 +29,7 @@ import com.madrobot.beans.IntrospectionException;
 import com.madrobot.beans.Introspector;
 import com.madrobot.beans.PropertyDescriptor;
 import com.madrobot.db.DBUtils;
-import com.madrobot.reflect.ClassUtils;
+import com.madrobot.lang.reflect.ClassUtils;
 
 /**
  * Utility class to map a database cursor/resultset to a java bean

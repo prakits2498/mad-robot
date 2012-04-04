@@ -1,4 +1,4 @@
-package com.madrobot.reflect;
+package com.madrobot.lang.reflect;
 
 public class PackageUtils {
 	public static void checkPackageAccess(Class clazz) {

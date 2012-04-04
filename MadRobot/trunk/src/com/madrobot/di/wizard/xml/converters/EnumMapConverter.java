@@ -21,7 +21,7 @@ import java.util.EnumMap;
 import com.madrobot.di.wizard.xml.Mapper;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamReader;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
-import com.madrobot.reflect.FieldUtils;
+import com.madrobot.lang.reflect.FieldUtils;
 
 /**
  * Serializes an Java 5 EnumMap, including the type of Enum it's for. If a

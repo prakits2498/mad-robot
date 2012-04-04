@@ -22,7 +22,7 @@ import java.util.Iterator;
 import com.madrobot.di.wizard.xml.Mapper;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamReader;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
-import com.madrobot.reflect.FieldUtils;
+import com.madrobot.lang.reflect.FieldUtils;
 
 /**
  * Serializes a Java 5 EnumSet. If a SecurityManager is set, the converter will

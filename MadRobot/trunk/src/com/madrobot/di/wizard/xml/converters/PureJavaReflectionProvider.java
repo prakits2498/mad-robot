@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import com.madrobot.di.wizard.xml.core.JVM;
-import com.madrobot.reflect.ClassUtils;
+import com.madrobot.lang.reflect.ClassUtils;
 
 /**
  * Pure Java ObjectFactory that instantiates objects using standard Java

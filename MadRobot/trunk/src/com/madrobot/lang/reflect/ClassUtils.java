@@ -8,7 +8,7 @@
  * Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
-package com.madrobot.reflect;
+package com.madrobot.lang.reflect;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

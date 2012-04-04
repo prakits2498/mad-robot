@@ -13,7 +13,7 @@ package com.madrobot.beans;
 import java.lang.ref.Reference;
 import java.lang.reflect.Method;
 
-import com.madrobot.reflect.MethodUtils;
+import com.madrobot.lang.reflect.MethodUtils;
 
 /**
  * An IndexedPropertyDescriptor describes a property that acts like an array and

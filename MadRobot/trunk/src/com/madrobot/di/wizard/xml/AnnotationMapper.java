@@ -44,7 +44,7 @@ import com.madrobot.di.wizard.xml.converters.ReflectionProvider;
 import com.madrobot.di.wizard.xml.converters.SingleValueConverter;
 import com.madrobot.di.wizard.xml.converters.SingleValueConverterWrapper;
 import com.madrobot.di.wizard.xml.core.JVM;
-import com.madrobot.reflect.ClassUtils;
+import com.madrobot.lang.reflect.ClassUtils;
 
 /**
  * A mapper that uses annotations to prepare the remaining mappers in the chain.

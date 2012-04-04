@@ -19,7 +19,7 @@ import java.util.TreeMap;
 
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamReader;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
-import com.madrobot.reflect.FieldUtils;
+import com.madrobot.lang.reflect.FieldUtils;
 
 /**
  * Special converter for java.util.Properties that stores properties in a more

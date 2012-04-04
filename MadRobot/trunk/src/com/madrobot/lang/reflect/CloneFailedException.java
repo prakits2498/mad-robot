@@ -8,7 +8,7 @@
  * Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
-package com.madrobot.reflect;
+package com.madrobot.lang.reflect;
 
 /**
  * Exception thrown when a clone cannot be created. In contrast to

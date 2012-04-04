@@ -11,7 +11,7 @@
 
 package com.madrobot.di.wizard.xml.io;
 
-import com.madrobot.reflect.ObjectUtils;
+import com.madrobot.lang.reflect.ObjectUtils;
 
 /**
  * Abstract base class for all HierarchicalStreamReader implementations.

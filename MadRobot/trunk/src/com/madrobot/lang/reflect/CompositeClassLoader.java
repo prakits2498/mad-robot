@@ -1,4 +1,4 @@
-package com.madrobot.reflect;
+package com.madrobot.lang.reflect;
 
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
