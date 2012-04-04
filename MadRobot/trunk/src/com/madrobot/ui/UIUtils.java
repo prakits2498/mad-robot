@@ -290,7 +290,7 @@ public class UIUtils {
 	/**
 	 * Get the given view copied onto a bitmap.
 	 * 
-	 * @param view
+	 * @param view 
 	 * @param outputConfig
 	 *            for the bitmap that is returned
 	 * @return
