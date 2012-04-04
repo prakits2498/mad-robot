@@ -10,11 +10,13 @@
  ******************************************************************************/
 package com.madrobot.text;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.TimeZone;
@@ -224,140 +226,135 @@ public final class DateUtils {
 		return c.getTime();
 	}
 
-	// -----------------------------------------------------------------------
 	/**
-	 * Adds a number of days to a date returning a new object. The original date
-	 * object is unchanged.
+	 * Convert a date value / time value to a timestamp, using the default
+	 * timezone.
 	 * 
-	 * @param date
-	 *            the date, not null
-	 * @param amount
-	 *            the amount to add, may be negative
-	 * @return the new date object with the amount added
-	 * @throws IllegalArgumentException
-	 *             if the date is null
+	 * @param dateValue
+	 *            the date value
+	 * @param nanos
+	 *            the nanoseconds since midnight
+	 * @return the timestamp
 	 */
-	public static Date addDays(Date date, int amount) {
-		return add(date, Calendar.DAY_OF_MONTH, amount);
+	public static Timestamp convertDateValueToTimestamp(long dateValue,
+			long nanos) {
+		long millis = nanos / 1000000;
+		nanos -= millis * 1000000;
+		long s = millis / 1000;
+		millis -= s * 1000;
+		long m = s / 60;
+		s -= m * 60;
+		long h = m / 60;
+		m -= h * 60;
+		int yearFromDateValue = (int) (dateValue >>> 9);
+		int monthFromDateValue = (int) (dateValue >>> 5 & 15);
+		int dayFromDateValue = (int) (dateValue & 31);
+		long ms = getMillis(TimeZone.getDefault(), yearFromDateValue,
+				monthFromDateValue, dayFromDateValue, (int) h, (int) m,
+				(int) s, 0);
+		Timestamp ts = new Timestamp(ms);
+		ts.setNanos((int) (nanos + millis * 1000000));
+		return ts;
 	}
 
-	// -----------------------------------------------------------------------
 	/**
-	 * Adds a number of hours to a date returning a new object. The original
-	 * date object is unchanged.
+	 * Calculate the milliseconds for the given date and time in the specified
+	 * timezone.
 	 * 
-	 * @param date
-	 *            the date, not null
-	 * @param amount
-	 *            the amount to add, may be negative
-	 * @return the new date object with the amount added
-	 * @throws IllegalArgumentException
-	 *             if the date is null
+	 * @param tz
+	 *            the timezone
+	 * @param year
+	 *            the absolute year (positive or negative)
+	 * @param month
+	 *            the month (1-12)
+	 * @param day
+	 *            the day (1-31)
+	 * @param hour
+	 *            the hour (0-23)
+	 * @param minute
+	 *            the minutes (0-59)
+	 * @param second
+	 *            the number of seconds (0-59)
+	 * @param millis
+	 *            the number of milliseconds
+	 * @return the number of milliseconds
 	 */
-	public static Date addHours(Date date, int amount) {
-		return add(date, Calendar.HOUR_OF_DAY, amount);
+	public static long getMillis(TimeZone tz, int year, int month, int day,
+			int hour, int minute, int second, int millis) {
+		try {
+			return getTimeTry(false, tz, year, month, day, hour, minute,
+					second, millis);
+		} catch (IllegalArgumentException e) {
+			// special case: if the time simply doesn't exist because of
+			// daylight saving time changes, use the lenient version
+			String message = e.toString();
+			if (message.indexOf("HOUR_OF_DAY") > 0) {
+				if (hour < 0 || hour > 23) {
+					throw e;
+				}
+				return getTimeTry(true, tz, year, month, day, hour, minute,
+						second, millis);
+			} else if (message.indexOf("DAY_OF_MONTH") > 0) {
+				int maxDay;
+				if (month == 2) {
+					maxDay = new GregorianCalendar().isLeapYear(year) ? 29 : 28;
+				} else {
+					maxDay = 30 + ((month + (month > 7 ? 1 : 0)) & 1);
+				}
+				if (day < 1 || day > maxDay) {
+					throw e;
+				}
+				// DAY_OF_MONTH is thrown for years > 2037
+				// using the timezone Brasilia and others,
+				// for example for 2042-10-12 00:00:00.
+				hour += 6;
+				return getTimeTry(true, tz, year, month, day, hour, minute,
+						second, millis);
+			} else {
+				return getTimeTry(true, tz, year, month, day, hour, minute,
+						second, millis);
+			}
+		}
 	}
 
-	// -----------------------------------------------------------------------
-	/**
-	 * Adds a number of milliseconds to a date returning a new object. The
-	 * original date object is unchanged.
-	 * 
-	 * @param date
-	 *            the date, not null
-	 * @param amount
-	 *            the amount to add, may be negative
-	 * @return the new date object with the amount added
-	 * @throws IllegalArgumentException
-	 *             if the date is null
-	 */
-	public static Date addMilliseconds(Date date, int amount) {
-		return add(date, Calendar.MILLISECOND, amount);
+	private static Calendar getCalendar() {
+		if (cachedCalendar == null) {
+			cachedCalendar = Calendar.getInstance();
+			zoneOffset = cachedCalendar.get(Calendar.ZONE_OFFSET);
+		}
+		return cachedCalendar;
 	}
 
-	// -----------------------------------------------------------------------
-	/**
-	 * Adds a number of minutes to a date returning a new object. The original
-	 * date object is unchanged.
-	 * 
-	 * @param date
-	 *            the date, not null
-	 * @param amount
-	 *            the amount to add, may be negative
-	 * @return the new date object with the amount added
-	 * @throws IllegalArgumentException
-	 *             if the date is null
-	 */
-	public static Date addMinutes(Date date, int amount) {
-		return add(date, Calendar.MINUTE, amount);
-	}
+	private static Calendar cachedCalendar;
+	private static int zoneOffset;
 
-	// -----------------------------------------------------------------------
-	/**
-	 * Adds a number of months to a date returning a new object. The original
-	 * date object is unchanged.
-	 * 
-	 * @param date
-	 *            the date, not null
-	 * @param amount
-	 *            the amount to add, may be negative
-	 * @return the new date object with the amount added
-	 * @throws IllegalArgumentException
-	 *             if the date is null
-	 */
-	public static Date addMonths(Date date, int amount) {
-		return add(date, Calendar.MONTH, amount);
-	}
-
-	// -----------------------------------------------------------------------
-	/**
-	 * Adds a number of seconds to a date returning a new object. The original
-	 * date object is unchanged.
-	 * 
-	 * @param date
-	 *            the date, not null
-	 * @param amount
-	 *            the amount to add, may be negative
-	 * @return the new date object with the amount added
-	 * @throws IllegalArgumentException
-	 *             if the date is null
-	 */
-	public static Date addSeconds(Date date, int amount) {
-		return add(date, Calendar.SECOND, amount);
-	}
-
-	// -----------------------------------------------------------------------
-	/**
-	 * Adds a number of weeks to a date returning a new object. The original
-	 * date object is unchanged.
-	 * 
-	 * @param date
-	 *            the date, not null
-	 * @param amount
-	 *            the amount to add, may be negative
-	 * @return the new date object with the amount added
-	 * @throws IllegalArgumentException
-	 *             if the date is null
-	 */
-	public static Date addWeeks(Date date, int amount) {
-		return add(date, Calendar.WEEK_OF_YEAR, amount);
-	}
-
-	// -----------------------------------------------------------------------
-	/**
-	 * Adds a number of years to a date returning a new object. The original
-	 * date object is unchanged.
-	 * 
-	 * @param date
-	 *            the date, not null
-	 * @param amount
-	 *            the amount to add, may be negative
-	 * @return the new date object with the amount added
-	 * @throws IllegalArgumentException
-	 *             if the date is null
-	 */
-	public static Date addYears(Date date, int amount) {
-		return add(date, Calendar.YEAR, amount);
+	private static long getTimeTry(boolean lenient, TimeZone tz, int year,
+			int month, int day, int hour, int minute, int second, int millis) {
+		Calendar c;
+		if (tz == null) {
+			c = getCalendar();
+		} else {
+			c = Calendar.getInstance(tz);
+		}
+		synchronized (c) {
+			c.clear();
+			c.setLenient(lenient);
+			if (year <= 0) {
+				c.set(Calendar.ERA, GregorianCalendar.BC);
+				c.set(Calendar.YEAR, 1 - year);
+			} else {
+				c.set(Calendar.ERA, GregorianCalendar.AD);
+				c.set(Calendar.YEAR, year);
+			}
+			// january is 0
+			c.set(Calendar.MONTH, month - 1);
+			c.set(Calendar.DAY_OF_MONTH, day);
+			c.set(Calendar.HOUR_OF_DAY, hour);
+			c.set(Calendar.MINUTE, minute);
+			c.set(Calendar.SECOND, second);
+			c.set(Calendar.MILLISECOND, millis);
+			return c.getTime().getTime();
+		}
 	}
 
 	/**
@@ -1890,130 +1887,6 @@ public final class DateUtils {
 	}
 
 	// -----------------------------------------------------------------------
-	/**
-	 * Sets the day of month field to a date returning a new object. The
-	 * original date object is unchanged.
-	 * 
-	 * @param date
-	 *            the date, not null
-	 * @param amount
-	 *            the amount to set
-	 * @return a new Date object set with the specified value
-	 * @throws IllegalArgumentException
-	 *             if the date is null
-	 * @since 2.4
-	 */
-	public static Date setDays(Date date, int amount) {
-		return set(date, Calendar.DAY_OF_MONTH, amount);
-	}
-
-	// -----------------------------------------------------------------------
-	/**
-	 * Sets the hours field to a date returning a new object. Hours range from
-	 * 0-23. The original date object is unchanged.
-	 * 
-	 * @param date
-	 *            the date, not null
-	 * @param amount
-	 *            the amount to set
-	 * @return a new Date object set with the specified value
-	 * @throws IllegalArgumentException
-	 *             if the date is null
-	 * @since 2.4
-	 */
-	public static Date setHours(Date date, int amount) {
-		return set(date, Calendar.HOUR_OF_DAY, amount);
-	}
-
-	// -----------------------------------------------------------------------
-	/**
-	 * Sets the miliseconds field to a date returning a new object. The original
-	 * date object is unchanged.
-	 * 
-	 * @param date
-	 *            the date, not null
-	 * @param amount
-	 *            the amount to set
-	 * @return a new Date object set with the specified value
-	 * @throws IllegalArgumentException
-	 *             if the date is null
-	 * @since 2.4
-	 */
-	public static Date setMilliseconds(Date date, int amount) {
-		return set(date, Calendar.MILLISECOND, amount);
-	}
-
-	// -----------------------------------------------------------------------
-	/**
-	 * Sets the minute field to a date returning a new object. The original date
-	 * object is unchanged.
-	 * 
-	 * @param date
-	 *            the date, not null
-	 * @param amount
-	 *            the amount to set
-	 * @return a new Date object set with the specified value
-	 * @throws IllegalArgumentException
-	 *             if the date is null
-	 * @since 2.4
-	 */
-	public static Date setMinutes(Date date, int amount) {
-		return set(date, Calendar.MINUTE, amount);
-	}
-
-	// -----------------------------------------------------------------------
-	/**
-	 * Sets the months field to a date returning a new object. The original date
-	 * object is unchanged.
-	 * 
-	 * @param date
-	 *            the date, not null
-	 * @param amount
-	 *            the amount to set
-	 * @return a new Date object set with the specified value
-	 * @throws IllegalArgumentException
-	 *             if the date is null
-	 * @since 2.4
-	 */
-	public static Date setMonths(Date date, int amount) {
-		return set(date, Calendar.MONTH, amount);
-	}
-
-	// -----------------------------------------------------------------------
-	/**
-	 * Sets the seconds field to a date returning a new object. The original
-	 * date object is unchanged.
-	 * 
-	 * @param date
-	 *            the date, not null
-	 * @param amount
-	 *            the amount to set
-	 * @return a new Date object set with the specified value
-	 * @throws IllegalArgumentException
-	 *             if the date is null
-	 * @since 2.4
-	 */
-	public static Date setSeconds(Date date, int amount) {
-		return set(date, Calendar.SECOND, amount);
-	}
-
-	// -----------------------------------------------------------------------
-	/**
-	 * Sets the years field to a date returning a new object. The original date
-	 * object is unchanged.
-	 * 
-	 * @param date
-	 *            the date, not null
-	 * @param amount
-	 *            the amount to set
-	 * @return a new Date object set with the specified value
-	 * @throws IllegalArgumentException
-	 *             if the date is null
-	 * @since 2.4
-	 */
-	public static Date setYears(Date date, int amount) {
-		return set(date, Calendar.YEAR, amount);
-	}
 
 	// -----------------------------------------------------------------------
 	/**
@@ -2244,4 +2117,23 @@ public final class DateUtils {
 		super();
 	}
 
+	 /**
+     * Calculate the nanoseconds since midnight (in the default timezone) from a
+     * given time in milliseconds in UTC.
+     *
+     * @param ms the milliseconds
+     * @return the date value
+     */
+    public static long nanosFromMilliSecs(long ms) {
+        Calendar cal = getCalendar();
+        synchronized (cal) {
+            cal.clear();
+            cal.setTimeInMillis(ms);
+            int h = cal.get(Calendar.HOUR_OF_DAY);
+            int m = cal.get(Calendar.MINUTE);
+            int s = cal.get(Calendar.SECOND);
+            int millis = cal.get(Calendar.MILLISECOND);
+            return ((((((h * 60L) + m) * 60) + s) * 1000) + millis) * 1000000;
+        }
+    }
 }
