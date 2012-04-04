@@ -1797,6 +1797,51 @@ public final class StringUtils {
 		return (String[]) collection.toArray(new String[collection.size()]);
 	}
 
+	/**
+	 * Escapes an XML text element.
+	 * 
+	 * @param text
+	 *            the text data
+	 * @return the escaped text
+	 */
+	public static String xmlText(String text) {
+		int length = text.length();
+		StringBuilder buff = new StringBuilder(length);
+		for (int i = 0; i < length; i++) {
+			char ch = text.charAt(i);
+			switch (ch) {
+			case '<':
+				buff.append("&lt;");
+				break;
+			case '>':
+				buff.append("&gt;");
+				break;
+			case '&':
+				buff.append("&amp;");
+				break;
+			case '\'':
+				buff.append("&apos;");
+				break;
+			case '\"':
+				buff.append("&quot;");
+				break;
+			case '\r':
+			case '\n':
+			case '\t':
+				buff.append(ch);
+				break;
+			default:
+				if (ch < ' ' || ch > 127) {
+					buff.append("&#x").append(Integer.toHexString(ch))
+							.append(';');
+				} else {
+					buff.append(ch);
+				}
+			}
+		}
+		return buff.toString();
+	}
+
 	private StringUtils() {
 	}
 }
