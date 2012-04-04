@@ -14,7 +14,7 @@ import java.lang.ref.Reference;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
-import com.madrobot.reflect.MethodUtils;
+import com.madrobot.lang.reflect.MethodUtils;
 
 /**
  * A PropertyDescriptor describes one property that a Java Bean exports via a

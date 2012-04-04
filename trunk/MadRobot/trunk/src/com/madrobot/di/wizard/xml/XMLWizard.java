@@ -111,7 +111,7 @@ import com.madrobot.di.wizard.xml.io.HierarchicalStreamReader;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
 import com.madrobot.di.wizard.xml.io.StatefulWriter;
 import com.madrobot.di.wizard.xml.io.XppDriver;
-import com.madrobot.reflect.CompositeClassLoader;
+import com.madrobot.lang.reflect.CompositeClassLoader;
 
 /**
  * A Java-XML serialization tool.

@@ -22,8 +22,8 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.WeakHashMap;
 
-import com.madrobot.reflect.ClassUtils;
-import com.madrobot.reflect.MethodUtils;
+import com.madrobot.lang.reflect.ClassUtils;
+import com.madrobot.lang.reflect.MethodUtils;
 import com.madrobot.text.WordUtils;
 
 /**

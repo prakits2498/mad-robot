@@ -27,7 +27,7 @@ import android.text.TextUtils;
 
 import com.madrobot.beans.Introspector;
 import com.madrobot.io.IOUtils;
-import com.madrobot.reflect.MethodUtils;
+import com.madrobot.lang.reflect.MethodUtils;
 
 public final class DBUtils {
 

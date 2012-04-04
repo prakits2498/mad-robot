@@ -21,7 +21,7 @@ import com.madrobot.di.wizard.xml.DynamicProxyMapper;
 import com.madrobot.di.wizard.xml.Mapper;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamReader;
 import com.madrobot.di.wizard.xml.io.HierarchicalStreamWriter;
-import com.madrobot.reflect.FieldUtils;
+import com.madrobot.lang.reflect.FieldUtils;
 
 /**
  * Converts a dynamic proxy to XML, storing the implemented interfaces and

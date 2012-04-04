@@ -8,7 +8,7 @@
  * Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
-package com.madrobot.reflect;
+package com.madrobot.lang.reflect;
 
 // adapted from org.apache.axis.utils.IDKey
 

@@ -14,9 +14,9 @@ import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.madrobot.reflect.EqualsBuilder;
-import com.madrobot.reflect.ToStringBuilder;
-import com.madrobot.reflect.ToStringStyle;
+import com.madrobot.lang.reflect.EqualsBuilder;
+import com.madrobot.lang.reflect.ToStringBuilder;
+import com.madrobot.lang.reflect.ToStringStyle;
 
 /**
  * <p>

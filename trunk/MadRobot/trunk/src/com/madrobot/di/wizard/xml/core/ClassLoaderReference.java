@@ -11,7 +11,7 @@
 
 package com.madrobot.di.wizard.xml.core;
 
-import com.madrobot.reflect.CompositeClassLoader;
+import com.madrobot.lang.reflect.CompositeClassLoader;
 
 /**
  * ClassLoader that refers to another ClassLoader, allowing a single instance to

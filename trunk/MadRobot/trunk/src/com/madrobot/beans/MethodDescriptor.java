@@ -16,7 +16,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.madrobot.reflect.MethodUtils;
+import com.madrobot.lang.reflect.MethodUtils;
 
 /**
  * A MethodDescriptor describes a particular method that a Java Bean supports
