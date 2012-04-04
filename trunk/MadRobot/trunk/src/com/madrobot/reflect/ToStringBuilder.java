@@ -93,9 +93,9 @@ package com.madrobot.reflect;
  * The exact format of the <code>toString</code> is determined by the
  * {@link ToStringStyle} passed into the constructor.
  * </p>
- * 
+ * @hide
  */
-class ToStringBuilder implements Builder<String> {
+public class ToStringBuilder implements Builder<String> {
 
 	/**
 	 * The default style of output to use, not null.

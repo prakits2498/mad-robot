@@ -31,7 +31,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import com.madrobot.reflect.ArrayUtils;
+import com.madrobot.lang.ArrayUtils;
 
 /**
  * <p>

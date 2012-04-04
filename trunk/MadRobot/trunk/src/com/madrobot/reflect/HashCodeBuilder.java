@@ -17,6 +17,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.madrobot.lang.ArrayUtils;
+
 /**
  * <p>
  * Assists in implementing {@link Object#hashCode()} methods.

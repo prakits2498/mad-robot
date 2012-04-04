@@ -14,6 +14,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 
+import com.madrobot.lang.ArrayUtils;
+
 /**
  * <p>
  * Utility reflection methods focussed on constructors, modelled after
@@ -166,7 +168,7 @@ public class ConstructorUtils {
 			throws NoSuchMethodException, IllegalAccessException,
 			InvocationTargetException, InstantiationException {
 		if (null == args) {
-			args = ArrayUtils.EMPTY_OBJECT_ARRAY;
+			args = new Object[0];//ArrayUtils.EMPTY_OBJECT_ARRAY;
 		}
 		Class<?> parameterTypes[] = new Class[args.length];
 		for (int i = 0; i < args.length; i++) {
@@ -209,10 +211,10 @@ public class ConstructorUtils {
 			IllegalAccessException, InvocationTargetException,
 			InstantiationException {
 		if (parameterTypes == null) {
-			parameterTypes = ArrayUtils.EMPTY_CLASS_ARRAY;
+			parameterTypes =new Class[0];// ArrayUtils.EMPTY_CLASS_ARRAY;
 		}
 		if (args == null) {
-			args = ArrayUtils.EMPTY_OBJECT_ARRAY;
+			args = new Object[0];//ArrayUtils.EMPTY_OBJECT_ARRAY;
 		}
 		Constructor<T> ctor = getMatchingAccessibleConstructor(cls,
 				parameterTypes);
@@ -259,7 +261,7 @@ public class ConstructorUtils {
 			throws NoSuchMethodException, IllegalAccessException,
 			InvocationTargetException, InstantiationException {
 		if (null == args) {
-			args = ArrayUtils.EMPTY_OBJECT_ARRAY;
+			args =new Object[0];// ArrayUtils.EMPTY_OBJECT_ARRAY;
 		}
 		int arguments = args.length;
 		Class<?> parameterTypes[] = new Class[arguments];
@@ -303,10 +305,10 @@ public class ConstructorUtils {
 			IllegalAccessException, InvocationTargetException,
 			InstantiationException {
 		if (args == null) {
-			args = ArrayUtils.EMPTY_OBJECT_ARRAY;
+			args = new Object[0];//ArrayUtils.EMPTY_OBJECT_ARRAY;
 		}
 		if (parameterTypes == null) {
-			parameterTypes = ArrayUtils.EMPTY_CLASS_ARRAY;
+			parameterTypes = new Class[0];//ArrayUtils.EMPTY_CLASS_ARRAY;
 		}
 		Constructor<T> ctor = getAccessibleConstructor(cls, parameterTypes);
 		if (null == ctor) {

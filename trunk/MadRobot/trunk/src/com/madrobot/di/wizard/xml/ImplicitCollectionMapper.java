@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import com.madrobot.reflect.PrimitiveUtils;
+import com.madrobot.lang.PrimitiveUtils;
 
 class ImplicitCollectionMapper extends MapperWrapper {
 

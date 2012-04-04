@@ -58,9 +58,9 @@ import java.util.WeakHashMap;
  * </pre>
  * 
  * </p>
- * 
+ * @hide
  */
-abstract class ToStringStyle implements Serializable {
+public abstract class ToStringStyle implements Serializable {
 
 	/**
 	 * <p>
@@ -343,7 +343,7 @@ abstract class ToStringStyle implements Serializable {
 	 * John Doe,33,false
 	 * </pre>
 	 */
-	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
+public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 
 	/**
 	 * <p>

@@ -11,7 +11,7 @@
 
 package com.madrobot.di.wizard.xml.converters;
 
-import com.madrobot.reflect.PrimitiveUtils;
+import com.madrobot.lang.PrimitiveUtils;
 
 /**
  * Converts a java.lang.Class to XML.

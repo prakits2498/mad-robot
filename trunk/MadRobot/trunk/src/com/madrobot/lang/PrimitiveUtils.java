@@ -1,4 +1,4 @@
-package com.madrobot.reflect;
+package com.madrobot.lang;
 
 import java.util.HashMap;
 import java.util.Map;

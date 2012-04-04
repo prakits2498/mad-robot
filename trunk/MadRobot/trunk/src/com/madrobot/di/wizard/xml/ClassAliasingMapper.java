@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import com.madrobot.reflect.PrimitiveUtils;
+import com.madrobot.lang.PrimitiveUtils;
 
 /**
  * Mapper that allows a fully qualified class name to be replaced with an alias.
