@@ -2,7 +2,9 @@ package com.madrobot.app;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.util.List;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -61,5 +63,30 @@ public final class ApplicationUtils {
 	 */
 	public static boolean isAPILevelLower4() {
 		return "1.5".compareTo(Build.VERSION.RELEASE) >= 0;
+	}
+
+	/**
+	 * Check if the application with the given package name is running.
+	 * <p>
+	 * Eg: To check if the browser is running.<br/>
+	 * <code>
+	 * isApplicationRunning(getApplicationContext(),"com.android.browser");
+	 * </code>
+	 * </p>
+	 * @param context
+	 * @param packageName
+	 * @return
+	 */
+	public static boolean isApplicationRunning(Context context,
+			String packageName) {
+		ActivityManager manager=(ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+		List<ActivityManager.RunningAppProcessInfo> procInfos = manager.getRunningAppProcesses();
+		for(int i = 0; i < procInfos.size(); i++){
+	        if(procInfos.get(i).processName.equals(packageName)) {
+	        	return true;
+	        }
+		}
+		return false;
+
 	}
 }
