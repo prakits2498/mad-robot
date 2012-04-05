@@ -27,6 +27,8 @@ public class PixellateFilters {
 	public final static int GRID_TYPE_OCTAGONAL = 3;
 	public final static int GRID_TYPE_TRIANGULAR = 4;
 
+	
+	
 	public static final Bitmap crystallize(Bitmap bitmap, int gridType,
 			boolean fadeEdges, float angle, float scale, float stretch,
 			float randomNess, float edgeThickness, int edgeColor,

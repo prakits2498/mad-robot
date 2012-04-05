@@ -1798,48 +1798,32 @@ public final class StringUtils {
 	}
 
 	/**
-	 * Escapes an XML text element.
-	 * 
-	 * @param text
-	 *            the text data
-	 * @return the escaped text
+	 * Count the number of matches of <code>sub</code> string in
+	 * <code>str</code>
+	 * <p>
+	 * Eg:<br/>
+	 * <code>
+	 * str="test input inside"<br/>
+	 * sub="in"<br/>
+	 * countMatches=2;
+	 * </code>
+	 * </p>
+	 * @param str Input string
+	 * @param sub string to match with
+	 * @return number of matches found
 	 */
-	public static String xmlText(String text) {
-		int length = text.length();
-		StringBuilder buff = new StringBuilder(length);
-		for (int i = 0; i < length; i++) {
-			char ch = text.charAt(i);
-			switch (ch) {
-			case '<':
-				buff.append("&lt;");
-				break;
-			case '>':
-				buff.append("&gt;");
-				break;
-			case '&':
-				buff.append("&amp;");
-				break;
-			case '\'':
-				buff.append("&apos;");
-				break;
-			case '\"':
-				buff.append("&quot;");
-				break;
-			case '\r':
-			case '\n':
-			case '\t':
-				buff.append(ch);
-				break;
-			default:
-				if (ch < ' ' || ch > 127) {
-					buff.append("&#x").append(Integer.toHexString(ch))
-							.append(';');
-				} else {
-					buff.append(ch);
-				}
-			}
+	public static int countMatches(String str, String sub) {
+		if (str == null || str.length() == 0 || sub == null
+				|| sub.length() == 0) {
+			return 0;
 		}
-		return buff.toString();
+		int count = 0;
+		int idx = 0;
+		while ((idx = str.indexOf(sub, idx)) != -1) {
+			count++;
+			idx += sub.length();
+		}
+		return count;
 	}
 
 	private StringUtils() {

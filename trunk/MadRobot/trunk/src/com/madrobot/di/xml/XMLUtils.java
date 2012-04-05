@@ -66,4 +66,88 @@ public final class XMLUtils {
 
 	private XMLUtils() {
 	}
+
+	/**
+	 * Escapes an XML text element.
+	 * <p>
+	 * <code><</code> becomes <code>& lt;</code><br/>
+	 * <code>></code> becomes <code>& gt;</code><br/>
+	 * and so on..
+	 * </p>
+	 * 
+	 * @param text
+	 *            the text data
+	 * @return the escaped text
+	 */
+	public static String escapeXMLText(String text) {
+		int length = text.length();
+		StringBuilder buff = new StringBuilder(length);
+		for (int i = 0; i < length; i++) {
+			char ch = text.charAt(i);
+			switch (ch) {
+			case '<':
+				buff.append("&lt;");
+				break;
+			case '>':
+				buff.append("&gt;");
+				break;
+			case '&':
+				buff.append("&amp;");
+				break;
+			case '\'':
+				buff.append("&apos;");
+				break;
+			case '\"':
+				buff.append("&quot;");
+				break;
+			case '\r':
+			case '\n':
+			case '\t':
+				buff.append(ch);
+				break;
+			default:
+				if (ch < ' ' || ch > 127) {
+					buff.append("&#x").append(Integer.toHexString(ch))
+							.append(';');
+				} else {
+					buff.append(ch);
+				}
+			}
+		}
+		return buff.toString();
+	}
+
+	public static String unescapeXml(String str) {
+		str = str.replaceAll("&amp;", "&");
+		str = str.replaceAll("&lt;", "<");
+		str = str.replaceAll("&gt;", ">");
+		str = str.replaceAll("&quot;", "\"");
+		str = str.replaceAll("&apos;", "'");
+		return str;
+	}
+
+	/**
+	 * Remove any xml tags from a String. Same as HtmlW's method.
+	 * @param str input string
+	 * @return text with all xml tags removed.
+	 */
+	public static String removeXml(String str) {
+		int sz = str.length();
+		StringBuffer buffer = new StringBuffer(sz);
+		boolean inString = false;
+		boolean inTag = false;
+		for (int i = 0; i < sz; i++) {
+			char ch = str.charAt(i);
+			if (ch == '<') {
+				inTag = true;
+			} else if (ch == '>') {
+				inTag = false;
+				continue;
+			}
+			if (!inTag) {
+				buffer.append(ch);
+			}
+		}
+		return buffer.toString();
+	}
 }

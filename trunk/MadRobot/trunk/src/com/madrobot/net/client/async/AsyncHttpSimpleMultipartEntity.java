@@ -14,7 +14,7 @@ import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.message.BasicHeader;
 
-class AsyncHttpSimpleMultipartEntity implements HttpEntity {
+public class AsyncHttpSimpleMultipartEntity implements HttpEntity {
 	private final static char[] MULTIPART_CHARS = "-_1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 			.toCharArray();
 
