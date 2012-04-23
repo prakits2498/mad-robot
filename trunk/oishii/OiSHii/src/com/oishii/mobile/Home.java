@@ -17,7 +17,7 @@ public class Home extends OishiiBaseActivity {
 	@Override
 	protected String getTitleString() {
 		// TODO Auto-generated method stub
-		return null;
+		return "";
 	}
 
 }
