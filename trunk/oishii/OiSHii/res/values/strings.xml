@@ -3,5 +3,6 @@
 
     <string name="hello">Hello World, OiSHiiActivity!</string>
     <string name="app_name">OiSHii</string>
+    <string name="login_title">Login</string>
 
 </resources>
