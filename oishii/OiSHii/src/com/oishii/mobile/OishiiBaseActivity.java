@@ -55,6 +55,7 @@ public abstract class OishiiBaseActivity extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.defaultmenu, menu);
+		
 		return true;
 	}
 }

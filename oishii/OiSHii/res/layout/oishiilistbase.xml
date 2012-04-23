@@ -2,7 +2,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
@@ -12,7 +12,8 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center" >
+            android:layout_centerInParent="true" 
+            android:layout_alignParentTop="true">
 
             <TextView
                 android:id="@+id/titleFirst"
@@ -35,7 +36,7 @@
                 android:textSize="25dp"
                 android:textStyle="bold" />
         </LinearLayout>
-    </LinearLayout>
+    </RelativeLayout>
 
     <ListView
         android:id="@+id/listView1"
