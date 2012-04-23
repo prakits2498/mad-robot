@@ -4,15 +4,13 @@
     android:layout_height="fill_parent"
     android:background="#808080" >
 
-
     <RelativeLayout
+        android:layout_below="@+id/header"
         android:id="@+id/contentArea"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_above="@+id/footer"
-        android:layout_marginTop="42dip"
-        android:background="@color/screen_bg_color"
-        android:padding="8dip" >
+        android:background="@color/screen_bg_color" >
     </RelativeLayout>
 
     <include

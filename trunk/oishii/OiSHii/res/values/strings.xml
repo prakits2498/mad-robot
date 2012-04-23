@@ -4,5 +4,8 @@
     <string name="hello">Hello World, OiSHiiActivity!</string>
     <string name="app_name">OiSHii</string>
     <string name="login_title">Login</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="btn_login">Login</string>
 
 </resources>
