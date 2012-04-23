@@ -12,20 +12,28 @@
 
         <TextView
             android:id="@+id/headertitle"
+            style="@style/headertext"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_marginLeft="12dip"
             android:layout_marginRight="12dip"
             android:gravity="center"
-            android:text="header title"
-            style="@style/headertext"
-           />
+            android:text="header title" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/oshii_image"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true" 
+            android:paddingRight="10dp"
+            android:visibility="gone"
+            />
 
         <View
             android:layout_width="fill_parent"
             android:layout_height="1dip"
-            android:layout_alignParentBottom="true"
-             />
+            android:layout_alignParentBottom="true" />
     </RelativeLayout>
 
 </RelativeLayout>

@@ -24,7 +24,7 @@ public abstract class OishiiBaseActivity extends Activity {
 				.findViewById(R.id.contentArea);
 		getLayoutInflater().inflate(getChildViewLayout(), contentArea);
 		TextView title = (TextView) parent.findViewById(R.id.headertitle);
-		title.setText(getTitleResource());
+		title.setText(getTitleString());
 		setContentView(parent);
 
 		hookInChildViews();
@@ -42,5 +42,5 @@ public abstract class OishiiBaseActivity extends Activity {
 	 */
 	protected abstract int getChildViewLayout();
 
-	protected abstract int getTitleResource();
+	protected abstract String getTitleString();
 }
