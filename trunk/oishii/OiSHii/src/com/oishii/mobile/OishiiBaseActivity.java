@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 public abstract class OishiiBaseActivity extends Activity {
 
@@ -22,18 +23,21 @@ public abstract class OishiiBaseActivity extends Activity {
 		RelativeLayout contentArea = (RelativeLayout) parent
 				.findViewById(R.id.contentArea);
 		getLayoutInflater().inflate(getChildViewLayout(), contentArea);
+		TextView title = (TextView) parent.findViewById(R.id.headertitle);
+		title.setText(getTitleResource());
 		setContentView(parent);
+
 		hookInChildViews();
 	}
 
 	/**
-	 * This method should be used to hook in the listeners 
+	 * This method should be used to hook in the listeners
 	 */
 	protected abstract void hookInChildViews();
 
-	
 	/**
 	 * Get the layout contents of the child view
+	 * 
 	 * @return
 	 */
 	protected abstract int getChildViewLayout();
