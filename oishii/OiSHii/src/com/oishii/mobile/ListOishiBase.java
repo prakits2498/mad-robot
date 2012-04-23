@@ -1,5 +1,7 @@
 package com.oishii.mobile;
 
+import android.widget.TextView;
+
 public class ListOishiBase extends OishiiBaseActivity {
 
 	@Override
@@ -15,6 +17,12 @@ public class ListOishiBase extends OishiiBaseActivity {
 	@Override
 	protected String getTitleString() {
 		return "";
+	}
+
+	protected void setTitleFirstPart(String title, int color) {
+		TextView tv = (TextView) findViewById(R.id.titleFirst);
+		tv.setText(title);
+		tv.setTextColor(color);
 	}
 
 }
