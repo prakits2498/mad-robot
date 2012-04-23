@@ -1,12 +1,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="80dp"
+    android:layout_height="85dp"
     android:background="#C1D830"
     android:orientation="horizontal" >
 
     <ImageView
         android:id="@+id/imageView1"
-        android:layout_width="100"
+        android:layout_width="100dp"
         android:layout_height="fill_parent"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
@@ -22,7 +22,7 @@
         android:layout_toRightOf="@+id/imageView1"
         android:layout_toLeftOf="@+id/imageView2"
         
-        android:text="Noodle Soupsdfsfsdf sfsdsdfsdfsd sdfsds" 
+        android:text="Noodle Soups" 
         android:singleLine="true"/>
 
     <ImageView
