@@ -1,6 +1,5 @@
 package com.oishii.mobile;
 
-
 public class Login extends OishiiBaseActivity {
 
 	@Override
@@ -15,9 +14,8 @@ public class Login extends OishiiBaseActivity {
 	}
 
 	@Override
-	protected int getTitleResource() {
-		return R.string.login_title;
+	protected String getTitleString() {
+		return getResources().getString(R.string.login_title);
 	}
-	
-	
+
 }
