@@ -8,10 +8,12 @@
     <string name="password">Password</string>
     <string name="btn_login">Login</string>
     <string name="btn_signup">New Customer</string>
+    <string name="btn_today_menu">Todays menu</string>
     <string name="mnu_about">About</string>
     <string name="mnu_offer">Offers</string>
     <string name="mnu_history">History</string>
     <string name="mnu_myacc">My Account</string>
     <string name="mnu_basket">Basket</string>
+     
 
 </resources>
