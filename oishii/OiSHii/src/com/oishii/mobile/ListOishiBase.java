@@ -9,7 +9,7 @@ public class ListOishiBase extends OishiiBaseActivity {
 
 	@Override
 	protected int getChildViewLayout() {
-		return 0;
+		return R.layout.oishiilistbase;
 	}
 
 	@Override
