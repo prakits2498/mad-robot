@@ -32,7 +32,7 @@
             android:singleLine="true"
             android:tag="Username"
             android:textColor="@color/text_color"
-            android:textColorHint="#A6A8AB"
+            android:textColorHint="@color/text_field_hint"
             android:textSize="17dip"
             android:textStyle="bold" />
 
@@ -56,20 +56,27 @@
             android:singleLine="true"
             android:tag="Password"
             android:textColor="@color/text_color"
-            android:textColorHint="#A6A8AB"
+            android:textColorHint="@color/text_field_hint"
             android:textSize="17dip"
             android:textStyle="bold" />
     </LinearLayout>
 
     <Button
+        android:id="@+id/login"
         style="@style/primary_btn"
         android:layout_width="fill_parent"
         android:layout_marginLeft="10dip"
         android:layout_marginRight="10dip"
         android:layout_marginTop="15dp"
-        android:text="@string/btn_login"
-        android:textColor="@android:color/white"
-        android:textSize="18dp"
-        android:textStyle="bold" />
+        android:text="@string/btn_login" />
+
+    <Button
+        android:id="@+id/signUp"
+        style="@style/primary_btn"
+        android:layout_width="fill_parent"
+        android:layout_marginLeft="10dip"
+        android:layout_marginRight="10dip"
+        android:layout_marginTop="15dp"
+        android:text="@string/btn_signup" />
 
 </LinearLayout>
