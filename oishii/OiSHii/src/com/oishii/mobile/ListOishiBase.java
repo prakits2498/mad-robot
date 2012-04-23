@@ -2,7 +2,7 @@ package com.oishii.mobile;
 
 import android.widget.TextView;
 
-public class ListOishiBase extends OishiiBaseActivity {
+public abstract class ListOishiBase extends OishiiBaseActivity {
 
 	@Override
 	protected void hookInChildViews() {
@@ -25,4 +25,11 @@ public class ListOishiBase extends OishiiBaseActivity {
 		tv.setTextColor(color);
 	}
 
+	protected void setTitleSecondPart(String title, int color) {
+		TextView tv = (TextView) findViewById(R.id.titleSecond);
+		tv.setText(title);
+		tv.setTextColor(color);
+	}
+	
+	protected abstract void hookInListData();
 }
