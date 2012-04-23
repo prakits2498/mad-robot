@@ -1,5 +1,8 @@
 package com.oishii.mobile;
 
+import android.view.Menu;
+
+
 public class Login extends OishiiBaseActivity {
 
 	@Override
@@ -16,6 +19,12 @@ public class Login extends OishiiBaseActivity {
 	@Override
 	protected String getTitleString() {
 		return getResources().getString(R.string.login_title);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+
+		return false;
 	}
 
 }
