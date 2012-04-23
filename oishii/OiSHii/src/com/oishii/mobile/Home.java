@@ -4,19 +4,16 @@ public class Home extends OishiiBaseActivity {
 
 	@Override
 	protected void hookInChildViews() {
-		// TODO Auto-generated method stub
-
+		showOnlyLogo();
 	}
 
 	@Override
 	protected int getChildViewLayout() {
-		// TODO Auto-generated method stub
-		return 0;
+		return R.layout.home;
 	}
 
 	@Override
 	protected String getTitleString() {
-		// TODO Auto-generated method stub
 		return "";
 	}
 

@@ -1,14 +1,21 @@
 package com.oishii.mobile;
 
+import android.content.Intent;
 import android.view.Menu;
-
+import android.view.View;
 
 public class Login extends OishiiBaseActivity {
 
 	@Override
 	protected void hookInChildViews() {
-		// TODO Auto-generated method stub
-
+		findViewById(R.id.login).setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				finish();
+				Intent launch = new Intent(Login.this, Home.class);
+				startActivity(launch);
+			}
+		});
 	}
 
 	@Override
