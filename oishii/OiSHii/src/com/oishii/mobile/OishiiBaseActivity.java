@@ -2,6 +2,8 @@ package com.oishii.mobile;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -43,4 +45,16 @@ public abstract class OishiiBaseActivity extends Activity {
 	protected abstract int getChildViewLayout();
 
 	protected abstract String getTitleString();
+
+	protected void showOnlyLogo() {
+		findViewById(R.id.logo).setVisibility(View.VISIBLE);
+		findViewById(R.id.headertitle).setVisibility(View.GONE);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.defaultmenu, menu);
+		return true;
+	}
 }
