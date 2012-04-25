@@ -8,6 +8,7 @@ import java.net.URISyntaxException;
 import org.apache.http.HttpEntity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
@@ -68,12 +69,14 @@ public abstract class OishiiBaseActivity extends Activity {
 		
 		return true;
 	}
-	
+	AlertDialog alertDialog;
 	protected void hideDialog(){
-		
+		alertDialog.hide();
 	}
 	protected void showDialog(){
-		
+		alertDialog = new AlertDialog.Builder(OishiiBaseActivity.this).create();
+		alertDialog.setTitle("Loading niggars");
+		 alertDialog.show();
 	}
 	
 	protected abstract void populateViewFromHttp(InputStream is,View v);
