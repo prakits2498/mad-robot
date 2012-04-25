@@ -71,4 +71,5 @@ public abstract class NSObject {
         for(int i=0;i<level;i++)
             xml.append(INDENT);
     }
+    
 }

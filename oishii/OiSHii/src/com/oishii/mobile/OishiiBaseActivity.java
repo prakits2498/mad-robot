@@ -1,5 +1,12 @@
 package com.oishii.mobile;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import org.apache.http.HttpEntity;
+
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -9,6 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.oishii.mobile.util.HttpTaskHelper;
 
 public abstract class OishiiBaseActivity extends Activity {
 
@@ -60,15 +69,42 @@ public abstract class OishiiBaseActivity extends Activity {
 		return true;
 	}
 	
-	protected class OishiiHttpTask extends AsyncTask<Object, View, Object>{
-
+	protected void hideDialog(){
+		
+	}
+	protected void showDialog(){
+		
+	}
+	
+	protected abstract void populateViewFromHttp(InputStream is,View v);
+	
+	protected class OishiiHttpTask extends AsyncTask<HttpUIWrapper, View, Object>{
+		protected void onPreExecute (){
+			showDialog();
+		}
 		@Override
-		protected Object doInBackground(Object... arg0) {
+		protected Object doInBackground(HttpUIWrapper... wrapper) {
+			HttpTaskHelper helper = new com.oishii.mobile.util.HttpTaskHelper(wrapper[0].uri);
+			try {
+				HttpEntity entity = helper.execute();
+				populateViewFromHttp(entity.getContent(),wrapper[0].view);
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+			}
+			
+			
 			return null;
 		}
 		
 		protected void onPostExecute(Object obj){
-			
+			hideDialog();
 		}
+	}
+	
+	protected class HttpUIWrapper{
+		protected View view;
+		protected URI uri;
 	}
 }

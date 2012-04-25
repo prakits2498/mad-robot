@@ -1,5 +1,7 @@
 package com.oishii.mobile;
 
+import java.io.InputStream;
+
 import android.content.Intent;
 import android.view.View;
 
@@ -27,6 +29,12 @@ public class Home extends OishiiBaseActivity {
 	@Override
 	protected String getTitleString() {
 		return "";
+	}
+
+	@Override
+	protected void populateViewFromHttp(InputStream is, View v) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
