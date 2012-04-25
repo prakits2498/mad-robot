@@ -32,9 +32,11 @@ public class Home extends OishiiBaseActivity {
 	}
 
 	@Override
-	protected void populateViewFromHttp(InputStream is, View v) {
+	protected void populateViewFromHttp(InputStream is, View v, int operation) {
 		// TODO Auto-generated method stub
 		
 	}
+
+
 
 }

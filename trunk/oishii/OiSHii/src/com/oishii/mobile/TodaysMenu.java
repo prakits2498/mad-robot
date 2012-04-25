@@ -18,6 +18,9 @@ import com.oishii.mobile.beans.MenuItem;
 
 public class TodaysMenu extends ListOishiBase {
 
+	public final static int OPERATION_BITMAP=10;
+	public final static int OPERATION_LIST=30;
+
 	@Override
 	protected void hookInListData() {
 		// TODO Auto-generated method stub
@@ -28,22 +31,28 @@ public class TodaysMenu extends ListOishiBase {
 	}
 
 	@Override
-	protected void populateViewFromHttp(InputStream is, View v) {
-		// TODO Auto-generated method stub
-		try {
-			NSObject object = PropertyListParser.parse(is);
-			NSArray array = (NSArray) object;
-			int count = array.count();
-			for (int i = 0; i < count; i++) {
-				NSDictionary d = (NSDictionary) array.objectAtIndex(i);
-				System.out.println(d.objectForKey("image"));
+	protected void populateViewFromHttp(InputStream is, View v, int operation) {
+		switch (operation) {
+		case OPERATION_BITMAP:
+			break;
+		case OPERATION_LIST:
+			// TODO Auto-generated method stub
+			try {
+				NSObject object = PropertyListParser.parse(is);
+				NSArray array = (NSArray) object;
+				int count = array.count();
+				for (int i = 0; i < count; i++) {
+					NSDictionary d = (NSDictionary) array.objectAtIndex(i);
+					System.out.println(d.objectForKey("image"));
 
+				}
+				// NSDictionary d = (NSDictionary) object;
+				Log.d("Data", "===>DATA" + object.toString());
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			// NSDictionary d = (NSDictionary) object;
-			Log.d("Data", "===>DATA" + object.toString());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			break;
 		}
 	}
 
@@ -54,15 +63,14 @@ public class TodaysMenu extends ListOishiBase {
 			super(context, resource, textViewResourceId, objects);
 			// TODO Auto-generated constructor stub
 		}
-		
-		
-		public View	getView(int position, View convertView, ViewGroup parent){
+
+		public View getView(int position, View convertView, ViewGroup parent) {
 			getItem(position);
-			if(convertView!=null){
-				
+			if (convertView != null) {
+
 			}
 			return parent;
-			
+
 		}
 
 	}
