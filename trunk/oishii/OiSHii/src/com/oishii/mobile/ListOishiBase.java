@@ -7,6 +7,7 @@ public abstract class ListOishiBase extends OishiiBaseActivity {
 	@Override
 	protected void hookInChildViews() {
 		showOnlyLogo();
+		hookInListData();
 	}
 
 	@Override

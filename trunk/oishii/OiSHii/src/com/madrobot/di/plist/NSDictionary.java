@@ -187,4 +187,11 @@ public class NSDictionary extends NSObject {
 	    out.writeID(out.getID(entry.getValue()));
 	}
     }
+
+	@Override
+	public String toString() {
+		return "NSDictionary [dict=" + dict + "]";
+	}
+    
+    
 }
