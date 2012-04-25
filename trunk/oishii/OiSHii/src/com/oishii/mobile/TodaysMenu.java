@@ -4,16 +4,17 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
 
+import android.content.Context;
+import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+
 import com.madrobot.di.plist.NSArray;
 import com.madrobot.di.plist.NSDictionary;
 import com.madrobot.di.plist.NSObject;
 import com.madrobot.di.plist.PropertyListParser;
 import com.oishii.mobile.beans.MenuItem;
-
-import android.content.Context;
-import android.util.Log;
-import android.view.View;
-import android.widget.ArrayAdapter;
 
 public class TodaysMenu extends ListOishiBase {
 
@@ -52,6 +53,16 @@ public class TodaysMenu extends ListOishiBase {
 				int textViewResourceId, List<MenuItem> objects) {
 			super(context, resource, textViewResourceId, objects);
 			// TODO Auto-generated constructor stub
+		}
+		
+		
+		public View	getView(int position, View convertView, ViewGroup parent){
+			getItem(position);
+			if(convertView!=null){
+				
+			}
+			return parent;
+			
 		}
 
 	}
