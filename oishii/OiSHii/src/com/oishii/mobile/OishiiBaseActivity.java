@@ -1,6 +1,7 @@
 package com.oishii.mobile;
 
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -57,5 +58,17 @@ public abstract class OishiiBaseActivity extends Activity {
 		inflater.inflate(R.menu.defaultmenu, menu);
 		
 		return true;
+	}
+	
+	protected class OishiiHttpTask extends AsyncTask<Object, View, Object>{
+
+		@Override
+		protected Object doInBackground(Object... arg0) {
+			return null;
+		}
+		
+		protected void onPostExecute(Object obj){
+			
+		}
 	}
 }
