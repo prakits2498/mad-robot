@@ -9,18 +9,18 @@
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
 
-package com.madrobot.di.wizard.json.annotations;
+package com.madrobot.di.json.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.madrobot.di.wizard.json.JSONDeserializer;
-import com.madrobot.di.wizard.json.JSONSerializer;
+import com.madrobot.di.json.JSONDeserializer;
+import com.madrobot.di.json.JSONSerializer;
 
 /**
- * Annotation to specify the boolean format in the json string. <br/>
+ * Annotation to specify the item type when the field is a collection. <br/>
  * See {@link JSONDeserializer} {@link JSONSerializer} for usage
  * 
  * @see {@link JSONDeserializer}, {@link JSONSerializer}
@@ -28,19 +28,29 @@ import com.madrobot.di.wizard.json.JSONSerializer;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.FIELD })
-public @interface BooleanFormat {
+public @interface ItemType {
 
 	/**
-	 * Represent the false format
+	 * Decision to json should hold empty array or not
 	 * 
-	 * @return false format , default false
+	 * @see JSONSerializer
+	 * 
+	 * @return decision
 	 */
-	String falseFormat() default "false";
+	boolean canEmpty() default true;
 
 	/**
-	 * Represent the true format
 	 * 
-	 * @return true format
+	 * Represent the size of the collection
+	 * 
+	 * @return size of the collection
 	 */
-	String trueFormat();
+	int size() default JSONDeserializer.DEFAULT_ITEM_COLLECTION_SIZE;
+
+	/**
+	 * Represent the item type
+	 * 
+	 * @return item type
+	 */
+	Class<?> value();
 }

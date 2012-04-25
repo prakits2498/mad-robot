@@ -24,8 +24,8 @@ import org.json.JSONObject;
 
 import android.util.Log;
 
-import com.madrobot.di.wizard.json.JSONDeserializer;
-import com.madrobot.di.wizard.json.annotations.BooleanFormat;
+import com.madrobot.di.json.JSONDeserializer;
+import com.madrobot.di.json.annotations.BooleanFormat;
 
 /**
  * Primitive mapper for XML and JSON serialization classes
@@ -242,9 +242,9 @@ public final class Converter {
 				Date date = (Date) value;
 				SimpleDateFormat simpleDateFormat = null;
 				if (field
-						.isAnnotationPresent(com.madrobot.di.wizard.json.annotations.DateFormat.class)) {
-					com.madrobot.di.wizard.json.annotations.DateFormat formatAnnotation = field
-							.getAnnotation(com.madrobot.di.wizard.json.annotations.DateFormat.class);
+						.isAnnotationPresent(com.madrobot.di.json.annotations.DateFormat.class)) {
+					com.madrobot.di.json.annotations.DateFormat formatAnnotation = field
+							.getAnnotation(com.madrobot.di.json.annotations.DateFormat.class);
 					String dateFormat = formatAnnotation.format();
 					simpleDateFormat = new SimpleDateFormat(dateFormat);
 				} else {

@@ -8,7 +8,7 @@
  *  Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
-package com.madrobot.di.wizard.json;
+package com.madrobot.di.json;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,8 +27,8 @@ import org.json.JSONObject;
 import android.util.Log;
 
 import com.madrobot.di.Converter;
-import com.madrobot.di.wizard.json.annotations.ItemType;
-import com.madrobot.di.wizard.json.annotations.SerializedName;
+import com.madrobot.di.json.annotations.ItemType;
+import com.madrobot.di.json.annotations.SerializedName;
 
 /**
  * Utility class for json deserializer , by using this utility you can convert
