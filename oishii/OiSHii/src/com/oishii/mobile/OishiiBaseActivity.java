@@ -71,7 +71,7 @@ public abstract class OishiiBaseActivity extends Activity {
 	}
 	AlertDialog alertDialog;
 	protected void hideDialog(){
-		alertDialog.hide();
+		alertDialog.dismiss();
 	}
 	protected void showDialog(){
 		alertDialog = new AlertDialog.Builder(OishiiBaseActivity.this).create();
