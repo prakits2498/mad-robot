@@ -16,6 +16,7 @@ public class Home extends OishiiBaseActivity {
 						startActivity(todays);
 					}
 				});
+
 	}
 
 	@Override
