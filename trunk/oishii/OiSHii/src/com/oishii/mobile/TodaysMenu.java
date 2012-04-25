@@ -2,6 +2,7 @@ package com.oishii.mobile;
 
 import java.io.InputStream;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
@@ -18,8 +19,8 @@ import com.oishii.mobile.beans.MenuItem;
 
 public class TodaysMenu extends ListOishiBase {
 
-	public final static int OPERATION_BITMAP=10;
-	public final static int OPERATION_LIST=30;
+	public final static int OPERATION_BITMAP = 10;
+	public final static int OPERATION_LIST = 30;
 
 	@Override
 	protected void hookInListData() {
@@ -27,33 +28,49 @@ public class TodaysMenu extends ListOishiBase {
 		HttpUIWrapper ui = new HttpUIWrapper();
 		ui.uri = URI
 				.create("http://oishiidev.kieonstaging.com/plist/menuData.php");
+		ui.operation = OPERATION_LIST;
 		new OishiiHttpTask().execute(ui);
 	}
 
 	@Override
-	protected void populateViewFromHttp(InputStream is, View v, int operation) {
+	protected boolean populateViewFromHttp(InputStream is, View v, int operation) {
 		switch (operation) {
 		case OPERATION_BITMAP:
-			break;
+			return false;
 		case OPERATION_LIST:
 			// TODO Auto-generated method stub
 			try {
 				NSObject object = PropertyListParser.parse(is);
-				NSArray array = (NSArray) object;
-				int count = array.count();
-				for (int i = 0; i < count; i++) {
-					NSDictionary d = (NSDictionary) array.objectAtIndex(i);
-					System.out.println(d.objectForKey("image"));
-
+				if (object != null) {
+					NSArray array = (NSArray) object;
+					ArrayList<MenuItem> menuList=getArray(array);
+					return true;
+				} else {
+					return false;
 				}
-				// NSDictionary d = (NSDictionary) object;
-				Log.d("Data", "===>DATA" + object.toString());
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			break;
+			return false;
 		}
+		return false;
+	}
+
+	private ArrayList<MenuItem> getArray(NSArray array) {
+		int count = array.count();
+		ArrayList<MenuItem> menus = new ArrayList<MenuItem>();
+		for (int i = 0; i < count; i++) {
+			NSDictionary d = (NSDictionary) array.objectAtIndex(i);
+			MenuItem menu = new MenuItem();
+			menu.setBitmapUrl(d.objectForKey("image").toString());
+			menu.setTitle(d.objectForKey("name").toString());
+			System.out.println(d.objectForKey("id"));
+			System.out.println(d.objectForKey("color"));
+			menus.add(menu);
+
+		}
+		return menus;
 	}
 
 	class MainMenuAdapter extends ArrayAdapter<MenuItem> {

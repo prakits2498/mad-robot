@@ -32,7 +32,8 @@ public class Home extends OishiiBaseActivity {
 	}
 
 	@Override
-	protected void populateViewFromHttp(InputStream is, View v, int operation) {
+	protected boolean populateViewFromHttp(InputStream is, View v, int operation) {
+		return false;
 		// TODO Auto-generated method stub
 		
 	}
