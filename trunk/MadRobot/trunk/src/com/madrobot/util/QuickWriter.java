@@ -3,7 +3,7 @@ package com.madrobot.util;
 import java.io.IOException;
 import java.io.Writer;
 
-import com.madrobot.di.wizard.xml.io.StreamException;
+import com.madrobot.di.xml.io.StreamException;
 
 public class QuickWriter {
 
