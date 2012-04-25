@@ -3,6 +3,7 @@ package com.oishii.mobile;
 import java.io.InputStream;
 import java.net.URI;
 
+import com.madrobot.di.plist.NSArray;
 import com.madrobot.di.plist.NSDictionary;
 import com.madrobot.di.plist.NSObject;
 import com.madrobot.di.plist.PropertyListParser;
@@ -25,8 +26,15 @@ public class TodaysMenu extends ListOishiBase {
 		// TODO Auto-generated method stub
 		try {
 			NSObject object = PropertyListParser.parse(is);
-			NSDictionary d = (NSDictionary) object;
-			Log.d("Data","===>DATA"+d.toString());
+			NSArray array=(NSArray) object;
+			int count=array.count();
+			for(int i=0;i<count;i++){
+				NSDictionary d=(NSDictionary) array.objectAtIndex(i);
+				System.out.println(d.objectForKey("image"));
+				
+			}
+//			NSDictionary d = (NSDictionary) object;
+			Log.d("Data","===>DATA"+object.toString());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
