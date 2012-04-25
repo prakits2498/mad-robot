@@ -79,7 +79,7 @@ public abstract class OishiiBaseActivity extends Activity {
 		 alertDialog.show();
 	}
 	
-	protected abstract void populateViewFromHttp(InputStream is,View v);
+	protected abstract void populateViewFromHttp(InputStream is,View v,int operation);
 	
 	protected class OishiiHttpTask extends AsyncTask<HttpUIWrapper, View, Object>{
 		protected void onPreExecute (){
@@ -90,7 +90,7 @@ public abstract class OishiiBaseActivity extends Activity {
 			HttpTaskHelper helper = new com.oishii.mobile.util.HttpTaskHelper(wrapper[0].uri);
 			try {
 				HttpEntity entity = helper.execute();
-				populateViewFromHttp(entity.getContent(),wrapper[0].view);
+				populateViewFromHttp(entity.getContent(),wrapper[0].view,wrapper[0].operation);
 			} catch (IOException e) {
 				e.printStackTrace();
 			} catch (URISyntaxException e) {
@@ -109,5 +109,6 @@ public abstract class OishiiBaseActivity extends Activity {
 	protected class HttpUIWrapper{
 		protected View view;
 		protected URI uri;
+		protected int operation;
 	}
 }
