@@ -5,10 +5,12 @@ import java.net.URI;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -62,6 +64,17 @@ public abstract class OishiiBaseActivity extends Activity {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.defaultmenu, menu);
 		return true;
+	}
+
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.offers:
+			Intent intent = new Intent(OishiiBaseActivity.this,
+					SpecialOffers.class);
+			startActivity(intent);
+			return true;
+		}
+		return false;
 	}
 
 	private Dialog dialog;
