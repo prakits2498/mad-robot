@@ -14,6 +14,7 @@
     <string name="mnu_history">History</string>
     <string name="mnu_myacc">My Account</string>
     <string name="mnu_basket">Basket</string>
+    <string name="loading_mnu">Loading today\'s menu..</string>
      
 
 </resources>
