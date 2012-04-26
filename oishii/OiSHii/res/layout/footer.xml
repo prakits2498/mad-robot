@@ -1,7 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/footer"
     android:layout_width="fill_parent"
-    android:layout_height="40dp"
-    android:background="#ffffff"
+    android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:orientation="vertical" />
+    android:orientation="vertical" >
+
+
+
+    <LinearLayout
+        android:id="@+id/addmoney"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_centerVertical="true"
+        android:background="@drawable/home_bg"
+        android:orientation="vertical"
+        >
+
+        <TextView
+            android:id="@+id/divider"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dip"
+            android:layout_marginLeft="10dip"
+            android:layout_marginTop="5dip"
+            android:textSize="10sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dip"
+            android:text="\u0040 2011 American Express Company. All rights reserved"
+            android:textSize="10sp" />
+    </LinearLayout>
+    <!-- </RelativeLayout> -->
+
+
+
+</LinearLayout>
