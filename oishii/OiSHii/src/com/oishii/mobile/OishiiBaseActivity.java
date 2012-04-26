@@ -2,6 +2,8 @@ package com.oishii.mobile;
 
 import java.net.URI;
 
+import com.oishii.mobile.util.CurrentScreen;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
@@ -66,12 +68,22 @@ public abstract class OishiiBaseActivity extends Activity {
 	}
 
 	public boolean onOptionsItemSelected(MenuItem item) {
+		int currentId = CurrentScreen.getInstance().getCurrentScreenID();
+		if (currentId == item.getItemId()) {
+			return false;
+		}
 		switch (item.getItemId()) {
 		case R.id.offers:
 			Intent intent = new Intent(OishiiBaseActivity.this,
 					SpecialOffers.class);
 			startActivity(intent);
 			return true;
+		case R.id.about:
+			 intent = new Intent(OishiiBaseActivity.this,
+					Home.class);
+			startActivity(intent);
+			return true;
+			
 		}
 		return false;
 	}
