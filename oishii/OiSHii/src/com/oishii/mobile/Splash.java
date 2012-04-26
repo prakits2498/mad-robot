@@ -13,7 +13,7 @@ public class Splash extends Activity {
 		new Handler().postDelayed(new Runnable() {
 			public void run() {
 				finish();
-				startActivity(new Intent(getApplicationContext(), Login.class));
+				startActivity(new Intent(getApplicationContext(), Home.class));
 			}
 		}, ApplicationConstants.SPLASH_DURATION);
 	}
