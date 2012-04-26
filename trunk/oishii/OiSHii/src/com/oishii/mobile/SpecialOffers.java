@@ -16,6 +16,7 @@ import com.madrobot.di.plist.NSDictionary;
 import com.madrobot.di.plist.NSObject;
 import com.madrobot.di.plist.PropertyListParser;
 import com.oishii.mobile.beans.SpecialOffer;
+import com.oishii.mobile.util.CurrentScreen;
 import com.oishii.mobile.util.tasks.HttpRequestTask;
 import com.oishii.mobile.util.tasks.HttpRequestWrapper;
 import com.oishii.mobile.util.tasks.IHttpCallback;
@@ -25,6 +26,7 @@ public class SpecialOffers extends ListOishiBase {
 
 	@Override
 	protected void hookInListData() {
+		CurrentScreen.getInstance().setCurrentScreenID(R.id.offers);
 		TextView tv = (TextView) findViewById(R.id.titleFirst);
 		tv.setText(R.string.special);
 		TextView tv2 = (TextView) findViewById(R.id.titleSecond);
