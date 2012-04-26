@@ -41,7 +41,7 @@ public class TodaysMenu extends ListOishiBase {
 		requestWrapper.requestURI = ApplicationConstants.API_MENU_DATA;
 		requestWrapper.callback = menuCallaback;
 		requestWrapper.operationID = OPERATION_LIST;
-		showDialog();
+		showDialog(getString(R.string.loading_mnu));
 		new HttpRequestTask().execute(requestWrapper);
 	}
 
