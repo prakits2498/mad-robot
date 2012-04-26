@@ -2,6 +2,7 @@
     android:layout_width="fill_parent"
     android:layout_height="85dp"
     android:background="#C1D830"
+    android:id="@+id/bg"
     android:orientation="horizontal" >
 
     <ImageView
@@ -21,8 +22,6 @@
         android:layout_marginLeft="8dp"
         android:layout_toRightOf="@+id/imageView1"
         android:layout_toLeftOf="@+id/imageView2"
-        
-        android:text="Noodle Soups" 
         android:singleLine="true"/>
 
     <ImageView
