@@ -7,7 +7,7 @@
         android:id="@+id/headerBar"
         android:layout_width="fill_parent"
         android:layout_height="42dip"
-        android:background="#000000"
+        android:background="@drawable/menu_bg"
         android:focusableInTouchMode="true" >
 
         <TextView
@@ -30,11 +30,6 @@
             android:paddingRight="10dp"
             android:visibility="gone"
             />
-
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1dip"
-            android:layout_alignParentBottom="true" />
     </RelativeLayout>
 
 </RelativeLayout>

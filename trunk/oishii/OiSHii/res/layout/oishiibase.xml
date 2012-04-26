@@ -17,14 +17,14 @@
     <include
         android:id="@+id/header"
         android:layout_alignParentTop="true"
-        layout="@layout/header" />
+        layout="@layout/header" /> 
 
-    <include
+     <include
         android:id="@+id/footer"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        layout="@layout/footer" />
+        layout="@layout/footer" />  
 
 
 </RelativeLayout>

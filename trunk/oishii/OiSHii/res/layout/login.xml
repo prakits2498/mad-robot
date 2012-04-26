@@ -40,14 +40,12 @@
             android:id="@+id/dividerLine"
             android:layout_width="fill_parent"
             android:layout_height="1dp"
-            android:layout_below="@+id/username_edit"
             android:background="#999999" />
 
         <EditText
             android:id="@+id/password_edit"
             android:layout_width="fill_parent"
             android:layout_height="45dip"
-            android:layout_below="@+id/dividerLine"
             android:background="@android:color/white"
             android:hint="@string/password"
             android:imeOptions="actionGo"
