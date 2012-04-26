@@ -4,12 +4,14 @@ import java.net.URI;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -59,20 +61,29 @@ public abstract class OishiiBaseActivity extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.defaultmenu, menu);
-
 		return true;
 	}
 
-private	AlertDialog alertDialog;
+	private Dialog dialog;
 
 	protected void hideDialog() {
-		alertDialog.dismiss();
+		dialog.dismiss();
 	}
 
-	protected void showDialog() {
-		alertDialog = new AlertDialog.Builder(OishiiBaseActivity.this).create();
-		alertDialog.setTitle("Loading niggars");
-		alertDialog.show();
+	protected void showDialog(String message) {
+		// alertDialog = new
+		// AlertDialog.Builder(OishiiBaseActivity.this).create();
+		// alertDialog.setTitle("Loading niggars");
+		// alertDialog.show();
+
+		dialog = new Dialog(OishiiBaseActivity.this);
+		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.setContentView(R.layout.progressdialog);
+		TextView tv = (TextView) dialog.findViewById(R.id.textView1);
+		tv.setText(message);
+		dialog.setCancelable(false);
+		dialog.setTitle(null);
+		dialog.show();
 	}
 
 	protected void httpSucess(int operation) {
