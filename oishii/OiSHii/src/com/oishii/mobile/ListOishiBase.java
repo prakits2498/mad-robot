@@ -1,5 +1,6 @@
 package com.oishii.mobile;
 
+import android.widget.ListView;
 import android.widget.TextView;
 
 public abstract class ListOishiBase extends OishiiBaseActivity {
@@ -32,5 +33,8 @@ public abstract class ListOishiBase extends OishiiBaseActivity {
 		tv.setTextColor(color);
 	}
 	
+	protected ListView getListView(){
+		return (ListView) findViewById(R.id.listView1);
+	}
 	protected abstract void hookInListData();
 }

@@ -131,7 +131,7 @@ public class HttpTaskHelper {
 	 * @throws URISyntaxException
 	 *             in case of request url syntax error
 	 */
-	public HttpEntity execute() throws IOException, URISyntaxException {
+	public HttpResponse execute() throws IOException, URISyntaxException {
 
 		switch (httpSettings.getHttpMethod()) {
 		case HTTP_GET:
@@ -220,7 +220,7 @@ public class HttpTaskHelper {
 	 * @throws URISyntaxException
 	 *             in case of request url syntax error
 	 */
-	private HttpEntity handleHttpDelete() throws IOException,
+	private HttpResponse handleHttpDelete() throws IOException,
 			URISyntaxException {
 
 		if (hasRequestParameter()) {
@@ -230,7 +230,7 @@ public class HttpTaskHelper {
 		HttpDelete httpDelete = new HttpDelete(requestUrl);
 		this.initRequest(httpDelete);
 		httpResponse = getHttpClient().execute(httpDelete);
-		return httpResponse.getEntity();
+		return httpResponse;//.getEntity();
 	}
 
 	/**
@@ -246,7 +246,7 @@ public class HttpTaskHelper {
 	 * @throws URISyntaxException
 	 *             in case of request url syntax error
 	 */
-	private HttpEntity handleHttpGet() throws IOException, URISyntaxException {
+	private HttpResponse handleHttpGet() throws IOException, URISyntaxException {
 
 		if (hasRequestParameter()) {
 			addQueryParameter();
@@ -256,14 +256,15 @@ public class HttpTaskHelper {
 		HttpGet httpGet = new HttpGet(requestUrl);
 		this.initRequest(httpGet);
 		httpResponse = getHttpClient().execute(httpGet);
-		return httpResponse.getEntity();
+		
+		return httpResponse;//.getEntity();
 	}
 
 	/**
 	 * Hold the responsibility of initialize and sending the http post request
 	 * to the requestURL and return the http resposne object
 	 * 
-	 * @return returns the HttpEntity object
+	 * @return returns the HttpResponse object
 	 * 
 	 * @throws IOException
 	 *             - in case of a problem or the connection was aborted
@@ -271,7 +272,7 @@ public class HttpTaskHelper {
 	 * @throws URISyntaxException
 	 *             in case of request url syntax error
 	 */
-	private HttpEntity handleHttpPost() throws IOException, URISyntaxException {
+	private HttpResponse handleHttpPost() throws IOException, URISyntaxException {
 
 		HttpPost httpPost = new HttpPost(requestUrl);
 		this.initRequest(httpPost);
@@ -287,7 +288,7 @@ public class HttpTaskHelper {
 		httpClient = getHttpClient();
 		httpResponse = httpClient.execute(httpPost);
 		addResponseHeaders(httpResponse.getAllHeaders());
-		return httpResponse.getEntity();
+		return httpResponse;//.getEntity();
 	}
 
 	/**

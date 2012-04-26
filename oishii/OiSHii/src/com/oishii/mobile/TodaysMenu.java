@@ -1,7 +1,6 @@
 package com.oishii.mobile;
 
 import java.io.InputStream;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,12 +9,16 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 import com.madrobot.di.plist.NSArray;
 import com.madrobot.di.plist.NSDictionary;
 import com.madrobot.di.plist.NSObject;
 import com.madrobot.di.plist.PropertyListParser;
 import com.oishii.mobile.beans.MenuItem;
+import com.oishii.mobile.util.tasks.HttpRequestTask;
+import com.oishii.mobile.util.tasks.HttpRequestWrapper;
+import com.oishii.mobile.util.tasks.IHttpCallback;
 
 public class TodaysMenu extends ListOishiBase {
 
@@ -24,38 +27,64 @@ public class TodaysMenu extends ListOishiBase {
 
 	@Override
 	protected void hookInListData() {
-		// TODO Auto-generated method stub
-		HttpUIWrapper ui = new HttpUIWrapper();
-		ui.uri = URI
-				.create("http://oishiidev.kieonstaging.com/plist/menuData.php");
-		ui.operation = OPERATION_LIST;
-		new OishiiHttpTask().execute(ui);
+		executeMenuListRequest();
 	}
 
-	@Override
-	protected boolean populateViewFromHttp(InputStream is, View v, int operation) {
-		switch (operation) {
-		case OPERATION_BITMAP:
-			return false;
-		case OPERATION_LIST:
-			// TODO Auto-generated method stub
-			try {
-				NSObject object = PropertyListParser.parse(is);
+	private void executeMenuListRequest() {
+		HttpRequestWrapper requestWrapper = new HttpRequestWrapper();
+		requestWrapper.requestURI = ApplicationConstants.API_MENU_DATA;
+		requestWrapper.callback = menuCallaback;
+		requestWrapper.operationID = OPERATION_LIST;
+		showDialog();
+		new HttpRequestTask().execute(requestWrapper);
+	}
+
+	IHttpCallback menuCallaback = new IHttpCallback() {
+
+		@Override
+		public Object populateBean(InputStream is, int operationId) {
+			switch (operationId) {
+			case OPERATION_LIST:
+				NSObject object = null;
+				try {
+					object = PropertyListParser.parse(is);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 				if (object != null) {
 					NSArray array = (NSArray) object;
-					ArrayList<MenuItem> menuList=getArray(array);
-					return true;
+					ArrayList<MenuItem> menuList = getArray(array);
+				
+					
+					return menuList;
 				} else {
-					return false;
+					return null;
 				}
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			case OPERATION_BITMAP:
+				break;
 			}
-			return false;
+			Log.e("Oishii","IDEALLY SHOULD NEVER GET HERE");
+			return null;
 		}
-		return false;
-	}
+
+		@Override
+		public void bindUI(Object t, int operationID) {
+			Log.e("Oishii","Binding UI");
+			MainMenuAdapter adapter=new MainMenuAdapter(getApplicationContext(), R.layout.list_todaysmenu_item,  (List<MenuItem>) t);
+			getListView().setAdapter(adapter);
+			hideDialog();
+		}
+
+		@Override
+		public void onFailure(String message, int operationID) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+		
+	};
+
+
 
 	private ArrayList<MenuItem> getArray(NSArray array) {
 		int count = array.count();
@@ -75,18 +104,19 @@ public class TodaysMenu extends ListOishiBase {
 
 	class MainMenuAdapter extends ArrayAdapter<MenuItem> {
 
-		public MainMenuAdapter(Context context, int resource,
-				int textViewResourceId, List<MenuItem> objects) {
-			super(context, resource, textViewResourceId, objects);
+
+		public MainMenuAdapter(Context context, int textViewResourceId,
+				List<MenuItem> objects) {
+			super(context, textViewResourceId, objects);
 			// TODO Auto-generated constructor stub
 		}
 
 		public View getView(int position, View convertView, ViewGroup parent) {
-			getItem(position);
-			if (convertView != null) {
-
-			}
-			return parent;
+			MenuItem item=getItem(position);
+			View view=getLayoutInflater().inflate(R.layout.list_todaysmenu_item, null);
+			TextView tv=(TextView) view.findViewById(R.id.textView1);
+			tv.setText(item.getTitle());
+			return view;
 
 		}
 
