@@ -10,6 +10,12 @@
         android:scaleType="fitXY"
         android:src="@drawable/logo_top" />
 
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView" />
+
     <LinearLayout
         android:id="@+id/userPasswdLayout"
         android:layout_width="match_parent"
@@ -67,14 +73,5 @@
         android:layout_marginRight="10dip"
         android:layout_marginTop="15dp"
         android:text="@string/btn_login" />
-
-    <Button
-        android:id="@+id/signUp"
-        style="@style/primary_btn"
-        android:layout_width="fill_parent"
-        android:layout_marginLeft="10dip"
-        android:layout_marginRight="10dip"
-        android:layout_marginTop="15dp"
-        android:text="@string/btn_signup" />
 
 </LinearLayout>
