@@ -13,8 +13,8 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true" 
-            android:layout_alignParentTop="true">
+            android:layout_alignParentTop="true"
+            android:layout_centerInParent="true" >
 
             <TextView
                 android:id="@+id/titleFirst"
@@ -45,8 +45,9 @@
         android:layout_height="fill_parent"
         android:divider="@android:color/transparent"
         android:dividerHeight="5dp"
+        android:drawSelectorOnTop="true"
         android:fadingEdge="none"
-        android:listSelector="@null"
+        android:listSelector="@drawable/selector"
         android:scrollingCache="false" />
 
 </LinearLayout>
