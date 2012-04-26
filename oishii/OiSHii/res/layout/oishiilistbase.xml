@@ -49,6 +49,7 @@
         android:drawSelectorOnTop="true"
         android:fadingEdge="none"
         android:listSelector="@drawable/selector"
-        android:scrollingCache="false" />
+        android:scrollingCache="false"
+         />
 
 </LinearLayout>
