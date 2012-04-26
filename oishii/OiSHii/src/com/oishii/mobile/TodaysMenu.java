@@ -5,10 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.madrobot.di.plist.NSArray;
@@ -35,7 +37,7 @@ public class TodaysMenu extends ListOishiBase {
 		requestWrapper.requestURI = ApplicationConstants.API_MENU_DATA;
 		requestWrapper.callback = menuCallaback;
 		requestWrapper.operationID = OPERATION_LIST;
-//		showDialog();
+		showDialog();
 		new HttpRequestTask().execute(requestWrapper);
 	}
 
@@ -73,13 +75,13 @@ public class TodaysMenu extends ListOishiBase {
 					getApplicationContext(), R.layout.list_todaysmenu_item,
 					(List<MenuItem>) t);
 			getListView().setAdapter(adapter);
-//			hideDialog();
+			hideDialog();
 		}
 
 		@Override
 		public void onFailure(String message, int operationID) {
 			// TODO Auto-generated method stub
-//			hideDialog();
+			hideDialog();
 		}
 
 	};
@@ -110,18 +112,24 @@ public class TodaysMenu extends ListOishiBase {
 
 		public View getView(int position, View convertView, ViewGroup parent) {
 			View view = convertView;
+			MenuItem item = getItem(position);
 			if(view == null)
 			{
 				view = getLayoutInflater().inflate(
 						R.layout.list_todaysmenu_item, null);
 				ViewHolder viewHolder = new ViewHolder();
 				viewHolder.text1 = (TextView) view.findViewById(R.id.textView1);
+				viewHolder.image=(ImageView)view.findViewById(R.id.imageView2);
+				viewHolder.bg=view.findViewById(R.id.bg);
+				viewHolder.bg.setBackgroundColor(item.getColor());
 				view.setTag(viewHolder);
 			}
-			MenuItem item = getItem(position);
-			view.setBackgroundColor(item.getColor());
 			ViewHolder viewHolder = (ViewHolder)view.getTag();
+			viewHolder.bg.setBackgroundColor(0xffffff);
 			viewHolder.text1.setText(item.getTitle());
+			if(viewHolder.image.getDrawable()==null){
+				
+			}
 			return view;
 
 		}
@@ -130,6 +138,8 @@ public class TodaysMenu extends ListOishiBase {
 
 	private static class ViewHolder {
 		TextView text1;
+		ImageView image;
+		View bg;
 	}
 
 }
