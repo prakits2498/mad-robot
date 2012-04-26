@@ -10,7 +10,7 @@
         android:layout_width="fill_parent"
         android:layout_height="60dp"
         android:layout_centerVertical="true"
-        android:background="#000000"
+        android:background="@drawable/menu_bg"
         android:orientation="horizontal" >
 
         <LinearLayout
@@ -24,7 +24,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_gravity="center_horizontal"
-                android:src="@drawable/home_selected" />
+                android:src="@drawable/menu_home" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -103,6 +103,10 @@
             android:layout_height="fill_parent"
             android:layout_weight="1"
             android:orientation="vertical" >
+
+         <!--    <FrameLayout>
+                
+            </FrameLayout> -->
 
             <ImageView
                 android:layout_width="40dp"
