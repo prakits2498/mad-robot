@@ -1,6 +1,6 @@
 package com.oishii.mobile;
 
-import com.oishii.mobile.util.CurrentScreen;
+import com.oishii.mobile.beans.CurrentScreen;
 
 import android.content.Intent;
 import android.view.View;

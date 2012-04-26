@@ -1,4 +1,4 @@
-package com.oishii.mobile.util;
+package com.oishii.mobile.beans;
 
 public class CurrentScreen {
 

@@ -34,8 +34,6 @@ public class TodaysMenu extends ListOishiBase {
 
 	@Override
 	protected void hookInListData() {
-//		setTitleFirstPart(getString(R.string.today), android.R.color.black);
-//		setTitleFirstPart(getString(R.string.menu), R.color.text_color);
 		TextView tv=(TextView) findViewById(R.id.titleFirst);
 		tv.setText(R.string.today);
 		TextView tv2=(TextView) findViewById(R.id.titleSecond);
@@ -94,6 +92,7 @@ public class TodaysMenu extends ListOishiBase {
 		@Override
 		public void onFailure(String message, int operationID) {
 			hideDialog();
+			
 		}
 
 	};

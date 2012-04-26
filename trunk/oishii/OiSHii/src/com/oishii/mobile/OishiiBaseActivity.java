@@ -1,22 +1,17 @@
 package com.oishii.mobile;
 
-import java.net.URI;
-
-import com.oishii.mobile.util.CurrentScreen;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.oishii.mobile.beans.CurrentScreen;
 
 public abstract class OishiiBaseActivity extends Activity {
 
@@ -37,8 +32,66 @@ public abstract class OishiiBaseActivity extends Activity {
 		TextView title = (TextView) parent.findViewById(R.id.headertitle);
 		title.setText(getTitleString());
 		setContentView(parent);
+		hookInMenu();
 		hookInChildViews();
+
 	}
+
+	protected void hookInMenu() {
+		View v = findViewById(R.id.about);
+		v.setOnClickListener(menuListener);
+		v = findViewById(R.id.offers);
+		v.setOnClickListener(menuListener);
+		v = findViewById(R.id.history);
+		v.setOnClickListener(menuListener);
+		v = findViewById(R.id.history);
+		v.setOnClickListener(menuListener);
+		
+	}
+
+//	static boolean isMenuScreen;
+//	static boolean isHomeScreen;
+//	public void onBackPressed() {
+//		if(isMenuScreen){
+//			Intent intent=new Intent(getApplicationContext(),Home.class);
+//			startActivity(intent);
+//			isMenuScreen=false;
+//			isHomeScreen=true;
+//		}
+//		if(isHomeScreen){
+//			System.exit(0);
+//		}
+//
+//	};
+
+	View.OnClickListener menuListener = new View.OnClickListener() {
+
+		@Override
+		public void onClick(View v) {
+			int currentId = CurrentScreen.getInstance().getCurrentScreenID();
+			if (currentId == v.getId()) {
+				return;
+			}
+//			isMenuScreen=true;
+//			isHomeScreen=false;
+//			finish();
+			switch (v.getId()) {
+			case R.id.offers:
+				Intent intent = new Intent(OishiiBaseActivity.this,
+						SpecialOffers.class);
+				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(intent);
+				break;
+			case R.id.about:
+				intent = new Intent(OishiiBaseActivity.this, Home.class);
+				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(intent);
+				break;
+
+			}
+
+		}
+	};
 
 	/**
 	 * This method should be used to hook in the listeners
@@ -59,12 +112,12 @@ public abstract class OishiiBaseActivity extends Activity {
 		findViewById(R.id.headertitle).setVisibility(View.GONE);
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.defaultmenu, menu);
-		return true;
-	}
+	// @Override
+	// public boolean onCreateOptionsMenu(Menu menu) {
+	// MenuInflater inflater = getMenuInflater();
+	// inflater.inflate(R.menu.defaultmenu, menu);
+	// return true;
+	// }
 
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int currentId = CurrentScreen.getInstance().getCurrentScreenID();
@@ -78,11 +131,10 @@ public abstract class OishiiBaseActivity extends Activity {
 			startActivity(intent);
 			return true;
 		case R.id.about:
-			 intent = new Intent(OishiiBaseActivity.this,
-					Home.class);
+			intent = new Intent(OishiiBaseActivity.this, Home.class);
 			startActivity(intent);
 			return true;
-			
+
 		}
 		return false;
 	}
@@ -94,11 +146,6 @@ public abstract class OishiiBaseActivity extends Activity {
 	}
 
 	protected void showDialog(String message) {
-		// alertDialog = new
-		// AlertDialog.Builder(OishiiBaseActivity.this).create();
-		// alertDialog.setTitle("Loading niggars");
-		// alertDialog.show();
-
 		dialog = new Dialog(OishiiBaseActivity.this);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialog.setContentView(R.layout.progressdialog);
@@ -107,21 +154,6 @@ public abstract class OishiiBaseActivity extends Activity {
 		dialog.setCancelable(false);
 		dialog.setTitle(null);
 		dialog.show();
-	}
-
-	protected void httpSucess(int operation) {
-
-	}
-
-	protected void httpFailure(int operation, String message) {
-		// show error message
-		Log.e("ERROR->", message);
-	}
-
-	protected class RequestWrapper {
-		protected URI requestURI;
-		/* integer to identify the operation. an activity may user */
-		protected int operationID;
 	}
 
 }
