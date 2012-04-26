@@ -121,15 +121,11 @@ public class TodaysMenu extends ListOishiBase {
 				viewHolder.text1 = (TextView) view.findViewById(R.id.textView1);
 				viewHolder.image=(ImageView)view.findViewById(R.id.imageView2);
 				viewHolder.bg=view.findViewById(R.id.bg);
-				viewHolder.bg.setBackgroundColor(item.getColor());
 				view.setTag(viewHolder);
 			}
+			System.out.println("color->"+item.getColor());
 			ViewHolder viewHolder = (ViewHolder)view.getTag();
-			viewHolder.bg.setBackgroundColor(0xffffff);
 			viewHolder.text1.setText(item.getTitle());
-			if(viewHolder.image.getDrawable()==null){
-				
-			}
 			return view;
 
 		}
