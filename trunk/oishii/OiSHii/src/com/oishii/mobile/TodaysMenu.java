@@ -1,16 +1,18 @@
 package com.oishii.mobile;
 
 import java.io.InputStream;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.madrobot.di.plist.NSArray;
@@ -18,9 +20,11 @@ import com.madrobot.di.plist.NSDictionary;
 import com.madrobot.di.plist.NSObject;
 import com.madrobot.di.plist.PropertyListParser;
 import com.oishii.mobile.beans.MenuItem;
+import com.oishii.mobile.util.tasks.BitmapHttpTask;
 import com.oishii.mobile.util.tasks.HttpRequestTask;
 import com.oishii.mobile.util.tasks.HttpRequestWrapper;
 import com.oishii.mobile.util.tasks.IHttpCallback;
+import com.oishii.mobile.util.tasks.RequestParam;
 
 public class TodaysMenu extends ListOishiBase {
 
@@ -74,7 +78,9 @@ public class TodaysMenu extends ListOishiBase {
 			MainMenuAdapter adapter = new MainMenuAdapter(
 					getApplicationContext(), R.layout.list_todaysmenu_item,
 					(List<MenuItem>) t);
-			getListView().setAdapter(adapter);
+			ListView listview = getListView();
+			listview.setAdapter(adapter);
+			listview.setOnItemClickListener(listViewClickListener);
 			hideDialog();
 		}
 
@@ -86,6 +92,15 @@ public class TodaysMenu extends ListOishiBase {
 
 	};
 
+	AdapterView.OnItemClickListener listViewClickListener = new AdapterView.OnItemClickListener() {
+
+		@Override
+		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+				long arg3) {
+			Log.d("Oishii", "Item at position" + arg2);
+		}
+	};
+
 	private ArrayList<MenuItem> getArray(NSArray array) {
 		int count = array.count();
 		ArrayList<MenuItem> menus = new ArrayList<MenuItem>();
@@ -95,8 +110,9 @@ public class TodaysMenu extends ListOishiBase {
 			menu.setBitmapUrl(d.objectForKey("image").toString());
 			menu.setTitle(d.objectForKey("name").toString());
 			menu.setId(Integer.parseInt(d.objectForKey("id").toString()));
-			String color=d.objectForKey("color").toString().replace('#',' ').trim();
-			menu.setColor(Integer.parseInt(color,16));
+			String color = d.objectForKey("color").toString().replace('#', ' ')
+					.trim();
+			menu.setColor(Integer.parseInt(color, 16));
 			menus.add(menu);
 		}
 		return menus;
@@ -113,19 +129,28 @@ public class TodaysMenu extends ListOishiBase {
 		public View getView(int position, View convertView, ViewGroup parent) {
 			View view = convertView;
 			MenuItem item = getItem(position);
-			if(view == null)
-			{
+			if (view == null) {
 				view = getLayoutInflater().inflate(
 						R.layout.list_todaysmenu_item, null);
+				view.setBackgroundColor(item.getColor());
 				ViewHolder viewHolder = new ViewHolder();
 				viewHolder.text1 = (TextView) view.findViewById(R.id.textView1);
-				viewHolder.image=(ImageView)view.findViewById(R.id.imageView2);
-				viewHolder.bg=view.findViewById(R.id.bg);
+				viewHolder.image = (ImageView) view
+						.findViewById(R.id.imageView1);
+				viewHolder.bg = view.findViewById(R.id.bg);
 				view.setTag(viewHolder);
 			}
-			System.out.println("color->"+item.getColor());
-			ViewHolder viewHolder = (ViewHolder)view.getTag();
+			System.out.println("color->" + item.getColor());
+			ViewHolder viewHolder = (ViewHolder) view.getTag();
 			viewHolder.text1.setText(item.getTitle());
+			Object loaded = viewHolder.image.getTag();
+			if (loaded == null) {
+				RequestParam req = new RequestParam();
+				req.bitmapUri = URI.create(item.getBitmapUrl());
+				req.image = viewHolder.image;
+				req.image.setTag(new Object());
+				new BitmapHttpTask().execute(req);
+			}
 			return view;
 
 		}

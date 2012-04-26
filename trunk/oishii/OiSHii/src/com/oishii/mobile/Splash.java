@@ -15,6 +15,6 @@ public class Splash extends Activity {
 				finish();
 				startActivity(new Intent(getApplicationContext(), Login.class));
 			}
-		}, 4500);
+		}, ApplicationConstants.SPLASH_DURATION);
 	}
 }
