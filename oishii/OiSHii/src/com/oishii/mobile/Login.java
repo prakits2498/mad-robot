@@ -16,6 +16,7 @@ public class Login extends OishiiBaseActivity {
 				startActivity(launch);
 			}
 		});
+		findViewById(R.id.footer).setVisibility(View.GONE);
 	}
 
 	@Override
