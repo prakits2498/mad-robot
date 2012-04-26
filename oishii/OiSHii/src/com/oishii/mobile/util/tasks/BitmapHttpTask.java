@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import com.oishii.mobile.util.tasks.BitmapHttpTask.ResponseParam;
 
 public class BitmapHttpTask extends
-		AsyncTask<RequestParam, Void, ResponseParam> {
+		AsyncTask<BitmapRequestParam, Void, ResponseParam> {
 
 
 
@@ -24,7 +24,7 @@ public class BitmapHttpTask extends
 	}
 
 	@Override
-	protected ResponseParam doInBackground(RequestParam... params) {
+	protected ResponseParam doInBackground(BitmapRequestParam... params) {
 		com.oishii.mobile.util.HttpTaskHelper helper = new com.oishii.mobile.util.HttpTaskHelper(
 				params[0].bitmapUri);
 		HttpResponse entity;

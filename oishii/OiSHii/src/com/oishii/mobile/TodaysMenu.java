@@ -24,7 +24,7 @@ import com.oishii.mobile.util.tasks.BitmapHttpTask;
 import com.oishii.mobile.util.tasks.HttpRequestTask;
 import com.oishii.mobile.util.tasks.HttpRequestWrapper;
 import com.oishii.mobile.util.tasks.IHttpCallback;
-import com.oishii.mobile.util.tasks.RequestParam;
+import com.oishii.mobile.util.tasks.BitmapRequestParam;
 
 public class TodaysMenu extends ListOishiBase {
 
@@ -145,7 +145,7 @@ public class TodaysMenu extends ListOishiBase {
 			viewHolder.text1.setText(item.getTitle());
 			Object loaded = viewHolder.image.getTag();
 			if (loaded == null) {
-				RequestParam req = new RequestParam();
+				BitmapRequestParam req = new BitmapRequestParam();
 				req.bitmapUri = URI.create(item.getBitmapUrl());
 				req.image = viewHolder.image;
 				req.image.setTag(new Object());
