@@ -19,7 +19,7 @@ import com.madrobot.di.plist.NSArray;
 import com.madrobot.di.plist.NSDictionary;
 import com.madrobot.di.plist.NSObject;
 import com.madrobot.di.plist.PropertyListParser;
-import com.oishii.mobile.beans.MenuItem;
+import com.oishii.mobile.beans.MenuData;
 import com.oishii.mobile.util.tasks.BitmapHttpTask;
 import com.oishii.mobile.util.tasks.HttpRequestTask;
 import com.oishii.mobile.util.tasks.HttpRequestWrapper;
@@ -33,6 +33,8 @@ public class TodaysMenu extends ListOishiBase {
 
 	@Override
 	protected void hookInListData() {
+		setTitleFirstPart(getString(R.string.today), android.R.color.black);
+		setTitleFirstPart(getString(R.string.menu), R.color.text_color);
 		executeMenuListRequest();
 	}
 
@@ -59,7 +61,7 @@ public class TodaysMenu extends ListOishiBase {
 				}
 				if (object != null) {
 					NSArray array = (NSArray) object;
-					ArrayList<MenuItem> menuList = getArray(array);
+					ArrayList<MenuData> menuList = getArray(array);
 
 					return menuList;
 				} else {
@@ -77,7 +79,7 @@ public class TodaysMenu extends ListOishiBase {
 			Log.e("Oishii", "Binding UI");
 			MainMenuAdapter adapter = new MainMenuAdapter(
 					getApplicationContext(), R.layout.list_todaysmenu_item,
-					(List<MenuItem>) t);
+					(List<MenuData>) t);
 			ListView listview = getListView();
 			listview.setAdapter(adapter);
 			listview.setOnItemClickListener(listViewClickListener);
@@ -101,12 +103,12 @@ public class TodaysMenu extends ListOishiBase {
 		}
 	};
 
-	private ArrayList<MenuItem> getArray(NSArray array) {
+	private ArrayList<MenuData> getArray(NSArray array) {
 		int count = array.count();
-		ArrayList<MenuItem> menus = new ArrayList<MenuItem>();
+		ArrayList<MenuData> menus = new ArrayList<MenuData>();
 		for (int i = 0; i < count; i++) {
 			NSDictionary d = (NSDictionary) array.objectAtIndex(i);
-			MenuItem menu = new MenuItem();
+			MenuData menu = new MenuData();
 			menu.setBitmapUrl(d.objectForKey("image").toString());
 			menu.setTitle(d.objectForKey("name").toString());
 			menu.setId(Integer.parseInt(d.objectForKey("id").toString()));
@@ -118,17 +120,17 @@ public class TodaysMenu extends ListOishiBase {
 		return menus;
 	}
 
-	class MainMenuAdapter extends ArrayAdapter<MenuItem> {
+	class MainMenuAdapter extends ArrayAdapter<MenuData> {
 
 		public MainMenuAdapter(Context context, int textViewResourceId,
-				List<MenuItem> objects) {
+				List<MenuData> objects) {
 			super(context, textViewResourceId, objects);
 			// TODO Auto-generated constructor stub
 		}
 
 		public View getView(int position, View convertView, ViewGroup parent) {
 			View view = convertView;
-			MenuItem item = getItem(position);
+			MenuData item = getItem(position);
 			if (view == null) {
 				view = getLayoutInflater().inflate(
 						R.layout.list_todaysmenu_item, null);
