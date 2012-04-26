@@ -15,6 +15,9 @@
     <string name="mnu_myacc">My Account</string>
     <string name="mnu_basket">Basket</string>
     <string name="loading_mnu">Loading today\'s menu..</string>
-     
+    <string name="special">SPECIAL</string>
+    <string name="offers">OFFERS</string>
+        <string name="today">TODAYS</string>
+    <string name="menu">MENU</string>
 
 </resources>
