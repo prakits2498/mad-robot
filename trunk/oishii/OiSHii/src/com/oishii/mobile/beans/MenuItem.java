@@ -5,7 +5,8 @@ int color;
 int id;
 String title;
 	String bitmapUrl;
-public int getColor() {
+
+	public int getColor() {
 	return color;
 }
 public void setColor(int color) {
