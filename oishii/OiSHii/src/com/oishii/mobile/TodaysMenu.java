@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.madrobot.di.plist.NSArray;
@@ -33,8 +34,12 @@ public class TodaysMenu extends ListOishiBase {
 
 	@Override
 	protected void hookInListData() {
-		setTitleFirstPart(getString(R.string.today), android.R.color.black);
-		setTitleFirstPart(getString(R.string.menu), R.color.text_color);
+//		setTitleFirstPart(getString(R.string.today), android.R.color.black);
+//		setTitleFirstPart(getString(R.string.menu), R.color.text_color);
+		TextView tv=(TextView) findViewById(R.id.titleFirst);
+		tv.setText(R.string.today);
+		TextView tv2=(TextView) findViewById(R.id.titleSecond);
+		tv2.setText(R.string.menu);
 		executeMenuListRequest();
 	}
 
@@ -140,6 +145,7 @@ public class TodaysMenu extends ListOishiBase {
 				viewHolder.image = (ImageView) view
 						.findViewById(R.id.imageView1);
 				viewHolder.bg = view.findViewById(R.id.bg);
+				viewHolder.bar=(ProgressBar) view.findViewById(R.id.imageProgress);
 				view.setTag(viewHolder);
 			}
 			System.out.println("color->" + item.getColor());
@@ -151,6 +157,7 @@ public class TodaysMenu extends ListOishiBase {
 				req.bitmapUri = URI.create(item.getBitmapUrl());
 				req.image = viewHolder.image;
 				req.image.setTag(new Object());
+				req.progress=viewHolder.bar;
 				new BitmapHttpTask().execute(req);
 			}
 			return view;
@@ -163,6 +170,7 @@ public class TodaysMenu extends ListOishiBase {
 		TextView text1;
 		ImageView image;
 		View bg;
+		ProgressBar bar;
 	}
 
 }

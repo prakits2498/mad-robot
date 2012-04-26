@@ -9,7 +9,9 @@ import org.apache.http.HttpResponse;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.oishii.mobile.util.tasks.BitmapHttpTask.ResponseParam;
 
@@ -21,6 +23,7 @@ public class BitmapHttpTask extends
 	class ResponseParam {
 		Bitmap bitmap;
 		ImageView image;
+		ProgressBar bar;
 	}
 
 	@Override
@@ -44,11 +47,13 @@ public class BitmapHttpTask extends
 		ResponseParam resp = new ResponseParam();
 		resp.bitmap = bitmap;
 		resp.image = params[0].image;
+		resp.bar=params[0].progress;
 		return resp;
 	}
 
 	protected void onPostExecute(ResponseParam result) {
 		if (result.bitmap != null && result.image != null) {
+			result.bar.setVisibility(View.GONE);
 			result.image.setImageBitmap(result.bitmap);
 		}
 	}
