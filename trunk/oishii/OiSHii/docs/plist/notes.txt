@@ -1,0 +1,3 @@
+what is mac & sid
+-imei & sid during login
+-plain text on POST
