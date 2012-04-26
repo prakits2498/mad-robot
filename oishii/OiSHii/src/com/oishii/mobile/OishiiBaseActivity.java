@@ -37,7 +37,6 @@ public abstract class OishiiBaseActivity extends Activity {
 		TextView title = (TextView) parent.findViewById(R.id.headertitle);
 		title.setText(getTitleString());
 		setContentView(parent);
-
 		hookInChildViews();
 	}
 
