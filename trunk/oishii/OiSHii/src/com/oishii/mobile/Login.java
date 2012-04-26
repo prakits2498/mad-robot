@@ -1,7 +1,5 @@
 package com.oishii.mobile;
 
-import java.io.InputStream;
-
 import android.content.Intent;
 import android.view.Menu;
 import android.view.View;
@@ -36,10 +34,5 @@ public class Login extends OishiiBaseActivity {
 		return false;
 	}
 
-	@Override
-	protected boolean populateViewFromHttp(InputStream is, View v, int operation) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 }
