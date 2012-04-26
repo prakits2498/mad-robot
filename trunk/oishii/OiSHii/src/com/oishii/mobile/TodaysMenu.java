@@ -35,7 +35,7 @@ public class TodaysMenu extends ListOishiBase {
 		requestWrapper.requestURI = ApplicationConstants.API_MENU_DATA;
 		requestWrapper.callback = menuCallaback;
 		requestWrapper.operationID = OPERATION_LIST;
-		showDialog();
+//		showDialog();
 		new HttpRequestTask().execute(requestWrapper);
 	}
 
@@ -54,8 +54,7 @@ public class TodaysMenu extends ListOishiBase {
 				if (object != null) {
 					NSArray array = (NSArray) object;
 					ArrayList<MenuItem> menuList = getArray(array);
-				
-					
+
 					return menuList;
 				} else {
 					return null;
@@ -63,28 +62,27 @@ public class TodaysMenu extends ListOishiBase {
 			case OPERATION_BITMAP:
 				break;
 			}
-			Log.e("Oishii","IDEALLY SHOULD NEVER GET HERE");
+			Log.e("Oishii", "IDEALLY SHOULD NEVER GET HERE");
 			return null;
 		}
 
 		@Override
 		public void bindUI(Object t, int operationID) {
-			Log.e("Oishii","Binding UI");
-			MainMenuAdapter adapter=new MainMenuAdapter(getApplicationContext(), R.layout.list_todaysmenu_item,  (List<MenuItem>) t);
+			Log.e("Oishii", "Binding UI");
+			MainMenuAdapter adapter = new MainMenuAdapter(
+					getApplicationContext(), R.layout.list_todaysmenu_item,
+					(List<MenuItem>) t);
 			getListView().setAdapter(adapter);
-			hideDialog();
+//			hideDialog();
 		}
 
 		@Override
 		public void onFailure(String message, int operationID) {
 			// TODO Auto-generated method stub
-			
+//			hideDialog();
 		}
-		
-		
+
 	};
-
-
 
 	private ArrayList<MenuItem> getArray(NSArray array) {
 		int count = array.count();
@@ -94,16 +92,15 @@ public class TodaysMenu extends ListOishiBase {
 			MenuItem menu = new MenuItem();
 			menu.setBitmapUrl(d.objectForKey("image").toString());
 			menu.setTitle(d.objectForKey("name").toString());
-			System.out.println(d.objectForKey("id"));
-			System.out.println(d.objectForKey("color"));
+			menu.setId(Integer.parseInt(d.objectForKey("id").toString()));
+			String color=d.objectForKey("color").toString().replace('#',' ').trim();
+			menu.setColor(Integer.parseInt(color,16));
 			menus.add(menu);
-
 		}
 		return menus;
 	}
 
 	class MainMenuAdapter extends ArrayAdapter<MenuItem> {
-
 
 		public MainMenuAdapter(Context context, int textViewResourceId,
 				List<MenuItem> objects) {
@@ -112,14 +109,27 @@ public class TodaysMenu extends ListOishiBase {
 		}
 
 		public View getView(int position, View convertView, ViewGroup parent) {
-			MenuItem item=getItem(position);
-			View view=getLayoutInflater().inflate(R.layout.list_todaysmenu_item, null);
-			TextView tv=(TextView) view.findViewById(R.id.textView1);
-			tv.setText(item.getTitle());
+			View view = convertView;
+			if(view == null)
+			{
+				view = getLayoutInflater().inflate(
+						R.layout.list_todaysmenu_item, null);
+				ViewHolder viewHolder = new ViewHolder();
+				viewHolder.text1 = (TextView) view.findViewById(R.id.textView1);
+				view.setTag(viewHolder);
+			}
+			MenuItem item = getItem(position);
+			view.setBackgroundColor(item.getColor());
+			ViewHolder viewHolder = (ViewHolder)view.getTag();
+			viewHolder.text1.setText(item.getTitle());
 			return view;
 
 		}
 
+	}
+
+	private static class ViewHolder {
+		TextView text1;
 	}
 
 }

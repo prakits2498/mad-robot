@@ -63,7 +63,7 @@ public abstract class OishiiBaseActivity extends Activity {
 		return true;
 	}
 
-	AlertDialog alertDialog;
+private	AlertDialog alertDialog;
 
 	protected void hideDialog() {
 		alertDialog.dismiss();
