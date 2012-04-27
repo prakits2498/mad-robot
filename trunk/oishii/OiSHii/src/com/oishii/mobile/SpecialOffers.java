@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -86,9 +87,9 @@ public class SpecialOffers extends ListOishiBase {
 			SpecialOffer offer = new SpecialOffer();
 			offer.setOfferName(d.objectForKey("name").toString());
 			offer.setShortDesc(d.objectForKey("shortdescription").toString());
-			String color = d.objectForKey("color").toString().replace('#', ' ')
-					.trim();
-			offer.setColor(Integer.parseInt(color, 16));
+//			String color = d.objectForKey("color").toString().replace('#', ' ')
+//					.trim();
+			offer.setColor(Color.parseColor(d.objectForKey("color").toString()));
 			offers.add(offer);
 		}
 		return offers;

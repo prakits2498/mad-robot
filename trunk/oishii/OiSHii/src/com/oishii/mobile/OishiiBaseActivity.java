@@ -44,25 +44,27 @@ public abstract class OishiiBaseActivity extends Activity {
 		v.setOnClickListener(menuListener);
 		v = findViewById(R.id.history);
 		v.setOnClickListener(menuListener);
-		v = findViewById(R.id.history);
+		v = findViewById(R.id.myacc);
 		v.setOnClickListener(menuListener);
-		
+		v = findViewById(R.id.basket);
+		v.setOnClickListener(menuListener);
+
 	}
 
-//	static boolean isMenuScreen;
-//	static boolean isHomeScreen;
-//	public void onBackPressed() {
-//		if(isMenuScreen){
-//			Intent intent=new Intent(getApplicationContext(),Home.class);
-//			startActivity(intent);
-//			isMenuScreen=false;
-//			isHomeScreen=true;
-//		}
-//		if(isHomeScreen){
-//			System.exit(0);
-//		}
-//
-//	};
+	// static boolean isMenuScreen;
+	// static boolean isHomeScreen;
+	// public void onBackPressed() {
+	// if(isMenuScreen){
+	// Intent intent=new Intent(getApplicationContext(),Home.class);
+	// startActivity(intent);
+	// isMenuScreen=false;
+	// isHomeScreen=true;
+	// }
+	// if(isHomeScreen){
+	// System.exit(0);
+	// }
+	//
+	// };
 
 	View.OnClickListener menuListener = new View.OnClickListener() {
 
@@ -72,24 +74,25 @@ public abstract class OishiiBaseActivity extends Activity {
 			if (currentId == v.getId()) {
 				return;
 			}
-//			isMenuScreen=true;
-//			isHomeScreen=false;
-//			finish();
+			// isMenuScreen=true;
+			// isHomeScreen=false;
+			// finish();
+			Class clz = null;
 			switch (v.getId()) {
 			case R.id.offers:
-				Intent intent = new Intent(OishiiBaseActivity.this,
-						SpecialOffers.class);
-				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				startActivity(intent);
+
+				clz = SpecialOffers.class;
 				break;
 			case R.id.about:
-				intent = new Intent(OishiiBaseActivity.this, Home.class);
-				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				startActivity(intent);
+				clz = Home.class;
 				break;
 
 			}
-
+			if (clz != null) {
+				Intent intent = new Intent(OishiiBaseActivity.this, clz);
+				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(intent);
+			}
 		}
 	};
 
