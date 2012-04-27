@@ -41,6 +41,7 @@ public class TodaysMenu extends ListOishiBase {
 		tv.setText(R.string.today);
 		TextView tv2=(TextView) findViewById(R.id.titleSecond);
 		tv2.setText(R.string.menu);
+		
 		executeMenuListRequest();
 	}
 
@@ -106,6 +107,7 @@ public class TodaysMenu extends ListOishiBase {
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 				long arg3) {
 			Log.d("Oishii", "Item at position" + arg2);
+			
 		}
 	};
 
