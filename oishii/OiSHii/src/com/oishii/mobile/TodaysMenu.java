@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import com.madrobot.di.plist.NSArray;
 import com.madrobot.di.plist.NSDictionary;
 import com.madrobot.di.plist.NSObject;
 import com.madrobot.di.plist.PropertyListParser;
+import com.oishii.mobile.beans.CurrentScreen;
 import com.oishii.mobile.beans.MenuData;
 import com.oishii.mobile.util.tasks.BitmapHttpTask;
 import com.oishii.mobile.util.tasks.BitmapRequestParam;
@@ -34,6 +36,7 @@ public class TodaysMenu extends ListOishiBase {
 
 	@Override
 	protected void hookInListData() {
+		CurrentScreen.getInstance().setCurrentScreenID(-1);
 		TextView tv=(TextView) findViewById(R.id.titleFirst);
 		tv.setText(R.string.today);
 		TextView tv2=(TextView) findViewById(R.id.titleSecond);
@@ -115,9 +118,9 @@ public class TodaysMenu extends ListOishiBase {
 			menu.setBitmapUrl(d.objectForKey("image").toString());
 			menu.setTitle(d.objectForKey("name").toString());
 			menu.setId(Integer.parseInt(d.objectForKey("id").toString()));
-			String color = d.objectForKey("color").toString().replace('#', ' ')
-					.trim();
-			menu.setColor(Integer.parseInt(color, 16));
+//			String color = d.objectForKey("color").toString().replace('#', ' ')
+//					.trim();
+			menu.setColor(Color.parseColor(d.objectForKey("color").toString()));
 			menus.add(menu);
 		}
 		return menus;
@@ -161,7 +164,6 @@ public class TodaysMenu extends ListOishiBase {
 			return view;
 
 		}
-
 	}
 
 	private static class ViewHolder {
@@ -170,5 +172,4 @@ public class TodaysMenu extends ListOishiBase {
 		View bg;
 		ProgressBar bar;
 	}
-
 }
