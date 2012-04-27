@@ -19,6 +19,7 @@ public class SpecialOffer {
 	}
 
 	public void setOfferName(String offerName) {
+		offerName.replaceAll("null", "£");
 		this.offerName = offerName;
 	}
 
@@ -27,6 +28,7 @@ public class SpecialOffer {
 	}
 
 	public void setShortDesc(String shortDesc) {
+		offerName.replaceAll("null", "£");
 		this.shortDesc = shortDesc;
 	}
 
