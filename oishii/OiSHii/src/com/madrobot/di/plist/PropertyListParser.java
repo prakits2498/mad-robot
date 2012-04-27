@@ -88,6 +88,15 @@ public class PropertyListParser {
      * @throws Exception If an error occurred while parsing.
      */
     public static NSObject parse(InputStream is) throws Exception {
+       return parse(is,"UTF-8");
+    }
+    /**
+     * Parses a property list from an InputStream.
+     * @param is The InputStream delivering the property list data.
+     * @return The root object of the property list. This is usually a NSDictionary but can also be a NSArray.
+     * @throws Exception If an error occurred while parsing.
+     */
+    public static NSObject parse(InputStream is,String encoding) throws Exception {
         if(is.markSupported()) {
             is.mark(10);
             String magicString = new String(readAll(is, 8), 0, 8);
@@ -107,7 +116,7 @@ public class PropertyListParser {
             return parse(readAll(is, Integer.MAX_VALUE));
         }
     }
-
+    
     /**
      * Saves a property list with the given object as root into a XML file.
      * @param root The root object.
