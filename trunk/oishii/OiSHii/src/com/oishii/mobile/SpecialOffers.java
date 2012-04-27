@@ -49,7 +49,7 @@ public class SpecialOffers extends ListOishiBase {
 		public Object populateBean(InputStream is, int operationId) {
 			NSObject object = null;
 			try {
-				object = PropertyListParser.parse(is);
+				object = PropertyListParser.parse(is,"US-ASCII");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

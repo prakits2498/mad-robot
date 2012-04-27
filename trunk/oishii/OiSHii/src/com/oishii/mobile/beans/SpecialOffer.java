@@ -1,5 +1,7 @@
 package com.oishii.mobile.beans;
 
+import java.io.UnsupportedEncodingException;
+
 public class SpecialOffer {
 	int id;
 	String offerName;
@@ -19,8 +21,9 @@ public class SpecialOffer {
 	}
 
 	public void setOfferName(String offerName) {
-		offerName.replaceAll("null", "£");
+		offerName.replaceAll("null", "\u00a3");
 		this.offerName = offerName;
+		System.out.println("OFfer name->"+offerName);
 	}
 
 	public String getShortDesc() {
@@ -28,8 +31,13 @@ public class SpecialOffer {
 	}
 
 	public void setShortDesc(String shortDesc) {
-		offerName.replaceAll("null", "£");
-		this.shortDesc = shortDesc;
+		offerName.replaceAll("null", "\u00a3");
+		try {
+			this.shortDesc =new String(shortDesc.getBytes(),"US-ASCII");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public int getColor() {

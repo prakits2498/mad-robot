@@ -77,7 +77,7 @@ public class XMLPropertyListParser {
 
         Document doc = docBuilder.parse(f);
 
-        return parseDocument(doc);
+        return parseDocument(doc,"UTF-8");
     }
 
     /**
@@ -103,16 +103,32 @@ public class XMLPropertyListParser {
 
         Document doc = docBuilder.parse(is);
 
-        return parseDocument(doc);
+        return parseDocument(doc,"UTF-8");
     }
 
+    /**
+     * Parses a XML property list from an input stream.
+     * @param is The input stream pointing to the property list's data.
+     * @return The root object of the property list. This is usally a NSDictionary but can also be a NSArray.
+     * @throws Exception When an error occurs during parsing.
+     * @see javax.xml.parsers.DocumentBuilder#parse(java.io.InputStream)
+     */
+    public static NSObject parse(InputStream is,String encoding) throws Exception {
+        DocumentBuilder docBuilder = getDocBuilder();
+
+        Document doc = docBuilder.parse(is);
+
+        return parseDocument(doc,encoding);
+    }
+
+    
     /**
      * Parses the XML document by generating the appropriate NSObjects for each XML node.
      * @param doc The XML document.
      * @return The root NSObject of the property list contained in the XML document.
      * @throws Exception If an error occured during parsing.
      */
-    private static NSObject parseDocument(Document doc) throws Exception {
+    private static NSObject parseDocument(Document doc,String encoding) throws Exception {
         DocumentType docType = doc.getDoctype();
         if(docType==null) {
             if(!doc.getDocumentElement().getNodeName().equals("plist")) {
@@ -126,7 +142,7 @@ public class XMLPropertyListParser {
         //Skip all #TEXT nodes and take the first element node we find as root
         List<Node> rootNodes = filterElementNodes(doc.getDocumentElement().getChildNodes());
         if(rootNodes.size() > 0)
-            return parseObject(rootNodes.get(0));
+            return parseObject(rootNodes.get(0),encoding);
         else
             throw new Exception("No root node found!");
     }
@@ -137,7 +153,7 @@ public class XMLPropertyListParser {
      * @return The corresponding NSObject.
      * @throws Exception If an error occured during parsing the node.
      */
-    private static NSObject parseObject(Node n) throws Exception {
+    private static NSObject parseObject(Node n,String encoding) throws Exception {
         String type = n.getNodeName();
         if (type.equals("dict")) {
             NSDictionary dict = new NSDictionary();
@@ -153,14 +169,14 @@ public class XMLPropertyListParser {
                 for(int j=1;j<key.getChildNodes().getLength();j++)
                     keyString += key.getChildNodes().item(j).getNodeValue();
                 
-		dict.put(keyString, parseObject(val));
+		dict.put(keyString, parseObject(val,encoding));
             }
             return dict;
         } else if (type.equals("array")) {
             List<Node> children = filterElementNodes(n.getChildNodes());
 	    NSArray array = new NSArray(children.size());
 	    for (int i = 0; i < children.size(); i++) {
-		array.setValue(i, parseObject(children.get(i)));
+		array.setValue(i, parseObject(children.get(i),encoding));
 	    }
 	    return array;
         } else if (type.equals("true")) {
@@ -174,14 +190,14 @@ public class XMLPropertyListParser {
         } else if (type.equals("string")) {
             NodeList children = n.getChildNodes();
             if (children.getLength() == 0) {
-                return new NSString(""); //Empty string
+                return new NSString("",encoding); //Empty string
             } else {
                 String string = children.item(0).getNodeValue();
                 //Workaround for buggy behavior of the Android XML parser, which
                 //separates certain Strings into several nodes
                 for(int i=1;i<children.getLength();i++)
                     string += children.item(i).getNodeValue();
-                return new NSString(string);
+                return new NSString(string,encoding);
             }
         } else if (type.equals("data")) {
             return new NSData(n.getChildNodes().item(0).getNodeValue());

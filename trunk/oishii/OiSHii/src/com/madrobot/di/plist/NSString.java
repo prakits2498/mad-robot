@@ -25,6 +25,17 @@ public class NSString extends NSObject {
         content = new String(bytes, encoding);
     }
 
+//    /**
+//     * Creates a NSString from a string.
+//     * @param string The string that will be contained in the NSString.
+//     */
+//    public NSString(String string) {
+//        try {
+//            content = new String(string.getBytes("UTF-8"), "UTF-8");
+//        } catch (UnsupportedEncodingException ex) {
+//            ex.printStackTrace();
+//        }
+//    }
     /**
      * Creates a NSString from a string.
      * @param string The string that will be contained in the NSString.
@@ -36,6 +47,20 @@ public class NSString extends NSObject {
             ex.printStackTrace();
         }
     }
+    
+    /**
+     * Creates a NSString from a string.
+     * @param string The string that will be contained in the NSString.
+     */
+    public NSString(String string,String encoding) {
+        try {
+            content = new String(string.getBytes(encoding), encoding);
+        } catch (UnsupportedEncodingException ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+    
 
     @Override
     public boolean equals(Object obj) {
