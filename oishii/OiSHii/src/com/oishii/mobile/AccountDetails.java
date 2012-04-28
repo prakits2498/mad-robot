@@ -1,11 +1,13 @@
 package com.oishii.mobile;
 
+import com.oishii.mobile.beans.CurrentScreen;
+
 public class AccountDetails extends OishiiBaseActivity {
 
 	@Override
 	protected void hookInChildViews() {
 		// TODO Auto-generated method stub
-
+CurrentScreen.getInstance().setCurrentScreenID(R.id.myacc);
 	}
 
 	@Override
