@@ -22,6 +22,11 @@
     <string name="offers">OFFERS</string>
     <string name="today">TODAYS</string>
     <string name="menu">MENU</string>
-      <string name="acc_title">MY ACCOUNT</string>
+    <string name="acc_title">MY ACCOUNT</string>
+    <string name="error_bad_response">Invalid server response</string>
+    <string name="error_no_data">Could not connect, Please check data connectivity.</string>
+    <string name="signtocontinue">You need to sign in to continue.</string>
+    <string name="checkout">CHECK OUT</string>
+    <string name="history_title">HISTORY</string>
 
 </resources>

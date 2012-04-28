@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="headertext">
+    <style name="headertext" parent="@style/titleShadow">
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/text_color</item>
         <item name="android:textSize">21dip</item>
@@ -9,11 +9,7 @@
         <item name="android:minWidth">110dip</item>
     </style>
 
-    <style name="primary_btn">
-        <item name="android:shadowColor">#19736A</item>
-        <item name="android:shadowDx">0</item>
-        <item name="android:shadowDy">1</item>
-        <item name="android:shadowRadius">0.8</item>
+    <style name="primary_btn" parent="@style/buttonShadow">
         <item name="android:layout_height">40dp</item>
         <item name="android:background">@drawable/btn_primary_selector</item>
         <item name="android:textColor">@android:color/white</item>
@@ -21,10 +17,31 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="todaysmenu_text">
+    <style name="todaysmenu_text" parent="@style/textShadow">
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">19dp</item>
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="textShadow">
+        <item name="android:shadowColor">#19736A</item>
+        <item name="android:shadowDx">0</item>
+        <item name="android:shadowDy">1</item>
+        <item name="android:shadowRadius">0.8</item>
+    </style>
+
+    <style name="buttonShadow">
+        <item name="android:shadowColor">#000000</item>
+        <item name="android:shadowDx">1</item>
+        <item name="android:shadowDy">1</item>
+        <item name="android:shadowRadius">0.6</item>
+    </style>
+
+    <style name="titleShadow">
+        <item name="android:shadowColor">#C0C0C0</item>
+        <item name="android:shadowDx">1</item>
+        <item name="android:shadowDy">1</item>
+        <item name="android:shadowRadius">0.6</item>
+    </style>
+    
 </resources>
