@@ -28,5 +28,11 @@
     <string name="signtocontinue">You need to sign in to continue.</string>
     <string name="checkout">CHECK OUT</string>
     <string name="history_title">HISTORY</string>
+    <string name="create_acc_title">CREATE ACCOUNT</string>
+    <string name="field_title">Title</string>
+    <string name="field_first_name">First Name</string>
+    <string name="field_last_name">Last Name</string>
+    <string name="field_email">Email</string>
+    <string name="field_password">Password</string>
 
 </resources>
