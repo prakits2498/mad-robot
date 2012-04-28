@@ -2,7 +2,7 @@ package com.oishii.mobile.util.tasks;
 
 class HttpResponseWrapper {
 	boolean isSuccess;
-	String errorMessage;
+	int errorMessage;
 	Object responseBean;
 	int operationId;
 	IHttpCallback callback;

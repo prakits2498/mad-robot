@@ -1,8 +1,10 @@
 package com.oishii.mobile;
 
-
 public class OutOfSession extends OishiiBaseActivity {
-int notLoggedScreenID=0x45;
+
+	public static final String SRC_KEY = "SOURCE_SCRN";
+	int notLoggedScreenID = 0x45;
+
 	@Override
 	protected void hookInChildViews() {
 	}
@@ -16,7 +18,18 @@ int notLoggedScreenID=0x45;
 	@Override
 	protected String getTitleString() {
 		// TODO Auto-generated method stub
-		return getString(R.string.acc_title);
+		int source = getIntent().getIntExtra(SRC_KEY, 0);
+		int titleString=R.string.login_title;
+		switch (source) {
+		case R.id.basket:
+			titleString=R.string.checkout;
+			break;
+		case R.id.myacc:
+			titleString=R.string.acc_title;
+		case R.id.history:
+			titleString=R.string.history_title;
+		}
+		return getString(titleString);
 	}
 
 	@Override
