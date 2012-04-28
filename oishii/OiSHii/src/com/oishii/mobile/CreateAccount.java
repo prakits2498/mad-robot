@@ -1,7 +1,7 @@
 package com.oishii.mobile;
 
 
-public class AccountDetails extends OishiiBaseActivity {
+public class CreateAccount extends OishiiBaseActivity {
 
 	@Override
 	protected void hookInChildViews() {
@@ -10,13 +10,13 @@ public class AccountDetails extends OishiiBaseActivity {
 	@Override
 	protected int getChildViewLayout() {
 		// TODO Auto-generated method stub
-		return 0;
+		return R.layout.create_account;
 	}
 
 	@Override
 	protected String getTitleString() {
 		// TODO Auto-generated method stub
-		return getString(R.string.acc_title);
+		return getString(R.string.create_acc_title);
 	}
 
 	@Override
