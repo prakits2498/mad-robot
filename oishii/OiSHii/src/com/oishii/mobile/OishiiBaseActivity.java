@@ -105,6 +105,7 @@ public abstract class OishiiBaseActivity extends Activity {
 			if (clz != null) {
 				Intent intent = new Intent(OishiiBaseActivity.this, clz);
 				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				intent.putExtra(OutOfSession.SRC_KEY, v.getId());
 				startActivity(intent);
 			}
 		}
