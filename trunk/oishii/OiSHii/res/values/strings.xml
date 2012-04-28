@@ -22,5 +22,6 @@
     <string name="offers">OFFERS</string>
     <string name="today">TODAYS</string>
     <string name="menu">MENU</string>
+      <string name="acc_title">MY ACCOUNT</string>
 
 </resources>
