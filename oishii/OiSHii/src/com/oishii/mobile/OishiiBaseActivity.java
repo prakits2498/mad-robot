@@ -2,6 +2,8 @@ package com.oishii.mobile;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,7 +18,8 @@ import com.oishii.mobile.beans.AccountStatus;
 import com.oishii.mobile.beans.CurrentScreen;
 
 public abstract class OishiiBaseActivity extends Activity {
-	public static final  String TAG="Oishii";
+	public static final String TAG = "Oishii";
+
 	@Override
 	public final void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -72,7 +75,7 @@ public abstract class OishiiBaseActivity extends Activity {
 	View.OnClickListener menuListener = new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			Log.d(TAG,"Menu clicked");
+			Log.d(TAG, "Menu clicked");
 			int currentId = CurrentScreen.getInstance().getCurrentScreenID();
 			if (currentId == v.getId()) {
 				return;
@@ -90,10 +93,11 @@ public abstract class OishiiBaseActivity extends Activity {
 				clz = Home.class;
 				break;
 			case R.id.myacc:
-				if(!AccountStatus.getInstance(getApplicationContext()).isSignedIn()){
-					clz=OutOfSession.class;
-				}else{
-					clz=AccountDetails.class;
+				if (!AccountStatus.getInstance(getApplicationContext())
+						.isSignedIn()) {
+					clz = OutOfSession.class;
+				} else {
+					clz = AccountDetails.class;
 				}
 				break;
 
@@ -113,9 +117,11 @@ public abstract class OishiiBaseActivity extends Activity {
 
 	/**
 	 * Activities with the same flow should return the same screen id
+	 * 
 	 * @return
 	 */
 	protected abstract int getSreenID();
+
 	/**
 	 * Get the layout contents of the child view
 	 * 
@@ -164,13 +170,14 @@ public abstract class OishiiBaseActivity extends Activity {
 	}
 
 	protected void showDialog(String message) {
+
 		dialog = new Dialog(OishiiBaseActivity.this);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialog.setContentView(R.layout.progressdialog);
+		// dialog.setCancelable(false);
+		dialog.setTitle(null);
 		TextView tv = (TextView) dialog.findViewById(R.id.textView1);
 		tv.setText(message);
-		dialog.setCancelable(false);
-		dialog.setTitle(null);
 		dialog.show();
 	}
 

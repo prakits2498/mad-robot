@@ -63,7 +63,7 @@ public class SpecialOffers extends ListOishiBase {
 		}
 
 		@Override
-		public void onFailure(String message, int operationID) {
+		public void onFailure(int message, int operationID) {
 			hideDialog();
 		}
 

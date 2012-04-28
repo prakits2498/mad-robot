@@ -9,6 +9,7 @@ import org.apache.http.HttpResponse;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.oishii.mobile.R;
 import com.oishii.mobile.util.HttpTaskHelper;
 
 public class HttpRequestTask extends
@@ -38,19 +39,19 @@ public class HttpRequestTask extends
 					} else {// deserialization failed
 						Log.e("Oishi", "Could not read server response!"
 								+ statusCode);
-						response.errorMessage = "Could not read server response!";
+						response.errorMessage = R.string.error_bad_response;//"Could not read server response!";
 						response.isSuccess = false;
 					}
 				}
 			} else {
 				Log.e("Oishi", "Invalid response received from server!==>"
 						+ statusCode);
-				response.errorMessage = "Invalid Server Response";
+				response.errorMessage =R.string.error_bad_response;// "Invalid Server Response";
 				response.isSuccess = false;
 			}
 			// if(httpEntity.)
 		} catch (IOException e) {
-			response.errorMessage = "Invalid Server Response!";
+			response.errorMessage =R.string.error_no_data;//// "Invalid Server Response!";
 			response.isSuccess = false;
 			e.printStackTrace();
 		} catch (URISyntaxException e) {
