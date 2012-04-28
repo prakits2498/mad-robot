@@ -34,6 +34,12 @@ public class Login extends OishiiBaseActivity {
 
 		return false;
 	}
+//TODO set screen id
+	@Override
+	protected int getSreenID() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
 
 }

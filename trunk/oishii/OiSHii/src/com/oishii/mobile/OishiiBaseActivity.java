@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +16,7 @@ import com.oishii.mobile.beans.AccountStatus;
 import com.oishii.mobile.beans.CurrentScreen;
 
 public abstract class OishiiBaseActivity extends Activity {
-
+	public static final  String TAG="Oishii";
 	@Override
 	public final void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -35,6 +36,7 @@ public abstract class OishiiBaseActivity extends Activity {
 		setContentView(parent);
 		hookInMenu();
 		hookInChildViews();
+		CurrentScreen.getInstance().setCurrentScreenID(getSreenID());
 
 	}
 
@@ -68,9 +70,9 @@ public abstract class OishiiBaseActivity extends Activity {
 	// };
 
 	View.OnClickListener menuListener = new View.OnClickListener() {
-
 		@Override
 		public void onClick(View v) {
+			Log.d(TAG,"Menu clicked");
 			int currentId = CurrentScreen.getInstance().getCurrentScreenID();
 			if (currentId == v.getId()) {
 				return;
@@ -109,6 +111,11 @@ public abstract class OishiiBaseActivity extends Activity {
 	 */
 	protected abstract void hookInChildViews();
 
+	/**
+	 * Activities with the same flow should return the same screen id
+	 * @return
+	 */
+	protected abstract int getSreenID();
 	/**
 	 * Get the layout contents of the child view
 	 * 
