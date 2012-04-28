@@ -3,139 +3,128 @@
     android:layout_height="wrap_content"
     android:orientation="vertical" >
 
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/stroke_border"
-        android:orientation="vertical" >
+        android:layout_marginTop="8dp" >
 
         <LinearLayout
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/stroke_border"
             android:orientation="vertical" >
 
             <LinearLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp" >
+                android:orientation="vertical" >
 
-                <TextView
-                    style="@style/fieldLabel"
-                    android:text="@string/field_title" />
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp" >
 
-                <EditText
-                    android:id="@+id/editText1"
-                    style="@style/fieldText" >
+                    <TextView
+                        style="@style/fieldLabel"
+                        android:text="@string/field_title" />
 
-                    <requestFocus />
-                </EditText>
-            </LinearLayout>
+                    <EditText
+                        android:id="@+id/field_Title"
+                        style="@style/fieldText" >
 
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="2dp"
-                android:background="@drawable/field_separator" />
+                        <requestFocus />
+                    </EditText>
+                </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp" >
+                <View style="@style/fieldSeparator" />
 
-                <TextView
-                    style="@style/fieldLabel"
-                    android:text="@string/field_first_name" />
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp" >
 
-                <EditText
-                    android:id="@+id/fld_FirstName"
-                    style="@style/fieldText" />
-            </LinearLayout>
+                    <TextView
+                        style="@style/fieldLabel"
+                        android:text="@string/field_first_name" />
 
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="2dp"
-                android:background="@drawable/field_separator" />
+                    <EditText
+                        android:id="@+id/fld_FirstName"
+                        style="@style/fieldText" />
+                </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp" >
+                <View style="@style/fieldSeparator" />
 
-                <TextView
-                    style="@style/fieldLabel"
-                    android:text="@string/field_last_name" />
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp" >
 
-                <EditText
-                    android:id="@+id/fld_LastName"
-                    style="@style/fieldText" />
-            </LinearLayout>
+                    <TextView
+                        style="@style/fieldLabel"
+                        android:text="@string/field_last_name" />
 
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="2dp"
-                android:background="@drawable/field_separator" />
+                    <EditText
+                        android:id="@+id/fld_LastName"
+                        style="@style/fieldText" />
+                </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp" >
+                <View style="@style/fieldSeparator" />
 
-                <TextView
-                    style="@style/fieldLabel"
-                    android:text="@string/field_email"
-                    />
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp" >
 
-                <EditText
-                    android:id="@+id/fld_Email"
-                    android:inputType="textEmailAddress"
-                    style="@style/fieldText" />
-            </LinearLayout>
+                    <TextView
+                        style="@style/fieldLabel"
+                        android:text="@string/field_email" />
 
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="2dp"
-                android:background="@drawable/field_separator" />
+                    <EditText
+                        android:id="@+id/fld_Email"
+                        style="@style/fieldText"
+                        android:inputType="textEmailAddress" />
+                </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp" >
+                <View style="@style/fieldSeparator" />
 
-                <TextView
-                    style="@style/fieldLabel"
-                    android:text="@string/field_password" />
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp" >
 
-                <EditText
-                    android:id="@+id/fld_Password"
-                    style="@style/fieldText"
-                    android:inputType="textPassword" />
-            </LinearLayout>
+                    <TextView
+                        style="@style/fieldLabel"
+                        android:text="@string/field_password" />
 
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="2dp"
-                android:background="@drawable/field_separator" />
+                    <EditText
+                        android:id="@+id/fld_Password"
+                        style="@style/fieldText"
+                        android:inputType="textPassword" />
+                </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp" >
+                <View style="@style/fieldSeparator" />
 
-                <TextView
-                    style="@style/fieldLabel"
-                    android:text="@string/field_password" />
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp" >
 
-                <EditText
-                    android:id="@+id/fld_RepPassword"
-                    style="@style/fieldText"
-                    android:inputType="textPassword" />
+                    <TextView
+                        style="@style/fieldLabel"
+                        android:text="@string/field_reppassword" />
+
+                    <EditText
+                        android:id="@+id/fld_RepPassword"
+                        style="@style/fieldText"
+                        android:inputType="textPassword" />
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
+    </ScrollView>
 
     <Button
         android:id="@+id/btnCreateAcc"

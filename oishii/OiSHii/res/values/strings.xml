@@ -34,5 +34,14 @@
     <string name="field_last_name">Last Name</string>
     <string name="field_email">Email</string>
     <string name="field_password">Password</string>
+    <string name="field_reppassword">Confirm</string>
 
+    <!-- Validation error messages -->
+    <string name="error_no_title">*Please enter a title.</string>
+    <string name="error_no_fn">*Please enter a first name.</string>
+    <string name="error_no_ln">*Please enter a last name.</string>
+    <string name="error_no_email">*Please enter an email.</string>
+    <string name="error_no_pwd">*Please enter a password.</string>
+    <string name="error_no_rpwd">*Please repeat password.</string>
+    <string name="error_invalid_email">*Please enter a valid email</string>
 </resources>
