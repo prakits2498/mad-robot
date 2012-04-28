@@ -49,7 +49,7 @@ public class SpecialOffers extends ListOishiBase {
 		public Object populateBean(InputStream is, int operationId) {
 			NSObject object = null;
 			try {
-				object = PropertyListParser.parse(is,"US-ASCII");
+				object = PropertyListParser.parse(is, "US-ASCII");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -65,7 +65,7 @@ public class SpecialOffers extends ListOishiBase {
 
 		@Override
 		public void onFailure(String message, int operationID) {
-
+			hideDialog();
 		}
 
 		@Override
@@ -87,8 +87,9 @@ public class SpecialOffers extends ListOishiBase {
 			SpecialOffer offer = new SpecialOffer();
 			offer.setOfferName(d.objectForKey("name").toString());
 			offer.setShortDesc(d.objectForKey("shortdescription").toString());
-//			String color = d.objectForKey("color").toString().replace('#', ' ')
-//					.trim();
+			// String color = d.objectForKey("color").toString().replace('#',
+			// ' ')
+			// .trim();
 			offer.setColor(Color.parseColor(d.objectForKey("color").toString()));
 			offers.add(offer);
 		}
