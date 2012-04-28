@@ -97,7 +97,7 @@ public abstract class OishiiBaseActivity extends Activity {
 						.isSignedIn()) {
 					clz = OutOfSession.class;
 				} else {
-					clz = AccountDetails.class;
+					clz = CreateAccount.class;
 				}
 				break;
 
