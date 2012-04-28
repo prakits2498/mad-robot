@@ -27,7 +27,6 @@ public class SpecialOffers extends ListOishiBase {
 
 	@Override
 	protected void hookInListData() {
-		CurrentScreen.getInstance().setCurrentScreenID(R.id.offers);
 		TextView tv = (TextView) findViewById(R.id.titleFirst);
 		tv.setText(R.string.special);
 		TextView tv2 = (TextView) findViewById(R.id.titleSecond);
@@ -129,5 +128,11 @@ public class SpecialOffers extends ListOishiBase {
 	private static class ViewHolder {
 		TextView text1;
 		TextView text2;
+	}
+
+	@Override
+	protected int getSreenID() {
+		// TODO Auto-generated method stub
+		return R.id.offers;
 	}
 }

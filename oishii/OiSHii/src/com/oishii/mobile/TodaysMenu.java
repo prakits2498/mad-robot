@@ -36,7 +36,6 @@ public class TodaysMenu extends ListOishiBase {
 
 	@Override
 	protected void hookInListData() {
-		CurrentScreen.getInstance().setCurrentScreenID(-1);
 		TextView tv=(TextView) findViewById(R.id.titleFirst);
 		tv.setText(R.string.today);
 		TextView tv2=(TextView) findViewById(R.id.titleSecond);
@@ -173,5 +172,11 @@ public class TodaysMenu extends ListOishiBase {
 		ImageView image;
 		View bg;
 		ProgressBar bar;
+	}
+
+	@Override
+	protected int getSreenID() {
+		// TODO Auto-generated method stub
+		return -1;
 	}
 }

@@ -1,11 +1,10 @@
 package com.oishii.mobile;
 
-public class OutOfSession extends OishiiBaseActivity {
 
+public class OutOfSession extends OishiiBaseActivity {
+int notLoggedScreenID=0x45;
 	@Override
 	protected void hookInChildViews() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -18,6 +17,12 @@ public class OutOfSession extends OishiiBaseActivity {
 	protected String getTitleString() {
 		// TODO Auto-generated method stub
 		return getString(R.string.acc_title);
+	}
+
+	@Override
+	protected int getSreenID() {
+		// TODO Auto-generated method stub
+		return notLoggedScreenID;
 	}
 
 }
