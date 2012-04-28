@@ -1,5 +1,7 @@
 package com.oishii.mobile;
 
+import android.view.View;
+
 public class OutOfSession extends OishiiBaseActivity {
 
 	public static final String SRC_KEY = "SOURCE_SCRN";
@@ -8,6 +10,18 @@ public class OutOfSession extends OishiiBaseActivity {
 	@Override
 	protected void hookInChildViews() {
 	}
+
+	View.OnClickListener actionListener = new View.OnClickListener() {
+
+		@Override
+		public void onClick(View v) {
+			switch (v.getId()) {
+			case R.id.signIn:
+			case R.id.createAccount:
+				
+			}
+		}
+	};
 
 	@Override
 	protected int getChildViewLayout() {
@@ -19,16 +33,16 @@ public class OutOfSession extends OishiiBaseActivity {
 	protected String getTitleString() {
 		// TODO Auto-generated method stub
 		int source = getIntent().getIntExtra(SRC_KEY, 0);
-		int titleString=R.string.login_title;
+		int titleString = R.string.login_title;
 		switch (source) {
 		case R.id.basket:
-			titleString=R.string.checkout;
+			titleString = R.string.checkout;
 			break;
 		case R.id.myacc:
-			titleString=R.string.acc_title;
+			titleString = R.string.acc_title;
 			break;
 		case R.id.history:
-			titleString=R.string.history_title;
+			titleString = R.string.history_title;
 			break;
 		}
 		return getString(titleString);
