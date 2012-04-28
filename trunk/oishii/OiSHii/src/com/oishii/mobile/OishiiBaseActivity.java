@@ -11,6 +11,7 @@ import android.view.Window;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.oishii.mobile.beans.AccountStatus;
 import com.oishii.mobile.beans.CurrentScreen;
 
 public abstract class OishiiBaseActivity extends Activity {
@@ -85,6 +86,13 @@ public abstract class OishiiBaseActivity extends Activity {
 				break;
 			case R.id.about:
 				clz = Home.class;
+				break;
+			case R.id.myacc:
+				if(!AccountStatus.getInstance(getApplicationContext()).isSignedIn()){
+					clz=OutOfSession.class;
+				}else{
+					clz=AccountDetails.class;
+				}
 				break;
 
 			}
