@@ -3,10 +3,10 @@ package com.oishii.mobile.beans;
 import android.content.Context;
 import android.telephony.TelephonyManager;
 
-public class AccountStatus {
-	boolean isSignedIn;
-	String sid;
-	String mac;
+public final class AccountStatus {
+	private boolean isSignedIn;
+	private String sid;
+	private String mac;
 
 	public boolean isSignedIn() {
 		return isSignedIn;
