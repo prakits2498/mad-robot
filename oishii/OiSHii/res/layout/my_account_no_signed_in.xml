@@ -14,7 +14,7 @@
         android:textSize="17sp" />
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/signIn"
         style="@style/primary_btn"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -24,7 +24,7 @@
         android:text="@string/signin" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/createAccount"
         style="@style/primary_btn"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
