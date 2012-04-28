@@ -10,7 +10,7 @@
         android:layout_height="fill_parent"
         android:layout_above="@+id/footer"
         android:layout_marginTop="42dip"
-        android:background="@color/screen_bg_color"
+        android:background="@drawable/bg"
        >
     </RelativeLayout>
 
