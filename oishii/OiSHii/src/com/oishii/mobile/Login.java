@@ -1,6 +1,5 @@
 package com.oishii.mobile;
 
-import android.content.Intent;
 import android.view.Menu;
 import android.view.View;
 
@@ -11,12 +10,41 @@ public class Login extends OishiiBaseActivity {
 		findViewById(R.id.login).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				finish();
-				Intent launch = new Intent(Login.this, Home.class);
-				startActivity(launch);
+				// finish();
+				// Intent launch = new Intent(Login.this, Home.class);
+				// startActivity(launch);
+
+				if (validate()) {
+					final int nextScreen = getIntent().getIntExtra(
+							OutOfSession.SRC_KEY, 0);
+					Class targetClass;
+					switch (nextScreen) {
+
+					case R.id.basket:
+//						targetClass=;//titleString = R.string.checkout;
+						break;
+					case R.id.myacc:
+//						titleString = R.string.acc_title;
+						break;
+					case R.id.history:
+//						titleString = R.string.history_title;
+						break;
+					}
+				}
+				{
+					// show validate toast
+				}
 			}
 		});
 		findViewById(R.id.footer).setVisibility(View.GONE);
+	}
+
+	private void executeLoginRequest() {
+
+	}
+
+	private boolean validate() {
+		return false;
 	}
 
 	@Override
@@ -34,12 +62,12 @@ public class Login extends OishiiBaseActivity {
 
 		return false;
 	}
-//TODO set screen id
+
+	// TODO set screen id
 	@Override
 	protected int getSreenID() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-
 
 }
