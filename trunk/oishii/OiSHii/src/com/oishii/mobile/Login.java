@@ -116,7 +116,6 @@ public class Login extends OishiiBaseActivity {
 						OutOfSession.SRC_KEY, 0);
 				Class targetClass;
 				switch (nextScreen) {
-
 				case R.id.basket:
 					// targetClass=;//titleString = R.string.checkout;
 					break;
@@ -158,10 +157,10 @@ public class Login extends OishiiBaseActivity {
 			errors.append(getString(R.string.error_no_pwd));
 			errors.append(newline);
 		}
-		// if(TextUtils.isValidEmailAddress(login.getText().toString())){
-		// errors.append(getString(R.string.error_invalid_email));
-		// errors.append(newline);
-		// }
+		 if(TextUtils.isValidEmailAddress(login.getText().toString())){
+		 errors.append(getString(R.string.error_invalid_email));
+		 errors.append(newline);
+		 }
 		return errors.toString();
 	}
 

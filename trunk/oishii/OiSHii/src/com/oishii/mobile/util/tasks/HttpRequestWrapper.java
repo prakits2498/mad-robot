@@ -8,7 +8,7 @@ import org.apache.http.NameValuePair;
 
 import com.oishii.mobile.util.HttpSettings;
 
-public class HttpRequestWrapper<T> {
+public class HttpRequestWrapper {
 	public URI requestURI;
 	/*integer to identify the operation. an activity may user*/
 	public int operationID;
