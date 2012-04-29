@@ -11,21 +11,24 @@ public class OutOfSession extends OishiiBaseActivity {
 	@Override
 	protected void hookInChildViews() {
 		findViewById(R.id.createAccount).setOnClickListener(actionListener);
+		findViewById(R.id.signIn).setOnClickListener(actionListener);
 	}
 
 	View.OnClickListener actionListener = new View.OnClickListener() {
 
 		@Override
 		public void onClick(View v) {
+			Intent intent=new Intent();
+			intent.putExtra(SRC_KEY,getIntent().getIntExtra(SRC_KEY, 0));
 			switch (v.getId()) {
 			case R.id.signIn:
+				intent.setClass(OutOfSession.this, Login.class);
 				break;
 			case R.id.createAccount:
-				Intent intent=new Intent(OutOfSession.this,CreateAccount.class);
-				intent.putExtra(SRC_KEY,getIntent().getIntExtra(SRC_KEY, 0));
-				startActivity(intent);
+				intent.setClass(OutOfSession.this, CreateAccount.class);
 				break;
 			}
+			startActivity(intent);
 		}
 	};
 
