@@ -6,7 +6,7 @@
     <string name="login_title">SIGN IN</string>
     <string name="signin">Sign In</string>
     <string name="createacc">Create Account</string>
-    <string name="username">Username</string>
+    <string name="username">Email</string>
     <string name="password">Password</string>
     <string name="btn_login">Login</string>
     <string name="btn_signup">New Customer</string>
@@ -19,6 +19,7 @@
     <string name="loading_mnu">Loading today\'s menu..</string>
     <string name="loading_offers">Loading Special Offers..</string>
     <string name="loading_register">Creating Account..</string>
+      <string name="loading_login">Signing In..</string>
     <string name="special">SPECIAL</string>
     <string name="offers">OFFERS</string>
     <string name="today">TODAYS</string>
