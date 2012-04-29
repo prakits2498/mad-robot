@@ -36,6 +36,8 @@
                         android:layout_marginBottom="8dp"
                         android:layout_marginLeft="8dp"
                         android:layout_marginTop="8dp"
+                        android:textSize="18sp"
+                        
                         android:text="TextView" />
 
                     <ImageView
@@ -45,7 +47,7 @@
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="8dp"
-                        android:src="@drawable/arrow" />
+                        android:src="@drawable/arrow_green" />
                 </RelativeLayout>
 
                 <View style="@style/fieldSeparator" />
