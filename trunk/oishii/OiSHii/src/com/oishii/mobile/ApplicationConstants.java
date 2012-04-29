@@ -13,5 +13,7 @@ public class ApplicationConstants {
 			+ "menuData.php");
 	public static final URI API_SPECIAL_OFFERS = URI.create(PLIST_PATH
 			+ "specialOffers.php");
+	public static final URI API_REGISTRATION = URI.create(PLIST_PATH
+			+ "registration.php");
 
 }

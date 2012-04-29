@@ -1,14 +1,28 @@
 package com.oishii.mobile;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.oishii.mobile.util.TextUtils;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 
 import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.madrobot.di.plist.NSDictionary;
+import com.madrobot.di.plist.NSNumber;
+import com.madrobot.di.plist.NSObject;
+import com.madrobot.di.plist.PropertyListParser;
+import com.oishii.mobile.beans.RegistrationResult;
+import com.oishii.mobile.util.HttpSettings;
+import com.oishii.mobile.util.HttpSettings.HttpMethod;
+import com.oishii.mobile.util.TextUtils;
+import com.oishii.mobile.util.tasks.HttpRequestTask;
+import com.oishii.mobile.util.tasks.HttpRequestWrapper;
+import com.oishii.mobile.util.tasks.IHttpCallback;
 
 public class CreateAccount extends OishiiBaseActivity {
 
@@ -18,6 +32,8 @@ public class CreateAccount extends OishiiBaseActivity {
 	private EditText email;
 	private EditText pwd;
 	private EditText repPwd;
+
+	private final int OPERATION_REGISTER = 54;
 
 	@Override
 	protected void hookInChildViews() {
@@ -42,8 +58,81 @@ public class CreateAccount extends OishiiBaseActivity {
 	};
 
 	private void createNewAccount() {
-
+		HttpRequestWrapper requestWrapper = new HttpRequestWrapper();
+		requestWrapper.requestURI = ApplicationConstants.API_REGISTRATION;
+		requestWrapper.callback = createAccountCallback;
+		requestWrapper.operationID = OPERATION_REGISTER;
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		NameValuePair param = new BasicNameValuePair("title", title.getText()
+				.toString());
+		params.add(param);
+		param = new BasicNameValuePair("fname", fName.getText().toString());
+		params.add(param);
+		param = new BasicNameValuePair("lname", lName.getText().toString());
+		params.add(param);
+		param = new BasicNameValuePair("email", email.getText().toString());
+		params.add(param);
+		param = new BasicNameValuePair("pswd", pwd.getText().toString());
+		params.add(param);
+		param = new BasicNameValuePair("is_subscribed", "1");
+		params.add(param);
+		HttpSettings settings = new HttpSettings();
+		settings.setHttpMethod(HttpMethod.HTTP_POST);
+		requestWrapper.httpParams = params;
+		requestWrapper.httpSettings = settings;
+		showDialog(getString(R.string.loading_register));
+		new HttpRequestTask().execute(requestWrapper);
 	}
+
+
+
+
+	
+
+	private RegistrationResult getResult(NSObject object) {
+		NSDictionary dict = (NSDictionary) object;
+		RegistrationResult res=new RegistrationResult();
+		NSNumber sucessFalg=(NSNumber) dict.objectForKey("success");
+		res.setSucess(sucessFalg.boolValue());
+		res.setErrorMessage( dict.objectForKey("message").toString());
+		return res;
+	}
+
+	IHttpCallback createAccountCallback = new IHttpCallback() {
+
+		@Override
+		public Object populateBean(InputStream is, int operationId) {
+			NSObject object = null;
+			try {
+				object = PropertyListParser.parse(is);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			if (object != null) {
+				RegistrationResult result = getResult(object);
+				return result;
+			} else {
+				return null;
+			}
+
+		}
+
+		@Override
+		public void onFailure(int message, int operationID) {
+		}
+
+		@Override
+		public void bindUI(Object t, int operationId) {
+			hideDialog();
+			RegistrationResult result=(RegistrationResult) t;
+			if(!result.isSucess()){
+				showErrorDialog(result.getErrorMessage());
+			}else{
+				//TODO launch login screen  . and set the src screen
+				
+			}
+		}
+	};
 
 	@Override
 	protected int getChildViewLayout() {
@@ -72,42 +161,58 @@ public class CreateAccount extends OishiiBaseActivity {
 		return false;
 	}
 
+	private boolean hasValidText(EditText et) {
+		if (et != null) {
+			String text = et.getText().toString().trim();
+			if (text.length() > 0) {
+				return true;
+			}
+
+		}
+		return false;
+	}
+
 	private String validate() {
 		// Level 1 validation
 		String newline = System.getProperty("line.separator");
 		StringBuilder errors = new StringBuilder();
-		if (!(title.getText().toString().length() > 0)) {
+		if (!hasValidText(title)) {
 			errors.append(getString(R.string.error_no_title));
 			errors.append(newline);
 		}
-		if (!(fName.getText().toString().length() > 0)) {
+		if (!hasValidText(fName)) {
 			errors.append(getString(R.string.error_no_fn));
 			errors.append(newline);
 		}
-		if (!(lName.getText().toString().length() > 0)) {
+		if (!hasValidText(lName)) {
 			errors.append(getString(R.string.error_no_ln));
 			errors.append(newline);
 		}
-		if (!(email.getText().toString().length() > 0)) {
+		if (!hasValidText(email)) {
 			errors.append(getString(R.string.error_no_email));
 			errors.append(newline);
 		}
-		if (!(pwd.getText().toString().length() > 0)) {
+		if (!hasValidText(pwd)) {
 			errors.append(getString(R.string.error_no_pwd));
 			errors.append(newline);
 		}
 
-		if (!(repPwd.getText().toString().length() > 0)) {
+		if (!hasValidText(repPwd)) {
 			errors.append(getString(R.string.error_no_rpwd));
 			errors.append(newline);
 		}
 		if (errors.length() > 0)
 			return errors.toString();
 
-		//level 2 validation
-		if(!TextUtils.isValidEmailAddress(email.getText().toString())){
+		// level 2 validation
+		if (!TextUtils.isValidEmailAddress(email.getText().toString())) {
 			errors.append(getString(R.string.error_invalid_email));
+			errors.append(newline);
 		}
+		if (!(pwd.getText().toString().equals(repPwd.getText().toString()))) {
+			errors.append(getString(R.string.error_pwd_match));
+		}
+
 		return errors.toString();
 	}
 }

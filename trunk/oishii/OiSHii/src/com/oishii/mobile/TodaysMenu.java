@@ -95,7 +95,7 @@ public class TodaysMenu extends ListOishiBase {
 		@Override
 		public void onFailure(int message, int operationID) {
 			hideDialog();
-			
+			showErrorDialog(getString(message));
 		}
 
 	};
