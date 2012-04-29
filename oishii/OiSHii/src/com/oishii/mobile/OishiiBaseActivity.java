@@ -137,34 +137,18 @@ public abstract class OishiiBaseActivity extends Activity {
 		findViewById(R.id.headertitle).setVisibility(View.GONE);
 	}
 
-	// @Override
-	// public boolean onCreateOptionsMenu(Menu menu) {
-	// MenuInflater inflater = getMenuInflater();
-	// inflater.inflate(R.menu.defaultmenu, menu);
-	// return true;
-	// }
-
-	public boolean onOptionsItemSelected(MenuItem item) {
-		int currentId = CurrentScreen.getInstance().getCurrentScreenID();
-		if (currentId == item.getItemId()) {
-			return false;
-		}
-		switch (item.getItemId()) {
-		case R.id.offers:
-			Intent intent = new Intent(OishiiBaseActivity.this,
-					SpecialOffers.class);
-			startActivity(intent);
-			return true;
-		case R.id.about:
-			intent = new Intent(OishiiBaseActivity.this, Home.class);
-			startActivity(intent);
-			return true;
-
-		}
-		return false;
+	protected void showErrorDialog(String errorMessage) {
+		errorDialog = new Dialog(OishiiBaseActivity.this);
+		errorDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		errorDialog.setContentView(R.layout.error_dialog);
+		TextView errMsg = (TextView) errorDialog.findViewById(R.id.errMsg);
+		errMsg.setText(errorMessage);
+		// TODO set message
+		errorDialog.show();
 	}
 
 	private Dialog dialog;
+	private Dialog errorDialog;
 
 	protected void hideDialog() {
 		dialog.dismiss();
