@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
+import android.content.Intent;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
@@ -114,17 +115,23 @@ public class Login extends OishiiBaseActivity {
 			if (AccountStatus.getInstance(getApplicationContext()).isSignedIn()) {
 				final int nextScreen = getIntent().getIntExtra(
 						OutOfSession.SRC_KEY, 0);
-				Class targetClass;
+				Class<? extends OishiiBaseActivity> targetClass = null;
 				switch (nextScreen) {
 				case R.id.basket:
 					// targetClass=;//titleString = R.string.checkout;
 					break;
 				case R.id.myacc:
 					// titleString = R.string.acc_title;
+					targetClass=AccountDetails.class;
 					break;
 				case R.id.history:
 					// titleString = R.string.history_title;
 					break;
+				}
+				if(targetClass!=null){
+					finish();
+					Intent intent=new Intent(Login.this,targetClass);
+					startActivity(intent);
 				}
 			} else {
 				showErrorDialog(t.toString());
@@ -155,12 +162,12 @@ public class Login extends OishiiBaseActivity {
 		}
 		if (!hasValidText(pwd)) {
 			errors.append(getString(R.string.error_no_pwd));
-			errors.append(newline);
+//			errors.append(newline);
 		}
-		 if(TextUtils.isValidEmailAddress(login.getText().toString())){
-		 errors.append(getString(R.string.error_invalid_email));
-		 errors.append(newline);
-		 }
+//		 if(TextUtils.isValidEmailAddress(login.getText().toString())){
+//		 errors.append(getString(R.string.error_invalid_email));
+//		 errors.append(newline);
+//		 }
 		return errors.toString();
 	}
 
