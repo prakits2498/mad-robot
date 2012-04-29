@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -25,6 +26,17 @@ public abstract class OishiiBaseActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		hookInViews();
 
+	}
+
+	protected boolean hasValidText(EditText et) {
+		if (et != null) {
+			String text = et.getText().toString().trim();
+			if (text.length() > 0) {
+				return true;
+			}
+
+		}
+		return false;
 	}
 
 	protected void hookInViews() {
@@ -143,6 +155,14 @@ public abstract class OishiiBaseActivity extends Activity {
 		errorDialog.setContentView(R.layout.error_dialog);
 		TextView errMsg = (TextView) errorDialog.findViewById(R.id.errMsg);
 		errMsg.setText(errorMessage);
+		errorDialog.findViewById(R.id.btnDismiss).setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				errorDialog.dismiss();
+			}
+		});
+		
 		// TODO set message
 		errorDialog.show();
 	}
@@ -151,7 +171,8 @@ public abstract class OishiiBaseActivity extends Activity {
 	private Dialog errorDialog;
 
 	protected void hideDialog() {
-		dialog.dismiss();
+		if (dialog.isShowing())
+			dialog.dismiss();
 	}
 
 	protected void showDialog(String message) {
@@ -159,7 +180,7 @@ public abstract class OishiiBaseActivity extends Activity {
 		dialog = new Dialog(OishiiBaseActivity.this);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialog.setContentView(R.layout.progressdialog);
-		// dialog.setCancelable(false);
+		dialog.setCancelable(false);
 		dialog.setTitle(null);
 		TextView tv = (TextView) dialog.findViewById(R.id.textView1);
 		tv.setText(message);

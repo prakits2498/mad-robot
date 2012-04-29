@@ -164,16 +164,7 @@ public class CreateAccount extends OishiiBaseActivity {
 		return false;
 	}
 
-	private boolean hasValidText(EditText et) {
-		if (et != null) {
-			String text = et.getText().toString().trim();
-			if (text.length() > 0) {
-				return true;
-			}
-
-		}
-		return false;
-	}
+	
 
 	private String validate() {
 		// Level 1 validation

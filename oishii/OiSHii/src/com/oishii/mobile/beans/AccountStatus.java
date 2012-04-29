@@ -7,6 +7,15 @@ public final class AccountStatus {
 	private boolean isSignedIn;
 	private String sid;
 	private String mac;
+	private long customerId;
+
+	public long getCustomerId() {
+		return customerId;
+	}
+
+	public void setCustomerId(long customerId) {
+		this.customerId = customerId;
+	}
 
 	public boolean isSignedIn() {
 		return isSignedIn;
