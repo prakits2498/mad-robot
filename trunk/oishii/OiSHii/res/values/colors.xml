@@ -3,4 +3,5 @@
     <color name="text_color">#31B7AC</color>
     <color name="screen_bg_color">#CCCCCC</color>
     <color name="text_field_hint">#A6A8AB</color>
+    <color name="gray">#E5E5E5</color>
 </resources>
