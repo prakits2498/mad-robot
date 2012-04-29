@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
+import android.content.Intent;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
@@ -129,7 +130,9 @@ public class CreateAccount extends OishiiBaseActivity {
 				showErrorDialog(result.getErrorMessage());
 			}else{
 				//TODO launch login screen  . and set the src screen
-				
+				Intent intent=new Intent(CreateAccount.this,Login.class);
+				intent.putExtra(OutOfSession.SRC_KEY, getIntent().getIntExtra(OutOfSession.SRC_KEY,0));
+				startActivity(intent);
 			}
 		}
 	};
