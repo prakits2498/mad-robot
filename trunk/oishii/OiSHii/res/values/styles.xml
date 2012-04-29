@@ -23,6 +23,10 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="sploffers_text" parent="@style/todaysmenu_text">
+        <item name="android:textSize">16dp</item>
+    </style>
+    
     <style name="textShadow">
         <item name="android:shadowColor">#19736A</item>
         <item name="android:shadowDx">0</item>

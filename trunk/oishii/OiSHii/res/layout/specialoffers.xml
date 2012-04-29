@@ -7,6 +7,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/imageView1"
         android:layout_marginBottom="8dp"
         android:layout_marginLeft="15dp"
         android:layout_marginTop="8dp"
@@ -14,7 +15,7 @@
 
         <TextView
             android:id="@+id/offerTitle"
-            style="@style/todaysmenu_text"
+            style="@style/sploffers_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
