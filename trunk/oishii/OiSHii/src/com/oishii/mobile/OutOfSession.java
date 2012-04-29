@@ -35,7 +35,7 @@ public class OutOfSession extends OishiiBaseActivity {
 	@Override
 	protected int getChildViewLayout() {
 		// TODO Auto-generated method stub
-		return R.layout.my_account_no_signed_in;
+		return R.layout.no_signed_in;
 	}
 
 	@Override
