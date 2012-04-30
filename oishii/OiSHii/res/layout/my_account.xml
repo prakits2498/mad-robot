@@ -36,15 +36,15 @@
                         android:layout_marginBottom="8dp"
                         android:layout_marginLeft="8dp"
                         android:layout_marginTop="8dp"
-                        android:textSize="21sp"
+                        android:text="@string/mydet"
                         android:textColor="@color/text_color"
-                        android:textStyle="bold"
-                        android:text="@string/mydet" />
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
 
                     <ImageView
                         android:id="@+id/imageView1"
-                        android:layout_width="25dp"
-                        android:layout_height="30dp"
+                        android:layout_width="10dp"
+                        android:layout_height="15dp"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="8dp"
