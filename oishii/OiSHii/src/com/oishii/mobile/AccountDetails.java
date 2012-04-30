@@ -44,7 +44,7 @@ public class AccountDetails extends OishiiBaseActivity {
 		param = new BasicNameValuePair("sid", accStat.getSid());
 		params.add(param);
 		requestWrapper.httpParams = params;
-		showDialog(getString(R.string.loading_acc));
+//		showDialog(getString(R.string.loading_acc));
 		new HttpRequestTask().execute(requestWrapper);
 	}
 
