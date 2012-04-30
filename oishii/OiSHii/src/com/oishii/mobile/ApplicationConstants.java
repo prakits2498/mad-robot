@@ -15,4 +15,6 @@ public class ApplicationConstants {
 			+ "specialOffers.php");
 	public static final URI API_REGISTRATION = URI.create(PLIST_PATH
 			+ "registration.php");
+	public static final URI API_MY_ACCOUNT = URI.create(PLIST_PATH
+			+ "myaccount.php");
 }
