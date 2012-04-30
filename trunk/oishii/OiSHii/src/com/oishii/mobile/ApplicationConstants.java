@@ -11,6 +11,8 @@ public class ApplicationConstants {
 	public static final URI API_LOGIN = URI.create(PLIST_PATH + "login.php");
 	public static final URI API_MENU_DATA = URI.create(PLIST_PATH
 			+ "menuData.php");
+	public static final URI API_MENU_DETAILS = URI.create(PLIST_PATH
+			+ "menuItemData.php");
 	public static final URI API_SPECIAL_OFFERS = URI.create(PLIST_PATH
 			+ "specialOffers.php");
 	public static final URI API_REGISTRATION = URI.create(PLIST_PATH

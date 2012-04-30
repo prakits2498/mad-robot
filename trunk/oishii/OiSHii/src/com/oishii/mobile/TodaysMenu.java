@@ -24,6 +24,7 @@ import com.madrobot.di.plist.NSObject;
 import com.madrobot.di.plist.PropertyListParser;
 import com.oishii.mobile.beans.CurrentScreen;
 import com.oishii.mobile.beans.MenuData;
+import com.oishii.mobile.util.HttpSettings.HttpMethod;
 import com.oishii.mobile.util.tasks.BitmapHttpTask;
 import com.oishii.mobile.util.tasks.BitmapRequestParam;
 import com.oishii.mobile.util.tasks.HttpRequestTask;
@@ -50,6 +51,7 @@ public class TodaysMenu extends ListOishiBase {
 		requestWrapper.requestURI = ApplicationConstants.API_MENU_DATA;
 		requestWrapper.callback = menuCallaback;
 		requestWrapper.operationID = OPERATION_LIST;
+		requestWrapper.httpSettings.setHttpMethod(HttpMethod.HTTP_POST);
 		showDialog(getString(R.string.loading_mnu));
 		new HttpRequestTask().execute(requestWrapper);
 	}
