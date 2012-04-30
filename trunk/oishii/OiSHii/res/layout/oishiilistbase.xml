@@ -23,6 +23,7 @@
 
             <TextView
                 android:id="@+id/titleFirst"
+                style="@style/todaysmenu_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
@@ -32,6 +33,7 @@
 
             <TextView
                 android:id="@+id/titleSecond"
+                style="@style/todaysmenu_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/text_color"
@@ -49,7 +51,18 @@
         android:drawSelectorOnTop="true"
         android:fadingEdge="none"
         android:listSelector="@drawable/selector"
-        android:scrollingCache="false"
-         />
+        android:scrollingCache="false" />
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:id="@+id/manualList"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone" />
+    </ScrollView>
 
 </LinearLayout>
