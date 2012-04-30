@@ -17,7 +17,7 @@ import com.madrobot.di.plist.NSDictionary;
 import com.madrobot.di.plist.NSNumber;
 import com.madrobot.di.plist.NSObject;
 import com.madrobot.di.plist.PropertyListParser;
-import com.oishii.mobile.beans.RegistrationResult;
+import com.oishii.mobile.beans.SimpleResult;
 import com.oishii.mobile.util.HttpSettings;
 import com.oishii.mobile.util.HttpSettings.HttpMethod;
 import com.oishii.mobile.util.TextUtils;
@@ -86,19 +86,6 @@ public class CreateAccount extends OishiiBaseActivity {
 	}
 
 
-
-
-	
-
-	private RegistrationResult getResult(NSObject object) {
-		NSDictionary dict = (NSDictionary) object;
-		RegistrationResult res=new RegistrationResult();
-		NSNumber sucessFalg=(NSNumber) dict.objectForKey("success");
-		res.setSucess(sucessFalg.boolValue());
-		res.setErrorMessage( dict.objectForKey("message").toString());
-		return res;
-	}
-
 	IHttpCallback createAccountCallback = new IHttpCallback() {
 
 		@Override
@@ -110,7 +97,7 @@ public class CreateAccount extends OishiiBaseActivity {
 				e.printStackTrace();
 			}
 			if (object != null) {
-				RegistrationResult result = getResult(object);
+				SimpleResult result = getSimpleResult(object);
 				return result;
 			} else {
 				return null;
@@ -120,12 +107,13 @@ public class CreateAccount extends OishiiBaseActivity {
 
 		@Override
 		public void onFailure(int message, int operationID) {
+			processFailure(message);
 		}
 
 		@Override
 		public void bindUI(Object t, int operationId) {
 			hideDialog();
-			RegistrationResult result=(RegistrationResult) t;
+			SimpleResult result=(SimpleResult) t;
 			if(!result.isSucess()){
 				showErrorDialog(result.getErrorMessage());
 			}else{

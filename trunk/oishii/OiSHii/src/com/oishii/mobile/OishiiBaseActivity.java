@@ -11,12 +11,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.madrobot.di.plist.NSDictionary;
+import com.madrobot.di.plist.NSNumber;
+import com.madrobot.di.plist.NSObject;
 import com.oishii.mobile.beans.AccountStatus;
 import com.oishii.mobile.beans.CurrentScreen;
+import com.oishii.mobile.beans.SimpleResult;
 
 public abstract class OishiiBaseActivity extends Activity {
 	public static final String TAG = "Oishii";
@@ -51,12 +56,12 @@ public abstract class OishiiBaseActivity extends Activity {
 		setContentView(parent);
 		hookInMenu();
 		hookInChildViews();
-setCurrentScreen();
+		setCurrentScreen();
 	}
-	
-	private void setCurrentScreen(){
+
+	private void setCurrentScreen() {
 		CurrentScreen.getInstance().setCurrentScreenID(getSreenID());
-		
+
 	}
 
 	protected void hookInMenu() {
@@ -157,7 +162,16 @@ setCurrentScreen();
 		findViewById(R.id.headertitle).setVisibility(View.GONE);
 	}
 
-	protected void showErrorDialog(String errorMessage) {
+	View.OnClickListener errorDialogListener = new View.OnClickListener() {
+
+		@Override
+		public void onClick(View v) {
+			errorDialog.dismiss();
+		}
+	};
+
+	protected void showErrorDialog(String errorMessage,
+			OnClickListener dismissHandler) {
 		errorDialog = new Dialog(OishiiBaseActivity.this);
 		errorDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		errorDialog.setContentView(R.layout.error_dialog);
@@ -168,12 +182,21 @@ setCurrentScreen();
 
 					@Override
 					public void onClick(View v) {
-						errorDialog.dismiss();
+
 					}
 				});
 
 		// TODO set message
 		errorDialog.show();
+	}
+
+	protected void dismissErrorDialog() {
+		if (errorDialog.isShowing())
+			errorDialog.dismiss();
+	}
+
+	protected void showErrorDialog(String errorMessage) {
+		showErrorDialog(errorMessage, errorDialogListener);
 	}
 
 	private Dialog dialog;
@@ -200,5 +223,21 @@ setCurrentScreen();
 		super.onResume();
 		setCurrentScreen();
 	}
+
+	protected void processFailure(int message) {
+		hideDialog();
+
+		showErrorDialog(getString(message));
+	}
+	
+	protected SimpleResult getSimpleResult(NSObject object) {
+		NSDictionary dict = (NSDictionary) object;
+		SimpleResult res = new SimpleResult();
+		NSNumber sucessFalg = (NSNumber) dict.objectForKey("success");
+		res.setSucess(sucessFalg.boolValue());
+		res.setErrorMessage(dict.objectForKey("message").toString());
+		return res;
+	}
+
 
 }
