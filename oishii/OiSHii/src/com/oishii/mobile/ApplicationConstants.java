@@ -17,4 +17,6 @@ public class ApplicationConstants {
 			+ "registration.php");
 	public static final URI API_MY_ACCOUNT = URI.create(PLIST_PATH
 			+ "myaccount.php");
+	public static final URI API_CHANGE_PWD= URI.create(PLIST_PATH
+			+ "changePassword.php");
 }

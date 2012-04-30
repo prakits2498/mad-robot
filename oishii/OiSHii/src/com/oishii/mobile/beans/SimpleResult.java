@@ -1,6 +1,6 @@
 package com.oishii.mobile.beans;
 
-public class RegistrationResult {
+public class SimpleResult {
 	boolean sucess;
 	String errorMessage;
 	public boolean isSucess() {

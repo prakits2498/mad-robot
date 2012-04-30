@@ -57,10 +57,10 @@ public class AccountDetails extends OishiiBaseActivity {
 				break;
 			}
 			if (clz != null) {
-				Intent intent=new Intent(AccountDetails.this, clz);
+				Intent intent = new Intent(AccountDetails.this, clz);
 				startActivity(intent);
 			}
-			
+
 		}
 	};
 
@@ -99,7 +99,7 @@ public class AccountDetails extends OishiiBaseActivity {
 
 		@Override
 		public void onFailure(int message, int operationID) {
-			hideDialog();
+			processFailure(message);
 		}
 
 		@Override

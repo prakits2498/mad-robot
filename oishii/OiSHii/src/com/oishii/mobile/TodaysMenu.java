@@ -36,11 +36,11 @@ public class TodaysMenu extends ListOishiBase {
 
 	@Override
 	protected void hookInListData() {
-		TextView tv=(TextView) findViewById(R.id.titleFirst);
+		TextView tv = (TextView) findViewById(R.id.titleFirst);
 		tv.setText(R.string.today);
-		TextView tv2=(TextView) findViewById(R.id.titleSecond);
+		TextView tv2 = (TextView) findViewById(R.id.titleSecond);
 		tv2.setText(R.string.menu);
-		
+
 		executeMenuListRequest();
 	}
 
@@ -94,8 +94,7 @@ public class TodaysMenu extends ListOishiBase {
 
 		@Override
 		public void onFailure(int message, int operationID) {
-			hideDialog();
-			showErrorDialog(getString(message));
+			processFailure(message);
 		}
 
 	};
@@ -106,7 +105,7 @@ public class TodaysMenu extends ListOishiBase {
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 				long arg3) {
 			Log.d("Oishii", "Item at position" + arg2);
-			
+
 		}
 	};
 
@@ -119,8 +118,9 @@ public class TodaysMenu extends ListOishiBase {
 			menu.setBitmapUrl(d.objectForKey("image").toString());
 			menu.setTitle(d.objectForKey("name").toString());
 			menu.setId(Integer.parseInt(d.objectForKey("id").toString()));
-//			String color = d.objectForKey("color").toString().replace('#', ' ')
-//					.trim();
+			// String color = d.objectForKey("color").toString().replace('#',
+			// ' ')
+			// .trim();
 			menu.setColor(Color.parseColor(d.objectForKey("color").toString()));
 			menus.add(menu);
 		}
@@ -147,7 +147,8 @@ public class TodaysMenu extends ListOishiBase {
 				viewHolder.image = (ImageView) view
 						.findViewById(R.id.imageView1);
 				viewHolder.bg = view.findViewById(R.id.bg);
-				viewHolder.bar=(ProgressBar) view.findViewById(R.id.imageProgress);
+				viewHolder.bar = (ProgressBar) view
+						.findViewById(R.id.imageProgress);
 				view.setTag(viewHolder);
 			}
 			System.out.println("color->" + item.getColor());
@@ -159,7 +160,7 @@ public class TodaysMenu extends ListOishiBase {
 				req.bitmapUri = URI.create(item.getBitmapUrl());
 				req.image = viewHolder.image;
 				req.image.setTag(new Object());
-				req.progress=viewHolder.bar;
+				req.progress = viewHolder.bar;
 				new BitmapHttpTask().execute(req);
 			}
 			return view;

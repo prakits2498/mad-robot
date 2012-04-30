@@ -109,9 +109,7 @@ public class Login extends OishiiBaseActivity {
 
 		@Override
 		public void onFailure(int message, int operationID) {
-			hideDialog();
-			showErrorDialog(getString(message));
-
+processFailure(message);
 		}
 
 		@Override
