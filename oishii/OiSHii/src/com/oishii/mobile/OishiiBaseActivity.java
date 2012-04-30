@@ -2,16 +2,14 @@ package com.oishii.mobile;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -31,6 +29,20 @@ public abstract class OishiiBaseActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		hookInViews();
 
+	}
+
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_MENU) {
+			// Do Stuff
+			if (menuView.getVisibility() == View.VISIBLE) {
+				menuView.setVisibility(View.GONE);
+			} else {
+				menuView.setVisibility(View.VISIBLE);
+			}
+			return true;
+		} else {
+			return super.onKeyDown(keyCode, event);
+		}
 	}
 
 	protected boolean hasValidText(EditText et) {
@@ -64,7 +76,10 @@ public abstract class OishiiBaseActivity extends Activity {
 
 	}
 
+	private View menuView;
+
 	protected void hookInMenu() {
+		menuView = findViewById(R.id.footer);
 		View v = findViewById(R.id.about);
 		v.setOnClickListener(menuListener);
 		v = findViewById(R.id.offers);
@@ -177,8 +192,8 @@ public abstract class OishiiBaseActivity extends Activity {
 		errorDialog.setContentView(R.layout.error_dialog);
 		TextView errMsg = (TextView) errorDialog.findViewById(R.id.errMsg);
 		errMsg.setText(errorMessage);
-		errorDialog.findViewById(R.id.btnDismiss).setOnClickListener(dismissHandler);
-				
+		errorDialog.findViewById(R.id.btnDismiss).setOnClickListener(
+				dismissHandler);
 
 		// TODO set message
 		errorDialog.show();
@@ -223,7 +238,7 @@ public abstract class OishiiBaseActivity extends Activity {
 
 		showErrorDialog(getString(message));
 	}
-	
+
 	protected SimpleResult getSimpleResult(NSObject object) {
 		NSDictionary dict = (NSDictionary) object;
 		SimpleResult res = new SimpleResult();
@@ -232,6 +247,5 @@ public abstract class OishiiBaseActivity extends Activity {
 		res.setErrorMessage(dict.objectForKey("message").toString());
 		return res;
 	}
-
 
 }
