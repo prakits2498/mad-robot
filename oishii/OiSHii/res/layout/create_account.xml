@@ -132,6 +132,6 @@
     <Button
         android:id="@+id/btnCreateAcc"
         style="@style/fieldButton"
-        android:text="@string/createacc" />
+        android:text="@string/chngpwd" />
 
 </LinearLayout>
