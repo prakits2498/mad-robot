@@ -33,7 +33,7 @@
             <View style="@style/fieldSeparator" />
 
             <RelativeLayout
-                android:id="@+id/myAccDetails"
+                android:id="@+id/myAccLocation"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content" >
 
@@ -47,7 +47,7 @@
             <View style="@style/fieldSeparator" />
 
             <RelativeLayout
-                android:id="@+id/myAccDetails"
+                android:id="@+id/myAccPayment"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content" >
 
@@ -61,7 +61,8 @@
             <View style="@style/fieldSeparator" />
 
             <RelativeLayout
-                android:id="@+id/myAccDetails"
+                
+                android:id="@+id/myAccPwd"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content" >
 

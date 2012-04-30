@@ -4,21 +4,21 @@
     android:orientation="vertical" >
 
     <ScrollView
+        style="@style/fieldShadow"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
         android:layout_gravity="center"
+        android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
-        style="@style/fieldShadow" >
+        android:layout_marginTop="8dp" >
 
         <LinearLayout
             xmlns:android="http://schemas.android.com/apk/res/android"
+            style="@style/fieldShadow"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/stroke_border"
-            android:orientation="vertical"
-            style="@style/fieldShadow" >
+            android:orientation="vertical" >
 
             <LinearLayout
                 xmlns:android="http://schemas.android.com/apk/res/android"
@@ -131,12 +131,7 @@
 
     <Button
         android:id="@+id/btnCreateAcc"
-        style="@style/primary_btn"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginTop="15dp"
+        style="@style/fieldButton"
         android:text="@string/createacc" />
 
 </LinearLayout>
