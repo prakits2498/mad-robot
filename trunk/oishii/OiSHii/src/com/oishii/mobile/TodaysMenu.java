@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.View;
@@ -106,6 +107,12 @@ public class TodaysMenu extends ListOishiBase {
 				long arg3) {
 			Log.d("Oishii", "Item at position" + arg2);
 
+			MenuData menu = (MenuData) getListView().getItemAtPosition(arg2);
+			Intent intent = new Intent(TodaysMenu.this, TodaysMenuDetails.class);
+			intent.putExtra(TodaysMenuDetails.EXTRA_TITLE, menu.getTitle());
+			intent.putExtra(TodaysMenuDetails.EXTRA_CAT_ID, menu.getId());
+			intent.putExtra(TodaysMenuDetails.EXTRA_COLOR, menu.getColor());
+			startActivity(intent);
 		}
 	};
 
