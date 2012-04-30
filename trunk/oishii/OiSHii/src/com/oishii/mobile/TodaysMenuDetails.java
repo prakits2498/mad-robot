@@ -7,7 +7,16 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
+import com.madrobot.di.plist.NSArray;
+import com.madrobot.di.plist.NSDictionary;
+import com.madrobot.di.plist.NSNumber;
+import com.madrobot.di.plist.NSObject;
+import com.madrobot.di.plist.PropertyListParser;
 import com.oishii.mobile.beans.AccountStatus;
+import com.oishii.mobile.beans.MenuData;
+import com.oishii.mobile.beans.MenuItem;
+import com.oishii.mobile.beans.MenuItemCategory;
+import com.oishii.mobile.beans.MenuItemDetails;
 import com.oishii.mobile.util.HttpSettings.HttpMethod;
 import com.oishii.mobile.util.tasks.HttpRequestTask;
 import com.oishii.mobile.util.tasks.HttpRequestWrapper;
@@ -21,7 +30,7 @@ public class TodaysMenuDetails extends OishiiBaseActivity {
 	final static String EXTRA_TITLE = "title";
 	final static String EXTRA_COLOR = "bgColor";
 	final static String EXTRA_CAT_ID = "catID";
-	int OPERATION_MNU_DET=78;
+	int OPERATION_MNU_DET = 78;
 
 	@Override
 	protected void hookInChildViews() {
@@ -35,11 +44,58 @@ public class TodaysMenuDetails extends OishiiBaseActivity {
 		executeMenuDetailsRequest();
 	}
 
+	private MenuItemDetails processPlist(NSObject obj) {
+		NSArray plist = (NSArray) obj;
+		int categories = plist.count();
+		MenuItemDetails details = new MenuItemDetails();
+		for (int i = 0; i < categories; i++) {
+			NSDictionary dict = (NSDictionary) plist.objectAtIndex(i);
+			MenuItemCategory menuCategory = new MenuItemCategory();
+			NSNumber id = (NSNumber) dict.objectForKey("id");
+			menuCategory.setId(id.intValue());
+			menuCategory.setName(dict.objectForKey("name").toString());
+			menuCategory.setDescription(dict.objectForKey("shortdescription")
+					.toString());
+			NSArray items = (NSArray) dict.objectForKey("items");
+			int number = items.count();
+			for (int y = 0; y < number; y++) {
+				NSDictionary menuItems = (NSDictionary) items.objectAtIndex(y);
+				MenuItem menuItem = new MenuItem();
+				id = (NSNumber) menuItems.objectForKey("id");
+				menuItem.setId(id.intValue());
+				menuItem.setName(menuItems.objectForKey("name").toString());
+				menuItem.setImage(menuItems.objectForKey("image").toString());
+				menuItem.setDescription(menuItems.objectForKey(
+						"shortdescription").toString());
+				id = (NSNumber) menuItems.objectForKey("itemsremaining");
+				menuItem.setItemsRemain(id.intValue());
+				id = (NSNumber) menuItems.objectForKey("price");
+				menuItem.setPrice(id.floatValue());
+				menuCategory.addMenuItem(menuItem);
+			}
+			details.addMenuCategories(menuCategory);
+		}
+		return details;
+	}
+
 	IHttpCallback detailsCallback = new IHttpCallback() {
 
 		@Override
 		public Object populateBean(InputStream is, int operationId) {
-			return null;
+			NSObject object = null;
+			try {
+				object = PropertyListParser.parse(is);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			if (object != null) {
+				// NSArray array = (NSArray) object;
+				// ArrayList<MenuData> menuList = getArray(array);
+				MenuItemDetails det = processPlist(object);
+				return det;
+			} else {
+				return null;
+			}
 		}
 
 		@Override
@@ -49,6 +105,8 @@ public class TodaysMenuDetails extends OishiiBaseActivity {
 
 		@Override
 		public void bindUI(Object t, int operationId) {
+			hideDialog();
+			MenuItemDetails menuDetails = (MenuItemDetails) t;
 
 		}
 	};
@@ -63,7 +121,7 @@ public class TodaysMenuDetails extends OishiiBaseActivity {
 		NameValuePair param = new BasicNameValuePair("catID", catId);
 		params.add(param);
 		requestWrapper.httpParams = params;
-		requestWrapper.httpSettings.setHttpMethod(HttpMethod.HTTP_GET);
+		requestWrapper.httpSettings.setHttpMethod(HttpMethod.HTTP_POST);
 		showDialog(getString(R.string.loading_det));
 		new HttpRequestTask().execute(requestWrapper);
 	}
