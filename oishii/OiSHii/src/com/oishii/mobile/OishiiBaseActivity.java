@@ -177,14 +177,8 @@ public abstract class OishiiBaseActivity extends Activity {
 		errorDialog.setContentView(R.layout.error_dialog);
 		TextView errMsg = (TextView) errorDialog.findViewById(R.id.errMsg);
 		errMsg.setText(errorMessage);
-		errorDialog.findViewById(R.id.btnDismiss).setOnClickListener(
-				new View.OnClickListener() {
-
-					@Override
-					public void onClick(View v) {
-
-					}
-				});
+		errorDialog.findViewById(R.id.btnDismiss).setOnClickListener(dismissHandler);
+				
 
 		// TODO set message
 		errorDialog.show();
