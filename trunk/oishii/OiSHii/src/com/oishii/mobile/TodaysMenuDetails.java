@@ -20,6 +20,10 @@ public class TodaysMenuDetails extends OishiiBaseActivity {
 		tv.setTextColor(color);
 	}
 
+	private void executeMenuDetailsRequest() {
+		
+	}
+
 	@Override
 	protected int getSreenID() {
 		return R.layout.todaysmenu_details;
