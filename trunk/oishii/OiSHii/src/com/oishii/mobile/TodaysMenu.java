@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.madrobot.di.plist.NSArray;
@@ -52,7 +53,7 @@ public class TodaysMenu extends ListOishiBase {
 				viewHolder.text1 = (TextView) view.findViewById(R.id.textView1);
 				viewHolder.image = (ImageView) view
 						.findViewById(R.id.imageView1);
-				viewHolder.bg = view.findViewById(R.id.bg);
+				viewHolder.bg = (RelativeLayout) view.findViewById(R.id.bg);
 				viewHolder.bar = (ProgressBar) view
 						.findViewById(R.id.imageProgress);
 				view.setTag(viewHolder);
@@ -67,6 +68,7 @@ public class TodaysMenu extends ListOishiBase {
 				req.image = viewHolder.image;
 				req.image.setTag(new Object());
 				req.progress = viewHolder.bar;
+				req.parent=viewHolder.bg;
 				new BitmapHttpTask().execute(req);
 			}
 			return view;
@@ -76,7 +78,7 @@ public class TodaysMenu extends ListOishiBase {
 	private static class ViewHolder {
 		TextView text1;
 		ImageView image;
-		View bg;
+		RelativeLayout bg;
 		ProgressBar bar;
 	}
 
@@ -138,9 +140,9 @@ public class TodaysMenu extends ListOishiBase {
 
 			MenuData menu = (MenuData) getListView().getItemAtPosition(arg2);
 			Intent intent = new Intent(TodaysMenu.this, TodaysMenuDetailList.class);
-			intent.putExtra(TodaysMenuDetails2.EXTRA_TITLE, menu.getTitle());
-			intent.putExtra(TodaysMenuDetails2.EXTRA_CAT_ID, menu.getId());
-			intent.putExtra(TodaysMenuDetails2.EXTRA_COLOR, menu.getColor());
+			intent.putExtra(TodaysMenuDetailList.EXTRA_TITLE, menu.getTitle());
+			intent.putExtra(TodaysMenuDetailList.EXTRA_CAT_ID, menu.getId());
+			intent.putExtra(TodaysMenuDetailList.EXTRA_COLOR, menu.getColor());
 			startActivity(intent);
 		}
 	};

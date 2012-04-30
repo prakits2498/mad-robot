@@ -7,6 +7,15 @@ public class MenuItem {
 	String description;
 	int itemsRemain;
 	float price;
+	MenuItemCategory category;
+	
+	
+	public MenuItemCategory getCategory() {
+		return category;
+	}
+	public void setCategory(MenuItemCategory category) {
+		this.category = category;
+	}
 	public int getId() {
 		return id;
 	}
@@ -29,7 +38,7 @@ public class MenuItem {
 		return description;
 	}
 	public void setDescription(String description) {
-		this.description = description;
+		this.description = description.trim();
 	}
 	public int getItemsRemain() {
 		return itemsRemain;

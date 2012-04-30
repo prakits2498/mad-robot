@@ -1,20 +1,21 @@
 package com.oishii.mobile;
 
 import java.io.InputStream;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
-import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.madrobot.di.plist.NSArray;
@@ -24,6 +25,8 @@ import com.madrobot.di.plist.NSObject;
 import com.madrobot.di.plist.PropertyListParser;
 import com.oishii.mobile.beans.MenuItem;
 import com.oishii.mobile.beans.MenuItemCategory;
+import com.oishii.mobile.util.tasks.BitmapHttpTask;
+import com.oishii.mobile.util.tasks.BitmapRequestParam;
 import com.oishii.mobile.util.tasks.HttpRequestTask;
 import com.oishii.mobile.util.tasks.HttpRequestWrapper;
 import com.oishii.mobile.util.tasks.IHttpCallback;
@@ -96,9 +99,30 @@ public class TodaysMenuDetailList extends ListOishiBase {
 					tv.setText(category.getName());
 					tv = (TextView) v.findViewById(R.id.mnuDesc);
 					tv.setText(category.getDescription());
+					v.setTag(category);
 				} else {
 					item = (MenuItem) obj;
-					v = inflater.inflate(R.layout.menu_item_contents, null);
+					v = inflater.inflate(R.layout.item_contents, null);
+					TextView tv = (TextView) v.findViewById(R.id.title);
+					tv.setText(item.getName());
+					tv = (TextView) v.findViewById(R.id.desc);
+					tv.setText(item.getDescription());
+					tv = (TextView) v.findViewById(R.id.left);
+					tv.setText(item.getItemsRemain() + " Left");
+					ImageView image = (ImageView) v.findViewById(R.id.menuImg);
+					image.setId(i);
+					Button price = (Button) v.findViewById(R.id.price);
+					price.setText("£"+item.getPrice());
+					BitmapRequestParam req = new BitmapRequestParam();
+					req.bitmapUri = URI.create(item.getImage());
+					req.image = image;
+					ProgressBar progress = (ProgressBar) v
+							.findViewById(R.id.imageProgress);
+					progress.setId(i);
+					req.progress = progress;
+					req.parent = (LinearLayout) findViewById(R.id.progressParent);
+					new BitmapHttpTask().execute(req);
+
 				}
 				layout.addView(v);
 			}
@@ -159,6 +183,7 @@ public class TodaysMenuDetailList extends ListOishiBase {
 				menuItem.setItemsRemain(id.intValue());
 				id = (NSNumber) menuItems.objectForKey("price");
 				menuItem.setPrice(id.floatValue());
+				menuItem.setCategory(menuCategory);
 				list.add(menuItem);
 			}
 		}
