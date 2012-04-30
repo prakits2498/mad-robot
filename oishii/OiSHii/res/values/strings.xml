@@ -16,10 +16,11 @@
     <string name="mnu_history">History</string>
     <string name="mnu_myacc">My Acc</string>
     <string name="mnu_basket">Basket</string>
-    <string name="loading_mnu">Loading today\'s menu..</string>
-    <string name="loading_offers">Loading Special Offers..</string>
-    <string name="loading_register">Creating Account..</string>
-      <string name="loading_login">Signing In..</string>
+    <string name="loading_mnu">Loading today\'s menu...</string>
+    <string name="loading_offers">Loading Special Offers...</string>
+    <string name="loading_register">Creating Account...</string>
+      <string name="loading_login">Signing In...</string>
+      <string name="loading_acc">Obtaining Account Info...</string>
     <string name="special">SPECIAL</string>
     <string name="offers">OFFERS</string>
     <string name="today">TODAYS</string>
@@ -38,6 +39,9 @@
     <string name="field_password">Password</string>
     <string name="field_reppassword">Confirm</string>
     <string name="dismiss">Dismiss</string>
+    
+    <!-- My Account -->
+    <string  name="mydet">My Details</string>
 
     <!-- Validation error messages -->
     <string name="error_no_title">* Please enter a title.</string>
