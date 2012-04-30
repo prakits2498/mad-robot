@@ -95,6 +95,7 @@ public abstract class OishiiBaseActivity extends Activity {
 			// isMenuScreen=true;
 			// isHomeScreen=false;
 			// finish();
+			Intent intent=new Intent();
 			Class clz = null;
 			switch (v.getId()) {
 			case R.id.offers:
@@ -107,7 +108,9 @@ public abstract class OishiiBaseActivity extends Activity {
 			case R.id.myacc:
 				if (!AccountStatus.getInstance(getApplicationContext())
 						.isSignedIn()) {
+					
 					clz = OutOfSession.class;
+					intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
 				} else {
 					clz = AccountDetails.class;
 				}
@@ -115,7 +118,8 @@ public abstract class OishiiBaseActivity extends Activity {
 
 			}
 			if (clz != null) {
-				Intent intent = new Intent(OishiiBaseActivity.this, clz);
+//				Intent intent = new Intent(OishiiBaseActivity.this, clz);
+				intent.setClass(OishiiBaseActivity.this, clz);
 				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				intent.putExtra(OutOfSession.SRC_KEY, v.getId());
 				startActivity(intent);

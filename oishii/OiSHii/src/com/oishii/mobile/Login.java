@@ -20,6 +20,8 @@ import com.madrobot.di.plist.NSNumber;
 import com.madrobot.di.plist.NSObject;
 import com.madrobot.di.plist.PropertyListParser;
 import com.oishii.mobile.beans.AccountStatus;
+import com.oishii.mobile.util.HttpSettings;
+import com.oishii.mobile.util.HttpSettings.HttpMethod;
 import com.oishii.mobile.util.TextUtils;
 import com.oishii.mobile.util.tasks.HttpRequestTask;
 import com.oishii.mobile.util.tasks.HttpRequestWrapper;
@@ -53,6 +55,9 @@ public class Login extends OishiiBaseActivity {
 		HttpRequestWrapper requestWrapper = new HttpRequestWrapper();
 		requestWrapper.requestURI = ApplicationConstants.API_LOGIN;
 		requestWrapper.callback = loginCallback;
+		HttpSettings settings=new HttpSettings();
+		settings.setHttpMethod(HttpMethod.HTTP_POST);
+		requestWrapper.httpSettings=settings;
 		requestWrapper.operationID = OPERATION_LOGIN;
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		NameValuePair param = new BasicNameValuePair("mac", AccountStatus

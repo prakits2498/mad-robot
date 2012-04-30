@@ -8,6 +8,16 @@ public final class AccountStatus {
 	private String sid;
 	private String mac;
 	private long customerId;
+	private AccountInformation accInformation;
+	
+
+	public AccountInformation getAccInformation() {
+		return accInformation;
+	}
+
+	public void setAccInformation(AccountInformation accInformation) {
+		this.accInformation = accInformation;
+	}
 
 	public long getCustomerId() {
 		return customerId;
