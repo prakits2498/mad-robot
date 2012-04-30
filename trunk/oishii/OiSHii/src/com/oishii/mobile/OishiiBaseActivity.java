@@ -13,6 +13,7 @@ import android.view.Window;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.madrobot.di.plist.NSDictionary;
 import com.madrobot.di.plist.NSNumber;
@@ -139,7 +140,12 @@ public abstract class OishiiBaseActivity extends Activity {
 					clz = AccountDetails.class;
 				}
 				break;
-
+			case R.id.basket:
+				showNotImplToast();
+				break;
+			case R.id.history:
+				showNotImplToast();
+				break;
 			}
 			if (clz != null) {
 				// Intent intent = new Intent(OishiiBaseActivity.this, clz);
@@ -246,6 +252,12 @@ public abstract class OishiiBaseActivity extends Activity {
 		res.setSucess(sucessFalg.boolValue());
 		res.setErrorMessage(dict.objectForKey("message").toString());
 		return res;
+	}
+
+	protected void showNotImplToast() {
+		Toast t = Toast.makeText(getApplicationContext(),
+				"Sorry not implemented yet! :(", 4000);
+		t.show();
 	}
 
 }

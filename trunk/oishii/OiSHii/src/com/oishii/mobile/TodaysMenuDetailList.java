@@ -57,6 +57,17 @@ public class TodaysMenuDetailList extends ListOishiBase {
 		executeMenuDetailsRequest();
 	}
 
+	
+	View.OnClickListener btnListener=new View.OnClickListener() {
+		
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+			showNotImplToast();
+		}
+	};
+	
+	
 	@Override
 	protected int getSreenID() {
 		// TODO Auto-generated method stub
@@ -113,6 +124,7 @@ public class TodaysMenuDetailList extends ListOishiBase {
 					image.setId(i);
 					Button price = (Button) v.findViewById(R.id.price);
 					price.setText("£"+item.getPrice());
+					price.setOnClickListener(btnListener);
 					BitmapRequestParam req = new BitmapRequestParam();
 					req.bitmapUri = URI.create(item.getImage());
 					req.image = image;

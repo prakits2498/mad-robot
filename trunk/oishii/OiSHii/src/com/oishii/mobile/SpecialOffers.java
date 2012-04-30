@@ -5,9 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -17,6 +20,7 @@ import com.madrobot.di.plist.NSDictionary;
 import com.madrobot.di.plist.NSObject;
 import com.madrobot.di.plist.PropertyListParser;
 import com.oishii.mobile.beans.CurrentScreen;
+import com.oishii.mobile.beans.MenuData;
 import com.oishii.mobile.beans.SpecialOffer;
 import com.oishii.mobile.util.tasks.HttpRequestTask;
 import com.oishii.mobile.util.tasks.HttpRequestWrapper;
@@ -73,8 +77,18 @@ public class SpecialOffers extends ListOishiBase {
 					getApplicationContext(), R.layout.specialoffers,
 					(List<SpecialOffer>) t);
 			ListView listview = getListView();
+			listview.setOnItemClickListener(listViewClickListener);
 			listview.setAdapter(adapter);
 			hideDialog();
+		}
+	};
+
+	AdapterView.OnItemClickListener listViewClickListener = new AdapterView.OnItemClickListener() {
+
+		@Override
+		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+				long arg3) {
+			showNotImplToast();
 		}
 	};
 
