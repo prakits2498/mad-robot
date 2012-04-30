@@ -1,0 +1,68 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_menu"
+    android:orientation="horizontal" >
+
+    <LinearLayout
+        android:id="@+id/progressParent"
+        android:layout_width="100dp"
+        android:layout_height="fill_parent"
+        android:orientation="vertical" >
+
+        <ProgressBar
+            android:id="@+id/imageProgress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+             android:layout_gravity="center_horizontal"
+            style="@android:style/Widget.ProgressBar.Inverse" />
+
+        <ImageView
+            android:id="@+id/menuImg"
+            android:layout_width="fill_parent"
+            android:layout_height="100dp"
+            android:visibility="gone"
+ />
+
+        <TextView
+            android:id="@+id/left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@android:color/black" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:layout_marginLeft="5dp"
+        android:layout_weight="75"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:textColor="@android:color/black"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black" />
+
+        <Button
+            android:id="@+id/price"
+            android:layout_width="wrap_content"
+            android:background="@drawable/btn_mnu"
+            android:textColor="@android:color/white"
+            android:layout_height="wrap_content"
+            android:text="test"
+            android:textSize="15dp" 
+            android:layout_marginBottom="3dp"
+            android:layout_marginTop="3dp"/>
+    </LinearLayout>
+
+</LinearLayout>

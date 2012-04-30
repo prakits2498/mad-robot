@@ -51,12 +51,13 @@
         android:drawSelectorOnTop="true"
         android:fadingEdge="none"
         android:listSelector="@drawable/selector"
-        android:scrollingCache="false"
-        android:scrollbarAlwaysDrawVerticalTrack="false" />
+        android:scrollbarAlwaysDrawVerticalTrack="false"
+        android:scrollingCache="false" />
 
     <ScrollView
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="3dp" >
 
         <LinearLayout
             android:id="@+id/manualList"

@@ -18,6 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:layout_weight="1"
+            android:gravity="center_vertical"
             android:orientation="vertical" >
 
             <ImageView
@@ -27,12 +28,8 @@
                 android:src="@drawable/menu_home" />
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="@string/mnu_about"
-                android:textColor="@android:color/white"
-                android:textSize="14sp" />
+                style="@style/mainmenutext"
+                android:text="@string/mnu_about" />
         </LinearLayout>
 
         <LinearLayout
@@ -40,6 +37,7 @@
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:layout_weight="1"
+            android:gravity="center_vertical"
             android:orientation="vertical" >
 
             <ImageView
@@ -49,12 +47,8 @@
                 android:src="@drawable/menu_home" />
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="@string/mnu_offer"
-                android:textColor="@android:color/white"
-                android:textSize="14sp" />
+                style="@style/mainmenutext"
+                android:text="@string/mnu_offer" />
         </LinearLayout>
 
         <LinearLayout
@@ -62,6 +56,7 @@
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:layout_weight="1"
+            android:gravity="center_vertical"
             android:orientation="vertical" >
 
             <ImageView
@@ -71,12 +66,8 @@
                 android:src="@drawable/menu_home" />
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="@string/mnu_history"
-                android:textColor="@android:color/white"
-                android:textSize="14sp" />
+                style="@style/mainmenutext"
+                android:text="@string/mnu_history" />
         </LinearLayout>
 
         <LinearLayout
@@ -84,6 +75,7 @@
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:layout_weight="1"
+            android:gravity="center_vertical"
             android:orientation="vertical" >
 
             <ImageView
@@ -93,21 +85,18 @@
                 android:src="@drawable/menu_home" />
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="@string/mnu_myacc"
-                android:textColor="@android:color/white"
-                android:textSize="14sp" />
+                style="@style/mainmenutext"
+                android:text="@string/mnu_myacc" />
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/basket"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
+            android:layout_marginLeft="10dp"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:layout_marginLeft="10dp" >
+            android:gravity="center_vertical"
+            android:orientation="vertical" >
 
             <FrameLayout
                 android:layout_width="wrap_content"
@@ -118,6 +107,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
                     android:layout_weight="1"
+                    android:gravity="center_vertical"
                     android:orientation="vertical" >
 
                     <ImageView
@@ -127,16 +117,11 @@
                         android:src="@drawable/menu_home" />
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:text="@string/mnu_basket"
-                        android:textColor="@android:color/white"
-                        android:textSize="14sp" />
+                        style="@style/mainmenutext"
+                        android:text="@string/mnu_basket" />
                 </LinearLayout>
 
                 <TextView
-                    android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right|center_vertical"
@@ -146,7 +131,8 @@
                     android:text="£ 30"
                     android:textColor="@android:color/white"
                     android:textSize="8sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:visibility="gone" />
             </FrameLayout>
         </LinearLayout>
     </LinearLayout>
