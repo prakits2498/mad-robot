@@ -33,109 +33,6 @@ import com.oishii.mobile.util.tasks.IHttpCallback;
 
 public class TodaysMenu extends ListOishiBase {
 
-	public final static int OPERATION_BITMAP = 10;
-	public final static int OPERATION_LIST = 30;
-
-	@Override
-	protected void hookInListData() {
-		TextView tv = (TextView) findViewById(R.id.titleFirst);
-		tv.setText(R.string.today);
-		TextView tv2 = (TextView) findViewById(R.id.titleSecond);
-		tv2.setText(R.string.menu);
-
-		executeMenuListRequest();
-	}
-
-	private void executeMenuListRequest() {
-		HttpRequestWrapper requestWrapper = new HttpRequestWrapper();
-		requestWrapper.requestURI = ApplicationConstants.API_MENU_DATA;
-		requestWrapper.callback = menuCallaback;
-		requestWrapper.operationID = OPERATION_LIST;
-		requestWrapper.httpSettings.setHttpMethod(HttpMethod.HTTP_POST);
-		showDialog(getString(R.string.loading_mnu));
-		new HttpRequestTask().execute(requestWrapper);
-	}
-
-	IHttpCallback menuCallaback = new IHttpCallback() {
-
-		@Override
-		public Object populateBean(InputStream is, int operationId) {
-			switch (operationId) {
-			case OPERATION_LIST:
-				NSObject object = null;
-				try {
-					object = PropertyListParser.parse(is);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				if (object != null) {
-					NSArray array = (NSArray) object;
-					ArrayList<MenuData> menuList = getArray(array);
-
-					return menuList;
-				} else {
-					return null;
-				}
-			case OPERATION_BITMAP:
-				break;
-			}
-			Log.e("Oishii", "IDEALLY SHOULD NEVER GET HERE");
-			return null;
-		}
-
-		@Override
-		public void bindUI(Object t, int operationID) {
-			Log.e("Oishii", "Binding UI");
-			MainMenuAdapter adapter = new MainMenuAdapter(
-					getApplicationContext(), R.layout.list_todaysmenu_item,
-					(List<MenuData>) t);
-			ListView listview = getListView();
-			listview.setAdapter(adapter);
-			listview.setOnItemClickListener(listViewClickListener);
-			hideDialog();
-		}
-
-		@Override
-		public void onFailure(int message, int operationID) {
-			processFailure(message);
-		}
-
-	};
-
-	AdapterView.OnItemClickListener listViewClickListener = new AdapterView.OnItemClickListener() {
-
-		@Override
-		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-				long arg3) {
-			Log.d("Oishii", "Item at position" + arg2);
-
-			MenuData menu = (MenuData) getListView().getItemAtPosition(arg2);
-			Intent intent = new Intent(TodaysMenu.this, TodaysMenuDetails.class);
-			intent.putExtra(TodaysMenuDetails.EXTRA_TITLE, menu.getTitle());
-			intent.putExtra(TodaysMenuDetails.EXTRA_CAT_ID, menu.getId());
-			intent.putExtra(TodaysMenuDetails.EXTRA_COLOR, menu.getColor());
-			startActivity(intent);
-		}
-	};
-
-	private ArrayList<MenuData> getArray(NSArray array) {
-		int count = array.count();
-		ArrayList<MenuData> menus = new ArrayList<MenuData>();
-		for (int i = 0; i < count; i++) {
-			NSDictionary d = (NSDictionary) array.objectAtIndex(i);
-			MenuData menu = new MenuData();
-			menu.setBitmapUrl(d.objectForKey("image").toString());
-			menu.setTitle(d.objectForKey("name").toString());
-			menu.setId(Integer.parseInt(d.objectForKey("id").toString()));
-			// String color = d.objectForKey("color").toString().replace('#',
-			// ' ')
-			// .trim();
-			menu.setColor(Color.parseColor(d.objectForKey("color").toString()));
-			menus.add(menu);
-		}
-		return menus;
-	}
-
 	class MainMenuAdapter extends ArrayAdapter<MenuData> {
 
 		public MainMenuAdapter(Context context, int textViewResourceId,
@@ -176,7 +73,6 @@ public class TodaysMenu extends ListOishiBase {
 
 		}
 	}
-
 	private static class ViewHolder {
 		TextView text1;
 		ImageView image;
@@ -184,9 +80,112 @@ public class TodaysMenu extends ListOishiBase {
 		ProgressBar bar;
 	}
 
+	public final static int OPERATION_BITMAP = 10;
+
+	public final static int OPERATION_LIST = 30;
+
+	IHttpCallback menuCallaback = new IHttpCallback() {
+
+		@Override
+		public void bindUI(Object t, int operationID) {
+			MainMenuAdapter adapter = new MainMenuAdapter(
+					getApplicationContext(), R.layout.list_todaysmenu_item,
+					(List<MenuData>) t);
+			ListView listview = getListView();
+			listview.setAdapter(adapter);
+			listview.setOnItemClickListener(listViewClickListener);
+			hideDialog();
+		}
+
+		@Override
+		public void onFailure(int message, int operationID) {
+			processFailure(message);
+		}
+
+		@Override
+		public Object populateBean(InputStream is, int operationId) {
+			switch (operationId) {
+			case OPERATION_LIST:
+				NSObject object = null;
+				try {
+					object = PropertyListParser.parse(is);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				if (object != null) {
+					NSArray array = (NSArray) object;
+					ArrayList<MenuData> menuList = getArray(array);
+
+					return menuList;
+				} else {
+					return null;
+				}
+			case OPERATION_BITMAP:
+				break;
+			}
+			Log.e("Oishii", "IDEALLY SHOULD NEVER GET HERE");
+			return null;
+		}
+
+	};
+
+	AdapterView.OnItemClickListener listViewClickListener = new AdapterView.OnItemClickListener() {
+
+		@Override
+		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+				long arg3) {
+			Log.d("Oishii", "Item at position" + arg2);
+
+			MenuData menu = (MenuData) getListView().getItemAtPosition(arg2);
+			Intent intent = new Intent(TodaysMenu.this, TodaysMenuDetailList.class);
+			intent.putExtra(TodaysMenuDetails2.EXTRA_TITLE, menu.getTitle());
+			intent.putExtra(TodaysMenuDetails2.EXTRA_CAT_ID, menu.getId());
+			intent.putExtra(TodaysMenuDetails2.EXTRA_COLOR, menu.getColor());
+			startActivity(intent);
+		}
+	};
+
+	private void executeMenuListRequest() {
+		HttpRequestWrapper requestWrapper = new HttpRequestWrapper();
+		requestWrapper.requestURI = ApplicationConstants.API_MENU_DATA;
+		requestWrapper.callback = menuCallaback;
+		requestWrapper.operationID = OPERATION_LIST;
+		requestWrapper.httpSettings.setHttpMethod(HttpMethod.HTTP_POST);
+		showDialog(getString(R.string.loading_mnu));
+		new HttpRequestTask().execute(requestWrapper);
+	}
+
+	private ArrayList<MenuData> getArray(NSArray array) {
+		int count = array.count();
+		ArrayList<MenuData> menus = new ArrayList<MenuData>();
+		for (int i = 0; i < count; i++) {
+			NSDictionary d = (NSDictionary) array.objectAtIndex(i);
+			MenuData menu = new MenuData();
+			menu.setBitmapUrl(d.objectForKey("image").toString());
+			menu.setTitle(d.objectForKey("name").toString());
+			menu.setId(Integer.parseInt(d.objectForKey("id").toString()));
+			// String color = d.objectForKey("color").toString().replace('#',
+			// ' ')
+			// .trim();
+			menu.setColor(Color.parseColor(d.objectForKey("color").toString()));
+			menus.add(menu);
+		}
+		return menus;
+	}
+
 	@Override
 	protected int getSreenID() {
 		// TODO Auto-generated method stub
 		return -1;
+	}
+
+	@Override
+	protected void hookInListData() {
+		TextView tv = (TextView) findViewById(R.id.titleFirst);
+		tv.setText(R.string.today);
+		TextView tv2 = (TextView) findViewById(R.id.titleSecond);
+		tv2.setText(R.string.menu);
+
+		executeMenuListRequest();
 	}
 }
