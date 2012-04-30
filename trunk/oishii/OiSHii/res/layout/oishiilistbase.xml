@@ -51,7 +51,8 @@
         android:drawSelectorOnTop="true"
         android:fadingEdge="none"
         android:listSelector="@drawable/selector"
-        android:scrollingCache="false" />
+        android:scrollingCache="false"
+        android:scrollbarAlwaysDrawVerticalTrack="false" />
 
     <ScrollView
         android:layout_width="fill_parent"
