@@ -7,6 +7,8 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
+import com.madrobot.di.plist.NSObject;
+import com.madrobot.di.plist.PropertyListParser;
 import com.oishii.mobile.beans.AccountStatus;
 import com.oishii.mobile.util.HttpSettings;
 import com.oishii.mobile.util.HttpSettings.HttpMethod;
@@ -32,9 +34,9 @@ public class AccountDetails extends OishiiBaseActivity {
 		HttpRequestWrapper requestWrapper = new HttpRequestWrapper();
 		requestWrapper.requestURI = ApplicationConstants.API_MY_ACCOUNT;
 		requestWrapper.callback = accountDetailsCallback;
-//		HttpSettings settings = new HttpSettings();
-//		settings.setHttpMethod(HttpMethod.HTTP_POST);
-//		requestWrapper.httpSettings = settings;
+		HttpSettings settings = new HttpSettings();
+		settings.setHttpMethod(HttpMethod.HTTP_POST);
+		requestWrapper.httpSettings = settings;
 		requestWrapper.operationID = OPERATION_ACC;
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		AccountStatus accStat = AccountStatus
@@ -44,7 +46,7 @@ public class AccountDetails extends OishiiBaseActivity {
 		param = new BasicNameValuePair("sid", accStat.getSid());
 		params.add(param);
 		requestWrapper.httpParams = params;
-//		showDialog(getString(R.string.loading_acc));
+		showDialog(getString(R.string.loading_acc));
 		new HttpRequestTask().execute(requestWrapper);
 	}
 
@@ -52,38 +54,39 @@ public class AccountDetails extends OishiiBaseActivity {
 
 		@Override
 		public Object populateBean(InputStream is, int operationId) {
-			// TODO Auto-generated method stub
+			NSObject object = null;
+			try {
+				object = PropertyListParser.parse(is);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			return null;
 		}
 
 		@Override
 		public void onFailure(int message, int operationID) {
-			// TODO Auto-generated method stub
-
+			hideDialog();
 		}
 
 		@Override
 		public void bindUI(Object t, int operationId) {
-			// TODO Auto-generated method stub
+			hideDialog();
 
 		}
 	};
 
 	@Override
 	protected int getSreenID() {
-		// TODO Auto-generated method stub
 		return SCR_ID;
 	}
 
 	@Override
 	protected int getChildViewLayout() {
-		// TODO Auto-generated method stub
 		return R.layout.my_account;
 	}
 
 	@Override
 	protected String getTitleString() {
-		// TODO Auto-generated method stub
 		return getString(R.string.acc_title);
 	}
 

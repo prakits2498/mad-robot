@@ -37,8 +37,8 @@ public class HttpRequestTask extends
 						response.isSuccess=true;
 						response.operationId = params[0].operationID;
 					} else {// deserialization failed
-						Log.e("Oishi", "Could not read server response!"
-								+ statusCode);
+						Log.e("Oishi", "Error in deserialization!"
+								);
 						response.errorMessage = R.string.error_bad_response;//"Could not read server response!";
 						response.isSuccess = false;
 					}
