@@ -7,6 +7,9 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
+import android.content.Intent;
+import android.view.View;
+
 import com.madrobot.di.plist.NSObject;
 import com.madrobot.di.plist.PropertyListParser;
 import com.oishii.mobile.beans.AccountStatus;
@@ -22,13 +25,44 @@ public class AccountDetails extends OishiiBaseActivity {
 
 	@Override
 	protected void hookInChildViews() {
-		// TODO Auto-generated method stub
+
 		if (AccountStatus.getInstance(getApplicationContext())
 				.getAccInformation() == null) {
 			executeAccountInfoRequest();
 
 		}
+		findViewById(R.id.myAccDetails).setOnClickListener(
+				accountDetailsListener);
+		findViewById(R.id.myAccLocation).setOnClickListener(
+				accountDetailsListener);
+		findViewById(R.id.myAccPayment).setOnClickListener(
+				accountDetailsListener);
+		findViewById(R.id.myAccPwd).setOnClickListener(accountDetailsListener);
 	}
+
+	View.OnClickListener accountDetailsListener = new View.OnClickListener() {
+
+		@Override
+		public void onClick(View v) {
+			Class clz = null;
+			switch (v.getId()) {
+			case R.id.myAccDetails:
+				break;
+			case R.id.myAccLocation:
+				break;
+			case R.id.myAccPayment:
+				break;
+			case R.id.myAccPwd:
+				clz = ChangePassword.class;
+				break;
+			}
+			if (clz != null) {
+				Intent intent=new Intent(AccountDetails.this, clz);
+				startActivity(intent);
+			}
+			
+		}
+	};
 
 	private void executeAccountInfoRequest() {
 		HttpRequestWrapper requestWrapper = new HttpRequestWrapper();

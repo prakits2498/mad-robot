@@ -51,8 +51,12 @@ public abstract class OishiiBaseActivity extends Activity {
 		setContentView(parent);
 		hookInMenu();
 		hookInChildViews();
+setCurrentScreen();
+	}
+	
+	private void setCurrentScreen(){
 		CurrentScreen.getInstance().setCurrentScreenID(getSreenID());
-
+		
 	}
 
 	protected void hookInMenu() {
@@ -95,7 +99,7 @@ public abstract class OishiiBaseActivity extends Activity {
 			// isMenuScreen=true;
 			// isHomeScreen=false;
 			// finish();
-			Intent intent=new Intent();
+			Intent intent = new Intent();
 			Class clz = null;
 			switch (v.getId()) {
 			case R.id.offers:
@@ -108,7 +112,7 @@ public abstract class OishiiBaseActivity extends Activity {
 			case R.id.myacc:
 				if (!AccountStatus.getInstance(getApplicationContext())
 						.isSignedIn()) {
-					
+
 					clz = OutOfSession.class;
 					intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
 				} else {
@@ -118,7 +122,7 @@ public abstract class OishiiBaseActivity extends Activity {
 
 			}
 			if (clz != null) {
-//				Intent intent = new Intent(OishiiBaseActivity.this, clz);
+				// Intent intent = new Intent(OishiiBaseActivity.this, clz);
 				intent.setClass(OishiiBaseActivity.this, clz);
 				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				intent.putExtra(OutOfSession.SRC_KEY, v.getId());
@@ -159,14 +163,15 @@ public abstract class OishiiBaseActivity extends Activity {
 		errorDialog.setContentView(R.layout.error_dialog);
 		TextView errMsg = (TextView) errorDialog.findViewById(R.id.errMsg);
 		errMsg.setText(errorMessage);
-		errorDialog.findViewById(R.id.btnDismiss).setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				errorDialog.dismiss();
-			}
-		});
-		
+		errorDialog.findViewById(R.id.btnDismiss).setOnClickListener(
+				new View.OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						errorDialog.dismiss();
+					}
+				});
+
 		// TODO set message
 		errorDialog.show();
 	}
@@ -189,6 +194,11 @@ public abstract class OishiiBaseActivity extends Activity {
 		TextView tv = (TextView) dialog.findViewById(R.id.textView1);
 		tv.setText(message);
 		dialog.show();
+	}
+
+	protected void onResume() {
+		super.onResume();
+		setCurrentScreen();
 	}
 
 }
