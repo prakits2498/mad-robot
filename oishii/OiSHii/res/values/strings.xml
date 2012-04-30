@@ -21,6 +21,8 @@
     <string name="loading_login">Signing In…</string>
     <string name="loading_acc">Obtaining Account Info…</string>
     <string name="loading_chg_pwd">Changing Password…</string>
+    <string name="loading_det">Loading menu details…</string>
+    
     
     
     <string name="error_bad_response">Invalid server response</string>
