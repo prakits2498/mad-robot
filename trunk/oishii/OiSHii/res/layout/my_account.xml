@@ -3,148 +3,76 @@
     android:layout_height="wrap_content"
     android:orientation="vertical" >
 
-    <ScrollView
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp" >
+        android:layout_marginTop="8dp"
+        android:background="@drawable/stroke_border"
+        android:orientation="vertical" >
 
         <LinearLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/stroke_border"
             android:orientation="vertical" >
 
-            <LinearLayout
-                xmlns:android="http://schemas.android.com/apk/res/android"
+            <RelativeLayout
+                android:id="@+id/myAccDetails"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" >
+                android:layout_height="wrap_content" >
 
-                <RelativeLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content" >
+                <TextView
+                    style="@style/accountdetailsText"
+                    android:text="@string/mydet" />
 
-                    <TextView
-                        android:id="@+id/textView1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginBottom="15dp"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginTop="15dp"
-                        android:text="@string/mydet"
-                        android:textColor="@color/text_color"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                <ImageView style="@style/accountdetailsImage" />
+            </RelativeLayout>
 
-                    <ImageView
-                        android:id="@+id/imageView1"
-                        android:layout_width="10dp"
-                        android:layout_height="15dp"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginRight="12dp"
-                        android:src="@drawable/arrow_green" />
-                </RelativeLayout>
+            <View style="@style/fieldSeparator" />
 
-                <View style="@style/fieldSeparator" />
+            <RelativeLayout
+                android:id="@+id/myAccDetails"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" >
 
-                <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp" >
+                <TextView
+                    style="@style/accountdetailsText"
+                    android:text="@string/myloc" />
 
-                    <TextView
-                        style="@style/fieldLabel"
-                        android:text="@string/field_first_name" />
+                <ImageView style="@style/accountdetailsImage" />
+            </RelativeLayout>
 
-                    <EditText
-                        android:id="@+id/fld_FirstName"
-                        style="@style/fieldText" />
-                </LinearLayout>
+            <View style="@style/fieldSeparator" />
 
-                <View style="@style/fieldSeparator" />
+            <RelativeLayout
+                android:id="@+id/myAccDetails"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" >
 
-                <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp" >
+                <TextView
+                    style="@style/accountdetailsText"
+                    android:text="@string/mypayment" />
 
-                    <TextView
-                        style="@style/fieldLabel"
-                        android:text="@string/field_last_name" />
+                <ImageView style="@style/accountdetailsImage" />
+            </RelativeLayout>
 
-                    <EditText
-                        android:id="@+id/fld_LastName"
-                        style="@style/fieldText" />
-                </LinearLayout>
+            <View style="@style/fieldSeparator" />
 
-                <View style="@style/fieldSeparator" />
+            <RelativeLayout
+                android:id="@+id/myAccDetails"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" >
 
-                <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp" >
+                <TextView
+                    style="@style/accountdetailsText"
+                    android:text="@string/mypwd"
+                     />
 
-                    <TextView
-                        style="@style/fieldLabel"
-                        android:text="@string/field_email" />
-
-                    <EditText
-                        android:id="@+id/fld_Email"
-                        style="@style/fieldText"
-                        android:inputType="textEmailAddress" />
-                </LinearLayout>
-
-                <View style="@style/fieldSeparator" />
-
-                <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp" >
-
-                    <TextView
-                        style="@style/fieldLabel"
-                        android:text="@string/field_password" />
-
-                    <EditText
-                        android:id="@+id/fld_Password"
-                        style="@style/fieldText"
-                        android:inputType="textPassword" />
-                </LinearLayout>
-
-                <View style="@style/fieldSeparator" />
-
-                <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp" >
-
-                    <TextView
-                        style="@style/fieldLabel"
-                        android:text="@string/field_reppassword" />
-
-                    <EditText
-                        android:id="@+id/fld_RepPassword"
-                        style="@style/fieldText"
-                        android:inputType="textPassword" />
-                </LinearLayout>
-            </LinearLayout>
+                <ImageView style="@style/accountdetailsImage" />
+            </RelativeLayout>
         </LinearLayout>
-    </ScrollView>
-
-    <Button
-        android:id="@+id/btnCreateAcc"
-        style="@style/primary_btn"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginTop="15dp"
-        android:text="@string/createacc" />
+    </LinearLayout>
 
 </LinearLayout>
