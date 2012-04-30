@@ -34,13 +34,11 @@ public class OutOfSession extends OishiiBaseActivity {
 
 	@Override
 	protected int getChildViewLayout() {
-		// TODO Auto-generated method stub
 		return R.layout.no_signed_in;
 	}
 
 	@Override
 	protected String getTitleString() {
-		// TODO Auto-generated method stub
 		int source = getIntent().getIntExtra(SRC_KEY, 0);
 		int titleString = R.string.login_title;
 		switch (source) {
@@ -59,7 +57,6 @@ public class OutOfSession extends OishiiBaseActivity {
 
 	@Override
 	protected int getSreenID() {
-		// TODO Auto-generated method stub
 		return notLoggedScreenID;
 	}
 
