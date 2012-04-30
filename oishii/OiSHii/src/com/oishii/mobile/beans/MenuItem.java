@@ -43,5 +43,13 @@ public class MenuItem {
 	public void setPrice(float price) {
 		this.price = price;
 	}
+	@Override
+	public String toString() {
+		return "MenuItem [id=" + id + ", name=" + name + ", image=" + image
+				+ ", description=" + description + ", itemsRemain="
+				+ itemsRemain + ", price=" + price + "]";
+	}
+	
+	
 
 }
