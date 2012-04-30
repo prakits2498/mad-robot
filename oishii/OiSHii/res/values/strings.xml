@@ -42,6 +42,9 @@
     
     <!-- My Account -->
     <string  name="mydet">My Details</string>
+    <string  name="myloc">My Location</string>
+    <string  name="mypayment">Payment Details</string>
+    <string  name="mypwd">Change Password</string>
 
     <!-- Validation error messages -->
     <string name="error_no_title">* Please enter a title.</string>
