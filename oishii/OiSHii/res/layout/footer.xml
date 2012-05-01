@@ -28,6 +28,7 @@
                 android:src="@drawable/menu_home" />
 
             <TextView
+                android:id="@+id/txtAbout"
                 style="@style/mainmenutext"
                 android:text="@string/mnu_about" />
         </LinearLayout>
