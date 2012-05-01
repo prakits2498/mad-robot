@@ -55,12 +55,14 @@
 
         <Button
             android:id="@+id/price"
-            android:layout_width="wrap_content"
-            android:background="@drawable/btn_mnu"
+            android:layout_width="fill_parent"
+            android:background="@drawable/btn_menu_selector"
             android:textColor="@android:color/white"
             android:layout_height="wrap_content"
             android:text="test"
-            android:textSize="15dp" 
+            android:paddingRight="20dp"
+            android:layout_marginRight="8dp"
+            android:textSize="13dp" 
             android:layout_marginBottom="3dp"
             android:layout_marginTop="3dp"/>
     </LinearLayout>
