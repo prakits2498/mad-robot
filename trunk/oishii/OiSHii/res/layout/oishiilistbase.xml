@@ -54,7 +54,8 @@
         android:scrollbarAlwaysDrawVerticalTrack="false"
         android:scrollingCache="false" />
 
-  <!--   <ScrollView
+    <!--
+    <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="3dp" >
@@ -65,12 +66,17 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:visibility="gone" />
-    </ScrollView> -->
+    </ScrollView>
+    -->
 
     <ExpandableListView
         android:id="@+id/expList"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-      />
+        android:drawSelectorOnTop="true"
+        android:fadingEdge="none"
+        android:listSelector="@drawable/selector"
+        
+        android:scrollingCache="false" />
 
 </LinearLayout>
