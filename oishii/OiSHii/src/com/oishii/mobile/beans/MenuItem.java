@@ -1,6 +1,7 @@
 package com.oishii.mobile.beans;
 
-public class MenuItem {
+
+public class MenuItem extends BitmapBean{
 	int id;
 	String name;
 	String image;
@@ -8,7 +9,6 @@ public class MenuItem {
 	int itemsRemain;
 	float price;
 	MenuItemCategory category;
-	
 	
 	public MenuItemCategory getCategory() {
 		return category;

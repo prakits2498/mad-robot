@@ -16,8 +16,7 @@ import android.widget.ProgressBar;
 
 import com.oishii.mobile.util.tasks.BitmapHttpTask.ResponseParam;
 
-public class BitmapHttpTask extends
-		AsyncTask<BitmapRequestParam, Void, ResponseParam> {
+public class BitmapHttpTask extends AsyncTask<BitmapRequestParam, Void, Bitmap> {
 
 	class ResponseParam {
 		Bitmap bitmap;
@@ -26,10 +25,14 @@ public class BitmapHttpTask extends
 		ViewGroup parent;
 	}
 
+	private BitmapRequestParam param;
+
 	@Override
-	protected ResponseParam doInBackground(BitmapRequestParam... params) {
+	protected Bitmap doInBackground(BitmapRequestParam... params) {
+		param = params[0];
+
 		com.oishii.mobile.util.HttpTaskHelper helper = new com.oishii.mobile.util.HttpTaskHelper(
-				params[0].bitmapUri);
+				param.bitmapUri);
 		HttpResponse entity;
 		Bitmap bitmap = null;
 		try {
@@ -44,26 +47,31 @@ public class BitmapHttpTask extends
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		ResponseParam resp = new ResponseParam();
-		resp.bitmap = bitmap;
-		resp.image = params[0].image;
-		resp.bar = params[0].progress;
-		resp.parent = params[0].parent;
-		System.out.println("REtrn resp for->"+params[0].bitmapUri) ;
-		return resp;
+		// ResponseParam resp = new ResponseParam();
+		// resp.bitmap = bitmap;
+		// resp.image = params[0].image;
+		// resp.bar = params[0].progress;
+		// resp.parent = params[0].parent;
+
+		System.out.println("REtrn resp for->" + params[0].bitmapUri);
+		return bitmap;
 	}
 
-	protected void onPostExecute(ResponseParam result) {
-		if (result.bitmap != null && result.image != null) {
-			if (result.bar != null) {
-				result.bar.setVisibility(View.GONE);
-				if (result.parent != null) {
+	protected void onPostExecute(Bitmap bitmap) {
+		if (bitmap != null && param.image != null) {
+			if (param.progress != null) {
+				param.progress.setVisibility(View.GONE);
+				if (param.parent != null) {
 					System.out.println("removing progress");
-					result.parent.removeView(result.bar);
+					param.parent.removeView(param.progress);
 				}
 			}
-			result.image.setImageBitmap(result.bitmap);
-			result.image.setVisibility(View.VISIBLE);
+			param.image.setImageBitmap(bitmap);
+			param.image.setVisibility(View.VISIBLE);
+			if (param.bean != null) {
+				param.bean.setBitmap(bitmap);
+				System.out.println("Setting bitmap bean");
+			}
 		}
 	}
 }

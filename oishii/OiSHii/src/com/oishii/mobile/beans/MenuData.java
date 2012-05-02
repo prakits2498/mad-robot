@@ -1,6 +1,6 @@
 package com.oishii.mobile.beans;
 
-public class MenuData {
+public class MenuData extends BitmapBean{
 	int color;
 	int id;
 	String title;

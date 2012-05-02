@@ -261,7 +261,6 @@ public class TodaysMenuDetailList extends ListOishiBase {
 		return container;
 	}
 
-
 	private class MenuDetailsExpandableAdapter extends
 			BaseExpandableListAdapter {
 		private List<MenuItemCategory> parents;
@@ -275,14 +274,12 @@ public class TodaysMenuDetailList extends ListOishiBase {
 
 		@Override
 		public MenuItem getChild(int group, int child) {
-			// TODO Auto-generated method stub
 			ArrayList<MenuItem> chil = children.get(group);
 			return chil.get(child);
 		}
 
 		@Override
 		public long getChildId(int arg0, int arg1) {
-			// TODO Auto-generated method stub
 			return 0;
 		}
 
@@ -292,7 +289,6 @@ public class TodaysMenuDetailList extends ListOishiBase {
 
 			ArrayList<MenuItem> menu = children.get(group);
 			MenuItem item = menu.get(child);
-			// TODO Auto-generated method stub
 			View v = getLayoutInflater().inflate(R.layout.item_contents, null);
 			TextView tv = (TextView) v.findViewById(R.id.title);
 			tv.setText(item.getName());
@@ -306,57 +302,61 @@ public class TodaysMenuDetailList extends ListOishiBase {
 			Button price = (Button) v.findViewById(R.id.price);
 			price.setText("£" + item.getPrice());
 			price.setOnClickListener(btnListener);
-			if (image.getTag() == null) {
+			System.out.println("Item bitmap->" + item.getBitmap());
+			ProgressBar progress = (ProgressBar) v
+					.findViewById(R.id.imageProgress);
+			LinearLayout parent=(LinearLayout) v.findViewById(R.id.progressParent);
+			if (item.getBitmap() == null) {
 				BitmapRequestParam req = new BitmapRequestParam();
 				req.bitmapUri = URI.create(item.getImage());
 				req.image = image;
-				ProgressBar progress = (ProgressBar) v
-						.findViewById(R.id.imageProgress);
 				progress.setId(group + child);
 				req.progress = progress;
-				req.parent = (LinearLayout) v.findViewById(R.id.progressParent);
+				req.parent = parent;//(LinearLayout) v.findViewById(R.id.progressParent);
+				req.bean = item;
 				new BitmapHttpTask().execute(req);
-				image.setTag(new Object());
+			} else {
+				System.out.println("Setting  Bitmap" + item.getBitmap());
+				image.setImageBitmap(item.getBitmap());
+				image.setVisibility(View.VISIBLE);
+				parent.removeView(progress);
 			}
 			return v;
 		}
 
 		@Override
 		public int getChildrenCount(int arg0) {
-			// TODO Auto-generated method stub
 			return children.get(arg0).size();
 		}
 
 		@Override
 		public ArrayList<MenuItem> getGroup(int arg0) {
-			// TODO Auto-generated method stub
 			return children.get(arg0);
 		}
 
 		@Override
 		public int getGroupCount() {
-			// TODO Auto-generated method stub
 			return parents.size();
 		}
 
 		@Override
 		public long getGroupId(int arg0) {
-			// TODO Auto-generated method stub
 			return 0;
 		}
 
 		@Override
 		public View getGroupView(int arg0, boolean arg1, View arg2,
 				ViewGroup arg3) {
-			MenuItemCategory category=parents.get(arg0);
-			View v=arg2;
-			if(v==null){
-				v= getLayoutInflater().inflate(R.layout.menu_item_header, null);
+			MenuItemCategory category = parents.get(arg0);
+			View v = arg2;
+			if (v == null) {
+				v = getLayoutInflater()
+						.inflate(R.layout.menu_item_header, null);
 				v.setBackgroundColor(color);
 				TextView tv = (TextView) v.findViewById(R.id.mnuTitle);
-				 tv.setText(category.getName());
-				 tv = (TextView) v.findViewById(R.id.mnuDesc);
-				 tv.setText(category.getDescription());
+				tv.setText(category.getName());
+				tv = (TextView) v.findViewById(R.id.mnuDesc);
+				tv.setText(category.getDescription());
 			}
 			return v;
 		}
@@ -373,5 +373,4 @@ public class TodaysMenuDetailList extends ListOishiBase {
 
 	}
 
-	
 }
