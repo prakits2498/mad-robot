@@ -36,7 +36,9 @@ public abstract class ListOishiBase extends OishiiBaseActivity {
 	}
 
 	protected ListView getListView() {
-		return (ListView) findViewById(R.id.listView1);
+		ListView lv=(ListView) findViewById(R.id.listView1);
+		lv.setVisibility(View.VISIBLE);
+		return lv;
 	}
 //
 //	protected LinearLayout getManualListView() {
