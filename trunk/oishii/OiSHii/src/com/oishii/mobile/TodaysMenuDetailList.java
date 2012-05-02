@@ -8,10 +8,15 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -57,17 +62,40 @@ public class TodaysMenuDetailList extends ListOishiBase {
 		executeMenuDetailsRequest();
 	}
 
-	
-	View.OnClickListener btnListener=new View.OnClickListener() {
-		
+	View.OnClickListener btnListener = new View.OnClickListener() {
+
 		@Override
 		public void onClick(View v) {
 			// TODO Auto-generated method stub
 			showNotImplToast();
 		}
 	};
-	
-	
+
+	View.OnClickListener expandCollapse = new View.OnClickListener() {
+
+		@Override
+		public void onClick(View v) {
+			MenuItemCategory category = (MenuItemCategory) v.getTag();
+			int visibility = category.isExpanded() ? View.GONE : View.VISIBLE;
+			category.setExpanded(!category.isExpanded());
+			int count = layout.getChildCount();
+			View currentView;
+			Object o;
+			MenuItem menu;
+			for (int i = 0; i < count; count++) {
+				currentView = layout.getChildAt(i);
+				o = currentView.getTag();
+				if (o instanceof MenuItem) {
+					menu = (MenuItem) o;
+					if (menu.getCategory().equals(category)) {
+						currentView.setVisibility(visibility);
+					}
+				}
+			}
+
+		}
+	};
+
 	@Override
 	protected int getSreenID() {
 		// TODO Auto-generated method stub
@@ -89,55 +117,72 @@ public class TodaysMenuDetailList extends ListOishiBase {
 		new HttpRequestTask().execute(requestWrapper);
 	}
 
+	LinearLayout layout;
+
 	IHttpCallback detailsCallback = new IHttpCallback() {
 
 		@Override
 		public void bindUI(Object t, int operationId) {
-			ArrayList<Object> list = (ArrayList<Object>) t;
-			Object obj;
-			LinearLayout layout = getManualListView();
-			LayoutInflater inflater = getLayoutInflater();
-			MenuItemCategory category;
-			MenuItem item;
-			for (int i = 0; i < list.size(); i++) {
-				obj = list.get(i);
-				View v;
-				if (obj instanceof MenuItemCategory) {
-					category = (MenuItemCategory) obj;
-					v = inflater.inflate(R.layout.menu_item_header, null);
-					v.setBackgroundColor(color);
-					TextView tv = (TextView) v.findViewById(R.id.mnuTitle);
-					tv.setText(category.getName());
-					tv = (TextView) v.findViewById(R.id.mnuDesc);
-					tv.setText(category.getDescription());
-					v.setTag(category);
-				} else {
-					item = (MenuItem) obj;
-					v = inflater.inflate(R.layout.item_contents, null);
-					TextView tv = (TextView) v.findViewById(R.id.title);
-					tv.setText(item.getName());
-					tv = (TextView) v.findViewById(R.id.desc);
-					tv.setText(item.getDescription());
-					tv = (TextView) v.findViewById(R.id.left);
-					tv.setText(item.getItemsRemain() + " Left");
-					ImageView image = (ImageView) v.findViewById(R.id.menuImg);
-					image.setId(i);
-					Button price = (Button) v.findViewById(R.id.price);
-					price.setText("£"+item.getPrice());
-					price.setOnClickListener(btnListener);
-					BitmapRequestParam req = new BitmapRequestParam();
-					req.bitmapUri = URI.create(item.getImage());
-					req.image = image;
-					ProgressBar progress = (ProgressBar) v
-							.findViewById(R.id.imageProgress);
-					progress.setId(i);
-					req.progress = progress;
-					req.parent = (LinearLayout) findViewById(R.id.progressParent);
-					new BitmapHttpTask().execute(req);
 
-				}
-				layout.addView(v);
-			}
+			ResultContainer result = (ResultContainer) t;
+			ExpandableListView list = (ExpandableListView) findViewById(R.id.expList);
+
+			MenuDetailsExpandableAdapter adapter = new MenuDetailsExpandableAdapter(
+					result.parent, result.children);
+			list.setAdapter(adapter);
+			list.setVisibility(View.VISIBLE);
+
+			//
+			//
+			//
+			// list.setAdapter(adapter);
+			// ArrayList<Object> list = (ArrayList<Object>) t;
+			// Object obj;
+			// layout = getManualListView();
+			// LayoutInflater inflater = getLayoutInflater();
+			// MenuItemCategory category;
+			// MenuItem item;
+			// for (int i = 0; i < list.size(); i++) {
+			// obj = list.get(i);
+			// View v;
+			// if (obj instanceof MenuItemCategory) {
+			// category = (MenuItemCategory) obj;
+			// v = inflater.inflate(R.layout.menu_item_header, null);
+			// v.setBackgroundColor(color);
+			// TextView tv = (TextView) v.findViewById(R.id.mnuTitle);
+			// tv.setText(category.getName());
+			// tv = (TextView) v.findViewById(R.id.mnuDesc);
+			// tv.setText(category.getDescription());
+			// v.setTag(category);
+			// v.setOnClickListener(expandCollapse);
+			// } else {
+			// item = (MenuItem) obj;
+			// v = inflater.inflate(R.layout.item_contents, null);
+			// TextView tv = (TextView) v.findViewById(R.id.title);
+			// tv.setText(item.getName());
+			// tv = (TextView) v.findViewById(R.id.desc);
+			// tv.setText(item.getDescription());
+			// tv = (TextView) v.findViewById(R.id.left);
+			// tv.setText(item.getItemsRemain() + " Left");
+			// ImageView image = (ImageView) v.findViewById(R.id.menuImg);
+			// image.setId(i);
+			// Button price = (Button) v.findViewById(R.id.price);
+			// price.setText("£" + item.getPrice());
+			// price.setOnClickListener(btnListener);
+			// BitmapRequestParam req = new BitmapRequestParam();
+			// req.bitmapUri = URI.create(item.getImage());
+			// req.image = image;
+			// ProgressBar progress = (ProgressBar) v
+			// .findViewById(R.id.imageProgress);
+			// progress.setId(i);
+			// req.progress = progress;
+			// req.parent = (LinearLayout) findViewById(R.id.progressParent);
+			// new BitmapHttpTask().execute(req);
+			//
+			// }
+			// layout.addView(v);
+			// }
+
 			hideDialog();
 		}
 
@@ -157,7 +202,7 @@ public class TodaysMenuDetailList extends ListOishiBase {
 			if (object != null) {
 				// NSArray array = (NSArray) object;
 				// ArrayList<MenuData> menuList = getArray(array);
-				ArrayList<Object> det = processPlist(object);
+				ResultContainer det = processPlist(object);
 				return det;
 			} else {
 				return null;
@@ -165,10 +210,17 @@ public class TodaysMenuDetailList extends ListOishiBase {
 		}
 	};
 
-	private ArrayList<Object> processPlist(NSObject obj) {
+	private class ResultContainer {
+		private ArrayList<MenuItemCategory> parent;
+		private ArrayList<ArrayList<MenuItem>> children;
+	}
+
+	private ResultContainer processPlist(NSObject obj) {
 		NSArray plist = (NSArray) obj;
 		int categories = plist.count();
-		ArrayList<Object> list = new ArrayList<Object>();
+		ResultContainer container = new ResultContainer();
+		ArrayList<MenuItemCategory> parentGroups = new ArrayList<MenuItemCategory>();
+		ArrayList<ArrayList<MenuItem>> childGroups = new ArrayList<ArrayList<MenuItem>>();
 
 		for (int i = 0; i < categories; i++) {
 			NSDictionary dict = (NSDictionary) plist.objectAtIndex(i);
@@ -178,8 +230,11 @@ public class TodaysMenuDetailList extends ListOishiBase {
 			menuCategory.setName(dict.objectForKey("name").toString());
 			menuCategory.setDescription(dict.objectForKey("shortdescription")
 					.toString());
-			list.add(menuCategory);
+			// list.add(menuCategory);
+
+			parentGroups.add(menuCategory);
 			NSArray items = (NSArray) dict.objectForKey("items");
+			ArrayList<MenuItem> childGroup = new ArrayList<MenuItem>();
 			int number = items.count();
 
 			for (int y = 0; y < number; y++) {
@@ -196,10 +251,127 @@ public class TodaysMenuDetailList extends ListOishiBase {
 				id = (NSNumber) menuItems.objectForKey("price");
 				menuItem.setPrice(id.floatValue());
 				menuItem.setCategory(menuCategory);
-				list.add(menuItem);
+				childGroup.add(menuItem);
 			}
+			childGroups.add(childGroup);
 		}
-		return list;
+		container.parent = parentGroups;
+		container.children = childGroups;
+
+		return container;
 	}
 
+
+	private class MenuDetailsExpandableAdapter extends
+			BaseExpandableListAdapter {
+		private List<MenuItemCategory> parents;
+		private ArrayList<ArrayList<MenuItem>> children;
+
+		private MenuDetailsExpandableAdapter(List<MenuItemCategory> categories,
+				ArrayList<ArrayList<MenuItem>> menuItem) {
+			this.parents = categories;
+			this.children = menuItem;
+		}
+
+		@Override
+		public MenuItem getChild(int group, int child) {
+			// TODO Auto-generated method stub
+			ArrayList<MenuItem> chil = children.get(group);
+			return chil.get(child);
+		}
+
+		@Override
+		public long getChildId(int arg0, int arg1) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public View getChildView(int group, int child, boolean arg2, View arg3,
+				ViewGroup arg4) {
+
+			ArrayList<MenuItem> menu = children.get(group);
+			MenuItem item = menu.get(child);
+			// TODO Auto-generated method stub
+			View v = getLayoutInflater().inflate(R.layout.item_contents, null);
+			TextView tv = (TextView) v.findViewById(R.id.title);
+			tv.setText(item.getName());
+			tv = (TextView) v.findViewById(R.id.desc);
+			tv.setText(item.getDescription());
+			tv = (TextView) v.findViewById(R.id.left);
+			tv.setText(item.getItemsRemain() + " Left");
+			ImageView image = (ImageView) v.findViewById(R.id.menuImg);
+			image.setId(group + child);
+
+			Button price = (Button) v.findViewById(R.id.price);
+			price.setText("£" + item.getPrice());
+			price.setOnClickListener(btnListener);
+			if (image.getTag() == null) {
+				BitmapRequestParam req = new BitmapRequestParam();
+				req.bitmapUri = URI.create(item.getImage());
+				req.image = image;
+				ProgressBar progress = (ProgressBar) v
+						.findViewById(R.id.imageProgress);
+				progress.setId(group + child);
+				req.progress = progress;
+				req.parent = (LinearLayout) v.findViewById(R.id.progressParent);
+				new BitmapHttpTask().execute(req);
+				image.setTag(new Object());
+			}
+			return v;
+		}
+
+		@Override
+		public int getChildrenCount(int arg0) {
+			// TODO Auto-generated method stub
+			return children.get(arg0).size();
+		}
+
+		@Override
+		public ArrayList<MenuItem> getGroup(int arg0) {
+			// TODO Auto-generated method stub
+			return children.get(arg0);
+		}
+
+		@Override
+		public int getGroupCount() {
+			// TODO Auto-generated method stub
+			return parents.size();
+		}
+
+		@Override
+		public long getGroupId(int arg0) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public View getGroupView(int arg0, boolean arg1, View arg2,
+				ViewGroup arg3) {
+			MenuItemCategory category=parents.get(arg0);
+			View v=arg2;
+			if(v==null){
+				v= getLayoutInflater().inflate(R.layout.menu_item_header, null);
+				v.setBackgroundColor(color);
+				TextView tv = (TextView) v.findViewById(R.id.mnuTitle);
+				 tv.setText(category.getName());
+				 tv = (TextView) v.findViewById(R.id.mnuDesc);
+				 tv.setText(category.getDescription());
+			}
+			return v;
+		}
+
+		@Override
+		public boolean hasStableIds() {
+			return false;
+		}
+
+		@Override
+		public boolean isChildSelectable(int arg0, int arg1) {
+			return true;
+		}
+
+	}
+
+	
 }
