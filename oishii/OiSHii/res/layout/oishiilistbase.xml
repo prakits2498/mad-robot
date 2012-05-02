@@ -50,6 +50,7 @@
         android:dividerHeight="3dp"
         android:drawSelectorOnTop="true"
         android:fadingEdge="none"
+        android:visibility="gone"
         android:listSelector="@drawable/selector"
         android:scrollbarAlwaysDrawVerticalTrack="false"
         android:scrollingCache="false" />
@@ -76,7 +77,7 @@
         android:drawSelectorOnTop="true"
         android:fadingEdge="none"
         android:listSelector="@drawable/selector"
-        
+        android:visibility="gone"
         android:scrollingCache="false" />
 
 </LinearLayout>
