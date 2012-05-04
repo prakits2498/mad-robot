@@ -348,16 +348,16 @@ public class TodaysMenuDetailList extends ListOishiBase {
 		public View getGroupView(int arg0, boolean arg1, View arg2,
 				ViewGroup arg3) {
 			MenuItemCategory category = parents.get(arg0);
-			View v = arg2;
-			if (v == null) {
-				v = getLayoutInflater()
+//			View v = arg2;
+//			if (v == null) {
+				View v = getLayoutInflater()
 						.inflate(R.layout.menu_item_header, null);
 				v.setBackgroundColor(color);
 				TextView tv = (TextView) v.findViewById(R.id.mnuTitle);
 				tv.setText(category.getName());
 				tv = (TextView) v.findViewById(R.id.mnuDesc);
 				tv.setText(category.getDescription());
-			}
+//			}
 			return v;
 		}
 
