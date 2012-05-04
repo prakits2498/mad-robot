@@ -67,13 +67,14 @@ public class TodaysMenu extends ListOishiBase {
 				req.image = viewHolder.image;
 				req.image.setTag(new Object());
 				req.progress = viewHolder.bar;
-				req.parent=viewHolder.bg;
+				req.parent = viewHolder.bg;
 				new BitmapHttpTask().execute(req);
 			}
 			return view;
 
 		}
 	}
+
 	private static class ViewHolder {
 		TextView text1;
 		ImageView image;
@@ -84,6 +85,7 @@ public class TodaysMenu extends ListOishiBase {
 	public final static int OPERATION_BITMAP = 10;
 
 	public final static int OPERATION_LIST = 30;
+	ListView listview;
 
 	IHttpCallback menuCallaback = new IHttpCallback() {
 
@@ -92,7 +94,8 @@ public class TodaysMenu extends ListOishiBase {
 			MainMenuAdapter adapter = new MainMenuAdapter(
 					getApplicationContext(), R.layout.list_todaysmenu_item,
 					(List<MenuData>) t);
-			ListView listview = getListView();
+			listview = getListView(true);
+
 			listview.setAdapter(adapter);
 			listview.setOnItemClickListener(listViewClickListener);
 			hideDialog();
@@ -136,13 +139,17 @@ public class TodaysMenu extends ListOishiBase {
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 				long arg3) {
 			Log.d("Oishii", "Item at position" + arg2);
-
-			MenuData menu = (MenuData) getListView().getItemAtPosition(arg2);
-			Intent intent = new Intent(TodaysMenu.this, TodaysMenuDetailList.class);
-			intent.putExtra(TodaysMenuDetailList.EXTRA_TITLE, menu.getTitle());
-			intent.putExtra(TodaysMenuDetailList.EXTRA_CAT_ID, menu.getId());
-			intent.putExtra(TodaysMenuDetailList.EXTRA_COLOR, menu.getColor());
-			startActivity(intent);
+			if (arg2 != 0) {
+				MenuData menu = (MenuData) listview.getItemAtPosition(arg2);
+				Intent intent = new Intent(TodaysMenu.this,
+						TodaysMenuDetailList.class);
+				intent.putExtra(TodaysMenuDetailList.EXTRA_TITLE,
+						menu.getTitle());
+				intent.putExtra(TodaysMenuDetailList.EXTRA_CAT_ID, menu.getId());
+				intent.putExtra(TodaysMenuDetailList.EXTRA_COLOR,
+						menu.getColor());
+				startActivity(intent);
+			}
 		}
 	};
 

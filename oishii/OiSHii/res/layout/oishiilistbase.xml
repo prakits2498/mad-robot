@@ -1,46 +1,9 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:background="@drawable/todays_bg" >
 
-        <!--
-            android:layout_alignParentTop="true"
-            android:layout_centerInParent="true"
-        -->
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerInParent="true" >
-
-            <TextView
-                android:id="@+id/titleFirst"
-                style="@style/todaysmenu_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="5dp"
-                android:textColor="@android:color/black"
-                android:textSize="20dp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/titleSecond"
-                style="@style/todaysmenu_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/text_color"
-                android:textSize="20dp"
-                android:textStyle="bold" />
-        </LinearLayout>
-    </RelativeLayout>
 
     <ListView
         android:id="@+id/listView1"
@@ -79,5 +42,45 @@
         android:listSelector="@drawable/selector"
         android:visibility="gone"
         android:scrollingCache="false" />
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@drawable/todays_bg"
+        android:layout_gravity="top|fill" 
+        >
 
-</LinearLayout>
+        <!--
+            android:layout_alignParentTop="true"
+            android:layout_centerInParent="true"
+        -->
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerInParent="true" 
+>
+
+            <TextView
+                android:id="@+id/titleFirst"
+                style="@style/todaysmenu_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:textColor="@android:color/black"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/titleSecond"
+                style="@style/todaysmenu_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_color"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </RelativeLayout>
+</FrameLayout>

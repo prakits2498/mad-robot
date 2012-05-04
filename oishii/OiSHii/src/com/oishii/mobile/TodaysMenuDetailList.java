@@ -47,8 +47,6 @@ public class TodaysMenuDetailList extends ListOishiBase {
 	@Override
 	protected void hookInListData() {
 		// TODO Auto-generated method stub
-		ListView lv = getListView();
-		System.out.println(lv);
 		showOnlyLogo();
 		Intent intent = getIntent();
 		String title = intent.getStringExtra(EXTRA_TITLE);
@@ -125,64 +123,12 @@ public class TodaysMenuDetailList extends ListOishiBase {
 		public void bindUI(Object t, int operationId) {
 
 			ResultContainer result = (ResultContainer) t;
-			ExpandableListView list = (ExpandableListView) findViewById(R.id.expList);
+			ExpandableListView list =getExandableList();/// (ExpandableListView) findViewById(R.id.expList);
 
 			MenuDetailsExpandableAdapter adapter = new MenuDetailsExpandableAdapter(
 					result.parent, result.children);
 			list.setAdapter(adapter);
 			list.setVisibility(View.VISIBLE);
-
-			//
-			//
-			//
-			// list.setAdapter(adapter);
-			// ArrayList<Object> list = (ArrayList<Object>) t;
-			// Object obj;
-			// layout = getManualListView();
-			// LayoutInflater inflater = getLayoutInflater();
-			// MenuItemCategory category;
-			// MenuItem item;
-			// for (int i = 0; i < list.size(); i++) {
-			// obj = list.get(i);
-			// View v;
-			// if (obj instanceof MenuItemCategory) {
-			// category = (MenuItemCategory) obj;
-			// v = inflater.inflate(R.layout.menu_item_header, null);
-			// v.setBackgroundColor(color);
-			// TextView tv = (TextView) v.findViewById(R.id.mnuTitle);
-			// tv.setText(category.getName());
-			// tv = (TextView) v.findViewById(R.id.mnuDesc);
-			// tv.setText(category.getDescription());
-			// v.setTag(category);
-			// v.setOnClickListener(expandCollapse);
-			// } else {
-			// item = (MenuItem) obj;
-			// v = inflater.inflate(R.layout.item_contents, null);
-			// TextView tv = (TextView) v.findViewById(R.id.title);
-			// tv.setText(item.getName());
-			// tv = (TextView) v.findViewById(R.id.desc);
-			// tv.setText(item.getDescription());
-			// tv = (TextView) v.findViewById(R.id.left);
-			// tv.setText(item.getItemsRemain() + " Left");
-			// ImageView image = (ImageView) v.findViewById(R.id.menuImg);
-			// image.setId(i);
-			// Button price = (Button) v.findViewById(R.id.price);
-			// price.setText("£" + item.getPrice());
-			// price.setOnClickListener(btnListener);
-			// BitmapRequestParam req = new BitmapRequestParam();
-			// req.bitmapUri = URI.create(item.getImage());
-			// req.image = image;
-			// ProgressBar progress = (ProgressBar) v
-			// .findViewById(R.id.imageProgress);
-			// progress.setId(i);
-			// req.progress = progress;
-			// req.parent = (LinearLayout) findViewById(R.id.progressParent);
-			// new BitmapHttpTask().execute(req);
-			//
-			// }
-			// layout.addView(v);
-			// }
-
 			hideDialog();
 		}
 

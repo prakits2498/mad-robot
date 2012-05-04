@@ -76,7 +76,7 @@ public class SpecialOffers extends ListOishiBase {
 			SplOfferAdapter adapter = new SplOfferAdapter(
 					getApplicationContext(), R.layout.specialoffers,
 					(List<SpecialOffer>) t);
-			ListView listview = getListView();
+			ListView listview = getListView(true);
 			listview.setOnItemClickListener(listViewClickListener);
 			listview.setAdapter(adapter);
 			hideDialog();
@@ -146,7 +146,6 @@ public class SpecialOffers extends ListOishiBase {
 
 	@Override
 	protected int getSreenID() {
-		// TODO Auto-generated method stub
 		return R.id.offers;
 	}
 }
