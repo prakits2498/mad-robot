@@ -96,7 +96,6 @@ public class TodaysMenuDetailList extends ListOishiBase {
 
 	@Override
 	protected int getSreenID() {
-		// TODO Auto-generated method stub
 		return R.layout.menu_item_header;
 	}
 
