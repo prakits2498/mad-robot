@@ -3,8 +3,6 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-
-
     <ListView
         android:id="@+id/listView1"
         android:layout_width="fill_parent"
@@ -13,25 +11,11 @@
         android:dividerHeight="3dp"
         android:drawSelectorOnTop="true"
         android:fadingEdge="none"
-        android:visibility="gone"
         android:listSelector="@drawable/selector"
         android:scrollbarAlwaysDrawVerticalTrack="false"
-        android:scrollingCache="false" />
+        android:scrollingCache="false"
+        android:visibility="gone" />
 
-    <!--
-    <ScrollView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="3dp" >
-
-        <LinearLayout
-            android:id="@+id/manualList"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone" />
-    </ScrollView>
-    -->
 
     <ExpandableListView
         android:id="@+id/expList"
@@ -40,16 +24,17 @@
         android:drawSelectorOnTop="true"
         android:fadingEdge="none"
         android:listSelector="@drawable/selector"
-        android:visibility="gone"
-        android:scrollingCache="false" />
+        android:scrollingCache="false"
+        android:visibility="gone" />
+
     <RelativeLayout
+        android:id="@+id/shadow_title"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="top|fill"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:background="@drawable/todays_bg"
-        android:layout_gravity="top|fill" 
-        >
+        android:background="@drawable/todays_bg" >
 
         <!--
             android:layout_alignParentTop="true"
@@ -60,8 +45,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_centerInParent="true" 
->
+            android:layout_centerInParent="true" >
 
             <TextView
                 android:id="@+id/titleFirst"
@@ -83,4 +67,5 @@
                 android:textStyle="bold" />
         </LinearLayout>
     </RelativeLayout>
+
 </FrameLayout>
