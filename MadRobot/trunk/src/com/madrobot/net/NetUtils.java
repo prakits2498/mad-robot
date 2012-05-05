@@ -41,7 +41,7 @@ import com.madrobot.security.HexDump;
 import com.madrobot.text.CharUtils;
 
 public class NetUtils {
-	private final static String emailPattern = "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+	
 
 	/**
 	 * Decode the IP Address represented as an integer
@@ -176,6 +176,7 @@ public class NetUtils {
 	}
 
 	public static boolean isValidEmailAddress(String address) {
+		final String emailPattern = "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 		Pattern pattern = Pattern.compile(emailPattern);
 		Matcher matcher = pattern.matcher(address);
 		return matcher.matches();

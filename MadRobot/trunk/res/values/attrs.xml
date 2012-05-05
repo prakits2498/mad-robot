@@ -84,5 +84,23 @@
         <attr format="float" name="minorWeightMax" />
         
     </declare-styleable>
-
+	<declare-styleable name="PageCurlView">
+		<!-- Enable/Disable debug mode -->
+		<attr name="enableDebugMode" format="boolean" />
+		<!-- Curl speed  the animation moves in px/frame -->
+		<attr name="curlSpeed" format="integer" />		
+		<!-- FPS our animation will run -->
+		<attr name="updateRate" format="integer" />		
+		<!-- Pixel offset the page will have from the curl edge -->
+		<attr name="initialEdgeOffset" format="integer" />
+		<!-- Top drawable for the curlview -->
+		<attr name="top_Drawable" format="integer"/>
+		<!-- Bottom drawable for the curlview -->
+		<attr name="bottom_Drawable" format="integer"/>
+		<!-- The curl mode to apply -->
+		<attr name="curlMode">
+			<enum name="Simple" value="0" />
+			<enum name="Dynamic" value="1" />
+		</attr>
+	</declare-styleable>
 </resources>
