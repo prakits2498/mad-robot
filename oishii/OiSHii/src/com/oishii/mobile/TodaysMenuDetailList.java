@@ -123,7 +123,7 @@ public class TodaysMenuDetailList extends ListOishiBase {
 		public void bindUI(Object t, int operationId) {
 
 			ResultContainer result = (ResultContainer) t;
-			ExpandableListView list =getExandableList();/// (ExpandableListView) findViewById(R.id.expList);
+			ExpandableListView list = getExandableList(true);
 
 			MenuDetailsExpandableAdapter adapter = new MenuDetailsExpandableAdapter(
 					result.parent, result.children);
@@ -235,7 +235,8 @@ public class TodaysMenuDetailList extends ListOishiBase {
 
 			ArrayList<MenuItem> menu = children.get(group);
 			MenuItem item = menu.get(child);
-			View v = getLayoutInflater().inflate(R.layout.item_contents, null);
+			View v = getLayoutInflater().inflate(
+					R.layout.todays_menu_item_contents, null);
 			TextView tv = (TextView) v.findViewById(R.id.title);
 			tv.setText(item.getName());
 			tv = (TextView) v.findViewById(R.id.desc);
@@ -244,21 +245,24 @@ public class TodaysMenuDetailList extends ListOishiBase {
 			tv.setText(item.getItemsRemain() + " Left");
 			ImageView image = (ImageView) v.findViewById(R.id.menuImg);
 			image.setId(group + child);
-
-			Button price = (Button) v.findViewById(R.id.price);
+			TextView price = (TextView)v.findViewById(R.id.price);
 			price.setText("£" + item.getPrice());
-			price.setOnClickListener(btnListener);
-			System.out.println("Item bitmap->" + item.getBitmap());
+
+			Button detail = (Button) v.findViewById(R.id.detail);
+			detail.setTag(item);
+			detail.setOnClickListener(btnListener);
 			ProgressBar progress = (ProgressBar) v
 					.findViewById(R.id.imageProgress);
-			LinearLayout parent=(LinearLayout) v.findViewById(R.id.progressParent);
+			LinearLayout parent = (LinearLayout) v
+					.findViewById(R.id.progressParent);
 			if (item.getBitmap() == null) {
 				BitmapRequestParam req = new BitmapRequestParam();
 				req.bitmapUri = URI.create(item.getImage());
 				req.image = image;
 				progress.setId(group + child);
 				req.progress = progress;
-				req.parent = parent;//(LinearLayout) v.findViewById(R.id.progressParent);
+				req.parent = parent;// (LinearLayout)
+									// v.findViewById(R.id.progressParent);
 				req.bean = item;
 				new BitmapHttpTask().execute(req);
 			} else {
@@ -294,16 +298,16 @@ public class TodaysMenuDetailList extends ListOishiBase {
 		public View getGroupView(int arg0, boolean arg1, View arg2,
 				ViewGroup arg3) {
 			MenuItemCategory category = parents.get(arg0);
-//			View v = arg2;
-//			if (v == null) {
-				View v = getLayoutInflater()
-						.inflate(R.layout.menu_item_header, null);
-				v.setBackgroundColor(color);
-				TextView tv = (TextView) v.findViewById(R.id.mnuTitle);
-				tv.setText(category.getName());
-				tv = (TextView) v.findViewById(R.id.mnuDesc);
-				tv.setText(category.getDescription());
-//			}
+			// View v = arg2;
+			// if (v == null) {
+			View v = getLayoutInflater().inflate(R.layout.menu_item_header,
+					null);
+			v.setBackgroundColor(color);
+			TextView tv = (TextView) v.findViewById(R.id.mnuTitle);
+			tv.setText(category.getName());
+			tv = (TextView) v.findViewById(R.id.mnuDesc);
+			tv.setText(category.getDescription());
+			// }
 			return v;
 		}
 

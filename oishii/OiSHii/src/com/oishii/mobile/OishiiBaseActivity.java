@@ -1,6 +1,5 @@
 package com.oishii.mobile;
 
-import android.R.color;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
@@ -62,6 +61,8 @@ public abstract class OishiiBaseActivity extends Activity {
 		return false;
 	}
 
+	View menuView;
+
 	protected void hookInViews() {
 		ViewGroup parent = (ViewGroup) View.inflate(this, R.layout.oishiibase,
 				null);
@@ -79,7 +80,9 @@ public abstract class OishiiBaseActivity extends Activity {
 		// tv.getPaint().setShader(textShader);
 		hookInMenu();
 		hookInChildViews();
+		setMenuView();
 		setCurrentScreen();
+
 	}
 
 	private void setCurrentScreen() {
@@ -87,7 +90,9 @@ public abstract class OishiiBaseActivity extends Activity {
 
 	}
 
-	private View menuView;
+	private void setMenuView() {
+		menuView = findViewById(getParentScreenId());
+	}
 
 	protected void hookInMenu() {
 		menuView = findViewById(R.id.footer);
@@ -155,7 +160,14 @@ public abstract class OishiiBaseActivity extends Activity {
 				showNotImplToast();
 				break;
 			case R.id.history:
-				showNotImplToast();
+				if (!AccountStatus.getInstance(getApplicationContext())
+						.isSignedIn()) {
+
+					clz = OutOfSession.class;
+					intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+				} else {
+					clz = History.class;
+				}
 				break;
 			}
 			if (clz != null) {
@@ -192,6 +204,11 @@ public abstract class OishiiBaseActivity extends Activity {
 	protected void showOnlyLogo() {
 		findViewById(R.id.logo).setVisibility(View.VISIBLE);
 		findViewById(R.id.headertitle).setVisibility(View.GONE);
+	}
+
+	protected void showOnlyTitle() {
+		findViewById(R.id.logo).setVisibility(View.GONE);
+		findViewById(R.id.headertitle).setVisibility(View.VISIBLE);
 	}
 
 	View.OnClickListener errorDialogListener = new View.OnClickListener() {
@@ -252,28 +269,28 @@ public abstract class OishiiBaseActivity extends Activity {
 		setSelectedMenu();
 	}
 
-	private void setSelectedMenu(){
-		int parentScreen=getParentScreenId();
-		View v=findViewById(parentScreen);
-		v.setBackgroundColor(0x32ffffff);
-		ImageView icon=(ImageView) v.findViewById(R.id.image);
-		TextView text=(TextView) v.findViewById(R.id.text);
+	private void setSelectedMenu() {
+		int parentScreen = getParentScreenId();
+		// View v=findViewById(parentScreen);
+		menuView.setBackgroundColor(0x32ffffff);
+		ImageView icon = (ImageView) menuView.findViewById(R.id.image);
+		TextView text = (TextView) menuView.findViewById(R.id.text);
 		int imageResource = 0;
 		switch (parentScreen) {
 		case R.id.offers:
-			imageResource=R.drawable.offers_sel;
+			imageResource = R.drawable.offers_sel;
 			break;
 		case R.id.about:
-			imageResource=R.drawable.home_sel;
+			imageResource = R.drawable.home_sel;
 			break;
 		case R.id.myacc:
-			imageResource=R.drawable.acc_sel;
+			imageResource = R.drawable.acc_sel;
 			break;
 		case R.id.basket:
-			imageResource=R.drawable.basket_sel;
+			imageResource = R.drawable.basket_sel;
 			break;
 		case R.id.history:
-			imageResource=R.drawable.clock_sel;
+			imageResource = R.drawable.clock_sel;
 			break;
 		}
 		icon.setImageResource(imageResource);

@@ -12,7 +12,7 @@
     <string name="mnu_about">About</string>
     <string name="mnu_offer">Offers</string>
     <string name="mnu_history">History</string>
-    <string name="mnu_myacc">My Account</string>
+    <string name="mnu_myacc">Account</string>
     <string name="mnu_basket">Basket</string>
     <!-- Loading dialog messages -->
     <string name="loading_mnu">Loading today\'s menu…</string>
@@ -22,7 +22,7 @@
     <string name="loading_acc">Obtaining Account Info…</string>
     <string name="loading_chg_pwd">Changing Password…</string>
     <string name="loading_det">Loading menu details…</string>
-    
+    <string name="loading_history">Loading history…</string>
     
     
     <string name="error_bad_response">Invalid server response</string>
@@ -38,10 +38,11 @@
     <string name="current">Current</string>
     <string name="new_text">New</string>
     <string name="chngpwd">Change Password</string>
-
+    <string name="details">Details</string>
+ <string name="price">Price:</string>
+    
     <!-- SCREEN TITLES -->
     <string name="checkout">CHECK OUT</string>
-    <string name="history_title">HISTORY</string>
     <string name="special">SPECIAL</string>
     <string name="offers">OFFERS</string>
     <string name="today">TODAYS</string>
@@ -50,6 +51,7 @@
     <string name="create_acc_title">CREATE ACCOUNT</string>
     <string name="login_title">SIGN IN</string>
     <string name="title_chng_pwd">CHANGE PASSWORD</string>
+     <string name="title_history">HISTORY</string>
 
     <!-- My Account -->
     <string name="mydet">My Details</string>

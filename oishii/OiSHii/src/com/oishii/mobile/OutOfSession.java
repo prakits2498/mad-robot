@@ -48,7 +48,7 @@ public class OutOfSession extends OishiiBaseActivity {
 			titleString = R.string.acc_title;
 			break;
 		case R.id.history:
-			titleString = R.string.history_title;
+			titleString = R.string.title_history;
 			break;
 		}
 		return getString(titleString);

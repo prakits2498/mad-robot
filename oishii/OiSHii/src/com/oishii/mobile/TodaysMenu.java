@@ -46,7 +46,7 @@ public class TodaysMenu extends ListOishiBase {
 			MenuData item = getItem(position);
 			if (view == null) {
 				view = getLayoutInflater().inflate(
-						R.layout.list_todaysmenu_item, null);
+						R.layout.todaysmenu_list_item, null);
 				view.setBackgroundColor(item.getColor());
 				ViewHolder viewHolder = new ViewHolder();
 				viewHolder.text1 = (TextView) view.findViewById(R.id.textView1);
@@ -92,7 +92,7 @@ public class TodaysMenu extends ListOishiBase {
 		@Override
 		public void bindUI(Object t, int operationID) {
 			MainMenuAdapter adapter = new MainMenuAdapter(
-					getApplicationContext(), R.layout.list_todaysmenu_item,
+					getApplicationContext(), R.layout.todaysmenu_list_item,
 					(List<MenuData>) t);
 			listview = getListView(true);
 

@@ -21,4 +21,6 @@ public class ApplicationConstants {
 			+ "myaccount.php");
 	public static final URI API_CHANGE_PWD = URI.create(PLIST_PATH
 			+ "changePassword.php");
+	public static final URI API_MY_HISTORY = URI.create(PLIST_PATH
+			+ "historyData.php");
 }
