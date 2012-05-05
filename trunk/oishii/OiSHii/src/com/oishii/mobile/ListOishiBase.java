@@ -2,8 +2,6 @@ package com.oishii.mobile;
 
 import android.view.View;
 import android.widget.ExpandableListView;
-import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -46,28 +44,21 @@ public abstract class ListOishiBase extends OishiiBaseActivity {
 
 		return lv;
 	}
-	
-	private View getDummyHeaderView(){
-		View v = getLayoutInflater().inflate(R.layout.list_dummy_header,
-				null);
+
+	private View getDummyHeaderView() {
+		View v = getLayoutInflater().inflate(R.layout.list_dummy_header, null);
 		v.setFocusable(false);
 		v.setClickable(false);
-	return v;
-	}
-	
-	protected ExpandableListView getExandableList(){
-		ExpandableListView list = (ExpandableListView) findViewById(R.id.expList);
-		list.addHeaderView(getDummyHeaderView());
-		return list;
+		return v;
 	}
 
-	//
-	// protected LinearLayout getManualListView() {
-	// findViewById(R.id.listView1).setVisibility(View.GONE);
-	// View view = findViewById(R.id.manualList);
-	// view.setVisibility(View.VISIBLE);
-	// return (LinearLayout) view;
-	// }
+	protected ExpandableListView getExandableList(boolean addHead) {
+		ExpandableListView list = (ExpandableListView) findViewById(R.id.expList);
+		if (addHead) {
+			list.addHeaderView(getDummyHeaderView());
+		}
+		return list;
+	}
 
 	protected abstract void hookInListData();
 }

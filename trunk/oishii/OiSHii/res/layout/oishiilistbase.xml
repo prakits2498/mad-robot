@@ -3,6 +3,18 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:id="@+id/arbitaryLayout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_marginTop="38dp" />
+    </ScrollView>
+
     <ListView
         android:id="@+id/listView1"
         android:layout_width="fill_parent"
@@ -15,7 +27,6 @@
         android:scrollbarAlwaysDrawVerticalTrack="false"
         android:scrollingCache="false"
         android:visibility="gone" />
-
 
     <ExpandableListView
         android:id="@+id/expList"
