@@ -55,9 +55,9 @@ public class Login extends OishiiBaseActivity {
 		HttpRequestWrapper requestWrapper = new HttpRequestWrapper();
 		requestWrapper.requestURI = ApplicationConstants.API_LOGIN;
 		requestWrapper.callback = loginCallback;
-		HttpSettings settings=new HttpSettings();
+		HttpSettings settings = new HttpSettings();
 		settings.setHttpMethod(HttpMethod.HTTP_POST);
-		requestWrapper.httpSettings=settings;
+		requestWrapper.httpSettings = settings;
 		requestWrapper.operationID = OPERATION_LOGIN;
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		NameValuePair param = new BasicNameValuePair("mac", AccountStatus
@@ -109,7 +109,7 @@ public class Login extends OishiiBaseActivity {
 
 		@Override
 		public void onFailure(int message, int operationID) {
-processFailure(message);
+			processFailure(message);
 		}
 
 		@Override
@@ -125,15 +125,15 @@ processFailure(message);
 					break;
 				case R.id.myacc:
 					// titleString = R.string.acc_title;
-					targetClass=AccountDetails.class;
+					targetClass = AccountDetails.class;
 					break;
 				case R.id.history:
 					// titleString = R.string.history_title;
 					break;
 				}
-				if(targetClass!=null){
+				if (targetClass != null) {
 					finish();
-					Intent intent=new Intent(Login.this,targetClass);
+					Intent intent = new Intent(Login.this, targetClass);
 					startActivity(intent);
 				}
 			} else {
@@ -165,12 +165,12 @@ processFailure(message);
 		}
 		if (!hasValidText(pwd)) {
 			errors.append(getString(R.string.error_no_pwd));
-//			errors.append(newline);
+			// errors.append(newline);
 		}
-//		 if(TextUtils.isValidEmailAddress(login.getText().toString())){
-//		 errors.append(getString(R.string.error_invalid_email));
-//		 errors.append(newline);
-//		 }
+		// if(TextUtils.isValidEmailAddress(login.getText().toString())){
+		// errors.append(getString(R.string.error_invalid_email));
+		// errors.append(newline);
+		// }
 		return errors.toString();
 	}
 
@@ -207,7 +207,21 @@ processFailure(message);
 	@Override
 	protected int getSreenID() {
 		// TODO Auto-generated method stub
-		return 0;
+		return R.layout.login;
+	}
+
+	@Override
+	protected int getParentScreenId() {
+		int source = getIntent().getIntExtra(OutOfSession.SRC_KEY, 0);
+		switch (source) {
+		case R.id.basket:
+			return R.id.basket;
+		case R.id.myacc:
+			return R.id.myacc;
+		case R.id.history:
+			return R.id.history;
+		}
+		return R.id.myacc;
 	}
 
 }

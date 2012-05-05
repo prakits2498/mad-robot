@@ -163,4 +163,10 @@ public class ChangePassword extends OishiiBaseActivity {
 		return getString(R.string.title_chng_pwd);
 	}
 
+	@Override
+	protected int getParentScreenId() {
+		// TODO Auto-generated method stub
+		return R.id.myacc;
+	}
+
 }

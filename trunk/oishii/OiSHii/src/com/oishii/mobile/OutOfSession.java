@@ -59,4 +59,18 @@ public class OutOfSession extends OishiiBaseActivity {
 		return notLoggedScreenID;
 	}
 
+	@Override
+	protected int getParentScreenId() {
+		int source = getIntent().getIntExtra(SRC_KEY, 0);
+		switch (source) {
+		case R.id.basket:
+		return R.id.basket;
+		case R.id.myacc:
+			return R.id.myacc;
+		case R.id.history:
+			return R.id.history;
+		}
+		return R.id.myacc;
+	}
+
 }

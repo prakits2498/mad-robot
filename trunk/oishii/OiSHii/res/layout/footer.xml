@@ -22,13 +22,12 @@
             android:orientation="vertical" >
 
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center_horizontal"
-                android:src="@drawable/menu_home" />
+                android:id="@+id/image"
+                style="@style/mainmenuimage"
+                android:src="@drawable/home_sel" />
 
             <TextView
-                android:id="@+id/txtAbout"
+                 android:id="@+id/text"
                 style="@style/mainmenutext"
                 android:text="@string/mnu_about" />
         </LinearLayout>
@@ -42,9 +41,7 @@
             android:orientation="vertical" >
 
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center_horizontal"
+                style="@style/mainmenuimage"
                 android:src="@drawable/menu_home" />
 
             <TextView
@@ -61,9 +58,7 @@
             android:orientation="vertical" >
 
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center_horizontal"
+                style="@style/mainmenuimage"
                 android:src="@drawable/menu_home" />
 
             <TextView
@@ -80,9 +75,7 @@
             android:orientation="vertical" >
 
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center_horizontal"
+                style="@style/mainmenuimage"
                 android:src="@drawable/basket" />
 
             <TextView
@@ -112,9 +105,7 @@
                     android:orientation="vertical" >
 
                     <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_gravity="center_horizontal"
+                        style="@style/mainmenuimage"
                         android:src="@drawable/basket" />
 
                     <TextView

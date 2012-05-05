@@ -34,6 +34,12 @@ public class Home extends OishiiBaseActivity {
 		return R.id.about;
 	}
 
+	@Override
+	protected int getParentScreenId() {
+		// TODO Auto-generated method stub
+		return R.id.about;
+	}
+
 
 
 

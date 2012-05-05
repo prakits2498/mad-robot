@@ -124,4 +124,10 @@ public class AccountDetails extends OishiiBaseActivity {
 		return getString(R.string.acc_title);
 	}
 
+	@Override
+	protected int getParentScreenId() {
+		// TODO Auto-generated method stub
+		return R.id.myacc;
+	}
+
 }
