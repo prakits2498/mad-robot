@@ -31,7 +31,7 @@
                 style="@style/mainmenutext"
                 android:text="@string/mnu_about" />
         </LinearLayout>
-
+		
         <LinearLayout
             android:id="@+id/offers"
             android:layout_width="wrap_content"
@@ -59,6 +59,7 @@
 
             <ImageView
                 style="@style/mainmenuimage"
+                
                 android:src="@drawable/clock" />
 
             <TextView
