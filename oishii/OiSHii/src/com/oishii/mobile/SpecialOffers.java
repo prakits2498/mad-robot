@@ -152,6 +152,6 @@ public class SpecialOffers extends ListOishiBase {
 	@Override
 	protected int getParentScreenId() {
 		// TODO Auto-generated method stub
-		return R.id.about;
+		return R.id.offers;
 	}
 }

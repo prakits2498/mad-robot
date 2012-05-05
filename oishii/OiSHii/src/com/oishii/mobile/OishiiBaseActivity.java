@@ -1,8 +1,10 @@
 package com.oishii.mobile;
 
+import android.R.color;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -11,6 +13,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,7 +34,7 @@ public abstract class OishiiBaseActivity extends Activity {
 		hookInViews();
 
 	}
-	
+
 	protected abstract int getParentScreenId();
 
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -69,11 +72,11 @@ public abstract class OishiiBaseActivity extends Activity {
 		TextView title = (TextView) parent.findViewById(R.id.headertitle);
 		title.setText(getTitleString());
 		setContentView(parent);
-//		 Shader textShader=new LinearGradient(0, 0, 0, 20,
-//		            new int[]{Color.WHITE,Color.GRAY},
-//		            new float[]{0, 1}, TileMode.CLAMP);
-//		   TextView tv= (TextView) findViewById(R.id.txtAbout);
-//		    tv.getPaint().setShader(textShader);
+		// Shader textShader=new LinearGradient(0, 0, 0, 20,
+		// new int[]{Color.WHITE,Color.GRAY},
+		// new float[]{0, 1}, TileMode.CLAMP);
+		// TextView tv= (TextView) findViewById(R.id.txtAbout);
+		// tv.getPaint().setShader(textShader);
 		hookInMenu();
 		hookInChildViews();
 		setCurrentScreen();
@@ -124,7 +127,7 @@ public abstract class OishiiBaseActivity extends Activity {
 			if (currentId == v.getId()) {
 				return;
 			}
-			
+
 			// isMenuScreen=true;
 			// isHomeScreen=false;
 			// finish();
@@ -246,6 +249,35 @@ public abstract class OishiiBaseActivity extends Activity {
 		super.onResume();
 		setCurrentScreen();
 		System.out.println("ON RESUMEEEE++++++++++++++");
+		setSelectedMenu();
+	}
+
+	private void setSelectedMenu(){
+		int parentScreen=getParentScreenId();
+		View v=findViewById(parentScreen);
+		v.setBackgroundColor(0x32ffffff);
+		ImageView icon=(ImageView) v.findViewById(R.id.image);
+		TextView text=(TextView) v.findViewById(R.id.text);
+		int imageResource = 0;
+		switch (parentScreen) {
+		case R.id.offers:
+			imageResource=R.drawable.offers_sel;
+			break;
+		case R.id.about:
+			imageResource=R.drawable.home_sel;
+			break;
+		case R.id.myacc:
+			imageResource=R.drawable.acc_sel;
+			break;
+		case R.id.basket:
+			imageResource=R.drawable.basket_sel;
+			break;
+		case R.id.history:
+			imageResource=R.drawable.clock_sel;
+			break;
+		}
+		icon.setImageResource(imageResource);
+		text.setTextColor(ColorStateList.valueOf(0xffffffff));
 	}
 
 	protected void processFailure(int message) {
