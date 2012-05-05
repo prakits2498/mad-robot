@@ -272,7 +272,8 @@ public abstract class OishiiBaseActivity extends Activity {
 	private void setSelectedMenu() {
 		int parentScreen = getParentScreenId();
 		// View v=findViewById(parentScreen);
-		menuView.setBackgroundColor(0x32ffffff);
+//		menuView.setBackgroundColor(0x32ffffff);
+		menuView.setBackgroundResource(R.drawable.menu_selected_bg);
 		ImageView icon = (ImageView) menuView.findViewById(R.id.image);
 		TextView text = (TextView) menuView.findViewById(R.id.text);
 		int imageResource = 0;
