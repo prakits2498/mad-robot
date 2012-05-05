@@ -3,10 +3,6 @@ package com.oishii.mobile;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.LinearGradient;
-import android.graphics.Shader;
-import android.graphics.Shader.TileMode;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -35,6 +31,8 @@ public abstract class OishiiBaseActivity extends Activity {
 		hookInViews();
 
 	}
+	
+	protected abstract int getParentScreenId();
 
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_MENU) {
@@ -71,11 +69,11 @@ public abstract class OishiiBaseActivity extends Activity {
 		TextView title = (TextView) parent.findViewById(R.id.headertitle);
 		title.setText(getTitleString());
 		setContentView(parent);
-		 Shader textShader=new LinearGradient(0, 0, 0, 20,
-		            new int[]{Color.WHITE,Color.GRAY},
-		            new float[]{0, 1}, TileMode.CLAMP);
-		   TextView tv= (TextView) findViewById(R.id.txtAbout);
-		    tv.getPaint().setShader(textShader);
+//		 Shader textShader=new LinearGradient(0, 0, 0, 20,
+//		            new int[]{Color.WHITE,Color.GRAY},
+//		            new float[]{0, 1}, TileMode.CLAMP);
+//		   TextView tv= (TextView) findViewById(R.id.txtAbout);
+//		    tv.getPaint().setShader(textShader);
 		hookInMenu();
 		hookInChildViews();
 		setCurrentScreen();
@@ -126,6 +124,7 @@ public abstract class OishiiBaseActivity extends Activity {
 			if (currentId == v.getId()) {
 				return;
 			}
+			
 			// isMenuScreen=true;
 			// isHomeScreen=false;
 			// finish();
@@ -246,6 +245,7 @@ public abstract class OishiiBaseActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 		setCurrentScreen();
+		System.out.println("ON RESUMEEEE++++++++++++++");
 	}
 
 	protected void processFailure(int message) {

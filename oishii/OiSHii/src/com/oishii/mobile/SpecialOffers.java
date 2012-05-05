@@ -102,9 +102,7 @@ public class SpecialOffers extends ListOishiBase {
 			SpecialOffer offer = new SpecialOffer();
 			offer.setOfferName(d.objectForKey("name").toString());
 			offer.setShortDesc(d.objectForKey("shortdescription").toString());
-			// String color = d.objectForKey("color").toString().replace('#',
-			// ' ')
-			// .trim();
+			
 			offer.setColor(Color.parseColor(d.objectForKey("color").toString()));
 			offers.add(offer);
 		}
@@ -131,7 +129,7 @@ public class SpecialOffers extends ListOishiBase {
 				viewHolder.text2 = (TextView) view.findViewById(R.id.offerDesc);
 				view.setTag(viewHolder);
 			}
-			System.out.println("color->" + item.getColor());
+			
 			ViewHolder viewHolder = (ViewHolder) view.getTag();
 			viewHolder.text1.setText(item.getOfferName());
 			viewHolder.text2.setText(item.getShortDesc());
@@ -149,5 +147,11 @@ public class SpecialOffers extends ListOishiBase {
 	@Override
 	protected int getSreenID() {
 		return R.id.offers;
+	}
+
+	@Override
+	protected int getParentScreenId() {
+		// TODO Auto-generated method stub
+		return R.id.about;
 	}
 }

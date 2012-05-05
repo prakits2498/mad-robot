@@ -57,7 +57,7 @@ public class TodaysMenu extends ListOishiBase {
 						.findViewById(R.id.imageProgress);
 				view.setTag(viewHolder);
 			}
-			System.out.println("color->" + item.getColor());
+			
 			ViewHolder viewHolder = (ViewHolder) view.getTag();
 			viewHolder.text1.setText(item.getTitle());
 			Object loaded = viewHolder.image.getTag();
@@ -172,9 +172,7 @@ public class TodaysMenu extends ListOishiBase {
 			menu.setBitmapUrl(d.objectForKey("image").toString());
 			menu.setTitle(d.objectForKey("name").toString());
 			menu.setId(Integer.parseInt(d.objectForKey("id").toString()));
-			// String color = d.objectForKey("color").toString().replace('#',
-			// ' ')
-			// .trim();
+			
 			menu.setColor(Color.parseColor(d.objectForKey("color").toString()));
 			menus.add(menu);
 		}
@@ -195,5 +193,11 @@ public class TodaysMenu extends ListOishiBase {
 		tv2.setText(R.string.menu);
 
 		executeMenuListRequest();
+	}
+
+	@Override
+	protected int getParentScreenId() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }

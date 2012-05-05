@@ -197,4 +197,10 @@ public class CreateAccount extends OishiiBaseActivity {
 
 		return errors.toString();
 	}
+
+	@Override
+	protected int getParentScreenId() {
+		// TODO Auto-generated method stub
+		return R.id.myacc;
+	}
 }
