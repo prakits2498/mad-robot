@@ -24,7 +24,7 @@
             <ImageView
                 android:id="@+id/image"
                 style="@style/mainmenuimage"
-                android:src="@drawable/home_sel" />
+                android:src="@drawable/home" />
 
             <TextView
                  android:id="@+id/text"
@@ -42,7 +42,7 @@
 
             <ImageView
                 style="@style/mainmenuimage"
-                android:src="@drawable/menu_home" />
+                android:src="@drawable/offers" />
 
             <TextView
                 style="@style/mainmenutext"
@@ -59,7 +59,7 @@
 
             <ImageView
                 style="@style/mainmenuimage"
-                android:src="@drawable/menu_home" />
+                android:src="@drawable/clock" />
 
             <TextView
                 style="@style/mainmenutext"
@@ -76,7 +76,7 @@
 
             <ImageView
                 style="@style/mainmenuimage"
-                android:src="@drawable/basket" />
+                android:src="@drawable/acc" />
 
             <TextView
                 style="@style/mainmenutext"

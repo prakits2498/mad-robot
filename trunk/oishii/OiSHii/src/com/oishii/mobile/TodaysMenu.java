@@ -197,7 +197,6 @@ public class TodaysMenu extends ListOishiBase {
 
 	@Override
 	protected int getParentScreenId() {
-		// TODO Auto-generated method stub
-		return 0;
+		return R.id.about;
 	}
 }
