@@ -43,10 +43,10 @@ public abstract class OishiiBaseActivity extends Activity {
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_MENU) {
 			// Do Stuff
-			if (menuView.getVisibility() == View.VISIBLE) {
-				menuView.setVisibility(View.GONE);
+			if (menuParent.getVisibility() == View.VISIBLE) {
+				menuParent.setVisibility(View.GONE);
 			} else {
-				menuView.setVisibility(View.VISIBLE);
+				menuParent.setVisibility(View.VISIBLE);
 			}
 			return true;
 		} else {
@@ -114,20 +114,6 @@ public abstract class OishiiBaseActivity extends Activity {
 
 	}
 
-	// static boolean isMenuScreen;
-	// static boolean isHomeScreen;
-	// public void onBackPressed() {
-	// if(isMenuScreen){
-	// Intent intent=new Intent(getApplicationContext(),Home.class);
-	// startActivity(intent);
-	// isMenuScreen=false;
-	// isHomeScreen=true;
-	// }
-	// if(isHomeScreen){
-	// System.exit(0);
-	// }
-	//
-	// };
 
 	View.OnClickListener menuListener = new View.OnClickListener() {
 		@Override
