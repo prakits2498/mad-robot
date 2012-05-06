@@ -20,6 +20,7 @@ public class OutOfSession extends OishiiBaseActivity {
 		super.onResume();
 		if(AccountStatus.getInstance(getApplicationContext()).isSignedIn()){
 			findViewById(R.id.signIn).setVisibility(View.GONE);
+			findViewById(R.id.txtMsg).setVisibility(View.GONE);
 		}
 	};
 

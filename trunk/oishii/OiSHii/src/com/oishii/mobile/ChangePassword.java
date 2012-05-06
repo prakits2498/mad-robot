@@ -47,45 +47,44 @@ public class ChangePassword extends OishiiBaseActivity {
 				});
 	}
 
+//	IHttpCallback changePwdCallback = new IHttpCallback() {
+//
+//		@Override
+//		public Object populateBean(InputStream is, int operationId) {
+//			NSObject object = null;
+//			try {
+//				object = PropertyListParser.parse(is);
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//			if (object != null) {
+//				SimpleResult result = getSimpleResult(object);
+//				return result;
+//			} else {
+//				return null;
+//			}
+//		}
+//
+//		@Override
+//		public void onFailure(int message, int operationID) {
+//			processFailure(message);
+//		}
+//
+//		@Override
+//		public void bindUI(Object t, int operationId) {
+//			// TODO Auto-generated method stub
+//			hideDialog();
+//			SimpleResult result = (SimpleResult) t;
+//			if (result.isSucess()) {
+//				showChangedDialog(result.getErrorMessage());
+//			} else {
+//				showErrorDialog(result.getErrorMessage());
+//			}
+//
+//		}
+//	};
 
-	IHttpCallback changePwdCallback = new IHttpCallback() {
-
-		@Override
-		public Object populateBean(InputStream is, int operationId) {
-			NSObject object = null;
-			try {
-				object = PropertyListParser.parse(is);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			if (object != null) {
-				SimpleResult result = getSimpleResult(object);
-				return result;
-			} else {
-				return null;
-			}
-		}
-
-		@Override
-		public void onFailure(int message, int operationID) {
-			processFailure(message);
-		}
-
-		@Override
-		public void bindUI(Object t, int operationId) {
-			// TODO Auto-generated method stub
-			hideDialog();
-			SimpleResult result = (SimpleResult) t;
-			if (result.isSucess()) {
-				showChangedDialog(result.getErrorMessage());
-			} else {
-				showErrorDialog(result.getErrorMessage());
-			}
-
-		}
-	};
-
-	private void showChangedDialog(String message) {
+	protected void handleSimpleResultResponse(String message) {
 		showErrorDialog(message, changedListener);
 
 	}
@@ -102,9 +101,10 @@ public class ChangePassword extends OishiiBaseActivity {
 	private void executeChangePasswordRequest() {
 		HttpRequestWrapper requestWrapper = new HttpRequestWrapper();
 		requestWrapper.requestURI = ApplicationConstants.API_CHANGE_PWD;
-		requestWrapper.callback = changePwdCallback;
+		requestWrapper.callback = simpleResultCallback;
 		requestWrapper.operationID = OPERATION_CHG_PWD;
-		requestWrapper.httpSettings.setHttpMethod(ApplicationConstants.HTTP_METHOD);
+		requestWrapper.httpSettings
+				.setHttpMethod(ApplicationConstants.HTTP_METHOD);
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		AccountStatus accStat = AccountStatus
 				.getInstance(getApplicationContext());
@@ -118,9 +118,6 @@ public class ChangePassword extends OishiiBaseActivity {
 		params.add(param);
 
 		requestWrapper.httpParams = params;
-		// HttpSettings settings = new HttpSettings();
-		// settings.setHttpMethod(HttpMethod.HTTP_POST);
-		// requestWrapper.httpSettings = settings;
 		showDialog(getString(R.string.loading_chg_pwd));
 		new HttpRequestTask().execute(requestWrapper);
 	}

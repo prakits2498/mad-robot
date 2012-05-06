@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
+import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -120,7 +121,9 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 			Button btnAddBasket = (Button) findViewById(R.id.btnToBasket);
 			int remain = detail.getRemaining();
 			if (remain == 0) {
-				btnAddBasket.setVisibility(View.GONE);
+				btnAddBasket.setBackgroundResource(R.drawable.sold_out);
+				btnAddBasket.setText(R.string.sold_out);
+				btnAddBasket.setTextColor(Color.BLACK);
 			} else {
 				btnAddBasket.setTag(detail);
 				btnAddBasket
