@@ -1,5 +1,7 @@
 package com.oishii.mobile;
 
+import com.oishii.mobile.beans.AccountStatus;
+
 import android.content.Intent;
 import android.view.View;
 
@@ -14,13 +16,21 @@ public class OutOfSession extends OishiiBaseActivity {
 		findViewById(R.id.signIn).setOnClickListener(actionListener);
 	}
 
+	protected void onResume() {
+		super.onResume();
+		if(AccountStatus.getInstance(getApplicationContext()).isSignedIn()){
+			findViewById(R.id.signIn).setVisibility(View.GONE);
+		}
+	};
+
 	View.OnClickListener actionListener = new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			Intent intent=new Intent();
-			intent.putExtra(SRC_KEY,getIntent().getIntExtra(SRC_KEY, 0));
+			Intent intent = new Intent();
+			intent.putExtra(SRC_KEY, getIntent().getIntExtra(SRC_KEY, 0));
 			switch (v.getId()) {
 			case R.id.signIn:
+				finish();
 				intent.setClass(OutOfSession.this, Login.class);
 				break;
 			case R.id.createAccount:
@@ -64,7 +74,7 @@ public class OutOfSession extends OishiiBaseActivity {
 		int source = getIntent().getIntExtra(SRC_KEY, 0);
 		switch (source) {
 		case R.id.basket:
-		return R.id.basket;
+			return R.id.basket;
 		case R.id.myacc:
 			return R.id.myacc;
 		case R.id.history:

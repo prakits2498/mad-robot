@@ -5,16 +5,6 @@ public class MenuItemCategory {
 	private int id;
 	private String name;
 	private String description;
-	private boolean isExpanded =true;
-
-
-	public boolean isExpanded() {
-	return isExpanded;
-}
-
-public void setExpanded(boolean isExpanded) {
-	this.isExpanded = isExpanded;
-}
 
 	public int getId() {
 		return id;

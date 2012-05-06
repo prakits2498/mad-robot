@@ -1,31 +1,152 @@
 package com.oishii.mobile;
 
-public class TodaysMenuItemDetail extends ListOishiBase {
+import java.io.InputStream;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+
+import com.madrobot.di.plist.NSArray;
+import com.madrobot.di.plist.NSDictionary;
+import com.madrobot.di.plist.NSNumber;
+import com.madrobot.di.plist.NSObject;
+import com.madrobot.di.plist.PropertyListParser;
+import com.oishii.mobile.beans.MenuItemDetail;
+import com.oishii.mobile.util.tasks.BitmapHttpTask;
+import com.oishii.mobile.util.tasks.BitmapRequestParam;
+import com.oishii.mobile.util.tasks.HttpRequestTask;
+import com.oishii.mobile.util.tasks.HttpRequestWrapper;
+import com.oishii.mobile.util.tasks.IHttpCallback;
+
+public class TodaysMenuItemDetail extends OishiiBaseActivity {
+
+	static final String PROD_ID = "prod_id";
+	static final String COLOR = "color";
+	private int productId;
+	private int color;
 
 	@Override
 	protected int getParentScreenId() {
-		// TODO Auto-generated method stub
 		return R.id.about;
 	}
 
-
-
 	@Override
 	protected int getSreenID() {
-		// TODO Auto-generated method stub
-		return 0;
+		return R.layout.todays_menu_item_detail;
 	}
 
 	@Override
 	protected String getTitleString() {
-		// TODO Auto-generated method stub
-		return null;
+		return "";
+	}
+
+	
+
+	private MenuItemDetail processPlist(NSObject obj) {
+		MenuItemDetail detail = new MenuItemDetail();
+		NSArray array = (NSArray) obj;
+		for (int i = 0; i < array.count(); i++) {
+			NSDictionary dict = (NSDictionary) array.objectAtIndex(i);
+			NSNumber id = (NSNumber) dict.objectForKey("id");
+			detail.setId(id.intValue());
+			String str = dict.objectForKey("name").toString();
+			detail.setName(str);
+			str = dict.objectForKey("image").toString();
+			detail.setImageUrl(str);
+			str = dict.objectForKey("description").toString();
+			detail.setDescription(str);
+			id = (NSNumber) dict.objectForKey("itemsremaining");
+			detail.setRemaining(id.intValue());
+			id = (NSNumber) dict.objectForKey("price");
+			detail.setPrice(id.floatValue());
+			str = dict.objectForKey("category").toString();
+			detail.setCategory(str);
+		}
+		return detail;
+
+	}
+
+	IHttpCallback details = new IHttpCallback() {
+
+		@Override
+		public Object populateBean(InputStream is, int operationId) {
+			NSObject object = null;
+			try {
+				object = PropertyListParser.parse(is);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			if (object != null) {
+				MenuItemDetail det = processPlist(object);
+				return det;
+			}
+			return null;
+
+		}
+
+		@Override
+		public void onFailure(int message, int operationID) {
+			processFailure(message);
+
+		}
+
+		@Override
+		public void bindUI(Object t, int operationId) {
+			MenuItemDetail detail = (MenuItemDetail) t;
+			TextView title = (TextView) findViewById(R.id.title);
+			title.setText(detail.getName());
+			title.setTextColor(color);
+			title = (TextView) findViewById(R.id.desc);
+			title.setText(detail.getDescription());
+			title= (TextView) findViewById(R.id.titleFirst);
+			title.setText(detail.getCategory());
+			title.setTextColor(color);
+			BitmapRequestParam req = new BitmapRequestParam();
+			req.bitmapUri = URI.create(detail.getImageUrl());
+			req.image = (ImageView) findViewById(R.id.image);
+			req.progress = (ProgressBar) findViewById(R.id.progress);
+			req.parent = (ViewGroup) findViewById(R.id.parent);
+			new BitmapHttpTask().execute(req);
+			hideDialog();
+		}
+	};
+
+	private void executeDetailsRequest() {
+		HttpRequestWrapper requestWrapper = new HttpRequestWrapper();
+		requestWrapper.requestURI = ApplicationConstants.API_MENU_SPECIFIC_DETAILS;
+		requestWrapper.callback = details;
+		requestWrapper.operationID = 10;
+		requestWrapper.httpSettings
+				.setHttpMethod(ApplicationConstants.HTTP_METHOD);
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		NameValuePair param = new BasicNameValuePair("prodid",
+				String.valueOf(productId));
+		params.add(param);
+		requestWrapper.httpParams = params;
+		showDialog(getString(R.string.loading));
+		new HttpRequestTask().execute(requestWrapper);
 	}
 
 	@Override
-	protected void hookInListData() {
-		// TODO Auto-generated method stub
-		
+	protected void hookInChildViews() {
+		productId = getIntent().getIntExtra(PROD_ID, 0);
+		color = getIntent().getIntExtra(COLOR, 0);
+		showOnlyLogo();
+		executeDetailsRequest();
+	}
+
+	@Override
+	protected int getChildViewLayout() {
+		return R.layout.todays_menu_item_detail;
 	}
 
 }
