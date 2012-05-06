@@ -256,7 +256,6 @@ public abstract class OishiiBaseActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 		setCurrentScreen();
-		System.out.println("ON RESUMEEEE++++++++++++++");
 		setSelectedMenu();
 	}
 
