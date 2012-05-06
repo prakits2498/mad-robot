@@ -104,6 +104,7 @@ public class ChangePassword extends OishiiBaseActivity {
 		requestWrapper.requestURI = ApplicationConstants.API_CHANGE_PWD;
 		requestWrapper.callback = changePwdCallback;
 		requestWrapper.operationID = OPERATION_CHG_PWD;
+		requestWrapper.httpSettings.setHttpMethod(ApplicationConstants.HTTP_METHOD);
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		AccountStatus accStat = AccountStatus
 				.getInstance(getApplicationContext());

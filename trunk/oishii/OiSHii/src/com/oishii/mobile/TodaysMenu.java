@@ -119,11 +119,10 @@ public class TodaysMenu extends ListOishiBase {
 				if (object != null) {
 					NSArray array = (NSArray) object;
 					ArrayList<MenuData> menuList = getArray(array);
-
 					return menuList;
-				} else {
-					return null;
 				}
+					return null;
+				
 			case OPERATION_BITMAP:
 				break;
 			}
@@ -158,7 +157,7 @@ public class TodaysMenu extends ListOishiBase {
 		requestWrapper.requestURI = ApplicationConstants.API_MENU_DATA;
 		requestWrapper.callback = menuCallaback;
 		requestWrapper.operationID = OPERATION_LIST;
-		requestWrapper.httpSettings.setHttpMethod(HttpMethod.HTTP_POST);
+		requestWrapper.httpSettings.setHttpMethod(ApplicationConstants.HTTP_METHOD);
 		showDialog(getString(R.string.loading_mnu));
 		new HttpRequestTask().execute(requestWrapper);
 	}

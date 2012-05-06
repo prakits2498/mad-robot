@@ -54,9 +54,6 @@ public class TodaysMenuDetailList extends ListOishiBase {
 		TextView tv = (TextView) findViewById(R.id.titleFirst);
 		tv.setText(title);
 		tv.setTextColor(color);
-		// TextView tv = (TextView) findViewById(R.id.title);
-		// tv.setText(title);
-		// tv.setTextColor(color);
 		executeMenuDetailsRequest();
 	}
 
@@ -64,35 +61,40 @@ public class TodaysMenuDetailList extends ListOishiBase {
 
 		@Override
 		public void onClick(View v) {
-			// TODO Auto-generated method stub
-			showNotImplToast();
-		}
-	};
-
-	View.OnClickListener expandCollapse = new View.OnClickListener() {
-
-		@Override
-		public void onClick(View v) {
-			MenuItemCategory category = (MenuItemCategory) v.getTag();
-			int visibility = category.isExpanded() ? View.GONE : View.VISIBLE;
-			category.setExpanded(!category.isExpanded());
-			int count = layout.getChildCount();
-			View currentView;
-			Object o;
-			MenuItem menu;
-			for (int i = 0; i < count; count++) {
-				currentView = layout.getChildAt(i);
-				o = currentView.getTag();
-				if (o instanceof MenuItem) {
-					menu = (MenuItem) o;
-					if (menu.getCategory().equals(category)) {
-						currentView.setVisibility(visibility);
-					}
-				}
-			}
+			MenuItem item = (MenuItem) v.getTag();
+			Intent intent = new Intent(TodaysMenuDetailList.this,
+					TodaysMenuItemDetail.class);
+			intent.putExtra(TodaysMenuItemDetail.COLOR, color);
+			intent.putExtra(TodaysMenuItemDetail.PROD_ID, item.getId());
+			startActivity(intent);
 
 		}
 	};
+
+	// View.OnClickListener expandCollapse = new View.OnClickListener() {
+	//
+	// @Override
+	// public void onClick(View v) {
+	// MenuItemCategory category = (MenuItemCategory) v.getTag();
+	// int visibility = category.isExpanded() ? View.GONE : View.VISIBLE;
+	// category.setExpanded(!category.isExpanded());
+	// int count = layout.getChildCount();
+	// View currentView;
+	// Object o;
+	// MenuItem menu;
+	// for (int i = 0; i < count; count++) {
+	// currentView = layout.getChildAt(i);
+	// o = currentView.getTag();
+	// if (o instanceof MenuItem) {
+	// menu = (MenuItem) o;
+	// if (menu.getCategory().equals(category)) {
+	// currentView.setVisibility(visibility);
+	// }
+	// }
+	// }
+	//
+	// }
+	// };
 
 	@Override
 	protected int getSreenID() {
@@ -104,6 +106,8 @@ public class TodaysMenuDetailList extends ListOishiBase {
 		requestWrapper.requestURI = ApplicationConstants.API_MENU_DETAILS;
 		requestWrapper.callback = detailsCallback;
 		requestWrapper.operationID = OPERATION_MNU_DET;
+		requestWrapper.httpSettings
+				.setHttpMethod(ApplicationConstants.HTTP_METHOD);
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		String catId = String.valueOf(getIntent().getIntExtra(EXTRA_CAT_ID, 0));
 		NameValuePair param = new BasicNameValuePair("catID", catId);
@@ -145,8 +149,6 @@ public class TodaysMenuDetailList extends ListOishiBase {
 				e.printStackTrace();
 			}
 			if (object != null) {
-				// NSArray array = (NSArray) object;
-				// ArrayList<MenuData> menuList = getArray(array);
 				ResultContainer det = processPlist(object);
 				return det;
 			} else {
@@ -241,10 +243,15 @@ public class TodaysMenuDetailList extends ListOishiBase {
 			tv = (TextView) v.findViewById(R.id.desc);
 			tv.setText(item.getDescription());
 			tv = (TextView) v.findViewById(R.id.left);
-			tv.setText(item.getItemsRemain() + " Left");
+			int itemsRemain = item.getItemsRemain();
+			if (itemsRemain == 0) {
+				tv.setText(R.string.sold_out);
+			} else {
+				tv.setText(item.getItemsRemain() + " Left");
+			}
 			ImageView image = (ImageView) v.findViewById(R.id.menuImg);
 			image.setId(group + child);
-			TextView price = (TextView)v.findViewById(R.id.price);
+			TextView price = (TextView) v.findViewById(R.id.price);
 			price.setText("£" + item.getPrice());
 
 			Button detail = (Button) v.findViewById(R.id.detail);

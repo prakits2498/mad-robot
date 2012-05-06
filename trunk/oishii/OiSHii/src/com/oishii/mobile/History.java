@@ -49,7 +49,7 @@ public class History extends ListOishiBase {
 		requestWrapper.requestURI = ApplicationConstants.API_MY_HISTORY;
 		requestWrapper.callback = historyCallback;
 		HttpSettings settings = new HttpSettings();
-		// settings.setHttpMethod(HttpMethod.HTTP_POST);
+		requestWrapper.httpSettings.setHttpMethod(ApplicationConstants.HTTP_METHOD);
 		requestWrapper.httpSettings = settings;
 		requestWrapper.operationID = OPERATION_HISTORY;
 		List<NameValuePair> params = new ArrayList<NameValuePair>();

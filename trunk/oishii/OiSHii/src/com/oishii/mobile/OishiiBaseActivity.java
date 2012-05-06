@@ -62,7 +62,7 @@ public abstract class OishiiBaseActivity extends Activity {
 	}
 
 	View menuView;
-
+View menuParent;
 	protected void hookInViews() {
 		ViewGroup parent = (ViewGroup) View.inflate(this, R.layout.oishiibase,
 				null);
@@ -95,7 +95,7 @@ public abstract class OishiiBaseActivity extends Activity {
 	}
 
 	protected void hookInMenu() {
-		menuView = findViewById(R.id.footer);
+		menuParent = findViewById(R.id.footer);
 		View v = findViewById(R.id.about);
 		v.setOnClickListener(menuListener);
 		v = findViewById(R.id.offers);
@@ -151,7 +151,7 @@ public abstract class OishiiBaseActivity extends Activity {
 						.isSignedIn()) {
 
 					clz = OutOfSession.class;
-					intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+//					intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
 				} else {
 					clz = AccountDetails.class;
 				}

@@ -43,6 +43,7 @@ public class SpecialOffers extends ListOishiBase {
 		requestWrapper.requestURI = ApplicationConstants.API_SPECIAL_OFFERS;
 		requestWrapper.callback = splOffersCallback;
 		requestWrapper.operationID = OPERATION_SPL_OFFER;
+		requestWrapper.httpSettings.setHttpMethod(ApplicationConstants.HTTP_METHOD);
 		showDialog(getString(R.string.loading_offers));
 		new HttpRequestTask().execute(requestWrapper);
 	}

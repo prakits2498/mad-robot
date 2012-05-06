@@ -63,6 +63,7 @@ public class CreateAccount extends OishiiBaseActivity {
 		requestWrapper.requestURI = ApplicationConstants.API_REGISTRATION;
 		requestWrapper.callback = createAccountCallback;
 		requestWrapper.operationID = OPERATION_REGISTER;
+		requestWrapper.httpSettings.setHttpMethod(ApplicationConstants.HTTP_METHOD);
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		NameValuePair param = new BasicNameValuePair("title", title.getText()
 				.toString());

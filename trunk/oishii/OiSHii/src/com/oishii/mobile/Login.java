@@ -55,9 +55,7 @@ public class Login extends OishiiBaseActivity {
 		HttpRequestWrapper requestWrapper = new HttpRequestWrapper();
 		requestWrapper.requestURI = ApplicationConstants.API_LOGIN;
 		requestWrapper.callback = loginCallback;
-		HttpSettings settings = new HttpSettings();
-		settings.setHttpMethod(HttpMethod.HTTP_POST);
-		requestWrapper.httpSettings = settings;
+		requestWrapper.httpSettings.setHttpMethod(ApplicationConstants.HTTP_METHOD);
 		requestWrapper.operationID = OPERATION_LOGIN;
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		NameValuePair param = new BasicNameValuePair("mac", AccountStatus

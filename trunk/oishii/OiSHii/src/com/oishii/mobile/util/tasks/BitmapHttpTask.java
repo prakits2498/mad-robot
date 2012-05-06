@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+import com.oishii.mobile.R;
 import com.oishii.mobile.util.tasks.BitmapHttpTask.ResponseParam;
 
 public class BitmapHttpTask extends AsyncTask<BitmapRequestParam, Void, Bitmap> {
@@ -58,19 +59,19 @@ public class BitmapHttpTask extends AsyncTask<BitmapRequestParam, Void, Bitmap> 
 	}
 
 	protected void onPostExecute(Bitmap bitmap) {
-		if (bitmap != null && param.image != null) {
-			if (param.progress != null) {
-				param.progress.setVisibility(View.GONE);
-				if (param.parent != null) {
-					System.out.println("removing progress");
-					param.parent.removeView(param.progress);
-				}
-			}
+		param.image.setVisibility(View.VISIBLE);
+		if (bitmap != null) {
 			param.image.setImageBitmap(bitmap);
-			param.image.setVisibility(View.VISIBLE);
 			if (param.bean != null) {
 				param.bean.setBitmap(bitmap);
-				System.out.println("Setting bitmap bean");
+			}
+		}else{
+			param.image.setImageResource(R.drawable.error_bitmap);
+		}
+		if (param.progress != null) {
+			param.progress.setVisibility(View.GONE);
+			if (param.parent != null) {
+				param.parent.removeView(param.progress);
 			}
 		}
 	}

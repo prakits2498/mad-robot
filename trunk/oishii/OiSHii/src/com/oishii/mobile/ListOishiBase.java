@@ -2,6 +2,7 @@ package com.oishii.mobile;
 
 import android.view.View;
 import android.widget.ExpandableListView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -59,6 +60,12 @@ public abstract class ListOishiBase extends OishiiBaseActivity {
 		}
 		return list;
 	}
+
+//	protected LinearLayout getArbitarytLayout() {
+//		LinearLayout layout = (LinearLayout) findViewById(R.id.arbitaryLayout);
+//		layout.setVisibility(View.VISIBLE);
+//		return layout;
+//	}
 
 	protected abstract void hookInListData();
 }

@@ -2,6 +2,8 @@ package com.oishii.mobile;
 
 import java.net.URI;
 
+import com.oishii.mobile.util.HttpSettings.HttpMethod;
+
 public class ApplicationConstants {
 	public static final int SPLASH_DURATION = 1000;
 	static final String BASE_URL = "http://oishiidev.kieonstaging.com/";
@@ -13,6 +15,8 @@ public class ApplicationConstants {
 			+ "menuData.php");
 	public static final URI API_MENU_DETAILS = URI.create(PLIST_PATH
 			+ "menuItemData.php");
+	public static final URI API_MENU_SPECIFIC_DETAILS = URI.create(PLIST_PATH
+			+ "menuDetailData.php");
 	public static final URI API_SPECIAL_OFFERS = URI.create(PLIST_PATH
 			+ "specialOffers.php");
 	public static final URI API_REGISTRATION = URI.create(PLIST_PATH
@@ -23,4 +27,6 @@ public class ApplicationConstants {
 			+ "changePassword.php");
 	public static final URI API_MY_HISTORY = URI.create(PLIST_PATH
 			+ "historyData.php");
+	
+	public static HttpMethod HTTP_METHOD=HttpMethod.HTTP_GET;
 }

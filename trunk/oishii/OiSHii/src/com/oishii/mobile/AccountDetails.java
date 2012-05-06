@@ -10,9 +10,12 @@ import org.apache.http.message.BasicNameValuePair;
 import android.content.Intent;
 import android.view.View;
 
+import com.madrobot.di.plist.NSArray;
 import com.madrobot.di.plist.NSObject;
 import com.madrobot.di.plist.PropertyListParser;
+import com.oishii.mobile.beans.AccountInformation;
 import com.oishii.mobile.beans.AccountStatus;
+import com.oishii.mobile.beans.MenuData;
 import com.oishii.mobile.util.HttpSettings;
 import com.oishii.mobile.util.HttpSettings.HttpMethod;
 import com.oishii.mobile.util.tasks.HttpRequestTask;
@@ -69,7 +72,7 @@ public class AccountDetails extends OishiiBaseActivity {
 		requestWrapper.requestURI = ApplicationConstants.API_MY_ACCOUNT;
 		requestWrapper.callback = accountDetailsCallback;
 		HttpSettings settings = new HttpSettings();
-		settings.setHttpMethod(HttpMethod.HTTP_POST);
+		settings.setHttpMethod(ApplicationConstants.HTTP_METHOD);
 		requestWrapper.httpSettings = settings;
 		requestWrapper.operationID = OPERATION_ACC;
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -84,7 +87,14 @@ public class AccountDetails extends OishiiBaseActivity {
 		new HttpRequestTask().execute(requestWrapper);
 	}
 
-	IHttpCallback accountDetailsCallback = new IHttpCallback() {
+	private AccountInformation getAccountInfo(NSArray obj){
+		AccountInformation info=new AccountInformation();
+		
+		return info;
+	}
+	
+	
+	private IHttpCallback accountDetailsCallback = new IHttpCallback() {
 
 		@Override
 		public Object populateBean(InputStream is, int operationId) {
@@ -93,6 +103,12 @@ public class AccountDetails extends OishiiBaseActivity {
 				object = PropertyListParser.parse(is);
 			} catch (Exception e) {
 				e.printStackTrace();
+			}
+			if (object != null) {
+				NSArray array = (NSArray) object;
+				AccountInformation menuList = getAccountInfo(array);
+
+				return menuList;
 			}
 			return null;
 		}
