@@ -24,6 +24,7 @@
     <string name="loading_det">Loading menu details…</string>
     <string name="loading_history">Loading history…</string>
     <string name="loading">Loading details…</string>
+    <string name="loading_save">Saving details…</string>
     <string name="error_bad_response">Invalid server response</string>
     <string name="error_no_data">Could not connect, \nPlease check your data connectivity.</string>
     <string name="signtocontinue">You need to sign in to continue.</string>
@@ -33,7 +34,7 @@
     <string name="field_email">Email</string>
     <string name="field_password">Password</string>
     <string name="field_reppassword">Confirm</string>
-    <string name="dismiss">Dismiss</string>
+    <string name="dismiss">Close</string>
     <string name="current">Current</string>
     <string name="new_text">New</string>
     <string name="chngpwd">Change Password</string>
@@ -43,6 +44,7 @@
     <string name="hint_promo">Promotional code</string>
     <string name="btn_apply_promo">Apply promotional code</string>
     <string name="btn_continue">Continue</string>
+    <string name="btn_save">Save</string>
 	<string name="sold_out">Sold Out</string>
 	<string name="add_basket">Add to basket</string>
     <!-- SCREEN TITLES -->
@@ -56,6 +58,7 @@
     <string name="login_title">SIGN IN</string>
     <string name="title_chng_pwd">CHANGE PASSWORD</string>
     <string name="title_history">HISTORY</string>
+     <string name="title_details">MY DETAILS</string>
 
     <!-- My Account -->
     <string name="mydet">My Details</string>

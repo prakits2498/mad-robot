@@ -27,6 +27,8 @@ public class ApplicationConstants {
 			+ "changePassword.php");
 	public static final URI API_MY_HISTORY = URI.create(PLIST_PATH
 			+ "historyData.php");
+	public static final URI API_SAVE_ACC_DETAILS = URI.create(PLIST_PATH
+			+ "savedetails.php");
 	
 	public static HttpMethod HTTP_METHOD=HttpMethod.HTTP_GET;
 }

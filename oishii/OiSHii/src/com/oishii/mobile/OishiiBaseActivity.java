@@ -1,5 +1,7 @@
 package com.oishii.mobile;
 
+import java.io.InputStream;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
@@ -20,9 +22,11 @@ import android.widget.Toast;
 import com.madrobot.di.plist.NSDictionary;
 import com.madrobot.di.plist.NSNumber;
 import com.madrobot.di.plist.NSObject;
+import com.madrobot.di.plist.PropertyListParser;
 import com.oishii.mobile.beans.AccountStatus;
 import com.oishii.mobile.beans.CurrentScreen;
 import com.oishii.mobile.beans.SimpleResult;
+import com.oishii.mobile.util.tasks.IHttpCallback;
 
 public abstract class OishiiBaseActivity extends Activity {
 	public static final String TAG = "Oishii";
@@ -62,7 +66,8 @@ public abstract class OishiiBaseActivity extends Activity {
 	}
 
 	View menuView;
-View menuParent;
+	View menuParent;
+
 	protected void hookInViews() {
 		ViewGroup parent = (ViewGroup) View.inflate(this, R.layout.oishiibase,
 				null);
@@ -151,7 +156,7 @@ View menuParent;
 						.isSignedIn()) {
 
 					clz = OutOfSession.class;
-//					intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+					// intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
 				} else {
 					clz = AccountDetails.class;
 				}
@@ -272,7 +277,7 @@ View menuParent;
 	private void setSelectedMenu() {
 		int parentScreen = getParentScreenId();
 		// View v=findViewById(parentScreen);
-//		menuView.setBackgroundColor(0x32ffffff);
+		// menuView.setBackgroundColor(0x32ffffff);
 		menuView.setBackgroundResource(R.drawable.menu_selected_bg);
 		ImageView icon = (ImageView) menuView.findViewById(R.id.image);
 		TextView text = (TextView) menuView.findViewById(R.id.text);
@@ -313,6 +318,49 @@ View menuParent;
 		return res;
 	}
 
+	
+	IHttpCallback simpleResultCallback=new IHttpCallback() {
+		
+		@Override
+		public Object populateBean(InputStream is, int operationId) {
+			NSObject object = null;
+			try {
+				object = PropertyListParser.parse(is);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			if (object != null) {
+				SimpleResult result = getSimpleResult(object);
+				return result;
+			} else {
+				return null;
+			}
+		}
+		
+		@Override
+		public void onFailure(int message, int operationID) {
+			// TODO Auto-generated method stub
+			processFailure(message);
+		}
+		
+		@Override
+		public void bindUI(Object t, int operationId) {
+						hideDialog();
+						SimpleResult result = (SimpleResult) t;
+						if (result.isSucess()) {
+							handleSimpleResultResponse(result.getErrorMessage());
+						} else {
+							showErrorDialog(result.getErrorMessage());
+						}			
+		}
+	};
+	/**
+	 * Sent when simple result is a success
+	 * @param message
+	 */
+	protected void handleSimpleResultResponse(String message){
+		
+	}
 	protected void showNotImplToast() {
 		Toast t = Toast.makeText(getApplicationContext(),
 				"Sorry not implemented yet! :(", 4000);

@@ -25,8 +25,8 @@
     </ScrollView>
 
     <Button
-        android:id="@+id/btnCreateAcc"
+        android:id="@+id/btnSave"
         style="@style/fieldButton"
-        android:text="@string/createacc" />
+        android:text="@string/btn_save" />
 
 </LinearLayout>

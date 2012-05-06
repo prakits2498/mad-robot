@@ -11,11 +11,15 @@ import android.content.Intent;
 import android.view.View;
 
 import com.madrobot.di.plist.NSArray;
+import com.madrobot.di.plist.NSDictionary;
+import com.madrobot.di.plist.NSNumber;
 import com.madrobot.di.plist.NSObject;
 import com.madrobot.di.plist.PropertyListParser;
 import com.oishii.mobile.beans.AccountInformation;
 import com.oishii.mobile.beans.AccountStatus;
+import com.oishii.mobile.beans.Address;
 import com.oishii.mobile.beans.MenuData;
+import com.oishii.mobile.beans.SavedCard;
 import com.oishii.mobile.util.HttpSettings;
 import com.oishii.mobile.util.HttpSettings.HttpMethod;
 import com.oishii.mobile.util.tasks.HttpRequestTask;
@@ -50,6 +54,7 @@ public class AccountDetails extends OishiiBaseActivity {
 			Class clz = null;
 			switch (v.getId()) {
 			case R.id.myAccDetails:
+				clz=EditAccountDetails.class;
 				break;
 			case R.id.myAccLocation:
 				break;
@@ -67,7 +72,7 @@ public class AccountDetails extends OishiiBaseActivity {
 		}
 	};
 
-	private void executeAccountInfoRequest() {
+	protected void executeAccountInfoRequest() {
 		HttpRequestWrapper requestWrapper = new HttpRequestWrapper();
 		requestWrapper.requestURI = ApplicationConstants.API_MY_ACCOUNT;
 		requestWrapper.callback = accountDetailsCallback;
@@ -87,13 +92,69 @@ public class AccountDetails extends OishiiBaseActivity {
 		new HttpRequestTask().execute(requestWrapper);
 	}
 
-	private AccountInformation getAccountInfo(NSArray obj){
-		AccountInformation info=new AccountInformation();
-		
+	private AccountInformation getAccountInfo(NSArray obj) {
+		AccountInformation info = new AccountInformation();
+		NSDictionary dict = (NSDictionary) obj.objectAtIndex(0);
+		NSDictionary details = (NSDictionary) dict.objectForKey("details");
+		String str = details.objectForKey("title").toString();
+		info.setTitle(str);
+		str = details.objectForKey("firstname").toString();
+		info.setFirstname(str);
+		str = details.objectForKey("lastname").toString();
+		info.setLastname(str);
+		str = details.objectForKey("email").toString();
+		info.setEmail(str);
+		NSNumber no = (NSNumber) details.objectForKey("subscribed");
+		info.setSubscribed(no.intValue());
+		/* set the addresses */
+		NSArray arr = (NSArray) details.objectForKey("address");
+		List<Address> addressList = new ArrayList<Address>();
+		NSDictionary temp;
+		int count = arr.count();
+		for (int i = 0; i < count; i++) {
+			temp = (NSDictionary) arr.objectAtIndex(i);
+			com.oishii.mobile.beans.Address address = new com.oishii.mobile.beans.Address();
+			no = (NSNumber) temp.objectForKey("id");
+			address.setId(no.intValue());
+			str = temp.objectForKey("company").toString();
+			address.setCompany(str);
+			str = temp.objectForKey("floor").toString();
+			address.setFloor(str);
+			str = temp.objectForKey("address").toString();
+			address.setAddress(str);
+			str = temp.objectForKey("city").toString();
+			address.setCity(str);
+			str = temp.objectForKey("postcode").toString();
+			address.setPostCode(str);
+			str = temp.objectForKey("mobile").toString();
+			address.setMobile(str);
+			str = temp.objectForKey("shipping").toString();
+			boolean isShipping = str.equals("1");
+			address.setShipping(isShipping);
+			str = temp.objectForKey("billing").toString();
+			boolean isBilling = str.equals("1");
+			address.setShipping(isBilling);
+			addressList.add(address);
+		}
+		info.setAddresses(addressList);
+		arr = (NSArray) details.objectForKey("cc");
+		count = arr.count();
+		List<SavedCard> cardsList = new ArrayList<SavedCard>();
+		for (int i = 0; i < count; i++) {
+			temp = (NSDictionary) arr.objectAtIndex(i);
+			SavedCard card = new SavedCard();
+			str = temp.objectForKey("token").toString();
+			card.setToken(str);
+			str = temp.objectForKey("type").toString();
+			card.setType(str);
+			str = temp.objectForKey("number").toString();
+			card.setNumber(str);
+			cardsList.add(card);
+		}
+		info.setSavedCards(cardsList);
 		return info;
 	}
-	
-	
+
 	private IHttpCallback accountDetailsCallback = new IHttpCallback() {
 
 		@Override
@@ -120,6 +181,9 @@ public class AccountDetails extends OishiiBaseActivity {
 
 		@Override
 		public void bindUI(Object t, int operationId) {
+			AccountInformation info = (AccountInformation) t;
+			AccountStatus.getInstance(getApplicationContext())
+					.setAccInformation(info);
 			hideDialog();
 
 		}
