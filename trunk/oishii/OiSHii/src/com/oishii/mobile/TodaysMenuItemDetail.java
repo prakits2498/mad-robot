@@ -10,8 +10,8 @@ import org.apache.http.message.BasicNameValuePair;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -49,8 +49,6 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 		return "";
 	}
 
-	
-
 	private MenuItemDetail processPlist(NSObject obj) {
 		MenuItemDetail detail = new MenuItemDetail();
 		NSArray array = (NSArray) obj;
@@ -74,6 +72,15 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 		return detail;
 
 	}
+
+	View.OnClickListener btnAddBasket = new View.OnClickListener() {
+
+		@Override
+		public void onClick(View arg0) {
+			// TODO Auto-generated method stub
+
+		}
+	};
 
 	IHttpCallback details = new IHttpCallback() {
 
@@ -107,9 +114,18 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 			title.setTextColor(color);
 			title = (TextView) findViewById(R.id.desc);
 			title.setText(detail.getDescription());
-			title= (TextView) findViewById(R.id.titleFirst);
+			title = (TextView) findViewById(R.id.titleFirst);
 			title.setText(detail.getCategory());
 			title.setTextColor(color);
+			Button btnAddBasket = (Button) findViewById(R.id.btnToBasket);
+			int remain = detail.getRemaining();
+			if (remain == 0) {
+				btnAddBasket.setVisibility(View.GONE);
+			} else {
+				btnAddBasket.setTag(detail);
+				btnAddBasket
+						.setOnClickListener(TodaysMenuItemDetail.this.btnAddBasket);
+			}
 			BitmapRequestParam req = new BitmapRequestParam();
 			req.bitmapUri = URI.create(detail.getImageUrl());
 			req.image = (ImageView) findViewById(R.id.image);
