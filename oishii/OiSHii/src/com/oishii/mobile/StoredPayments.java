@@ -30,11 +30,19 @@ public class StoredPayments extends OishiiBaseActivity {
 		List<SavedCard> address = AccountStatus
 				.getInstance(getApplicationContext()).getAccInformation()
 				.getSavedCards();
+		int size = address.size();
+		if (address.isEmpty()) {
+			parent.setVisibility(View.GONE);
+			findViewById(R.id.noLocations).setVisibility(View.VISIBLE);
+		} else {
+			parent.setVisibility(View.VISIBLE);
+			findViewById(R.id.noLocations).setVisibility(View.GONE);
+		}
 		LayoutInflater inflater = getLayoutInflater();
 		View v;
 		TextView tv;
 		SavedCard add;
-		for (int i = 0; i < address.size(); i++) {
+		for (int i = 0; i < size; i++) {
 			add = address.get(i);
 			v = inflater.inflate(R.layout.address_field, null);
 			tv = (TextView) v.findViewById(R.id.address);
