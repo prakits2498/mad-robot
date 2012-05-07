@@ -48,6 +48,8 @@ public class Login extends OishiiBaseActivity {
 //		findViewById(R.id.footer).setVisibility(View.GONE);
 		login = (EditText) findViewById(R.id.username_edit);
 		pwd = (EditText) findViewById(R.id.password_edit);
+		login.setText("venkatesh.prabhu@kieon.com");
+		pwd.setText("kieon123");
 
 	}
 
