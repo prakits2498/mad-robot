@@ -122,7 +122,7 @@ public class EditAccountDetails extends CreateAccount {
 	 */
 	protected void handleSimpleResultResponse(String message) {
 		/* get the latest account details */
-		executeAccountInfoRequest();
+		executeAccountInfoRequest(accountDetailsCallback);
 	}
 
 	@Override

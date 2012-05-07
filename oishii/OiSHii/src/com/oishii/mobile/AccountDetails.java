@@ -35,7 +35,7 @@ public class AccountDetails extends OishiiBaseActivity {
 
 		if (AccountStatus.getInstance(getApplicationContext())
 				.getAccInformation() == null) {
-			executeAccountInfoRequest();
+			executeAccountInfoRequest(accountDetailsCallback);
 
 		}
 		findViewById(R.id.myAccDetails).setOnClickListener(
@@ -73,7 +73,7 @@ public class AccountDetails extends OishiiBaseActivity {
 		}
 	};
 
-	protected void executeAccountInfoRequest() {
+	protected void executeAccountInfoRequest(IHttpCallback listener) {
 		HttpRequestWrapper requestWrapper = new HttpRequestWrapper();
 		requestWrapper.requestURI = ApplicationConstants.API_MY_ACCOUNT;
 		requestWrapper.callback = accountDetailsCallback;
@@ -156,7 +156,7 @@ public class AccountDetails extends OishiiBaseActivity {
 		return info;
 	}
 
-	private IHttpCallback accountDetailsCallback = new IHttpCallback() {
+	protected IHttpCallback accountDetailsCallback = new IHttpCallback() {
 
 		@Override
 		public Object populateBean(InputStream is, int operationId) {
