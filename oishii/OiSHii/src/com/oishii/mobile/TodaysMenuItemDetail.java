@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +22,10 @@ import com.madrobot.di.plist.NSDictionary;
 import com.madrobot.di.plist.NSNumber;
 import com.madrobot.di.plist.NSObject;
 import com.madrobot.di.plist.PropertyListParser;
+import com.oishii.mobile.beans.AccountStatus;
+import com.oishii.mobile.beans.BasketItem;
 import com.oishii.mobile.beans.MenuItemDetail;
+import com.oishii.mobile.beans.OishiiBasket;
 import com.oishii.mobile.util.tasks.BitmapHttpTask;
 import com.oishii.mobile.util.tasks.BitmapRequestParam;
 import com.oishii.mobile.util.tasks.HttpRequestTask;
@@ -78,8 +82,31 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 
 		@Override
 		public void onClick(View arg0) {
-			// TODO Auto-generated method stub
+			MenuItemDetail detail = (MenuItemDetail) arg0.getTag();
+			AccountStatus status = AccountStatus
+					.getInstance(getApplicationContext());
+			OishiiBasket basket = status.getBasket();
+			BasketItem item = new BasketItem();
+			item.setColor(color);
+			item.setCount(1);
+			item.setName(detail.getName());
+			item.setPrice(detail.getPrice());
+			item.setProdId(detail.getId());
+			basket.addItem(item);
 
+			Intent intent = new Intent();
+			Class clz;
+			if (!status.isSignedIn()) {
+
+				clz = OutOfSession.class;
+				// intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+			} else {
+				clz = Basket.class;
+			}
+			intent.setClass(TodaysMenuItemDetail.this, clz);
+			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			intent.putExtra(OutOfSession.SRC_KEY, R.id.basket);
+			startActivity(intent);
 		}
 	};
 

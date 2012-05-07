@@ -151,7 +151,14 @@ public abstract class OishiiBaseActivity extends Activity {
 				}
 				break;
 			case R.id.basket:
-				showNotImplToast();
+				if (!AccountStatus.getInstance(getApplicationContext())
+						.isSignedIn()) {
+
+					clz = OutOfSession.class;
+					intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+				} else {
+					clz = Basket.class;
+				}
 				break;
 			case R.id.history:
 				if (!AccountStatus.getInstance(getApplicationContext())
@@ -326,7 +333,6 @@ public abstract class OishiiBaseActivity extends Activity {
 
 		@Override
 		public void onFailure(int message, int operationID) {
-			// TODO Auto-generated method stub
 			processFailure(message);
 		}
 
@@ -353,7 +359,7 @@ public abstract class OishiiBaseActivity extends Activity {
 
 	protected void showNotImplToast() {
 		Toast t = Toast.makeText(getApplicationContext(),
-				"Sorry not implemented yet! :(", 4000);
+				"Implementation unknown.", 4000);
 		t.show();
 	}
 

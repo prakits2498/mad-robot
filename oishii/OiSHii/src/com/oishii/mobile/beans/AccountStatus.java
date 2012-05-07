@@ -9,7 +9,13 @@ public final class AccountStatus {
 	private String mac;
 	private long customerId;
 	private AccountInformation accInformation;
+	private OishiiBasket basket =new OishiiBasket();
 	
+	
+
+	public OishiiBasket getBasket() {
+		return basket;
+	}
 
 	public AccountInformation getAccInformation() {
 		return accInformation;
