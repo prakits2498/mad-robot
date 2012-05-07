@@ -67,7 +67,7 @@
         <string name="no_loc">No locations saved!</string>
         <string name="no_cards">No cards saved!</string>
     <!-- SCREEN TITLES -->
-    <string name="checkout">CHECK OUT</string>
+    <string name="checkout">BASKET</string>
     <string name="special">SPECIAL</string>
     <string name="offers">OFFERS</string>
     <string name="today">TODAYS</string>
