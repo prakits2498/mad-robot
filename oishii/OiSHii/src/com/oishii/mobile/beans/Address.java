@@ -11,6 +11,12 @@ public class Address {
 	boolean isShipping;
 	boolean isBilling;
 
+	@Override
+	public String toString() {
+		return company + " " + floor + " " + address + " " + city + " "
+				+ postCode;
+	}
+
 	public int getId() {
 		return id;
 	}

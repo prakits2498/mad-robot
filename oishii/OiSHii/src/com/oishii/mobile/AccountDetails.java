@@ -54,12 +54,13 @@ public class AccountDetails extends OishiiBaseActivity {
 			Class<? extends OishiiBaseActivity> clz = null;
 			switch (v.getId()) {
 			case R.id.myAccDetails:
-				clz=EditAccountDetails.class;
+				clz = EditAccountDetails.class;
 				break;
 			case R.id.myAccLocation:
-				clz=Locations.class;
+				clz = Locations.class;
 				break;
 			case R.id.myAccPayment:
+				clz = StoredPayments.class;
 				break;
 			case R.id.myAccPwd:
 				clz = ChangePassword.class;
@@ -93,7 +94,7 @@ public class AccountDetails extends OishiiBaseActivity {
 		new HttpRequestTask().execute(requestWrapper);
 	}
 
-	private AccountInformation getAccountInfo(NSArray obj) {
+	protected AccountInformation getAccountInfo(NSArray obj) {
 		AccountInformation info = new AccountInformation();
 		NSDictionary dict = (NSDictionary) obj.objectAtIndex(0);
 		NSDictionary details = (NSDictionary) dict.objectForKey("details");

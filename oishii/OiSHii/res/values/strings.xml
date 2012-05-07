@@ -25,6 +25,10 @@
     <string name="loading_history">Loading history…</string>
     <string name="loading">Loading details…</string>
     <string name="loading_save">Saving details…</string>
+    <string name="loading_add_location">Adding Location…</string>
+    
+    
+    <!--  -->
     <string name="error_bad_response">Invalid server response</string>
     <string name="error_no_data">Could not connect, \nPlease check your data connectivity.</string>
     <string name="signtocontinue">You need to sign in to continue.</string>
@@ -73,6 +77,7 @@
     <string name="title_history">HISTORY</string>
     <string name="title_details">MY DETAILS</string>
     <string name="title_locations">MY LOCATIONS</string>
+     <string name="title_sc">SAVED CARDS</string>
 
     <!-- My Account -->
     <string name="mydet">My Details</string>

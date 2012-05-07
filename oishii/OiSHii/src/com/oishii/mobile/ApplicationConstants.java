@@ -29,6 +29,8 @@ public class ApplicationConstants {
 			+ "historyData.php");
 	public static final URI API_SAVE_ACC_DETAILS = URI.create(PLIST_PATH
 			+ "savedetails.php");
-	
-	public static HttpMethod HTTP_METHOD=HttpMethod.HTTP_GET;
+	public static final URI API_ADD_LOCATION = URI.create(PLIST_PATH
+			+ "addLocation.php");
+
+	public static HttpMethod HTTP_METHOD = HttpMethod.HTTP_GET;
 }
