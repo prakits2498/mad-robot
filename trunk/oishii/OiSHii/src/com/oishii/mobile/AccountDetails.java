@@ -77,7 +77,7 @@ public class AccountDetails extends OishiiBaseActivity {
 	protected void executeAccountInfoRequest(IHttpCallback listener) {
 		HttpRequestWrapper requestWrapper = new HttpRequestWrapper();
 		requestWrapper.requestURI = ApplicationConstants.API_MY_ACCOUNT;
-		requestWrapper.callback = accountDetailsCallback;
+		requestWrapper.callback = listener;
 		HttpSettings settings = new HttpSettings();
 		settings.setHttpMethod(ApplicationConstants.HTTP_METHOD);
 		requestWrapper.httpSettings = settings;

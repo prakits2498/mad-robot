@@ -55,6 +55,15 @@ public class Locations extends AccountDetails {
 		List<Address> address = AccountStatus
 				.getInstance(getApplicationContext()).getAccInformation()
 				.getAddresses();
+		int size=address.size();
+		if(address.isEmpty()){
+			parent.setVisibility(View.GONE);
+			findViewById(R.id.noLocations).setVisibility(View.VISIBLE);
+		}else{
+			parent.setVisibility(View.VISIBLE
+					);
+			findViewById(R.id.noLocations).setVisibility(View.GONE);
+		}
 		LayoutInflater inflater = getLayoutInflater();
 		View v;
 		TextView tv;
@@ -123,9 +132,12 @@ public class Locations extends AccountDetails {
 			String tag = (String) arg0.getTag();
 			if (tag.equals("S")) {
 				shipping = 1;
+				billing=0;
 			} else if (tag.equals("B")) {
 				billing = 1;
+				shipping=0;
 			}
+			System.out.println("BIlling->"+billing+"Sh"+shipping);
 		}
 	};
 
