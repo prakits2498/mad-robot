@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -113,7 +114,6 @@ public abstract class OishiiBaseActivity extends Activity {
 		v.setOnClickListener(menuListener);
 
 	}
-
 
 	View.OnClickListener menuListener = new View.OnClickListener() {
 		@Override
@@ -303,9 +303,8 @@ public abstract class OishiiBaseActivity extends Activity {
 		return res;
 	}
 
-	
-	IHttpCallback simpleResultCallback=new IHttpCallback() {
-		
+	IHttpCallback simpleResultCallback = new IHttpCallback() {
+
 		@Override
 		public Object populateBean(InputStream is, int operationId) {
 			NSObject object = null;
@@ -321,35 +320,43 @@ public abstract class OishiiBaseActivity extends Activity {
 				return null;
 			}
 		}
-		
+
 		@Override
 		public void onFailure(int message, int operationID) {
 			// TODO Auto-generated method stub
 			processFailure(message);
 		}
-		
+
 		@Override
 		public void bindUI(Object t, int operationId) {
-						hideDialog();
-						SimpleResult result = (SimpleResult) t;
-						if (result.isSucess()) {
-							handleSimpleResultResponse(result.getErrorMessage());
-						} else {
-							showErrorDialog(result.getErrorMessage());
-						}			
+			hideDialog();
+			SimpleResult result = (SimpleResult) t;
+			if (result.isSucess()) {
+				handleSimpleResultResponse(result.getErrorMessage());
+			} else {
+				showErrorDialog(result.getErrorMessage());
+			}
 		}
 	};
+
 	/**
 	 * Sent when simple result is a success
+	 * 
 	 * @param message
 	 */
-	protected void handleSimpleResultResponse(String message){
-		
+	protected void handleSimpleResultResponse(String message) {
+
 	}
+
 	protected void showNotImplToast() {
 		Toast t = Toast.makeText(getApplicationContext(),
 				"Sorry not implemented yet! :(", 4000);
 		t.show();
 	}
 
+	protected Button getArbitartButton() {
+		Button btnArbit = (Button) findViewById(R.id.btnArbitary);
+		btnArbit.setVisibility(View.VISIBLE);
+		return btnArbit;
+	}
 }

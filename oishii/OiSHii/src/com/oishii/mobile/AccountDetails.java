@@ -51,12 +51,13 @@ public class AccountDetails extends OishiiBaseActivity {
 
 		@Override
 		public void onClick(View v) {
-			Class clz = null;
+			Class<? extends OishiiBaseActivity> clz = null;
 			switch (v.getId()) {
 			case R.id.myAccDetails:
 				clz=EditAccountDetails.class;
 				break;
 			case R.id.myAccLocation:
+				clz=Locations.class;
 				break;
 			case R.id.myAccPayment:
 				break;
