@@ -34,6 +34,17 @@
     <string name="field_email">Email</string>
     <string name="field_password">Password</string>
     <string name="field_reppassword">Confirm</string>
+    <string name="field_company">Company</string>
+    <string name="field_floor">Floor</string>
+    <string name="field_address">Address</string>
+    <string name="field_city">City</string>
+    <string name="field_postcode">Post Code</string>
+    <string name="field_mobile">Mobile</string>
+    <string name="field_shipping">Shipping</string>
+    <string name="field_billing">Billing</string>
+    <string name="field_use">Use for</string>
+
+    <!-- General -->
     <string name="dismiss">Close</string>
     <string name="current">Current</string>
     <string name="new_text">New</string>
@@ -45,8 +56,10 @@
     <string name="btn_apply_promo">Apply promotional code</string>
     <string name="btn_continue">Continue</string>
     <string name="btn_save">Save</string>
-	<string name="sold_out">Sold Out</string>
-	<string name="add_basket">Add to basket</string>
+    <string name="btn_add">Add Location</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="sold_out">Sold Out</string>
+    <string name="add_basket">Add to basket</string>
     <!-- SCREEN TITLES -->
     <string name="checkout">CHECK OUT</string>
     <string name="special">SPECIAL</string>
@@ -58,7 +71,8 @@
     <string name="login_title">SIGN IN</string>
     <string name="title_chng_pwd">CHANGE PASSWORD</string>
     <string name="title_history">HISTORY</string>
-     <string name="title_details">MY DETAILS</string>
+    <string name="title_details">MY DETAILS</string>
+    <string name="title_locations">MY LOCATIONS</string>
 
     <!-- My Account -->
     <string name="mydet">My Details</string>
