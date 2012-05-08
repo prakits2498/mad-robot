@@ -90,6 +90,7 @@
     <string name="title_locations">MY LOCATIONS</string>
     <string name="title_sc">SAVED CARDS</string>
     <string name="title_checkout">CHECKOUT</string>
+    <string name="title_check_del">DELIVERY TIME</string>
 
     <!-- My Account -->
     <string name="mydet">My Details</string>
