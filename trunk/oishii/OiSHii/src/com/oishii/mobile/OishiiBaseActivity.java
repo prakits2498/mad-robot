@@ -112,14 +112,7 @@ public abstract class OishiiBaseActivity extends Activity {
 		v.setOnClickListener(menuListener);
 		v = findViewById(R.id.basket);
 		v.setOnClickListener(menuListener);
-		OishiiBasket basket=AccountStatus.getInstance(getApplicationContext()).getBasket();
-		TextView total=(TextView) findViewById(R.id.totalPrice);
-		if(basket.getCurrentTotal()>0.0f){
-			total.setText("£"+basket.getCurrentTotal());
-			total.setVisibility(View.VISIBLE);
-		}else{
-			total.setVisibility(View.GONE);
-		}
+		
 	}
 
 	View.OnClickListener menuListener = new View.OnClickListener() {
@@ -271,6 +264,18 @@ public abstract class OishiiBaseActivity extends Activity {
 		super.onResume();
 		setCurrentScreen();
 		setSelectedMenu();
+		setBasketPrice();
+	}
+	
+	private void setBasketPrice(){
+		OishiiBasket basket=AccountStatus.getInstance(getApplicationContext()).getBasket();
+		TextView total=(TextView) findViewById(R.id.totalPrice);
+		if(basket.getCurrentTotal()>0.0f){
+			total.setText("£"+basket.getCurrentTotal());
+			total.setVisibility(View.VISIBLE);
+		}else{
+			total.setVisibility(View.GONE);
+		}
 	}
 
 	private void setSelectedMenu() {
