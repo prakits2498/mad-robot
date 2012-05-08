@@ -9,7 +9,19 @@ import org.apache.http.message.BasicNameValuePair;
 
 import android.view.View;
 
+import com.madrobot.di.plist.NSArray;
+import com.madrobot.di.plist.NSDate;
+import com.madrobot.di.plist.NSDictionary;
+import com.madrobot.di.plist.NSNumber;
+import com.madrobot.di.plist.NSObject;
+import com.madrobot.di.plist.PropertyListParser;
 import com.oishii.mobile.beans.AccountStatus;
+import com.oishii.mobile.beans.EmptyOrder;
+import com.oishii.mobile.beans.HistoryContainer;
+import com.oishii.mobile.beans.Item;
+import com.oishii.mobile.beans.MenuItemDetail;
+import com.oishii.mobile.beans.Order;
+import com.oishii.mobile.beans.OrderCategory;
 import com.oishii.mobile.util.HttpSettings;
 import com.oishii.mobile.util.tasks.HttpRequestTask;
 import com.oishii.mobile.util.tasks.HttpRequestWrapper;
@@ -23,23 +35,104 @@ public class History extends ListOishiBase {
 		return R.id.history;
 	}
 
-	IHttpCallback historyCallback = new IHttpCallback() {
+	private HistoryContainer getHistoryContainer(NSArray array) {
+		HistoryContainer container = new HistoryContainer();
+		List<OrderCategory> categories = new ArrayList<OrderCategory>();
+		List<List<Order>> orderList = new ArrayList<List<Order>>();
+		int count = array.count();
+		NSDictionary dict;
+		String str;
+		NSArray orders;
+		for (int i = 0; i < count; i++) {
+			dict = (NSDictionary) array.objectAtIndex(i);
+			OrderCategory category = new OrderCategory();
+			str = dict.objectForKey("groups").toString();
+			ArrayList<Order> ordersInCat = new ArrayList<Order>();
+			orders = (NSArray) dict.objectForKey("orders");
+			int orderCount = orders.count();
+			if (orders.count() == 0) {
+				/* There are no orders in this category */
+				ordersInCat.add(new EmptyOrder());
+			} else {
+				/* Add order to list */
+				for (int j = 0; j < orderCount; j++) {
+					dict = (NSDictionary) orders.objectAtIndex(j);
+					ordersInCat.add(processOrder(dict));
+				}
+			}
+			orderList.add(ordersInCat);
+			categories.add(category);
+		}
 
+		container.setOrderCategories(categories);
+		container.setOrderDetails(orderList);
+		return container;
+	}
+
+	private Order processOrder(NSDictionary dict) {
+		Order order = new Order();
+		NSNumber no = (NSNumber) dict.objectForKey("orderid");
+		order.setOrderId(no.intValue());
+		String str = dict.objectForKey("deliverytime").toString();
+		order.setDeliveryTime(str);
+		no = (NSNumber) dict.objectForKey("discount");
+		order.setDiscount(no.floatValue());
+		no = (NSNumber) dict.objectForKey("subtotal");
+		order.setSubtotal(no.floatValue());
+		no = (NSNumber) dict.objectForKey("totalprice");
+		order.setTotalPrice(no.floatValue());
+		str = dict.objectForKey("status").toString();
+		order.setStatus(str);
+		NSDate date = (NSDate) dict.objectForKey("date");
+		order.setDate(date.getDate());
+		NSArray items = (NSArray) dict.objectForKey("items");
+		int count = items.count();
+		NSDictionary orderItems;
+		List<Item> itemsList = new ArrayList<Item>();
+		Item currentItem;
+		for (int i = 0; i < count; i++) {
+			orderItems = (NSDictionary) items.objectAtIndex(i);
+			currentItem = new Item();
+			no = (NSNumber) orderItems.objectForKey("id");
+			currentItem.setId(no.intValue());
+			str = orderItems.objectForKey("name").toString();
+			currentItem.setName(str);
+			no = (NSNumber) orderItems.objectForKey("price");
+			currentItem.setPrice(no.floatValue());
+			str=orderItems.objectForKey("sku").toString();
+			currentItem.setSku(str);
+			no=(NSNumber) orderItems.objectForKey("quantity");
+			currentItem.setQuantity(no.intValue());
+			itemsList.add(currentItem);
+		}
+		order.setItems(itemsList);
+		return order;
+	}
+
+	IHttpCallback historyCallback = new IHttpCallback() {
 		@Override
 		public Object populateBean(InputStream is, int operationId) {
-			// TODO Auto-generated method stub
+			NSObject object = null;
+			try {
+				object = PropertyListParser.parse(is);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			if (object != null) {
+				HistoryContainer det = getHistoryContainer((NSArray) object);
+				return det;
+			}
 			return null;
 		}
 
 		@Override
 		public void onFailure(int message, int operationID) {
-			// TODO Auto-generated method stub
 			processFailure(message);
 		}
 
 		@Override
 		public void bindUI(Object t, int operationId) {
-			// TODO Auto-generated method stub
+			HistoryContainer container=(HistoryContainer) t;
 			hideDialog();
 		}
 	};
@@ -49,7 +142,8 @@ public class History extends ListOishiBase {
 		requestWrapper.requestURI = ApplicationConstants.API_MY_HISTORY;
 		requestWrapper.callback = historyCallback;
 		HttpSettings settings = new HttpSettings();
-		requestWrapper.httpSettings.setHttpMethod(ApplicationConstants.HTTP_METHOD);
+		requestWrapper.httpSettings
+				.setHttpMethod(ApplicationConstants.HTTP_METHOD);
 		requestWrapper.httpSettings = settings;
 		requestWrapper.operationID = OPERATION_HISTORY;
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -66,19 +160,16 @@ public class History extends ListOishiBase {
 
 	@Override
 	protected int getSreenID() {
-		// TODO Auto-generated method stub
 		return R.layout.history;
 	}
 
 	@Override
 	protected String getTitleString() {
-		// TODO Auto-generated method stub
 		return getString(R.string.title_history);
 	}
 
 	@Override
 	protected void hookInListData() {
-		// TODO Auto-generated method stub
 		executeHistoryRequest();
 		findViewById(R.id.shadow_title).setVisibility(View.GONE);
 		showOnlyTitle();
