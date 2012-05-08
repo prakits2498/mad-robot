@@ -26,8 +26,7 @@
     <string name="loading">Loading details…</string>
     <string name="loading_save">Saving details…</string>
     <string name="loading_add_location">Adding Location…</string>
-    
-    
+
     <!--  -->
     <string name="error_bad_response">Invalid server response</string>
     <string name="error_no_data">Could not connect, \nPlease check your data connectivity.</string>
@@ -49,6 +48,7 @@
     <string name="field_use">Use for</string>
 
     <!-- General -->
+    <string name="basket_noitems">No Items in Basket</string>
     <string name="dismiss">Close</string>
     <string name="current">Current</string>
     <string name="new_text">New</string>
@@ -62,13 +62,13 @@
     <string name="btn_save">Save</string>
     <string name="btn_add">Add Location</string>
     <string name="btn_cancel">Cancel</string>
-     <string name="btn_gtocheck"></string>
+    <string name="btn_gtocheck">Go to checkout</string>
     <string name="sold_out">Sold Out</string>
     <string name="add_basket">Add to basket</string>
-        <string name="no_loc">No locations saved!</string>
-        <string name="no_cards">No cards saved!</string>
-        <string name="items">MY ITEMS</string>
-        <string name="calcs">CALCULATIONS</string>
+    <string name="no_loc">No locations saved!</string>
+    <string name="no_cards">No cards saved!</string>
+    <string name="items">MY ITEMS</string>
+    <string name="calcs">CALCULATIONS</string>
     <!-- SCREEN TITLES -->
     <string name="checkout">BASKET</string>
     <string name="special">SPECIAL</string>
@@ -82,7 +82,7 @@
     <string name="title_history">HISTORY</string>
     <string name="title_details">MY DETAILS</string>
     <string name="title_locations">MY LOCATIONS</string>
-     <string name="title_sc">SAVED CARDS</string>
+    <string name="title_sc">SAVED CARDS</string>
 
     <!-- My Account -->
     <string name="mydet">My Details</string>
