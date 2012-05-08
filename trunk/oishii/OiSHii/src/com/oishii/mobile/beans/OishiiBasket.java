@@ -24,7 +24,7 @@ public class OishiiBasket {
 		BasketItem item;
 		for (int i = 0; i < items.size(); i++) {
 			item = items.get(i);
-			currentTotal += item.price * item.color;
+			currentTotal += item.price * item.count;
 		}
 	}
 
