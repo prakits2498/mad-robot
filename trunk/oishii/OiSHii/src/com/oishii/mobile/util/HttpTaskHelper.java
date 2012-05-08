@@ -72,7 +72,7 @@ public class HttpTaskHelper {
 		return matcher.matches();
 	}
 
-	private static final String TAG = "MadRobot";
+	private static final String TAG = "Oishii";
 
 	private HttpClient httpClient;
 
