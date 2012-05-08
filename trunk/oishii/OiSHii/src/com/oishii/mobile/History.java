@@ -8,6 +8,8 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseExpandableListAdapter;
 
 import com.madrobot.di.plist.NSArray;
 import com.madrobot.di.plist.NSDate;
@@ -19,6 +21,8 @@ import com.oishii.mobile.beans.AccountStatus;
 import com.oishii.mobile.beans.EmptyOrder;
 import com.oishii.mobile.beans.HistoryContainer;
 import com.oishii.mobile.beans.Item;
+import com.oishii.mobile.beans.MenuItem;
+import com.oishii.mobile.beans.MenuItemCategory;
 import com.oishii.mobile.beans.MenuItemDetail;
 import com.oishii.mobile.beans.Order;
 import com.oishii.mobile.beans.OrderCategory;
@@ -99,9 +103,9 @@ public class History extends ListOishiBase {
 			currentItem.setName(str);
 			no = (NSNumber) orderItems.objectForKey("price");
 			currentItem.setPrice(no.floatValue());
-			str=orderItems.objectForKey("sku").toString();
+			str = orderItems.objectForKey("sku").toString();
 			currentItem.setSku(str);
-			no=(NSNumber) orderItems.objectForKey("quantity");
+			no = (NSNumber) orderItems.objectForKey("quantity");
 			currentItem.setQuantity(no.intValue());
 			itemsList.add(currentItem);
 		}
@@ -132,7 +136,7 @@ public class History extends ListOishiBase {
 
 		@Override
 		public void bindUI(Object t, int operationId) {
-			HistoryContainer container=(HistoryContainer) t;
+			HistoryContainer container = (HistoryContainer) t;
 			hideDialog();
 		}
 	};
@@ -173,6 +177,81 @@ public class History extends ListOishiBase {
 		executeHistoryRequest();
 		findViewById(R.id.shadow_title).setVisibility(View.GONE);
 		showOnlyTitle();
+
+	}
+
+	private class HistoryExpandableAdapter extends BaseExpandableListAdapter {
+
+		private List<OrderCategory> parents;
+		private List<List<Order>> children;
+
+		private HistoryExpandableAdapter(List<OrderCategory> orderCategories,
+				List<List<Order>> orderDetails) {
+			this.parents = orderCategories;
+			this.children = orderDetails;
+		}
+
+		@Override
+		public Object getChild(int arg0, int arg1) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public long getChildId(int groupPosition, int childPosition) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public View getChildView(int groupPosition, int childPosition,
+				boolean isLastChild, View convertView, ViewGroup parent) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public int getChildrenCount(int groupPosition) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public Object getGroup(int groupPosition) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public int getGroupCount() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public long getGroupId(int groupPosition) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public View getGroupView(int groupPosition, boolean isExpanded,
+				View convertView, ViewGroup parent) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public boolean hasStableIds() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean isChildSelectable(int groupPosition, int childPosition) {
+			// TODO Auto-generated method stub
+			return false;
+		}
 
 	}
 
