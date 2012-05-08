@@ -1,5 +1,8 @@
 package com.oishii.mobile;
 
+import android.content.Intent;
+import android.view.View;
+
 public class PromoCode extends OishiiBaseActivity {
 
 	@Override
@@ -9,7 +12,16 @@ public class PromoCode extends OishiiBaseActivity {
 
 	@Override
 	protected void hookInChildViews() {
+		findViewById(R.id.btnContinue).setOnClickListener(
+				new View.OnClickListener() {
 
+					@Override
+					public void onClick(View v) {
+						Intent intent = new Intent(PromoCode.this,
+								DeliveryTime.class);
+						startActivity(intent);
+					}
+				});
 	}
 
 	@Override

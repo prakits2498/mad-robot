@@ -1,35 +1,38 @@
 package com.oishii.mobile;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import android.widget.TextView;
+
 public class DeliveryTime extends OishiiBaseActivity {
 
 	@Override
 	protected int getParentScreenId() {
-		// TODO Auto-generated method stub
-		return 0;
+		return R.id.basket;
 	}
 
 	@Override
 	protected void hookInChildViews() {
-		// TODO Auto-generated method stub
-
+		SimpleDateFormat df = new SimpleDateFormat("EEE, MMM d, ''yy");
+		String format = df.format(new Date(System.currentTimeMillis()));
+		TextView date = (TextView) findViewById(R.id.day);
+		date.setText(format);
 	}
 
 	@Override
 	protected int getSreenID() {
-		// TODO Auto-generated method stub
-		return 0;
+		return R.layout.delivery_time;
 	}
 
 	@Override
 	protected int getChildViewLayout() {
-		// TODO Auto-generated method stub
-		return 0;
+		return R.layout.delivery_time;
 	}
 
 	@Override
 	protected String getTitleString() {
-		// TODO Auto-generated method stub
-		return null;
+		return getString(R.string.title_check_del);
 	}
 
 }
