@@ -27,8 +27,10 @@ import com.madrobot.di.plist.NSDictionary;
 import com.madrobot.di.plist.NSNumber;
 import com.madrobot.di.plist.NSObject;
 import com.madrobot.di.plist.PropertyListParser;
+import com.oishii.mobile.R.id;
 import com.oishii.mobile.beans.AccountStatus;
 import com.oishii.mobile.beans.CurrentScreen;
+import com.oishii.mobile.beans.OishiiBasket;
 import com.oishii.mobile.beans.SimpleResult;
 import com.oishii.mobile.util.tasks.IHttpCallback;
 
@@ -82,11 +84,6 @@ public abstract class OishiiBaseActivity extends Activity {
 		TextView title = (TextView) parent.findViewById(R.id.headertitle);
 		title.setText(getTitleString());
 		setContentView(parent);
-		// Shader textShader=new LinearGradient(0, 0, 0, 20,
-		// new int[]{Color.WHITE,Color.GRAY},
-		// new float[]{0, 1}, TileMode.CLAMP);
-		// TextView tv= (TextView) findViewById(R.id.txtAbout);
-		// tv.getPaint().setShader(textShader);
 		hookInMenu();
 		hookInChildViews();
 		setMenuView();
@@ -115,7 +112,14 @@ public abstract class OishiiBaseActivity extends Activity {
 		v.setOnClickListener(menuListener);
 		v = findViewById(R.id.basket);
 		v.setOnClickListener(menuListener);
-
+		OishiiBasket basket=AccountStatus.getInstance(getApplicationContext()).getBasket();
+		TextView total=(TextView) findViewById(R.id.totalPrice);
+		if(basket.getCurrentTotal()>0.0f){
+			total.setText("£"+basket.getCurrentTotal());
+			total.setVisibility(View.VISIBLE);
+		}else{
+			total.setVisibility(View.GONE);
+		}
 	}
 
 	View.OnClickListener menuListener = new View.OnClickListener() {
