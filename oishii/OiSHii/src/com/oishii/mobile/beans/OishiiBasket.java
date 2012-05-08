@@ -11,6 +11,10 @@ public class OishiiBasket {
 		return currentTotal;
 	}
 
+	public List<BasketItem> getBasketItems() {
+		return items;
+	}
+
 	public void setCurrentTotal(float currentTotal) {
 		this.currentTotal = currentTotal;
 	}
