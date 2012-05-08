@@ -7,9 +7,13 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
+import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ExpandableListView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.madrobot.di.plist.NSArray;
 import com.madrobot.di.plist.NSDate;
@@ -21,9 +25,6 @@ import com.oishii.mobile.beans.AccountStatus;
 import com.oishii.mobile.beans.EmptyOrder;
 import com.oishii.mobile.beans.HistoryContainer;
 import com.oishii.mobile.beans.Item;
-import com.oishii.mobile.beans.MenuItem;
-import com.oishii.mobile.beans.MenuItemCategory;
-import com.oishii.mobile.beans.MenuItemDetail;
 import com.oishii.mobile.beans.Order;
 import com.oishii.mobile.beans.OrderCategory;
 import com.oishii.mobile.util.HttpSettings;
@@ -51,6 +52,7 @@ public class History extends ListOishiBase {
 			dict = (NSDictionary) array.objectAtIndex(i);
 			OrderCategory category = new OrderCategory();
 			str = dict.objectForKey("groups").toString();
+			category.setCategoryName(str);
 			ArrayList<Order> ordersInCat = new ArrayList<Order>();
 			orders = (NSArray) dict.objectForKey("orders");
 			int orderCount = orders.count();
@@ -137,6 +139,12 @@ public class History extends ListOishiBase {
 		@Override
 		public void bindUI(Object t, int operationId) {
 			HistoryContainer container = (HistoryContainer) t;
+			ExpandableListView list = getExandableList(false);
+
+			HistoryExpandableAdapter adapter = new HistoryExpandableAdapter(
+					container.getOrderCategories(), container.getOrderDetails());
+			list.setAdapter(adapter);
+			list.setVisibility(View.VISIBLE);
 			hideDialog();
 		}
 	};
@@ -164,7 +172,7 @@ public class History extends ListOishiBase {
 
 	@Override
 	protected int getSreenID() {
-		return R.layout.history;
+		return R.string.title_history;
 	}
 
 	@Override
@@ -192,65 +200,88 @@ public class History extends ListOishiBase {
 		}
 
 		@Override
-		public Object getChild(int arg0, int arg1) {
-			// TODO Auto-generated method stub
-			return null;
+		public Order getChild(int group, int child) {
+			List<Order> chil = children.get(group);
+			return chil.get(child);
 		}
 
 		@Override
 		public long getChildId(int groupPosition, int childPosition) {
-			// TODO Auto-generated method stub
 			return 0;
 		}
 
 		@Override
 		public View getChildView(int groupPosition, int childPosition,
 				boolean isLastChild, View convertView, ViewGroup parent) {
-			// TODO Auto-generated method stub
-			return null;
+			List<Order> menu = children.get(groupPosition);
+			View v;
+			if (menu.get(childPosition) instanceof EmptyOrder) {
+				v = getLayoutInflater().inflate(R.layout.history_empty_order,
+						null);
+			} else {
+
+				Order item = menu.get(childPosition);
+				v = getLayoutInflater().inflate(R.layout.history_child, null);
+				String str = item.getItems().size() + "X";
+				TextView tv = (TextView)v.findViewById(R.id.itemCount);
+				tv.setText(str);
+				str = getString(R.string.items_text) + "(£"
+						+ item.getTotalPrice() + ")";
+				tv = (TextView) v.findViewById(R.id.itemNo);
+				tv.setText(str);
+				tv = (TextView)v.findViewById(R.id.status);
+				tv.setText(item.getStatus());
+				LinearLayout items = (LinearLayout)v.findViewById(R.id.items);
+				List<Item> myItems = item.getItems();
+
+				for (int i = 0; i < myItems.size(); i++) {
+					tv = new TextView(getApplicationContext());
+					tv.setTextColor(Color.BLACK);
+					tv.setText(myItems.get(i).getName());
+					items.addView(tv);
+				}
+			}
+			return v;
 		}
 
 		@Override
 		public int getChildrenCount(int groupPosition) {
-			// TODO Auto-generated method stub
-			return 0;
+			return children.get(groupPosition).size();
 		}
 
 		@Override
-		public Object getGroup(int groupPosition) {
-			// TODO Auto-generated method stub
-			return null;
+		public List<Order> getGroup(int groupPosition) {
+			return children.get(groupPosition);
 		}
 
 		@Override
 		public int getGroupCount() {
-			// TODO Auto-generated method stub
-			return 0;
+			return parents.size();
 		}
 
 		@Override
 		public long getGroupId(int groupPosition) {
-			// TODO Auto-generated method stub
 			return 0;
 		}
 
 		@Override
 		public View getGroupView(int groupPosition, boolean isExpanded,
 				View convertView, ViewGroup parent) {
-			// TODO Auto-generated method stub
-			return null;
+			OrderCategory category = parents.get(groupPosition);
+			View v = getLayoutInflater().inflate(R.layout.history_header, null);
+			TextView tv = (TextView) v.findViewById(R.id.title);
+			tv.setText(category.getCategoryName());
+			return v;
 		}
 
 		@Override
 		public boolean hasStableIds() {
-			// TODO Auto-generated method stub
 			return false;
 		}
 
 		@Override
 		public boolean isChildSelectable(int groupPosition, int childPosition) {
-			// TODO Auto-generated method stub
-			return false;
+			return true;
 		}
 
 	}
