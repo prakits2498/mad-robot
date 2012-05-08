@@ -71,31 +71,6 @@ public class TodaysMenuDetailList extends ListOishiBase {
 		}
 	};
 
-	// View.OnClickListener expandCollapse = new View.OnClickListener() {
-	//
-	// @Override
-	// public void onClick(View v) {
-	// MenuItemCategory category = (MenuItemCategory) v.getTag();
-	// int visibility = category.isExpanded() ? View.GONE : View.VISIBLE;
-	// category.setExpanded(!category.isExpanded());
-	// int count = layout.getChildCount();
-	// View currentView;
-	// Object o;
-	// MenuItem menu;
-	// for (int i = 0; i < count; count++) {
-	// currentView = layout.getChildAt(i);
-	// o = currentView.getTag();
-	// if (o instanceof MenuItem) {
-	// menu = (MenuItem) o;
-	// if (menu.getCategory().equals(category)) {
-	// currentView.setVisibility(visibility);
-	// }
-	// }
-	// }
-	//
-	// }
-	// };
-
 	@Override
 	protected int getSreenID() {
 		return R.layout.menu_item_header;
