@@ -1,4 +1,5 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/topParent"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
 
@@ -11,7 +12,6 @@
             android:id="@+id/basketParent"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:background="@android:color/white"
             android:orientation="vertical" >
 
             <TextView
@@ -59,15 +59,15 @@
                 <RelativeLayout
                     xmlns:android="http://schemas.android.com/apk/res/android"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content" >
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp" >
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
                         android:layout_alignParentTop="true"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginTop="10dp"
                         android:layout_toLeftOf="@+id/subtotal"
                         android:text="@string/subtotal"
                         android:textColor="@android:color/black"
@@ -80,26 +80,28 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_alignParentTop="true"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginTop="10dp"
-                        android:text="TextView"
                         android:textColor="@color/text_color"
                         android:textSize="17sp"
                         android:textStyle="bold" />
                 </RelativeLayout>
 
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dp"
+                    android:background="#E0E0E0" />
+
                 <RelativeLayout
                     xmlns:android="http://schemas.android.com/apk/res/android"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content" >
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp" >
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
                         android:layout_alignParentTop="true"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginTop="10dp"
                         android:layout_toLeftOf="@+id/free"
                         android:text="@string/delivery"
                         android:textColor="@android:color/black"
@@ -112,13 +114,16 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_alignParentTop="true"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginTop="10dp"
                         android:text="@string/free"
                         android:textColor="@color/text_color"
                         android:textSize="17sp"
                         android:textStyle="bold" />
                 </RelativeLayout>
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dp"
+                    android:background="#E0E0E0" />
 
                 <RelativeLayout
                     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -146,7 +151,6 @@
                         android:layout_alignParentTop="true"
                         android:layout_marginBottom="10dp"
                         android:layout_marginTop="10dp"
-                        android:text="TextView"
                         android:textColor="@color/text_color"
                         android:textSize="17sp"
                         android:textStyle="bold" />
@@ -156,13 +160,15 @@
             <View
                 android:layout_width="fill_parent"
                 android:layout_height="1dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
                 android:layout_marginTop="5dp"
                 android:background="@color/text_color" />
 
             <Button
                 android:id="@+id/btnCheckout"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:layout_marginBottom="20dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
@@ -178,6 +184,8 @@
             android:id="@+id/emptyBasket"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
             android:orientation="vertical"
             android:visibility="gone" >
 
@@ -192,13 +200,13 @@
 
             <Button
                 android:id="@+id/todaysMenu"
+                style="@style/primary_btn"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content" 
-                android:text="@string/btn_today_menu"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginTop="8dp"
-                style="@style/primary_btn"/>
+                android:text="@string/btn_today_menu" />
         </LinearLayout>
     </LinearLayout>
 
