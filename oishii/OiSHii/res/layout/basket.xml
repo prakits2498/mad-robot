@@ -1,7 +1,6 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="@android:color/white" >
+    android:layout_height="fill_parent" >
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -12,6 +11,7 @@
             android:id="@+id/basketParent"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
+            android:background="@android:color/white"
             android:orientation="vertical" >
 
             <TextView
@@ -174,14 +174,32 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
-        <TextView
+        <LinearLayout
             android:id="@+id/emptyBasket"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/basket_noitems"
-            android:textColor="@android:color/black"
-            android:visibility="gone" />
+            android:orientation="vertical"
+            android:visibility="gone" >
+
+            <TextView
+                style="@style/buttonShadow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/basket_noitems"
+                android:textColor="@color/text_color"
+                android:textSize="17sp" />
+
+            <Button
+                android:id="@+id/todaysMenu"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" 
+                android:text="@string/btn_today_menu"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="8dp"
+                style="@style/primary_btn"/>
+        </LinearLayout>
     </LinearLayout>
 
 </ScrollView>
