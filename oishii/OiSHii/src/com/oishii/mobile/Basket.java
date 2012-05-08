@@ -40,10 +40,11 @@ public class Basket extends OishiiBaseActivity {
 			View basketItem;
 			BasketItem item;
 			String temp;
+			TextView tv;
 			for (int i = 0; i < count; i++) {
 				item = items.get(i);
 				basketItem = inflater.inflate(R.layout.basket_item, null);
-				TextView tv = (TextView) basketItem.findViewById(R.id.item);
+				tv = (TextView) basketItem.findViewById(R.id.item);
 				temp = item.getCount() + " X " + item.getName();
 				tv.setText(temp);
 				temp = "£" + item.getPrice();
@@ -51,6 +52,12 @@ public class Basket extends OishiiBaseActivity {
 				tv.setText(temp);
 				basketParent.addView(basketItem);
 			}
+			System.out.println("Total->"+basket.getCurrentTotal());
+			String total = "£" + basket.getCurrentTotal();
+			tv = (TextView) findViewById(R.id.subtotal);
+			tv.setText(total);
+			tv = (TextView) findViewById(R.id.totalPrice);
+			tv.setText(total);
 		}
 	}
 
