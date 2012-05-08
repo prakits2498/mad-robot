@@ -437,4 +437,17 @@ public class NetUtils {
 		}
 		return encodedUrl.toString(); // Return encoded URL
 	}
+
+	/**
+	 * Uses regular expressions to validate a URL
+	 * @param url
+	 * @return
+	 */
+	public static boolean isValidURL(String url) {
+		String regex = "\\b(https?|ftp|file)://[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|]";
+		Pattern patt = Pattern.compile(regex);
+		Matcher matcher = patt.matcher(url);
+		return matcher.matches();
+	}
+
 }
