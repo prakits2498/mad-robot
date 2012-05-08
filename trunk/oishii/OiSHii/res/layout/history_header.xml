@@ -10,8 +10,9 @@
         android:text="Large Text"
         android:textStyle="bold"
         android:textColor="@android:color/white"
-        android:layout_marginLeft="8dp"
+        android:layout_marginLeft="35dp"
         android:layout_marginTop="8dp"
+        android:textSize="18sp"
         android:layout_gravity="center_vertical"
         android:layout_marginBottom="8dp" />
 
