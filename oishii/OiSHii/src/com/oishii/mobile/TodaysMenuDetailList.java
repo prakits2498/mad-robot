@@ -218,6 +218,7 @@ public class TodaysMenuDetailList extends ListOishiBase {
 			tv = (TextView) v.findViewById(R.id.desc);
 			tv.setText(item.getDescription());
 			tv = (TextView) v.findViewById(R.id.left);
+			tv.setBackgroundColor(color);
 			int itemsRemain = item.getItemsRemain();
 			if (itemsRemain == 0) {
 				tv.setText(R.string.sold_out);
