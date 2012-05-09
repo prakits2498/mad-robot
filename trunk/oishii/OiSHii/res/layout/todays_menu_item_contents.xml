@@ -6,7 +6,7 @@
 
     <LinearLayout
         android:id="@+id/progressParent"
-        android:layout_width="100dp"
+        android:layout_width="120dp"
         android:layout_height="fill_parent"
         android:orientation="vertical" >
 
@@ -21,14 +21,21 @@
             android:id="@+id/menuImg"
             android:layout_width="fill_parent"
             android:layout_height="100dp"
+            android:layout_weight="80"
             android:visibility="gone" />
 
         <TextView
             android:id="@+id/left"
-            android:layout_width="wrap_content"
+            style="@style/sploffers_text"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:textColor="@android:color/black" />
+            android:layout_marginBottom="3dp"
+            android:gravity="center_horizontal"
+            android:paddingBottom="3dp"
+            android:paddingTop="3dp"
+            android:layout_weight="20"
+            android:textSize="12sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -55,28 +62,40 @@
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:gravity="left" 
             android:layout_marginBottom="5dp"
-            >
+            android:gravity="left" >
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="3dp"
                 android:layout_marginTop="5dp"
                 android:text="@string/price"
                 android:textColor="@android:color/black"
-                android:textStyle="bold"
-                android:layout_marginRight="3dp" />
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ldg"
                 android:layout_gravity="center_horizontal"
+                android:text="Ldg"
                 android:textColor="@android:color/black"
                 android:textStyle="bold" />
         </LinearLayout>
+
+        <Button
+            android:id="@+id/btnAddBasket"
+            android:layout_width="fill_parent"
+            android:layout_height="30dp"
+            android:layout_marginBottom="3dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="3dp"
+            android:paddingRight="20dp"
+            style="@style/primary_btn"
+            android:gravity="center_horizontal"
+            android:text="@string/add_basket"
+            android:textSize="13dp" />
 
         <Button
             android:id="@+id/detail"
