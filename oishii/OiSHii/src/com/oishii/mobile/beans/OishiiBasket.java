@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OishiiBasket {
-	List<BasketItem> items = new ArrayList<BasketItem>();
-	float currentTotal;
+	private List<BasketItem> items = new ArrayList<BasketItem>();
+	private float currentTotal;
+	private float discountedTotal;
 
 	public float getCurrentTotal() {
 		return currentTotal;

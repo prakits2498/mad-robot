@@ -82,6 +82,7 @@ public class Basket extends OishiiBaseActivity {
 						public void onClick(View v) {
 							Intent intent = new Intent(getApplicationContext(),
 									PromoCode.class);
+							intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
 							startActivity(intent);
 						}
 					});
