@@ -8,18 +8,17 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
-import android.content.Context;
+import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.Typeface;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager.LayoutParams;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -46,7 +45,6 @@ public class TodaysMenuDetailList extends ListOishiBase {
 
 	@Override
 	protected void hookInListData() {
-		// TODO Auto-generated method stub
 		showOnlyLogo();
 		Intent intent = getIntent();
 		String title = intent.getStringExtra(EXTRA_TITLE);
@@ -71,6 +69,28 @@ public class TodaysMenuDetailList extends ListOishiBase {
 		}
 	};
 
+	View.OnClickListener addToBasketListner = new View.OnClickListener() {
+
+		@Override
+		public void onClick(View v) {
+			MenuItem item = (MenuItem) v.getTag();
+
+			Dialog dialog = new Dialog(TodaysMenuDetailList.this);
+			dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+			dialog.setContentView(R.layout.add_to_basket_dailog);
+			dialog.setTitle(null);
+			TextView tv = (TextView) dialog.findViewById(R.id.itemName);
+			tv.setText(item.getName());
+
+			LayoutParams params = getWindow().getAttributes();
+			params.height = LayoutParams.FILL_PARENT;
+			dialog.getWindow().setLayout(LayoutParams.FILL_PARENT,
+					LayoutParams.WRAP_CONTENT);
+
+			dialog.show();
+		}
+	};
+
 	@Override
 	protected int getSreenID() {
 		return R.layout.menu_item_header;
@@ -88,7 +108,6 @@ public class TodaysMenuDetailList extends ListOishiBase {
 		NameValuePair param = new BasicNameValuePair("catID", catId);
 		params.add(param);
 		requestWrapper.httpParams = params;
-		// requestWrapper.httpSettings.setHttpMethod(HttpMethod.HTTP_POST);
 		showDialog(getString(R.string.loading_det));
 		new HttpRequestTask().execute(requestWrapper);
 	}
@@ -124,11 +143,15 @@ public class TodaysMenuDetailList extends ListOishiBase {
 				e.printStackTrace();
 			}
 			if (object != null) {
-				ResultContainer det = processPlist(object);
-				return det;
-			} else {
-				return null;
+				ResultContainer det;
+				try {
+					det = processPlist(object);
+					return det;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
+			return null;
 		}
 	};
 
@@ -137,7 +160,7 @@ public class TodaysMenuDetailList extends ListOishiBase {
 		private ArrayList<ArrayList<MenuItem>> children;
 	}
 
-	private ResultContainer processPlist(NSObject obj) {
+	private ResultContainer processPlist(NSObject obj) throws Exception {
 		NSArray plist = (NSArray) obj;
 		int categories = plist.count();
 		ResultContainer container = new ResultContainer();
@@ -219,10 +242,14 @@ public class TodaysMenuDetailList extends ListOishiBase {
 			tv.setText(item.getDescription());
 			tv = (TextView) v.findViewById(R.id.left);
 			tv.setBackgroundColor(color);
+			Button btn = (Button) v.findViewById(R.id.btnAddBasket);
 			int itemsRemain = item.getItemsRemain();
 			if (itemsRemain == 0) {
 				tv.setText(R.string.sold_out);
+				btn.setVisibility(View.GONE);
 			} else {
+				btn.setTag(item);
+				btn.setOnClickListener(addToBasketListner);
 				tv.setText(item.getItemsRemain() + " Left");
 			}
 			ImageView image = (ImageView) v.findViewById(R.id.menuImg);
@@ -230,9 +257,10 @@ public class TodaysMenuDetailList extends ListOishiBase {
 			TextView price = (TextView) v.findViewById(R.id.price);
 			price.setText("£" + item.getPrice());
 
-			Button detail = (Button) v.findViewById(R.id.detail);
-			detail.setTag(item);
-			detail.setOnClickListener(btnListener);
+			btn = (Button) v.findViewById(R.id.detail);
+			btn.setTag(item);
+			btn.setOnClickListener(btnListener);
+
 			ProgressBar progress = (ProgressBar) v
 					.findViewById(R.id.imageProgress);
 			LinearLayout parent = (LinearLayout) v
@@ -243,8 +271,7 @@ public class TodaysMenuDetailList extends ListOishiBase {
 				req.image = image;
 				progress.setId(group + child);
 				req.progress = progress;
-				req.parent = parent;// (LinearLayout)
-									// v.findViewById(R.id.progressParent);
+				req.parent = parent;
 				req.bean = item;
 				new BitmapHttpTask().execute(req);
 			} else {
@@ -280,8 +307,6 @@ public class TodaysMenuDetailList extends ListOishiBase {
 		public View getGroupView(int arg0, boolean arg1, View arg2,
 				ViewGroup arg3) {
 			MenuItemCategory category = parents.get(arg0);
-			// View v = arg2;
-			// if (v == null) {
 			View v = getLayoutInflater().inflate(R.layout.menu_item_header,
 					null);
 			v.setBackgroundColor(color);
@@ -289,7 +314,6 @@ public class TodaysMenuDetailList extends ListOishiBase {
 			tv.setText(category.getName());
 			tv = (TextView) v.findViewById(R.id.mnuDesc);
 			tv.setText(category.getDescription());
-			// }
 			return v;
 		}
 
@@ -307,7 +331,6 @@ public class TodaysMenuDetailList extends ListOishiBase {
 
 	@Override
 	protected int getParentScreenId() {
-		// TODO Auto-generated method stub
 		return R.id.about;
 	}
 

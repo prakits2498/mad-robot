@@ -40,7 +40,7 @@ public class History extends ListOishiBase {
 		return R.id.history;
 	}
 
-	private HistoryContainer getHistoryContainer(NSArray array) {
+	private HistoryContainer getHistoryContainer(NSArray array) throws Exception {
 		HistoryContainer container = new HistoryContainer();
 		List<OrderCategory> categories = new ArrayList<OrderCategory>();
 		List<List<Order>> orderList = new ArrayList<List<Order>>();
@@ -125,8 +125,13 @@ public class History extends ListOishiBase {
 				e.printStackTrace();
 			}
 			if (object != null) {
-				HistoryContainer det = getHistoryContainer((NSArray) object);
-				return det;
+				HistoryContainer det;
+				try {
+					det = getHistoryContainer((NSArray) object);
+					return det;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 			return null;
 		}

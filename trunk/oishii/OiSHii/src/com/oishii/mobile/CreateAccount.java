@@ -79,45 +79,8 @@ public class CreateAccount extends AccountDetails {
 	}
 
 
-	// IHttpCallback createAccountCallback = new IHttpCallback() {
-	//
-	// @Override
-	// public Object populateBean(InputStream is, int operationId) {
-	// NSObject object = null;
-	// try {
-	// object = PropertyListParser.parse(is);
-	// } catch (Exception e) {
-	// e.printStackTrace();
-	// }
-	// if (object != null) {
-	// SimpleResult result = getSimpleResult(object);
-	// return result;
-	// } else {
-	// return null;
-	// }
-	//
-	// }
-	//
-	// @Override
-	// public void onFailure(int message, int operationID) {
-	// processFailure(message);
-	// }
-	//
-	// @Override
-	// public void bindUI(Object t, int operationId) {
-	// hideDialog();
-	// SimpleResult result=(SimpleResult) t;
-	// if(!result.isSucess()){
-	// showErrorDialog(result.getErrorMessage());
-	// }else{
-	//
-	// }
-	// }
-	// };
 
-	
 	protected void handleSimpleResultResponse(String message) {
-		//TODO launch login screen  . and set the src screen
 		Intent intent=new Intent(CreateAccount.this,Login.class);
 		intent.putExtra(OutOfSession.SRC_KEY, getIntent().getIntExtra(OutOfSession.SRC_KEY,0));
 		startActivity(intent);

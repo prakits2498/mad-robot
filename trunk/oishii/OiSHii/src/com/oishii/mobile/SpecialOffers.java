@@ -43,7 +43,8 @@ public class SpecialOffers extends ListOishiBase {
 		requestWrapper.requestURI = ApplicationConstants.API_SPECIAL_OFFERS;
 		requestWrapper.callback = splOffersCallback;
 		requestWrapper.operationID = OPERATION_SPL_OFFER;
-		requestWrapper.httpSettings.setHttpMethod(ApplicationConstants.HTTP_METHOD);
+		requestWrapper.httpSettings
+				.setHttpMethod(ApplicationConstants.HTTP_METHOD);
 		showDialog(getString(R.string.loading_offers));
 		new HttpRequestTask().execute(requestWrapper);
 	}
@@ -59,12 +60,17 @@ public class SpecialOffers extends ListOishiBase {
 			}
 			if (object != null) {
 				NSArray array = (NSArray) object;
-				ArrayList<SpecialOffer> offerList = getArray(array);
+				ArrayList<SpecialOffer> offerList;
+				try {
+					offerList = getArray(array);
+					return offerList;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 
-				return offerList;
-			} else {
-				return null;
 			}
+			return null;
+
 		}
 
 		@Override
@@ -95,7 +101,7 @@ public class SpecialOffers extends ListOishiBase {
 		}
 	};
 
-	private ArrayList<SpecialOffer> getArray(NSArray array) {
+	private ArrayList<SpecialOffer> getArray(NSArray array) throws Exception {
 		int count = array.count();
 		ArrayList<SpecialOffer> offers = new ArrayList<SpecialOffer>();
 		for (int i = 0; i < count; i++) {
@@ -103,7 +109,7 @@ public class SpecialOffers extends ListOishiBase {
 			SpecialOffer offer = new SpecialOffer();
 			offer.setOfferName(d.objectForKey("name").toString());
 			offer.setShortDesc(d.objectForKey("shortdescription").toString());
-			
+
 			offer.setColor(Color.parseColor(d.objectForKey("color").toString()));
 			offers.add(offer);
 		}
@@ -130,7 +136,7 @@ public class SpecialOffers extends ListOishiBase {
 				viewHolder.text2 = (TextView) view.findViewById(R.id.offerDesc);
 				view.setTag(viewHolder);
 			}
-			
+
 			ViewHolder viewHolder = (ViewHolder) view.getTag();
 			viewHolder.text1.setText(item.getOfferName());
 			viewHolder.text2.setText(item.getShortDesc());
