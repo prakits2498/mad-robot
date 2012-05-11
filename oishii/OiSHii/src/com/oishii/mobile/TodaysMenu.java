@@ -118,8 +118,13 @@ public class TodaysMenu extends ListOishiBase {
 				}
 				if (object != null) {
 					NSArray array = (NSArray) object;
-					ArrayList<MenuData> menuList = getArray(array);
-					return menuList;
+					ArrayList<MenuData> menuList;
+					try {
+						menuList = getArray(array);
+						return menuList;
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
 					return null;
 				
@@ -162,7 +167,7 @@ public class TodaysMenu extends ListOishiBase {
 		new HttpRequestTask().execute(requestWrapper);
 	}
 
-	private ArrayList<MenuData> getArray(NSArray array) {
+	private ArrayList<MenuData> getArray(NSArray array) throws Exception{
 		int count = array.count();
 		ArrayList<MenuData> menus = new ArrayList<MenuData>();
 		for (int i = 0; i < count; i++) {

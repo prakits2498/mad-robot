@@ -215,7 +215,7 @@ public class Locations extends AccountDetails {
 
 	}
 
-	private MultipleMessageResult processResult(NSDictionary dict) {
+	private MultipleMessageResult processResult(NSDictionary dict)throws Exception {
 		MultipleMessageResult result = new MultipleMessageResult();
 		NSNumber sucessFalg = (NSNumber) dict.objectForKey("success");
 		result.setSuccess(sucessFalg.boolValue());
@@ -250,9 +250,14 @@ public class Locations extends AccountDetails {
 			}
 			if (object != null) {
 				NSDictionary array = (NSDictionary) object;
-				MultipleMessageResult menuList = processResult(array);
+				MultipleMessageResult menuList;
+				try {
+					menuList = processResult(array);
+					return menuList;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 
-				return menuList;
 			}
 			return null;
 		}
@@ -289,9 +294,14 @@ public class Locations extends AccountDetails {
 			}
 			if (object != null) {
 				NSArray array = (NSArray) object;
-				AccountInformation menuList = getAccountInfo(array);
+				AccountInformation menuList;
+				try {
+					menuList = getAccountInfo(array);
+					return menuList;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 
-				return menuList;
 			}
 			return null;
 		}

@@ -94,7 +94,7 @@ public class AccountDetails extends OishiiBaseActivity {
 		new HttpRequestTask().execute(requestWrapper);
 	}
 
-	protected AccountInformation getAccountInfo(NSArray obj) {
+	protected AccountInformation getAccountInfo(NSArray obj)throws Exception {
 		AccountInformation info = new AccountInformation();
 		NSDictionary dict = (NSDictionary) obj.objectAtIndex(0);
 		NSDictionary details = (NSDictionary) dict.objectForKey("details");
@@ -169,9 +169,14 @@ public class AccountDetails extends OishiiBaseActivity {
 			}
 			if (object != null) {
 				NSArray array = (NSArray) object;
-				AccountInformation menuList = getAccountInfo(array);
+				AccountInformation menuList;
+				try {
+					menuList = getAccountInfo(array);
+					return menuList;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 
-				return menuList;
 			}
 			return null;
 		}

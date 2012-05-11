@@ -47,43 +47,6 @@ public class ChangePassword extends OishiiBaseActivity {
 				});
 	}
 
-//	IHttpCallback changePwdCallback = new IHttpCallback() {
-//
-//		@Override
-//		public Object populateBean(InputStream is, int operationId) {
-//			NSObject object = null;
-//			try {
-//				object = PropertyListParser.parse(is);
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//			if (object != null) {
-//				SimpleResult result = getSimpleResult(object);
-//				return result;
-//			} else {
-//				return null;
-//			}
-//		}
-//
-//		@Override
-//		public void onFailure(int message, int operationID) {
-//			processFailure(message);
-//		}
-//
-//		@Override
-//		public void bindUI(Object t, int operationId) {
-//			// TODO Auto-generated method stub
-//			hideDialog();
-//			SimpleResult result = (SimpleResult) t;
-//			if (result.isSucess()) {
-//				showChangedDialog(result.getErrorMessage());
-//			} else {
-//				showErrorDialog(result.getErrorMessage());
-//			}
-//
-//		}
-//	};
-
 	protected void handleSimpleResultResponse(String message) {
 		showErrorDialog(message, changedListener);
 

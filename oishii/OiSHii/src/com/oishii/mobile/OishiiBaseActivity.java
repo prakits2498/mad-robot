@@ -112,7 +112,7 @@ public abstract class OishiiBaseActivity extends Activity {
 		v.setOnClickListener(menuListener);
 		v = findViewById(R.id.basket);
 		v.setOnClickListener(menuListener);
-		
+
 	}
 
 	View.OnClickListener menuListener = new View.OnClickListener() {
@@ -266,14 +266,15 @@ public abstract class OishiiBaseActivity extends Activity {
 		setSelectedMenu();
 		setBasketPrice();
 	}
-	
-	private void setBasketPrice(){
-		OishiiBasket basket=AccountStatus.getInstance(getApplicationContext()).getBasket();
-		TextView total=(TextView) findViewById(R.id.totalPrice);
-		if(basket.getCurrentTotal()>0.0f){
-			total.setText("£"+basket.getCurrentTotal());
+
+	private void setBasketPrice() {
+		OishiiBasket basket = AccountStatus
+				.getInstance(getApplicationContext()).getBasket();
+		TextView total = (TextView) findViewById(R.id.totalPrice);
+		if (basket.getCurrentTotal() > 0.0f) {
+			total.setText("£" + basket.getCurrentTotal());
 			total.setVisibility(View.VISIBLE);
-		}else{
+		} else {
 			total.setVisibility(View.GONE);
 		}
 	}
@@ -313,7 +314,7 @@ public abstract class OishiiBaseActivity extends Activity {
 		showErrorDialog(getString(message));
 	}
 
-	protected SimpleResult getSimpleResult(NSObject object) {
+	protected SimpleResult getSimpleResult(NSObject object) throws Exception {
 		NSDictionary dict = (NSDictionary) object;
 		SimpleResult res = new SimpleResult();
 		NSNumber sucessFalg = (NSNumber) dict.objectForKey("success");
@@ -333,11 +334,16 @@ public abstract class OishiiBaseActivity extends Activity {
 				e.printStackTrace();
 			}
 			if (object != null) {
-				SimpleResult result = getSimpleResult(object);
-				return result;
-			} else {
-				return null;
+				SimpleResult result;
+				try {
+					result = getSimpleResult(object);
+					return result;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
+			return null;
+
 		}
 
 		@Override
