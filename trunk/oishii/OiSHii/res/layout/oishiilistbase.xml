@@ -7,6 +7,7 @@
         android:id="@+id/listView1"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:cacheColorHint="@android:color/transparent"
         android:divider="@android:color/transparent"
         android:dividerHeight="3dp"
         android:drawSelectorOnTop="true"
@@ -14,6 +15,7 @@
         android:listSelector="@drawable/selector"
         android:scrollbarAlwaysDrawVerticalTrack="false"
         android:scrollingCache="false"
+        android:smoothScrollbar="true"
         android:visibility="gone" />
 
     <ExpandableListView
