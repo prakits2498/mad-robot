@@ -8,11 +8,15 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager.LayoutParams;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -24,6 +28,7 @@ import com.madrobot.di.plist.NSObject;
 import com.madrobot.di.plist.PropertyListParser;
 import com.oishii.mobile.beans.AccountStatus;
 import com.oishii.mobile.beans.BasketItem;
+import com.oishii.mobile.beans.MenuItem;
 import com.oishii.mobile.beans.MenuItemDetail;
 import com.oishii.mobile.beans.OishiiBasket;
 import com.oishii.mobile.util.tasks.BitmapHttpTask;
@@ -77,38 +82,91 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 		return detail;
 
 	}
-
-	View.OnClickListener btnAddBasket = new View.OnClickListener() {
+	
+	View.OnClickListener addToBasketListner = new View.OnClickListener() {
 
 		@Override
-		public void onClick(View arg0) {
-			MenuItemDetail detail = (MenuItemDetail) arg0.getTag();
-			AccountStatus status = AccountStatus
-					.getInstance(getApplicationContext());
-			OishiiBasket basket = status.getBasket();
-			BasketItem item = new BasketItem();
-			item.setColor(color);
-			item.setCount(1);
-			item.setName(detail.getName());
-			item.setPrice(detail.getPrice());
-			item.setProdId(detail.getId());
-			basket.addItem(item);
+		public void onClick(View v) {
+			final MenuItemDetail item = (MenuItemDetail) v.getTag();
+			final Dialog dialog = new Dialog(TodaysMenuItemDetail.this);
+			dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+			dialog.setContentView(R.layout.add_to_basket_dailog);
+			dialog.setTitle(null);
+			TextView tv = (TextView) dialog.findViewById(R.id.itemName);
+			tv.setText(item.getName());
+			final EditText number = (EditText) dialog.findViewById(R.id.number);
+			final TextView count = (TextView) dialog
+					.findViewById(R.id.itemCount);
+			dialog.findViewById(R.id.btnCheckout).setOnClickListener(
+					new View.OnClickListener() {
+						@Override
+						public void onClick(View arg0) {
+							AccountStatus status = AccountStatus
+									.getInstance(getApplicationContext());
+							OishiiBasket basket = status.getBasket();
+							BasketItem basItem = new BasketItem();
+							basItem.setColor(color);
+							int total = Integer.parseInt(number.getText()
+									.toString());
+							basItem.setCount(total);
+							basItem.setName(item.getName());
+							basItem.setPrice(item.getPrice());
+							basItem.setProdId(item.getId());
+							basket.addItem(basItem);
 
-			Intent intent = new Intent();
-			Class clz;
-			if (!status.isSignedIn()) {
+							Intent intent = new Intent();
+							Class clz;
+							if (!status.isSignedIn()) {
 
-				clz = OutOfSession.class;
-				// intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-			} else {
-				clz = Basket.class;
-			}
-			intent.setClass(TodaysMenuItemDetail.this, clz);
-			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			intent.putExtra(OutOfSession.SRC_KEY, R.id.basket);
-			startActivity(intent);
+								clz = OutOfSession.class;
+								// intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+							} else {
+								clz = Basket.class;
+							}
+							intent.setClass(TodaysMenuItemDetail.this, clz);
+							intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+							intent.putExtra(OutOfSession.SRC_KEY, R.id.basket);
+							dialog.dismiss();
+							startActivity(intent);
+						}
+					});
+			dialog.findViewById(R.id.add).setOnClickListener(
+					new View.OnClickListener() {
+						@Override
+						public void onClick(View arg0) {
+							int total = Integer.parseInt(number.getText()
+									.toString());
+							if (total < 0) {
+								total = 1;
+							}
+							if (total < 99)
+								total++;
+							number.setText(String.valueOf(total));
+							count.setText(total + "X");
+						}
+					});
+
+			dialog.findViewById(R.id.minus).setOnClickListener(
+					new View.OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							int total = Integer.parseInt(number.getText()
+									.toString());
+							if (total > 1) {
+								total--;
+							}
+							number.setText(String.valueOf(total));
+							count.setText(total + "X");
+						}
+					});
+			LayoutParams params = getWindow().getAttributes();
+			params.height = LayoutParams.FILL_PARENT;
+			dialog.getWindow().setLayout(LayoutParams.FILL_PARENT,
+					LayoutParams.WRAP_CONTENT);
+			dialog.show();
 		}
 	};
+
 
 	IHttpCallback details = new IHttpCallback() {
 
@@ -154,7 +212,7 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 			} else {
 				btnAddBasket.setTag(detail);
 				btnAddBasket
-						.setOnClickListener(TodaysMenuItemDetail.this.btnAddBasket);
+						.setOnClickListener(addToBasketListner);
 			}
 			BitmapRequestParam req = new BitmapRequestParam();
 			req.bitmapUri = URI.create(detail.getImageUrl());

@@ -10,6 +10,7 @@ import org.apache.http.message.BasicNameValuePair;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -28,8 +29,11 @@ import com.madrobot.di.plist.NSDictionary;
 import com.madrobot.di.plist.NSNumber;
 import com.madrobot.di.plist.NSObject;
 import com.madrobot.di.plist.PropertyListParser;
+import com.oishii.mobile.beans.AccountStatus;
+import com.oishii.mobile.beans.BasketItem;
 import com.oishii.mobile.beans.MenuItem;
 import com.oishii.mobile.beans.MenuItemCategory;
+import com.oishii.mobile.beans.OishiiBasket;
 import com.oishii.mobile.util.tasks.BitmapHttpTask;
 import com.oishii.mobile.util.tasks.BitmapRequestParam;
 import com.oishii.mobile.util.tasks.HttpRequestTask;
@@ -49,7 +53,7 @@ public class TodaysMenuDetailList extends ListOishiBase {
 		showOnlyLogo();
 		Intent intent = getIntent();
 		String title = intent.getStringExtra(EXTRA_TITLE);
-		color = intent.getIntExtra(EXTRA_COLOR, 0x000000);
+		color = intent.getIntExtra(EXTRA_COLOR, Color.parseColor("#F98E00"));
 		TextView tv = (TextView) findViewById(R.id.titleFirst);
 		tv.setText(title);
 		tv.setTextColor(color);
@@ -74,16 +78,49 @@ public class TodaysMenuDetailList extends ListOishiBase {
 
 		@Override
 		public void onClick(View v) {
-			MenuItem item = (MenuItem) v.getTag();
-			Dialog dialog = new Dialog(TodaysMenuDetailList.this);
+			final MenuItem item = (MenuItem) v.getTag();
+			final Dialog dialog = new Dialog(TodaysMenuDetailList.this);
 			dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 			dialog.setContentView(R.layout.add_to_basket_dailog);
 			dialog.setTitle(null);
 			TextView tv = (TextView) dialog.findViewById(R.id.itemName);
 			tv.setText(item.getName());
 			final EditText number = (EditText) dialog.findViewById(R.id.number);
-			final TextView count = (TextView) dialog.findViewById(R.id.itemCount);
+			final TextView count = (TextView) dialog
+					.findViewById(R.id.itemCount);
+			dialog.findViewById(R.id.btnCheckout).setOnClickListener(
+					new View.OnClickListener() {
+						@Override
+						public void onClick(View arg0) {
+							AccountStatus status = AccountStatus
+									.getInstance(getApplicationContext());
+							OishiiBasket basket = status.getBasket();
+							BasketItem basItem = new BasketItem();
+							basItem.setColor(color);
+							int total = Integer.parseInt(number.getText()
+									.toString());
+							basItem.setCount(total);
+							basItem.setName(item.getName());
+							basItem.setPrice(item.getPrice());
+							basItem.setProdId(item.getId());
+							basket.addItem(basItem);
 
+							Intent intent = new Intent();
+							Class clz;
+							if (!status.isSignedIn()) {
+
+								clz = OutOfSession.class;
+								// intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+							} else {
+								clz = Basket.class;
+							}
+							intent.setClass(TodaysMenuDetailList.this, clz);
+							intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+							intent.putExtra(OutOfSession.SRC_KEY, R.id.basket);
+							dialog.dismiss();
+							startActivity(intent);
+						}
+					});
 			dialog.findViewById(R.id.add).setOnClickListener(
 					new View.OnClickListener() {
 						@Override
