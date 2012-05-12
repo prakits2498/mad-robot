@@ -5,9 +5,11 @@
     android:orientation="vertical" >
 
     <LinearLayout
+        android:layout_gravity="center_horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         android:layout_marginTop="10dp"
         android:orientation="horizontal" >
 
@@ -15,16 +17,16 @@
             android:id="@+id/itemCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
+            
             android:textColor="@color/text_color"
             android:textSize="15sp"
+            android:text="1X"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/itemName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
             android:layout_marginLeft="8dp"
             android:textColor="@android:color/black"
             android:textSize="15sp"
@@ -46,15 +48,14 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp"
-        android:gravity="center_horizontal" >
+        android:gravity="center" >
 
         <Button
             android:id="@+id/add"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginRight="5dp"
-            android:background="@drawable/plus" />
+            android:background="@drawable/plus_selector" />
 
         <EditText
             android:id="@+id/number"
@@ -75,11 +76,13 @@
             android:id="@+id/minus"
             android:layout_width="30dp"
             android:layout_height="30dp"
+            
             android:layout_marginLeft="5dp"
-            android:background="@drawable/minus" />
+            android:background="@drawable/minus_selector" />
     </LinearLayout>
 
     <Button
+        android:id="@+id/btnCheckout"
         style="@style/primary_btn"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
