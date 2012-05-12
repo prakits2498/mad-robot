@@ -1,5 +1,7 @@
 package com.oishii.mobile.beans;
 
+import android.graphics.Bitmap;
+
 public class MenuData extends BitmapBean{
 	int color;
 	int id;
