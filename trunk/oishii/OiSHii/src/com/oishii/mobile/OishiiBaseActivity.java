@@ -124,9 +124,6 @@ public abstract class OishiiBaseActivity extends Activity {
 				return;
 			}
 
-			// isMenuScreen=true;
-			// isHomeScreen=false;
-			// finish();
 			Intent intent = new Intent();
 			Class clz = null;
 			switch (v.getId()) {

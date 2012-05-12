@@ -46,17 +46,15 @@ public class BitmapHttpTask extends AsyncTask<BitmapRequestParam, Void, Bitmap> 
 				bitmap = BitmapFactory.decodeStream(is, null,
 						new BitmapFactory.Options());
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (URISyntaxException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			// ResponseParam resp = new ResponseParam();
 			// resp.bitmap = bitmap;
 			// resp.image = params[0].image;
 			// resp.bar = params[0].progress;
-			// resp.parent = params[0].parent;
+			// resp.parent = params[0].parent;O
 
 			System.out.println("REtrn resp for->" + params[0].bitmapUri);
 		}

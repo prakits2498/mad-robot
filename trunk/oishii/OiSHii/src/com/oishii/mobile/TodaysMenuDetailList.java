@@ -16,6 +16,7 @@ import android.view.Window;
 import android.view.WindowManager.LayoutParams;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -74,19 +75,48 @@ public class TodaysMenuDetailList extends ListOishiBase {
 		@Override
 		public void onClick(View v) {
 			MenuItem item = (MenuItem) v.getTag();
-
 			Dialog dialog = new Dialog(TodaysMenuDetailList.this);
 			dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 			dialog.setContentView(R.layout.add_to_basket_dailog);
 			dialog.setTitle(null);
 			TextView tv = (TextView) dialog.findViewById(R.id.itemName);
 			tv.setText(item.getName());
+			final EditText number = (EditText) dialog.findViewById(R.id.number);
+			final TextView count = (TextView) dialog.findViewById(R.id.itemCount);
 
+			dialog.findViewById(R.id.add).setOnClickListener(
+					new View.OnClickListener() {
+						@Override
+						public void onClick(View arg0) {
+							int total = Integer.parseInt(number.getText()
+									.toString());
+							if (total < 0) {
+								total = 1;
+							}
+							if (total < 99)
+								total++;
+							number.setText(String.valueOf(total));
+							count.setText(total + "X");
+						}
+					});
+
+			dialog.findViewById(R.id.minus).setOnClickListener(
+					new View.OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							int total = Integer.parseInt(number.getText()
+									.toString());
+							if (total > 1) {
+								total--;
+							}
+							number.setText(String.valueOf(total));
+							count.setText(total + "X");
+						}
+					});
 			LayoutParams params = getWindow().getAttributes();
 			params.height = LayoutParams.FILL_PARENT;
 			dialog.getWindow().setLayout(LayoutParams.FILL_PARENT,
 					LayoutParams.WRAP_CONTENT);
-
 			dialog.show();
 		}
 	};
