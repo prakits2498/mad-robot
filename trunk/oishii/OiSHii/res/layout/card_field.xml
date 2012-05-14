@@ -29,13 +29,6 @@
             android:textColor="#385487"
             android:textSize="15sp" />
 
-        <Button
-            android:id="@+id/btnDelete"
-            android:layout_width="0dp"
-             android:layout_weight="20"
-            android:layout_height="30dp"
-            android:layout_marginRight="8dp"
-            android:layout_gravity="center_vertical" />
     </LinearLayout>
 
     <View
