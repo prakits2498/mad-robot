@@ -38,8 +38,24 @@
             android:layout_marginRight="10dp"
             android:layout_marginTop="3dp"
             android:layout_marginBottom="3dp"
-            
             android:visibility="gone" />
+        
+         <Button
+            android:id="@+id/btnHome"
+            android:background="@drawable/back_selector"
+            android:layout_width="50dp"
+            android:text="Home"
+            android:textSize="10sp"
+            android:textColor="@android:color/white"
+            android:paddingLeft="13dp"
+            android:layout_height="30dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="3dp"
+            style="@style/buttonShadow"
+            android:visibility="gone"
+            android:layout_marginBottom="3dp"/>
     </RelativeLayout>
 
 </RelativeLayout>
