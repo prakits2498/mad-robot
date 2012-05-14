@@ -42,18 +42,17 @@ public class DeliveryTime extends OishiiBaseActivity {
 		
 		@Override
 		public void bindUI(Object t, int operationId) {
-			// TODO Auto-generated method stub
 			
 		}
 	};
 	
 	protected void executeDeliveryTimeRequest(){
 		HttpRequestWrapper requestWrapper = new HttpRequestWrapper();
-		requestWrapper.requestURI = ApplicationConstants.API_MENU_DATA;
+		requestWrapper.requestURI = ApplicationConstants.API_DELIVERY_TIME;
 		requestWrapper.callback = delTimeCallback;
 		requestWrapper.operationID = 45;
 		requestWrapper.httpSettings.setHttpMethod(ApplicationConstants.HTTP_METHOD);
-		showDialog(getString(R.string.loading_mnu));
+		showDialog(getString(R.string.loading_get_delivery));
 		new HttpRequestTask().execute(requestWrapper);
 	}
 	
