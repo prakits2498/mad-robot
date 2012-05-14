@@ -33,6 +33,8 @@ public class ApplicationConstants {
 			+ "addLocation.php");
 	public static final URI API_DELIVERY_TIME = URI.create(PLIST_PATH
 			+ "deliveryTime.php");
+	public static final URI API_DELETE_LOCATION = URI.create(PLIST_PATH
+			+ "deleteLocation.php");
 
 	public static HttpMethod HTTP_METHOD = HttpMethod.HTTP_GET;
 }
