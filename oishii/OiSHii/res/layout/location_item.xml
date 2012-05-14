@@ -32,6 +32,13 @@
                 android:layout_height="20dp"
                 android:layout_marginLeft="5dp"
                 android:background="@drawable/delete_selector" />
+
+            <Button
+                android:id="@+id/btnEdit"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/edit_selector" />
         </LinearLayout>
 
         <TextView
