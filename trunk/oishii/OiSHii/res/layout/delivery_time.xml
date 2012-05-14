@@ -66,6 +66,19 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="15dp"
-        android:text="@string/btn_continue" />
+        android:id="@+id/btnSelTime"
+        android:text="@string/btn_SelTime" />
+
+    <Button
+        style="@style/primary_btn"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="15dp"
+        android:text="@string/btn_continue"
+        android:id="@+id/btnContinue"
+        android:visibility="gone" />
 
 </LinearLayout>

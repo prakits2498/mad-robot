@@ -26,6 +26,7 @@
     <string name="loading">Loading details…</string>
     <string name="loading_save">Saving details…</string>
     <string name="loading_add_location">Adding Location…</string>
+    <string name="loading_get_delivery">Getting delivery time…</string>
 
     <!--  -->
     <string name="error_bad_response">Invalid server response</string>
@@ -64,6 +65,7 @@
     <string name="enter_promo">Enter promotional code:</string>
     <string name="hint_promo">Promotional code</string>
     <string name="btn_continue">Continue</string>
+    <string name="btn_SelTime">Select Time</string>
     <string name="btn_save">Save</string>
     <string name="btn_add">Add Location</string>
     <string name="btn_cancel">Cancel</string>
