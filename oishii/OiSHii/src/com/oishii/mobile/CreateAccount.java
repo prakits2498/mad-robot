@@ -18,7 +18,7 @@ import com.oishii.mobile.util.TextUtils;
 import com.oishii.mobile.util.tasks.HttpRequestTask;
 import com.oishii.mobile.util.tasks.HttpRequestWrapper;
 
-public class CreateAccount extends AccountDetails {
+public class CreateAccount extends Login {
 
 	protected EditText title;
 	protected EditText fName;
