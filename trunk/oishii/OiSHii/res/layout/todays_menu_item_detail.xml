@@ -57,11 +57,8 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="20dp"
-                android:background="@drawable/btn_checkout_selector"
-                android:text="@string/add_basket"
-                android:textColor="@android:color/white"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                style="@style/primary_btn"
+                android:text="@string/add_basket"/>
 
             <ImageView
                 android:layout_marginBottom="20dp"
