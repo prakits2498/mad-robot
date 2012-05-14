@@ -12,29 +12,34 @@
             android:id="@+id/address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
             android:layout_margin="8dp"
-            android:layout_toLeftOf="@+id/type"
+            android:layout_weight="60"
             android:textColor="@android:color/black"
             android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_weight="75" />
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:textColor="#385487"
-            android:singleLine="true"
-            android:textSize="15sp"
+            android:layout_gravity="center_vertical"
             android:layout_marginRight="8dp"
-            android:layout_weight="25"
+            android:layout_weight="20"
+            android:singleLine="true"
+            android:textColor="#385487"
+            android:textSize="15sp" />
+
+        <Button
+            android:id="@+id/btnDelete"
+            android:layout_width="0dp"
+             android:layout_weight="20"
+            android:layout_height="30dp"
+            android:layout_marginRight="8dp"
             android:layout_gravity="center_vertical" />
     </LinearLayout>
 
-    <View android:id="@+id/sep" style="@style/fieldSeparator" />
+    <View
+        android:id="@+id/sep"
+        style="@style/fieldSeparator" />
 
 </LinearLayout>
