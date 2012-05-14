@@ -248,9 +248,11 @@ public class Login extends OishiiBaseActivity {
 			address.setMobile(str);
 			str = temp.objectForKey("shipping").toString();
 			boolean isShipping = str.equals("1");
+			System.out.println("IS SHIPPing->"+isShipping);
 			address.setShipping(isShipping);
 			str = temp.objectForKey("billing").toString();
 			boolean isBilling = str.equals("1");
+			System.out.println("IS Billing->"+isBilling);
 			address.setShipping(isBilling);
 			addressList.add(address);
 		}
