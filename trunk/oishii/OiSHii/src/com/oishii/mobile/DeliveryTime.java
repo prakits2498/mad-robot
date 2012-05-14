@@ -94,7 +94,7 @@ public class DeliveryTime extends OishiiBaseActivity {
 			timeStr = dict.objectForKey("Time").toString();
 			if (!timeStr.contains(":")) {
 				envelope.success = false;
-				envelope.message = timeStr;
+				envelope.message = "Delivery Closed!";
 			}
 			time.add(timeStr);
 		}

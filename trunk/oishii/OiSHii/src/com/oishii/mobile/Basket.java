@@ -2,10 +2,13 @@ package com.oishii.mobile;
 
 import java.util.List;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -25,17 +28,54 @@ public class Basket extends OishiiBaseActivity {
 		populateBasket();
 	}
 
-	View.OnClickListener removeItemListener=new View.OnClickListener() {
-		
+	int removalIndex;
+	View.OnClickListener removeItemListener = new View.OnClickListener() {
+
 		@Override
 		public void onClick(View v) {
-			int index=(Integer)v.getTag();
-			OishiiBasket basket=AccountStatus.getInstance(getApplicationContext()).getBasket();
-			basket.removeItem(index);
-			populateBasket();
+			removalIndex = (Integer) v.getTag();
+			showRemovalDialog();
 		}
 	};
-	
+
+	private void showRemovalDialog() {
+		final OishiiBasket basket = AccountStatus
+				.getInstance(getApplicationContext()).getBasket();
+		BasketItem item = basket.getItem(removalIndex);
+		final Dialog dialog = new Dialog(Basket.this);
+		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.setContentView(R.layout.modal_dialog);
+		dialog.setTitle(null);
+		TextView tv = (TextView) dialog.findViewById(R.id.errMsg);
+		
+		StringBuilder builder=new StringBuilder();
+		builder.append("Remove ");
+		builder.append("<b>");
+		builder.append( item.getName() );
+		builder.append("</b>");
+		builder.append("?");
+		tv.setText(Html.fromHtml(builder.toString()));
+		dialog.findViewById(R.id.btnOk).setOnClickListener(
+				new View.OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						basket.removeItem(removalIndex);
+						populateBasket();
+						dialog.dismiss();
+					}
+				});
+		dialog.findViewById(R.id.btnCancel).setOnClickListener(
+				new View.OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						dialog.dismiss();
+					}
+				});
+		dialog.show();
+	}
+
 	private void populateBasket() {
 		OishiiBasket basket = AccountStatus
 				.getInstance(getApplicationContext()).getBasket();
@@ -75,10 +115,10 @@ public class Basket extends OishiiBaseActivity {
 				tv = (TextView) basketItem.findViewById(R.id.item);
 				tv.setText(item.getName());
 				tv.setTextColor(item.getColor());
-				temp = "£" + (item.getPrice()*item.getCount());
+				temp = "£" + (item.getPrice() * item.getCount());
 				tv = (TextView) basketItem.findViewById(R.id.price);
 				tv.setText(temp);
-				View v =basketItem.findViewById(R.id.btnDelete);
+				View v = basketItem.findViewById(R.id.btnDelete);
 				v.setTag(new Integer(i));
 				v.setOnClickListener(removeItemListener);
 				basketParent.addView(basketItem);
