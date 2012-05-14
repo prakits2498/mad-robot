@@ -149,7 +149,7 @@ public class DeliveryTime extends OishiiBaseActivity {
 		requestWrapper.operationID = 45;
 		requestWrapper.httpSettings
 				.setHttpMethod(ApplicationConstants.HTTP_METHOD);
-		showDialog(getString(R.string.loading_get_delivery));
+		showDialog(getString(R.string.loading_delivery_time));
 		new HttpRequestTask().execute(requestWrapper);
 	}
 
