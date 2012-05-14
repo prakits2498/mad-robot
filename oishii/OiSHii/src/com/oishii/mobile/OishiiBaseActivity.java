@@ -348,7 +348,7 @@ public abstract class OishiiBaseActivity extends Activity {
 			hideDialog();
 			SimpleResult result = (SimpleResult) t;
 			if (result.isSucess()) {
-				handleSimpleResultResponse(result.getErrorMessage());
+				handleSimpleResultResponse(result.getErrorMessage(),operationId);
 			} else {
 				showErrorDialog(result.getErrorMessage());
 			}
@@ -360,7 +360,7 @@ public abstract class OishiiBaseActivity extends Activity {
 	 * 
 	 * @param message
 	 */
-	protected void handleSimpleResultResponse(String message) {
+	protected void handleSimpleResultResponse(String message,int operationId) {
 
 	}
 

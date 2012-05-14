@@ -38,7 +38,8 @@ public class ChangePassword extends OishiiBaseActivity {
 				});
 	}
 
-	protected void handleSimpleResultResponse(String message) {
+	@Override
+	protected void handleSimpleResultResponse(String message,int operationId) {
 		showErrorDialog(message, changedListener);
 
 	}
