@@ -2,6 +2,8 @@ package com.oishii.mobile;
 
 import java.net.URI;
 
+import android.graphics.Color;
+
 import com.oishii.mobile.util.HttpSettings.HttpMethod;
 
 public class ApplicationConstants {
@@ -39,4 +41,12 @@ public class ApplicationConstants {
 			+ "deliveryTime.php");
 
 	public static HttpMethod HTTP_METHOD = HttpMethod.HTTP_GET;
+
+	/**
+	 * Drink & snack box cat id's
+	 */
+	public static final int CAT_ID_DRINKS = 30;
+	public static final int CAT_ID_SNACKS = 29;
+	public static final int COLOR_SNACKS = Color.parseColor("#D60C8C");
+	public static final int COLOR_DRINKS = Color.parseColor("#ff9000");
 }

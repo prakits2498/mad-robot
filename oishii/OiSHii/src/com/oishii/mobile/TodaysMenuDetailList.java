@@ -47,6 +47,7 @@ public class TodaysMenuDetailList extends ListOishiBase {
 	final static String EXTRA_CAT_ID = "catID";
 	int OPERATION_MNU_DET = 78;
 	private int color;
+	private int catId;
 
 	@Override
 	protected void hookInListData() {
@@ -57,6 +58,7 @@ public class TodaysMenuDetailList extends ListOishiBase {
 		TextView tv = (TextView) findViewById(R.id.titleFirst);
 		tv.setText(title);
 		tv.setTextColor(color);
+		catId = getIntent().getIntExtra(EXTRA_CAT_ID, 0);
 		executeMenuDetailsRequest();
 	}
 
@@ -69,6 +71,11 @@ public class TodaysMenuDetailList extends ListOishiBase {
 					TodaysMenuItemDetail.class);
 			intent.putExtra(TodaysMenuItemDetail.COLOR, color);
 			intent.putExtra(TodaysMenuItemDetail.PROD_ID, item.getId());
+			if (catId == ApplicationConstants.CAT_ID_DRINKS
+					|| catId == ApplicationConstants.CAT_ID_SNACKS) {
+				intent.putExtra(TodaysMenuItemDetail.SHOW_ADD_DRINKS_SNACKS,
+						false);
+			}
 			startActivity(intent);
 
 		}
@@ -171,8 +178,8 @@ public class TodaysMenuDetailList extends ListOishiBase {
 		requestWrapper.httpSettings
 				.setHttpMethod(ApplicationConstants.HTTP_METHOD);
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		String catId = String.valueOf(getIntent().getIntExtra(EXTRA_CAT_ID, 0));
-		NameValuePair param = new BasicNameValuePair("catID", catId);
+		NameValuePair param = new BasicNameValuePair("catID",
+				String.valueOf(catId));
 		params.add(param);
 		requestWrapper.httpParams = params;
 		showDialog(getString(R.string.loading_det));
@@ -192,8 +199,8 @@ public class TodaysMenuDetailList extends ListOishiBase {
 					result.parent, result.children);
 			list.setAdapter(adapter);
 			list.setVisibility(View.VISIBLE);
-			int groups=result.parent.size();
-			for(int i=0;i<groups;i++){
+			int groups = result.parent.size();
+			for (int i = 0; i < groups; i++) {
 				list.expandGroup(i);
 			}
 			hideDialog();
@@ -212,7 +219,7 @@ public class TodaysMenuDetailList extends ListOishiBase {
 				if (object != null) {
 					ResultContainer det = processPlist(object);
 					return det;
-					
+
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
