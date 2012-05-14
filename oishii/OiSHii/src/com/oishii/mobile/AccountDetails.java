@@ -28,16 +28,9 @@ import com.oishii.mobile.util.tasks.IHttpCallback;
 
 public class AccountDetails extends OishiiBaseActivity {
 	final int SCR_ID = 67;
-	private final int OPERATION_ACC = 898;
 
 	@Override
 	protected void hookInChildViews() {
-
-//		if (AccountStatus.getInstance(getApplicationContext())
-//				.getAccInformation() == null) {
-//			executeAccountInfoRequest(accountDetailsCallback);
-//
-//		}
 		findViewById(R.id.myAccDetails).setOnClickListener(
 				accountDetailsListener);
 		findViewById(R.id.myAccLocation).setOnClickListener(
@@ -74,30 +67,6 @@ public class AccountDetails extends OishiiBaseActivity {
 		}
 	};
 
-//	protected void executeAccountInfoRequest(IHttpCallback listener) {
-//		HttpRequestWrapper requestWrapper = new HttpRequestWrapper();
-//		requestWrapper.requestURI = ApplicationConstants.API_MY_ACCOUNT;
-//		requestWrapper.callback = listener;
-//		HttpSettings settings = new HttpSettings();
-//		settings.setHttpMethod(ApplicationConstants.HTTP_METHOD);
-//		requestWrapper.httpSettings = settings;
-//		requestWrapper.operationID = OPERATION_ACC;
-//		List<NameValuePair> params = new ArrayList<NameValuePair>();
-//		AccountStatus accStat = AccountStatus
-//				.getInstance(getApplicationContext());
-//		NameValuePair param = new BasicNameValuePair("mac", accStat.getMac());
-//		params.add(param);
-//		param = new BasicNameValuePair("sid", accStat.getSid());
-//		params.add(param);
-//		requestWrapper.httpParams = params;
-//		showDialog(getString(R.string.loading_acc));
-//		new HttpRequestTask().execute(requestWrapper);
-//	}
-
-
-
-	
-
 	@Override
 	protected int getSreenID() {
 		return SCR_ID;
@@ -115,7 +84,6 @@ public class AccountDetails extends OishiiBaseActivity {
 
 	@Override
 	protected int getParentScreenId() {
-		// TODO Auto-generated method stub
 		return R.id.myacc;
 	}
 

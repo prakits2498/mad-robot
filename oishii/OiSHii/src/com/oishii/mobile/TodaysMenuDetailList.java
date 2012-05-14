@@ -206,17 +206,13 @@ public class TodaysMenuDetailList extends ListOishiBase {
 			NSObject object = null;
 			try {
 				object = PropertyListParser.parse(is);
+				if (object != null) {
+					ResultContainer det = processPlist(object);
+					return det;
+					
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
-			}
-			if (object != null) {
-				ResultContainer det;
-				try {
-					det = processPlist(object);
-					return det;
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
 			}
 			return null;
 		}
