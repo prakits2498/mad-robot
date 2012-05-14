@@ -1,5 +1,6 @@
 package com.oishii.mobile;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +9,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
 import android.app.Dialog;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +29,7 @@ import com.oishii.mobile.beans.AccountInformation;
 import com.oishii.mobile.beans.AccountStatus;
 import com.oishii.mobile.beans.Address;
 import com.oishii.mobile.beans.MultipleMessageResult;
+import com.oishii.mobile.util.HttpSettings;
 import com.oishii.mobile.util.HttpSettings.HttpMethod;
 import com.oishii.mobile.util.tasks.HttpRequestTask;
 import com.oishii.mobile.util.tasks.HttpRequestWrapper;
@@ -82,9 +85,9 @@ public class Locations extends Login {
 			if (i == (address.size() - 1)) {
 				v.findViewById(R.id.sep).setVisibility(View.GONE);
 			}
-			View view = findViewById(R.id.btnDelete);
+			View view = v.findViewById(R.id.btnDelete);
 			view.setTag(new Integer(i));
-
+			view.setOnClickListener(deleteListener);
 			parent.addView(v);
 		}
 
@@ -102,7 +105,69 @@ public class Locations extends Login {
 	};
 
 	private void showDeleteConfirmDialog() {
+		final List<Address> address = AccountStatus
+				.getInstance(getApplicationContext()).getAccInformation()
+				.getAddresses();
+		final Dialog dialog = new Dialog(Locations.this);
+		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.setContentView(R.layout.modal_dialog);
+		dialog.setTitle(null);
+		TextView tv = (TextView) dialog.findViewById(R.id.errMsg);
+		tv.setText("Delete Address" + address.get(addressIndex).toString());
+		dialog.findViewById(R.id.btnOk).setOnClickListener(
+				new View.OnClickListener() {
 
+					@Override
+					public void onClick(View v) {
+						executeDeleteAddressRequest(address.get(addressIndex)
+								.getId());
+						dialog.dismiss();
+					}
+				});
+		dialog.findViewById(R.id.btnCancel).setOnClickListener(
+				new View.OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						dialog.dismiss();
+					}
+				});
+		dialog.show();
+	}
+
+	/**
+	 * Sent when simple result is a success
+	 * 
+	 * @param message
+	 */
+	protected void handleSimpleResultResponse(String message) {
+		final List<Address> address = AccountStatus
+				.getInstance(getApplicationContext()).getAccInformation()
+				.getAddresses();
+		address.remove(addressIndex);
+		populateLocations();
+	}
+
+	private void executeDeleteAddressRequest(int id) {
+		HttpRequestWrapper requestWrapper = new HttpRequestWrapper();
+		requestWrapper.requestURI = ApplicationConstants.API_DELETE_LOCATION;
+		requestWrapper.callback = simpleResultCallback;
+		HttpSettings settings = new HttpSettings();
+		settings.setHttpMethod(ApplicationConstants.HTTP_METHOD);
+		requestWrapper.httpSettings = settings;
+		requestWrapper.operationID = 63;
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		AccountStatus accStat = AccountStatus
+				.getInstance(getApplicationContext());
+		NameValuePair param = new BasicNameValuePair("mac", accStat.getMac());
+		params.add(param);
+		param = new BasicNameValuePair("sid", accStat.getSid());
+		params.add(param);
+		param = new BasicNameValuePair("id", String.valueOf(id));
+		params.add(param);
+		requestWrapper.httpParams = params;
+		showDialog(getString(R.string.loading_del_address));
+		new HttpRequestTask().execute(requestWrapper);
 	}
 
 	Dialog addLocationDialog;
