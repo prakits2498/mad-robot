@@ -73,18 +73,35 @@ public class Locations extends Login {
 			tv = (TextView) v.findViewById(R.id.address);
 			tv.setText(add.toString());
 			tv = (TextView) v.findViewById(R.id.type);
-			if (add.isBilling()) {
+			if (add.isBilling().equals("1")) {
 				tv.setText("Billing");
 			}
-			if (add.isShipping()) {
+			if (add.isShipping().equals("1")) {
 				tv.setText("Shipping");
 			}
 			if (i == (address.size() - 1)) {
 				v.findViewById(R.id.sep).setVisibility(View.GONE);
 			}
+			View view = findViewById(R.id.btnDelete);
+			view.setTag(new Integer(i));
 
 			parent.addView(v);
 		}
+
+	}
+
+	private int addressIndex;
+
+	private View.OnClickListener deleteListener = new View.OnClickListener() {
+
+		@Override
+		public void onClick(View v) {
+			addressIndex = (Integer) v.getTag();
+			showDeleteConfirmDialog();
+		}
+	};
+
+	private void showDeleteConfirmDialog() {
 
 	}
 

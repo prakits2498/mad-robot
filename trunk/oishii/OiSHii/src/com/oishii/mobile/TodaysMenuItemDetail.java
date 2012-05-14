@@ -205,9 +205,11 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 			Button btnAddBasket = (Button) findViewById(R.id.btnToBasket);
 			int remain = detail.getRemaining();
 			if (remain == 0) {
-				btnAddBasket.setBackgroundResource(R.drawable.sold_out);
-				btnAddBasket.setText(R.string.sold_out);
-				btnAddBasket.setTextColor(Color.BLACK);
+				btnAddBasket.setVisibility(View.GONE);
+				findViewById(R.id.soldOut).setVisibility(View.VISIBLE);
+//				btnAddBasket.setBackgroundResource(R.drawable.sold_out);
+//				btnAddBasket.setText(R.string.sold_out);
+//				btnAddBasket.setTextColor(Color.BLACK);
 			} else {
 				btnAddBasket.setTag(detail);
 				btnAddBasket
