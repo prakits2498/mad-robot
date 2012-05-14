@@ -31,6 +31,8 @@ public class ApplicationConstants {
 			+ "savedetails.php");
 	public static final URI API_ADD_LOCATION = URI.create(PLIST_PATH
 			+ "addLocation.php");
+	public static final URI API_DELIVERY_TIME = URI.create(PLIST_PATH
+			+ "deliveryTime.php");
 
 	public static HttpMethod HTTP_METHOD = HttpMethod.HTTP_GET;
 }

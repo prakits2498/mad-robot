@@ -7,6 +7,15 @@ public class OishiiBasket {
 	private List<BasketItem> items = new ArrayList<BasketItem>();
 	private float currentTotal;
 	private float discountedTotal;
+	private String deliveryTime;
+
+	public String getDeliveryTime() {
+		return deliveryTime;
+	}
+
+	public void setDeliveryTime(String deliveryTime) {
+		this.deliveryTime = deliveryTime;
+	}
 
 	public float getCurrentTotal() {
 		return currentTotal;
