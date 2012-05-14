@@ -188,11 +188,14 @@ public class TodaysMenuDetailList extends ListOishiBase {
 
 			ResultContainer result = (ResultContainer) t;
 			ExpandableListView list = getExandableList(true);
-
 			MenuDetailsExpandableAdapter adapter = new MenuDetailsExpandableAdapter(
 					result.parent, result.children);
 			list.setAdapter(adapter);
 			list.setVisibility(View.VISIBLE);
+			int groups=result.parent.size();
+			for(int i=0;i<groups;i++){
+				list.expandGroup(i);
+			}
 			hideDialog();
 		}
 

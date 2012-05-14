@@ -55,29 +55,26 @@ public class Locations extends Login {
 		List<Address> address = AccountStatus
 				.getInstance(getApplicationContext()).getAccInformation()
 				.getAddresses();
-		int size=address.size();
-		if(address.isEmpty()){
+		int size = address.size();
+		if (address.isEmpty()) {
 			parent.setVisibility(View.GONE);
 			findViewById(R.id.noLocations).setVisibility(View.VISIBLE);
-		}else{
-			parent.setVisibility(View.VISIBLE
-					);
+		} else {
+			parent.setVisibility(View.VISIBLE);
 			findViewById(R.id.noLocations).setVisibility(View.GONE);
 		}
 		LayoutInflater inflater = getLayoutInflater();
 		View v;
 		TextView tv;
 		Address add;
-		System.out.println("LOcation size=>" + address.size());
 		for (int i = 0; i < address.size(); i++) {
 			add = address.get(i);
-			v = inflater.inflate(R.layout.address_field, null);
+			v = inflater.inflate(R.layout.location_item, null);
 			tv = (TextView) v.findViewById(R.id.address);
 			tv.setText(add.toString());
 			tv = (TextView) v.findViewById(R.id.type);
 			if (add.isBilling()) {
 				tv.setText("Billing");
-
 			}
 			if (add.isShipping()) {
 				tv.setText("Shipping");
@@ -132,10 +129,10 @@ public class Locations extends Login {
 			String tag = (String) arg0.getTag();
 			if (tag.equals("S")) {
 				shipping = 1;
-				billing=0;
+				billing = 0;
 			} else if (tag.equals("B")) {
 				billing = 1;
-				shipping=0;
+				shipping = 0;
 			}
 		}
 	};
@@ -204,17 +201,22 @@ public class Locations extends Login {
 		params.add(param);
 		param = new BasicNameValuePair("telephone", mobile.getText().toString());
 		params.add(param);
-		param = new BasicNameValuePair("billing", String.valueOf(billing));
-		params.add(param);
-		param = new BasicNameValuePair("shipping", String.valueOf(shipping));
-		params.add(param);
+		if (billing == 1) {
+			param = new BasicNameValuePair("billing", String.valueOf(billing));
+			params.add(param);
+		}
+		if (shipping == 1) {
+			param = new BasicNameValuePair("shipping", String.valueOf(shipping));
+			params.add(param);
+		}
 		requestWrapper.httpParams = params;
 		showDialog(getString(R.string.loading_add_location));
 		new HttpRequestTask().execute(requestWrapper);
 
 	}
 
-	private MultipleMessageResult processResult(NSDictionary dict)throws Exception {
+	private MultipleMessageResult processResult(NSDictionary dict)
+			throws Exception {
 		MultipleMessageResult result = new MultipleMessageResult();
 		NSNumber sucessFalg = (NSNumber) dict.objectForKey("success");
 		result.setSuccess(sucessFalg.boolValue());

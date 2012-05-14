@@ -40,7 +40,8 @@ public class History extends ListOishiBase {
 		return R.id.history;
 	}
 
-	private HistoryContainer getHistoryContainer(NSArray array) throws Exception {
+	private HistoryContainer getHistoryContainer(NSArray array)
+			throws Exception {
 		HistoryContainer container = new HistoryContainer();
 		List<OrderCategory> categories = new ArrayList<OrderCategory>();
 		List<List<Order>> orderList = new ArrayList<List<Order>>();
@@ -150,6 +151,10 @@ public class History extends ListOishiBase {
 					container.getOrderCategories(), container.getOrderDetails());
 			list.setAdapter(adapter);
 			list.setVisibility(View.VISIBLE);
+			int groupCount = container.getOrderCategories().size();
+			for (int i = 0; i < groupCount; i++) {
+				list.expandGroup(i);
+			}
 			hideDialog();
 		}
 	};
@@ -228,15 +233,15 @@ public class History extends ListOishiBase {
 				Order item = menu.get(childPosition);
 				v = getLayoutInflater().inflate(R.layout.history_child, null);
 				String str = item.getItems().size() + "X";
-				TextView tv = (TextView)v.findViewById(R.id.itemCount);
+				TextView tv = (TextView) v.findViewById(R.id.itemCount);
 				tv.setText(str);
 				str = getString(R.string.items_text) + "(£"
 						+ item.getTotalPrice() + ")";
 				tv = (TextView) v.findViewById(R.id.itemNo);
 				tv.setText(str);
-				tv = (TextView)v.findViewById(R.id.status);
+				tv = (TextView) v.findViewById(R.id.status);
 				tv.setText(item.getStatus());
-				LinearLayout items = (LinearLayout)v.findViewById(R.id.items);
+				LinearLayout items = (LinearLayout) v.findViewById(R.id.items);
 				List<Item> myItems = item.getItems();
 
 				for (int i = 0; i < myItems.size(); i++) {
