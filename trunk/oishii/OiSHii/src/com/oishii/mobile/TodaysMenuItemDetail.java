@@ -40,6 +40,7 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 
 	static final String PROD_ID = "prod_id";
 	static final String COLOR = "color";
+	static final String SHOW_ADD_DRINKS_SNACKS = "show_add_DS";
 	private int productId;
 	private int color;
 
@@ -201,17 +202,54 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 			title = (TextView) findViewById(R.id.titleFirst);
 			title.setText(detail.getCategory());
 			title.setTextColor(color);
+			title=(TextView) findViewById(R.id.price);
+			title.setText("£"+detail.getPrice());
 			Button btnAddBasket = (Button) findViewById(R.id.btnToBasket);
 			int remain = detail.getRemaining();
+			if (!showDrinksSnacks) {
+				findViewById(R.id.extrasLayout).setVisibility(View.GONE);
+			}
 			if (remain == 0) {
 				btnAddBasket.setVisibility(View.GONE);
 				findViewById(R.id.soldOut).setVisibility(View.VISIBLE);
+				findViewById(R.id.extrasLayout).setVisibility(View.GONE);
 				// btnAddBasket.setBackgroundResource(R.drawable.sold_out);
 				// btnAddBasket.setText(R.string.sold_out);
 				// btnAddBasket.setTextColor(Color.BLACK);
 			} else {
 				btnAddBasket.setTag(detail);
 				btnAddBasket.setOnClickListener(addToBasketListner);
+				findViewById(R.id.drinkLayout).setOnClickListener(new View.OnClickListener() {
+					
+					@Override
+					public void onClick(View arg0) {
+						// TODO Auto-generated method stub
+						Intent intent = new Intent(TodaysMenuItemDetail.this,
+								TodaysMenuDetailList.class);
+						intent.putExtra(TodaysMenuDetailList.EXTRA_TITLE,
+								"Add a drink");
+						intent.putExtra(TodaysMenuDetailList.EXTRA_CAT_ID, ApplicationConstants.CAT_ID_DRINKS);
+						intent.putExtra(TodaysMenuDetailList.EXTRA_COLOR,
+								ApplicationConstants.COLOR_DRINKS);
+						startActivity(intent);
+						
+					}
+				});
+				findViewById(R.id.snackLayout).setOnClickListener(new View.OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						Intent intent = new Intent(TodaysMenuItemDetail.this,
+								TodaysMenuDetailList.class);
+						intent.putExtra(TodaysMenuDetailList.EXTRA_TITLE,
+								"Add a Snack box");
+						intent.putExtra(TodaysMenuDetailList.EXTRA_CAT_ID, ApplicationConstants.CAT_ID_SNACKS);
+						intent.putExtra(TodaysMenuDetailList.EXTRA_COLOR,
+								ApplicationConstants.COLOR_SNACKS);
+						startActivity(intent);						
+					}
+				});
+				
 			}
 			BitmapRequestParam req = new BitmapRequestParam();
 			req.bitmapUri = URI.create(detail.getImageUrl());
@@ -239,10 +277,14 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 		new HttpRequestTask().execute(requestWrapper);
 	}
 
+	boolean showDrinksSnacks;
+
 	@Override
 	protected void hookInChildViews() {
 		productId = getIntent().getIntExtra(PROD_ID, 0);
 		color = getIntent().getIntExtra(COLOR, 0);
+		showDrinksSnacks = getIntent().getBooleanExtra(SHOW_ADD_DRINKS_SNACKS,
+				true);
 		Button view = (Button) findViewById(R.id.btnHome);
 		view.setVisibility(View.VISIBLE);
 		view.setText("Menu");
