@@ -10,7 +10,35 @@ public class OishiiBasket {
 	private float currentTotal;
 	private float discountedTotal;
 	private String deliveryTime;
+	private int billingAddressId;
+	private int shippingAddressId;
+	
+	public float getDiscountedTotal() {
+		return discountedTotal;
+	}
 
+	public void setDiscountedTotal(float discountedTotal) {
+		this.discountedTotal = discountedTotal;
+	}
+
+	public int getBillingAddressId() {
+		return billingAddressId;
+	}
+
+	public void setBillingAddressId(int billingAddressId) {
+		this.billingAddressId = billingAddressId;
+	}
+
+	public int getShippingAddressId() {
+		return shippingAddressId;
+	}
+
+	public void setShippingAddressId(int shippingAddressId) {
+		this.shippingAddressId = shippingAddressId;
+	}
+
+	
+	
 	public String getDeliveryTime() {
 		return deliveryTime;
 	}
@@ -46,6 +74,9 @@ public class OishiiBasket {
 		updateTotal();
 	}
 
+	public BasketItem getItem(int index) {
+		return items.get(index);
+	}
 	public void removeItem(int index) {
 		items.remove(index);
 		updateTotal();

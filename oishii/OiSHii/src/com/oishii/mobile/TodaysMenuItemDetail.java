@@ -81,7 +81,7 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 		return detail;
 
 	}
-	
+
 	View.OnClickListener addToBasketListner = new View.OnClickListener() {
 
 		@Override
@@ -166,7 +166,6 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 		}
 	};
 
-
 	IHttpCallback details = new IHttpCallback() {
 
 		@Override
@@ -207,13 +206,12 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 			if (remain == 0) {
 				btnAddBasket.setVisibility(View.GONE);
 				findViewById(R.id.soldOut).setVisibility(View.VISIBLE);
-//				btnAddBasket.setBackgroundResource(R.drawable.sold_out);
-//				btnAddBasket.setText(R.string.sold_out);
-//				btnAddBasket.setTextColor(Color.BLACK);
+				// btnAddBasket.setBackgroundResource(R.drawable.sold_out);
+				// btnAddBasket.setText(R.string.sold_out);
+				// btnAddBasket.setTextColor(Color.BLACK);
 			} else {
 				btnAddBasket.setTag(detail);
-				btnAddBasket
-						.setOnClickListener(addToBasketListner);
+				btnAddBasket.setOnClickListener(addToBasketListner);
 			}
 			BitmapRequestParam req = new BitmapRequestParam();
 			req.bitmapUri = URI.create(detail.getImageUrl());
@@ -245,6 +243,19 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 	protected void hookInChildViews() {
 		productId = getIntent().getIntExtra(PROD_ID, 0);
 		color = getIntent().getIntExtra(COLOR, 0);
+		Button view = (Button) findViewById(R.id.btnHome);
+		view.setVisibility(View.VISIBLE);
+		view.setText("Menu");
+		view.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Intent todays = new Intent(TodaysMenuItemDetail.this,
+						TodaysMenu.class);
+				todays.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(todays);
+			}
+		});
 		showOnlyLogo();
 		executeDetailsRequest();
 	}
