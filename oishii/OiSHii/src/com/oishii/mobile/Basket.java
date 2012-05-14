@@ -25,6 +25,17 @@ public class Basket extends OishiiBaseActivity {
 		populateBasket();
 	}
 
+	View.OnClickListener removeItemListener=new View.OnClickListener() {
+		
+		@Override
+		public void onClick(View v) {
+			int index=(Integer)v.getTag();
+			OishiiBasket basket=AccountStatus.getInstance(getApplicationContext()).getBasket();
+			basket.removeItem(index);
+			populateBasket();
+		}
+	};
+	
 	private void populateBasket() {
 		OishiiBasket basket = AccountStatus
 				.getInstance(getApplicationContext()).getBasket();
@@ -67,6 +78,9 @@ public class Basket extends OishiiBaseActivity {
 				temp = "£" + (item.getPrice()*item.getCount());
 				tv = (TextView) basketItem.findViewById(R.id.price);
 				tv.setText(temp);
+				View v =basketItem.findViewById(R.id.btnDelete);
+				v.setTag(new Integer(i));
+				v.setOnClickListener(removeItemListener);
 				basketParent.addView(basketItem);
 			}
 			System.out.println("Total->" + basket.getCurrentTotal());
