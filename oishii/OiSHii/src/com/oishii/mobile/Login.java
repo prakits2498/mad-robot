@@ -244,14 +244,14 @@ public class Login extends OishiiBaseActivity {
 			str = temp.objectForKey("mobile").toString();
 			address.setMobile(str);
 			str = temp.objectForKey("shipping").toString();
-			boolean isShipping = str.equals("1");
-			System.out.println("IS SHIPPing->"+isShipping);
-			address.setShipping(isShipping);
+			
+//			boolean isShipping = str.equals("1");
+			address.setShipping(str);
 			str = temp.objectForKey("billing").toString();
-			boolean isBilling = str.equals("1");
-			System.out.println("IS Billing->"+isBilling);
-			address.setShipping(isBilling);
+//			boolean isBilling = str.equals("1");
+			address.setBilling(str);
 			addressList.add(address);
+			
 		}
 		info.setAddresses(addressList);
 		arr = (NSArray) details.objectForKey("cc");

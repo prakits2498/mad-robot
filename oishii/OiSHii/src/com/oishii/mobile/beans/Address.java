@@ -8,18 +8,29 @@ public class Address {
 	String city;
 	String postCode;
 	String mobile;
-	boolean isShipping;
-	boolean isBilling;
+	String isShipping;
+	String isBilling;
 
 	@Override
 	public String toString() {
 		return company + " " + floor + " " + address + " " + city + " "
 				+ postCode;
 	}
+	
+	
 
 	public int getId() {
 		return id;
 	}
+
+//	@Override
+//	public String toString() {
+//		return "Address [id=" + id + ", company=" + company + ", floor="
+//				+ floor + ", address=" + address + ", city=" + city
+//				+ ", postCode=" + postCode + ", mobile=" + mobile
+//				+ ", isShipping=" + isShipping + ", isBilling=" + isBilling
+//				+ "]";
+//	}
 
 	public void setId(int id) {
 		this.id = id;
@@ -73,19 +84,19 @@ public class Address {
 		this.mobile = mobile;
 	}
 
-	public boolean isShipping() {
+	public String isShipping() {
 		return isShipping;
 	}
 
-	public void setShipping(boolean isShipping) {
+	public void setShipping(String isShipping) {
 		this.isShipping = isShipping;
 	}
 
-	public boolean isBilling() {
+	public String isBilling() {
 		return isBilling;
 	}
 
-	public void setBilling(boolean isBilling) {
+	public void setBilling(String isBilling) {
 		this.isBilling = isBilling;
 	}
 }

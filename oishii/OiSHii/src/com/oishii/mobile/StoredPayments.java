@@ -44,7 +44,7 @@ public class StoredPayments extends OishiiBaseActivity {
 		SavedCard add;
 		for (int i = 0; i < size; i++) {
 			add = address.get(i);
-			v = inflater.inflate(R.layout.address_field, null);
+			v = inflater.inflate(R.layout.card_field, null);
 			tv = (TextView) v.findViewById(R.id.address);
 			tv.setText(add.getNumber());
 			tv = (TextView) v.findViewById(R.id.type);
