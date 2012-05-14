@@ -49,28 +49,117 @@
                 android:layout_marginTop="10dp"
                 android:textColor="#404040" />
 
+            <View
+                style="@style/fieldSeparator"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp" />
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="8dp" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:text="Price"
+                    android:textColor="@android:color/black"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:textColor="@android:color/black"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/extrasLayout"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:orientation="vertical" >
+
+                <View style="@style/fieldSeparator" />
+
+                <RelativeLayout
+                    android:id="@+id/drinkLayout"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:text="Add a drink"
+                        android:textColor="#ff9000"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <ImageView style="@style/accountdetailsImage" />
+                </RelativeLayout>
+
+                <View style="@style/fieldSeparator" />
+
+                <RelativeLayout
+                     android:id="@+id/snackLayout"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:text="Add a  Snack box"
+                        android:textColor="#D60C8C"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <ImageView style="@style/accountdetailsImage" />
+                </RelativeLayout>
+
+                <View style="@style/fieldSeparator" />
+            </LinearLayout>
+
             <Button
                 android:id="@+id/btnToBasket"
+                style="@style/primary_btn"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="20dp"
-                style="@style/primary_btn"
-                android:text="@string/add_basket"/>
+                android:text="@string/add_basket" />
 
             <ImageView
+                android:id="@+id/soldOut"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="20dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="20dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:src="@drawable/soldout"
-                android:layout_gravity="center_horizontal"
-                android:visibility="gone"
-                android:id="@+id/soldOut" />
+                android:visibility="gone" />
         </LinearLayout>
     </ScrollView>
 
