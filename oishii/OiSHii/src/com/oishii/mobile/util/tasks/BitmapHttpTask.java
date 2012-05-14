@@ -15,8 +15,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.oishii.mobile.R;
-import com.oishii.mobile.util.HttpTaskHelper;
-import com.oishii.mobile.util.tasks.BitmapHttpTask.ResponseParam;
 
 public class BitmapHttpTask extends AsyncTask<BitmapRequestParam, Void, Bitmap> {
 

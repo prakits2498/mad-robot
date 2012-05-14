@@ -1,30 +1,7 @@
 package com.oishii.mobile;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-
 import android.content.Intent;
 import android.view.View;
-
-import com.madrobot.di.plist.NSArray;
-import com.madrobot.di.plist.NSDictionary;
-import com.madrobot.di.plist.NSNumber;
-import com.madrobot.di.plist.NSObject;
-import com.madrobot.di.plist.PropertyListParser;
-import com.oishii.mobile.beans.AccountInformation;
-import com.oishii.mobile.beans.AccountStatus;
-import com.oishii.mobile.beans.Address;
-import com.oishii.mobile.beans.MenuData;
-import com.oishii.mobile.beans.SavedCard;
-import com.oishii.mobile.util.HttpSettings;
-import com.oishii.mobile.util.HttpSettings.HttpMethod;
-import com.oishii.mobile.util.tasks.HttpRequestTask;
-import com.oishii.mobile.util.tasks.HttpRequestWrapper;
-import com.oishii.mobile.util.tasks.IHttpCallback;
 
 public class AccountDetails extends OishiiBaseActivity {
 	final int SCR_ID = 67;

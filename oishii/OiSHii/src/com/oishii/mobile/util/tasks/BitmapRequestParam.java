@@ -2,13 +2,12 @@ package com.oishii.mobile.util.tasks;
 
 import java.net.URI;
 
-import com.oishii.mobile.beans.BitmapBean;
-
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+
+import com.oishii.mobile.beans.BitmapBean;
 
 
 

@@ -1,28 +1,19 @@
 package com.oishii.mobile;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
-import com.madrobot.di.plist.NSDictionary;
-import com.madrobot.di.plist.NSNumber;
-import com.madrobot.di.plist.NSObject;
-import com.madrobot.di.plist.PropertyListParser;
-import com.oishii.mobile.beans.AccountStatus;
-import com.oishii.mobile.beans.SimpleResult;
-import com.oishii.mobile.util.HttpSettings;
-import com.oishii.mobile.util.HttpSettings.HttpMethod;
-import com.oishii.mobile.util.tasks.HttpRequestTask;
-import com.oishii.mobile.util.tasks.HttpRequestWrapper;
-import com.oishii.mobile.util.tasks.IHttpCallback;
-
 import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.oishii.mobile.beans.AccountStatus;
+import com.oishii.mobile.util.tasks.HttpRequestTask;
+import com.oishii.mobile.util.tasks.HttpRequestWrapper;
 
 public class ChangePassword extends OishiiBaseActivity {
 

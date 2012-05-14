@@ -6,17 +6,14 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
-import com.oishii.mobile.beans.AccountInformation;
-import com.oishii.mobile.beans.AccountStatus;
-import com.oishii.mobile.util.HttpSettings;
-import com.oishii.mobile.util.TextUtils;
-import com.oishii.mobile.util.HttpSettings.HttpMethod;
-import com.oishii.mobile.util.tasks.HttpRequestTask;
-import com.oishii.mobile.util.tasks.HttpRequestWrapper;
-
-import android.content.Intent;
 import android.view.View;
 import android.widget.EditText;
+
+import com.oishii.mobile.beans.AccountInformation;
+import com.oishii.mobile.beans.AccountStatus;
+import com.oishii.mobile.util.TextUtils;
+import com.oishii.mobile.util.tasks.HttpRequestTask;
+import com.oishii.mobile.util.tasks.HttpRequestWrapper;
 
 public class EditAccountDetails extends CreateAccount {
 
