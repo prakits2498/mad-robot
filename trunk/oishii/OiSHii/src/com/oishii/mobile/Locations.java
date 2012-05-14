@@ -32,7 +32,7 @@ import com.oishii.mobile.util.tasks.HttpRequestTask;
 import com.oishii.mobile.util.tasks.HttpRequestWrapper;
 import com.oishii.mobile.util.tasks.IHttpCallback;
 
-public class Locations extends AccountDetails {
+public class Locations extends Login {
 
 	@Override
 	protected int getParentScreenId() {
@@ -137,7 +137,6 @@ public class Locations extends AccountDetails {
 				billing = 1;
 				shipping=0;
 			}
-			System.out.println("BIlling->"+billing+"Sh"+shipping);
 		}
 	};
 
@@ -271,9 +270,9 @@ public class Locations extends AccountDetails {
 		@Override
 		public void bindUI(Object t, int operationId) {
 			MultipleMessageResult result = (MultipleMessageResult) t;
+			hideDialog();
 			if (result.isSuccess()) {
 				addLocationDialog.dismiss();
-				hideDialog();
 				executeAccountInfoRequest(accountCallback);
 			} else {
 				showErrorDialog(result.getErrors().toString());

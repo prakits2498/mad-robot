@@ -15,11 +15,15 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.madrobot.di.plist.NSArray;
 import com.madrobot.di.plist.NSDictionary;
 import com.madrobot.di.plist.NSNumber;
 import com.madrobot.di.plist.NSObject;
 import com.madrobot.di.plist.PropertyListParser;
+import com.oishii.mobile.beans.AccountInformation;
 import com.oishii.mobile.beans.AccountStatus;
+import com.oishii.mobile.beans.Address;
+import com.oishii.mobile.beans.SavedCard;
 import com.oishii.mobile.util.HttpSettings;
 import com.oishii.mobile.util.HttpSettings.HttpMethod;
 import com.oishii.mobile.util.TextUtils;
@@ -45,7 +49,7 @@ public class Login extends OishiiBaseActivity {
 				}
 			}
 		});
-//		findViewById(R.id.footer).setVisibility(View.GONE);
+		// findViewById(R.id.footer).setVisibility(View.GONE);
 		login = (EditText) findViewById(R.id.username_edit);
 		pwd = (EditText) findViewById(R.id.password_edit);
 		login.setText("venkatesh.prabhu@kieon.com");
@@ -57,7 +61,8 @@ public class Login extends OishiiBaseActivity {
 		HttpRequestWrapper requestWrapper = new HttpRequestWrapper();
 		requestWrapper.requestURI = ApplicationConstants.API_LOGIN;
 		requestWrapper.callback = loginCallback;
-		requestWrapper.httpSettings.setHttpMethod(ApplicationConstants.HTTP_METHOD);
+		requestWrapper.httpSettings
+				.setHttpMethod(ApplicationConstants.HTTP_METHOD);
 		requestWrapper.operationID = OPERATION_LOGIN;
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		NameValuePair param = new BasicNameValuePair("mac", AccountStatus
@@ -116,32 +121,157 @@ public class Login extends OishiiBaseActivity {
 		public void bindUI(Object t, int operationId) {
 			hideDialog();
 			if (AccountStatus.getInstance(getApplicationContext()).isSignedIn()) {
-				final int nextScreen = getIntent().getIntExtra(
-						OutOfSession.SRC_KEY, 0);
-				Class<? extends OishiiBaseActivity> targetClass = null;
-				switch (nextScreen) {
-				case R.id.basket:
-					// targetClass=;//titleString = R.string.checkout;
-					targetClass=Basket.class;
-					break;
-				case R.id.myacc:
-					targetClass = AccountDetails.class;
-					break;
-				case R.id.history:
-					targetClass=History.class;
-					break;
-				}
-				if (targetClass != null) {
-					finish();
-					Intent intent = new Intent(Login.this, targetClass);
-					startActivity(intent);
-				}
+				// get account information
+				executeAccountInfoRequest(accountDetailsCallback);
+
 			} else {
 				showErrorDialog(t.toString());
 			}
 
 		}
 	};
+
+	protected void executeAccountInfoRequest(IHttpCallback listener) {
+		HttpRequestWrapper requestWrapper = new HttpRequestWrapper();
+		requestWrapper.requestURI = ApplicationConstants.API_MY_ACCOUNT;
+		requestWrapper.callback = listener;
+		HttpSettings settings = new HttpSettings();
+		settings.setHttpMethod(ApplicationConstants.HTTP_METHOD);
+		requestWrapper.httpSettings = settings;
+		requestWrapper.operationID = 63;
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		AccountStatus accStat = AccountStatus
+				.getInstance(getApplicationContext());
+		NameValuePair param = new BasicNameValuePair("mac", accStat.getMac());
+		params.add(param);
+		param = new BasicNameValuePair("sid", accStat.getSid());
+		params.add(param);
+		requestWrapper.httpParams = params;
+		showDialog(getString(R.string.loading_acc));
+		new HttpRequestTask().execute(requestWrapper);
+	}
+
+	protected IHttpCallback accountDetailsCallback = new IHttpCallback() {
+
+		@Override
+		public Object populateBean(InputStream is, int operationId) {
+			NSObject object = null;
+			try {
+				object = PropertyListParser.parse(is);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			if (object != null) {
+				NSArray array = (NSArray) object;
+				AccountInformation menuList;
+				try {
+					menuList = getAccountInfo(array);
+					return menuList;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+			}
+			return null;
+		}
+
+		@Override
+		public void onFailure(int message, int operationID) {
+			processFailure(message);
+		}
+
+		@Override
+		public void bindUI(Object t, int operationId) {
+			AccountInformation info = (AccountInformation) t;
+			AccountStatus.getInstance(getApplicationContext())
+					.setAccInformation(info);
+			hideDialog();
+			final int nextScreen = getIntent().getIntExtra(
+					OutOfSession.SRC_KEY, 0);
+			Class<? extends OishiiBaseActivity> targetClass = null;
+			switch (nextScreen) {
+			case R.id.basket:
+				// targetClass=;//titleString = R.string.checkout;
+				targetClass = Basket.class;
+				break;
+			case R.id.myacc:
+				targetClass = AccountDetails.class;
+				break;
+			case R.id.history:
+				targetClass = History.class;
+				break;
+			}
+			if (targetClass != null) {
+				finish();
+				Intent intent = new Intent(Login.this, targetClass);
+				startActivity(intent);
+			}
+
+		}
+	};
+
+	protected AccountInformation getAccountInfo(NSArray obj) throws Exception {
+		AccountInformation info = new AccountInformation();
+		NSDictionary dict = (NSDictionary) obj.objectAtIndex(0);
+		NSDictionary details = (NSDictionary) dict.objectForKey("details");
+		String str = details.objectForKey("title").toString();
+		info.setTitle(str);
+		str = details.objectForKey("firstname").toString();
+		info.setFirstname(str);
+		str = details.objectForKey("lastname").toString();
+		info.setLastname(str);
+		str = details.objectForKey("email").toString();
+		info.setEmail(str);
+		NSNumber no = (NSNumber) details.objectForKey("subscribed");
+		info.setSubscribed(no.intValue());
+		/* set the addresses */
+		NSArray arr = (NSArray) details.objectForKey("address");
+		List<Address> addressList = new ArrayList<Address>();
+		NSDictionary temp;
+		int count = arr.count();
+		for (int i = 0; i < count; i++) {
+			temp = (NSDictionary) arr.objectAtIndex(i);
+			com.oishii.mobile.beans.Address address = new com.oishii.mobile.beans.Address();
+			no = (NSNumber) temp.objectForKey("id");
+			address.setId(no.intValue());
+			str = temp.objectForKey("company").toString();
+			address.setCompany(str);
+			str = temp.objectForKey("floor").toString();
+			address.setFloor(str);
+			str = temp.objectForKey("address").toString();
+			address.setAddress(str);
+			str = temp.objectForKey("city").toString();
+			address.setCity(str);
+			str = temp.objectForKey("postcode").toString();
+			address.setPostCode(str);
+			str = temp.objectForKey("mobile").toString();
+			address.setMobile(str);
+			str = temp.objectForKey("shipping").toString();
+			boolean isShipping = str.equals("1");
+			address.setShipping(isShipping);
+			str = temp.objectForKey("billing").toString();
+			boolean isBilling = str.equals("1");
+			address.setShipping(isBilling);
+			addressList.add(address);
+		}
+		info.setAddresses(addressList);
+		arr = (NSArray) details.objectForKey("cc");
+		count = arr.count();
+		List<SavedCard> cardsList = new ArrayList<SavedCard>();
+		for (int i = 0; i < count; i++) {
+			temp = (NSDictionary) arr.objectAtIndex(i);
+			SavedCard card = new SavedCard();
+			str = temp.objectForKey("token").toString();
+			card.setToken(str);
+			str = temp.objectForKey("type").toString();
+			card.setType(str);
+			str = temp.objectForKey("number").toString();
+			card.setNumber(str);
+			cardsList.add(card);
+		}
+		info.setSavedCards(cardsList);
+		return info;
+	}
 
 	private boolean validate() {
 		String errors = getErrors();
@@ -206,7 +336,6 @@ public class Login extends OishiiBaseActivity {
 	// TODO set screen id
 	@Override
 	protected int getSreenID() {
-		// TODO Auto-generated method stub
 		return R.layout.login;
 	}
 

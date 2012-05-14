@@ -139,7 +139,6 @@ public abstract class OishiiBaseActivity extends Activity {
 						.isSignedIn()) {
 
 					clz = OutOfSession.class;
-					// intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
 				} else {
 					clz = AccountDetails.class;
 				}
@@ -166,7 +165,6 @@ public abstract class OishiiBaseActivity extends Activity {
 				break;
 			}
 			if (clz != null) {
-				// Intent intent = new Intent(OishiiBaseActivity.this, clz);
 				intent.setClass(OishiiBaseActivity.this, clz);
 				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				intent.putExtra(OutOfSession.SRC_KEY, v.getId());
@@ -278,8 +276,6 @@ public abstract class OishiiBaseActivity extends Activity {
 
 	private void setSelectedMenu() {
 		int parentScreen = getParentScreenId();
-		// View v=findViewById(parentScreen);
-		// menuView.setBackgroundColor(0x32ffffff);
 		menuView.setBackgroundResource(R.drawable.menu_selected_bg);
 		ImageView icon = (ImageView) menuView.findViewById(R.id.image);
 		TextView text = (TextView) menuView.findViewById(R.id.text);
