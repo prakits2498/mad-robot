@@ -28,7 +28,6 @@ import com.madrobot.di.plist.NSObject;
 import com.madrobot.di.plist.PropertyListParser;
 import com.oishii.mobile.beans.AccountStatus;
 import com.oishii.mobile.beans.BasketItem;
-import com.oishii.mobile.beans.MenuItem;
 import com.oishii.mobile.beans.MenuItemDetail;
 import com.oishii.mobile.beans.OishiiBasket;
 import com.oishii.mobile.util.tasks.BitmapHttpTask;

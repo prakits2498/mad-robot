@@ -12,7 +12,6 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.madrobot.di.plist.NSArray;
@@ -25,8 +24,6 @@ import com.oishii.mobile.beans.AccountStatus;
 import com.oishii.mobile.beans.Address;
 import com.oishii.mobile.beans.SavedCard;
 import com.oishii.mobile.util.HttpSettings;
-import com.oishii.mobile.util.HttpSettings.HttpMethod;
-import com.oishii.mobile.util.TextUtils;
 import com.oishii.mobile.util.tasks.HttpRequestTask;
 import com.oishii.mobile.util.tasks.HttpRequestWrapper;
 import com.oishii.mobile.util.tasks.IHttpCallback;

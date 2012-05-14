@@ -1,9 +1,9 @@
 package com.oishii.mobile;
 
-import com.oishii.mobile.beans.AccountStatus;
-
 import android.content.Intent;
 import android.view.View;
+
+import com.oishii.mobile.beans.AccountStatus;
 
 public class OutOfSession extends OishiiBaseActivity {
 
