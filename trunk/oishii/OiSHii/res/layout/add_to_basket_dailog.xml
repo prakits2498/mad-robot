@@ -15,13 +15,10 @@
 
         <TextView
             android:id="@+id/itemCount"
-            style="@style/buttonShadow"
+            style="@style/white_text_with_shadow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="1X"
-            android:textColor="@android:color/white"
-            android:textSize="15sp"
-            android:textStyle="bold" />
+            android:text="1X" />
 
         <TextView
             android:id="@+id/itemName"
@@ -65,13 +62,13 @@
             android:enabled="false"
             android:gravity="center"
             android:inputType="number"
-            android:textColor="@android:color/black"
             android:maxLength="2"
             android:paddingBottom="3dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:paddingTop="3dp"
-            android:text="1" />
+            android:text="1"
+            android:textColor="@android:color/black" />
 
         <Button
             android:id="@+id/minus"
@@ -84,8 +81,8 @@
     <Button
         android:id="@+id/btnCheckout"
         style="@style/btn_black"
-        android:layout_height="wrap_content"
         android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
