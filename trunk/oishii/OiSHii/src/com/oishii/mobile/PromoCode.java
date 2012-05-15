@@ -1,5 +1,6 @@
 package com.oishii.mobile;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -82,6 +83,12 @@ public class PromoCode extends OishiiBaseActivity {
 		@Override
 		public Object populateBean(InputStream is, int operationId) {
 			// TODO Auto-generated method stub
+			try {
+				System.out.println(asString(is));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			return null;
 		}
 
@@ -117,14 +124,13 @@ public class PromoCode extends OishiiBaseActivity {
 		OishiiBasket basket = stat.getBasket();
 		List<BasketItem> items = basket.getBasketItems();
 		int itemsCount = items.size();
-		String paramName;
 		String paramValue;
+		String paramName = "shopping_cart[]";
 		for (int i = 0; i < itemsCount; i++) {
 			BasketItem item = items.get(i);
-			paramName = "shopping_cart[" + i + "]";
-			paramValue = "productid=" + item.getProdId() + "&quantity="
-					+ item.getCount();
-			param = new BasicNameValuePair(paramName, paramValue);
+			param = new BasicNameValuePair(paramName, String.valueOf(item.getProdId()));
+			params.add(param);
+			param = new BasicNameValuePair(paramName, String.valueOf(item.getCount()));
 			params.add(param);
 		}
 		requestWrapper.httpParams = params;
