@@ -147,4 +147,10 @@
         <item name="android:textSize">18sp</item>
     </style>
 
+    <style name="white_text_with_shadow" parent="@style/buttonShadow">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
 </resources>
