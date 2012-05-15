@@ -39,7 +39,9 @@ public class ApplicationConstants {
 			+ "editLocation.php");
 	public static final URI API_DELIVERY_TIME = URI.create(PLIST_PATH
 			+ "deliveryTime.php");
-
+	public static final URI API_REDEEM_CODE = URI.create(PLIST_PATH
+			+ "redeemCode.php");
+	
 	public static HttpMethod HTTP_METHOD = HttpMethod.HTTP_GET;
 
 	/**

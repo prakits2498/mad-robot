@@ -1,7 +1,10 @@
 package com.oishii.mobile;
 
 import android.content.Intent;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
 
 public class PromoCode extends OishiiBaseActivity {
 
@@ -10,8 +13,10 @@ public class PromoCode extends OishiiBaseActivity {
 		return R.id.basket;
 	}
 
+	private EditText promoCode;
 	@Override
 	protected void hookInChildViews() {
+		promoCode = (EditText) findViewById(R.id.promoCode);
 		findViewById(R.id.btnContinue).setOnClickListener(
 				new View.OnClickListener() {
 
@@ -23,6 +28,20 @@ public class PromoCode extends OishiiBaseActivity {
 						startActivity(intent);
 					}
 				});
+		findViewById(R.id.btnPromoCode).setOnClickListener(new View.OnClickListener() {
+		
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				if(!hasValidText(promoCode)){
+					Toast toast=Toast.makeText(getApplicationContext(), R.string.error_no_promo, 4000);
+					toast.setGravity(Gravity.CENTER, 0, 0);
+					toast.show();
+				}else{
+					executePromocodeRequest();
+				}
+			}
+		});
 	}
 
 	@Override
@@ -40,4 +59,7 @@ public class PromoCode extends OishiiBaseActivity {
 		return getString(R.string.title_checkout);
 	}
 
+	private void executePromocodeRequest() {
+
+	}
 }
