@@ -22,7 +22,7 @@
             android:textSize="15sp" />
 
         <EditText
-            android:id="@+id/editText1"
+            android:id="@+id/promoCode"
             android:layout_width="fill_parent"
              android:layout_height="45dip"
             android:layout_marginLeft="8dp"
@@ -37,7 +37,7 @@
         </EditText>
 
         <Button
-            android:id="@+id/button1"
+            android:id="@+id/btnPromoCode"
             style="@style/primary_btn"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
