@@ -63,6 +63,7 @@ public class Basket extends OishiiBaseActivity {
 					public void onClick(View v) {
 						basket.removeItem(removalIndex);
 						populateBasket();
+						setBasketPrice();
 						dialog.dismiss();
 					}
 				});

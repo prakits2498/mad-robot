@@ -2,19 +2,23 @@ package com.oishii.mobile;
 
 import java.util.List;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.oishii.mobile.beans.AccountStatus;
+import com.oishii.mobile.beans.OishiiBasket;
 import com.oishii.mobile.beans.SavedCard;
 
 public class StoredPayments extends OishiiBaseActivity {
+	protected static final String ACTION_SELECT = "select";
+	private boolean isForSelecting;
 
 	@Override
 	protected int getParentScreenId() {
-		return R.id.myacc;
+		return isForSelecting ? R.id.basket : R.id.myacc;
 	}
 
 	LinearLayout parent;
@@ -22,6 +26,12 @@ public class StoredPayments extends OishiiBaseActivity {
 	@Override
 	protected void hookInChildViews() {
 		parent = (LinearLayout) findViewById(R.id.parent);
+		isForSelecting = getIntent().getBooleanExtra(ACTION_SELECT, false);
+		if (isForSelecting) {
+			
+			TextView title = (TextView) findViewById(R.id.headertitle);
+			title.setText(getString(R.string.title_sel_payment));
+		}
 		populateSavedCards();
 	}
 
@@ -52,10 +62,38 @@ public class StoredPayments extends OishiiBaseActivity {
 			if (i == (address.size() - 1)) {
 				v.findViewById(R.id.sep).setVisibility(View.GONE);
 			}
-
+			if (isForSelecting) {
+				v.setTag(add.getToken());
+				v.setOnClickListener(paymentListener);
+			}
 			parent.addView(v);
 		}
+		if (isForSelecting) {
+			View view = findViewById(R.id.btn_alternate);
+			view.setVisibility(View.VISIBLE);
+			view.setOnClickListener(new View.OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					Intent intent = new Intent(StoredPayments.this,
+							CheckoutFinal.class);
+					startActivity(intent);
+				}
+			});
+		}
 	}
+
+	View.OnClickListener paymentListener = new View.OnClickListener() {
+
+		@Override
+		public void onClick(View v) {
+			OishiiBasket basket = AccountStatus.getInstance(
+					getApplicationContext()).getBasket();
+			basket.setSavedToken(v.getTag().toString());
+			Intent intent = new Intent(StoredPayments.this, CheckoutFinal.class);
+			startActivity(intent);
+		}
+	};
 
 	@Override
 	protected int getSreenID() {

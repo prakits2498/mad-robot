@@ -15,6 +15,34 @@ public class OishiiBasket {
 	private boolean isDiscountApplied;
 	private float discountPercentage;
 	private float discount;
+	
+	/**
+	 * Coupon if used
+	 */
+	private String currentCouponCode;
+	
+	/**
+	 * saved creditcard token if selected.
+	 */
+	private String savedToken;
+	
+	
+
+	public String getSavedToken() {
+		return savedToken;
+	}
+
+	public void setSavedToken(String savedToken) {
+		this.savedToken = savedToken;
+	}
+
+	public String getCurrentCouponCode() {
+		return currentCouponCode;
+	}
+
+	public void setCurrentCouponCode(String currentCouponCode) {
+		this.currentCouponCode = currentCouponCode;
+	}
 
 	public float getDiscount() {
 		return discount;

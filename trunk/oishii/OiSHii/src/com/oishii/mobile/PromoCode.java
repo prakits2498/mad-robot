@@ -117,10 +117,12 @@ public class PromoCode extends OishiiBaseActivity {
 			hideDialog();
 			if (status.isError) {
 				showErrorDialog(status.errorMessage);
-			}else{
-				OishiiBasket basket=AccountStatus.getInstance(getApplicationContext()).getBasket();
+			} else {
+				OishiiBasket basket = AccountStatus.getInstance(
+						getApplicationContext()).getBasket();
 				basket.setDiscountPercentage(status.discountPercent);
-				Intent intent=new Intent(PromoCode.this,Basket.class);
+				basket.setCurrentCouponCode(promoCode.getText().toString());
+				Intent intent = new Intent(PromoCode.this, Basket.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent);
 			}
@@ -152,7 +154,7 @@ public class PromoCode extends OishiiBaseActivity {
 		OishiiBasket basket = stat.getBasket();
 		List<BasketItem> items = basket.getBasketItems();
 		int itemsCount = items.size();
-//		String paramValue;
+		// String paramValue;
 		String paramName = "shopping_cart[]";
 		for (int i = 0; i < itemsCount; i++) {
 			BasketItem item = items.get(i);

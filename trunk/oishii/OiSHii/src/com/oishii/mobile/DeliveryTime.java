@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -46,6 +47,11 @@ public class DeliveryTime extends OishiiBaseActivity {
 		public void onClick(View v) {
 			switch (v.getId()) {
 			case R.id.btnContinue:
+				//start same activity for billing address.
+				Intent intent=new Intent(DeliveryTime.this,Locations.class);
+				intent.putExtra(Locations.ACTION_SELECT, true);
+				intent.putExtra(Locations.ACTION_SELECT_TYPE, Locations.ACTION_SHIPPING_ADDRESS);
+				startActivity(intent);
 				break;
 			case R.id.btnSelTime:
 				if (currentTimeDetails == null
