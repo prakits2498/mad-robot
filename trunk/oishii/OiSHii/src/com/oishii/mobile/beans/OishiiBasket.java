@@ -12,7 +12,18 @@ public class OishiiBasket {
 	private String deliveryTime;
 	private int billingAddressId;
 	private int shippingAddressId;
+	private boolean isDiscountApplied;
+
 	
+	
+	public boolean isDiscountApplied() {
+		return isDiscountApplied;
+	}
+
+	public void setDiscountApplied(boolean isDiscountApplied) {
+		this.isDiscountApplied = isDiscountApplied;
+	}
+
 	public float getDiscountedTotal() {
 		return discountedTotal;
 	}
@@ -37,8 +48,6 @@ public class OishiiBasket {
 		this.shippingAddressId = shippingAddressId;
 	}
 
-	
-	
 	public String getDeliveryTime() {
 		return deliveryTime;
 	}
@@ -66,7 +75,7 @@ public class OishiiBasket {
 			item = items.get(i);
 			currentTotal += item.price * item.count;
 		}
-		currentTotal=(float) TextUtils.round(currentTotal, 2);
+		currentTotal = (float) TextUtils.round(currentTotal, 2);
 	}
 
 	public void addItem(BasketItem item) {
@@ -77,6 +86,7 @@ public class OishiiBasket {
 	public BasketItem getItem(int index) {
 		return items.get(index);
 	}
+
 	public void removeItem(int index) {
 		items.remove(index);
 		updateTotal();

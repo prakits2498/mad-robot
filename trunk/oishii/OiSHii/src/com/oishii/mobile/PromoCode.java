@@ -89,19 +89,20 @@ public class PromoCode extends OishiiBaseActivity {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			return null;
+			return new Object();
 		}
 
 		@Override
 		public void onFailure(int message, int operationID) {
 			// TODO Auto-generated method stub
+			processFailure(message);
 
 		}
 
 		@Override
 		public void bindUI(Object t, int operationId) {
 			// TODO Auto-generated method stub
-
+hideDialog();
 		}
 	};
 
