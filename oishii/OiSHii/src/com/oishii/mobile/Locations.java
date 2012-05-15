@@ -1,6 +1,5 @@
 package com.oishii.mobile;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,11 +8,13 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -29,6 +30,7 @@ import com.oishii.mobile.beans.AccountInformation;
 import com.oishii.mobile.beans.AccountStatus;
 import com.oishii.mobile.beans.Address;
 import com.oishii.mobile.beans.MultipleMessageResult;
+import com.oishii.mobile.beans.OishiiBasket;
 import com.oishii.mobile.util.HttpSettings;
 import com.oishii.mobile.util.HttpSettings.HttpMethod;
 import com.oishii.mobile.util.tasks.HttpRequestTask;
@@ -36,6 +38,10 @@ import com.oishii.mobile.util.tasks.HttpRequestWrapper;
 import com.oishii.mobile.util.tasks.IHttpCallback;
 
 public class Locations extends Login {
+	protected static final String ACTION_SELECT = "select";
+	protected static final String ACTION_SELECT_TYPE = "select_address_type";
+	protected static final int ACTION_BILLING_ADDRESS=10;
+	protected static final int ACTION_SHIPPING_ADDRESS=30;
 
 	protected IHttpCallback accountCallback = new IHttpCallback() {
 
@@ -282,7 +288,7 @@ public class Locations extends Login {
 
 	@Override
 	protected int getParentScreenId() {
-		return R.id.myacc;
+		return forSelection? R.id.basket:R.id.myacc;
 	}
 
 	@Override
@@ -317,12 +323,26 @@ public class Locations extends Login {
 
 	}
 
+	boolean forSelection;
+int selectionType;
 	@Override
 	protected void hookInChildViews() {
 		Button btnArbit = getArbitartButton();
 		btnArbit.setBackgroundResource(R.drawable.btn_title_selector);
 		btnArbit.setOnClickListener(addLocation);
 		parent = (LinearLayout) findViewById(R.id.parent);
+		forSelection = getIntent().getBooleanExtra(ACTION_SELECT, false);
+		selectionType=getIntent().getIntExtra(ACTION_SELECT_TYPE, 0);
+		if(forSelection){
+			String titleStr;
+			if(selectionType==ACTION_BILLING_ADDRESS){
+				titleStr=getString(R.string.title_sel_bill);
+			}else{
+				titleStr=getString(R.string.title_sel_ship);
+			}
+			TextView title = (TextView) findViewById(R.id.headertitle);
+			title.setText(titleStr);
+		}
 		populateLocations();
 	}
 
@@ -347,6 +367,8 @@ public class Locations extends Login {
 		return true;
 	}
 
+	CheckBox chkSameBill;
+
 	private void populateLocations() {
 		parent.removeAllViews();
 		List<Address> address = AccountStatus
@@ -357,6 +379,11 @@ public class Locations extends Login {
 			parent.setVisibility(View.GONE);
 			findViewById(R.id.noLocations).setVisibility(View.VISIBLE);
 		} else {
+			/* if this activity is used for selecting an address */
+			if (forSelection &&selectionType==ACTION_SHIPPING_ADDRESS) {
+				chkSameBill = (CheckBox) findViewById(R.id.chkSameBill);
+				chkSameBill.setVisibility(View.VISIBLE);
+			}
 			parent.setVisibility(View.VISIBLE);
 			findViewById(R.id.noLocations).setVisibility(View.GONE);
 		}
@@ -379,16 +406,56 @@ public class Locations extends Login {
 			if (i == (address.size() - 1)) {
 				v.findViewById(R.id.sep).setVisibility(View.GONE);
 			}
+
+			
 			View view = v.findViewById(R.id.btnDelete);
 			view.setTag(new Integer(i));
 			view.setOnClickListener(deleteListener);
+			if(forSelection){
+				view.setVisibility(View.GONE);
+			}
 			view = v.findViewById(R.id.btnEdit);
 			view.setTag(new Integer(i));
 			view.setOnClickListener(editListener);
+
+			if (forSelection) {
+				v.setOnClickListener(selectAddressListener);
+				v.setTag(new Integer(add.getId()));
+			}
+
 			parent.addView(v);
 		}
 
 	}
+
+	View.OnClickListener selectAddressListener = new View.OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			int addressId=(Integer)v.getTag();
+			OishiiBasket basket=AccountStatus.getInstance(getApplicationContext()).getBasket();
+			if(selectionType==ACTION_SHIPPING_ADDRESS){
+				basket.setShippingAddressId(addressId);
+				if(!chkSameBill.isChecked()){
+					//start same activity for billing address.
+					Intent intent=new Intent(Locations.this,Locations.class);
+					intent.putExtra(ACTION_SELECT, true);
+					intent.putExtra(ACTION_SELECT_TYPE, ACTION_BILLING_ADDRESS);
+					startActivity(intent);
+				}else{
+					// select payment type
+					Intent intent=new Intent(Locations.this,StoredPayments.class);
+					intent.putExtra(ACTION_SELECT, true);
+					startActivity(intent);
+				}
+			}else{
+				basket.setBillingAddressId(addressId);
+				// select payment type
+				Intent intent=new Intent(Locations.this,StoredPayments.class);
+				intent.putExtra(ACTION_SELECT, true);
+				startActivity(intent);
+			}
+		}
+	};
 
 	private MultipleMessageResult processResult(NSDictionary dict)
 			throws Exception {
@@ -427,7 +494,8 @@ public class Locations extends Login {
 		dialog.setContentView(R.layout.modal_dialog);
 		dialog.setTitle(null);
 		TextView tv = (TextView) dialog.findViewById(R.id.errMsg);
-		tv.setText("Delete Address \"" + address.get(addressIndex).toString()+"\"?");
+		tv.setText("Delete Address \"" + address.get(addressIndex).toString()
+				+ "\"?");
 		dialog.findViewById(R.id.btnOk).setOnClickListener(
 				new View.OnClickListener() {
 

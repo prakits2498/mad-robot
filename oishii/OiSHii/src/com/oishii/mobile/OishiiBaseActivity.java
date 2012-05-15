@@ -261,7 +261,7 @@ public abstract class OishiiBaseActivity extends Activity {
 		setBasketPrice();
 	}
 
-	private void setBasketPrice() {
+	protected void setBasketPrice() {
 		OishiiBasket basket = AccountStatus
 				.getInstance(getApplicationContext()).getBasket();
 		float tot=basket.isDiscountApplied()?basket.getDiscountedTotal():basket.getCurrentTotal();
