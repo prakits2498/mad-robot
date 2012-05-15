@@ -54,7 +54,7 @@ public class Basket extends OishiiBaseActivity {
 		builder.append("<b>");
 		builder.append(item.getName());
 		builder.append("\"</b>");
-		builder.append("?");
+		builder.append(" ?");
 		tv.setText(Html.fromHtml(builder.toString()));
 		dialog.findViewById(R.id.btnOk).setOnClickListener(
 				new View.OnClickListener() {
@@ -78,8 +78,8 @@ public class Basket extends OishiiBaseActivity {
 	}
 
 	private void populateBasket() {
-		final OishiiBasket basket = AccountStatus
-				.getInstance(getApplicationContext()).getBasket();
+		final OishiiBasket basket = AccountStatus.getInstance(
+				getApplicationContext()).getBasket();
 		List<BasketItem> items = basket.getBasketItems();
 		int count = items.size();
 		if (items.isEmpty()) {
@@ -126,44 +126,44 @@ public class Basket extends OishiiBaseActivity {
 				basketParent.addView(basketItem);
 			}
 			System.out.println("Total->" + basket.getCurrentTotal());
-			String total = "£" + basket.getCurrentTotal();
+			String subtotal = "£" + basket.getCurrentTotal();
 			tv = (TextView) findViewById(R.id.subtotal);
-			tv.setText(total);
+			tv.setText(subtotal);
+			float total = basket.isDiscountApplied() ? basket
+					.getDiscountedTotal() : basket.getCurrentTotal();
 			tv = (TextView) findViewById(R.id.totalPrice);
-			tv.setText(total);
-			Button checkout=(Button) findViewById(R.id.btnCheckout);
-			if(basket.isDiscountApplied()){
+			tv.setText("£" + String.valueOf(total));
+			Button checkout = (Button) findViewById(R.id.btnCheckout);
+			if (basket.isDiscountApplied()) {
 				checkout.setText(R.string.btn_deltime);
 			}
-			
-			checkout.setOnClickListener(
-					new View.OnClickListener() {
 
-						@Override
-						public void onClick(View v) {
-							if (basket.isDiscountApplied()) {
-								/*proceed to set delivery time*/
-								Intent intent = new Intent(Basket.this,
-										DeliveryTime.class);
-								intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-								startActivity(intent);
+			checkout.setOnClickListener(new View.OnClickListener() {
 
-							} else {
-								Intent intent = new Intent(
-										getApplicationContext(),
-										PromoCode.class);
-								intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-								startActivity(intent);
-							}
-						}
-					});
+				@Override
+				public void onClick(View v) {
+					if (basket.isDiscountApplied()) {
+						/* proceed to set delivery time */
+						Intent intent = new Intent(Basket.this,
+								DeliveryTime.class);
+						intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+						startActivity(intent);
+
+					} else {
+						Intent intent = new Intent(getApplicationContext(),
+								PromoCode.class);
+						intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+						startActivity(intent);
+					}
+				}
+			});
 			/* if the discount is set,proceed to check out */
 			if (basket.isDiscountApplied()) {
 				findViewById(R.id.discountParent).setVisibility(View.VISIBLE);
 				findViewById(R.id.discountSeparator)
 						.setVisibility(View.VISIBLE);
 				tv = (TextView) findViewById(R.id.discount);
-				tv.setText(String.valueOf(basket.getDiscountedTotal()));
+				tv.setText("£" + String.valueOf(basket.getDiscount()));
 			}
 		}
 	}

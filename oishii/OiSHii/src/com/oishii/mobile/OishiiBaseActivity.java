@@ -264,9 +264,10 @@ public abstract class OishiiBaseActivity extends Activity {
 	private void setBasketPrice() {
 		OishiiBasket basket = AccountStatus
 				.getInstance(getApplicationContext()).getBasket();
-		TextView total = (TextView) findViewById(R.id.totalPrice);
+		float tot=basket.isDiscountApplied()?basket.getDiscountedTotal():basket.getCurrentTotal();
+		TextView total = (TextView) findViewById(R.id.totalPriceTag);
 		if (basket.getCurrentTotal() > 0.0f) {
-			total.setText("£" + basket.getCurrentTotal());
+			total.setText("£" +tot);
 			total.setVisibility(View.VISIBLE);
 		} else {
 			total.setVisibility(View.GONE);
