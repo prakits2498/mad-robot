@@ -42,7 +42,7 @@ public class ApplicationConstants {
 	public static final URI API_REDEEM_CODE = URI.create(PLIST_PATH
 			+ "redeemCode.php");
 	
-	public static HttpMethod HTTP_METHOD = HttpMethod.HTTP_GET;
+	public static final HttpMethod HTTP_METHOD = HttpMethod.HTTP_GET;
 
 	/**
 	 * Drink & snack box cat id's
