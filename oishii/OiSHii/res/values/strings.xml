@@ -29,6 +29,7 @@
     <string name="loading_delivery_time">Loading delivery time…</string>
     <string name="loading_del_address">Deleting address…</string>
     <string name="loading_edit_address">Edit address…</string>
+    <string name="loading_promo_code">Processing promotional code…</string>
     <!--  -->
     <string name="error_bad_response">Invalid server response</string>
     <string name="error_no_data">Could not connect, \nPlease check your data connectivity.</string>
