@@ -8,6 +8,10 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
+import com.madrobot.di.plist.NSDictionary;
+import com.madrobot.di.plist.NSNumber;
+import com.madrobot.di.plist.NSObject;
+import com.madrobot.di.plist.PropertyListParser;
 import com.oishii.mobile.beans.AccountStatus;
 import com.oishii.mobile.beans.BasketItem;
 import com.oishii.mobile.beans.OishiiBasket;
@@ -82,29 +86,52 @@ public class PromoCode extends OishiiBaseActivity {
 
 		@Override
 		public Object populateBean(InputStream is, int operationId) {
-			// TODO Auto-generated method stub
+			PromoStatus status = new PromoStatus();
 			try {
-				System.out.println(asString(is));
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
+				NSObject object = PropertyListParser.parse(is);
+				NSDictionary dict = (NSDictionary) object;
+				NSObject dumb = dict.objectForKey("discount");
+				if (dumb == null) {
+					/* invalid discount code */
+					status.isError = true;
+					status.errorMessage = dict.objectForKey("message")
+							.toString();
+				} else {
+					NSNumber number = (NSNumber) dumb;
+					status.discountPercent = number.floatValue();
+				}
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			return new Object();
+			return status;
 		}
 
 		@Override
 		public void onFailure(int message, int operationID) {
-			// TODO Auto-generated method stub
 			processFailure(message);
-
 		}
 
 		@Override
 		public void bindUI(Object t, int operationId) {
-			// TODO Auto-generated method stub
-hideDialog();
+			PromoStatus status = (PromoStatus) t;
+			hideDialog();
+			if (status.isError) {
+				showErrorDialog(status.errorMessage);
+			}else{
+				OishiiBasket basket=AccountStatus.getInstance(getApplicationContext()).getBasket();
+				basket.setDiscountPercentage(status.discountPercent);
+				Intent intent=new Intent(PromoCode.this,Basket.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(intent);
+			}
 		}
 	};
+
+	private class PromoStatus {
+		boolean isError;
+		String errorMessage;
+		float discountPercent;
+	}
 
 	private void executePromocodeRequest() {
 		HttpRequestWrapper requestWrapper = new HttpRequestWrapper();
@@ -125,13 +152,15 @@ hideDialog();
 		OishiiBasket basket = stat.getBasket();
 		List<BasketItem> items = basket.getBasketItems();
 		int itemsCount = items.size();
-		String paramValue;
+//		String paramValue;
 		String paramName = "shopping_cart[]";
 		for (int i = 0; i < itemsCount; i++) {
 			BasketItem item = items.get(i);
-			param = new BasicNameValuePair(paramName, String.valueOf(item.getProdId()));
+			param = new BasicNameValuePair(paramName, String.valueOf(item
+					.getProdId()));
 			params.add(param);
-			param = new BasicNameValuePair(paramName, String.valueOf(item.getCount()));
+			param = new BasicNameValuePair(paramName, String.valueOf(item
+					.getCount()));
 			params.add(param);
 		}
 		requestWrapper.httpParams = params;
