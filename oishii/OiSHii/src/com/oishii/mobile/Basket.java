@@ -9,6 +9,7 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -39,19 +40,19 @@ public class Basket extends OishiiBaseActivity {
 	};
 
 	private void showRemovalDialog() {
-		final OishiiBasket basket = AccountStatus
-				.getInstance(getApplicationContext()).getBasket();
+		final OishiiBasket basket = AccountStatus.getInstance(
+				getApplicationContext()).getBasket();
 		BasketItem item = basket.getItem(removalIndex);
 		final Dialog dialog = new Dialog(Basket.this);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialog.setContentView(R.layout.modal_dialog);
 		dialog.setTitle(null);
 		TextView tv = (TextView) dialog.findViewById(R.id.errMsg);
-		
-		StringBuilder builder=new StringBuilder();
+
+		StringBuilder builder = new StringBuilder();
 		builder.append("Remove \"");
 		builder.append("<b>");
-		builder.append( item.getName() );
+		builder.append(item.getName());
 		builder.append("\"</b>");
 		builder.append("?");
 		tv.setText(Html.fromHtml(builder.toString()));
@@ -77,7 +78,7 @@ public class Basket extends OishiiBaseActivity {
 	}
 
 	private void populateBasket() {
-		OishiiBasket basket = AccountStatus
+		final OishiiBasket basket = AccountStatus
 				.getInstance(getApplicationContext()).getBasket();
 		List<BasketItem> items = basket.getBasketItems();
 		int count = items.size();
@@ -96,6 +97,7 @@ public class Basket extends OishiiBaseActivity {
 					});
 
 		} else {
+			/* basket is not empty */
 			findViewById(R.id.topParent).setBackgroundColor(Color.WHITE);
 			findViewById(R.id.basketParent).setVisibility(View.VISIBLE);
 			findViewById(R.id.emptyBasket).setVisibility(View.GONE);
@@ -129,17 +131,40 @@ public class Basket extends OishiiBaseActivity {
 			tv.setText(total);
 			tv = (TextView) findViewById(R.id.totalPrice);
 			tv.setText(total);
-			findViewById(R.id.btnCheckout).setOnClickListener(
+			Button checkout=(Button) findViewById(R.id.btnCheckout);
+			if(basket.isDiscountApplied()){
+				checkout.setText(R.string.btn_deltime);
+			}
+			
+			checkout.setOnClickListener(
 					new View.OnClickListener() {
 
 						@Override
 						public void onClick(View v) {
-							Intent intent = new Intent(getApplicationContext(),
-									PromoCode.class);
-							intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-							startActivity(intent);
+							if (basket.isDiscountApplied()) {
+								/*proceed to set delivery time*/
+								Intent intent = new Intent(Basket.this,
+										DeliveryTime.class);
+								intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+								startActivity(intent);
+
+							} else {
+								Intent intent = new Intent(
+										getApplicationContext(),
+										PromoCode.class);
+								intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+								startActivity(intent);
+							}
 						}
 					});
+			/* if the discount is set,proceed to check out */
+			if (basket.isDiscountApplied()) {
+				findViewById(R.id.discountParent).setVisibility(View.VISIBLE);
+				findViewById(R.id.discountSeparator)
+						.setVisibility(View.VISIBLE);
+				tv = (TextView) findViewById(R.id.discount);
+				tv.setText(String.valueOf(basket.getDiscountedTotal()));
+			}
 		}
 	}
 
