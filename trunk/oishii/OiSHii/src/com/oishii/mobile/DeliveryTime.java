@@ -48,7 +48,11 @@ public class DeliveryTime extends OishiiBaseActivity {
 			case R.id.btnContinue:
 				break;
 			case R.id.btnSelTime:
-				showTimeDialog();
+				if (currentTimeDetails == null
+						|| currentTimeDetails.time == null) {
+					executeDeliveryTimeRequest();
+				} else
+					showTimeDialog();
 				break;
 			}
 		}
