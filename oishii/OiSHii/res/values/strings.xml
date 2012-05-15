@@ -28,7 +28,7 @@
     <string name="loading_add_location">Adding Location…</string>
     <string name="loading_delivery_time">Loading delivery time…</string>
     <string name="loading_del_address">Deleting address…</string>
-     <string name="loading_edit_address">Edit address…</string>
+    <string name="loading_edit_address">Edit address…</string>
     <!--  -->
     <string name="error_bad_response">Invalid server response</string>
     <string name="error_no_data">Could not connect, \nPlease check your data connectivity.</string>
@@ -73,8 +73,8 @@
     <string name="btn_apply_promo">Apply promotional code</string>
     <string name="btn_gtocheck">Go to checkout</string>
     <string name="btn_editlocation">Edit Location</string>
-     <string name="btn_yes">YES</string>
-     <string name="btn_no">NO</string>
+    <string name="btn_yes">YES</string>
+    <string name="btn_no">NO</string>
     <string name="sold_out">Sold Out</string>
     <string name="add_basket">ADD TO ORDER</string>
     <string name="no_loc">No locations saved!</string>
@@ -115,5 +115,6 @@
     <string name="error_pwd_match">* Password and confirmation do not match.</string>
     <string name="error_no_curr_pwd">* Please enter your current password.</string>
     <string name="error_no_new_pwd">* Please enter your new password.</string>
+    <string name="error_no_promo">* Please enter a promotional code.</string>
 
 </resources>
