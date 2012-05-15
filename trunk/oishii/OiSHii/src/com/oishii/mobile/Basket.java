@@ -49,10 +49,10 @@ public class Basket extends OishiiBaseActivity {
 		TextView tv = (TextView) dialog.findViewById(R.id.errMsg);
 		
 		StringBuilder builder=new StringBuilder();
-		builder.append("Remove ");
+		builder.append("Remove \"");
 		builder.append("<b>");
 		builder.append( item.getName() );
-		builder.append("</b>");
+		builder.append("\"</b>");
 		builder.append("?");
 		tv.setText(Html.fromHtml(builder.toString()));
 		dialog.findViewById(R.id.btnOk).setOnClickListener(

@@ -427,7 +427,7 @@ public class Locations extends Login {
 		dialog.setContentView(R.layout.modal_dialog);
 		dialog.setTitle(null);
 		TextView tv = (TextView) dialog.findViewById(R.id.errMsg);
-		tv.setText("Delete Address" + address.get(addressIndex).toString()+"?");
+		tv.setText("Delete Address \"" + address.get(addressIndex).toString()+"\"?");
 		dialog.findViewById(R.id.btnOk).setOnClickListener(
 				new View.OnClickListener() {
 
