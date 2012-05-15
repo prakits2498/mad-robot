@@ -173,11 +173,9 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="20dp"
-                android:background="@drawable/btn_checkout_selector"
+                style="@style/btn_black"
                 android:text="@string/btn_gtocheck"
-                android:textColor="@android:color/white"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                />
         </LinearLayout>
 
         <LinearLayout

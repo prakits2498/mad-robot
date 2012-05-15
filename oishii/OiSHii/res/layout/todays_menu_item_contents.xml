@@ -1,5 +1,4 @@
-<LinearLayout
-     xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_menu"
@@ -32,10 +31,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="3dp"
+            android:layout_weight="20"
             android:gravity="center"
             android:paddingBottom="3dp"
             android:paddingTop="3dp"
-            android:layout_weight="20"
             android:textSize="12sp" />
     </LinearLayout>
 
@@ -87,14 +86,14 @@
 
         <Button
             android:id="@+id/btnAddBasket"
+            style="@style/primary_btn"
             android:layout_width="fill_parent"
             android:layout_height="30dp"
             android:layout_marginBottom="3dp"
             android:layout_marginRight="8dp"
             android:layout_marginTop="3dp"
-            android:paddingRight="20dp"
-            style="@style/primary_btn"
             android:gravity="center_horizontal"
+            android:paddingRight="20dp"
             android:text="@string/add_basket"
             android:textSize="13dp" />
 
@@ -107,9 +106,14 @@
             android:layout_marginTop="3dp"
             android:background="@drawable/btn_menu_selector"
             android:paddingRight="20dp"
+            android:shadowColor="#000000"
+            android:shadowDx="0"
+            android:shadowDy="-2"
+            android:shadowRadius="0.8"
             android:text="@string/details"
             android:textColor="@android:color/white"
-            android:textSize="13dp" />
+            android:textSize="13dp"
+            android:textStyle="bold" />
     </LinearLayout>
 
 </LinearLayout>
