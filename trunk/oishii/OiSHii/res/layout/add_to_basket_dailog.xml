@@ -1,7 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/bg"
+    android:background="@color/text_color"
     android:orientation="vertical" >
 
     <LinearLayout
@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="1X"
-            android:textColor="@color/text_color"
+            android:textColor="@android:color/white"
             android:textSize="15sp"
             android:textStyle="bold" />
 
@@ -83,9 +83,9 @@
 
     <Button
         android:id="@+id/btnCheckout"
-        style="@style/primary_btn"
-        android:layout_width="fill_parent"
+        style="@style/btn_black"
         android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_marginBottom="10dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
