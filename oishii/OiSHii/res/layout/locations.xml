@@ -10,6 +10,16 @@
         android:layout_height="wrap_content"
         android:orientation="vertical" >
 
+        <CheckBox
+            android:id="@+id/chkSameBill"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="35dp"
+            android:textColor="@color/text_color"
+            style="@style/buttonShadow"
+            android:visibility="gone"
+            android:text="@string/billingdelivery" />
+
         <LinearLayout
             android:id="@+id/parent"
             android:layout_width="fill_parent"
@@ -22,11 +32,11 @@
             style="@style/buttonShadow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/text_color"
+            android:layout_gravity="center_horizontal"
             android:text="@string/no_loc"
-            android:textSize="17sp" 
-            android:visibility="gone"
-            android:layout_gravity="center_horizontal" />
+            android:textColor="@color/text_color"
+            android:textSize="17sp"
+            android:visibility="gone" />
     </LinearLayout>
 
 </ScrollView>
