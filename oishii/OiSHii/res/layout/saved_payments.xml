@@ -15,6 +15,14 @@
         android:text="@string/btn_no_saved"
         android:visibility="gone" />
 
+    <CheckBox
+        android:id="@+id/saveCC"
+        android:paddingLeft="35dp"
+        android:visibility="gone"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/save_cc" />
+
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" >
@@ -28,8 +36,8 @@
                 android:id="@+id/parent"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/stroke_border"
                 android:layout_marginBottom="5dp"
+                android:background="@drawable/stroke_border"
                 android:orientation="vertical" />
 
             <TextView

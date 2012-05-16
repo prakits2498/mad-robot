@@ -52,6 +52,7 @@
     <string name="field_use">Use for</string>
 
     <!-- General -->
+     <string name="save_cc">Save new payment details</string>
     <string name="items_text">ITEMS</string>
     <string name="no_orders">No Orders</string>
     <string name="subtotal">Subtotal</string>
