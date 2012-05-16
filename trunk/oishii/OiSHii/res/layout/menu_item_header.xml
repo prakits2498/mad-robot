@@ -4,25 +4,25 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="3dp"
     android:orientation="vertical"
-    android:paddingBottom="3dp" 
-    >
+    android:paddingBottom="3dp" >
 
     <TextView
         android:id="@+id/mnuTitle"
         style="@style/sploffers_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
         android:layout_marginLeft="35dp"
-        android:layout_marginTop="5dp" />
+        android:layout_marginTop="5dp"
+        android:gravity="center_vertical" />
 
     <TextView
         android:id="@+id/mnuDesc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="35dp"
-         android:gravity="center_vertical"
         android:layout_marginTop="5dp"
-        android:textColor="@android:color/black" />
+        android:gravity="center_vertical"
+        style="@style/textShadow"
+        android:textColor="@android:color/white" />
 
 </LinearLayout>
