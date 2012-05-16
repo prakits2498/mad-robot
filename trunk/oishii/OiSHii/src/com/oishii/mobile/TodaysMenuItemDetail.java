@@ -41,6 +41,8 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 	static final String PROD_ID = "prod_id";
 	static final String COLOR = "color";
 	static final String SHOW_ADD_DRINKS_SNACKS = "show_add_DS";
+	static final String CAT_ID = "cat_id";
+	private int catID;
 	private int productId;
 	private int color;
 
@@ -104,6 +106,9 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 							AccountStatus status = AccountStatus
 									.getInstance(getApplicationContext());
 							OishiiBasket basket = status.getBasket();
+							if(catID==ApplicationConstants.CAT_ID_CORPORATE){
+								basket.setCorporate(true);
+							}
 							BasketItem basItem = new BasketItem();
 							basItem.setColor(color);
 							int total = Integer.parseInt(number.getText()
@@ -294,6 +299,7 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 	protected void hookInChildViews() {
 		productId = getIntent().getIntExtra(PROD_ID, 0);
 		color = getIntent().getIntExtra(COLOR, 0);
+		catID=getIntent().getIntExtra(CAT_ID, 0);
 		showDrinksSnacks = getIntent().getBooleanExtra(SHOW_ADD_DRINKS_SNACKS,
 				true);
 		Button view = (Button) findViewById(R.id.btnHome);
