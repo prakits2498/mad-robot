@@ -79,6 +79,7 @@
         android:layout_marginTop="15dp"
         android:text="@string/btn_continue"
         android:id="@+id/btnContinue"
+        android:visibility="gone"
          />
     <!-- android:visibility="gone" -->
 
