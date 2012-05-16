@@ -38,6 +38,7 @@ public class StoredPayments extends OishiiBaseActivity {
 
 	CheckBox cbSave;
 	private void populateSavedCards() {
+		
 		parent.removeAllViews();
 		List<SavedCard> address = AccountStatus
 				.getInstance(getApplicationContext()).getAccInformation()
@@ -71,6 +72,9 @@ public class StoredPayments extends OishiiBaseActivity {
 			parent.addView(v);
 		}
 		if (isForSelecting) {
+			OishiiBasket baskt=AccountStatus.getInstance(getApplicationContext()).getBasket();
+			baskt.setSaveCC(false);
+			baskt.setSavedToken(null);
 			View view = findViewById(R.id.btn_alternate);
 			view.setVisibility(View.VISIBLE);
 			cbSave=(CheckBox) findViewById(R.id.saveCC);
