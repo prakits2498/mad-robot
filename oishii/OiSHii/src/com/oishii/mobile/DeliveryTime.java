@@ -111,7 +111,12 @@ public class DeliveryTime extends OishiiBaseActivity {
 			for(int j=0;j<timeSlots.count();j++){
 				dict=(NSDictionary) timeSlots.objectAtIndex(j);
 				timeStr = dict.objectForKey("Time").toString();
+				if (!timeStr.contains(":")) {
+					envelope.success = false;
+					envelope.message = "Delivery Closed!";
+				} else {
 				time.add(timeStr);
+				}
 			}
 //			if (!timeStr.contains(":")) {
 //				envelope.success = false;
