@@ -51,6 +51,8 @@ public class ApplicationConstants {
 	 */
 	public static final int CAT_ID_DRINKS = 30;
 	public static final int CAT_ID_SNACKS = 29;
+	public static final int CAT_ID_CORPORATE = 59;
+	
 	public static final int COLOR_SNACKS = Color.parseColor("#D60C8C");
 	public static final int COLOR_DRINKS = Color.parseColor("#ff9000");
 }
