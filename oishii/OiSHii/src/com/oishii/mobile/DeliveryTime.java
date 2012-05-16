@@ -4,6 +4,10 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 
 import android.app.Dialog;
 import android.content.Intent;
@@ -159,6 +163,11 @@ public class DeliveryTime extends OishiiBaseActivity {
 		requestWrapper.operationID = 45;
 		requestWrapper.httpSettings
 				.setHttpMethod(ApplicationConstants.HTTP_METHOD);
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		String platter=AccountStatus
+				.getInstance(getApplicationContext()).getBasket().isCorporate()?"1":"0";
+		NameValuePair param = new BasicNameValuePair("platter", platter);
+		params.add(param);
 		showDialog(getString(R.string.loading_delivery_time));
 		new HttpRequestTask().execute(requestWrapper);
 	}

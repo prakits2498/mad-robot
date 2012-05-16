@@ -15,7 +15,17 @@ public class OishiiBasket {
 	private boolean isDiscountApplied;
 	private float discountPercentage;
 	private float discount;
+	private boolean isCorporate;
 	
+	
+	public boolean isCorporate() {
+		return isCorporate;
+	}
+
+	public void setCorporate(boolean isCorporate) {
+		this.isCorporate = isCorporate;
+	}
+
 	/**
 	 * Coupon if used
 	 */

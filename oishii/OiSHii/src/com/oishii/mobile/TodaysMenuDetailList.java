@@ -111,6 +111,9 @@ public class TodaysMenuDetailList extends ListOishiBase {
 							basItem.setPrice(item.getPrice());
 							basItem.setProdId(item.getId());
 							basket.addItem(basItem);
+							if(catId==ApplicationConstants.CAT_ID_CORPORATE){
+								basket.setCorporate(true);
+							}
 
 							Intent intent = new Intent();
 							Class clz;
