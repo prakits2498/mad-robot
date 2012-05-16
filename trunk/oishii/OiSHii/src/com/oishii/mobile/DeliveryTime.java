@@ -159,10 +159,10 @@ public class DeliveryTime extends OishiiBaseActivity {
 		public void bindUI(Object t, int operationId) {
 			hideDialog();
 			TimeEnvelope time = (TimeEnvelope) t;
+			TextView tv=(TextView) findViewById(R.id.day);
+			tv.setText(time.day);
 			if (time.success) {
 				currentTimeDetails = time;
-				TextView tv=(TextView) findViewById(R.id.day);
-				tv.setText(time.day);
 			} else {
 				showErrorDialog(time.message);
 				findViewById(R.id.btnSelTime).setVisibility(View.GONE);

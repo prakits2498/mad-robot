@@ -43,7 +43,8 @@ public class ApplicationConstants {
 			+ "redeemCode.php");
 	public static final URI API_VALIDATE_CHECKOUT = URI.create(PLIST_PATH
 			+ "checkoutValidation.php");
-	
+	public static final URI API_FINAL_CHECKOUT = URI.create(PLIST_PATH
+			+ "checkout.php");
 	public static final HttpMethod HTTP_METHOD = HttpMethod.HTTP_GET;
 
 	/**
