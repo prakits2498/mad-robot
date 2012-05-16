@@ -73,26 +73,22 @@ public class CheckoutFinal extends OishiiBaseActivity {
 		params.add(param);
 		param = new BasicNameValuePair("couponcode", basket.getCurrentCouponCode());
 		params.add(param);
-		param = new BasicNameValuePair("billingId",String.valueOf(basket.getBillingAddressId()));
+		param = new BasicNameValuePair("billingid",String.valueOf(basket.getBillingAddressId()));
 		params.add(param);
-		param = new BasicNameValuePair("shippingId",String.valueOf(basket.getShippingAddressId()));
+		param = new BasicNameValuePair("shippingid",String.valueOf(basket.getShippingAddressId()));
 		params.add(param);
 		param = new BasicNameValuePair("deliverytime",String.valueOf(basket.getDeliveryTime()));
 		params.add(param);
+		param = new BasicNameValuePair("token","sagepay");
+		params.add(param);
 		if(basket.getSavedToken()==null){
-			param = new BasicNameValuePair("token","sagepay");
-			params.add(param);
-			param = new BasicNameValuePair("savedtoken","");
-			params.add(param);
-			param = new BasicNameValuePair("is_saved_cc","no");
+			param = new BasicNameValuePair("is_saved_cc",String.valueOf(basket.isSaveCC()));
 			params.add(param);
 		}else{
-			param = new BasicNameValuePair("token","");
-			params.add(param);
 			param = new BasicNameValuePair("savedtoken",basket.getSavedToken());
 			params.add(param);
-			param = new BasicNameValuePair("is_saved_cc","yes");
-			params.add(param);
+//			param = new BasicNameValuePair("is_saved_cc","yes");
+//			params.add(param);
 		}
 		List<BasketItem> items = basket.getBasketItems();
 		int itemsCount = items.size();
@@ -100,9 +96,12 @@ public class CheckoutFinal extends OishiiBaseActivity {
 		String paramName = "shopping_cart[]";
 		for (int i = 0; i < itemsCount; i++) {
 			BasketItem item = items.get(i);
+			
+			paramName="shopping_cart["+i+"][productid]";
 			param = new BasicNameValuePair(paramName, String.valueOf(item
 					.getProdId()));
 			params.add(param);
+			paramName="shopping_cart["+i+"][quantity]";
 			param = new BasicNameValuePair(paramName, String.valueOf(item
 					.getCount()));
 			params.add(param);

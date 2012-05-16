@@ -5,6 +5,7 @@ import java.util.List;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -35,6 +36,7 @@ public class StoredPayments extends OishiiBaseActivity {
 		populateSavedCards();
 	}
 
+	CheckBox cbSave;
 	private void populateSavedCards() {
 		parent.removeAllViews();
 		List<SavedCard> address = AccountStatus
@@ -71,10 +73,14 @@ public class StoredPayments extends OishiiBaseActivity {
 		if (isForSelecting) {
 			View view = findViewById(R.id.btn_alternate);
 			view.setVisibility(View.VISIBLE);
+			cbSave=(CheckBox) findViewById(R.id.saveCC);
 			view.setOnClickListener(new View.OnClickListener() {
 
 				@Override
 				public void onClick(View v) {
+					OishiiBasket basket = AccountStatus.getInstance(
+							getApplicationContext()).getBasket();
+					basket.setSaveCC(cbSave.isChecked());
 					Intent intent = new Intent(StoredPayments.this,
 							CheckoutFinal.class);
 					startActivity(intent);
@@ -89,6 +95,7 @@ public class StoredPayments extends OishiiBaseActivity {
 		public void onClick(View v) {
 			OishiiBasket basket = AccountStatus.getInstance(
 					getApplicationContext()).getBasket();
+			basket.setSaveCC(cbSave.isChecked());
 			basket.setSavedToken(v.getTag().toString());
 			Intent intent = new Intent(StoredPayments.this, CheckoutFinal.class);
 			startActivity(intent);
