@@ -74,6 +74,7 @@ public class StoredPayments extends OishiiBaseActivity {
 			View view = findViewById(R.id.btn_alternate);
 			view.setVisibility(View.VISIBLE);
 			cbSave=(CheckBox) findViewById(R.id.saveCC);
+			cbSave.setVisibility(View.VISIBLE);
 			view.setOnClickListener(new View.OnClickListener() {
 
 				@Override
