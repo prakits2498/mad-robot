@@ -58,7 +58,7 @@ public class CheckoutFinal extends OishiiBaseActivity {
 	private void executeValidateCheckout() {
 		HttpRequestWrapper requestWrapper = new HttpRequestWrapper();
 		requestWrapper.requestURI = ApplicationConstants.API_VALIDATE_CHECKOUT;
-		requestWrapper.callback = simpleResultCallback;//validateCallback;
+		requestWrapper.callback = validateCallback;//validateCallback;
 		requestWrapper.operationID = 67;
 		requestWrapper.httpSettings
 				.setHttpMethod(ApplicationConstants.HTTP_METHOD);
