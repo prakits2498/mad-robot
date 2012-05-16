@@ -16,8 +16,19 @@ public class OishiiBasket {
 	private float discountPercentage;
 	private float discount;
 	private boolean isCorporate;
+	/*save card details for this tx*/
+	private boolean saveCC;
 	
 	
+	
+	public boolean isSaveCC() {
+		return saveCC;
+	}
+
+	public void setSaveCC(boolean saveCC) {
+		this.saveCC = saveCC;
+	}
+
 	public boolean isCorporate() {
 		return isCorporate;
 	}

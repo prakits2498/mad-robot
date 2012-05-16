@@ -155,12 +155,15 @@ public class PromoCode extends OishiiBaseActivity {
 		List<BasketItem> items = basket.getBasketItems();
 		int itemsCount = items.size();
 		// String paramValue;
-		String paramName = "shopping_cart[]";
+		String paramName ;
 		for (int i = 0; i < itemsCount; i++) {
 			BasketItem item = items.get(i);
+			
+			paramName="shopping_cart["+i+"][productid]";
 			param = new BasicNameValuePair(paramName, String.valueOf(item
 					.getProdId()));
 			params.add(param);
+			paramName="shopping_cart["+i+"][quantity]";
 			param = new BasicNameValuePair(paramName, String.valueOf(item
 					.getCount()));
 			params.add(param);
