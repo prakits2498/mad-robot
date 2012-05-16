@@ -204,6 +204,17 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 			title.setTextColor(color);
 			title=(TextView) findViewById(R.id.price);
 			title.setText("£"+detail.getPrice());
+			
+			
+			title=(TextView) findViewById(R.id.remaining);
+			title.setBackgroundColor(color);
+			int itemsRemain = detail.getRemaining();
+			if (itemsRemain == 0) {
+				title.setText(R.string.sold_out);
+			} else {
+				title.setText(itemsRemain + " Left");
+			}
+			
 			Button btnAddBasket = (Button) findViewById(R.id.btnToBasket);
 			int remain = detail.getRemaining();
 			if (!showDrinksSnacks) {
