@@ -45,6 +45,7 @@ public class CheckoutFinal extends OishiiBaseActivity {
 	class CheckOutClient extends WebViewClient {
 		public void onPageFinished(WebView view, String url) {
 			// do your stuff here
+			System.out.println("LOading complete"+url);
 			hideDialog();
 		}
 	}
@@ -73,9 +74,10 @@ public class CheckoutFinal extends OishiiBaseActivity {
 		@Override
 		public void bindUI(Object t, int operationId) {
 			// TODO Auto-generated method stub
+			hideDialog();
+			showDialog(getString(R.string.loading_directing));
 			webView.loadDataWithBaseURL(ApplicationConstants.API_FINAL_CHECKOUT.toString(), t.toString(),
 		            "text/html", HTTP.UTF_8, null);
-			hideDialog();
 		}
 	};
 	
@@ -136,7 +138,7 @@ public class CheckoutFinal extends OishiiBaseActivity {
 			params.add(param);
 		}
 		requestWrapper.httpParams = params;
-		showDialog("Loading webview");
+		showDialog(getString(R.string.loading_processing));
 		new HttpRequestTask().execute(requestWrapper);
 //		showDialog("Loading webview");
 //		webView.loadUrl("http://google.com");

@@ -7,7 +7,7 @@ import android.graphics.Color;
 import com.oishii.mobile.util.HttpSettings.HttpMethod;
 
 public class ApplicationConstants {
-	public static final int SPLASH_DURATION = 1000;
+	public static final int SPLASH_DURATION = 4000;
 	static final String BASE_URL = "http://oishiidev.kieonstaging.com/";
 	static final String PLIST_PATH = BASE_URL + "plist/";
 
