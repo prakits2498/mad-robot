@@ -9,7 +9,7 @@ public class OishiiBasket {
 	private List<BasketItem> items = new ArrayList<BasketItem>();
 	private float currentTotal;
 	private float discountedTotal;
-	private String deliveryTime;
+	private String deliveryTime="12:00";
 	private int billingAddressId;
 	private int shippingAddressId;
 	private boolean isDiscountApplied;
@@ -19,7 +19,7 @@ public class OishiiBasket {
 	/**
 	 * Coupon if used
 	 */
-	private String currentCouponCode;
+	private String currentCouponCode="";
 	
 	/**
 	 * saved creditcard token if selected.

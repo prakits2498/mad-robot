@@ -442,6 +442,7 @@ int selectionType;
 					intent.putExtra(ACTION_SELECT_TYPE, ACTION_BILLING_ADDRESS);
 					startActivity(intent);
 				}else{
+					basket.setBillingAddressId(addressId);
 					// select payment type
 					Intent intent=new Intent(Locations.this,StoredPayments.class);
 					intent.putExtra(ACTION_SELECT, true);

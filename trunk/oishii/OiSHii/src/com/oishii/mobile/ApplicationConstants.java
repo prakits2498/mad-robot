@@ -41,6 +41,8 @@ public class ApplicationConstants {
 			+ "deliveryTime.php");
 	public static final URI API_REDEEM_CODE = URI.create(PLIST_PATH
 			+ "redeemCode.php");
+	public static final URI API_VALIDATE_CHECKOUT = URI.create(PLIST_PATH
+			+ "checkoutValidation.php");
 	
 	public static final HttpMethod HTTP_METHOD = HttpMethod.HTTP_GET;
 
