@@ -105,12 +105,18 @@ public class DeliveryTime extends OishiiBaseActivity {
 		String timeStr;
 		for (int i = 0; i < count; i++) {
 			dict = (NSDictionary) array.objectAtIndex(i);
-			timeStr = dict.objectForKey("Time").toString();
-			if (!timeStr.contains(":")) {
-				envelope.success = false;
-				envelope.message = "Delivery Closed!";
+			envelope.day=dict.objectForKey("Date").toString();
+			NSArray timeSlots=(NSArray) dict.objectForKey("slots");
+			
+			for(int j=0;j<timeSlots.count();j++){
+				dict=(NSDictionary) timeSlots.objectAtIndex(j);
+				timeStr = dict.objectForKey("Time").toString();
+				time.add(timeStr);
 			}
-			time.add(timeStr);
+//			if (!timeStr.contains(":")) {
+//				envelope.success = false;
+//				envelope.message = "Delivery Closed!";
+//			}
 		}
 		envelope.time = time;
 		return envelope;
@@ -118,6 +124,7 @@ public class DeliveryTime extends OishiiBaseActivity {
 
 	private class TimeEnvelope {
 		ArrayList<String> time;
+		String day;
 		boolean success = true;
 		String message;
 	}
@@ -149,6 +156,8 @@ public class DeliveryTime extends OishiiBaseActivity {
 			TimeEnvelope time = (TimeEnvelope) t;
 			if (time.success) {
 				currentTimeDetails = time;
+				TextView tv=(TextView) findViewById(R.id.day);
+				tv.setText(time.day);
 			} else {
 				showErrorDialog(time.message);
 				findViewById(R.id.btnSelTime).setVisibility(View.GONE);
@@ -168,6 +177,7 @@ public class DeliveryTime extends OishiiBaseActivity {
 				.getInstance(getApplicationContext()).getBasket().isCorporate()?"1":"0";
 		NameValuePair param = new BasicNameValuePair("platter", platter);
 		params.add(param);
+		requestWrapper.httpParams=params;
 		showDialog(getString(R.string.loading_delivery_time));
 		new HttpRequestTask().execute(requestWrapper);
 	}

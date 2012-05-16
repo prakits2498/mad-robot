@@ -71,6 +71,7 @@ public class TodaysMenuDetailList extends ListOishiBase {
 					TodaysMenuItemDetail.class);
 			intent.putExtra(TodaysMenuItemDetail.COLOR, color);
 			intent.putExtra(TodaysMenuItemDetail.PROD_ID, item.getId());
+			intent.putExtra(TodaysMenuItemDetail.CAT_ID, catId);
 			if (catId == ApplicationConstants.CAT_ID_DRINKS
 					|| catId == ApplicationConstants.CAT_ID_SNACKS) {
 				intent.putExtra(TodaysMenuItemDetail.SHOW_ADD_DRINKS_SNACKS,
