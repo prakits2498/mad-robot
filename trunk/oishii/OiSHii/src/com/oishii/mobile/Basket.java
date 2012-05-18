@@ -151,10 +151,22 @@ public class Basket extends OishiiBaseActivity {
 						startActivity(intent);
 
 					} else {
-						Intent intent = new Intent(getApplicationContext(),
-								PromoCode.class);
-						intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+						// Intent intent = new Intent(getApplicationContext(),
+						// PromoCode.class);
+						// intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+						// startActivity(intent);
+						Intent intent = new Intent();
+						if (!AccountStatus.getInstance(getApplicationContext())
+								.isSignedIn()) {
+							intent.setClass(getApplicationContext(),
+									OutOfSession.class);
+							intent.putExtra(OutOfSession.SRC_KEY, R.id.basket);
+						} else {
+							intent = new Intent(getApplicationContext(),
+									PromoCode.class);
+						}
 						startActivity(intent);
+
 					}
 				}
 			});

@@ -189,7 +189,7 @@ public class Login extends OishiiBaseActivity {
 			switch (nextScreen) {
 			case R.id.basket:
 				// targetClass=;//titleString = R.string.checkout;
-				targetClass = Basket.class;
+				targetClass = PromoCode.class;//Basket.class;
 				break;
 			case R.id.myacc:
 				targetClass = AccountDetails.class;
