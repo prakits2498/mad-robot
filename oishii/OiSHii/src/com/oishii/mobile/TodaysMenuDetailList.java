@@ -117,17 +117,7 @@ public class TodaysMenuDetailList extends ListOishiBase {
 							}
 
 							Intent intent = new Intent();
-							Class clz;
-							if (!status.isSignedIn()) {
-
-								clz = OutOfSession.class;
-								// intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-							} else {
-								clz = Basket.class;
-							}
-							intent.setClass(TodaysMenuDetailList.this, clz);
-							intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-							intent.putExtra(OutOfSession.SRC_KEY, R.id.basket);
+							intent.setClass(TodaysMenuDetailList.this, Basket.class);
 							dialog.dismiss();
 							startActivity(intent);
 						}

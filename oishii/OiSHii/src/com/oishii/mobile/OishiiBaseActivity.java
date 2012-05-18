@@ -144,14 +144,14 @@ public abstract class OishiiBaseActivity extends Activity {
 				}
 				break;
 			case R.id.basket:
-				if (!AccountStatus.getInstance(getApplicationContext())
-						.isSignedIn()) {
-
-					clz = OutOfSession.class;
-					intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-				} else {
+//				if (!AccountStatus.getInstance(getApplicationContext())
+//						.isSignedIn()) {
+//
+//					clz = OutOfSession.class;
+//					intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+//				} else {
 					clz = Basket.class;
-				}
+//				}
 				break;
 			case R.id.history:
 				if (!AccountStatus.getInstance(getApplicationContext())

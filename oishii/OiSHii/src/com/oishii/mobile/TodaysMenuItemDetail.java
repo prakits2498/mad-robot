@@ -119,16 +119,16 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 							basket.addItem(basItem);
 
 							Intent intent = new Intent();
-							Class clz;
-							if (!status.isSignedIn()) {
-
-								clz = OutOfSession.class;
-								// intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-							} else {
-								clz = Basket.class;
-							}
-							intent.setClass(TodaysMenuItemDetail.this, clz);
-							intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//							Class clz;
+//							if (!status.isSignedIn()) {
+//
+//								clz = OutOfSession.class;
+//								// intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+//							} else {
+//								clz = Basket.class;
+//							}
+							intent.setClass(TodaysMenuItemDetail.this, Basket.class);
+//							intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 							intent.putExtra(OutOfSession.SRC_KEY, R.id.basket);
 							dialog.dismiss();
 							startActivity(intent);
