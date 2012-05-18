@@ -10,6 +10,7 @@ public class BitmapBean {
 	}
 
 	public void setBitmap(Bitmap bitmap) {
+		System.out.println("Setting bitmap->"+bitmap);
 		this.bitmap = bitmap;
 	}
 	

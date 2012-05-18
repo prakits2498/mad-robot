@@ -106,6 +106,8 @@ public class EditAccountDetails extends CreateAccount {
 		params.add(param);
 		param = new BasicNameValuePair("email", email.getText().toString());
 		params.add(param);
+		param = new BasicNameValuePair("id", "1");
+		params.add(param);
 		param = new BasicNameValuePair("is_subcribed", String.valueOf(stat
 				.getAccInformation().getSubscribed()));
 		params.add(param);
