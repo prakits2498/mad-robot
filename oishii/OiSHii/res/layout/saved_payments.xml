@@ -20,6 +20,7 @@
         android:paddingLeft="35dp"
         android:visibility="gone"
         android:textColor="@color/text_color"
+         style="@style/buttonShadow"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/save_cc" />
