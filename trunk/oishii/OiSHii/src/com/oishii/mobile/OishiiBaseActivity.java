@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager.LayoutParams;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -216,6 +217,8 @@ public abstract class OishiiBaseActivity extends Activity {
 		errorDialog = new Dialog(OishiiBaseActivity.this);
 		errorDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		errorDialog.setContentView(R.layout.error_dialog);
+		errorDialog.getWindow().setLayout(LayoutParams.FILL_PARENT,
+				LayoutParams.WRAP_CONTENT);
 		TextView errMsg = (TextView) errorDialog.findViewById(R.id.errMsg);
 		errMsg.setText(errorMessage);
 		errorDialog.findViewById(R.id.btnDismiss).setOnClickListener(

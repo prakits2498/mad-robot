@@ -32,7 +32,6 @@ import com.oishii.mobile.beans.Address;
 import com.oishii.mobile.beans.MultipleMessageResult;
 import com.oishii.mobile.beans.OishiiBasket;
 import com.oishii.mobile.util.HttpSettings;
-import com.oishii.mobile.util.HttpSettings.HttpMethod;
 import com.oishii.mobile.util.tasks.HttpRequestTask;
 import com.oishii.mobile.util.tasks.HttpRequestWrapper;
 import com.oishii.mobile.util.tasks.IHttpCallback;
@@ -209,14 +208,14 @@ public class Locations extends Login {
 				: callback;
 		requestWrapper.operationID = isAddressEdit ? OPERATION_EDIT
 				: OPERATION_ADD;
-		requestWrapper.httpSettings.setHttpMethod(HttpMethod.HTTP_POST);
+		requestWrapper.httpSettings.setHttpMethod(ApplicationConstants.HTTP_METHOD);
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		AccountStatus stat = AccountStatus.getInstance(getApplicationContext());
 		NameValuePair param = new BasicNameValuePair("sid", stat.getSid());
 		params.add(param);
 		param = new BasicNameValuePair("mac", stat.getMac());
 		params.add(param);
-		param = new BasicNameValuePair("comp", company.getText().toString());
+		param = new BasicNameValuePair("company", company.getText().toString());
 		params.add(param);
 		param = new BasicNameValuePair("city", city.getText().toString());
 		params.add(param);

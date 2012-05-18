@@ -37,7 +37,6 @@ public class TodaysMenu extends ListOishiBase {
 		public MainMenuAdapter(Context context, int textViewResourceId,
 				List<MenuData> objects) {
 			super(context, textViewResourceId, objects);
-			// TODO Auto-generated constructor stub
 		}
 
 		public View getView(int position, View convertView, ViewGroup parent) {
@@ -46,7 +45,6 @@ public class TodaysMenu extends ListOishiBase {
 			if (view == null) {
 				view = getLayoutInflater().inflate(
 						R.layout.todaysmenu_list_item, null);
-				view.setBackgroundColor(item.getColor());
 				ViewHolder viewHolder = new ViewHolder();
 				viewHolder.text1 = (TextView) view.findViewById(R.id.textView1);
 				viewHolder.image = (ImageView) view
@@ -56,9 +54,28 @@ public class TodaysMenu extends ListOishiBase {
 						.findViewById(R.id.imageProgress);
 				view.setTag(viewHolder);
 			}
-			
 			ViewHolder viewHolder = (ViewHolder) view.getTag();
+			view.setBackgroundColor(item.getColor());
 			viewHolder.text1.setText(item.getTitle());
+//			ImageView image=(ImageView) view.findViewById(R.id.imageView1);
+//			ProgressBar progress=(ProgressBar) view	.findViewById(R.id.imageProgress);
+//			
+//			if (item.getBitmap() == null) {
+//				BitmapRequestParam req = new BitmapRequestParam();
+//				req.bitmapUri = URI.create(item.getBitmapUrl());
+//				req.image = image;
+//				progress.setId(position);
+//				req.progress = progress;
+//				req.parent = parent;
+//				req.bean = item;
+//				new BitmapHttpTask().execute(req);
+//			} else {
+//				System.out.println("Setting  Bitmap" + item.getBitmap());
+//				image.setImageBitmap(item.getBitmap());
+//				image.setVisibility(View.VISIBLE);
+//				parent.removeView(progress);
+//			}
+			
 			Object loaded = viewHolder.image.getTag();
 			if (loaded == null) {
 				BitmapRequestParam req = new BitmapRequestParam();

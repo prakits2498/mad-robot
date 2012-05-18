@@ -1,12 +1,17 @@
 package com.oishii.mobile;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+
+import android.content.Intent;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.madrobot.di.plist.NSDictionary;
 import com.madrobot.di.plist.NSNumber;
@@ -18,12 +23,6 @@ import com.oishii.mobile.beans.OishiiBasket;
 import com.oishii.mobile.util.tasks.HttpRequestTask;
 import com.oishii.mobile.util.tasks.HttpRequestWrapper;
 import com.oishii.mobile.util.tasks.IHttpCallback;
-
-import android.content.Intent;
-import android.view.Gravity;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.Toast;
 
 public class PromoCode extends OishiiBaseActivity {
 
