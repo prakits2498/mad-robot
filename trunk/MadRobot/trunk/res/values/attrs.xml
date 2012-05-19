@@ -4,46 +4,46 @@
 
     <!-- Attributes for com.madrobot.ui.widgets.ColorPickerView -->
     <declare-styleable name="ColorPickerView">
-        <attr format="color" name="borderColor" />
-        <attr format="dimension" name="selectorRadius" />
-        <attr format="color" name="selectorOuterColor" />
-        <attr format="color" name="selectorInnerColor" />
-        <attr format="color" name="sliderPanelSelectorColor" />
-        <attr format="dimension" name="sliderPanelPadding" />
-        <attr format="dimension" name="sliderPanelWidth" />
+        <attr name="borderColor" format="color" />
+        <attr name="selectorRadius" format="dimension" />
+        <attr name="selectorOuterColor" format="color" />
+        <attr name="selectorInnerColor" format="color" />
+        <attr name="sliderPanelSelectorColor" format="color" />
+        <attr name="sliderPanelPadding" format="dimension" />
+        <attr name="sliderPanelWidth" format="dimension" />
     </declare-styleable>
 
     <!-- Attributes for com.madrobot.ui.widgets.WebImageView -->
     <declare-styleable name="WebImageView">
-        <attr format="string" name="imageUrl" />
-        <attr format="boolean" name="autoLoad" />
-        <attr format="integer" name="progressDrawable" />
-        <attr format="integer" name="errorDrawable" />
+        <attr name="imageUrl" format="string" />
+        <attr name="autoLoad" format="boolean" />
+        <attr name="progressDrawable" format="integer" />
+        <attr name="errorDrawable" format="integer" />
     </declare-styleable>
 
     <!-- Attributes for com.madrobot.ui.widgets.HorizontalScrollView -->
     <declare-styleable name="HorizontalScrollView">
-        <attr format="integer" name="snapVelocity" />
-        <attr format="dimension" name="pageWidth" />
-        <attr format="integer" name="pageAnimationDuration" />
+        <attr name="snapVelocity" format="integer" />
+        <attr name="pageWidth" format="dimension" />
+        <attr name="pageAnimationDuration" format="integer" />
     </declare-styleable>
     <!-- Attributes for com.madrobot.ui.widgets.WheelView -->
     <declare-styleable name="WheelView">
-        <attr format="integer" name="topDrawable" />
-        <attr format="integer" name="bottomDrawable" />
-        <attr format="boolean" name="isCyclic" />
-        <attr format="boolean" name="drawTopDrawable" />
-        <attr format="boolean" name="drawBottomDrawable" />
-        <attr format="integer" name="selectorDrawable" />
-        <attr format="boolean" name="drawSelector" />
+        <attr name="topDrawable" format="integer" />
+        <attr name="bottomDrawable" format="integer" />
+        <attr name="isCyclic" format="boolean" />
+        <attr name="drawTopDrawable" format="boolean" />
+        <attr name="drawBottomDrawable" format="boolean" />
+        <attr name="selectorDrawable" format="integer" />
+        <attr name="drawSelector" format="boolean" />
     </declare-styleable>
 
     <!-- Attributes for com.madrobot.ui.widgets.SortableListView -->
     <declare-styleable name="SortableListView">
-        <attr format="dimension" name="normalHeight" />
-        <attr format="dimension" name="expandedHeight" />
-        <attr format="reference" name="grabberView" />
-        <attr format="integer" name="draggingBackgroundDrawable" />
+        <attr name="normalHeight" format="dimension" />
+        <attr name="expandedHeight" format="dimension" />
+        <attr name="grabberView" format="reference" />
+        <attr name="draggingBackgroundDrawable" format="integer" />
         <attr name="removeMode">
             <enum name="none" value="-1" />
             <enum name="fling" value="0" />
@@ -55,52 +55,53 @@
 
     <!-- Attributes for com.madrobot.ui.widgets.CoverFlowGallery -->
     <declare-styleable name="CoverFlowGallery">
-        <attr format="integer" name="centerViewZoom" />
-        <attr format="integer" name="rotationAngle" />
+        <attr name="centerViewZoom" format="integer" />
+        <attr name="rotationAngle" format="integer" />
     </declare-styleable>
 
     <!-- Attributes for com.madrobot.ui.widgets.JoystickView -->
     <declare-styleable name="JoystickView">
-        <attr format="color" name="bgColor" />
-        <attr format="integer" name="bgAlpha" />
-        <attr format="color" name="handleColor" />
-        <attr format="float" name="clickThreshold" />
-        <attr format="float" name="moveResolution" />
-        <attr format="boolean" name="autoReturnToCenter" />
+        <attr name="bgColor" format="color" />
+        <attr name="bgAlpha" format="integer" />
+        <attr name="handleColor" format="color" />
+        <attr name="clickThreshold" format="float" />
+        <attr name="moveResolution" format="float" />
+        <attr name="autoReturnToCenter" format="boolean" />
         <attr name="coordinateSystem">
             <enum name="cartesian" value="0" />
             <enum name="differential" value="1" />
         </attr>
-        <attr format="boolean" name="yAxisInverted" />
-        <attr format="boolean" name="vibrate" />
-        <attr format="integer" name="vibrateDuration" />
+        <attr name="yAxisInverted" format="boolean" />
+        <attr name="vibrate" format="boolean" />
+        <attr name="vibrateDuration" format="integer" />
     </declare-styleable>
 
     <!-- Attributes for com.madrobot.ui.widgets.WeightedLinearLayout -->
     <declare-styleable name="WeightedLinearLayout">
-        <attr format="float" name="majorWeightMin" />
-        <attr format="float" name="minorWeightMin" />
-        <attr format="float" name="majorWeightMax" />
-        <attr format="float" name="minorWeightMax" />
-        
+        <attr name="majorWeightMin" format="float" />
+        <attr name="minorWeightMin" format="float" />
+        <attr name="majorWeightMax" format="float" />
+        <attr name="minorWeightMax" format="float" />
     </declare-styleable>
-	<declare-styleable name="PageCurlView">
-		<!-- Enable/Disable debug mode -->
-		<attr name="enableDebugMode" format="boolean" />
-		<!-- Curl speed  the animation moves in px/frame -->
-		<attr name="curlSpeed" format="integer" />		
-		<!-- FPS our animation will run -->
-		<attr name="updateRate" format="integer" />		
-		<!-- Pixel offset the page will have from the curl edge -->
-		<attr name="initialEdgeOffset" format="integer" />
-		<!-- Top drawable for the curlview -->
-		<attr name="top_Drawable" format="integer"/>
-		<!-- Bottom drawable for the curlview -->
-		<attr name="bottom_Drawable" format="integer"/>
-		<!-- The curl mode to apply -->
-		<attr name="curlMode">
-			<enum name="Simple" value="0" />
-			<enum name="Dynamic" value="1" />
-		</attr>
-	</declare-styleable>
+    <declare-styleable name="PageCurlView">
+
+        <!-- Enable/Disable debug mode -->
+        <attr name="enableDebugMode" format="boolean" />
+        <!-- Curl speed  the animation moves in px/frame -->
+        <attr name="curlSpeed" format="integer" />
+        <!-- FPS our animation will run -->
+        <attr name="updateRate" format="integer" />
+        <!-- Pixel offset the page will have from the curl edge -->
+        <attr name="initialEdgeOffset" format="integer" />
+        <!-- Top drawable for the curlview -->
+        <attr name="top_Drawable" format="integer" />
+        <!-- Bottom drawable for the curlview -->
+        <attr name="bottom_Drawable" format="integer" />
+        <!-- The curl mode to apply -->
+        <attr name="curlMode">
+            <enum name="Simple" value="0" />
+            <enum name="Dynamic" value="1" />
+        </attr>
+    </declare-styleable>
+
 </resources>
