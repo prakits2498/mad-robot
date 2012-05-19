@@ -40,6 +40,19 @@ import com.madrobot.ui.UIUtils;
  * stay rotated</td>
  * </tr>
  * </table>
+ * <br/>
+ * <b>Demo</b><br/>
+ * <center><OBJECT CLASSID="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
+ * WIDTH="725" HEIGHT="461" CODEBASE=
+ * "http://active.macromedia.com/flash5/cabs/swflash.cab#version=7,0,0,0">
+ * <PARAM NAME=movie VALUE="../../../../resources/demos/coverflow.swf"> <PARAM NAME=play VALUE=true> <PARAM
+ * NAME=loop VALUE=false> <PARAM NAME=wmode VALUE=transparent> <PARAM
+ * NAME=quality VALUE=low> <EMBED SRC="../../../../resources/demos/coverflow.swf" WIDTH=725 HEIGHT=461
+ * quality=low loop=false wmode=transparent TYPE="application/x-shockwave-flash"
+ * PLUGINSPAGE=
+ * "http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash"
+ * > </EMBED> </OBJECT></center> <SCRIPT src='../../../../resources/demos/pagecurl.js'></script>
+ * <br/>
  * 
  * <b>Using the CoverFlowGallery</b><br/>
  * <p>
