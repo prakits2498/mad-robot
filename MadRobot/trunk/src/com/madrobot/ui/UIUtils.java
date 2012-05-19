@@ -11,6 +11,7 @@
 package com.madrobot.ui;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -302,4 +303,10 @@ public class UIUtils {
 		view.draw(canvas);
 		return bitmap;
 	}
+	
+	public static boolean isTablet(Context context) {
+        return (context.getResources().getConfiguration().screenLayout
+                & Configuration.SCREENLAYOUT_SIZE_MASK)
+                >= Configuration.SCREENLAYOUT_SIZE_LARGE;
+    }
 }
