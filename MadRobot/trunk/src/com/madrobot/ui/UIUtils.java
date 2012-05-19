@@ -10,6 +10,8 @@
  ******************************************************************************/
 package com.madrobot.ui;
 
+import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -309,4 +311,26 @@ public class UIUtils {
                 & Configuration.SCREENLAYOUT_SIZE_MASK)
                 >= Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
+	
+	 /**
+     * Shows a toast to the user - can be called from any thread, toast will be displayed using the UI-thread.
+     * <p>
+     * The important thing about the delayed aspect of the UI-thread code used by this method is that it may actually
+     * run <em>after</em> the associated activity has been destroyed - so it can not keep a reference to the activity.
+     * Calling methods on a destroyed activity may throw exceptions, and keeping a reference to it is technically a
+     * short-term memory-leak: http://developer.android.com/resources/articles/avoiding-memory-leaks.html
+     *
+     * @param activity Activity to show it on
+     * @param message Toast message
+     * @param duration duration of the toast
+     */
+    public static void toastOnUiThread(Activity activity, final String message,final int duration) {
+        final Application application = activity.getApplication();
+        activity.runOnUiThread(new Runnable() {
+            public void run() {
+                Toast.makeText(application, message, duration).show();
+            }
+        });
+    }
+
 }

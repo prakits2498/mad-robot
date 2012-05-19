@@ -10,89 +10,60 @@
  ******************************************************************************/
 package com.madrobot;
 
-import java.io.File;
-import java.io.IOException;
-
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.content.Context;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
-import com.madrobot.geom.Rectangle;
-import com.madrobot.graphics.bitmap.AestheticTransformFilters;
-import com.madrobot.graphics.bitmap.OutputConfiguration;
-import com.madrobot.io.file.SDCardUtils;
-import com.madrobot.net.server.HTTPServer;
-import com.madrobot.text.English;
+import com.madrobot.ui.widgets.CoverFlowGallery;
 
 public class TestActivity extends Activity {
-	/** Called when the activity is first created. */
-	Bitmap src;
-	OutputConfiguration outputConfig;
-	ImageView img;
+
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		try {
-			HTTPServer server=new HTTPServer(8090, getFilesDir());
-			server.start();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		src = BitmapFactory.decodeResource(getResources(), R.drawable.two);
-		// Bitmap.Config outputConfig = Bitmap.Config.ARGB_8888;
-		long time = System.currentTimeMillis();
-		outputConfig = new OutputConfiguration();
-		outputConfig.setAffectedArea(new Rectangle(0, 0, src.getWidth() / 2,
-				src.getHeight()));
-		img = (ImageView) findViewById(R.id.text);
-		System.out.println("Time->"
-				+ English.timeToEnglish(System.currentTimeMillis()));
-		// try {
-		// Method method = Surface.class.getMethod("screenshot", new Class[] {
-		// Integer.class, Integer.class });
-		// Bitmap bitmap=(Bitmap) method.invoke(null, 50,50);
-		// img.setImageBitmap(bitmap);
-		// } catch (IllegalArgumentException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// } catch (IllegalAccessException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// } catch (InvocationTargetException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// } catch (SecurityException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// } catch (NoSuchMethodException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		Bitmap bitmap2 = AestheticTransformFilters.sketch(src,
-				outputConfig.getConfig());
-
-		// 96, 0, 64, 96, 0, 64 }, outputConfig);
-		System.out
-				.println("============================== DONE ====================");
-		// + (System.currentTimeMillis() - time));
-		// SimpleBitmapFilters.motionBlur(src, 1.0f, 5.0f, 0.0f, 0.0f, true,
-		// false, outputConfig);// (src,
-		// outputConfig);//(src,
-		// outputConfig);//(bitmap,
-		// 3, 256,
-		// Config.ARGB_8888);//
-		// (bitmap,Config.ARGB_8888);//(bitmap,
-		// BitmapFilters.CLAMP_EDGES,
-		// true, true,
-		// Bitmap.Config.ARGB_8888);
-
-		img.setImageBitmap(bitmap2);
-		// new DownloadFilesTask().execute();
+//		BezelImageView gal=(BezelImageView) findViewById(R.id.coverflow);
+//		gal.setAdapter(new ImageAdapter(getApplicationContext()));
+		
 	}
 
+	
+	 public class ImageAdapter extends BaseAdapter {
+	 		private Context mContext;
+	 		private Integer[] mImageIds = { R.drawable.three, R.drawable.one, R.drawable.two, R.drawable.three,
+	 				R.drawable.four,R.drawable.five
+	 		};
+	 
+	 		public ImageAdapter(Context c) {
+	 			mContext = c;
+	 		}
+	 		public int getCount() {
+	 			return mImageIds.length;
+	 		}
+	 		public Object getItem(int position) {
+	 			return position;
+	 		}
+	 
+	 		public long getItemId(int position) {
+	 			return position;
+	 		}
+	 		public View getView(int position, View convertView, ViewGroup parent) {
+	 
+	 			ImageView i = new ImageView(mContext);
+	 			i.setImageResource(mImageIds[position]);
+	 			i.setLayoutParams(new CoverFlowGallery.LayoutParams(350, 250));
+	 			i.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+	 
+	 			BitmapDrawable drawable = (BitmapDrawable) i.getDrawable();
+	 			drawable.setAntiAlias(true);
+	 			return i;
+	 		}
+	 
+	 }
 }
