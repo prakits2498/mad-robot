@@ -47,22 +47,22 @@ import android.view.ViewGroup;
  * </p>
  * 
  */
-public class DashboardLayout extends ViewGroup {
+public class DashboardGridLayout extends ViewGroup {
 
 	private static final int UNEVEN_GRID_PENALTY_MULTIPLIER = 10;
 
 	private int mMaxChildWidth = 0;
 	private int mMaxChildHeight = 0;
 
-	public DashboardLayout(Context context) {
+	public DashboardGridLayout(Context context) {
 		super(context, null);
 	}
 
-	public DashboardLayout(Context context, AttributeSet attrs) {
+	public DashboardGridLayout(Context context, AttributeSet attrs) {
 		super(context, attrs, 0);
 	}
 
-	public DashboardLayout(Context context, AttributeSet attrs, int defStyle) {
+	public DashboardGridLayout(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 	}
 
