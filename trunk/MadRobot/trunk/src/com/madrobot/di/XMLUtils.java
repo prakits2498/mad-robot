@@ -21,6 +21,7 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
 
 import android.util.AttributeSet;
 import android.util.Xml;
@@ -150,4 +151,17 @@ public final class XMLUtils {
 		}
 		return buffer.toString();
 	}
+	private static XmlPullParserFactory sFactory;
+	/**
+     * Build and return a new {@link XmlPullParser} with the given
+     * {@link InputStream} assigned to it.
+     */
+    public static XmlPullParser newPullParser(InputStream input) throws XmlPullParserException {
+        if (sFactory == null) {
+            sFactory = XmlPullParserFactory.newInstance();
+        }
+        final XmlPullParser parser = sFactory.newPullParser();
+        parser.setInput(input, null);
+        return parser;
+    }
 }

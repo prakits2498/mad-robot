@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 
 /**
@@ -138,4 +139,13 @@ public class IntentUtils {
 				&& intentAction != null
 				&& intentAction.equals(Intent.ACTION_MAIN);
 	}
+	
+	 public static Drawable getIconForIntent(final Context context, Intent i) {
+	        PackageManager pm = context.getPackageManager();
+	        List<ResolveInfo> infos = pm.queryIntentActivities(i, PackageManager.MATCH_DEFAULT_ONLY);
+	        if (infos.size() > 0) {
+	            return infos.get(0).loadIcon(pm);
+	        }
+	        return null;
+	    }
 }
