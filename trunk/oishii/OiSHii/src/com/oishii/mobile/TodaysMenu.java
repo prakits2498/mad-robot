@@ -23,6 +23,7 @@ import com.madrobot.di.plist.NSArray;
 import com.madrobot.di.plist.NSDictionary;
 import com.madrobot.di.plist.NSObject;
 import com.madrobot.di.plist.PropertyListParser;
+import com.oishii.mobile.beans.MenuCache;
 import com.oishii.mobile.beans.MenuData;
 import com.oishii.mobile.util.tasks.BitmapHttpTask;
 import com.oishii.mobile.util.tasks.BitmapRequestParam;
@@ -57,25 +58,26 @@ public class TodaysMenu extends ListOishiBase {
 			ViewHolder viewHolder = (ViewHolder) view.getTag();
 			view.setBackgroundColor(item.getColor());
 			viewHolder.text1.setText(item.getTitle());
-//			ImageView image=(ImageView) view.findViewById(R.id.imageView1);
-//			ProgressBar progress=(ProgressBar) view	.findViewById(R.id.imageProgress);
-//			
-//			if (item.getBitmap() == null) {
-//				BitmapRequestParam req = new BitmapRequestParam();
-//				req.bitmapUri = URI.create(item.getBitmapUrl());
-//				req.image = image;
-//				progress.setId(position);
-//				req.progress = progress;
-//				req.parent = parent;
-//				req.bean = item;
-//				new BitmapHttpTask().execute(req);
-//			} else {
-//				System.out.println("Setting  Bitmap" + item.getBitmap());
-//				image.setImageBitmap(item.getBitmap());
-//				image.setVisibility(View.VISIBLE);
-//				parent.removeView(progress);
-//			}
-			
+			// ImageView image=(ImageView) view.findViewById(R.id.imageView1);
+			// ProgressBar progress=(ProgressBar) view
+			// .findViewById(R.id.imageProgress);
+			//
+			// if (item.getBitmap() == null) {
+			// BitmapRequestParam req = new BitmapRequestParam();
+			// req.bitmapUri = URI.create(item.getBitmapUrl());
+			// req.image = image;
+			// progress.setId(position);
+			// req.progress = progress;
+			// req.parent = parent;
+			// req.bean = item;
+			// new BitmapHttpTask().execute(req);
+			// } else {
+			// System.out.println("Setting  Bitmap" + item.getBitmap());
+			// image.setImageBitmap(item.getBitmap());
+			// image.setVisibility(View.VISIBLE);
+			// parent.removeView(progress);
+			// }
+
 			Object loaded = viewHolder.image.getTag();
 			if (loaded == null) {
 				BitmapRequestParam req = new BitmapRequestParam();
@@ -101,19 +103,31 @@ public class TodaysMenu extends ListOishiBase {
 	public final static int OPERATION_BITMAP = 10;
 
 	public final static int OPERATION_LIST = 30;
-	ListView listview;
+	private ListView listview;
+
+	private void populateTodaysMenu(List<MenuData> menu) {
+		MainMenuAdapter adapter = new MainMenuAdapter(getApplicationContext(),
+				R.layout.todaysmenu_list_item, menu);
+		listview = getListView(true);
+
+		listview.setAdapter(adapter);
+		listview.setOnItemClickListener(listViewClickListener);
+	}
 
 	IHttpCallback menuCallaback = new IHttpCallback() {
 
 		@Override
 		public void bindUI(Object t, int operationID) {
-			MainMenuAdapter adapter = new MainMenuAdapter(
-					getApplicationContext(), R.layout.todaysmenu_list_item,
-					(List<MenuData>) t);
-			listview = getListView(true);
-
-			listview.setAdapter(adapter);
-			listview.setOnItemClickListener(listViewClickListener);
+			// MainMenuAdapter adapter = new MainMenuAdapter(
+			// getApplicationContext(), R.layout.todaysmenu_list_item,
+			// (List<MenuData>) t);
+			// listview = getListView(true);
+			//
+			// listview.setAdapter(adapter);
+			// listview.setOnItemClickListener(listViewClickListener);
+			List<MenuData> menuData = (List<MenuData>) t;
+			MenuCache.getInstance().setTodayMenu(menuData);
+			populateTodaysMenu(menuData);
 			hideDialog();
 		}
 
@@ -142,8 +156,8 @@ public class TodaysMenu extends ListOishiBase {
 						e.printStackTrace();
 					}
 				}
-					return null;
-				
+				return null;
+
 			case OPERATION_BITMAP:
 				break;
 			}
@@ -178,12 +192,13 @@ public class TodaysMenu extends ListOishiBase {
 		requestWrapper.requestURI = ApplicationConstants.API_MENU_DATA;
 		requestWrapper.callback = menuCallaback;
 		requestWrapper.operationID = OPERATION_LIST;
-		requestWrapper.httpSettings.setHttpMethod(ApplicationConstants.HTTP_METHOD);
+		requestWrapper.httpSettings
+				.setHttpMethod(ApplicationConstants.HTTP_METHOD);
 		showDialog(getString(R.string.loading_mnu));
 		new HttpRequestTask().execute(requestWrapper);
 	}
 
-	private ArrayList<MenuData> getArray(NSArray array) throws Exception{
+	private ArrayList<MenuData> getArray(NSArray array) throws Exception {
 		int count = array.count();
 		ArrayList<MenuData> menus = new ArrayList<MenuData>();
 		for (int i = 0; i < count; i++) {
@@ -192,7 +207,7 @@ public class TodaysMenu extends ListOishiBase {
 			menu.setBitmapUrl(d.objectForKey("image").toString());
 			menu.setTitle(d.objectForKey("name").toString());
 			menu.setId(Integer.parseInt(d.objectForKey("id").toString()));
-			
+
 			menu.setColor(Color.parseColor(d.objectForKey("color").toString()));
 			menus.add(menu);
 		}
@@ -201,7 +216,6 @@ public class TodaysMenu extends ListOishiBase {
 
 	@Override
 	protected int getSreenID() {
-		// TODO Auto-generated method stub
 		return -1;
 	}
 
@@ -211,8 +225,11 @@ public class TodaysMenu extends ListOishiBase {
 		tv.setText(R.string.today);
 		TextView tv2 = (TextView) findViewById(R.id.titleSecond);
 		tv2.setText(R.string.menu);
-
-		executeMenuListRequest();
+		if (MenuCache.getInstance().getTodayMenu() == null) {
+			executeMenuListRequest();
+		} else {
+			populateTodaysMenu(MenuCache.getInstance().getTodayMenu());
+		}
 	}
 
 	@Override
