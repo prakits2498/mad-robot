@@ -17,6 +17,7 @@ import com.madrobot.di.plist.NSArray;
 import com.madrobot.di.plist.NSDictionary;
 import com.madrobot.di.plist.NSObject;
 import com.madrobot.di.plist.PropertyListParser;
+import com.oishii.mobile.beans.MenuCache;
 import com.oishii.mobile.beans.SpecialOffer;
 import com.oishii.mobile.util.tasks.HttpRequestTask;
 import com.oishii.mobile.util.tasks.HttpRequestWrapper;
@@ -31,7 +32,11 @@ public class SpecialOffers extends ListOishiBase {
 		tv.setText(R.string.special);
 		TextView tv2 = (TextView) findViewById(R.id.titleSecond);
 		tv2.setText(R.string.offers);
-		executeSpecialOffersRequest();
+		if (MenuCache.getInstance().getSplOffers() == null) {
+			executeSpecialOffersRequest();
+		}else{
+			populateOffers(MenuCache.getInstance().getSplOffers());
+		}
 	}
 
 	protected void executeSpecialOffersRequest() {
@@ -76,15 +81,21 @@ public class SpecialOffers extends ListOishiBase {
 
 		@Override
 		public void bindUI(Object t, int operationId) {
-			SplOfferAdapter adapter = new SplOfferAdapter(
-					getApplicationContext(), R.layout.specialoffers,
-					(List<SpecialOffer>) t);
-			ListView listview = getListView(true);
-			listview.setOnItemClickListener(listViewClickListener);
-			listview.setAdapter(adapter);
+
+			List<SpecialOffer> offers = (List<SpecialOffer>) t;
+			MenuCache.getInstance().setSplOffers(offers);
+			populateOffers(offers);
 			hideDialog();
 		}
 	};
+
+	private void populateOffers(List<SpecialOffer> offers) {
+		SplOfferAdapter adapter = new SplOfferAdapter(getApplicationContext(),
+				R.layout.specialoffers, offers);
+		ListView listview = getListView(true);
+		listview.setOnItemClickListener(listViewClickListener);
+		listview.setAdapter(adapter);
+	}
 
 	AdapterView.OnItemClickListener listViewClickListener = new AdapterView.OnItemClickListener() {
 
