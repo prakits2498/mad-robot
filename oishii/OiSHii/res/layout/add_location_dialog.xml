@@ -23,6 +23,7 @@
             <EditText
                 android:id="@+id/fld_comp"
                 android:tag="Company"
+                android:inputType="textCapWords"
                 style="@style/fieldText" >
 
                 <requestFocus />
@@ -78,6 +79,7 @@
             <EditText
                 android:id="@+id/fld_city"
                 android:tag="City"
+                android:inputType="textCapWords"
                 style="@style/fieldText" />
         </LinearLayout>
 
