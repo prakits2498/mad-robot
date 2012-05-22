@@ -207,13 +207,22 @@
                 android:id="@+id/btnCheckout"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
+                android:layout_marginBottom="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="20dp"
-                style="@style/btn_black"
+                style="@style/primary_btn"
                 android:text="@string/btn_gtocheck"
                 />
+             <Button
+                android:id="@+id/browseMenu"
+                style="@style/primary_btn"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/btn_today_menu" />
         </LinearLayout>
 
         <LinearLayout
