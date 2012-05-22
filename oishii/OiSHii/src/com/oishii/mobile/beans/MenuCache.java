@@ -4,6 +4,8 @@ import java.util.List;
 
 public class MenuCache {
 
+	private static MenuCache cache;
+
 	public static MenuCache getInstance() {
 		if (cache == null) {
 			cache = new MenuCache();
@@ -11,12 +13,25 @@ public class MenuCache {
 		return cache;
 	}
 
-	private static MenuCache cache;
+	private List<MenuData> todayMenu;
+	private List<SpecialOffer> splOffers;
+	
+	
 
-	List<MenuData> todayMenu;
+	private MenuCache() {
+
+	}
+
+	public List<SpecialOffer> getSplOffers() {
+		return splOffers;
+	}
 
 	public List<MenuData> getTodayMenu() {
 		return todayMenu;
+	}
+
+	public void setSplOffers(List<SpecialOffer> splOffers) {
+		this.splOffers = splOffers;
 	}
 
 	/**
@@ -26,9 +41,5 @@ public class MenuCache {
 	 */
 	public void setTodayMenu(List<MenuData> todayMenu) {
 		this.todayMenu = todayMenu;
-	}
-
-	private MenuCache() {
-
 	}
 }
