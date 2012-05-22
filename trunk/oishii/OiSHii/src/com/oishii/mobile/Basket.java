@@ -78,6 +78,17 @@ public class Basket extends OishiiBaseActivity {
 		dialog.show();
 	}
 
+	View.OnClickListener todaysMenu = new View.OnClickListener() {
+
+		@Override
+		public void onClick(View v) {
+			Intent intent = new Intent();
+			intent.setClass(Basket.this, TodaysMenu.class);
+			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			startActivity(intent);
+		}
+	};
+
 	private void populateBasket() {
 		final OishiiBasket basket = AccountStatus.getInstance(
 				getApplicationContext()).getBasket();
@@ -86,19 +97,11 @@ public class Basket extends OishiiBaseActivity {
 		if (items.isEmpty()) {
 			findViewById(R.id.basketParent).setVisibility(View.GONE);
 			findViewById(R.id.emptyBasket).setVisibility(View.VISIBLE);
-			findViewById(R.id.todaysMenu).setOnClickListener(
-					new View.OnClickListener() {
-
-						@Override
-						public void onClick(View v) {
-							Intent intent = new Intent();
-							intent.setClass(Basket.this, TodaysMenu.class);
-							startActivity(intent);
-						}
-					});
+			findViewById(R.id.todaysMenu).setOnClickListener(todaysMenu);
 
 		} else {
 			/* basket is not empty */
+			findViewById(R.id.browseMenu).setOnClickListener(todaysMenu);
 			findViewById(R.id.topParent).setBackgroundColor(Color.WHITE);
 			findViewById(R.id.basketParent).setVisibility(View.VISIBLE);
 			findViewById(R.id.emptyBasket).setVisibility(View.GONE);
@@ -121,6 +124,8 @@ public class Basket extends OishiiBaseActivity {
 				temp = "£" + (item.getPrice() * item.getCount());
 				tv = (TextView) basketItem.findViewById(R.id.price);
 				tv.setText(temp);
+				tv.setTag(new Integer(i));
+				tv.setOnClickListener(removeItemListener);
 				View v = basketItem.findViewById(R.id.btnDelete);
 				v.setTag(new Integer(i));
 				v.setOnClickListener(removeItemListener);
