@@ -14,6 +14,7 @@
 
         <EditText
             android:id="@+id/field_Title"
+            android:inputType="textCapSentences"
             style="@style/fieldText" >
 
             <requestFocus />
@@ -33,6 +34,7 @@
 
         <EditText
             android:id="@+id/fld_FirstName"
+            android:inputType="textCapWords"
             style="@style/fieldText" />
     </LinearLayout>
 
@@ -49,6 +51,7 @@
 
         <EditText
             android:id="@+id/fld_LastName"
+            android:inputType="textCapWords"
             style="@style/fieldText" />
     </LinearLayout>
 
