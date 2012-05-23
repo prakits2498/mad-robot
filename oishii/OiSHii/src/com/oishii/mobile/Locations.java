@@ -51,6 +51,7 @@ public class Locations extends Login {
 					.setAccInformation(info);
 			populateLocations();
 			hideDialog();
+			addLocationDialog.dismiss();
 
 		}
 
