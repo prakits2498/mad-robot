@@ -97,7 +97,7 @@ public class PromoCode extends OishiiBaseActivity {
 							.toString();
 				} else {
 					NSNumber number = (NSNumber) dumb;
-					status.discountPercent = number.floatValue();
+					status.discountAmount = number.floatValue();
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -119,7 +119,7 @@ public class PromoCode extends OishiiBaseActivity {
 			} else {
 				OishiiBasket basket = AccountStatus.getInstance(
 						getApplicationContext()).getBasket();
-				basket.setDiscountPercentage(status.discountPercent);
+				basket.setDiscountAmount(status.discountAmount);
 				basket.setCurrentCouponCode(promoCode.getText().toString());
 				Intent intent = new Intent(PromoCode.this, Basket.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -131,7 +131,7 @@ public class PromoCode extends OishiiBaseActivity {
 	private class PromoStatus {
 		boolean isError;
 		String errorMessage;
-		float discountPercent;
+		float discountAmount;
 	}
 
 	private void executePromocodeRequest() {
@@ -154,15 +154,15 @@ public class PromoCode extends OishiiBaseActivity {
 		List<BasketItem> items = basket.getBasketItems();
 		int itemsCount = items.size();
 		// String paramValue;
-		String paramName ;
+		String paramName = "shopping_cart[]";
 		for (int i = 0; i < itemsCount; i++) {
 			BasketItem item = items.get(i);
-			
-			paramName="shopping_cart["+i+"][productid]";
+
+			paramName = "shopping_cart[" + i + "][productid]";
 			param = new BasicNameValuePair(paramName, String.valueOf(item
 					.getProdId()));
 			params.add(param);
-			paramName="shopping_cart["+i+"][quantity]";
+			paramName = "shopping_cart[" + i + "][quantity]";
 			param = new BasicNameValuePair(paramName, String.valueOf(item
 					.getCount()));
 			params.add(param);
