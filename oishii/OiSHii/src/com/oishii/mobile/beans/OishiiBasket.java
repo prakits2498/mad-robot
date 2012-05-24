@@ -13,7 +13,7 @@ public class OishiiBasket {
 	private int billingAddressId;
 	private int shippingAddressId;
 	private boolean isDiscountApplied;
-	private float discountPercentage;
+	private float discountAmount;
 	private float discount;
 	private boolean isCorporate;
 	/*save card details for this tx*/
@@ -69,12 +69,9 @@ public class OishiiBasket {
 		return discount;
 	}
 
-	public float getDiscountPercentage() {
-		return discountPercentage;
-	}
-
-	public void setDiscountPercentage(float discountPercentage) {
-		this.discountPercentage = discountPercentage;
+	public void setDiscountAmount(float discountPercentage) {
+		this.discountAmount = discountPercentage;
+		this.discount=discountAmount;
 		applyDiscount();
 	}
 
@@ -82,9 +79,11 @@ public class OishiiBasket {
 	 * Apply the given discount percentage to the basket
 	 */
 	private void applyDiscount() {
-		discount = (currentTotal * discountPercentage) / 100;
-		discount=(float) TextUtils.round(discount, 2);
-		discountedTotal = currentTotal - discount;
+		discountedTotal=currentTotal-discountAmount;
+		/*Earlier it was percentage*/
+//		discount = (currentTotal * discountAmount) / 100;
+//		discount=(float) TextUtils.round(discount, 2);
+//		discountedTotal = currentTotal - discount;
 		discountedTotal = (float) TextUtils.round(discountedTotal, 2);
 		isDiscountApplied = true;
 	}
@@ -143,6 +142,7 @@ public class OishiiBasket {
 
 	private void updateTotal() {
 		currentTotal = 0.0f;
+		discountAmount=0.0f;
 		BasketItem item;
 		for (int i = 0; i < items.size(); i++) {
 			item = items.get(i);
