@@ -33,37 +33,37 @@ public class TestActivity extends Activity {
 		
 	}
 
-	
-	 public class ImageAdapter extends BaseAdapter {
-	 		private Context mContext;
-	 		private Integer[] mImageIds = { R.drawable.three, R.drawable.one, R.drawable.two, R.drawable.three,
-	 				R.drawable.four,R.drawable.five
-	 		};
-	 
-	 		public ImageAdapter(Context c) {
-	 			mContext = c;
-	 		}
-	 		public int getCount() {
-	 			return mImageIds.length;
-	 		}
-	 		public Object getItem(int position) {
-	 			return position;
-	 		}
-	 
-	 		public long getItemId(int position) {
-	 			return position;
-	 		}
-	 		public View getView(int position, View convertView, ViewGroup parent) {
-	 
-	 			ImageView i = new ImageView(mContext);
-	 			i.setImageResource(mImageIds[position]);
-	 			i.setLayoutParams(new CoverFlowGallery.LayoutParams(350, 250));
-	 			i.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-	 
-	 			BitmapDrawable drawable = (BitmapDrawable) i.getDrawable();
-	 			drawable.setAntiAlias(true);
-	 			return i;
-	 		}
-	 
-	 }
+//	
+//	 public class ImageAdapter extends BaseAdapter {
+//	 		private Context mContext;
+//	 		private Integer[] mImageIds = { R.drawable.three, R.drawable.one, R.drawable.two, R.drawable.three,
+//	 				R.drawable.four,R.drawable.five
+//	 		};
+//	 
+//	 		public ImageAdapter(Context c) {
+//	 			mContext = c;
+//	 		}
+//	 		public int getCount() {
+//	 			return mImageIds.length;
+//	 		}
+//	 		public Object getItem(int position) {
+//	 			return position;
+//	 		}
+//	 
+//	 		public long getItemId(int position) {
+//	 			return position;
+//	 		}
+//	 		public View getView(int position, View convertView, ViewGroup parent) {
+//	 
+//	 			ImageView i = new ImageView(mContext);
+//	 			i.setImageResource(mImageIds[position]);
+//	 			i.setLayoutParams(new CoverFlowGallery.LayoutParams(350, 250));
+//	 			i.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+//	 
+//	 			BitmapDrawable drawable = (BitmapDrawable) i.getDrawable();
+//	 			drawable.setAntiAlias(true);
+//	 			return i;
+//	 		}
+//	 
+//	 }
 }
