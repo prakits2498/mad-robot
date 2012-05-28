@@ -13,7 +13,7 @@ package com.madrobot.graphics.threeD;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-import com.madrobot.graphics.bitmap.PixelUtils;
+import com.madrobot.graphics.ColorUtils;
 
 /**
  * Helper class to draw 3D primitives on a 2D surface Graphics3DUtil.java
@@ -89,9 +89,9 @@ public class Graphics3DUtil {
 			lineWidth--;
 			if (bBevelled) {
 				// soften the bevel by slightly fading the colors
-				highLightColor = PixelUtils
+				highLightColor = ColorUtils
 						.adjustBrightness(highLightColor, 10);
-				shadowColor = PixelUtils.adjustBrightness(shadowColor, 10);
+				shadowColor = ColorUtils.adjustBrightness(shadowColor, 10);
 			} else if (lineWidth == nHalfWidth) {
 				int tmp = highLightColor;
 
