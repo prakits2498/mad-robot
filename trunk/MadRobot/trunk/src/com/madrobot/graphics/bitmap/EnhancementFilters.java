@@ -2,6 +2,7 @@ package com.madrobot.graphics.bitmap;
 
 import android.graphics.Bitmap;
 
+import com.madrobot.graphics.ColorUtils;
 import com.madrobot.graphics.bitmap.OutputConfiguration.BitmapMeta;
 
 /**
@@ -75,7 +76,7 @@ public class EnhancementFilters {
 	private static int[] makeGainBiasTable(float gain, float bias) {
 		int[] table = new int[256];
 		for (int i = 0; i < 256; i++)
-			table[i] = PixelUtils.clamp((int) (255 * transferBiasGainFunction(
+			table[i] = ColorUtils.clamp((int) (255 * transferBiasGainFunction(
 					i / 255.0f, gain, bias)));
 		return table;
 	}
@@ -225,7 +226,7 @@ public class EnhancementFilters {
 	private static int[] makeExposureTable(float exposure) {
 		int[] table = new int[256];
 		for (int i = 0; i < 256; i++)
-			table[i] = com.madrobot.graphics.bitmap.PixelUtils
+			table[i] = com.madrobot.graphics.ColorUtils
 					.clamp((int) (255 * exposureTransferFunction(i / 255.0f,
 							exposure)));
 		return table;
@@ -463,7 +464,7 @@ public class EnhancementFilters {
 			float contrast) {
 		int[] table = new int[256];
 		for (int i = 0; i < 256; i++)
-			table[i] = PixelUtils
+			table[i] = ColorUtils
 					.clamp((int) (255 * brightnessContrastTransferFunction(
 							i / 255.0f, brightness, contrast)));
 		return table;
@@ -558,9 +559,9 @@ public class EnhancementFilters {
 				r = (rgb >> 16) & 0xff;
 				g = (rgb >> 8) & 0xff;
 				b = rgb & 0xff;
-				r = PixelUtils.clamp((int) (r * rFactor));
-				g = PixelUtils.clamp((int) (g * gFactor));
-				b = PixelUtils.clamp((int) (b * bFactor));
+				r = ColorUtils.clamp((int) (r * rFactor));
+				g = ColorUtils.clamp((int) (g * gFactor));
+				b = ColorUtils.clamp((int) (b * bFactor));
 				argb[position] = a | (r << 16) | (g << 8) | b;
 			}
 		}

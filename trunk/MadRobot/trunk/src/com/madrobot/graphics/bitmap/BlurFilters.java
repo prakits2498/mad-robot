@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.PointF;
 
 import com.madrobot.geom.AffineTransform;
+import com.madrobot.graphics.ColorUtils;
 
 /**
  * Collection of various blur filters
@@ -179,10 +180,10 @@ public class BlurFilters {
 				if (count == 0) {
 					outPixels[index] = inPixels[index];
 				} else {
-					a = PixelUtils.clamp((a / count));
-					r = PixelUtils.clamp((r / count));
-					g = PixelUtils.clamp((g / count));
-					b = PixelUtils.clamp((b / count));
+					a = ColorUtils.clamp((a / count));
+					r = ColorUtils.clamp((r / count));
+					g = ColorUtils.clamp((g / count));
+					b = ColorUtils.clamp((b / count));
 					outPixels[index] = (a << 24) | (r << 16) | (g << 8) | b;
 				}
 				index++;
@@ -386,8 +387,8 @@ public class BlurFilters {
 						for (int dx = -1; dx <= 1; dx++) {
 							int ix = x + dx;
 							if (0 <= ix && ix < width) {
-								pixel = PixelUtils.combinePixels(pixel,
-										inPixels[ioffset + ix], PixelUtils.MAX);
+								pixel = ColorUtils.combinePixels(pixel,
+										inPixels[ioffset + ix], ColorUtils.MAX);
 							}
 						}
 					}
@@ -424,8 +425,8 @@ public class BlurFilters {
 						for (int dx = -1; dx <= 1; dx++) {
 							int ix = x + dx;
 							if (0 <= ix && ix < width) {
-								pixel = PixelUtils.combinePixels(pixel,
-										inPixels[ioffset + ix], PixelUtils.MIN);
+								pixel = ColorUtils.combinePixels(pixel,
+										inPixels[ioffset + ix], ColorUtils.MIN);
 							}
 						}
 					}

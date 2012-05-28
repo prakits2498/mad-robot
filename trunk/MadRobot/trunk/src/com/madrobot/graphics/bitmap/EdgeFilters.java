@@ -1,5 +1,7 @@
 package com.madrobot.graphics.bitmap;
 
+import com.madrobot.graphics.ColorUtils;
+
 import android.graphics.Bitmap;
 
 /**
@@ -102,9 +104,9 @@ public class EdgeFilters {
 				r = (int) (Math.sqrt(rh * rh + rv * rv) / 1.8);
 				g = (int) (Math.sqrt(gh * gh + gv * gv) / 1.8);
 				b = (int) (Math.sqrt(bh * bh + bv * bv) / 1.8);
-				r = PixelUtils.clamp(r);
-				g = PixelUtils.clamp(g);
-				b = PixelUtils.clamp(b);
+				r = ColorUtils.clamp(r);
+				g = ColorUtils.clamp(g);
+				b = ColorUtils.clamp(b);
 				outPixels[index++] = a | (r << 16) | (g << 8) | b;
 			}
 
@@ -147,7 +149,7 @@ public class EdgeFilters {
 		bumpMapHeight = height;
 		bumpPixels = new int[bumpMapWidth * bumpMapHeight];
 		for (int i = 0; i < inPixels.length; i++)
-			bumpPixels[i] = PixelUtils.brightness(inPixels[i]);
+			bumpPixels[i] = ColorUtils.brightness(inPixels[i]);
 
 		int Nx, Ny, Nz, Lx, Ly, Lz, Nz2, NzLz, NdotL;
 		int shade, background;

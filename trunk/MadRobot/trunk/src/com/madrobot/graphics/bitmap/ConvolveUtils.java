@@ -1,5 +1,7 @@
 package com.madrobot.graphics.bitmap;
 
+import com.madrobot.graphics.ColorUtils;
+
 import android.graphics.Bitmap;
 
 class ConvolveUtils {
@@ -117,10 +119,10 @@ class ConvolveUtils {
 						}
 					}
 				}
-				int ia = alpha ? PixelUtils.clamp((int) (a + 0.5)) : 0xff;
-				int ir = PixelUtils.clamp((int) (r + 0.5));
-				int ig = PixelUtils.clamp((int) (g + 0.5));
-				int ib = PixelUtils.clamp((int) (b + 0.5));
+				int ia = alpha ? ColorUtils.clamp((int) (a + 0.5)) : 0xff;
+				int ir = ColorUtils.clamp((int) (r + 0.5));
+				int ig = ColorUtils.clamp((int) (g + 0.5));
+				int ib = ColorUtils.clamp((int) (b + 0.5));
 				outPixels[index++] = (ia << 24) | (ir << 16) | (ig << 8) | ib;
 			}
 		}
@@ -179,10 +181,10 @@ class ConvolveUtils {
 						b += f * (rgb & 0xff);
 					}
 				}
-				int ia = alpha ? PixelUtils.clamp((int) (a + 0.5)) : 0xff;
-				int ir = PixelUtils.clamp((int) (r + 0.5));
-				int ig = PixelUtils.clamp((int) (g + 0.5));
-				int ib = PixelUtils.clamp((int) (b + 0.5));
+				int ia = alpha ? ColorUtils.clamp((int) (a + 0.5)) : 0xff;
+				int ir = ColorUtils.clamp((int) (r + 0.5));
+				int ig = ColorUtils.clamp((int) (g + 0.5));
+				int ib = ColorUtils.clamp((int) (b + 0.5));
 				outPixels[index++] = (ia << 24) | (ir << 16) | (ig << 8) | ib;
 			}
 		}
@@ -247,10 +249,10 @@ class ConvolveUtils {
 						b += f * (rgb & 0xff);
 					}
 				}
-				int ia = alpha ? PixelUtils.clamp((int) (a + 0.5)) : 0xff;
-				int ir = PixelUtils.clamp((int) (r + 0.5));
-				int ig = PixelUtils.clamp((int) (g + 0.5));
-				int ib = PixelUtils.clamp((int) (b + 0.5));
+				int ia = alpha ? ColorUtils.clamp((int) (a + 0.5)) : 0xff;
+				int ir = ColorUtils.clamp((int) (r + 0.5));
+				int ig = ColorUtils.clamp((int) (g + 0.5));
+				int ib = ColorUtils.clamp((int) (b + 0.5));
 				outPixels[index++] = (ia << 24) | (ir << 16) | (ig << 8) | ib;
 			}
 		}
