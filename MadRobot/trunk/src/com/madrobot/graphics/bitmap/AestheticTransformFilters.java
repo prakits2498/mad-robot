@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 
 import com.madrobot.geom.Rectangle;
+import com.madrobot.graphics.ColorUtils;
 import com.madrobot.graphics.bitmap.OutputConfiguration.BitmapMeta;
 
 /**
@@ -701,14 +702,14 @@ public class AestheticTransformFilters extends TransformFilters {
 		short[] table = new short[256];
 		int offsetl = (int) (offset * 256 / levels);
 		for (int i = 0; i < 256; i++)
-			table[i] = (short) PixelUtils
+			table[i] = (short) ColorUtils
 					.clamp((int) (255
 							* Math.floor(levels * (i + offsetl) / 256)
 							/ (levels - 1) - offsetl));
 
 		for (int x = 0; x < width; x++) {
 			int rgb = inPixels[x];
-			r[1][x] = (short) PixelUtils.brightness(rgb);
+			r[1][x] = (short) ColorUtils.brightness(rgb);
 		}
 		for (int y = 0; y < height; y++) {
 			boolean yIn = y > 0 && y < height - 1;
@@ -716,7 +717,7 @@ public class AestheticTransformFilters extends TransformFilters {
 			if (y < height - 1) {
 				for (int x = 0; x < width; x++) {
 					int rgb = inPixels[nextRowIndex++];
-					r[2][x] = (short) PixelUtils.brightness(rgb);
+					r[2][x] = (short) ColorUtils.brightness(rgb);
 				}
 			}
 			for (int x = 0; x < width; x++) {
@@ -746,8 +747,8 @@ public class AestheticTransformFilters extends TransformFilters {
 				}
 
 				if (v != 0)
-					outPixels[index] = PixelUtils.combinePixels(
-							inPixels[index], contourColor, PixelUtils.EXCHANGE,
+					outPixels[index] = ColorUtils.combinePixels(
+							inPixels[index], contourColor, ColorUtils.EXCHANGE,
 							v);
 				// outPixels[index] = PixelUtils.combinePixels( (contourColor &
 				// 0xff)|(v << 24), inPixels[index],

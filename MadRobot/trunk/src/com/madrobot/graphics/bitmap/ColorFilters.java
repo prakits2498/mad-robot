@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 
 import com.madrobot.geom.Rectangle;
+import com.madrobot.graphics.ColorUtils;
 import com.madrobot.graphics.bitmap.OutputConfiguration.BitmapMeta;
 
 /**
@@ -85,7 +86,7 @@ public class ColorFilters {
 		for (int y = meta.y; y < meta.targetHeight; y++) {
 			for (int x = meta.x; x < meta.targetWidth; x++) {
 				int position = (y * meta.bitmapWidth) + x;
-				argb[position] = PixelUtils.posterizePixel(argb[position],
+				argb[position] = ColorUtils.posterizePixel(argb[position],
 						depth);
 			}
 		}
@@ -140,7 +141,7 @@ public class ColorFilters {
 			for (int hr = meta.x; hr < meta.targetWidth; hr++) {
 
 				int position = (ver * meta.bitmapWidth) + hr;
-				argb[position] = PixelUtils.invertColor(argb[position]);
+				argb[position] = ColorUtils.invertColor(argb[position]);
 			}
 		}
 		if (outputConfig.canRecycleSrc) {
@@ -169,7 +170,7 @@ public class ColorFilters {
 			for (int hr = meta.x; hr < meta.targetWidth; hr++) {
 
 				int position = (ver * meta.bitmapWidth) + hr;
-				argb[position] = PixelUtils.applySepia(argb[position], depth);
+				argb[position] = ColorUtils.applySepia(argb[position], depth);
 			}
 		}
 		if (outputConfig.canRecycleSrc) {
@@ -196,7 +197,7 @@ public class ColorFilters {
 			for (int hr = meta.x; hr < meta.targetWidth; hr++) {
 
 				int position = (ver * meta.bitmapWidth) + hr;
-				argb[position] = PixelUtils.setSaturation(argb[position],
+				argb[position] = ColorUtils.setSaturation(argb[position],
 						percent);
 			}
 		}
@@ -301,9 +302,9 @@ public class ColorFilters {
 										r1 += er * w / sum;
 										g1 += eg * w / sum;
 										b1 += eb * w / sum;
-										inPixels[k] = (PixelUtils.clamp(r1) << 16)
-												| (PixelUtils.clamp(g1) << 8)
-												| PixelUtils.clamp(b1);
+										inPixels[k] = (ColorUtils.clamp(r1) << 16)
+												| (ColorUtils.clamp(g1) << 8)
+												| ColorUtils.clamp(b1);
 									}
 								}
 							}
@@ -365,9 +366,9 @@ public class ColorFilters {
 				int g2 = (rgb2 >> 8) & 0xff;
 				int b2 = rgb2 & 0xff;
 
-				r1 = PixelUtils.clamp((int) (r1 + a * r2));
-				g1 = PixelUtils.clamp((int) (g1 + a * g2));
-				b1 = PixelUtils.clamp((int) (b1 + a * b2));
+				r1 = ColorUtils.clamp((int) (r1 + a * r2));
+				g1 = ColorUtils.clamp((int) (g1 + a * g2));
+				b1 = ColorUtils.clamp((int) (b1 + a * b2));
 
 				argb[index] = (rgb1 & 0xff000000) | (r1 << 16) | (g1 << 8) | b1;
 				index++;
@@ -454,10 +455,10 @@ public class ColorFilters {
 		if (depth == 0) {
 			int ml, mr, mt, mb, mm, t;
 
-			int tl = PixelUtils.getPixel(x1, y1, pixels, stride);
-			int bl = PixelUtils.getPixel(x1, y2, pixels, stride);
-			int tr = PixelUtils.getPixel(x2, y1, pixels, stride);
-			int br = PixelUtils.getPixel(x2, y2, pixels, stride);
+			int tl = ColorUtils.getPixel(x1, y1, pixels, stride);
+			int bl = ColorUtils.getPixel(x1, y2, pixels, stride);
+			int tr = ColorUtils.getPixel(x2, y1, pixels, stride);
+			int br = ColorUtils.getPixel(x2, y2, pixels, stride);
 
 			float amount = (256.0f / (2.0f * scale)) * turbulence;
 
@@ -468,37 +469,37 @@ public class ColorFilters {
 				return true;
 
 			if (mx != x1 || mx != x2) {
-				ml = PixelUtils.average(tl, bl);
-				ml = PixelUtils.displace(ml, amount);
-				PixelUtils.putPixel(x1, my, ml, pixels, stride);
+				ml = ColorUtils.average(tl, bl);
+				ml = ColorUtils.displace(ml, amount);
+				ColorUtils.putPixel(x1, my, ml, pixels, stride);
 
 				if (x1 != x2) {
-					mr = PixelUtils.average(tr, br);
-					mr = PixelUtils.displace(mr, amount);
-					PixelUtils.putPixel(x2, my, mr, pixels, stride);
+					mr = ColorUtils.average(tr, br);
+					mr = ColorUtils.displace(mr, amount);
+					ColorUtils.putPixel(x2, my, mr, pixels, stride);
 				}
 			}
 
 			if (my != y1 || my != y2) {
 				if (x1 != mx || my != y2) {
-					mb = PixelUtils.average(bl, br);
-					mb = PixelUtils.displace(mb, amount);
-					PixelUtils.putPixel(mx, y2, mb, pixels, stride);
+					mb = ColorUtils.average(bl, br);
+					mb = ColorUtils.displace(mb, amount);
+					ColorUtils.putPixel(mx, y2, mb, pixels, stride);
 				}
 
 				if (y1 != y2) {
-					mt = PixelUtils.average(tl, tr);
-					mt = PixelUtils.displace(mt, amount);
-					PixelUtils.putPixel(mx, y1, mt, pixels, stride);
+					mt = ColorUtils.average(tl, tr);
+					mt = ColorUtils.displace(mt, amount);
+					ColorUtils.putPixel(mx, y1, mt, pixels, stride);
 				}
 			}
 
 			if (y1 != y2 || x1 != x2) {
-				mm = PixelUtils.average(tl, br);
-				t = PixelUtils.average(bl, tr);
-				mm = PixelUtils.average(mm, t);
-				mm = PixelUtils.displace(mm, amount);
-				PixelUtils.putPixel(mx, my, mm, pixels, stride);
+				mm = ColorUtils.average(tl, br);
+				t = ColorUtils.average(bl, tr);
+				mm = ColorUtils.average(mm, t);
+				mm = ColorUtils.displace(mm, amount);
+				ColorUtils.putPixel(mx, my, mm, pixels, stride);
 			}
 
 			if (x2 - x1 < 3 && y2 - y1 < 3)
@@ -545,47 +546,47 @@ public class ColorFilters {
 		Rectangle originalSpace = new Rectangle(0, 0, width, height);
 		int w1 = width - 1;
 		int h1 = height - 1;
-		PixelUtils.putPixel(
+		ColorUtils.putPixel(
 				0,
 				0,
 				randomRGB(inPixels, 0, 0, useImageColors, originalSpace,
 						randomGenerator), outPixels, width);
-		PixelUtils.putPixel(
+		ColorUtils.putPixel(
 				w1,
 				0,
 				randomRGB(inPixels, w1, 0, useImageColors, originalSpace,
 						randomGenerator), outPixels, width);
-		PixelUtils.putPixel(
+		ColorUtils.putPixel(
 				0,
 				h1,
 				randomRGB(inPixels, 0, h1, useImageColors, originalSpace,
 						randomGenerator), outPixels, width);
-		PixelUtils.putPixel(
+		ColorUtils.putPixel(
 				w1,
 				h1,
 				randomRGB(inPixels, w1, h1, useImageColors, originalSpace,
 						randomGenerator), outPixels, width);
-		PixelUtils.putPixel(
+		ColorUtils.putPixel(
 				w1 / 2,
 				h1 / 2,
 				randomRGB(inPixels, w1 / 2, h1 / 2, useImageColors,
 						originalSpace, randomGenerator), outPixels, width);
-		PixelUtils.putPixel(
+		ColorUtils.putPixel(
 				0,
 				h1 / 2,
 				randomRGB(inPixels, 0, h1 / 2, useImageColors, originalSpace,
 						randomGenerator), outPixels, width);
-		PixelUtils.putPixel(
+		ColorUtils.putPixel(
 				w1,
 				h1 / 2,
 				randomRGB(inPixels, w1, h1 / 2, useImageColors, originalSpace,
 						randomGenerator), outPixels, width);
-		PixelUtils.putPixel(
+		ColorUtils.putPixel(
 				w1 / 2,
 				0,
 				randomRGB(inPixels, w1 / 2, 0, useImageColors, originalSpace,
 						randomGenerator), outPixels, width);
-		PixelUtils.putPixel(
+		ColorUtils.putPixel(
 				w1 / 2,
 				h1,
 				randomRGB(inPixels, w1 / 2, h1, useImageColors, originalSpace,
@@ -871,9 +872,9 @@ public class ColorFilters {
 		int position, rgb, a, r, g, b;
 		temperature = Math.max(1000F, Math.min(10000F, temperature));
 		int t = 3 * (int) ((temperature - 1000F) / 100F);
-		float rFactor = 1.0F / PixelUtils.blackBodyRGB[t];
-		float gFactor = 1.0F / PixelUtils.blackBodyRGB[t + 1];
-		float bFactor = 1.0F / PixelUtils.blackBodyRGB[t + 2];
+		float rFactor = 1.0F / ColorUtils.blackBodyRGB[t];
+		float gFactor = 1.0F / ColorUtils.blackBodyRGB[t + 1];
+		float bFactor = 1.0F / ColorUtils.blackBodyRGB[t + 2];
 		float m = Math.max(Math.max(rFactor, gFactor), bFactor);
 		rFactor /= m;
 		gFactor /= m;
@@ -934,7 +935,7 @@ public class ColorFilters {
 			for (int x = meta.x; x < meta.targetWidth; x++) {
 				position = (y * meta.bitmapWidth) + x;
 				rgb = argb[position];
-				argb[position] = lut[PixelUtils.brightness(rgb)];
+				argb[position] = lut[ColorUtils.brightness(rgb)];
 			}
 		}
 		if (outputConfig.canRecycleSrc) {
@@ -983,14 +984,14 @@ public class ColorFilters {
 				r = (rgb >> 16) & 0xff;
 				g = (rgb >> 8) & 0xff;
 				b = rgb & 0xff;
-				nr = PixelUtils
+				nr = ColorUtils
 						.clamp((intoRed
 								* (blueGreen * g + (255 - blueGreen) * b) / 255 + (255 - intoRed)
 								* r) / 255);
-				ng = PixelUtils
+				ng = ColorUtils
 						.clamp((intoGreen * (redBlue * b + (255 - redBlue) * r)
 								/ 255 + (255 - intoGreen) * g) / 255);
-				nb = PixelUtils
+				nb = ColorUtils
 						.clamp((intoBlue
 								* (greenRed * r + (255 - greenRed) * g) / 255 + (255 - intoBlue)
 								* b) / 255);
@@ -1040,7 +1041,7 @@ public class ColorFilters {
 	private static int[] makeSolarizeTable() {
 		int[] table = new int[256];
 		for (int i = 0; i < 256; i++)
-			table[i] = PixelUtils
+			table[i] = ColorUtils
 					.clamp((int) (255 * transferFunction(i / 255.0f)));
 		return table;
 	}
