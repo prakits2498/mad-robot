@@ -693,7 +693,7 @@ public class SVGParser {
 				return (value * 96) / 72;
 			}
 
-			Log.d(TAG, "Float parsing '" + name + "=" + v + "'");
+//			Log.d(TAG, "Float parsing '" + name + "=" + v + "'");
 			return Float.parseFloat(v);
 		}
 	}
@@ -1329,13 +1329,14 @@ public class SVGParser {
 			if (localName.equals("svg")) {
 				int width;
 				int height;
-				try{
+				try {
 					width = (int) Math.ceil(getFloatAttr("width", atts));
 					height = (int) Math.ceil(getFloatAttr("height", atts));
-					
-				}catch(Exception e){
-					Log.e(TAG,"Height and width not specified in <SVG> tag. Default values (100,100) set.");
-					width=height=100;
+
+				} catch (Exception e) {
+					Log.e(TAG,
+							"Height and width not specified in <SVG> tag. Default values (100,100) set.");
+					width = height = 100;
 				}
 				canvas = picture.beginRecording(width, height);
 
@@ -1349,24 +1350,38 @@ public class SVGParser {
 				if (gradient != null) {
 					float offset = getFloatAttr("offset", atts);
 					String styles = getStringAttr("style", atts);
-					StyleSet styleSet = new StyleSet(styles);
-					String colorStyle = styleSet.getStyle("stop-color");
 					int color = Color.BLACK;
-					if (colorStyle != null) {
-						if (colorStyle.startsWith("#")) {
-							color = Integer.parseInt(colorStyle.substring(1),
-									16);
-						} else {
-							color = Integer.parseInt(colorStyle, 16);
+					/* sometimes the styles are declared outside */
+					if (styles == null) {
+						String stopcolor = getStringAttr("stop-color", atts);
+						if (stopcolor != null) {
+							if(stopcolor.startsWith("#")){
+								color = Integer.parseInt(
+										stopcolor.substring(1), 16);
+							}else{
+									color= SVGColors.mapColor(stopcolor);
+							}
 						}
-					}
-					String opacityStyle = styleSet.getStyle("stop-opacity");
-					if (opacityStyle != null) {
-						float alpha = Float.parseFloat(opacityStyle);
-						int alphaInt = Math.round(255 * alpha);
-						color |= (alphaInt << 24);
 					} else {
-						color |= 0xFF000000;
+						/* if the styles are declared in */
+						StyleSet styleSet = new StyleSet(styles);
+						String colorStyle = styleSet.getStyle("stop-color");
+						if (colorStyle != null) {
+							if (colorStyle.startsWith("#")) {
+								color = Integer.parseInt(
+										colorStyle.substring(1), 16);
+							} else {
+								color = Integer.parseInt(colorStyle, 16);
+							}
+						}
+						String opacityStyle = styleSet.getStyle("stop-opacity");
+						if (opacityStyle != null) {
+							float alpha = Float.parseFloat(opacityStyle);
+							int alphaInt = Math.round(255 * alpha);
+							color |= (alphaInt << 24);
+						} else {
+							color |= 0xFF000000;
+						}
 					}
 					gradient.positions.add(offset);
 					gradient.colors.add(color);
