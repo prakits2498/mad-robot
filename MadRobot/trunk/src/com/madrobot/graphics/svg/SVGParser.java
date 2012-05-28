@@ -342,8 +342,7 @@ public class SVGParser {
 			case '\n':
 			case '\t':
 			case ' ':
-			case ',':
-			case '-': {
+			case ',': {
 				String str = s.substring(p, i);
 				// Just keep moving if multiple whitespace
 				if (str.trim().length() > 0) {
@@ -687,13 +686,17 @@ public class SVGParser {
 		} else {
 			if (v.endsWith("px")) {
 				v = v.substring(0, v.length() - 2);
+			} else if (v.endsWith("pt")) {
+				v = v.substring(0, v.length() - 2);
+				float value = Float.parseFloat(v);
+				/* convert points to pixels */
+				return (value * 96) / 72;
 			}
-			// Log.d(TAG, "Float parsing '" + name + "=" + v + "'");
+
+			Log.d(TAG, "Float parsing '" + name + "=" + v + "'");
 			return Float.parseFloat(v);
 		}
 	}
-
-	
 
 	private static class NumberParse {
 		private ArrayList<Float> numbers;
@@ -1324,8 +1327,16 @@ public class SVGParser {
 			// }
 
 			if (localName.equals("svg")) {
-				int width = (int) Math.ceil(getFloatAttr("width", atts));
-				int height = (int) Math.ceil(getFloatAttr("height", atts));
+				int width;
+				int height;
+				try{
+					width = (int) Math.ceil(getFloatAttr("width", atts));
+					height = (int) Math.ceil(getFloatAttr("height", atts));
+					
+				}catch(Exception e){
+					Log.e(TAG,"Height and width not specified in <SVG> tag. Default values (100,100) set.");
+					width=height=100;
+				}
 				canvas = picture.beginRecording(width, height);
 
 			} else if (localName.equals("defs")) {

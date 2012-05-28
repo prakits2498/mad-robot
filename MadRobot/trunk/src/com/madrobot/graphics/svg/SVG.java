@@ -10,6 +10,8 @@
  ******************************************************************************/
 package com.madrobot.graphics.svg;
 
+import com.madrobot.di.plist.Base64.OutputStream;
+
 import android.graphics.Picture;
 import android.graphics.RectF;
 import android.graphics.drawable.PictureDrawable;
@@ -81,6 +83,14 @@ public class SVG {
 		// }
 		// }
 		// };
+	}
+	
+	/**
+	 * Write the rendered image to an ouput stream
+	 * @param os
+	 */
+	public void compress(OutputStream os){
+		picture.writeToStream(os);
 	}
 
 	/**
