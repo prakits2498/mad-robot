@@ -18,4 +18,7 @@ public class BitmapRequestParam {
 	public BitmapFactory.Options bitmapOptions;
 	public ViewGroup parent;
 	public BitmapBean bean;
+	public int bitmapWidth;
+	public int bitmapHeight;
+	public int inSampleSize;
 }

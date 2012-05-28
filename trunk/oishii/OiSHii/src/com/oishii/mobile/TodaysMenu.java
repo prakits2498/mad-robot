@@ -58,25 +58,6 @@ public class TodaysMenu extends ListOishiBase {
 			ViewHolder viewHolder = (ViewHolder) view.getTag();
 			view.setBackgroundColor(item.getColor());
 			viewHolder.text1.setText(item.getTitle());
-			// ImageView image=(ImageView) view.findViewById(R.id.imageView1);
-			// ProgressBar progress=(ProgressBar) view
-			// .findViewById(R.id.imageProgress);
-			//
-			// if (item.getBitmap() == null) {
-			// BitmapRequestParam req = new BitmapRequestParam();
-			// req.bitmapUri = URI.create(item.getBitmapUrl());
-			// req.image = image;
-			// progress.setId(position);
-			// req.progress = progress;
-			// req.parent = parent;
-			// req.bean = item;
-			// new BitmapHttpTask().execute(req);
-			// } else {
-			// System.out.println("Setting  Bitmap" + item.getBitmap());
-			// image.setImageBitmap(item.getBitmap());
-			// image.setVisibility(View.VISIBLE);
-			// parent.removeView(progress);
-			// }
 
 			Object loaded = viewHolder.image.getTag();
 			if (loaded == null) {
@@ -86,6 +67,8 @@ public class TodaysMenu extends ListOishiBase {
 				req.image.setTag(new Object());
 				req.progress = viewHolder.bar;
 				req.parent = viewHolder.bg;
+//				req.bitmapWidth=100;
+//				req.bitmapHeight=65;
 				new BitmapHttpTask().execute(req);
 			}
 			return view;
