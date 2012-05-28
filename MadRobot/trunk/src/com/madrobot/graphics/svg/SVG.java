@@ -18,7 +18,9 @@ import android.graphics.drawable.PictureDrawable;
 
 /**
  * Describes a vector Picture object, and optionally its bounds.
- * 
+ * <p>
+ * The ImageView using this SVG drawable ({@link #createPictureDrawable()}) should have the dimensions to accomodate it.
+ * </p>
  */
 public class SVG {
 
