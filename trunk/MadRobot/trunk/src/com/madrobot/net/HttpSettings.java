@@ -1,6 +1,5 @@
 package com.madrobot.net;
 
-
 public class HttpSettings {
 
 	/**
@@ -8,21 +7,25 @@ public class HttpSettings {
 	 */
 
 	/**
-	 * Represents the HTTP GET, POST and DELETE
+	 * Represents the HTTP GET, POST, PUT and DELETE
 	 */
 	public enum HttpMethod {
 		/**
 		 * Http DELETE method
 		 */
-		HTTP_DELETE,
+		DELETE,
 		/**
 		 * Http GET method
 		 */
-		HTTP_GET,
+		GET,
 		/**
 		 * Http POST method
 		 */
-		HTTP_POST;
+		POST,
+		/**
+		 * Http PUT method
+		 */
+		PUT;
 	}
 
 	public static final String HTTP_EXPECT_CONTINUE_PARAM = "http.protocol.expect-continue";
@@ -35,7 +38,7 @@ public class HttpSettings {
 
 	private boolean expectContinue = true;
 
-	private HttpMethod httpMethod = HttpMethod.HTTP_GET;
+	private HttpMethod httpMethod = HttpMethod.GET;
 
 	private boolean isSingleCookieHeader = false;
 

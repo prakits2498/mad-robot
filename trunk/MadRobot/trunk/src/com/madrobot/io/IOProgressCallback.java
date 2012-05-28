@@ -1,5 +1,7 @@
 package com.madrobot.io;
 
+import com.madrobot.io.IOUtils.IOState;
+
 /**
  * Tracks the progress of an I/O operation
  * 
@@ -7,6 +9,8 @@ package com.madrobot.io;
  * 
  */
 public interface IOProgressCallback {
+
+
 	/**
 	 * Called when the I/O operation is completed.
 	 */
@@ -26,4 +30,8 @@ public interface IOProgressCallback {
 	 *            number of bytes read/written
 	 */
 	public void onProgress(int bytes);
+
+	public void progressPercent(double percent);
+
+	public void setIOState(IOState state);
 }
