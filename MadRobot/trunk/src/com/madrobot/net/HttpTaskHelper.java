@@ -134,11 +134,11 @@ public class HttpTaskHelper {
 	public HttpEntity execute() throws IOException, URISyntaxException {
 
 		switch (httpSettings.getHttpMethod()) {
-		case HTTP_GET:
+		case GET:
 			return handleHttpGet();
-		case HTTP_POST:
+		case POST:
 			return handleHttpPost();
-		case HTTP_DELETE:
+		case DELETE:
 			return handleHttpDelete();
 		}
 		throw new UnsupportedOperationException();

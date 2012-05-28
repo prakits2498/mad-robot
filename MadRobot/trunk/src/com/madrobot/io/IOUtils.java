@@ -34,6 +34,10 @@ import android.util.Log;
 
 public class IOUtils {
 
+	public static  enum IOState {
+		COMPLETE, CLIENT_ERROR, IN_PROGRESS, NOT_STARTED, PAUSED
+	}
+
 	public static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
 
 	/**
