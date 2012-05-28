@@ -340,6 +340,8 @@ public class TodaysMenuDetailList extends ListOishiBase {
 				req.progress = progress;
 				req.parent = parent;
 				req.bean = item;
+//				req.bitmapWidth=100;
+//				req.bitmapHeight=100;
 				new BitmapHttpTask().execute(req);
 			} else {
 				System.out.println("Setting  Bitmap" + item.getBitmap());

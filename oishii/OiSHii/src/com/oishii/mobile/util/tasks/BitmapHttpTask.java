@@ -31,29 +31,32 @@ public class BitmapHttpTask extends AsyncTask<BitmapRequestParam, Void, Bitmap> 
 	protected Bitmap doInBackground(BitmapRequestParam... params) {
 		param = params[0];
 		Bitmap bitmap = null;
-		System.out.println("Bitmap URI->"+param.bitmapUri);
-		System.out.println("Bitmap URI scheme->"+param.bitmapUri.getScheme());
-		if (param.bitmapUri.getScheme()!=null) {
+		System.out.println("Bitmap URI->" + param.bitmapUri);
+		System.out.println("Bitmap URI scheme->" + param.bitmapUri.getScheme());
+		if (param.bitmapUri.getScheme() != null) {
 			com.oishii.mobile.util.HttpTaskHelper helper = new com.oishii.mobile.util.HttpTaskHelper(
 					param.bitmapUri);
 			HttpResponse entity;
-
+			BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
+			System.out.println(" bitmap out params"+param.bitmapHeight+" "+param.bitmapWidth);
+			if (param.bitmapHeight > 0 && param.bitmapWidth > 0) {
+				bitmapOptions.outWidth = param.bitmapWidth;
+				bitmapOptions.outHeight = param.bitmapHeight;
+				
+			}
+			if(param.inSampleSize>0){
+				bitmapOptions.inSampleSize=param.inSampleSize;
+			}
 			try {
 				entity = helper.execute();
 				InputStream is = entity.getEntity().getContent();
 				bitmap = BitmapFactory.decodeStream(is, null,
-						new BitmapFactory.Options());
+						bitmapOptions);
 			} catch (IOException e) {
 				e.printStackTrace();
 			} catch (URISyntaxException e) {
 				e.printStackTrace();
 			}
-			// ResponseParam resp = new ResponseParam();
-			// resp.bitmap = bitmap;
-			// resp.image = params[0].image;
-			// resp.bar = params[0].progress;
-			// resp.parent = params[0].parent;O
-
 			System.out.println("REtrn resp for->" + params[0].bitmapUri);
 		}
 		return bitmap;
