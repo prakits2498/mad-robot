@@ -88,6 +88,13 @@ class SVGHandler extends DefaultHandler {
 		this.zoomFactor = zoomFactor;
 	}
 
+	private Float getZoomFactor(Float value) {
+		if (value == null)
+			return null;
+		value = value * zoomFactor;
+		return value / 100;
+	}
+
 	/**
 	 * Parses a single SVG path and returns it as a
 	 * <code>android.graphics.Path</code> object. An example path is
@@ -553,7 +560,7 @@ class SVGHandler extends DefaultHandler {
 			return false;
 		}
 		if (atts.getValue("font-size") != null) {
-			paint.setTextSize(getFloatAttr("font-size", atts, 10f));
+			paint.setTextSize(getZoomFactor(getFloatAttr("font-size", atts, 10f)));
 		}
 		Typeface typeface = getTypeFace(atts);
 		if (typeface != null) {
@@ -576,7 +583,7 @@ class SVGHandler extends DefaultHandler {
 		}
 
 		// Check for other stroke attributes
-		Float width = atts.getFloat("stroke-width");
+		Float width = getZoomFactor(atts.getFloat("stroke-width"));
 		if (width != null) {
 			strokePaint.setStrokeWidth(width);
 		}
@@ -636,14 +643,14 @@ class SVGHandler extends DefaultHandler {
 		gradient.id = getStringAttr("id", atts);
 		gradient.isLinear = isLinear;
 		if (isLinear) {
-			gradient.x1 = getFloatAttr("x1", atts, 0f);
-			gradient.x2 = getFloatAttr("x2", atts, 0f);
-			gradient.y1 = getFloatAttr("y1", atts, 0f);
-			gradient.y2 = getFloatAttr("y2", atts, 0f);
+			gradient.x1 = getZoomFactor(getFloatAttr("x1", atts, 0f));
+			gradient.x2 = getZoomFactor(getFloatAttr("x2", atts, 0f));
+			gradient.y1 = getZoomFactor(getFloatAttr("y1", atts, 0f));
+			gradient.y2 = getZoomFactor(getFloatAttr("y2", atts, 0f));
 		} else {
-			gradient.x = getFloatAttr("cx", atts, 0f);
-			gradient.y = getFloatAttr("cy", atts, 0f);
-			gradient.radius = getFloatAttr("r", atts, 0f);
+			gradient.x = getZoomFactor(getFloatAttr("cx", atts, 0f));
+			gradient.y = getZoomFactor(getFloatAttr("cy", atts, 0f));
+			gradient.radius = getZoomFactor(getFloatAttr("r", atts, 0f));
 		}
 		String transform = getStringAttr("gradientTransform", atts);
 		if (transform != null) {
@@ -817,18 +824,19 @@ class SVGHandler extends DefaultHandler {
 		// }
 
 		if (localName.equals("svg")) {
-			int width;
-			int height;
+			Float width;
+			Float height;
 			try {
-				width = (int) Math.ceil(getFloatAttr("width", atts));
-				height = (int) Math.ceil(getFloatAttr("height", atts));
+				width = (float) Math.ceil(getFloatAttr("width", atts));
+				height = (float) Math.ceil(getFloatAttr("height", atts));
 
 			} catch (Exception e) {
 				Log.e(TAG,
 						"Height and width not specified in <SVG> tag. Default values (100,100) set.");
-				width = height = 100;
+				width = height = 100f;
 			}
-			canvas = picture.beginRecording(width, height);
+			canvas = picture
+					.beginRecording(width.intValue(), height.intValue());
 
 		} else if (localName.equals("defs")) {
 			inDefsElement = true;
@@ -968,18 +976,18 @@ class SVGHandler extends DefaultHandler {
 			fillSet |= (props.getString("fill") != null);
 			strokeSet |= (props.getString("stroke") != null);
 		} else if (!hidden && localName.equals("rect")) {
-			Float x = getFloatAttr("x", atts);
+			Float x = getZoomFactor(getFloatAttr("x", atts));
 			if (x == null) {
 				x = 0f;
 			}
-			Float y = getFloatAttr("y", atts);
+			Float y = getZoomFactor(getFloatAttr("y", atts));
 			if (y == null) {
 				y = 0f;
 			}
-			Float width = getFloatAttr("width", atts);
-			Float height = getFloatAttr("height", atts);
-			Float rx = getFloatAttr("rx", atts, 0f);
-			Float ry = getFloatAttr("ry", atts, 0f);
+			Float width = getZoomFactor(getFloatAttr("width", atts));
+			Float height = getZoomFactor(getFloatAttr("height", atts));
+			Float rx = getZoomFactor(getFloatAttr("rx", atts, 0f));
+			Float ry = getZoomFactor(getFloatAttr("ry", atts, 0f));
 			pushTransform(atts);
 			SVGProperties props = new SVGProperties(atts);
 			if (doFill(props)) {
@@ -1001,10 +1009,10 @@ class SVGHandler extends DefaultHandler {
 			}
 			popTransform();
 		} else if (!hidden && localName.equals("line")) {
-			Float x1 = getFloatAttr("x1", atts);
-			Float x2 = getFloatAttr("x2", atts);
-			Float y1 = getFloatAttr("y1", atts);
-			Float y2 = getFloatAttr("y2", atts);
+			Float x1 = getZoomFactor(getFloatAttr("x1", atts));
+			Float x2 = getZoomFactor(getFloatAttr("x2", atts));
+			Float y1 = getZoomFactor(getFloatAttr("y1", atts));
+			Float y2 = getZoomFactor(getFloatAttr("y2", atts));
 			SVGProperties props = new SVGProperties(atts);
 			if (doStroke(props)) {
 				pushTransform(atts);
@@ -1014,9 +1022,9 @@ class SVGHandler extends DefaultHandler {
 				popTransform();
 			}
 		} else if (!hidden && localName.equals("circle")) {
-			Float centerX = getFloatAttr("cx", atts);
-			Float centerY = getFloatAttr("cy", atts);
-			Float radius = getFloatAttr("r", atts);
+			Float centerX = getZoomFactor(getFloatAttr("cx", atts));
+			Float centerY = getZoomFactor(getFloatAttr("cy", atts));
+			Float radius = getZoomFactor(getFloatAttr("r", atts));
 			if (centerX != null && centerY != null && radius != null) {
 				pushTransform(atts);
 				SVGProperties props = new SVGProperties(atts);
@@ -1031,10 +1039,10 @@ class SVGHandler extends DefaultHandler {
 				popTransform();
 			}
 		} else if (!hidden && localName.equals("ellipse")) {
-			Float centerX = getFloatAttr("cx", atts);
-			Float centerY = getFloatAttr("cy", atts);
-			Float radiusX = getFloatAttr("rx", atts);
-			Float radiusY = getFloatAttr("ry", atts);
+			Float centerX = getZoomFactor(getFloatAttr("cx", atts));
+			Float centerY = getZoomFactor(getFloatAttr("cy", atts));
+			Float radiusX = getZoomFactor(getFloatAttr("rx", atts));
+			Float radiusY = getZoomFactor(getFloatAttr("ry", atts));
 			if (centerX != null && centerY != null && radiusX != null
 					&& radiusY != null) {
 				pushTransform(atts);
@@ -1243,8 +1251,8 @@ class SVGHandler extends DefaultHandler {
 
 		public SVGText(Attributes atts) {
 			// Log.d(TAG, "text");
-			x = getFloatAttr("x", atts, 0f);
-			y = getFloatAttr("y", atts, 0f);
+			x = getZoomFactor(getFloatAttr("x", atts, 0f));
+			y = getZoomFactor(getFloatAttr("y", atts, 0f));
 			svgText = null;
 			inText = true;
 
