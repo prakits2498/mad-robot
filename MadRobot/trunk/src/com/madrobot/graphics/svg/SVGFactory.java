@@ -245,7 +245,7 @@ public class SVGFactory {
 			SAXParser sp = spf.newSAXParser();
 			XMLReader xr = sp.getXMLReader();
 			final Picture picture = new Picture();
-			svgHandler = new SVGHandler(picture,200);
+			svgHandler = new SVGHandler(picture,20);
 			svgHandler.setColorSwap(searchColor, replaceColor);
 			svgHandler.setWhiteMode(whiteMode);
 
