@@ -11,19 +11,19 @@ import com.madrobot.di.XMLUtils;
 class IDHandler extends DefaultHandler {
 	HashMap<String, String> idXml = new HashMap<String, String>();
 
-	class IdRecording {
+	final class IdRecording {
 		String id;
 		int level;
 		StringBuilder sb;
 
-		public IdRecording(String id) {
+		 IdRecording(String id) {
 			this.id = id;
 			this.level = 0;
 			this.sb = new StringBuilder();
 		}
 	}
 
-	Stack<IdRecording> idRecordingStack = new Stack<IdRecording>();
+	private Stack<IdRecording> idRecordingStack = new Stack<IdRecording>();
 
 	/**
 	 * @param namespaceURI
