@@ -3,14 +3,14 @@ package com.madrobot.graphics.svg;
  * Parses numbers from SVG text. Based on the Batik Number Parser (Apache 2 License).
  *
  */
-public class ParserHelper {
+ class ParserHelper {
 
     private char current;
     private CharSequence s;
     public int pos;
     private int n;
 
-    public ParserHelper(CharSequence s, int pos) {
+     ParserHelper(CharSequence s, int pos) {
         this.s = s;
         this.pos = pos;
         n = s.length();
@@ -28,7 +28,7 @@ public class ParserHelper {
         }
     }
 
-    public void skipWhitespace() {
+     void skipWhitespace() {
         while (pos < n) {
             if (Character.isWhitespace(s.charAt(pos))) {
                 advance();
@@ -38,7 +38,7 @@ public class ParserHelper {
         }
     }
 
-    public void skipNumberSeparator() {
+     void skipNumberSeparator() {
         while (pos < n) {
             char c = s.charAt(pos);
             switch (c) {
@@ -54,14 +54,14 @@ public class ParserHelper {
         }
     }
 
-    public void advance() {
+     void advance() {
         current = read();
     }
 
     /**
      * Parses the content of the buffer and converts it to a float.
      */
-    public float parseFloat() {
+     float parseFloat() {
         int     mant     = 0;
         int     mantDig  = 0;
         boolean mantPos  = true;
@@ -243,7 +243,7 @@ public class ParserHelper {
     /**
      * Computes a float from mantissa and exponent.
      */
-    public static float buildFloat(int mant, int exp) {
+     static float buildFloat(int mant, int exp) {
         if (exp < -125 || mant == 0) {
             return 0.0f;
         }
@@ -276,7 +276,7 @@ public class ParserHelper {
         }
     }
 
-    public float nextFloat() {
+     float nextFloat() {
         skipWhitespace();
         float f = parseFloat();
         skipNumberSeparator();
