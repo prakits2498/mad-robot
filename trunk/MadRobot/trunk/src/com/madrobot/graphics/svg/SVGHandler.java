@@ -70,9 +70,9 @@ class SVGHandler extends DefaultHandler {
 	private boolean boundsMode = false;
 
 	private HashMap<String, Shader> gradientMap = new HashMap<String, Shader>();
-	private HashMap<String, Gradient> gradientRefMap = new HashMap<String, Gradient>();
-	private Gradient gradient = null;
-	private SvgText text = null;
+	private HashMap<String, SVGGradient> gradientRefMap = new HashMap<String, SVGGradient>();
+	private SVGGradient gradient = null;
+	private SVGText text = null;
 
 	private boolean inDefsElement = false;
 	private int zoomFactor;
@@ -290,7 +290,7 @@ class SVGHandler extends DefaultHandler {
 		return p;
 	}
 
-	private NumberParse getNumberParseAttr(String name, Attributes attributes) {
+	private NumberParser getNumberParseAttr(String name, Attributes attributes) {
 		int n = attributes.getLength();
 		for (int i = 0; i < n; i++) {
 			if (attributes.getLocalName(i).equals(name)) {
@@ -300,7 +300,7 @@ class SVGHandler extends DefaultHandler {
 		return null;
 	}
 
-	private NumberParse parseNumbers(String s) {
+	private NumberParser parseNumbers(String s) {
 		// Util.debug("Parsing numbers from: '" + s + "'");
 		int n = s.length();
 		int p = 0;
@@ -342,7 +342,7 @@ class SVGHandler extends DefaultHandler {
 					numbers.add(f);
 				}
 				p = i;
-				return new NumberParse(numbers, p);
+				return new NumberParser(numbers, p);
 			}
 			case '\n':
 			case '\t':
@@ -377,7 +377,7 @@ class SVGHandler extends DefaultHandler {
 			}
 			p = s.length();
 		}
-		return new NumberParse(numbers, p);
+		return new NumberParser(numbers, p);
 	}
 
 	// Process a list of transforms
@@ -403,7 +403,7 @@ class SVGHandler extends DefaultHandler {
 
 	private Matrix parseTransformItem(String s, Matrix matrix) {
 		if (s.startsWith("matrix(")) {
-			NumberParse np = parseNumbers(s.substring("matrix(".length()));
+			NumberParser np = parseNumbers(s.substring("matrix(".length()));
 			if (np.numbers.size() == 6) {
 				Matrix mat = new Matrix();
 				mat.setValues(new float[] {
@@ -418,7 +418,7 @@ class SVGHandler extends DefaultHandler {
 				matrix.preConcat(mat);
 			}
 		} else if (s.startsWith("translate(")) {
-			NumberParse np = parseNumbers(s.substring("translate(".length()));
+			NumberParser np = parseNumbers(s.substring("translate(".length()));
 			if (np.numbers.size() > 0) {
 				float tx = np.numbers.get(0);
 				float ty = 0;
@@ -428,7 +428,7 @@ class SVGHandler extends DefaultHandler {
 				matrix.preTranslate(tx, ty);
 			}
 		} else if (s.startsWith("scale(")) {
-			NumberParse np = parseNumbers(s.substring("scale(".length()));
+			NumberParser np = parseNumbers(s.substring("scale(".length()));
 			if (np.numbers.size() > 0) {
 				float sx = np.numbers.get(0);
 				float sy = sx;
@@ -438,19 +438,19 @@ class SVGHandler extends DefaultHandler {
 				matrix.preScale(sx, sy);
 			}
 		} else if (s.startsWith("skewX(")) {
-			NumberParse np = parseNumbers(s.substring("skewX(".length()));
+			NumberParser np = parseNumbers(s.substring("skewX(".length()));
 			if (np.numbers.size() > 0) {
 				float angle = np.numbers.get(0);
 				matrix.preSkew((float) Math.tan(angle), 0);
 			}
 		} else if (s.startsWith("skewY(")) {
-			NumberParse np = parseNumbers(s.substring("skewY(".length()));
+			NumberParser np = parseNumbers(s.substring("skewY(".length()));
 			if (np.numbers.size() > 0) {
 				float angle = np.numbers.get(0);
 				matrix.preSkew(0, (float) Math.tan(angle));
 			}
 		} else if (s.startsWith("rotate(")) {
-			NumberParse np = parseNumbers(s.substring("rotate(".length()));
+			NumberParser np = parseNumbers(s.substring("rotate(".length()));
 			if (np.numbers.size() > 0) {
 				float angle = np.numbers.get(0);
 				float cx = 0;
@@ -492,7 +492,7 @@ class SVGHandler extends DefaultHandler {
 		 */
 	}
 
-	private boolean doFill(Properties atts) {
+	private boolean doFill(SVGProperties atts) {
 		if ("none".equals(atts.getString("display"))) {
 			return false;
 		}
@@ -566,7 +566,7 @@ class SVGHandler extends DefaultHandler {
 		return true;
 	}
 
-	private boolean doStroke(Properties atts) {
+	private boolean doStroke(SVGProperties atts) {
 		if (whiteMode) {
 			// Never stroke in white mode
 			return false;
@@ -631,8 +631,8 @@ class SVGHandler extends DefaultHandler {
 		}
 	}
 
-	private Gradient doGradient(boolean isLinear, Attributes atts) {
-		Gradient gradient = new Gradient();
+	private SVGGradient doGradient(boolean isLinear, Attributes atts) {
+		SVGGradient gradient = new SVGGradient();
 		gradient.id = getStringAttr("id", atts);
 		gradient.isLinear = isLinear;
 		if (isLinear) {
@@ -659,7 +659,7 @@ class SVGHandler extends DefaultHandler {
 		return gradient;
 	}
 
-	private void doColor(Properties atts, Integer color, boolean fillMode,
+	private void doColor(SVGProperties atts, Integer color, boolean fillMode,
 			Paint paint) {
 		int c = (0xFFFFFF & color) | 0xFF000000;
 		if (searchColor != null && searchColor.intValue() == c) {
@@ -854,7 +854,7 @@ class SVGHandler extends DefaultHandler {
 					}
 				} else {
 					/* if the styles are declared in */
-					StyleSet styleSet = new StyleSet(styles);
+					SVGStyleSet styleSet = new SVGStyleSet(styles);
 					String colorStyle = styleSet.getStyle("stop-color");
 					if (colorStyle != null) {
 						if (colorStyle.startsWith("#")) {
@@ -953,7 +953,7 @@ class SVGHandler extends DefaultHandler {
 				}
 			}
 			pushTransform(atts); // sau
-			Properties props = new Properties(atts);
+			SVGProperties props = new SVGProperties(atts);
 
 			fillPaintStack.push(new Paint(fillPaint));
 			strokePaintStack.push(new Paint(strokePaint));
@@ -981,7 +981,7 @@ class SVGHandler extends DefaultHandler {
 			Float rx = getFloatAttr("rx", atts, 0f);
 			Float ry = getFloatAttr("ry", atts, 0f);
 			pushTransform(atts);
-			Properties props = new Properties(atts);
+			SVGProperties props = new SVGProperties(atts);
 			if (doFill(props)) {
 				doLimits(x, y, width, height);
 				if (rx <= 0f && ry <= 0f) {
@@ -1005,7 +1005,7 @@ class SVGHandler extends DefaultHandler {
 			Float x2 = getFloatAttr("x2", atts);
 			Float y1 = getFloatAttr("y1", atts);
 			Float y2 = getFloatAttr("y2", atts);
-			Properties props = new Properties(atts);
+			SVGProperties props = new SVGProperties(atts);
 			if (doStroke(props)) {
 				pushTransform(atts);
 				doLimits(x1, y1);
@@ -1019,7 +1019,7 @@ class SVGHandler extends DefaultHandler {
 			Float radius = getFloatAttr("r", atts);
 			if (centerX != null && centerY != null && radius != null) {
 				pushTransform(atts);
-				Properties props = new Properties(atts);
+				SVGProperties props = new SVGProperties(atts);
 				if (doFill(props)) {
 					doLimits(centerX - radius, centerY - radius);
 					doLimits(centerX + radius, centerY + radius);
@@ -1038,7 +1038,7 @@ class SVGHandler extends DefaultHandler {
 			if (centerX != null && centerY != null && radiusX != null
 					&& radiusY != null) {
 				pushTransform(atts);
-				Properties props = new Properties(atts);
+				SVGProperties props = new SVGProperties(atts);
 				rect.set(centerX - radiusX, centerY - radiusY, centerX
 						+ radiusX, centerY + radiusY);
 				if (doFill(props)) {
@@ -1053,13 +1053,13 @@ class SVGHandler extends DefaultHandler {
 			}
 		} else if (!hidden
 				&& (localName.equals("polygon") || localName.equals("polyline"))) {
-			NumberParse numbers = getNumberParseAttr("points", atts);
+			NumberParser numbers = getNumberParseAttr("points", atts);
 			if (numbers != null) {
 				Path p = new Path();
 				ArrayList<Float> points = numbers.numbers;
 				if (points.size() > 1) {
 					pushTransform(atts);
-					Properties props = new Properties(atts);
+					SVGProperties props = new SVGProperties(atts);
 					p.moveTo(points.get(0), points.get(1));
 					for (int i = 2; i < points.size(); i += 2) {
 						float x = points.get(i);
@@ -1086,7 +1086,7 @@ class SVGHandler extends DefaultHandler {
 		} else if (!hidden && localName.equals("path")) {
 			Path p = doPath(getStringAttr("d", atts));
 			pushTransform(atts);
-			Properties props = new Properties(atts);
+			SVGProperties props = new SVGProperties(atts);
 			if (doFill(props)) {
 				// showBounds("gradient", p);
 				doLimits(p);
@@ -1100,7 +1100,7 @@ class SVGHandler extends DefaultHandler {
 			popTransform();
 		} else if (!hidden && localName.equals("text")) {
 			pushTransform(atts);
-			text = new SvgText(atts);
+			text = new SVGText(atts);
 		} else if (!hidden) {
 			Log.d(TAG, "UNRECOGNIZED SVG COMMAND: " + localName);
 		}
@@ -1158,7 +1158,7 @@ class SVGHandler extends DefaultHandler {
 		} else if (localName.equals("linearGradient")) {
 			if (gradient.id != null) {
 				if (gradient.xlink != null) {
-					Gradient parent = gradientRefMap.get(gradient.xlink);
+					SVGGradient parent = gradientRefMap.get(gradient.xlink);
 					if (parent != null) {
 						gradient = parent.createChild(gradient);
 					}
@@ -1194,7 +1194,7 @@ class SVGHandler extends DefaultHandler {
 					positions[i] = gradient.positions.get(i);
 				}
 				if (gradient.xlink != null) {
-					Gradient parent = gradientRefMap.get(gradient.xlink);
+					SVGGradient parent = gradientRefMap.get(gradient.xlink);
 					if (parent != null) {
 						gradient = parent.createChild(gradient);
 					}
@@ -1232,7 +1232,7 @@ class SVGHandler extends DefaultHandler {
 
 	// class to hold text properties
 
-	private final class SvgText {
+	private final class SVGText {
 		private final static int MIDDLE = 1;
 		private final static int TOP = 2;
 		private Paint stroke = null, fill = null;
@@ -1241,14 +1241,14 @@ class SVGHandler extends DefaultHandler {
 		private boolean inText;
 		private int vAlign = 0;
 
-		public SvgText(Attributes atts) {
+		public SVGText(Attributes atts) {
 			// Log.d(TAG, "text");
 			x = getFloatAttr("x", atts, 0f);
 			y = getFloatAttr("y", atts, 0f);
 			svgText = null;
 			inText = true;
 
-			Properties props = new Properties(atts);
+			SVGProperties props = new SVGProperties(atts);
 			if (doFill(props)) {
 				fill = new Paint(fillPaint);
 				doText(atts, fill);
@@ -1305,7 +1305,7 @@ class SVGHandler extends DefaultHandler {
 		}
 	}
 
-	private static final class Gradient {
+	private static final class SVGGradient {
 		private String id;
 		private String xlink;
 		private boolean isLinear;
@@ -1320,8 +1320,8 @@ class SVGHandler extends DefaultHandler {
 			return "Gradient [id=" + id + ", isLinear=" + isLinear + "]";
 		}
 
-		Gradient createChild(Gradient g) {
-			Gradient child = new Gradient();
+		SVGGradient createChild(SVGGradient g) {
+			SVGGradient child = new SVGGradient();
 			child.id = g.id;
 			child.xlink = id;
 			child.isLinear = g.isLinear;
@@ -1348,10 +1348,10 @@ class SVGHandler extends DefaultHandler {
 		}
 	}
 
-	private static final class StyleSet {
+	private static final class SVGStyleSet {
 		private HashMap<String, String> styleMap = new HashMap<String, String>();
 
-		private StyleSet(String string) {
+		private SVGStyleSet(String string) {
 			String[] styles = string.split(";");
 			for (String s : styles) {
 				String[] style = s.split(":");
@@ -1366,11 +1366,11 @@ class SVGHandler extends DefaultHandler {
 		}
 	}
 
-	private static final class NumberParse {
+	private static final class NumberParser {
 		private ArrayList<Float> numbers;
 		private int nextCmd;
 
-		private NumberParse(ArrayList<Float> numbers, int nextCmd) {
+		private NumberParser(ArrayList<Float> numbers, int nextCmd) {
 			this.numbers = numbers;
 			this.nextCmd = nextCmd;
 		}
@@ -1387,15 +1387,15 @@ class SVGHandler extends DefaultHandler {
 
 	}
 
-	private final class Properties {
-		private StyleSet styles = null;
+	private final class SVGProperties {
+		private SVGStyleSet styles = null;
 		private Attributes atts;
 
-		private Properties(Attributes atts) {
+		private SVGProperties(Attributes atts) {
 			this.atts = atts;
 			String styleAttr = getStringAttr("style", atts);
 			if (styleAttr != null) {
-				styles = new StyleSet(styleAttr);
+				styles = new SVGStyleSet(styleAttr);
 			}
 		}
 
