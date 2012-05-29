@@ -91,8 +91,8 @@ class SVGHandler extends DefaultHandler {
 		if (value == null)
 			return null;
 		value = value * zoomFactor;
-//		value=value / 100;
-		return value/100;
+		// value=value / 100;
+		return value / 100;
 	}
 
 	/**
@@ -104,9 +104,9 @@ class SVGHandler extends DefaultHandler {
 	 *            the SVG path, see the specification <a
 	 *            href="http://www.w3.org/TR/SVG/paths.html">here</a>.
 	 */
-//	private Path parsePath(String pathString) {
-//		return doPath(pathString);
-//	}
+	// private Path parsePath(String pathString) {
+	// return doPath(pathString);
+	// }
 
 	/**
 	 * This is where the hard-to-parse paths are handled. Uppercase rules are
@@ -182,7 +182,7 @@ class SVGHandler extends DefaultHandler {
 			}
 			case 'L':
 			case 'l': {
-				float x =getZoomFactor( ph.nextFloat());
+				float x = getZoomFactor(ph.nextFloat());
 				float y = getZoomFactor(ph.nextFloat());
 				if (cmd == 'l') {
 					p.rLineTo(x, y);
@@ -1068,7 +1068,8 @@ class SVGHandler extends DefaultHandler {
 				if (points.size() > 1) {
 					pushTransform(atts);
 					SVGProperties props = new SVGProperties(atts);
-					p.moveTo(getZoomFactor(points.get(0)), getZoomFactor(points.get(1)));
+					p.moveTo(getZoomFactor(points.get(0)),
+							getZoomFactor(points.get(1)));
 					for (int i = 2; i < points.size(); i += 2) {
 						float x = getZoomFactor(points.get(i));
 						float y = getZoomFactor(points.get(i + 1));
@@ -1180,7 +1181,9 @@ class SVGHandler extends DefaultHandler {
 					positions[i] = gradient.positions.get(i);
 				}
 				if (colors.length == 0) {
-					Log.e(TAG, "No Gradient colors for " + gradient.id);
+					Log.e(TAG, "No Gradient colors for " + gradient.id
+							+ " Default [Black/White] used");
+					colors = new int[] { 0x000000, 0xffffff };
 				}
 				LinearGradient g = new LinearGradient(gradient.x1, gradient.y1,
 						gradient.x2, gradient.y2, colors, positions,
@@ -1193,6 +1196,12 @@ class SVGHandler extends DefaultHandler {
 			}
 		} else if (localName.equals("radialGradient")) {
 			if (gradient.id != null) {
+				if (gradient.xlink != null) {
+					SVGGradient parent = gradientRefMap.get(gradient.xlink);
+					if (parent != null) {
+						gradient = parent.createChild(gradient);
+					}
+				}
 				int[] colors = new int[gradient.colors.size()];
 				for (int i = 0; i < colors.length; i++) {
 					colors[i] = gradient.colors.get(i);
@@ -1201,11 +1210,10 @@ class SVGHandler extends DefaultHandler {
 				for (int i = 0; i < positions.length; i++) {
 					positions[i] = gradient.positions.get(i);
 				}
-				if (gradient.xlink != null) {
-					SVGGradient parent = gradientRefMap.get(gradient.xlink);
-					if (parent != null) {
-						gradient = parent.createChild(gradient);
-					}
+				if (colors.length == 0) {
+					Log.e(TAG, "No Gradient colors for " + gradient.id
+							+ " Default [Black/White] used");
+					colors = new int[] { 0x000000, 0xffffff };
 				}
 				RadialGradient g = new RadialGradient(gradient.x, gradient.y,
 						gradient.radius, colors, positions,
