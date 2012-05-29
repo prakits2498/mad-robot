@@ -81,10 +81,13 @@ public class SVGParser {
 	 *             if there is an error while parsing.
 	 */
 	public static SVG getSVGFromString(String svgData) throws SVGParseException {
-		return SVGParser.parse(new ByteArrayInputStream(svgData.getBytes()), 0,
-				0, false);
+		return getSVGFromByteArray(svgData.getBytes());
 	}
 
+	public static SVG getSVGFromByteArray(byte[] svgData) throws SVGParseException {
+		return SVGParser.parse(new ByteArrayInputStream(svgData), 0,
+				0, false);
+	}
 	/**
 	 * Parse SVG data from an Android application resource.
 	 * <p>

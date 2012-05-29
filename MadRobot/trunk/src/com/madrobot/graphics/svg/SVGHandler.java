@@ -35,8 +35,7 @@ import com.madrobot.graphics.ColorUtils;
 import com.madrobot.graphics.GraphicsUtils;
 
 class SVGHandler extends DefaultHandler {
-	// public StringBuilder parsed = new StringBuilder();
-	static final String TAG = "MadRobot";
+	private static final String TAG = "MadRobot";
 	HashMap<String, String> idXml = new HashMap<String, String>();
 
 	private Picture picture;
@@ -162,8 +161,8 @@ class SVGHandler extends DefaultHandler {
 			switch (cmd) {
 			case 'M':
 			case 'm': {
-				float x = ph.nextFloat();
-				float y = ph.nextFloat();
+				float x = getZoomFactor(ph.nextFloat());
+				float y = getZoomFactor(ph.nextFloat());
 				if (cmd == 'm') {
 					p.rMoveTo(x, y);
 					lastX += x;
@@ -182,8 +181,8 @@ class SVGHandler extends DefaultHandler {
 			}
 			case 'L':
 			case 'l': {
-				float x = ph.nextFloat();
-				float y = ph.nextFloat();
+				float x =getZoomFactor( ph.nextFloat());
+				float y = getZoomFactor(ph.nextFloat());
 				if (cmd == 'l') {
 					p.rLineTo(x, y);
 					lastX += x;
@@ -197,7 +196,7 @@ class SVGHandler extends DefaultHandler {
 			}
 			case 'H':
 			case 'h': {
-				float x = ph.nextFloat();
+				float x = getZoomFactor(ph.nextFloat());
 				if (cmd == 'h') {
 					p.rLineTo(x, 0);
 					lastX += x;
@@ -209,7 +208,7 @@ class SVGHandler extends DefaultHandler {
 			}
 			case 'V':
 			case 'v': {
-				float y = ph.nextFloat();
+				float y = getZoomFactor(ph.nextFloat());
 				if (cmd == 'v') {
 					p.rLineTo(0, y);
 					lastY += y;
@@ -222,12 +221,12 @@ class SVGHandler extends DefaultHandler {
 			case 'C':
 			case 'c': {
 				wasCurve = true;
-				float x1 = ph.nextFloat();
-				float y1 = ph.nextFloat();
-				float x2 = ph.nextFloat();
-				float y2 = ph.nextFloat();
-				float x = ph.nextFloat();
-				float y = ph.nextFloat();
+				float x1 = getZoomFactor(ph.nextFloat());
+				float y1 = getZoomFactor(ph.nextFloat());
+				float x2 = getZoomFactor(ph.nextFloat());
+				float y2 = getZoomFactor(ph.nextFloat());
+				float x = getZoomFactor(ph.nextFloat());
+				float y = getZoomFactor(ph.nextFloat());
 				if (cmd == 'c') {
 					x1 += lastX;
 					x2 += lastX;
@@ -463,8 +462,8 @@ class SVGHandler extends DefaultHandler {
 				float cx = 0;
 				float cy = 0;
 				if (np.numbers.size() > 2) {
-					cx = np.numbers.get(1);
-					cy = np.numbers.get(2);
+					cx = getZoomFactor(np.numbers.get(1));
+					cy = getZoomFactor(np.numbers.get(2));
 				}
 				matrix.preTranslate(cx, cy);
 				matrix.preRotate(angle);
