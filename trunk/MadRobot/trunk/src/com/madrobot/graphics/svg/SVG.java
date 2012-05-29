@@ -14,6 +14,7 @@ import com.madrobot.di.plist.Base64.OutputStream;
 
 import android.graphics.Picture;
 import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PictureDrawable;
 
 /**
@@ -60,7 +61,7 @@ public class SVG {
 	 * 
 	 * @return the PictureDrawable.
 	 */
-	public PictureDrawable createPictureDrawable() {
+	public Drawable createDrawable() {
 		return new PictureDrawable(picture);
 		// return new PictureDrawable(picture) {
 		// @Override

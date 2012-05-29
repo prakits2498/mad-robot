@@ -427,10 +427,10 @@ class SVGHandler extends DefaultHandler {
 		} else if (s.startsWith("translate(")) {
 			NumberParser np = parseNumbers(s.substring("translate(".length()));
 			if (np.numbers.size() > 0) {
-				float tx = np.numbers.get(0);
+				float tx = getZoomFactor(np.numbers.get(0));
 				float ty = 0;
 				if (np.numbers.size() > 1) {
-					ty = np.numbers.get(1);
+					ty = getZoomFactor(np.numbers.get(1));
 				}
 				matrix.preTranslate(tx, ty);
 			}
