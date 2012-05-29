@@ -3,14 +3,14 @@ package com.madrobot.graphics.svg;
  * Parses numbers from SVG text. Based on the Batik Number Parser (Apache 2 License).
  *
  */
- class ParserHelper {
+ class FactoryHelper {
 
     private char current;
     private CharSequence s;
     public int pos;
     private int n;
 
-     ParserHelper(CharSequence s, int pos) {
+     FactoryHelper(CharSequence s, int pos) {
         this.s = s;
         this.pos = pos;
         n = s.length();

@@ -53,7 +53,7 @@ import com.madrobot.io.CopyInputStream;
  * @see #parsePath(String)
  * 
  */
-public class SVGParser {
+public class SVGFactory {
 
 	
 	/**
@@ -68,7 +68,7 @@ public class SVGParser {
 	 */
 	public static SVG getSVGFromInputStream(InputStream svgData)
 			throws SVGParseException {
-		return SVGParser.parse(svgData, 0, 0, false);
+		return SVGFactory.parse(svgData, 0, 0, false);
 	}
 
 	/**
@@ -85,7 +85,7 @@ public class SVGParser {
 	}
 
 	public static SVG getSVGFromByteArray(byte[] svgData) throws SVGParseException {
-		return SVGParser.parse(new ByteArrayInputStream(svgData), 0,
+		return SVGFactory.parse(new ByteArrayInputStream(svgData), 0,
 				0, false);
 	}
 	/**
@@ -105,7 +105,7 @@ public class SVGParser {
 	 */
 	public static SVG getSVGFromResource(Resources resources, int resId)
 			throws SVGParseException {
-		return SVGParser.parse(resources.openRawResource(resId), 0, 0, false);
+		return SVGFactory.parse(resources.openRawResource(resId), 0, 0, false);
 	}
 
 	/**
@@ -154,7 +154,7 @@ public class SVGParser {
 	 */
 	public static SVG getSVGFromInputStream(InputStream svgData,
 			int searchColor, int replaceColor) throws SVGParseException {
-		return SVGParser.parse(svgData, searchColor, replaceColor, false);
+		return SVGFactory.parse(svgData, searchColor, replaceColor, false);
 	}
 
 	/**
@@ -176,7 +176,7 @@ public class SVGParser {
 	 */
 	public static SVG getSVGFromString(String svgData, int searchColor,
 			int replaceColor) throws SVGParseException {
-		return SVGParser.parse(new ByteArrayInputStream(svgData.getBytes()),
+		return SVGFactory.parse(new ByteArrayInputStream(svgData.getBytes()),
 				searchColor, replaceColor, false);
 	}
 
@@ -201,7 +201,7 @@ public class SVGParser {
 	 */
 	public static SVG getSVGFromResource(Resources resources, int resId,
 			int searchColor, int replaceColor) throws SVGParseException {
-		return SVGParser.parse(resources.openRawResource(resId), searchColor,
+		return SVGFactory.parse(resources.openRawResource(resId), searchColor,
 				replaceColor, false);
 	}
 
@@ -245,7 +245,7 @@ public class SVGParser {
 			SAXParser sp = spf.newSAXParser();
 			XMLReader xr = sp.getXMLReader();
 			final Picture picture = new Picture();
-			svgHandler = new SVGHandler(picture,70);
+			svgHandler = new SVGHandler(picture,200);
 			svgHandler.setColorSwap(searchColor, replaceColor);
 			svgHandler.setWhiteMode(whiteMode);
 
