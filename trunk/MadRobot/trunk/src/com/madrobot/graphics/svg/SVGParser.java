@@ -242,7 +242,7 @@ public class SVGParser {
 			SAXParser sp = spf.newSAXParser();
 			XMLReader xr = sp.getXMLReader();
 			final Picture picture = new Picture();
-			svgHandler = new SVGHandler(picture,75);
+			svgHandler = new SVGHandler(picture,70);
 			svgHandler.setColorSwap(searchColor, replaceColor);
 			svgHandler.setWhiteMode(whiteMode);
 

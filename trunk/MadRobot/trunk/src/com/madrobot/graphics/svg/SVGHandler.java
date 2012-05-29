@@ -416,10 +416,10 @@ class SVGHandler extends DefaultHandler {
 				mat.setValues(new float[] {
 						// Row 1
 						np.numbers.get(0), np.numbers.get(2),
-						np.numbers.get(4),
+						getZoomFactor(np.numbers.get(4)),
 						// Row 2
 						np.numbers.get(1), np.numbers.get(3),
-						np.numbers.get(5),
+						getZoomFactor(np.numbers.get(5)),
 						// Row 3
 						0, 0, 1, });
 				matrix.preConcat(mat);
