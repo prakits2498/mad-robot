@@ -1167,7 +1167,7 @@ class SVGHandler extends DefaultHandler {
 					p.lineTo(x, y);
 				}
 				// Don't close a polyline
-				if (localName.equals("polygon")) {
+				if (localName.equals(POLYGON)) {
 					p.close();
 				}
 				if (doFill(props)) {
