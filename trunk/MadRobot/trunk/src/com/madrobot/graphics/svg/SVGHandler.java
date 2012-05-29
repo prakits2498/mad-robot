@@ -55,30 +55,29 @@ class SVGHandler extends DefaultHandler {
 	// Scratch rect (so we aren't constantly making new ones)
 	private RectF rect = new RectF();
 	RectF bounds = null;
-	RectF limits = new RectF(Float.POSITIVE_INFINITY,
-			Float.POSITIVE_INFINITY, Float.NEGATIVE_INFINITY,
-			Float.NEGATIVE_INFINITY);
+	RectF limits = new RectF(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY,
+			Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY);
 
-	Integer searchColor = null;
-	Integer replaceColor = null;
+	private Integer searchColor = null;
+	private Integer replaceColor = null;
 
-	boolean whiteMode = false;
+	private boolean whiteMode = false;
 
-	int pushed = 0;
+	private int pushed = 0;
 
 	private boolean hidden = false;
 	private int hiddenLevel = 0;
 	private boolean boundsMode = false;
 
-	HashMap<String, Shader> gradientMap = new HashMap<String, Shader>();
-	HashMap<String, Gradient> gradientRefMap = new HashMap<String, Gradient>();
-	Gradient gradient = null;
-	SvgText text = null;
+	private HashMap<String, Shader> gradientMap = new HashMap<String, Shader>();
+	private HashMap<String, Gradient> gradientRefMap = new HashMap<String, Gradient>();
+	private Gradient gradient = null;
+	private SvgText text = null;
 
 	private boolean inDefsElement = false;
 	private int zoomFactor;
-	
-	SVGHandler(Picture picture,int zoomFactor) {
+
+	SVGHandler(Picture picture, int zoomFactor) {
 		this.picture = picture;
 		strokePaint = new Paint();
 		strokePaint.setAntiAlias(true);
@@ -86,7 +85,7 @@ class SVGHandler extends DefaultHandler {
 		fillPaint = new Paint();
 		fillPaint.setAntiAlias(true);
 		fillPaint.setStyle(Paint.Style.FILL);
-		this.zoomFactor=zoomFactor;
+		this.zoomFactor = zoomFactor;
 	}
 
 	/**
@@ -98,7 +97,7 @@ class SVGHandler extends DefaultHandler {
 	 *            the SVG path, see the specification <a
 	 *            href="http://www.w3.org/TR/SVG/paths.html">here</a>.
 	 */
-	public Path parsePath(String pathString) {
+	private Path parsePath(String pathString) {
 		return doPath(pathString);
 	}
 
@@ -470,12 +469,12 @@ class SVGHandler extends DefaultHandler {
 		return matrix;
 	}
 
-	public void setColorSwap(Integer searchColor, Integer replaceColor) {
+	void setColorSwap(Integer searchColor, Integer replaceColor) {
 		this.searchColor = searchColor;
 		this.replaceColor = replaceColor;
 	}
 
-	public void setWhiteMode(boolean whiteMode) {
+	void setWhiteMode(boolean whiteMode) {
 		this.whiteMode = whiteMode;
 	}
 
@@ -722,7 +721,7 @@ class SVGHandler extends DefaultHandler {
 		strokePaint.setPathEffect(new DashPathEffect(intervals, off));
 	}
 
-	private static float toFloat(String s, float dflt) {
+	private float toFloat(String s, float dflt) {
 		float result = dflt;
 		try {
 			result = Float.parseFloat(s);
@@ -758,7 +757,7 @@ class SVGHandler extends DefaultHandler {
 		doLimits(rect.right, rect.bottom);
 	}
 
-	private final static Matrix IDENTITY_MATRIX = new Matrix();
+	private final Matrix IDENTITY_MATRIX = new Matrix();
 
 	// XXX could be more selective using save(flags)
 	private void pushTransform(Attributes atts) {
@@ -1307,21 +1306,21 @@ class SVGHandler extends DefaultHandler {
 	}
 
 	private static final class Gradient {
-		String id;
-		String xlink;
-		boolean isLinear;
-		float x1, y1, x2, y2;
-		float x, y, radius;
-		ArrayList<Float> positions = new ArrayList<Float>();
-		ArrayList<Integer> colors = new ArrayList<Integer>();
-		Matrix matrix = null;
+		private String id;
+		private String xlink;
+		private boolean isLinear;
+		private float x1, y1, x2, y2;
+		private float x, y, radius;
+		private ArrayList<Float> positions = new ArrayList<Float>();
+		private ArrayList<Integer> colors = new ArrayList<Integer>();
+		private Matrix matrix = null;
 
 		@Override
 		public String toString() {
 			return "Gradient [id=" + id + ", isLinear=" + isLinear + "]";
 		}
 
-		public Gradient createChild(Gradient g) {
+		Gradient createChild(Gradient g) {
 			Gradient child = new Gradient();
 			child.id = g.id;
 			child.xlink = id;
@@ -1350,7 +1349,7 @@ class SVGHandler extends DefaultHandler {
 	}
 
 	private static final class StyleSet {
-		HashMap<String, String> styleMap = new HashMap<String, String>();
+		private HashMap<String, String> styleMap = new HashMap<String, String>();
 
 		private StyleSet(String string) {
 			String[] styles = string.split(";");
@@ -1362,7 +1361,7 @@ class SVGHandler extends DefaultHandler {
 			}
 		}
 
-		public String getStyle(String name) {
+		private String getStyle(String name) {
 			return styleMap.get(name);
 		}
 	}
@@ -1371,26 +1370,26 @@ class SVGHandler extends DefaultHandler {
 		private ArrayList<Float> numbers;
 		private int nextCmd;
 
-		public NumberParse(ArrayList<Float> numbers, int nextCmd) {
+		private NumberParse(ArrayList<Float> numbers, int nextCmd) {
 			this.numbers = numbers;
 			this.nextCmd = nextCmd;
 		}
 
 		@SuppressWarnings("unused")
-		public int getNextCmd() {
+		private int getNextCmd() {
 			return nextCmd;
 		}
 
 		@SuppressWarnings("unused")
-		public float getNumber(int index) {
+		private float getNumber(int index) {
 			return numbers.get(index);
 		}
 
 	}
 
-	private static final class Properties {
-		StyleSet styles = null;
-		Attributes atts;
+	private final class Properties {
+		private StyleSet styles = null;
+		private Attributes atts;
 
 		private Properties(Attributes atts) {
 			this.atts = atts;
@@ -1400,7 +1399,7 @@ class SVGHandler extends DefaultHandler {
 			}
 		}
 
-		public String getAttr(String name) {
+		private String getAttr(String name) {
 			String v = null;
 			if (styles != null) {
 				v = styles.getStyle(name);
@@ -1411,11 +1410,11 @@ class SVGHandler extends DefaultHandler {
 			return v;
 		}
 
-		public String getString(String name) {
+		private String getString(String name) {
 			return getAttr(name);
 		}
 
-		public Integer getColorValue(String name) {
+		private Integer getColorValue(String name) {
 			String v = getAttr(name);
 			if (v == null) {
 				return null;
@@ -1436,7 +1435,7 @@ class SVGHandler extends DefaultHandler {
 		}
 
 		@SuppressWarnings("unused")
-		public Float getFloat(String name, float defaultValue) {
+		private Float getFloat(String name, float defaultValue) {
 			Float v = getFloat(name);
 			if (v == null) {
 				return defaultValue;
@@ -1445,7 +1444,7 @@ class SVGHandler extends DefaultHandler {
 			}
 		}
 
-		public Float getFloat(String name) {
+		private Float getFloat(String name) {
 			String v = getAttr(name);
 			if (v == null) {
 				return null;
@@ -1459,7 +1458,7 @@ class SVGHandler extends DefaultHandler {
 		}
 	}
 
-	private static String getStringAttr(String name, Attributes attributes) {
+	private String getStringAttr(String name, Attributes attributes) {
 		int n = attributes.getLength();
 		for (int i = 0; i < n; i++) {
 			if (attributes.getLocalName(i).equals(name)) {
@@ -1469,11 +1468,11 @@ class SVGHandler extends DefaultHandler {
 		return null;
 	}
 
-	private static Float getFloatAttr(String name, Attributes attributes) {
+	private Float getFloatAttr(String name, Attributes attributes) {
 		return getFloatAttr(name, attributes, null);
 	}
 
-	private static Float getFloatAttr(String name, Attributes attributes,
+	private Float getFloatAttr(String name, Attributes attributes,
 			Float defaultValue) {
 		String v = getStringAttr(name, attributes);
 		if (v == null) {
