@@ -245,10 +245,10 @@ class SVGHandler extends DefaultHandler {
 			case 'S':
 			case 's': {
 				wasCurve = true;
-				float x2 = ph.nextFloat();
-				float y2 = ph.nextFloat();
-				float x = ph.nextFloat();
-				float y = ph.nextFloat();
+				float x2 = getZoomFactor(ph.nextFloat());
+				float y2 = getZoomFactor(ph.nextFloat());
+				float x = getZoomFactor(ph.nextFloat());
+				float y = getZoomFactor(ph.nextFloat());
 				if (cmd == 's') {
 					x2 += lastX;
 					x += lastX;
