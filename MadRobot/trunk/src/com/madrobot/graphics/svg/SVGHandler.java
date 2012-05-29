@@ -75,7 +75,35 @@ class SVGHandler extends DefaultHandler {
 
 	private boolean inDefsElement = false;
 	private int zoomFactor;
-
+	
+	
+	/**
+	 *SUPPORTED TAGS
+	 */
+	private static final String G="g";
+	private static final String USE="use";
+	private static final String STOP="stop";
+	private static final String RECT="rect";
+	private static final String LINE="line";
+	private static final String CIRCLE="circle";
+	private static final String ELLIPSE="ellipse";
+	private static final String POLYGON="polygon";
+	private static final String POLYLINE="polyline";
+	private static final String DEFS="defs";
+	private static final String PATH="path";
+	private static final String TEXT="text";
+	private static final String RADIAL_GRAD="radialGradient";
+	private static final String LINEAR_GRAD="linearGradient";
+	/**
+	 * SUPPORTED TRANSFORMATIONS
+	 */
+	private static final String TRANSFORM_MATRIX="matrix(";
+	private static final String TRANSFORM_TRANSLATE="translate(";
+	private static final String TRANSFORM_SCALE="scale(";
+	private static final String TRANSFORM_SKEW_X="skewX(";
+	private static final String TRANSFORM_SKEW_Y="skewY(";
+	private static final String TRANSFORM_ROTATE="rotate(";
+	
 	SVGHandler(Picture picture, int zoomFactor) {
 		this.picture = picture;
 		strokePaint = new Paint();
@@ -407,10 +435,12 @@ class SVGHandler extends DefaultHandler {
 		// Log.d(TAG, matrix.toShortString());
 		return matrix;
 	}
+	
+
 
 	private Matrix parseTransformItem(String s, Matrix matrix) {
-		if (s.startsWith("matrix(")) {
-			NumberParser np = parseNumbers(s.substring("matrix(".length()));
+		if (s.startsWith(TRANSFORM_MATRIX)) {
+			NumberParser np = parseNumbers(s.substring(TRANSFORM_MATRIX.length()));
 			if (np.numbers.size() == 6) {
 				Matrix mat = new Matrix();
 				mat.setValues(new float[] {
@@ -424,8 +454,8 @@ class SVGHandler extends DefaultHandler {
 						0, 0, 1, });
 				matrix.preConcat(mat);
 			}
-		} else if (s.startsWith("translate(")) {
-			NumberParser np = parseNumbers(s.substring("translate(".length()));
+		} else if (s.startsWith(TRANSFORM_TRANSLATE)) {
+			NumberParser np = parseNumbers(s.substring(TRANSFORM_TRANSLATE.length()));
 			if (np.numbers.size() > 0) {
 				float tx = getZoomFactor(np.numbers.get(0));
 				float ty = 0;
@@ -434,8 +464,8 @@ class SVGHandler extends DefaultHandler {
 				}
 				matrix.preTranslate(tx, ty);
 			}
-		} else if (s.startsWith("scale(")) {
-			NumberParser np = parseNumbers(s.substring("scale(".length()));
+		} else if (s.startsWith(TRANSFORM_SCALE)) {
+			NumberParser np = parseNumbers(s.substring(TRANSFORM_SCALE.length()));
 			if (np.numbers.size() > 0) {
 				float sx = np.numbers.get(0);
 				float sy = sx;
@@ -444,20 +474,20 @@ class SVGHandler extends DefaultHandler {
 				}
 				matrix.preScale(sx, sy);
 			}
-		} else if (s.startsWith("skewX(")) {
-			NumberParser np = parseNumbers(s.substring("skewX(".length()));
+		} else if (s.startsWith(TRANSFORM_SKEW_X)) {
+			NumberParser np = parseNumbers(s.substring(TRANSFORM_SKEW_X.length()));
 			if (np.numbers.size() > 0) {
 				float angle = np.numbers.get(0);
 				matrix.preSkew((float) Math.tan(angle), 0);
 			}
-		} else if (s.startsWith("skewY(")) {
-			NumberParser np = parseNumbers(s.substring("skewY(".length()));
+		} else if (s.startsWith(TRANSFORM_SKEW_Y)) {
+			NumberParser np = parseNumbers(s.substring(TRANSFORM_SKEW_Y.length()));
 			if (np.numbers.size() > 0) {
 				float angle = np.numbers.get(0);
 				matrix.preSkew(0, (float) Math.tan(angle));
 			}
-		} else if (s.startsWith("rotate(")) {
-			NumberParser np = parseNumbers(s.substring("rotate(".length()));
+		} else if (s.startsWith(TRANSFORM_ROTATE)) {
+			NumberParser np = parseNumbers(s.substring(TRANSFORM_ROTATE.length()));
 			if (np.numbers.size() > 0) {
 				float angle = np.numbers.get(0);
 				float cx = 0;
@@ -483,20 +513,6 @@ class SVGHandler extends DefaultHandler {
 
 	void setWhiteMode(boolean whiteMode) {
 		this.whiteMode = whiteMode;
-	}
-
-	@Override
-	public void startDocument() {
-		// Set up prior to parsing a doc
-	}
-
-	@Override
-	public void endDocument() {
-		// Clean up after parsing a doc
-		/*
-		 * String s = parsed.toString(); if (s.endsWith("</svg>")) { s = s + "";
-		 * Log.d(TAG, s); }
-		 */
 	}
 
 	private boolean doFill(SVGProperties atts) {
@@ -803,7 +819,7 @@ class SVGHandler extends DefaultHandler {
 		fillPaint.setAlpha(255);
 		// Ignore everything but rectangles in bounds mode
 		if (boundsMode) {
-			if (localName.equals("rect")) {
+			if (localName.equals(RECT)) {
 				Float x = getFloatAttr("x", atts);
 				if (x == null) {
 					x = 0f;
@@ -838,280 +854,311 @@ class SVGHandler extends DefaultHandler {
 			canvas = picture
 					.beginRecording(width.intValue(), height.intValue());
 
-		} else if (localName.equals("defs")) {
+		} else if (localName.equals(DEFS)) {
 			inDefsElement = true;
-		} else if (localName.equals("linearGradient")) {
+		} else if (localName.equals(LINEAR_GRAD)) {
 			gradient = doGradient(true, atts);
-		} else if (localName.equals("radialGradient")) {
+		} else if (localName.equals(RADIAL_GRAD)) {
 			gradient = doGradient(false, atts);
-		} else if (localName.equals("stop")) {
-			if (gradient != null) {
-				float offset = getFloatAttr("offset", atts);
-				String styles = getStringAttr("style", atts);
-				int color = Color.BLACK;
-				/* sometimes the styles are declared outside */
-				if (styles == null) {
-					String stopcolor = getStringAttr("stop-color", atts);
-					if (stopcolor != null) {
-						if (stopcolor.startsWith("#")) {
-							color = Integer
-									.parseInt(stopcolor.substring(1), 16);
-						} else {
-							color = SVGColors.mapColor(stopcolor);
-						}
-					}
-				} else {
-					/* if the styles are declared in */
-					SVGStyleSet styleSet = new SVGStyleSet(styles);
-					String colorStyle = styleSet.getStyle("stop-color");
-					if (colorStyle != null) {
-						if (colorStyle.startsWith("#")) {
-							color = Integer.parseInt(colorStyle.substring(1),
-									16);
-						} else {
-							color = Integer.parseInt(colorStyle, 16);
-						}
-					}
-					String opacityStyle = styleSet.getStyle("stop-opacity");
-					if (opacityStyle != null) {
-						float alpha = Float.parseFloat(opacityStyle);
-						int alphaInt = Math.round(255 * alpha);
-						color |= (alphaInt << 24);
-					} else {
-						color |= 0xFF000000;
-					}
-				}
-				gradient.positions.add(offset);
-				gradient.colors.add(color);
-			}
-		} else if (localName.equals("use")) {
-			String href = atts.getValue("xlink:href");
-			String attTransform = atts.getValue("transform");
-			String attX = atts.getValue("x");
-			String attY = atts.getValue("y");
-
-			StringBuilder sb = new StringBuilder();
-			sb.append("<g");
-			sb.append(" xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.1'");
-			if (attTransform != null || attX != null || attY != null) {
-				sb.append(" transform='");
-				if (attTransform != null) {
-					sb.append(XMLUtils.escapeXMLText(attTransform));
-				}
-				if (attX != null || attY != null) {
-					sb.append("translate(");
-					sb.append(attX != null ? XMLUtils.escapeXMLText(attX) : "0");
-					sb.append(",");
-					sb.append(attY != null ? XMLUtils.escapeXMLText(attY) : "0");
-					sb.append(")");
-				}
-				sb.append("'");
-			}
-
-			for (int i = 0; i < atts.getLength(); i++) {
-				String attrQName = atts.getQName(i);
-				if (!"x".equals(attrQName) && !"y".equals(attrQName)
-						&& !"width".equals(attrQName)
-						&& !"height".equals(attrQName)
-						&& !"xlink:href".equals(attrQName)
-						&& !"transform".equals(attrQName)) {
-
-					sb.append(" ");
-					sb.append(attrQName);
-					sb.append("='");
-					sb.append(XMLUtils.escapeXMLText(atts.getValue(i)));
-					sb.append("'");
-				}
-			}
-
-			sb.append(">");
-
-			sb.append(idXml.get(href.substring(1)));
-
-			sb.append("</g>");
-
-			// Log.d(TAG, sb.toString());
-
-			InputSource is = new InputSource(new StringReader(sb.toString()));
-			try {
-				SAXParserFactory spf = SAXParserFactory.newInstance();
-				SAXParser sp = spf.newSAXParser();
-				XMLReader xr = sp.getXMLReader();
-				xr.setContentHandler(this);
-				xr.parse(is);
-			} catch (Exception e) {
-				Log.d(TAG, sb.toString());
-				e.printStackTrace();
-			}
-		} else if (localName.equals("g")) {
-			// Check to see if this is the "bounds" layer
-			if ("bounds".equalsIgnoreCase(getStringAttr("id", atts))) {
-				boundsMode = true;
-			}
-			if (hidden) {
-				hiddenLevel++;
-				// Util.debug("Hidden up: " + hiddenLevel);
-			}
-			// Go in to hidden mode if display is "none"
-			if ("none".equals(getStringAttr("display", atts))) {
-				if (!hidden) {
-					hidden = true;
-					hiddenLevel = 1;
-					// Util.debug("Hidden up: " + hiddenLevel);
-				}
-			}
-			pushTransform(atts); // sau
-			SVGProperties props = new SVGProperties(atts);
-
-			fillPaintStack.push(new Paint(fillPaint));
-			strokePaintStack.push(new Paint(strokePaint));
-			fillSetStack.push(fillSet);
-			strokeSetStack.push(strokeSet);
-
-			doText(atts, fillPaint);
-			doText(atts, strokePaint);
-			doFill(props);
-			doStroke(props);
-
-			fillSet |= (props.getString("fill") != null);
-			strokeSet |= (props.getString("stroke") != null);
-		} else if (!hidden && localName.equals("rect")) {
-			Float x = getZoomFactor(getFloatAttr("x", atts));
-			if (x == null) {
-				x = 0f;
-			}
-			Float y = getZoomFactor(getFloatAttr("y", atts));
-			if (y == null) {
-				y = 0f;
-			}
-			Float width = getZoomFactor(getFloatAttr("width", atts));
-			Float height = getZoomFactor(getFloatAttr("height", atts));
-			Float rx = getZoomFactor(getFloatAttr("rx", atts, 0f));
-			Float ry = getZoomFactor(getFloatAttr("ry", atts, 0f));
-			pushTransform(atts);
-			SVGProperties props = new SVGProperties(atts);
-			if (doFill(props)) {
-				doLimits(x, y, width, height);
-				if (rx <= 0f && ry <= 0f) {
-					canvas.drawRect(x, y, x + width, y + height, fillPaint);
-				} else {
-					rect.set(x, y, x + width, y + height);
-					canvas.drawRoundRect(rect, rx, ry, fillPaint);
-				}
-			}
-			if (doStroke(props)) {
-				if (rx <= 0f && ry <= 0f) {
-					canvas.drawRect(x, y, x + width, y + height, strokePaint);
-				} else {
-					rect.set(x, y, x + width, y + height);
-					canvas.drawRoundRect(rect, rx, ry, strokePaint);
-				}
-			}
-			popTransform();
-		} else if (!hidden && localName.equals("line")) {
-			Float x1 = getZoomFactor(getFloatAttr("x1", atts));
-			Float x2 = getZoomFactor(getFloatAttr("x2", atts));
-			Float y1 = getZoomFactor(getFloatAttr("y1", atts));
-			Float y2 = getZoomFactor(getFloatAttr("y2", atts));
-			SVGProperties props = new SVGProperties(atts);
-			if (doStroke(props)) {
-				pushTransform(atts);
-				doLimits(x1, y1);
-				doLimits(x2, y2);
-				canvas.drawLine(x1, y1, x2, y2, strokePaint);
-				popTransform();
-			}
-		} else if (!hidden && localName.equals("circle")) {
-			Float centerX = getZoomFactor(getFloatAttr("cx", atts));
-			Float centerY = getZoomFactor(getFloatAttr("cy", atts));
-			Float radius = getZoomFactor(getFloatAttr("r", atts));
-			if (centerX != null && centerY != null && radius != null) {
-				pushTransform(atts);
-				SVGProperties props = new SVGProperties(atts);
-				if (doFill(props)) {
-					doLimits(centerX - radius, centerY - radius);
-					doLimits(centerX + radius, centerY + radius);
-					canvas.drawCircle(centerX, centerY, radius, fillPaint);
-				}
-				if (doStroke(props)) {
-					canvas.drawCircle(centerX, centerY, radius, strokePaint);
-				}
-				popTransform();
-			}
-		} else if (!hidden && localName.equals("ellipse")) {
-			Float centerX = getZoomFactor(getFloatAttr("cx", atts));
-			Float centerY = getZoomFactor(getFloatAttr("cy", atts));
-			Float radiusX = getZoomFactor(getFloatAttr("rx", atts));
-			Float radiusY = getZoomFactor(getFloatAttr("ry", atts));
-			if (centerX != null && centerY != null && radiusX != null
-					&& radiusY != null) {
-				pushTransform(atts);
-				SVGProperties props = new SVGProperties(atts);
-				rect.set(centerX - radiusX, centerY - radiusY, centerX
-						+ radiusX, centerY + radiusY);
-				if (doFill(props)) {
-					doLimits(centerX - radiusX, centerY - radiusY);
-					doLimits(centerX + radiusX, centerY + radiusY);
-					canvas.drawOval(rect, fillPaint);
-				}
-				if (doStroke(props)) {
-					canvas.drawOval(rect, strokePaint);
-				}
-				popTransform();
-			}
+		} else if (localName.equals(STOP)) {
+			processStop(atts);
+		} else if (localName.equals(USE)) {
+			handleUse(atts);
+		} else if (localName.equals(G)) {
+			processG(atts);
+		} else if (!hidden && localName.equals(RECT)) {
+			processRect(atts);
+		} else if (!hidden && localName.equals(LINE)) {
+			processLine(atts);
+		} else if (!hidden && localName.equals(CIRCLE)) {
+			processCircle(atts);
+		} else if (!hidden && localName.equals(ELLIPSE)) {
+			processEllipse(atts);
 		} else if (!hidden
-				&& (localName.equals("polygon") || localName.equals("polyline"))) {
-			NumberParser numbers = getNumberParseAttr("points", atts);
-			if (numbers != null) {
-				Path p = new Path();
-				ArrayList<Float> points = numbers.numbers;
-				if (points.size() > 1) {
-					pushTransform(atts);
-					SVGProperties props = new SVGProperties(atts);
-					p.moveTo(getZoomFactor(points.get(0)),
-							getZoomFactor(points.get(1)));
-					for (int i = 2; i < points.size(); i += 2) {
-						float x = getZoomFactor(points.get(i));
-						float y = getZoomFactor(points.get(i + 1));
-						p.lineTo(x, y);
-					}
-					// Don't close a polyline
-					if (localName.equals("polygon")) {
-						p.close();
-					}
-					if (doFill(props)) {
-						doLimits(p);
-
-						// showBounds("fill", p);
-						canvas.drawPath(p, fillPaint);
-					}
-					if (doStroke(props)) {
-						// showBounds("stroke", p);
-						canvas.drawPath(p, strokePaint);
-					}
-					popTransform();
-				}
-			}
-		} else if (!hidden && localName.equals("path")) {
-			Path p = doPath(getStringAttr("d", atts));
-			pushTransform(atts);
-			SVGProperties props = new SVGProperties(atts);
-			if (doFill(props)) {
-				// showBounds("gradient", p);
-				doLimits(p);
-				// showBounds("gradient", p);
-				canvas.drawPath(p, fillPaint);
-			}
-			if (doStroke(props)) {
-				// showBounds("paint", p);
-				canvas.drawPath(p, strokePaint);
-			}
-			popTransform();
-		} else if (!hidden && localName.equals("text")) {
-			pushTransform(atts);
-			text = new SVGText(atts);
+				&& (localName.equals(POLYGON) || localName.equals(POLYLINE))) {
+			processPolygon(atts, localName);
+		} else if (!hidden && localName.equals(PATH)) {
+			processPath(atts);
+		} else if (!hidden && localName.equals(TEXT)) {
+			processText(atts);
 		} else if (!hidden) {
 			Log.d(TAG, "UNRECOGNIZED SVG COMMAND: " + localName);
+		}
+	}
+
+	private final void processStop(final Attributes atts) {
+		if (gradient != null) {
+			float offset = getFloatAttr("offset", atts);
+			String styles = getStringAttr("style", atts);
+			int color = Color.BLACK;
+			/* sometimes the styles are declared outside */
+			if (styles == null) {
+				String stopcolor = getStringAttr("stop-color", atts);
+				if (stopcolor != null) {
+					if (stopcolor.startsWith("#")) {
+						color = Integer.parseInt(stopcolor.substring(1), 16);
+					} else {
+						color = SVGColors.mapColor(stopcolor);
+					}
+				}
+			} else {
+				/* if the styles are declared in */
+				SVGStyleSet styleSet = new SVGStyleSet(styles);
+				String colorStyle = styleSet.getStyle("stop-color");
+				if (colorStyle != null) {
+					if (colorStyle.startsWith("#")) {
+						color = Integer.parseInt(colorStyle.substring(1), 16);
+					} else {
+						color = Integer.parseInt(colorStyle, 16);
+					}
+				}
+				String opacityStyle = styleSet.getStyle("stop-opacity");
+				if (opacityStyle != null) {
+					float alpha = Float.parseFloat(opacityStyle);
+					int alphaInt = Math.round(255 * alpha);
+					color |= (alphaInt << 24);
+				} else {
+					color |= 0xFF000000;
+				}
+			}
+			gradient.positions.add(offset);
+			gradient.colors.add(color);
+		}
+	}
+
+	private final void handleUse(final Attributes atts) {
+		String href = atts.getValue("xlink:href");
+		String attTransform = atts.getValue("transform");
+		String attX = atts.getValue("x");
+		String attY = atts.getValue("y");
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("<g");
+		sb.append(" xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.1'");
+		if (attTransform != null || attX != null || attY != null) {
+			sb.append(" transform='");
+			if (attTransform != null) {
+				sb.append(XMLUtils.escapeXMLText(attTransform));
+			}
+			if (attX != null || attY != null) {
+				sb.append("translate(");
+				sb.append(attX != null ? XMLUtils.escapeXMLText(attX) : "0");
+				sb.append(",");
+				sb.append(attY != null ? XMLUtils.escapeXMLText(attY) : "0");
+				sb.append(")");
+			}
+			sb.append("'");
+		}
+		for (int i = 0; i < atts.getLength(); i++) {
+			String attrQName = atts.getQName(i);
+			if (!"x".equals(attrQName) && !"y".equals(attrQName)
+					&& !"width".equals(attrQName)
+					&& !"height".equals(attrQName)
+					&& !"xlink:href".equals(attrQName)
+					&& !"transform".equals(attrQName)) {
+				sb.append(" ");
+				sb.append(attrQName);
+				sb.append("='");
+				sb.append(XMLUtils.escapeXMLText(atts.getValue(i)));
+				sb.append("'");
+			}
+		}
+		sb.append(">");
+		sb.append(idXml.get(href.substring(1)));
+		sb.append("</g>");
+		// Log.d(TAG, sb.toString());
+		InputSource is = new InputSource(new StringReader(sb.toString()));
+		try {
+			SAXParserFactory spf = SAXParserFactory.newInstance();
+			SAXParser sp = spf.newSAXParser();
+			XMLReader xr = sp.getXMLReader();
+			xr.setContentHandler(this);
+			xr.parse(is);
+		} catch (Exception e) {
+			Log.d(TAG, sb.toString());
+			e.printStackTrace();
+		}
+	}
+
+	private final void processG(final Attributes atts) {
+		// Check to see if this is the "bounds" layer
+		if ("bounds".equalsIgnoreCase(getStringAttr("id", atts))) {
+			boundsMode = true;
+		}
+		if (hidden) {
+			hiddenLevel++;
+			// Util.debug("Hidden up: " + hiddenLevel);
+		}
+		// Go in to hidden mode if display is "none"
+		if ("none".equals(getStringAttr("display", atts))) {
+			if (!hidden) {
+				hidden = true;
+				hiddenLevel = 1;
+				// Util.debug("Hidden up: " + hiddenLevel);
+			}
+		}
+		pushTransform(atts); // sau
+		SVGProperties props = new SVGProperties(atts);
+
+		fillPaintStack.push(new Paint(fillPaint));
+		strokePaintStack.push(new Paint(strokePaint));
+		fillSetStack.push(fillSet);
+		strokeSetStack.push(strokeSet);
+
+		doText(atts, fillPaint);
+		doText(atts, strokePaint);
+		doFill(props);
+		doStroke(props);
+
+		fillSet |= (props.getString("fill") != null);
+		strokeSet |= (props.getString("stroke") != null);
+	}
+
+	private final void processRect(final Attributes atts) {
+		Float x = getZoomFactor(getFloatAttr("x", atts));
+		if (x == null) {
+			x = 0f;
+		}
+		Float y = getZoomFactor(getFloatAttr("y", atts));
+		if (y == null) {
+			y = 0f;
+		}
+		Float width = getZoomFactor(getFloatAttr("width", atts));
+		Float height = getZoomFactor(getFloatAttr("height", atts));
+		Float rx = getZoomFactor(getFloatAttr("rx", atts, 0f));
+		Float ry = getZoomFactor(getFloatAttr("ry", atts, 0f));
+		pushTransform(atts);
+		SVGProperties props = new SVGProperties(atts);
+		if (doFill(props)) {
+			doLimits(x, y, width, height);
+			if (rx <= 0f && ry <= 0f) {
+				canvas.drawRect(x, y, x + width, y + height, fillPaint);
+			} else {
+				rect.set(x, y, x + width, y + height);
+				canvas.drawRoundRect(rect, rx, ry, fillPaint);
+			}
+		}
+		if (doStroke(props)) {
+			if (rx <= 0f && ry <= 0f) {
+				canvas.drawRect(x, y, x + width, y + height, strokePaint);
+			} else {
+				rect.set(x, y, x + width, y + height);
+				canvas.drawRoundRect(rect, rx, ry, strokePaint);
+			}
+		}
+		popTransform();
+	}
+
+	private final void processLine(final Attributes atts) {
+		Float x1 = getZoomFactor(getFloatAttr("x1", atts));
+		Float x2 = getZoomFactor(getFloatAttr("x2", atts));
+		Float y1 = getZoomFactor(getFloatAttr("y1", atts));
+		Float y2 = getZoomFactor(getFloatAttr("y2", atts));
+		SVGProperties props = new SVGProperties(atts);
+		if (doStroke(props)) {
+			pushTransform(atts);
+			doLimits(x1, y1);
+			doLimits(x2, y2);
+			canvas.drawLine(x1, y1, x2, y2, strokePaint);
+			popTransform();
+		}
+	}
+
+	private final void processCircle(final Attributes atts) {
+		Float centerX = getZoomFactor(getFloatAttr("cx", atts));
+		Float centerY = getZoomFactor(getFloatAttr("cy", atts));
+		Float radius = getZoomFactor(getFloatAttr("r", atts));
+		if (centerX != null && centerY != null && radius != null) {
+			pushTransform(atts);
+			SVGProperties props = new SVGProperties(atts);
+			if (doFill(props)) {
+				doLimits(centerX - radius, centerY - radius);
+				doLimits(centerX + radius, centerY + radius);
+				canvas.drawCircle(centerX, centerY, radius, fillPaint);
+			}
+			if (doStroke(props)) {
+				canvas.drawCircle(centerX, centerY, radius, strokePaint);
+			}
+			popTransform();
+		}
+	}
+
+	private final void processEllipse(final Attributes atts) {
+		Float centerX = getZoomFactor(getFloatAttr("cx", atts));
+		Float centerY = getZoomFactor(getFloatAttr("cy", atts));
+		Float radiusX = getZoomFactor(getFloatAttr("rx", atts));
+		Float radiusY = getZoomFactor(getFloatAttr("ry", atts));
+		if (centerX != null && centerY != null && radiusX != null
+				&& radiusY != null) {
+			pushTransform(atts);
+			SVGProperties props = new SVGProperties(atts);
+			rect.set(centerX - radiusX, centerY - radiusY, centerX + radiusX,
+					centerY + radiusY);
+			if (doFill(props)) {
+				doLimits(centerX - radiusX, centerY - radiusY);
+				doLimits(centerX + radiusX, centerY + radiusY);
+				canvas.drawOval(rect, fillPaint);
+			}
+			if (doStroke(props)) {
+				canvas.drawOval(rect, strokePaint);
+			}
+			popTransform();
+		}
+	}
+
+	private final void processText(final Attributes atts) {
+		pushTransform(atts);
+		text = new SVGText(atts);
+	}
+
+	private final void processPath(final Attributes atts) {
+		Path p = doPath(getStringAttr("d", atts));
+		pushTransform(atts);
+		SVGProperties props = new SVGProperties(atts);
+		if (doFill(props)) {
+			// showBounds("gradient", p);
+			doLimits(p);
+			// showBounds("gradient", p);
+			canvas.drawPath(p, fillPaint);
+		}
+		if (doStroke(props)) {
+			// showBounds("paint", p);
+			canvas.drawPath(p, strokePaint);
+		}
+		popTransform();
+	}
+
+	private void processPolygon(final Attributes atts, final String localName) {
+		NumberParser numbers = getNumberParseAttr("points", atts);
+		if (numbers != null) {
+			Path p = new Path();
+			ArrayList<Float> points = numbers.numbers;
+			if (points.size() > 1) {
+				pushTransform(atts);
+				SVGProperties props = new SVGProperties(atts);
+				p.moveTo(getZoomFactor(points.get(0)),
+						getZoomFactor(points.get(1)));
+				for (int i = 2; i < points.size(); i += 2) {
+					float x = getZoomFactor(points.get(i));
+					float y = getZoomFactor(points.get(i + 1));
+					p.lineTo(x, y);
+				}
+				// Don't close a polyline
+				if (localName.equals("polygon")) {
+					p.close();
+				}
+				if (doFill(props)) {
+					doLimits(p);
+
+					// showBounds("fill", p);
+					canvas.drawPath(p, fillPaint);
+				}
+				if (doStroke(props)) {
+					// showBounds("stroke", p);
+					canvas.drawPath(p, strokePaint);
+				}
+				popTransform();
+			}
 		}
 	}
 
@@ -1158,13 +1205,13 @@ class SVGHandler extends DefaultHandler {
 			picture.endRecording();
 			gradientMap.clear();
 			gradientRefMap.clear();
-		} else if (localName.equals("text")) {
+		} else if (localName.equals(TEXT)) {
 			if (text != null) {
 				text.render(canvas);
 				text.close();
 			}
 			popTransform();
-		} else if (localName.equals("linearGradient")) {
+		} else if (localName.equals(LINEAR_GRAD)) {
 			if (gradient.id != null) {
 				if (gradient.xlink != null) {
 					SVGGradient parent = gradientRefMap.get(gradient.xlink);
@@ -1194,7 +1241,7 @@ class SVGHandler extends DefaultHandler {
 				gradientMap.put(gradient.id, g);
 				gradientRefMap.put(gradient.id, gradient);
 			}
-		} else if (localName.equals("radialGradient")) {
+		} else if (localName.equals(RADIAL_GRAD)) {
 			if (gradient.id != null) {
 				if (gradient.xlink != null) {
 					SVGGradient parent = gradientRefMap.get(gradient.xlink);
@@ -1224,7 +1271,7 @@ class SVGHandler extends DefaultHandler {
 				gradientMap.put(gradient.id, g);
 				gradientRefMap.put(gradient.id, gradient);
 			}
-		} else if (localName.equals("g")) {
+		} else if (localName.equals(G)) {
 			if (boundsMode) {
 				boundsMode = false;
 			}
@@ -1236,8 +1283,6 @@ class SVGHandler extends DefaultHandler {
 					hidden = false;
 				}
 			}
-			// Clear gradient map
-			// gradientMap.clear();
 			popTransform(); // SAU
 			fillPaint = fillPaintStack.pop();
 			fillSet = fillSetStack.pop();
