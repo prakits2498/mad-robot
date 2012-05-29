@@ -91,7 +91,8 @@ class SVGHandler extends DefaultHandler {
 		if (value == null)
 			return null;
 		value = value * zoomFactor;
-		return value / 100;
+//		value=value / 100;
+		return value/100;
 	}
 
 	/**
@@ -103,9 +104,9 @@ class SVGHandler extends DefaultHandler {
 	 *            the SVG path, see the specification <a
 	 *            href="http://www.w3.org/TR/SVG/paths.html">here</a>.
 	 */
-	private Path parsePath(String pathString) {
-		return doPath(pathString);
-	}
+//	private Path parsePath(String pathString) {
+//		return doPath(pathString);
+//	}
 
 	/**
 	 * This is where the hard-to-parse paths are handled. Uppercase rules are
@@ -266,13 +267,13 @@ class SVGHandler extends DefaultHandler {
 			}
 			case 'A':
 			case 'a': {
-				float rx = ph.nextFloat();
-				float ry = ph.nextFloat();
+				float rx = getZoomFactor(ph.nextFloat());
+				float ry = getZoomFactor(ph.nextFloat());
 				float theta = ph.nextFloat();
 				int largeArc = (int) ph.nextFloat();
 				int sweepArc = (int) ph.nextFloat();
-				float x = ph.nextFloat();
-				float y = ph.nextFloat();
+				float x = getZoomFactor(ph.nextFloat());
+				float y = getZoomFactor(ph.nextFloat());
 				if (cmd == 'a') {
 					x += lastX;
 					y += lastY;
@@ -1067,10 +1068,10 @@ class SVGHandler extends DefaultHandler {
 				if (points.size() > 1) {
 					pushTransform(atts);
 					SVGProperties props = new SVGProperties(atts);
-					p.moveTo(points.get(0), points.get(1));
+					p.moveTo(getZoomFactor(points.get(0)), getZoomFactor(points.get(1)));
 					for (int i = 2; i < points.size(); i += 2) {
-						float x = points.get(i);
-						float y = points.get(i + 1);
+						float x = getZoomFactor(points.get(i));
+						float y = getZoomFactor(points.get(i + 1));
 						p.lineTo(x, y);
 					}
 					// Don't close a polyline
