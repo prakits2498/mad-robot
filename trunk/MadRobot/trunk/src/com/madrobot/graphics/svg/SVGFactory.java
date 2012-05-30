@@ -55,20 +55,24 @@ import com.madrobot.io.CopyInputStream;
  */
 public class SVGFactory {
 
-	
 	/**
 	 * Parse SVG data from an input stream.
 	 * 
 	 * @param svgData
 	 *            the input stream, with SVG XML data in UTF-8 character
 	 *            encoding.
+	 * @param zoomFactor
+	 *            The factor by which the SVG should be zoomed. <code>100</code>
+	 *            indicates that the SVG will be rendered in its actual size,
+	 *            <code>200</code> means twice its size,<code>50</code> means
+	 *            half its size and so on.
 	 * @return the parsed SVG.
 	 * @throws SVGParseException
 	 *             if there is an error while parsing.
 	 */
-	public static SVG getSVGFromInputStream(InputStream svgData)
+	public static SVG getSVGFromInputStream(InputStream svgData, int zoomFactor)
 			throws SVGParseException {
-		return SVGFactory.parse(svgData, 0, 0, false);
+		return SVGFactory.parse(svgData, 0, 0, false, zoomFactor);
 	}
 
 	/**
@@ -76,18 +80,38 @@ public class SVGFactory {
 	 * 
 	 * @param svgData
 	 *            the string containing SVG XML data.
+	 * @param zoomFactor
+	 *            The factor by which the SVG should be zoomed. <code>100</code>
+	 *            indicates that the SVG will be rendered in its actual size,
+	 *            <code>200</code> means twice its size,<code>50</code> means
+	 *            half its size and so on.
 	 * @return the parsed SVG.
 	 * @throws SVGParseException
 	 *             if there is an error while parsing.
 	 */
-	public static SVG getSVGFromString(String svgData) throws SVGParseException {
-		return getSVGFromByteArray(svgData.getBytes());
+	public static SVG getSVGFromString(String svgData, int zoomFactor)
+			throws SVGParseException {
+		return getSVGFromByteArray(svgData.getBytes(), zoomFactor);
 	}
 
-	public static SVG getSVGFromByteArray(byte[] svgData) throws SVGParseException {
-		return SVGFactory.parse(new ByteArrayInputStream(svgData), 0,
-				0, false);
+	/**
+	 * Parse SVG from a byte array
+	 * 
+	 * @param svgData
+	 * @param zoomFactor
+	 *            The factor by which the SVG should be zoomed. <code>100</code>
+	 *            indicates that the SVG will be rendered in its actual size,
+	 *            <code>200</code> means twice its size,<code>50</code> means
+	 *            half its size and so on.
+	 * @return
+	 * @throws SVGParseException
+	 */
+	public static SVG getSVGFromByteArray(byte[] svgData, int zoomFactor)
+			throws SVGParseException {
+		return SVGFactory.parse(new ByteArrayInputStream(svgData), 0, 0, false,
+				zoomFactor);
 	}
+
 	/**
 	 * Parse SVG data from an Android application resource.
 	 * <p>
@@ -99,13 +123,19 @@ public class SVGFactory {
 	 *            the Android context resources.
 	 * @param resId
 	 *            the ID of the raw resource SVG.
+	 * @param zoomFactor
+	 *            The factor by which the SVG should be zoomed. <code>100</code>
+	 *            indicates that the SVG will be rendered in its actual size,
+	 *            <code>200</code> means twice its size,<code>50</code> means
+	 *            half its size and so on.
 	 * @return the parsed SVG.
 	 * @throws SVGParseException
 	 *             if there is an error while parsing.
 	 */
-	public static SVG getSVGFromResource(Resources resources, int resId)
-			throws SVGParseException {
-		return SVGFactory.parse(resources.openRawResource(resId), 0, 0, false);
+	public static SVG getSVGFromResource(Resources resources, int resId,
+			int zoomFactor) throws SVGParseException {
+		return SVGFactory.parse(resources.openRawResource(resId), 0, 0, false,
+				zoomFactor);
 	}
 
 	/**
@@ -119,16 +149,21 @@ public class SVGFactory {
 	 *            the Android asset manager.
 	 * @param svgPath
 	 *            the path to the SVG file in the application's assets.
+	 * @param zoomFactor
+	 *            The factor by which the SVG should be zoomed. <code>100</code>
+	 *            indicates that the SVG will be rendered in its actual size,
+	 *            <code>200</code> means twice its size,<code>50</code> means
+	 *            half its size and so on.
 	 * @return the parsed SVG.
 	 * @throws SVGParseException
 	 *             if there is an error while parsing.
 	 * @throws IOException
 	 *             if there was a problem reading the file.
 	 */
-	public static SVG getSVGFromAsset(AssetManager assetMngr, String svgPath)
-			throws SVGParseException, IOException {
+	public static SVG getSVGFromAsset(AssetManager assetMngr, String svgPath,
+			int zoomFactor) throws SVGParseException, IOException {
 		InputStream inputStream = assetMngr.open(svgPath);
-		SVG svg = getSVGFromInputStream(inputStream);
+		SVG svg = getSVGFromInputStream(inputStream, zoomFactor);
 		inputStream.close();
 		return svg;
 	}
@@ -148,13 +183,20 @@ public class SVGFactory {
 	 *            the color in the SVG to replace.
 	 * @param replaceColor
 	 *            the color with which to replace the search color.
+	 * @param zoomFactor
+	 *            The factor by which the SVG should be zoomed. <code>100</code>
+	 *            indicates that the SVG will be rendered in its actual size,
+	 *            <code>200</code> means twice its size,<code>50</code> means
+	 *            half its size and so on.
 	 * @return the parsed SVG.
 	 * @throws SVGParseException
 	 *             if there is an error while parsing.
 	 */
 	public static SVG getSVGFromInputStream(InputStream svgData,
-			int searchColor, int replaceColor) throws SVGParseException {
-		return SVGFactory.parse(svgData, searchColor, replaceColor, false);
+			int searchColor, int replaceColor, int zoomFactor)
+			throws SVGParseException {
+		return SVGFactory.parse(svgData, searchColor, replaceColor, false,
+				zoomFactor);
 	}
 
 	/**
@@ -170,14 +212,19 @@ public class SVGFactory {
 	 *            the color in the SVG to replace.
 	 * @param replaceColor
 	 *            the color with which to replace the search color.
+	 * @param zoomFactor
+	 *            The factor by which the SVG should be zoomed. <code>100</code>
+	 *            indicates that the SVG will be rendered in its actual size,
+	 *            <code>200</code> means twice its size,<code>50</code> means
+	 *            half its size and so on.
 	 * @return the parsed SVG.
 	 * @throws SVGParseException
 	 *             if there is an error while parsing.
 	 */
 	public static SVG getSVGFromString(String svgData, int searchColor,
-			int replaceColor) throws SVGParseException {
+			int replaceColor, int zoomFactor) throws SVGParseException {
 		return SVGFactory.parse(new ByteArrayInputStream(svgData.getBytes()),
-				searchColor, replaceColor, false);
+				searchColor, replaceColor, false, zoomFactor);
 	}
 
 	/**
@@ -195,14 +242,20 @@ public class SVGFactory {
 	 *            the color in the SVG to replace.
 	 * @param replaceColor
 	 *            the color with which to replace the search color.
+	 * @param zoomFactor
+	 *            The factor by which the SVG should be zoomed. <code>100</code>
+	 *            indicates that the SVG will be rendered in its actual size,
+	 *            <code>200</code> means twice its size,<code>50</code> means
+	 *            half its size and so on.
 	 * @return the parsed SVG.
 	 * @throws SVGParseException
 	 *             if there is an error while parsing.
 	 */
 	public static SVG getSVGFromResource(Resources resources, int resId,
-			int searchColor, int replaceColor) throws SVGParseException {
+			int searchColor, int replaceColor, int zoomFactor)
+			throws SVGParseException {
 		return SVGFactory.parse(resources.openRawResource(resId), searchColor,
-				replaceColor, false);
+				replaceColor, false, zoomFactor);
 	}
 
 	/**
@@ -220,6 +273,11 @@ public class SVGFactory {
 	 *            the color in the SVG to replace.
 	 * @param replaceColor
 	 *            the color with which to replace the search color.
+	 * @param zoomFactor
+	 *            The factor by which the SVG should be zoomed. <code>100</code>
+	 *            indicates that the SVG will be rendered in its actual size,
+	 *            <code>200</code> means twice its size,<code>50</code> means
+	 *            half its size and so on.
 	 * @return the parsed SVG.
 	 * @throws SVGParseException
 	 *             if there is an error while parsing.
@@ -227,16 +285,18 @@ public class SVGFactory {
 	 *             if there was a problem reading the file.
 	 */
 	public static SVG getSVGFromAsset(AssetManager assetMngr, String svgPath,
-			int searchColor, int replaceColor) throws SVGParseException,
-			IOException {
+			int searchColor, int replaceColor, int zoomFactor)
+			throws SVGParseException, IOException {
 		InputStream inputStream = assetMngr.open(svgPath);
-		SVG svg = getSVGFromInputStream(inputStream, searchColor, replaceColor);
+		SVG svg = getSVGFromInputStream(inputStream, searchColor, replaceColor,
+				zoomFactor);
 		inputStream.close();
 		return svg;
 	}
 
 	private static SVG parse(InputStream in, Integer searchColor,
-			Integer replaceColor, boolean whiteMode) throws SVGParseException {
+			Integer replaceColor, boolean whiteMode, int zoomFactor)
+			throws SVGParseException {
 		// Util.debug("Parsing SVG...");
 		SVGHandler svgHandler = null;
 		try {
@@ -245,7 +305,7 @@ public class SVGFactory {
 			SAXParser sp = spf.newSAXParser();
 			XMLReader xr = sp.getXMLReader();
 			final Picture picture = new Picture();
-			svgHandler = new SVGHandler(picture,200);
+			svgHandler = new SVGHandler(picture, zoomFactor);
 			svgHandler.setColorSwap(searchColor, replaceColor);
 			svgHandler.setWhiteMode(whiteMode);
 
@@ -271,5 +331,4 @@ public class SVGFactory {
 		}
 	}
 
-	
-	}
+}
