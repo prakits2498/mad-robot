@@ -322,6 +322,7 @@ class SVGHandler extends DefaultHandler {
 	private static final String SVG = "svg";
 	private static final String G = "g";
 	private static final String TITLE = "title";
+	private static final String DESC = "desc";
 	private static final String USE = "use";
 	private static final String STOP = "stop";
 	private static final String RECT = "rect";
@@ -416,8 +417,15 @@ class SVGHandler extends DefaultHandler {
 	@Override
 	public void characters(char ch[], int start, int length) {
 		// Log.i(TAG, new String(ch) + " " + start + "/" + length);
-		if (text != null) {
-			text.setText(ch, start, length);
+		if (isInMeta_Title) {
+			meta_title = new String(ch);
+			 Log.d(TAG, "=====TITLE +++++" + new String(ch));
+		} else if (isInMeta_Desc) {
+			meta_desc=new String(ch);
+		} else {
+			if (text != null) {
+				text.setText(ch, start, length);
+			}
 		}
 	}
 
@@ -834,6 +842,10 @@ class SVGHandler extends DefaultHandler {
 				text.close();
 			}
 			popTransform();
+		} else if (localName.equals(TITLE)) {
+			isInMeta_Title = false;
+		} else if (localName.equals(TITLE)) {
+			isInMeta_Desc = false;
 		} else if (localName.equals(LINEAR_GRAD)) {
 			addGradient(true);
 		} else if (localName.equals(RADIAL_GRAD)) {
@@ -1484,6 +1496,9 @@ class SVGHandler extends DefaultHandler {
 				+ b.right + "," + b.top);
 	}
 
+	private boolean isInMeta_Title;
+	private boolean isInMeta_Desc;
+
 	@Override
 	public void startElement(String namespaceURI, String localName,
 			String qName, Attributes atts) {
@@ -1532,6 +1547,10 @@ class SVGHandler extends DefaultHandler {
 
 		} else if (localName.equals(DEFS)) {
 			inDefsElement = true;
+		} else if (localName.equals(TITLE)) {
+			isInMeta_Title = true;
+		} else if (localName.equals(DESC)) {
+			isInMeta_Desc = true;
 		} else if (localName.equals(LINEAR_GRAD)) {
 			gradient = doGradient(true, atts);
 		} else if (localName.equals(RADIAL_GRAD)) {
