@@ -33,6 +33,13 @@ public class SVG {
 			this.title = title;
 			this.description = desc;
 		}
+
+		@Override
+		public String toString() {
+			return "MetaData [title=" + title + ", description=" + description
+					+ "]";
+		}
+		
 	}
 
 	private MetaData data;
