@@ -33,6 +33,7 @@ import android.util.Log;
 import com.madrobot.di.XMLUtils;
 import com.madrobot.graphics.ColorUtils;
 import com.madrobot.graphics.GraphicsUtils;
+import com.madrobot.graphics.svg.SVG.MetaData;
 
 class SVGHandler extends DefaultHandler {
 	private static final class NumberParser {
@@ -320,6 +321,7 @@ class SVGHandler extends DefaultHandler {
 	 */
 	private static final String SVG = "svg";
 	private static final String G = "g";
+	private static final String TITLE = "title";
 	private static final String USE = "use";
 	private static final String STOP = "stop";
 	private static final String RECT = "rect";
@@ -355,6 +357,12 @@ class SVGHandler extends DefaultHandler {
 	private static final String STROKE_DASH_OFFSET = "stroke-dashoffset";
 
 	private final Matrix IDENTITY_MATRIX = new Matrix();
+	private String meta_title;
+	private String meta_desc;
+
+	MetaData getMetaData() {
+		return new MetaData(meta_title, meta_desc);
+	}
 
 	SVGHandler(Picture picture, int zoomFactor) {
 		this.picture = picture;

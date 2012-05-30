@@ -21,12 +21,25 @@ import android.graphics.drawable.PictureDrawable;
 
 /**
  * Describes a vector Picture object, and optionally its bounds.
- * <p>
- * The ImageView using this SVG drawable ({@link #createPictureDrawable()})
- * should have the dimensions to accomodate it.
- * </p>
+ * 
  */
 public class SVG {
+
+	public static class MetaData {
+		public final String title;
+		public final String description;
+
+		MetaData(String title, String desc) {
+			this.title = title;
+			this.description = desc;
+		}
+	}
+
+	private MetaData data;
+
+	public MetaData getMetaData() {
+		return data;
+	}
 
 	/**
 	 * These are the bounds for the SVG specified as a hidden "bounds" layer in
@@ -54,9 +67,10 @@ public class SVG {
 	 * @param bounds
 	 *            the bounds computed from the "bounds" layer in the SVG.
 	 */
-	SVG(Picture picture, RectF bounds) {
+	SVG(Picture picture, MetaData data, RectF bounds) {
 		this.picture = picture;
 		this.bounds = bounds;
+		this.data = data;
 	}
 
 	/**
