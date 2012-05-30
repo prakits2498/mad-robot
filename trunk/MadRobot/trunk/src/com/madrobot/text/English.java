@@ -13,21 +13,52 @@ package com.madrobot.text;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
+/**
+ * Convert primitive types like integers to their representation in the English
+ * language.
+ * 
+ * @author elton.stephen.kent
+ * 
+ */
 public final class English {
 
+	/**
+	 * Representation of a minute. This value can be modified.
+	 */
 	public static String minute = "Minute";
+	/**
+	 * Representation of a minute (plural). This value can be modified.
+	 */
 	public static String minutes = "Minutes";
+	/**
+	 * Representation of a day. This value can be modified.
+	 */
 	public static String day = "Day";
+	/**
+	 * Representation of a day (plural). This value can be modified.
+	 */
 	public static String days = "Days";
+	/**
+	 * Representation of an hour. This value can be modified.
+	 */
 	public static String hour = "Hour";
+	/**
+	 * Representation of an hour (plural). This value can be modified.
+	 */
 	public static String hours = "Hours";
+	/**
+	 * Representation of a second. This value can be modified.
+	 */
 	public static String second = "Second";
+	/**
+	 * Representation of a second (plural). This value can be modified.
+	 */
 	public static String seconds = "Seconds";
 
 	/**
 	 * Convert a long value to the corresponding english
 	 * <p>
-	 * <b>Eg:</b> <code>longToEnglish(3456)</code> will return -
+	 * <b>Eg:</b> <code>longToEnglish(3456)</code> will return:
 	 * <code>three thousand, four hundred sixty-five</code>
 	 * </p>
 	 * 
@@ -40,6 +71,7 @@ public final class English {
 		return result.toString();
 	}
 
+	
 	public static void longToEnglish(long i, StringBuilder result) {
 		if (i == 0) {
 			result.append("zero");
