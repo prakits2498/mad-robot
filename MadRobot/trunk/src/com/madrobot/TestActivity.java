@@ -11,15 +11,15 @@
 package com.madrobot;
 
 import android.app.Activity;
-import android.content.Context;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.PictureDrawable;
 import android.os.Bundle;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.util.Log;
 import android.widget.ImageView;
 
-import com.madrobot.ui.widgets.CoverFlowGallery;
+import com.madrobot.graphics.svg.SVG;
+import com.madrobot.graphics.svg.SVGFactory;
 
 public class TestActivity extends Activity {
 
@@ -27,7 +27,17 @@ public class TestActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
 		setContentView(R.layout.main);
+		ImageView iv=(ImageView) findViewById(R.id.image);
+		SVG svg=SVGFactory.getSVGFromResource(getResources(), R.raw.gir,50);
+		Log.d("MadRobot","META-->"+svg.getMetaData().toString());
+//		Bitmap bitmap=svg.createBitmap(Bitmap.Config.ARGB_8888);
+//		System.out.println("Parsing done");
+		Drawable drawable=svg.createDrawable();
+		iv.setBackgroundDrawable(drawable);
+//		iv.setImageBitmap(bitmap);
+		
 //		BezelImageView gal=(BezelImageView) findViewById(R.id.coverflow);
 //		gal.setAdapter(new ImageAdapter(getApplicationContext()));
 		
