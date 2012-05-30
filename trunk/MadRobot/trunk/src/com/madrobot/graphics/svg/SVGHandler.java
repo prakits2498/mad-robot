@@ -419,7 +419,6 @@ class SVGHandler extends DefaultHandler {
 		// Log.i(TAG, new String(ch) + " " + start + "/" + length);
 		if (isInMeta_Title) {
 			meta_title = new String(ch);
-			Log.d(TAG, "=====TITLE +++++" + new String(ch));
 		} else if (isInMeta_Desc) {
 			meta_desc = new String(ch);
 		} else {
