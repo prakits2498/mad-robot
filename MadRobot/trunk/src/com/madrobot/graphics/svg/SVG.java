@@ -10,14 +10,14 @@
  ******************************************************************************/
 package com.madrobot.graphics.svg;
 
-import com.madrobot.di.plist.Base64.OutputStream;
-
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Picture;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PictureDrawable;
+
+import com.madrobot.di.plist.Base64.OutputStream;
 
 /**
  * Describes a vector Picture object, and optionally its bounds.

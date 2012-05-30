@@ -1,8 +1,8 @@
 package com.madrobot.graphics.bitmap;
 
-import com.madrobot.graphics.ColorUtils;
-
 import android.graphics.Bitmap;
+
+import com.madrobot.graphics.ColorUtils;
 
 /**
  * Edge detection filters

@@ -11,15 +11,10 @@
 package com.madrobot;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.PictureDrawable;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.ImageView;
+import android.view.View;
 
-import com.madrobot.graphics.svg.SVG;
-import com.madrobot.graphics.svg.SVGFactory;
+import com.madrobot.ui.widgets.SVGImageView;
 
 public class TestActivity extends Activity {
 
@@ -29,13 +24,22 @@ public class TestActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		
 		setContentView(R.layout.main);
-		ImageView iv=(ImageView) findViewById(R.id.image);
-		SVG svg=SVGFactory.getSVGFromResource(getResources(), R.raw.gir,50);
-		Log.d("MadRobot","META-->"+svg.getMetaData().toString());
+		final SVGImageView iv=(SVGImageView) findViewById(R.id.image);
+//		iv.setSVGFromResource(R.raw.gir);
+		iv.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				iv.setSVGZoomFactor(iv.getSVGZoomFactor()+10);
+				
+			}
+		});
+//		SVG svg=SVGFactory.getSVGFromResource(getResources(), R.raw.gir,50);
+//		Log.d("MadRobot","META-->"+svg.getMetaData().toString());
 //		Bitmap bitmap=svg.createBitmap(Bitmap.Config.ARGB_8888);
 //		System.out.println("Parsing done");
-		Drawable drawable=svg.createDrawable();
-		iv.setBackgroundDrawable(drawable);
+//		Drawable drawable=svg.createDrawable();
+//		iv.setBackgroundDrawable(drawable);
 //		iv.setImageBitmap(bitmap);
 		
 //		BezelImageView gal=(BezelImageView) findViewById(R.id.coverflow);

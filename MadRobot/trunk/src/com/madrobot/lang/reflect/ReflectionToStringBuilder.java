@@ -18,8 +18,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import com.madrobot.lang.ArrayUtils;
-
 /**
  * <p>
  * Assists in implementing {@link Object#toString()} methods using reflection.

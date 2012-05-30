@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import com.madrobot.lang.ArrayUtils;
 import com.madrobot.text.StringUtils;
 
 /**
