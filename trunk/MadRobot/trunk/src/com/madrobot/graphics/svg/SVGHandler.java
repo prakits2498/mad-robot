@@ -809,6 +809,7 @@ class SVGHandler extends DefaultHandler {
 		return true;
 	}
 
+	
 	@Override
 	public void endElement(String namespaceURI, String localName, String qName) {
 		if (localName.equals(SVG)) {
@@ -1474,10 +1475,6 @@ class SVGHandler extends DefaultHandler {
 	@Override
 	public void startElement(String namespaceURI, String localName,
 			String qName, Attributes atts) {
-
-		// System.out.println("Start Element->"+localName);
-		// appendElementString(parsed, namespaceURI, localName, qName,
-		// atts);
 
 		// Log.d(TAG, localName + showAttributes(atts));
 		// Reset paint opacity
