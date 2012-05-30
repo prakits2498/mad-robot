@@ -261,6 +261,10 @@ class SVGHandler extends DefaultHandler {
 		}
 	}
 
+	private class Filter {
+
+	}
+
 	private static final String TAG = "MadRobot";
 	HashMap<String, String> idXml = new HashMap<String, String>();
 	private Picture picture;
@@ -310,7 +314,7 @@ class SVGHandler extends DefaultHandler {
 	private static final String WIDTH = "width";
 	private static final String HEIGHT = "height";
 	private static final String FILL = "fill";
-	private static final String DISPLAY ="display";
+	private static final String DISPLAY = "display";
 	/**
 	 * SUPPORTED TAGS
 	 */
@@ -329,6 +333,7 @@ class SVGHandler extends DefaultHandler {
 	private static final String TEXT = "text";
 	private static final String RADIAL_GRAD = "radialGradient";
 	private static final String LINEAR_GRAD = "linearGradient";
+	private static final String FILTER = "filter";
 	/**
 	 * SUPPORTED TRANSFORMATIONS
 	 */
@@ -809,7 +814,6 @@ class SVGHandler extends DefaultHandler {
 		return true;
 	}
 
-	
 	@Override
 	public void endElement(String namespaceURI, String localName, String qName) {
 		if (localName.equals(SVG)) {
@@ -1508,8 +1512,8 @@ class SVGHandler extends DefaultHandler {
 			try {
 				width = (float) Math.ceil(getFloatAttr(WIDTH, atts));
 				height = (float) Math.ceil(getFloatAttr(HEIGHT, atts));
-				width=getZoomFactor(width);
-				height=getZoomFactor(height);
+				width = getZoomFactor(width);
+				height = getZoomFactor(height);
 			} catch (Exception e) {
 				Log.e(TAG,
 						"Height and width not specified in <SVG> tag. Default values (100,100) set.");
