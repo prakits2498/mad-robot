@@ -104,4 +104,10 @@
         </attr>
     </declare-styleable>
 
+    <!-- Attributes for com.madrobot.ui.widgets.SVGImageView -->
+    <declare-styleable name="SVGImageView">
+        <attr name="svgResource" format="integer" />
+        <attr name="svgZoomFactor" format="integer" />
+    </declare-styleable>
+
 </resources>
