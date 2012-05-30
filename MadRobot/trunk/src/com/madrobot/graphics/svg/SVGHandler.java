@@ -1508,7 +1508,8 @@ class SVGHandler extends DefaultHandler {
 			try {
 				width = (float) Math.ceil(getFloatAttr(WIDTH, atts));
 				height = (float) Math.ceil(getFloatAttr(HEIGHT, atts));
-
+				width=getZoomFactor(width);
+				height=getZoomFactor(height);
 			} catch (Exception e) {
 				Log.e(TAG,
 						"Height and width not specified in <SVG> tag. Default values (100,100) set.");
