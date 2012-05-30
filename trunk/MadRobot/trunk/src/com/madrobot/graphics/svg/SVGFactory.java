@@ -3,41 +3,17 @@ package com.madrobot.graphics.svg;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Stack;
-import java.util.StringTokenizer;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.DefaultHandler;
 
 import android.content.res.AssetManager;
 import android.content.res.Resources;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.DashPathEffect;
-import android.graphics.LinearGradient;
-import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.Paint.Align;
-import android.graphics.Path;
 import android.graphics.Picture;
-import android.graphics.RadialGradient;
-import android.graphics.Rect;
-import android.graphics.RectF;
-import android.graphics.Shader;
-import android.graphics.Typeface;
-import android.util.Log;
 
-import com.madrobot.di.XMLUtils;
-import com.madrobot.graphics.ColorUtils;
-import com.madrobot.graphics.GraphicsUtils;
 import com.madrobot.io.CopyInputStream;
 
 /**
@@ -46,11 +22,10 @@ import com.madrobot.io.CopyInputStream;
  * single color can be searched and replaced in the SVG while parsing. You can
  * also parse an svg path directly.
  * 
- * @see #getSVGFromResource(android.content.res.Resources, int)
- * @see #getSVGFromAsset(android.content.res.AssetManager, String)
- * @see #getSVGFromString(String)
- * @see #getSVGFromInputStream(java.io.InputStream)
- * @see #parsePath(String)
+ * @see #getSVGFromResource(Resources, int, int)
+ * @see #getSVGFromAsset(AssetManager, String, int)
+ * @see #getSVGFromString(String, int)
+ * @see #getSVGFromInputStream(InputStream, int)
  * 
  */
 public class SVGFactory {
@@ -67,11 +42,11 @@ public class SVGFactory {
 	 *            <code>200</code> means twice its size,<code>50</code> means
 	 *            half its size and so on.
 	 * @return the parsed SVG.
-	 * @throws SVGParseException
+	 * @throws SVGException
 	 *             if there is an error while parsing.
 	 */
 	public static SVG getSVGFromInputStream(InputStream svgData, int zoomFactor)
-			throws SVGParseException {
+			throws SVGException {
 		return SVGFactory.parse(svgData, 0, 0, false, zoomFactor);
 	}
 
@@ -86,11 +61,11 @@ public class SVGFactory {
 	 *            <code>200</code> means twice its size,<code>50</code> means
 	 *            half its size and so on.
 	 * @return the parsed SVG.
-	 * @throws SVGParseException
+	 * @throws SVGException
 	 *             if there is an error while parsing.
 	 */
 	public static SVG getSVGFromString(String svgData, int zoomFactor)
-			throws SVGParseException {
+			throws SVGException {
 		return getSVGFromByteArray(svgData.getBytes(), zoomFactor);
 	}
 
@@ -104,10 +79,10 @@ public class SVGFactory {
 	 *            <code>200</code> means twice its size,<code>50</code> means
 	 *            half its size and so on.
 	 * @return
-	 * @throws SVGParseException
+	 * @throws SVGException
 	 */
 	public static SVG getSVGFromByteArray(byte[] svgData, int zoomFactor)
-			throws SVGParseException {
+			throws SVGException {
 		return SVGFactory.parse(new ByteArrayInputStream(svgData), 0, 0, false,
 				zoomFactor);
 	}
@@ -129,11 +104,11 @@ public class SVGFactory {
 	 *            <code>200</code> means twice its size,<code>50</code> means
 	 *            half its size and so on.
 	 * @return the parsed SVG.
-	 * @throws SVGParseException
+	 * @throws SVGException
 	 *             if there is an error while parsing.
 	 */
 	public static SVG getSVGFromResource(Resources resources, int resId,
-			int zoomFactor) throws SVGParseException {
+			int zoomFactor) throws SVGException {
 		return SVGFactory.parse(resources.openRawResource(resId), 0, 0, false,
 				zoomFactor);
 	}
@@ -155,13 +130,13 @@ public class SVGFactory {
 	 *            <code>200</code> means twice its size,<code>50</code> means
 	 *            half its size and so on.
 	 * @return the parsed SVG.
-	 * @throws SVGParseException
+	 * @throws SVGException
 	 *             if there is an error while parsing.
 	 * @throws IOException
 	 *             if there was a problem reading the file.
 	 */
 	public static SVG getSVGFromAsset(AssetManager assetMngr, String svgPath,
-			int zoomFactor) throws SVGParseException, IOException {
+			int zoomFactor) throws SVGException, IOException {
 		InputStream inputStream = assetMngr.open(svgPath);
 		SVG svg = getSVGFromInputStream(inputStream, zoomFactor);
 		inputStream.close();
@@ -189,12 +164,12 @@ public class SVGFactory {
 	 *            <code>200</code> means twice its size,<code>50</code> means
 	 *            half its size and so on.
 	 * @return the parsed SVG.
-	 * @throws SVGParseException
+	 * @throws SVGException
 	 *             if there is an error while parsing.
 	 */
 	public static SVG getSVGFromInputStream(InputStream svgData,
 			int searchColor, int replaceColor, int zoomFactor)
-			throws SVGParseException {
+			throws SVGException {
 		return SVGFactory.parse(svgData, searchColor, replaceColor, false,
 				zoomFactor);
 	}
@@ -218,11 +193,11 @@ public class SVGFactory {
 	 *            <code>200</code> means twice its size,<code>50</code> means
 	 *            half its size and so on.
 	 * @return the parsed SVG.
-	 * @throws SVGParseException
+	 * @throws SVGException
 	 *             if there is an error while parsing.
 	 */
 	public static SVG getSVGFromString(String svgData, int searchColor,
-			int replaceColor, int zoomFactor) throws SVGParseException {
+			int replaceColor, int zoomFactor) throws SVGException {
 		return SVGFactory.parse(new ByteArrayInputStream(svgData.getBytes()),
 				searchColor, replaceColor, false, zoomFactor);
 	}
@@ -248,12 +223,12 @@ public class SVGFactory {
 	 *            <code>200</code> means twice its size,<code>50</code> means
 	 *            half its size and so on.
 	 * @return the parsed SVG.
-	 * @throws SVGParseException
+	 * @throws SVGException
 	 *             if there is an error while parsing.
 	 */
 	public static SVG getSVGFromResource(Resources resources, int resId,
 			int searchColor, int replaceColor, int zoomFactor)
-			throws SVGParseException {
+			throws SVGException {
 		return SVGFactory.parse(resources.openRawResource(resId), searchColor,
 				replaceColor, false, zoomFactor);
 	}
@@ -279,14 +254,14 @@ public class SVGFactory {
 	 *            <code>200</code> means twice its size,<code>50</code> means
 	 *            half its size and so on.
 	 * @return the parsed SVG.
-	 * @throws SVGParseException
+	 * @throws SVGException
 	 *             if there is an error while parsing.
 	 * @throws IOException
 	 *             if there was a problem reading the file.
 	 */
 	public static SVG getSVGFromAsset(AssetManager assetMngr, String svgPath,
 			int searchColor, int replaceColor, int zoomFactor)
-			throws SVGParseException, IOException {
+			throws SVGException, IOException {
 		InputStream inputStream = assetMngr.open(svgPath);
 		SVG svg = getSVGFromInputStream(inputStream, searchColor, replaceColor,
 				zoomFactor);
@@ -296,7 +271,7 @@ public class SVGFactory {
 
 	private static SVG parse(InputStream in, Integer searchColor,
 			Integer replaceColor, boolean whiteMode, int zoomFactor)
-			throws SVGParseException {
+			throws SVGException {
 		// Util.debug("Parsing SVG...");
 		SVGHandler svgHandler = null;
 		try {
@@ -327,7 +302,7 @@ public class SVGFactory {
 			}
 			return result;
 		} catch (Exception e) {
-			throw new SVGParseException(e);
+			throw new SVGException(e);
 		}
 	}
 

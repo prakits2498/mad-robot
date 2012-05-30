@@ -14,22 +14,22 @@ package com.madrobot.graphics.svg;
  * Runtime exception thrown when there is a problem parsing an SVG.
  * 
  */
-public class SVGParseException extends RuntimeException {
+public class SVGException extends RuntimeException {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public SVGParseException(String s) {
+	public SVGException(String s) {
 		super(s);
 	}
 
-	public SVGParseException(String s, Throwable throwable) {
+	public SVGException(String s, Throwable throwable) {
 		super(s, throwable);
 	}
 
-	public SVGParseException(Throwable throwable) {
+	public SVGException(Throwable throwable) {
 		super(throwable);
 	}
 }
