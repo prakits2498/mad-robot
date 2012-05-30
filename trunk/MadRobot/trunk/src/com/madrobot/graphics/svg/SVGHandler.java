@@ -419,9 +419,9 @@ class SVGHandler extends DefaultHandler {
 		// Log.i(TAG, new String(ch) + " " + start + "/" + length);
 		if (isInMeta_Title) {
 			meta_title = new String(ch);
-			 Log.d(TAG, "=====TITLE +++++" + new String(ch));
+			Log.d(TAG, "=====TITLE +++++" + new String(ch));
 		} else if (isInMeta_Desc) {
-			meta_desc=new String(ch);
+			meta_desc = new String(ch);
 		} else {
 			if (text != null) {
 				text.setText(ch, start, length);
@@ -832,11 +832,7 @@ class SVGHandler extends DefaultHandler {
 
 	@Override
 	public void endElement(String namespaceURI, String localName, String qName) {
-		if (localName.equals(SVG)) {
-			picture.endRecording();
-			gradientMap.clear();
-			gradientRefMap.clear();
-		} else if (localName.equals(TEXT)) {
+		if (localName.equals(TEXT)) {
 			if (text != null) {
 				text.render(canvas);
 				text.close();
@@ -844,7 +840,7 @@ class SVGHandler extends DefaultHandler {
 			popTransform();
 		} else if (localName.equals(TITLE)) {
 			isInMeta_Title = false;
-		} else if (localName.equals(TITLE)) {
+		} else if (localName.equals(DESC)) {
 			isInMeta_Desc = false;
 		} else if (localName.equals(LINEAR_GRAD)) {
 			addGradient(true);
@@ -867,6 +863,10 @@ class SVGHandler extends DefaultHandler {
 			fillSet = fillSetStack.pop();
 			strokePaint = strokePaintStack.pop();
 			strokeSet = strokeSetStack.pop();
+		} else if (localName.equals(SVG)) {
+			picture.endRecording();
+			gradientMap.clear();
+			gradientRefMap.clear();
 		}
 	}
 
