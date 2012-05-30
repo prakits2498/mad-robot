@@ -44,6 +44,33 @@ import com.madrobot.graphics.svg.SVGFactory;
  * that the SVG will be rendered in its actual size, <code>200</code> means
  * twice its size,<code>50</code> means half its size and so on.</td> </tr>
  * </table>
+ * <br/>
+ * <b>Demo</b><br/>
+ * This demo uses the <a href="../../../../resources/giraffe.svg">Giraffe.svg</a> file.
+ * <center><OBJECT CLASSID="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
+ * WIDTH="725" HEIGHT="461" CODEBASE=
+ * "http://active.macromedia.com/flash5/cabs/swflash.cab#version=7,0,0,0">
+ * <PARAM NAME=movie VALUE="../../../../resources/demos/svgimageview.swf"> <PARAM NAME=play VALUE=true> <PARAM
+ * NAME=loop VALUE=false> <PARAM NAME=wmode VALUE=transparent> <PARAM
+ * NAME=quality VALUE=low> <EMBED SRC="../../../../resources/demos/svgimageview.swf" WIDTH=725 HEIGHT=461
+ * quality=low loop=false wmode=transparent TYPE="application/x-shockwave-flash"
+ * PLUGINSPAGE=
+ * "http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash"
+ * > </EMBED> </OBJECT></center> <SCRIPT src='../../../../resources/demos/pagecurl.js'></script>
+ * <br/>
+ * <b>Using the SVGImageView</b><br/>
+ * <code>
+ * <pre>
+ * 	&lt;com.madrobot.ui.widgets.SVGImageView
+ * 	android:id="@+id/image"
+ * 	android:layout_width="wrap_content"
+ *  android:layout_height="wrap_content"
+ *  app:svgZoomFactor="100" 
+ *  app:svgResource="@raw/giraffe"
+ * 	android:background="#ff0000" /&gt;
+ * </pre>
+ * </code>
+ * <br/>
  * </p>
  * 
  * @see SVGFactory
