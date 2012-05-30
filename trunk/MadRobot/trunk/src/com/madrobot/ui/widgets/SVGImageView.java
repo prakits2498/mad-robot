@@ -19,7 +19,7 @@ import com.madrobot.graphics.svg.SVG;
 import com.madrobot.graphics.svg.SVGFactory;
 
 /**
- * An ImageView that can also use SVG images as their source.
+ * An ImageView that can also use SVG images as its source.
  * <p>
  * The SVG image set is loaded asynchronously.<br/>
  * Attributes<br/>
