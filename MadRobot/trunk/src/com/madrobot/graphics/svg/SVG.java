@@ -12,6 +12,8 @@ package com.madrobot.graphics.svg;
 
 import com.madrobot.di.plist.Base64.OutputStream;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Picture;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
@@ -20,7 +22,8 @@ import android.graphics.drawable.PictureDrawable;
 /**
  * Describes a vector Picture object, and optionally its bounds.
  * <p>
- * The ImageView using this SVG drawable ({@link #createPictureDrawable()}) should have the dimensions to accomodate it.
+ * The ImageView using this SVG drawable ({@link #createPictureDrawable()})
+ * should have the dimensions to accomodate it.
  * </p>
  */
 public class SVG {
@@ -87,12 +90,22 @@ public class SVG {
 		// }
 		// };
 	}
-	
+
+	public Bitmap createBitmap(Bitmap.Config config) {
+		Drawable drawable = createDrawable();
+		Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
+				drawable.getIntrinsicHeight(), config);
+		Canvas canvas = new Canvas(bitmap);
+		canvas.drawPicture(picture);
+		return bitmap;
+	}
+
 	/**
 	 * Write the rendered image to an ouput stream
+	 * 
 	 * @param os
 	 */
-	public void compress(OutputStream os){
+	public void compress(OutputStream os) {
 		picture.writeToStream(os);
 	}
 
