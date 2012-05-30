@@ -14,6 +14,7 @@ import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.graphics.Picture;
 
+import com.madrobot.graphics.svg.SVG.MetaData;
 import com.madrobot.io.CopyInputStream;
 
 /**
@@ -283,6 +284,7 @@ public class SVGFactory {
 			svgHandler = new SVGHandler(picture, zoomFactor);
 			svgHandler.setColorSwap(searchColor, replaceColor);
 			svgHandler.setWhiteMode(whiteMode);
+			
 
 			CopyInputStream cin = new CopyInputStream(in);
 
@@ -295,7 +297,7 @@ public class SVGFactory {
 			xr.parse(new InputSource(cin.getCopy()));
 			// Util.debug("Parsing complete in " + (System.currentTimeMillis() -
 			// start) + " millis.");
-			SVG result = new SVG(picture, svgHandler.bounds);
+			SVG result = new SVG(picture,svgHandler.getMetaData(), svgHandler.bounds);
 			// Skip bounds if it was an empty pic
 			if (!Float.isInfinite(svgHandler.limits.top)) {
 				result.setLimits(svgHandler.limits);
