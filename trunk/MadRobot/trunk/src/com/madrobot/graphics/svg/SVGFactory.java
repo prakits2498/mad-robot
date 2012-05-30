@@ -14,7 +14,6 @@ import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.graphics.Picture;
 
-import com.madrobot.graphics.svg.SVG.MetaData;
 import com.madrobot.io.CopyInputStream;
 
 /**
@@ -273,6 +272,9 @@ public class SVGFactory {
 	private static SVG parse(InputStream in, Integer searchColor,
 			Integer replaceColor, boolean whiteMode, int zoomFactor)
 			throws SVGException {
+		if(zoomFactor<0){
+			throw new IllegalArgumentException("Zoom factor should be > 0");
+		}
 		// Util.debug("Parsing SVG...");
 		SVGHandler svgHandler = null;
 		try {

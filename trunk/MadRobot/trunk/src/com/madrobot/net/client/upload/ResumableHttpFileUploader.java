@@ -16,8 +16,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import android.provider.Contacts.Settings;
-
 import com.madrobot.io.IOProgressCallback;
 import com.madrobot.io.IOUtils.IOState;
 import com.madrobot.net.HttpSettings;

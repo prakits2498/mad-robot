@@ -17,9 +17,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.madrobot.lang.ArrayUtils;
-
 import android.util.Pair;
+
+import com.madrobot.lang.ArrayUtils;
 
 /**
  * <p>
