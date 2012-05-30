@@ -108,7 +108,7 @@ public class FileUtils {
 	 * @param size
 	 * @return
 	 */
-	public static String size(long size) {
+	public static String getSizeRepresentation(long size) {
 		if (size / (1024 * 1024) > 0) {
 			float tmpSize = (float) (size) / (float) (1024 * 1024);
 			DecimalFormat df = new DecimalFormat("#.##");

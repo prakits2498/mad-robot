@@ -13,10 +13,13 @@ package com.madrobot.text;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
+import com.madrobot.io.file.FileUtils;
+
 /**
  * Convert primitive types like integers to their representation in the English
  * language.
  * 
+ * @see {@link FileUtils#getSizeRepresentation(long)}
  * @author elton.stephen.kent
  * 
  */
