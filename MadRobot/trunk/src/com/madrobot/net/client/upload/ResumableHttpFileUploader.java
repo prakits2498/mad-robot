@@ -18,8 +18,8 @@ import java.util.concurrent.TimeoutException;
 
 import com.madrobot.io.IOProgressCallback;
 import com.madrobot.io.IOUtils.IOState;
+import com.madrobot.net.HeaderConstants.HttpMethod;
 import com.madrobot.net.HttpSettings;
-import com.madrobot.net.HttpSettings.HttpMethod;
 
 /**
  * Uploads a file using resumable HTTP requests (see
