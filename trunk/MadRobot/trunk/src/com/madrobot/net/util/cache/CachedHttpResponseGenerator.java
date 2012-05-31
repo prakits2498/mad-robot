@@ -12,7 +12,7 @@ import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.protocol.HTTP;
 
-import com.madrobot.net.HeaderConstants;
+import com.madrobot.net.HttpConstants;
 import com.madrobot.net.util.cache.annotation.Immutable;
 
 /**
@@ -56,9 +56,9 @@ class CachedHttpResponseGenerator {
         long age = this.validityStrategy.getCurrentAgeSecs(entry, now);
         if (age > 0) {
             if (age >= Integer.MAX_VALUE) {
-                response.setHeader(HeaderConstants.AGE, "2147483648");
+                response.setHeader(HttpConstants.AGE, "2147483648");
             } else {
-                response.setHeader(HeaderConstants.AGE, "" + ((int) age));
+                response.setHeader(HttpConstants.AGE, "" + ((int) age));
             }
         }
 
@@ -89,7 +89,7 @@ class CachedHttpResponseGenerator {
 
         // - ETag and/or Content-Location, if the header would have been sent
         //   in a 200 response to the same request
-        Header etagHeader = entry.getFirstHeader(HeaderConstants.ETAG);
+        Header etagHeader = entry.getFirstHeader(HttpConstants.ETAG);
         if (etagHeader != null) {
             response.addHeader(etagHeader);
         }
@@ -102,17 +102,17 @@ class CachedHttpResponseGenerator {
         // - Expires, Cache-Control, and/or Vary, if the field-value might
         //   differ from that sent in any previous response for the same
         //   variant
-        Header expiresHeader = entry.getFirstHeader(HeaderConstants.EXPIRES);
+        Header expiresHeader = entry.getFirstHeader(HttpConstants.EXPIRES);
         if (expiresHeader != null) {
             response.addHeader(expiresHeader);
         }
 
-        Header cacheControlHeader = entry.getFirstHeader(HeaderConstants.CACHE_CONTROL);
+        Header cacheControlHeader = entry.getFirstHeader(HttpConstants.CACHE_CONTROL);
         if (cacheControlHeader != null) {
             response.addHeader(cacheControlHeader);
         }
 
-        Header varyHeader = entry.getFirstHeader(HeaderConstants.VARY);
+        Header varyHeader = entry.getFirstHeader(HttpConstants.VARY);
         if (varyHeader != null) {
             response.addHeader(varyHeader);
         }

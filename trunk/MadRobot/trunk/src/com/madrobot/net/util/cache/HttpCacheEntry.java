@@ -12,7 +12,7 @@ import org.apache.http.ProtocolVersion;
 import org.apache.http.StatusLine;
 import org.apache.http.message.HeaderGroup;
 
-import com.madrobot.net.HeaderConstants;
+import com.madrobot.net.HttpConstants;
 import com.madrobot.net.util.cache.annotation.Immutable;
 
 /**
@@ -192,7 +192,7 @@ public class HttpCacheEntry implements Serializable {
      * @return {@code true} if this cached response was a variant
      */
     public boolean hasVariants() {
-        return getFirstHeader(HeaderConstants.VARY) != null;
+        return getFirstHeader(HttpConstants.VARY) != null;
     }
 
     /**

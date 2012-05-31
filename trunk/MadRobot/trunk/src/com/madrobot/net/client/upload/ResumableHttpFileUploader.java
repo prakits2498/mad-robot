@@ -18,8 +18,8 @@ import java.util.concurrent.TimeoutException;
 
 import com.madrobot.io.IOProgressCallback;
 import com.madrobot.io.IOUtils.IOState;
-import com.madrobot.net.HeaderConstants.HttpMethod;
-import com.madrobot.net.HttpSettings;
+import com.madrobot.net.HttpConstants.HttpMethod;
+import com.madrobot.net.HttpHelperSettings;
 
 /**
  * Uploads a file using resumable HTTP requests (see
@@ -195,7 +195,7 @@ public class ResumableHttpFileUploader {
 	/**
 	 * HTTP request method to use when uploading.
 	 */
-	private HttpSettings httpRequestMethod;
+	private HttpHelperSettings httpRequestMethod;
 
 	/**
 	 * Extra http headers to send in each request.
@@ -253,11 +253,11 @@ public class ResumableHttpFileUploader {
 		private IOProgressCallback progressListener;
 		private long chunkSize = DEFAULT_MAX_CHUNK_SIZE;
 		private long progressIntervalMillis = DEFAULT_PROGRESS_INTERVAL_MS;
-		private HttpSettings settings=new HttpSettings();
+		private HttpHelperSettings settings=new HttpHelperSettings();
 		{
 		settings.setHttpMethod(HttpMethod.PUT);
 		}
-		private HttpSettings requestMethod =settings;// RequestMethod.PUT;
+		private HttpHelperSettings requestMethod =settings;// RequestMethod.PUT;
 		
 		private BackoffPolicy backoffPolicy = BackoffPolicy.DEFAULT;
 
@@ -361,7 +361,7 @@ public class ResumableHttpFileUploader {
 		 *            PUT.
 		 * @return this
 		 */
-		public Builder setHttpSettings(HttpSettings httpSettings) {
+		public Builder setHttpSettings(HttpHelperSettings httpSettings) {
 			this.requestMethod = httpSettings;
 			return this;
 		}
@@ -492,7 +492,7 @@ public class ResumableHttpFileUploader {
 	/**
 	 * Returns the http request method to use for upload.
 	 */
-	public HttpSettings getHttpSettings() {
+	public HttpHelperSettings getHttpSettings() {
 		return this.httpRequestMethod;
 	}
 

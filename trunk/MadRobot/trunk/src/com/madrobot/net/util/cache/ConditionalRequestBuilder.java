@@ -9,7 +9,7 @@ import org.apache.http.HttpRequest;
 import org.apache.http.ProtocolException;
 import org.apache.http.impl.client.RequestWrapper;
 
-import com.madrobot.net.HeaderConstants;
+import com.madrobot.net.HttpConstants;
 import com.madrobot.net.util.cache.annotation.Immutable;
 
 import android.util.Log;
@@ -35,26 +35,26 @@ class ConditionalRequestBuilder {
             throws ProtocolException {
         RequestWrapper wrapperRequest = new RequestWrapper(request);
         wrapperRequest.resetHeaders();
-        Header eTag = cacheEntry.getFirstHeader(HeaderConstants.ETAG);
+        Header eTag = cacheEntry.getFirstHeader(HttpConstants.ETAG);
         if (eTag != null) {
-            wrapperRequest.setHeader(HeaderConstants.IF_NONE_MATCH, eTag.getValue());
+            wrapperRequest.setHeader(HttpConstants.IF_NONE_MATCH, eTag.getValue());
         }
-        Header lastModified = cacheEntry.getFirstHeader(HeaderConstants.LAST_MODIFIED);
+        Header lastModified = cacheEntry.getFirstHeader(HttpConstants.LAST_MODIFIED);
         if (lastModified != null) {
-            wrapperRequest.setHeader(HeaderConstants.IF_MODIFIED_SINCE, lastModified.getValue());
+            wrapperRequest.setHeader(HttpConstants.IF_MODIFIED_SINCE, lastModified.getValue());
         }
         boolean mustRevalidate = false;
-        for(Header h : cacheEntry.getHeaders(HeaderConstants.CACHE_CONTROL)) {
+        for(Header h : cacheEntry.getHeaders(HttpConstants.CACHE_CONTROL)) {
             for(HeaderElement elt : h.getElements()) {
-                if (HeaderConstants.CACHE_CONTROL_MUST_REVALIDATE.equalsIgnoreCase(elt.getName())
-                    || HeaderConstants.CACHE_CONTROL_PROXY_REVALIDATE.equalsIgnoreCase(elt.getName())) {
+                if (HttpConstants.CACHE_CONTROL_MUST_REVALIDATE.equalsIgnoreCase(elt.getName())
+                    || HttpConstants.CACHE_CONTROL_PROXY_REVALIDATE.equalsIgnoreCase(elt.getName())) {
                     mustRevalidate = true;
                     break;
                 }
             }
         }
         if (mustRevalidate) {
-            wrapperRequest.addHeader(HeaderConstants.CACHE_CONTROL, HeaderConstants.CACHE_CONTROL_MAX_AGE + "=0");
+            wrapperRequest.addHeader(HttpConstants.CACHE_CONTROL, HttpConstants.CACHE_CONTROL_MAX_AGE + "=0");
         }
         return wrapperRequest;
 
@@ -92,7 +92,7 @@ class ConditionalRequestBuilder {
             etags.append(etag);
         }
 
-        wrapperRequest.setHeader(HeaderConstants.IF_NONE_MATCH, etags.toString());
+        wrapperRequest.setHeader(HttpConstants.IF_NONE_MATCH, etags.toString());
         return wrapperRequest;
     }
 
@@ -116,13 +116,13 @@ class ConditionalRequestBuilder {
             return request;
         }
         wrapped.resetHeaders();
-        wrapped.addHeader(HeaderConstants.CACHE_CONTROL,HeaderConstants.CACHE_CONTROL_NO_CACHE);
-        wrapped.addHeader(HeaderConstants.PRAGMA,HeaderConstants.CACHE_CONTROL_NO_CACHE);
-        wrapped.removeHeaders(HeaderConstants.IF_RANGE);
-        wrapped.removeHeaders(HeaderConstants.IF_MATCH);
-        wrapped.removeHeaders(HeaderConstants.IF_NONE_MATCH);
-        wrapped.removeHeaders(HeaderConstants.IF_UNMODIFIED_SINCE);
-        wrapped.removeHeaders(HeaderConstants.IF_MODIFIED_SINCE);
+        wrapped.addHeader(HttpConstants.CACHE_CONTROL,HttpConstants.CACHE_CONTROL_NO_CACHE);
+        wrapped.addHeader(HttpConstants.PRAGMA,HttpConstants.CACHE_CONTROL_NO_CACHE);
+        wrapped.removeHeaders(HttpConstants.IF_RANGE);
+        wrapped.removeHeaders(HttpConstants.IF_MATCH);
+        wrapped.removeHeaders(HttpConstants.IF_NONE_MATCH);
+        wrapped.removeHeaders(HttpConstants.IF_UNMODIFIED_SINCE);
+        wrapped.removeHeaders(HttpConstants.IF_MODIFIED_SINCE);
         return wrapped;
     }
 

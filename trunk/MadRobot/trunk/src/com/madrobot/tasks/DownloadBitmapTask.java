@@ -23,7 +23,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
 import android.util.Log;
 
-import com.madrobot.net.HttpTaskHelper;
+import com.madrobot.net.HttpHelper;
 
 /**
  * Async task to download a list of bitmaps
@@ -63,7 +63,7 @@ public class DownloadBitmapTask extends AbstractTask {
 		for (int i = 0; i < uri.length; i++) {
 			DataResponse response = new DataResponse();
 			response.setResponseId(i);
-			HttpTaskHelper helper = new HttpTaskHelper(uri[i]);
+			HttpHelper helper = new HttpHelper(uri[i]);
 			try {
 				Log.d("BitmapTask", "Downloading Bitmap->" + uri[i]);
 				HttpEntity entity = helper.execute();

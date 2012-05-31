@@ -7,8 +7,8 @@ import org.apache.http.HttpRequest;
 import org.apache.http.HttpVersion;
 import org.apache.http.ProtocolVersion;
 
-import com.madrobot.net.HeaderConstants;
-import com.madrobot.net.HeaderConstants.HttpMethod;
+import com.madrobot.net.HttpConstants;
+import com.madrobot.net.HttpConstants.HttpMethod;
 import com.madrobot.net.util.cache.annotation.Immutable;
 
 import android.util.Log;
@@ -43,21 +43,21 @@ class CacheableRequestPolicy {
             return false;
         }
 
-        if (request.getHeaders(HeaderConstants.PRAGMA).length > 0) {
+        if (request.getHeaders(HttpConstants.PRAGMA).length > 0) {
         	  Log.d("MadRobot","request with Pragma header was not serveable from cache");
             return false;
         }
 
-        Header[] cacheControlHeaders = request.getHeaders(HeaderConstants.CACHE_CONTROL);
+        Header[] cacheControlHeaders = request.getHeaders(HttpConstants.CACHE_CONTROL);
         for (Header cacheControl : cacheControlHeaders) {
             for (HeaderElement cacheControlElement : cacheControl.getElements()) {
-                if (HeaderConstants.CACHE_CONTROL_NO_STORE.equalsIgnoreCase(cacheControlElement
+                if (HttpConstants.CACHE_CONTROL_NO_STORE.equalsIgnoreCase(cacheControlElement
                         .getName())) {
                 	  Log.d("MadRobot","Request with no-store was not serveable from cache");
                     return false;
                 }
 
-                if (HeaderConstants.CACHE_CONTROL_NO_CACHE.equalsIgnoreCase(cacheControlElement
+                if (HttpConstants.CACHE_CONTROL_NO_CACHE.equalsIgnoreCase(cacheControlElement
                         .getName())) {
                 	  Log.d("MadRobot","Request with no-cache was not serveable from cache");
                     return false;

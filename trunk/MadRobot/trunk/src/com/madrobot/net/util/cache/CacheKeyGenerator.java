@@ -17,7 +17,7 @@ import org.apache.http.HeaderElement;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 
-import com.madrobot.net.HeaderConstants;
+import com.madrobot.net.HttpConstants;
 import com.madrobot.net.util.cache.annotation.Immutable;
 
 /**
@@ -126,7 +126,7 @@ class CacheKeyGenerator {
      */
     public String getVariantKey(HttpRequest req, HttpCacheEntry entry) {
         List<String> variantHeaderNames = new ArrayList<String>();
-        for (Header varyHdr : entry.getHeaders(HeaderConstants.VARY)) {
+        for (Header varyHdr : entry.getHeaders(HttpConstants.VARY)) {
             for (HeaderElement elt : varyHdr.getElements()) {
                 variantHeaderNames.add(elt.getName());
             }

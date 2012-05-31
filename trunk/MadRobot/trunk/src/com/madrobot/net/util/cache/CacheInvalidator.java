@@ -13,8 +13,8 @@ import org.apache.http.impl.cookie.DateParseException;
 import org.apache.http.impl.cookie.DateUtils;
 import org.apache.http.protocol.HTTP;
 
-import com.madrobot.net.HeaderConstants;
-import com.madrobot.net.HeaderConstants.HttpMethod;
+import com.madrobot.net.HttpConstants;
+import com.madrobot.net.HttpConstants.HttpMethod;
 import com.madrobot.net.util.cache.annotation.ThreadSafe;
 
 import android.util.Log;
@@ -189,8 +189,8 @@ class CacheInvalidator {
 
     private boolean responseAndEntryEtagsDiffer(HttpResponse response,
             HttpCacheEntry entry) {
-        Header entryEtag = entry.getFirstHeader(HeaderConstants.ETAG);
-        Header responseEtag = response.getFirstHeader(HeaderConstants.ETAG);
+        Header entryEtag = entry.getFirstHeader(HttpConstants.ETAG);
+        Header responseEtag = response.getFirstHeader(HttpConstants.ETAG);
         if (entryEtag == null || responseEtag == null) return false;
         return (!entryEtag.getValue().equals(responseEtag.getValue()));
     }

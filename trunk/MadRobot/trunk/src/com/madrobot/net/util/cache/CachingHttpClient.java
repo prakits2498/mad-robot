@@ -38,8 +38,8 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.apache.http.util.VersionInfo;
 
-import com.madrobot.net.HeaderConstants;
-import com.madrobot.net.HeaderConstants.HttpMethod;
+import com.madrobot.net.HttpConstants;
+import com.madrobot.net.HttpConstants.HttpMethod;
 import com.madrobot.net.util.cache.annotation.ThreadSafe;
 
 import android.util.Log;
@@ -558,15 +558,15 @@ Log.d("MadRobot","Unable to retrieve entries from cache", ioe);
     private HttpResponse generateCachedResponse(HttpRequest request,
             HttpContext context, HttpCacheEntry entry, Date now) {
         final HttpResponse cachedResponse;
-        if (request.containsHeader(HeaderConstants.IF_NONE_MATCH)
-                || request.containsHeader(HeaderConstants.IF_MODIFIED_SINCE)) {
+        if (request.containsHeader(HttpConstants.IF_NONE_MATCH)
+                || request.containsHeader(HttpConstants.IF_MODIFIED_SINCE)) {
             cachedResponse = responseGenerator.generateNotModifiedResponse(entry);
         } else {
             cachedResponse = responseGenerator.generateResponse(entry);
         }
         setResponseStatus(context, CacheResponseStatus.CACHE_HIT);
         if (validityPolicy.getStalenessSecs(entry, now) > 0L) {
-            cachedResponse.addHeader(HeaderConstants.WARNING,"110 localhost \"Response is stale\"");
+            cachedResponse.addHeader(HttpConstants.WARNING,"110 localhost \"Response is stale\"");
         }
         return cachedResponse;
     }
@@ -590,7 +590,7 @@ Log.d("MadRobot","Unable to retrieve entries from cache", ioe);
             HttpCacheEntry entry) {
         final HttpResponse cachedResponse = responseGenerator.generateResponse(entry);
         setResponseStatus(context, CacheResponseStatus.CACHE_HIT);
-        cachedResponse.addHeader(HeaderConstants.WARNING, "111 localhost \"Revalidation failed\"");
+        cachedResponse.addHeader(HttpConstants.WARNING, "111 localhost \"Revalidation failed\"");
         return cachedResponse;
     }
 
@@ -602,7 +602,7 @@ Log.d("MadRobot","Unable to retrieve entries from cache", ioe);
     }
 
     private boolean mayCallBackend(HttpRequest request) {
-        for (Header h: request.getHeaders(HeaderConstants.CACHE_CONTROL)) {
+        for (Header h: request.getHeaders(HttpConstants.CACHE_CONTROL)) {
             for (HeaderElement elt : h.getElements()) {
                 if ("only-if-cached".equals(elt.getName())) {
                     return false;
@@ -613,9 +613,9 @@ Log.d("MadRobot","Unable to retrieve entries from cache", ioe);
     }
 
     private boolean explicitFreshnessRequest(HttpRequest request, HttpCacheEntry entry, Date now) {
-        for(Header h : request.getHeaders(HeaderConstants.CACHE_CONTROL)) {
+        for(Header h : request.getHeaders(HttpConstants.CACHE_CONTROL)) {
             for(HeaderElement elt : h.getElements()) {
-                if (HeaderConstants.CACHE_CONTROL_MAX_STALE.equals(elt.getName())) {
+                if (HttpConstants.CACHE_CONTROL_MAX_STALE.equals(elt.getName())) {
                     try {
                         int maxstale = Integer.parseInt(elt.getValue());
                         long age = validityPolicy.getCurrentAgeSecs(entry, now);
@@ -624,8 +624,8 @@ Log.d("MadRobot","Unable to retrieve entries from cache", ioe);
                     } catch (NumberFormatException nfe) {
                         return true;
                     }
-                } else if (HeaderConstants.CACHE_CONTROL_MIN_FRESH.equals(elt.getName())
-                            || HeaderConstants.CACHE_CONTROL_MAX_AGE.equals(elt.getName())) {
+                } else if (HttpConstants.CACHE_CONTROL_MIN_FRESH.equals(elt.getName())
+                            || HttpConstants.CACHE_CONTROL_MAX_AGE.equals(elt.getName())) {
                     return true;
                 }
             }
@@ -695,7 +695,7 @@ Log.d("MadRobot","Unable to retrieve entries from cache", ioe);
         if (!"*".equals(line.getUri()))
             return false;
 
-        if (!"0".equals(request.getFirstHeader(HeaderConstants.MAX_FORWARDS).getValue()))
+        if (!"0".equals(request.getFirstHeader(HttpConstants.MAX_FORWARDS).getValue()))
             return false;
 
         return true;
@@ -748,7 +748,7 @@ Log.d("MadRobot","Unable to retrieve entries from cache", ioe);
             return handleBackendResponse(target, request, requestDate, responseDate, backendResponse);
         }
 
-        Header resultEtagHeader = backendResponse.getFirstHeader(HeaderConstants.ETAG);
+        Header resultEtagHeader = backendResponse.getFirstHeader(HttpConstants.ETAG);
         if (resultEtagHeader == null) {
         	Log.d("MadRobot","304 response did not contain ETag");
             return callBackend(target, request, context);
@@ -843,7 +843,7 @@ Log.d("MadRobot","Unable to retrieve entries from cache", ioe);
             responseDate = getCurrentDate();
         }
 
-        backendResponse.addHeader(HeaderConstants.VIA, generateViaHeader(backendResponse));
+        backendResponse.addHeader(HttpConstants.VIA, generateViaHeader(backendResponse));
 
         int statusCode = backendResponse.getStatusLine().getStatusCode();
         if (statusCode == HttpStatus.SC_NOT_MODIFIED || statusCode == HttpStatus.SC_OK) {
@@ -864,7 +864,7 @@ Log.d("MadRobot","Unable to retrieve entries from cache", ioe);
             && !staleResponseNotAllowed(request, cacheEntry, getCurrentDate())
             && validityPolicy.mayReturnStaleIfError(request, cacheEntry, responseDate)) {
             final HttpResponse cachedResponse = responseGenerator.generateResponse(cacheEntry);
-            cachedResponse.addHeader(HeaderConstants.WARNING, "110 localhost \"Response is stale\"");
+            cachedResponse.addHeader(HttpConstants.WARNING, "110 localhost \"Response is stale\"");
             HttpEntity errorBody = backendResponse.getEntity();
             if (errorBody != null) consume(errorBody);
             return cachedResponse;

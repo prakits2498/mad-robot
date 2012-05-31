@@ -14,7 +14,7 @@ import org.apache.http.impl.cookie.DateParseException;
 import org.apache.http.impl.cookie.DateUtils;
 import org.apache.http.protocol.HTTP;
 
-import com.madrobot.net.HeaderConstants;
+import com.madrobot.net.HttpConstants;
 import com.madrobot.net.util.cache.annotation.Immutable;
 
 /**
@@ -106,8 +106,8 @@ class CacheEntryUpdater {
         while (cacheEntryHeaderListIter.hasNext()) {
             String cacheEntryHeaderName = cacheEntryHeaderListIter.next().getName();
 
-            if (HeaderConstants.WARNING.equals(cacheEntryHeaderName)) {
-                for (Header cacheEntryWarning : entry.getHeaders(HeaderConstants.WARNING)) {
+            if (HttpConstants.WARNING.equals(cacheEntryHeaderName)) {
+                for (Header cacheEntryWarning : entry.getHeaders(HttpConstants.WARNING)) {
                     if (cacheEntryWarning.getValue().startsWith("1")) {
                         cacheEntryHeaderListIter.remove();
                     }

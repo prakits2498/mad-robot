@@ -14,8 +14,8 @@ import org.apache.http.impl.cookie.DateParseException;
 import org.apache.http.impl.cookie.DateUtils;
 import org.apache.http.protocol.HTTP;
 
-import com.madrobot.net.HeaderConstants;
-import com.madrobot.net.HeaderConstants.HttpMethod;
+import com.madrobot.net.HttpConstants;
+import com.madrobot.net.HttpConstants.HttpMethod;
 import com.madrobot.net.util.cache.annotation.Immutable;
 
 import android.util.Log;
@@ -88,12 +88,12 @@ class ResponseCachingPolicy {
                 return false;
         }
 
-        Header[] ageHeaders = response.getHeaders(HeaderConstants.AGE);
+        Header[] ageHeaders = response.getHeaders(HttpConstants.AGE);
 
         if (ageHeaders.length > 1)
             return false;
 
-        Header[] expiresHeaders = response.getHeaders(HeaderConstants.EXPIRES);
+        Header[] expiresHeaders = response.getHeaders(HttpConstants.EXPIRES);
 
         if (expiresHeaders.length > 1)
             return false;
@@ -109,7 +109,7 @@ class ResponseCachingPolicy {
             return false;
         }
 
-        for (Header varyHdr : response.getHeaders(HeaderConstants.VARY)) {
+        for (Header varyHdr : response.getHeaders(HttpConstants.VARY)) {
             for (HeaderElement elem : varyHdr.getElements()) {
                 if ("*".equals(elem.getName())) {
                     return false;
@@ -124,12 +124,12 @@ class ResponseCachingPolicy {
     }
 
     protected boolean isExplicitlyNonCacheable(HttpResponse response) {
-        Header[] cacheControlHeaders = response.getHeaders(HeaderConstants.CACHE_CONTROL);
+        Header[] cacheControlHeaders = response.getHeaders(HttpConstants.CACHE_CONTROL);
         for (Header header : cacheControlHeaders) {
             for (HeaderElement elem : header.getElements()) {
-                if (HeaderConstants.CACHE_CONTROL_NO_STORE.equals(elem.getName())
-                        || HeaderConstants.CACHE_CONTROL_NO_CACHE.equals(elem.getName())
-                        || (sharedCache && HeaderConstants.PRIVATE.equals(elem.getName()))) {
+                if (HttpConstants.CACHE_CONTROL_NO_STORE.equals(elem.getName())
+                        || HttpConstants.CACHE_CONTROL_NO_CACHE.equals(elem.getName())
+                        || (sharedCache && HttpConstants.PRIVATE.equals(elem.getName()))) {
                     return true;
                 }
             }
@@ -138,7 +138,7 @@ class ResponseCachingPolicy {
     }
 
     protected boolean hasCacheControlParameterFrom(HttpMessage msg, String[] params) {
-        Header[] cacheControlHeaders = msg.getHeaders(HeaderConstants.CACHE_CONTROL);
+        Header[] cacheControlHeaders = msg.getHeaders(HttpConstants.CACHE_CONTROL);
         for (Header header : cacheControlHeaders) {
             for (HeaderElement elem : header.getElements()) {
                 for (String param : params) {
@@ -152,12 +152,12 @@ class ResponseCachingPolicy {
     }
 
     protected boolean isExplicitlyCacheable(HttpResponse response) {
-        if (response.getFirstHeader(HeaderConstants.EXPIRES) != null)
+        if (response.getFirstHeader(HttpConstants.EXPIRES) != null)
             return true;
-        String[] cacheableParams = { HeaderConstants.CACHE_CONTROL_MAX_AGE, "s-maxage",
-                HeaderConstants.CACHE_CONTROL_MUST_REVALIDATE,
-                HeaderConstants.CACHE_CONTROL_PROXY_REVALIDATE,
-                HeaderConstants.PUBLIC
+        String[] cacheableParams = { HttpConstants.CACHE_CONTROL_MAX_AGE, "s-maxage",
+                HttpConstants.CACHE_CONTROL_MUST_REVALIDATE,
+                HttpConstants.CACHE_CONTROL_PROXY_REVALIDATE,
+                HttpConstants.PUBLIC
         };
         return hasCacheControlParameterFrom(response, cacheableParams);
     }
@@ -176,7 +176,7 @@ class ResponseCachingPolicy {
             return false;
         }
 
-        String[] uncacheableRequestDirectives = { HeaderConstants.CACHE_CONTROL_NO_STORE };
+        String[] uncacheableRequestDirectives = { HttpConstants.CACHE_CONTROL_NO_STORE };
         if (hasCacheControlParameterFrom(request,uncacheableRequestDirectives)) {
             return false;
         }
@@ -192,10 +192,10 @@ class ResponseCachingPolicy {
         }
 
         if (sharedCache) {
-            Header[] authNHeaders = request.getHeaders(HeaderConstants.AUTHORIZATION);
+            Header[] authNHeaders = request.getHeaders(HttpConstants.AUTHORIZATION);
             if (authNHeaders != null && authNHeaders.length > 0) {
                 String[] authCacheableParams = {
-                        "s-maxage", HeaderConstants.CACHE_CONTROL_MUST_REVALIDATE, HeaderConstants.PUBLIC
+                        "s-maxage", HttpConstants.CACHE_CONTROL_MUST_REVALIDATE, HttpConstants.PUBLIC
                 };
                 return hasCacheControlParameterFrom(response, authCacheableParams);
             }
@@ -207,8 +207,8 @@ class ResponseCachingPolicy {
 
     private boolean expiresHeaderLessOrEqualToDateHeaderAndNoCacheControl(
             HttpResponse response) {
-        if (response.getFirstHeader(HeaderConstants.CACHE_CONTROL) != null) return false;
-        Header expiresHdr = response.getFirstHeader(HeaderConstants.EXPIRES);
+        if (response.getFirstHeader(HttpConstants.CACHE_CONTROL) != null) return false;
+        Header expiresHdr = response.getFirstHeader(HttpConstants.EXPIRES);
         Header dateHdr = response.getFirstHeader(HTTP.DATE_HEADER);
         if (expiresHdr == null || dateHdr == null) return false;
         try {
@@ -221,7 +221,7 @@ class ResponseCachingPolicy {
     }
 
     private boolean from1_0Origin(HttpResponse response) {
-        Header via = response.getFirstHeader(HeaderConstants.VIA);
+        Header via = response.getFirstHeader(HttpConstants.VIA);
         if (via != null) {
             for(HeaderElement elt : via.getElements()) {
                 String proto = elt.toString().split("\\s")[0];

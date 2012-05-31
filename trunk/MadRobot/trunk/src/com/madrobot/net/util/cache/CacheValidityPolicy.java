@@ -10,7 +10,7 @@ import org.apache.http.impl.cookie.DateParseException;
 import org.apache.http.impl.cookie.DateUtils;
 import org.apache.http.protocol.HTTP;
 
-import com.madrobot.net.HeaderConstants;
+import com.madrobot.net.HttpConstants;
 import com.madrobot.net.util.cache.annotation.Immutable;
 
 /**
@@ -83,22 +83,22 @@ class CacheValidityPolicy {
     }
 
     public boolean isRevalidatable(final HttpCacheEntry entry) {
-        return entry.getFirstHeader(HeaderConstants.ETAG) != null
-                || entry.getFirstHeader(HeaderConstants.LAST_MODIFIED) != null;
+        return entry.getFirstHeader(HttpConstants.ETAG) != null
+                || entry.getFirstHeader(HttpConstants.LAST_MODIFIED) != null;
     }
 
     public boolean mustRevalidate(final HttpCacheEntry entry) {
-        return hasCacheControlDirective(entry, HeaderConstants.CACHE_CONTROL_MUST_REVALIDATE);
+        return hasCacheControlDirective(entry, HttpConstants.CACHE_CONTROL_MUST_REVALIDATE);
     }
 
     public boolean proxyRevalidate(final HttpCacheEntry entry) {
-        return hasCacheControlDirective(entry, HeaderConstants.CACHE_CONTROL_PROXY_REVALIDATE);
+        return hasCacheControlDirective(entry, HttpConstants.CACHE_CONTROL_PROXY_REVALIDATE);
     }
 
     public boolean mayReturnStaleWhileRevalidating(final HttpCacheEntry entry, Date now) {
-        for (Header h : entry.getHeaders(HeaderConstants.CACHE_CONTROL)) {
+        for (Header h : entry.getHeaders(HttpConstants.CACHE_CONTROL)) {
             for(HeaderElement elt : h.getElements()) {
-                if (HeaderConstants.STALE_WHILE_REVALIDATE.equalsIgnoreCase(elt.getName())) {
+                if (HttpConstants.STALE_WHILE_REVALIDATE.equalsIgnoreCase(elt.getName())) {
                     try {
                         int allowedStalenessLifetime = Integer.parseInt(elt.getValue());
                         if (getStalenessSecs(entry, now) <= allowedStalenessLifetime) {
@@ -117,9 +117,9 @@ class CacheValidityPolicy {
     public boolean mayReturnStaleIfError(HttpRequest request,
             HttpCacheEntry entry, Date now) {
         long stalenessSecs = getStalenessSecs(entry, now);
-        return mayReturnStaleIfError(request.getHeaders(HeaderConstants.CACHE_CONTROL),
+        return mayReturnStaleIfError(request.getHeaders(HttpConstants.CACHE_CONTROL),
                                      stalenessSecs)
-                || mayReturnStaleIfError(entry.getHeaders(HeaderConstants.CACHE_CONTROL),
+                || mayReturnStaleIfError(entry.getHeaders(HttpConstants.CACHE_CONTROL),
                                          stalenessSecs);
     }
 
@@ -127,7 +127,7 @@ class CacheValidityPolicy {
         boolean result = false;
         for(Header h : headers) {
             for(HeaderElement elt : h.getElements()) {
-                if (HeaderConstants.STALE_IF_ERROR.equals(elt.getName())) {
+                if (HttpConstants.STALE_IF_ERROR.equals(elt.getName())) {
                     try {
                         int staleIfErrorSecs = Integer.parseInt(elt.getValue());
                         if (stalenessSecs <= staleIfErrorSecs) {
@@ -156,7 +156,7 @@ class CacheValidityPolicy {
     }
 
     protected Date getLastModifiedValue(final HttpCacheEntry entry) {
-        Header dateHdr = entry.getFirstHeader(HeaderConstants.LAST_MODIFIED);
+        Header dateHdr = entry.getFirstHeader(HttpConstants.LAST_MODIFIED);
         if (dateHdr == null)
             return null;
         try {
@@ -206,7 +206,7 @@ class CacheValidityPolicy {
 
     protected long getAgeValue(final HttpCacheEntry entry) {
         long ageValue = 0;
-        for (Header hdr : entry.getHeaders(HeaderConstants.AGE)) {
+        for (Header hdr : entry.getHeaders(HttpConstants.AGE)) {
             long hdrAge;
             try {
                 hdrAge = Long.parseLong(hdr.getValue());
@@ -243,9 +243,9 @@ class CacheValidityPolicy {
 
     protected long getMaxAge(final HttpCacheEntry entry) {
         long maxage = -1;
-        for (Header hdr : entry.getHeaders(HeaderConstants.CACHE_CONTROL)) {
+        for (Header hdr : entry.getHeaders(HttpConstants.CACHE_CONTROL)) {
             for (HeaderElement elt : hdr.getElements()) {
-                if (HeaderConstants.CACHE_CONTROL_MAX_AGE.equals(elt.getName())
+                if (HttpConstants.CACHE_CONTROL_MAX_AGE.equals(elt.getName())
                         || "s-maxage".equals(elt.getName())) {
                     try {
                         long currMaxAge = Long.parseLong(elt.getValue());
@@ -263,7 +263,7 @@ class CacheValidityPolicy {
     }
 
     protected Date getExpirationDate(final HttpCacheEntry entry) {
-        Header expiresHeader = entry.getFirstHeader(HeaderConstants.EXPIRES);
+        Header expiresHeader = entry.getFirstHeader(HttpConstants.EXPIRES);
         if (expiresHeader == null)
             return null;
         try {
@@ -276,7 +276,7 @@ class CacheValidityPolicy {
 
     public boolean hasCacheControlDirective(final HttpCacheEntry entry,
             final String directive) {
-        for (Header h : entry.getHeaders(HeaderConstants.CACHE_CONTROL)) {
+        for (Header h : entry.getHeaders(HttpConstants.CACHE_CONTROL)) {
             for(HeaderElement elt : h.getElements()) {
                 if (directive.equalsIgnoreCase(elt.getName())) {
                     return true;

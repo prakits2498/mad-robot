@@ -22,8 +22,8 @@ import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.message.BasicStatusLine;
 import org.apache.http.protocol.HTTP;
 
-import com.madrobot.net.HeaderConstants;
-import com.madrobot.net.HeaderConstants.HttpMethod;
+import com.madrobot.net.HttpConstants;
+import com.madrobot.net.HttpConstants.HttpMethod;
 import com.madrobot.net.util.cache.annotation.Immutable;
 
 /**
@@ -32,9 +32,9 @@ import com.madrobot.net.util.cache.annotation.Immutable;
 class RequestProtocolCompliance {
 
 	private static final List<String> disallowedWithNoCache = Arrays.asList(
-			HeaderConstants.CACHE_CONTROL_MIN_FRESH,
-			HeaderConstants.CACHE_CONTROL_MAX_STALE,
-			HeaderConstants.CACHE_CONTROL_MAX_AGE);
+			HttpConstants.CACHE_CONTROL_MIN_FRESH,
+			HttpConstants.CACHE_CONTROL_MAX_STALE,
+			HttpConstants.CACHE_CONTROL_MAX_AGE);
 
 	/**
 	 * Test to see if the {@link HttpRequest} is HTTP1.1 compliant or not and if
@@ -102,12 +102,12 @@ class RequestProtocolCompliance {
 	private void stripOtherFreshnessDirectivesWithNoCache(HttpRequest request) {
 		List<HeaderElement> outElts = new ArrayList<HeaderElement>();
 		boolean shouldStrip = false;
-		for (Header h : request.getHeaders(HeaderConstants.CACHE_CONTROL)) {
+		for (Header h : request.getHeaders(HttpConstants.CACHE_CONTROL)) {
 			for (HeaderElement elt : h.getElements()) {
 				if (!disallowedWithNoCache.contains(elt.getName())) {
 					outElts.add(elt);
 				}
-				if (HeaderConstants.CACHE_CONTROL_NO_CACHE
+				if (HttpConstants.CACHE_CONTROL_NO_CACHE
 						.equals(elt.getName())) {
 					shouldStrip = true;
 				}
@@ -115,8 +115,8 @@ class RequestProtocolCompliance {
 		}
 		if (!shouldStrip)
 			return;
-		request.removeHeaders(HeaderConstants.CACHE_CONTROL);
-		request.setHeader(HeaderConstants.CACHE_CONTROL,
+		request.removeHeaders(HttpConstants.CACHE_CONTROL);
+		request.setHeader(HttpConstants.CACHE_CONTROL,
 				buildHeaderFromElements(outElts));
 	}
 
@@ -146,15 +146,15 @@ class RequestProtocolCompliance {
 		}
 
 		Header maxForwards = request
-				.getFirstHeader(HeaderConstants.MAX_FORWARDS);
+				.getFirstHeader(HttpConstants.MAX_FORWARDS);
 		if (maxForwards == null) {
 			return;
 		}
 
-		request.removeHeaders(HeaderConstants.MAX_FORWARDS);
+		request.removeHeaders(HttpConstants.MAX_FORWARDS);
 		int currentMaxForwards = Integer.parseInt(maxForwards.getValue());
 
-		request.setHeader(HeaderConstants.MAX_FORWARDS,
+		request.setHeader(HttpConstants.MAX_FORWARDS,
 				Integer.toString(currentMaxForwards - 1));
 	}
 
@@ -329,11 +329,11 @@ class RequestProtocolCompliance {
 			return null;
 		}
 
-		Header range = request.getFirstHeader(HeaderConstants.RANGE);
+		Header range = request.getFirstHeader(HttpConstants.RANGE);
 		if (range == null)
 			return null;
 
-		Header ifRange = request.getFirstHeader(HeaderConstants.IF_RANGE);
+		Header ifRange = request.getFirstHeader(HttpConstants.IF_RANGE);
 		if (ifRange == null)
 			return null;
 
@@ -356,7 +356,7 @@ class RequestProtocolCompliance {
 			return null;
 		}
 
-		Header ifMatch = request.getFirstHeader(HeaderConstants.IF_MATCH);
+		Header ifMatch = request.getFirstHeader(HttpConstants.IF_MATCH);
 		if (ifMatch != null) {
 			String val = ifMatch.getValue();
 			if (val.startsWith("W/")) {
@@ -364,7 +364,7 @@ class RequestProtocolCompliance {
 			}
 		} else {
 			Header ifNoneMatch = request
-					.getFirstHeader(HeaderConstants.IF_NONE_MATCH);
+					.getFirstHeader(HttpConstants.IF_NONE_MATCH);
 			if (ifNoneMatch == null)
 				return null;
 
@@ -379,9 +379,9 @@ class RequestProtocolCompliance {
 
 	private RequestProtocolError requestContainsNoCacheDirectiveWithFieldName(
 			HttpRequest request) {
-		for (Header h : request.getHeaders(HeaderConstants.CACHE_CONTROL)) {
+		for (Header h : request.getHeaders(HttpConstants.CACHE_CONTROL)) {
 			for (HeaderElement elt : h.getElements()) {
-				if (HeaderConstants.CACHE_CONTROL_NO_CACHE.equalsIgnoreCase(elt
+				if (HttpConstants.CACHE_CONTROL_NO_CACHE.equalsIgnoreCase(elt
 						.getName()) && elt.getValue() != null) {
 					return RequestProtocolError.NO_CACHE_DIRECTIVE_WITH_FIELD_NAME;
 				}

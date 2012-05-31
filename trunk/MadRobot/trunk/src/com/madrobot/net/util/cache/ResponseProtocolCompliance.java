@@ -23,8 +23,8 @@ import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
-import com.madrobot.net.HeaderConstants;
-import com.madrobot.net.HeaderConstants.HttpMethod;
+import com.madrobot.net.HttpConstants;
+import com.madrobot.net.HttpConstants.HttpMethod;
 import com.madrobot.net.util.cache.annotation.Immutable;
 
 /**
@@ -85,7 +85,7 @@ class ResponseProtocolCompliance {
 
         if (responseDate == null) return;
 
-        Header[] warningHeaders = response.getHeaders(HeaderConstants.WARNING);
+        Header[] warningHeaders = response.getHeaders(HttpConstants.WARNING);
 
         if (warningHeaders == null || warningHeaders.length == 0) return;
 
@@ -95,14 +95,14 @@ class ResponseProtocolCompliance {
             for(WarningValue wv : WarningValue.getWarningValues(h)) {
                 Date warnDate = wv.getWarnDate();
                 if (warnDate == null || warnDate.equals(responseDate)) {
-                    newWarningHeaders.add(new BasicHeader(HeaderConstants.WARNING,wv.toString()));
+                    newWarningHeaders.add(new BasicHeader(HttpConstants.WARNING,wv.toString()));
                 } else {
                     modified = true;
                 }
             }
         }
         if (modified) {
-            response.removeHeaders(HeaderConstants.WARNING);
+            response.removeHeaders(HttpConstants.WARNING);
             for(Header h : newWarningHeaders) {
                 response.addHeader(h);
             }
@@ -147,7 +147,7 @@ class ResponseProtocolCompliance {
 
     private void ensurePartialContentIsNotSentToAClientThatDidNotRequestIt(HttpRequest request,
             HttpResponse response) throws IOException {
-        if (request.getFirstHeader(HeaderConstants.RANGE) != null
+        if (request.getFirstHeader(HttpConstants.RANGE) != null
                 || response.getStatusLine().getStatusCode() != HttpStatus.SC_PARTIAL_CONTENT)
             return;
 
@@ -171,9 +171,9 @@ class ResponseProtocolCompliance {
     }
 
     private void ensure304DoesNotContainExtraEntityHeaders(HttpResponse response) {
-        String[] disallowedEntityHeaders = { HeaderConstants.ALLOW, HTTP.CONTENT_ENCODING,
+        String[] disallowedEntityHeaders = { HttpConstants.ALLOW, HTTP.CONTENT_ENCODING,
                 "Content-Language", HTTP.CONTENT_LEN, "Content-MD5",
-                "Content-Range", HTTP.CONTENT_TYPE, HeaderConstants.LAST_MODIFIED
+                "Content-Range", HTTP.CONTENT_TYPE, HttpConstants.LAST_MODIFIED
         };
         if (response.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_MODIFIED) {
             for(String hdr : disallowedEntityHeaders) {
