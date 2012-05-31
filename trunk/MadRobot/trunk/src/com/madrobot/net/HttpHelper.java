@@ -34,6 +34,7 @@ import org.apache.http.client.methods.HttpTrace;
 import org.apache.http.client.utils.URIUtils;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.protocol.HTTP;
+import org.apache.http.protocol.HttpContext;
 
 import android.util.Log;
 
@@ -66,6 +67,15 @@ public class HttpHelper {
 	// private Map<String, String> requestHeader;
 	private URI requestUrl;
 	private Map<String, String> responseHeader;
+	private HttpContext httpContext;
+
+	public HttpContext getHttpContext() {
+		return httpContext;
+	}
+
+	public void setHttpContext(HttpContext httpContext) {
+		this.httpContext = httpContext;
+	}
 
 	/**
 	 * 
@@ -172,8 +182,14 @@ public class HttpHelper {
 		}
 		Log.d(TAG, "Request URL:[GET] " + requestUrl);
 		this.initRequest(method);
-		HttpResponse httpResponse = httpSettings.getHttpClient()
-				.execute(method);
+		HttpResponse httpResponse;
+		if (httpContext != null) {
+			httpResponse = httpSettings.getHttpClient().execute(method,
+					httpContext);
+		} else {
+			httpResponse = httpSettings.getHttpClient().execute(method);
+		}
+		addResponseHeaders(httpResponse.getAllHeaders());
 		return httpResponse;
 	}
 
@@ -222,8 +238,13 @@ public class HttpHelper {
 			e.printStackTrace();
 		}
 		Log.d(TAG, "Request URL:[POST] " + requestUrl);
-		HttpResponse httpResponse = httpSettings.getHttpClient().execute(
-				httpPost);
+		HttpResponse httpResponse;
+		if (httpContext != null) {
+			httpResponse = httpSettings.getHttpClient().execute(httpPost,httpContext);
+		}else{
+			httpResponse = httpSettings.getHttpClient().execute(httpPost);
+		}
+
 		addResponseHeaders(httpResponse.getAllHeaders());
 		return httpResponse;
 	}
