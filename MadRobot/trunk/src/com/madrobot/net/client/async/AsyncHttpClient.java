@@ -46,6 +46,8 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.protocol.SyncBasicHttpContext;
 
+import com.madrobot.net.HttpConstants;
+
 import android.content.Context;
 
 /**
@@ -96,7 +98,7 @@ public class AsyncHttpClient {
 	private static final int DEFAULT_SOCKET_BUFFER_SIZE = 8192;
 	private static final int DEFAULT_SOCKET_TIMEOUT = 10 * 1000;
 	private static final String ENCODING_GZIP = "gzip";
-	private static final String HEADER_ACCEPT_ENCODING = "Accept-Encoding";
+	
 
 	private static int maxConnections = DEFAULT_MAX_CONNECTIONS;
 	private static int socketTimeout = DEFAULT_SOCKET_TIMEOUT;
@@ -143,8 +145,8 @@ public class AsyncHttpClient {
 		httpClient.addRequestInterceptor(new HttpRequestInterceptor() {
 			@Override
 			public void process(HttpRequest request, HttpContext context) {
-				if (!request.containsHeader(HEADER_ACCEPT_ENCODING)) {
-					request.addHeader(HEADER_ACCEPT_ENCODING, ENCODING_GZIP);
+				if (!request.containsHeader(HttpConstants.HEADER_ACCEPT_ENCODING)) {
+					request.addHeader(HttpConstants.HEADER_ACCEPT_ENCODING, ENCODING_GZIP);
 				}
 				for (String header : clientHeaderMap.keySet()) {
 					request.addHeader(header, clientHeaderMap.get(header));
