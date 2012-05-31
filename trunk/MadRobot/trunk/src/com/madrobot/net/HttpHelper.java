@@ -20,7 +20,6 @@ import java.util.Map;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpVersion;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -30,7 +29,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.utils.URIUtils;
 import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.HTTP;
 
 import android.util.Log;
@@ -50,10 +48,7 @@ import android.util.Log;
  * httpTask.setRequestParameter(requestParameter);
  * // set the http method. The default is Http GET.
  * httpTask.getHttpSettings().setHttpMethod(HttpTaskHelper.HttpMethod.HTTP_GET);
- * 
- * 
  * </pre>
- * 
  * </p>
  * 
  */
@@ -113,8 +108,8 @@ public class HttpHelper {
 	 * called
 	 */
 	public void cancel() {
-		if (getHttpClient() != null) {
-			getHttpClient().getConnectionManager().shutdown();
+		if (httpSettings.getHttpClient() != null) {
+			httpSettings.getHttpClient().getConnectionManager().shutdown();
 		}
 	}
 
@@ -144,30 +139,30 @@ public class HttpHelper {
 		throw new UnsupportedOperationException();
 	}
 
-	/**
-	 * Return the http client object with http session time out values
-	 * 
-	 * @return HttpClient
-	 * 
-	 * @see {@link HttpHelper.HTTP_SOCKET_TIME_OUT_PARAM}
-	 */
-	private HttpClient getHttpClient() {
-		if (httpClient == null) {
-			httpClient = new DefaultHttpClient();
-			httpClient.getParams().setParameter(
-					HttpConstants.HTTP_SOCKET_TIME_OUT_PARAM,
-					httpSettings.getSocketTimeout());
-			httpClient.getParams().setParameter(HttpConstants.HTTP_PROTOCOL_VERSION,
-					HttpVersion.HTTP_1_1);
-			httpClient.getParams().setParameter(
-					HttpConstants.HTTP_SINGLE_COOKIE_PARAM,
-					httpSettings.isSingleCookieHeader());
-			httpClient.getParams().setParameter(
-					HttpConstants.HTTP_EXPECT_CONTINUE_PARAM,
-					httpSettings.isExpectContinue());
-		}
-		return httpClient;
-	}
+//	/**
+//	 * Return the http client object with http session time out values
+//	 * 
+//	 * @return HttpClient
+//	 * 
+//	 * @see {@link HttpHelper.HTTP_SOCKET_TIME_OUT_PARAM}
+//	 */
+//	private HttpClient getHttpClient() {
+//		if (httpClient == null) {
+//			httpClient = new DefaultHttpClient();
+//			httpClient.getParams().setParameter(
+//					HttpConstants.HTTP_SOCKET_TIME_OUT_PARAM,
+//					httpSettings.getSocketTimeout());
+//			httpClient.getParams().setParameter(HttpConstants.HTTP_PROTOCOL_VERSION,
+//					HttpVersion.HTTP_1_1);
+//			httpClient.getParams().setParameter(
+//					HttpConstants.HTTP_SINGLE_COOKIE_PARAM,
+//					httpSettings.isSingleCookieHeader());
+//			httpClient.getParams().setParameter(
+//					HttpConstants.HTTP_EXPECT_CONTINUE_PARAM,
+//					httpSettings.isExpectContinue());
+//		}
+//		return httpClient;
+//	}
 
 	public HttpHelperSettings getHttpSettings() {
 		return httpSettings;
@@ -229,7 +224,7 @@ public class HttpHelper {
 		Log.d(TAG, "Request URL:[GET] " + requestUrl);
 		HttpDelete httpDelete = new HttpDelete(requestUrl);
 		this.initRequest(httpDelete);
-		httpResponse = getHttpClient().execute(httpDelete);
+		httpResponse = httpSettings.getHttpClient().execute(httpDelete);
 		return httpResponse.getEntity();
 	}
 
@@ -255,7 +250,7 @@ public class HttpHelper {
 
 		HttpGet httpGet = new HttpGet(requestUrl);
 		this.initRequest(httpGet);
-		httpResponse = getHttpClient().execute(httpGet);
+		httpResponse = httpSettings.getHttpClient().execute(httpGet);
 		return httpResponse.getEntity();
 	}
 
@@ -284,7 +279,7 @@ public class HttpHelper {
 			e.printStackTrace();
 		}
 		Log.d(TAG, "Request URL:[POST] " + requestUrl);
-		httpClient = getHttpClient();
+		httpClient = httpSettings.getHttpClient();
 		httpResponse = httpClient.execute(httpPost);
 		addResponseHeaders(httpResponse.getAllHeaders());
 		return httpResponse.getEntity();
