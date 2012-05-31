@@ -82,6 +82,10 @@ public class HttpConstants {
 	public static final String HTTP_SOCKET_TIME_OUT_PARAM = "http.socket.timeout";
 	public static final String HTTP_PROTOCOL_VERSION ="http.protocol.version";
 	
+	/**
+	 * Header constants
+	 */
+	public static final String HEADER_ACCEPT_ENCODING = "Accept-Encoding";
 
 	public static final String WARNING = "Warning";
 	public static final String RANGE = "Range";
