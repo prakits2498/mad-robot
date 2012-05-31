@@ -37,7 +37,7 @@ import com.madrobot.lang.reflect.ClassUtils;
  * @author elton.kent
  * 
  */
-public class BeanGenerator {
+public class BeanPopulator {
 	/**
 	 * Set a bean's primitive properties to these defaults when SQL NULL is
 	 * returned. These are the same as the defaults that ResultSet get* methods
