@@ -34,7 +34,7 @@ import android.util.Log;
 
 public class IOUtils {
 
-	public static  enum IOState {
+	public static enum IOState {
 		COMPLETE, CLIENT_ERROR, IN_PROGRESS, NOT_STARTED, PAUSED
 	}
 
@@ -154,6 +154,27 @@ public class IOUtils {
 			return -1;
 		}
 		return (int) count;
+	}
+
+	public static void copyAndClose(final InputStream in, final OutputStream out)
+			throws IOException {
+		try {
+			copy(in, out);
+			in.close();
+			out.close();
+		} catch (IOException ex) {
+			closeSilently(in);
+			closeSilently(out);
+			// Propagate the original exception
+			throw ex;
+		}
+	}
+
+	static void closeSilently(final Closeable closable) {
+		try {
+			closable.close();
+		} catch (IOException ignore) {
+		}
 	}
 
 	/**
