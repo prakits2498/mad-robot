@@ -1,39 +1,12 @@
 package com.madrobot.net;
 
+import com.madrobot.net.HeaderConstants.HttpMethod;
+
 public class HttpSettings {
 
 	/**
 	 * Default HTTP payload buffer size 4Kb
 	 */
-
-	/**
-	 * Represents the HTTP GET, POST, PUT and DELETE
-	 */
-	public enum HttpMethod {
-		/**
-		 * Http DELETE method
-		 */
-		DELETE,
-		/**
-		 * Http GET method
-		 */
-		GET,
-		/**
-		 * Http POST method
-		 */
-		POST,
-		/**
-		 * Http PUT method
-		 */
-		PUT;
-	}
-
-	public static final String HTTP_EXPECT_CONTINUE_PARAM = "http.protocol.expect-continue";
-	public static final String HTTP_SINGLE_COOKIE_PARAM = "http.protocol.single-cookie-header";
-	/**
-	 * HTTP session socket time-out key
-	 */
-	public static final String HTTP_SOCKET_TIME_OUT_PARAM = "http.socket.timeout";
 	private int defaultBufferSize = 1042 * 4;
 
 	private boolean expectContinue = true;
