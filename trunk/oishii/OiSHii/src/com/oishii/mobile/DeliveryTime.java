@@ -171,7 +171,7 @@ public class DeliveryTime extends OishiiBaseActivity {
 	};
 
 	protected void executeDeliveryTimeRequest() {
-		HttpRequestWrapper requestWrapper = new HttpRequestWrapper();
+		HttpRequestWrapper requestWrapper = new HttpRequestWrapper(getApplicationContext());
 		requestWrapper.requestURI = ApplicationConstants.API_DELIVERY_TIME;
 		requestWrapper.callback = delTimeCallback;
 		requestWrapper.operationID = 45;

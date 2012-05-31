@@ -165,7 +165,7 @@ public class TodaysMenuDetailList extends ListOishiBase {
 	}
 
 	private void executeMenuDetailsRequest() {
-		HttpRequestWrapper requestWrapper = new HttpRequestWrapper();
+		HttpRequestWrapper requestWrapper = new HttpRequestWrapper(getApplicationContext());
 		requestWrapper.requestURI = ApplicationConstants.API_MENU_DETAILS;
 		requestWrapper.callback = detailsCallback;
 		requestWrapper.operationID = OPERATION_MNU_DET;

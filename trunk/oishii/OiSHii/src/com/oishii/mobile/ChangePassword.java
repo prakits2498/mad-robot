@@ -54,7 +54,7 @@ public class ChangePassword extends OishiiBaseActivity {
 	};
 
 	private void executeChangePasswordRequest() {
-		HttpRequestWrapper requestWrapper = new HttpRequestWrapper();
+		HttpRequestWrapper requestWrapper = new HttpRequestWrapper(getApplicationContext());
 		requestWrapper.requestURI = ApplicationConstants.API_CHANGE_PWD;
 		requestWrapper.callback = simpleResultCallback;
 		requestWrapper.operationID = OPERATION_CHG_PWD;

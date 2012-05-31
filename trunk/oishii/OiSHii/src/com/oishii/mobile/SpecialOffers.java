@@ -40,7 +40,7 @@ public class SpecialOffers extends ListOishiBase {
 	}
 
 	protected void executeSpecialOffersRequest() {
-		HttpRequestWrapper requestWrapper = new HttpRequestWrapper();
+		HttpRequestWrapper requestWrapper = new HttpRequestWrapper(getApplicationContext());
 		requestWrapper.requestURI = ApplicationConstants.API_SPECIAL_OFFERS;
 		requestWrapper.callback = splOffersCallback;
 		requestWrapper.operationID = OPERATION_SPL_OFFER;

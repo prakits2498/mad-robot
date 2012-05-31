@@ -135,7 +135,7 @@ public class PromoCode extends OishiiBaseActivity {
 	}
 
 	private void executePromocodeRequest() {
-		HttpRequestWrapper requestWrapper = new HttpRequestWrapper();
+		HttpRequestWrapper requestWrapper = new HttpRequestWrapper(getApplicationContext());
 		requestWrapper.requestURI = ApplicationConstants.API_REDEEM_CODE;
 		requestWrapper.callback = couponCallback;
 		requestWrapper.operationID = 67;
