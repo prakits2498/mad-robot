@@ -46,7 +46,7 @@ import com.madrobot.graphics.svg.SVGFactory;
  * </table>
  * <br/>
  * <b>Demo</b><br/>
- * This demo uses the <a href="../../../../resources/giraffe.svg">Giraffe.svg</a> file.
+ * This demo uses the <a href="../../../../resources/giraffe.svg">Giraffe.svg</a> created by <a href="http://openclipart.org/detail/160609/new-cartoon-giraffe-by-ryanlerch">ryan lerch</a>.
  * <center><OBJECT CLASSID="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
  * WIDTH="725" HEIGHT="461" CODEBASE=
  * "http://active.macromedia.com/flash5/cabs/swflash.cab#version=7,0,0,0">
