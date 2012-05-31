@@ -155,15 +155,15 @@ public class HttpTaskHelper {
 		if (httpClient == null) {
 			httpClient = new DefaultHttpClient();
 			httpClient.getParams().setParameter(
-					HttpSettings.HTTP_SOCKET_TIME_OUT_PARAM,
+					HeaderConstants.HTTP_SOCKET_TIME_OUT_PARAM,
 					httpSettings.getSocketTimeout());
-			httpClient.getParams().setParameter("http.protocol.version",
+			httpClient.getParams().setParameter(HeaderConstants.HTTP_PROTOCOL_VERSION,
 					HttpVersion.HTTP_1_1);
 			httpClient.getParams().setParameter(
-					HttpSettings.HTTP_SINGLE_COOKIE_PARAM,
+					HeaderConstants.HTTP_SINGLE_COOKIE_PARAM,
 					httpSettings.isSingleCookieHeader());
 			httpClient.getParams().setParameter(
-					HttpSettings.HTTP_EXPECT_CONTINUE_PARAM,
+					HeaderConstants.HTTP_EXPECT_CONTINUE_PARAM,
 					httpSettings.isExpectContinue());
 		}
 		return httpClient;
