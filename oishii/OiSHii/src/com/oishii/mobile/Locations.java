@@ -201,7 +201,7 @@ public class Locations extends Login {
 	int shipping;
 
 	private void executeAddLocation() {
-		HttpRequestWrapper requestWrapper = new HttpRequestWrapper();
+		HttpRequestWrapper requestWrapper = new HttpRequestWrapper(getApplicationContext());
 
 		requestWrapper.requestURI = isAddressEdit ? ApplicationConstants.API_EDIT_LOCATION
 				: ApplicationConstants.API_ADD_LOCATION;
@@ -260,7 +260,7 @@ public class Locations extends Login {
 	private final static int OPERATION_DELETE = 30;
 
 	private void executeDeleteAddressRequest(int id) {
-		HttpRequestWrapper requestWrapper = new HttpRequestWrapper();
+		HttpRequestWrapper requestWrapper = new HttpRequestWrapper(getApplicationContext());
 		requestWrapper.requestURI = ApplicationConstants.API_DELETE_LOCATION;
 		requestWrapper.callback = simpleResultCallback;
 		HttpSettings settings = new HttpSettings();

@@ -86,7 +86,7 @@ public class EditAccountDetails extends CreateAccount {
 	}
 
 	private void saveDetails() {
-		HttpRequestWrapper requestWrapper = new HttpRequestWrapper();
+		HttpRequestWrapper requestWrapper = new HttpRequestWrapper(getApplicationContext());
 		requestWrapper.requestURI = ApplicationConstants.API_SAVE_ACC_DETAILS;
 		requestWrapper.callback = simpleResultCallback;
 		requestWrapper.operationID = 67;

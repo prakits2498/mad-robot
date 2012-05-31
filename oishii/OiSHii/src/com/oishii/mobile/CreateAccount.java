@@ -52,7 +52,7 @@ public class CreateAccount extends Login {
 	};
 
 	private void createNewAccount() {
-		HttpRequestWrapper requestWrapper = new HttpRequestWrapper();
+		HttpRequestWrapper requestWrapper = new HttpRequestWrapper(getApplicationContext());
 		requestWrapper.requestURI = ApplicationConstants.API_REGISTRATION;
 		requestWrapper.callback = simpleResultCallback;
 		requestWrapper.operationID = OPERATION_REGISTER;

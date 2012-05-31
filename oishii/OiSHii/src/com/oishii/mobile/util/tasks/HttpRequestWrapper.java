@@ -6,9 +6,15 @@ import java.util.List;
 
 import org.apache.http.NameValuePair;
 
+import android.content.Context;
+
 import com.oishii.mobile.util.HttpSettings;
 
 public class HttpRequestWrapper {
+	public  HttpRequestWrapper(Context ctx){
+		this.ctx=ctx;
+	}
+	public Context ctx;
 	public URI requestURI;
 	/*integer to identify the operation. an activity may user*/
 	public int operationID;

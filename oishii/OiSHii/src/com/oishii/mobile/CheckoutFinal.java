@@ -82,7 +82,7 @@ public class CheckoutFinal extends OishiiBaseActivity {
 	};
 	
 	private void executeFinalCheckout(){
-		HttpRequestWrapper requestWrapper = new HttpRequestWrapper();
+		HttpRequestWrapper requestWrapper = new HttpRequestWrapper(getApplicationContext());
 		requestWrapper.requestURI = ApplicationConstants.API_FINAL_CHECKOUT;
 		requestWrapper.callback = finalCallback;// validateCallback;
 		requestWrapper.operationID = 67;
@@ -192,7 +192,7 @@ public class CheckoutFinal extends OishiiBaseActivity {
 	};
 
 	private void executeValidateCheckout() {
-		HttpRequestWrapper requestWrapper = new HttpRequestWrapper();
+		HttpRequestWrapper requestWrapper = new HttpRequestWrapper(getApplicationContext());
 		requestWrapper.requestURI = ApplicationConstants.API_VALIDATE_CHECKOUT;
 		requestWrapper.callback = validateCallback;// validateCallback;
 		requestWrapper.operationID = 67;

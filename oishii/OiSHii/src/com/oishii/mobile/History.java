@@ -160,7 +160,7 @@ public class History extends ListOishiBase {
 	};
 
 	private void executeHistoryRequest() {
-		HttpRequestWrapper requestWrapper = new HttpRequestWrapper();
+		HttpRequestWrapper requestWrapper = new HttpRequestWrapper(getApplicationContext());
 		requestWrapper.requestURI = ApplicationConstants.API_MY_HISTORY;
 		requestWrapper.callback = historyCallback;
 		HttpSettings settings = new HttpSettings();

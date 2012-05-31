@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.oishii.mobile.R;
+import com.oishii.mobile.util.CarrierHelper;
 import com.oishii.mobile.util.HttpTaskHelper;
 
 public class HttpRequestTask extends
@@ -17,6 +18,12 @@ public class HttpRequestTask extends
 
 	@Override
 	protected HttpResponseWrapper doInBackground(HttpRequestWrapper... params) {
+		
+
+		CarrierHelper bearerHelper=CarrierHelper.getInstance(params[0].ctx);
+		
+		
+		
 		HttpResponseWrapper response = new HttpResponseWrapper();
 		response.callback = params[0].callback;
 		HttpTaskHelper helper = new com.oishii.mobile.util.HttpTaskHelper(

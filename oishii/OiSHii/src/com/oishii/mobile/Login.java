@@ -55,7 +55,7 @@ public class Login extends OishiiBaseActivity {
 	}
 
 	private void executeLoginRequest() {
-		HttpRequestWrapper requestWrapper = new HttpRequestWrapper();
+		HttpRequestWrapper requestWrapper = new HttpRequestWrapper(getApplicationContext());
 		requestWrapper.requestURI = ApplicationConstants.API_LOGIN;
 		requestWrapper.callback = loginCallback;
 		requestWrapper.httpSettings
@@ -129,7 +129,7 @@ public class Login extends OishiiBaseActivity {
 	};
 
 	protected void executeAccountInfoRequest(IHttpCallback listener) {
-		HttpRequestWrapper requestWrapper = new HttpRequestWrapper();
+		HttpRequestWrapper requestWrapper = new HttpRequestWrapper(getApplicationContext());
 		requestWrapper.requestURI = ApplicationConstants.API_MY_ACCOUNT;
 		requestWrapper.callback = listener;
 		HttpSettings settings = new HttpSettings();
