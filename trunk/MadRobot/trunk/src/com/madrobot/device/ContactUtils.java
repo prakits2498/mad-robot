@@ -21,7 +21,7 @@ import android.provider.Contacts;
 import android.provider.ContactsContract;
 
 import com.madrobot.beans.IntrospectionException;
-import com.madrobot.db.orm.BeanGenerator;
+import com.madrobot.db.orm.BeanPopulator;
 
 /**
  * Utility for accessing phone contacts
@@ -34,7 +34,7 @@ public final class ContactUtils {
 		Cursor namesCursor = cr.query(ContactsContract.Contacts.CONTENT_URI,
 				null, null, null, null);
 		try {
-			return BeanGenerator.toBeanList(namesCursor, Contact.class);
+			return BeanPopulator.toBeanList(namesCursor, Contact.class);
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
