@@ -16,6 +16,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -66,8 +67,8 @@ public class DownloadBitmapTask extends AbstractTask {
 			HttpHelper helper = new HttpHelper(uri[i]);
 			try {
 				Log.d("BitmapTask", "Downloading Bitmap->" + uri[i]);
-				HttpEntity entity = helper.execute();
-				InputStream is = entity.getContent();
+				HttpResponse entity = helper.execute();
+				InputStream is = entity.getEntity().getContent();
 				Bitmap bitmap = BitmapFactory.decodeStream(is, null, opt);
 				response.setData(bitmap);
 				response.setResponseStatus(1);
