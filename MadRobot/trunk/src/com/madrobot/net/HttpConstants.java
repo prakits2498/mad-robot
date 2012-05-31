@@ -8,7 +8,7 @@ import com.madrobot.net.util.cache.annotation.Immutable;
  * @since 4.1
  */
 @Immutable
-public class HeaderConstants {
+public class HttpConstants {
 
 	/**
 	 * Represents the HTTP GET, POST, PUT and DELETE

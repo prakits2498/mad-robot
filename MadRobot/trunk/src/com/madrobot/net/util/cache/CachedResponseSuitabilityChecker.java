@@ -10,7 +10,7 @@ import org.apache.http.HttpRequest;
 import org.apache.http.impl.cookie.DateParseException;
 import org.apache.http.impl.cookie.DateUtils;
 
-import com.madrobot.net.HeaderConstants;
+import com.madrobot.net.HttpConstants;
 import com.madrobot.net.util.cache.annotation.Immutable;
 
 import android.util.Log;
@@ -65,9 +65,9 @@ class CachedResponseSuitabilityChecker {
 
     private long getMaxStale(HttpRequest request) {
         long maxstale = -1;
-        for(Header h : request.getHeaders(HeaderConstants.CACHE_CONTROL)) {
+        for(Header h : request.getHeaders(HttpConstants.CACHE_CONTROL)) {
             for(HeaderElement elt : h.getElements()) {
-                if (HeaderConstants.CACHE_CONTROL_MAX_STALE.equals(elt.getName())) {
+                if (HttpConstants.CACHE_CONTROL_MAX_STALE.equals(elt.getName())) {
                     if ((elt.getValue() == null || "".equals(elt.getValue().trim()))
                             && maxstale == -1) {
                         maxstale = Long.MAX_VALUE;
@@ -124,19 +124,19 @@ class CachedResponseSuitabilityChecker {
             return false;
         }
 
-        for (Header ccHdr : request.getHeaders(HeaderConstants.CACHE_CONTROL)) {
+        for (Header ccHdr : request.getHeaders(HttpConstants.CACHE_CONTROL)) {
             for (HeaderElement elt : ccHdr.getElements()) {
-                if (HeaderConstants.CACHE_CONTROL_NO_CACHE.equals(elt.getName())) {
+                if (HttpConstants.CACHE_CONTROL_NO_CACHE.equals(elt.getName())) {
                 	  Log.d("MadRobot","Response contained NO CACHE directive, cache was not suitable");
                     return false;
                 }
 
-                if (HeaderConstants.CACHE_CONTROL_NO_STORE.equals(elt.getName())) {
+                if (HttpConstants.CACHE_CONTROL_NO_STORE.equals(elt.getName())) {
                 	  Log.d("MadRobot","Response contained NO STORE directive, cache was not suitable");
                     return false;
                 }
 
-                if (HeaderConstants.CACHE_CONTROL_MAX_AGE.equals(elt.getName())) {
+                if (HttpConstants.CACHE_CONTROL_MAX_AGE.equals(elt.getName())) {
                     try {
                         int maxage = Integer.parseInt(elt.getValue());
                         if (validityStrategy.getCurrentAgeSecs(entry, now) > maxage) {
@@ -150,7 +150,7 @@ class CachedResponseSuitabilityChecker {
                     }
                 }
 
-                if (HeaderConstants.CACHE_CONTROL_MAX_STALE.equals(elt.getName())) {
+                if (HttpConstants.CACHE_CONTROL_MAX_STALE.equals(elt.getName())) {
                     try {
                         int maxstale = Integer.parseInt(elt.getValue());
                         if (validityStrategy.getFreshnessLifetimeSecs(entry) > maxstale) {
@@ -164,7 +164,7 @@ class CachedResponseSuitabilityChecker {
                     }
                 }
 
-                if (HeaderConstants.CACHE_CONTROL_MIN_FRESH.equals(elt.getName())) {
+                if (HttpConstants.CACHE_CONTROL_MIN_FRESH.equals(elt.getName())) {
                     try {
                         long minfresh = Long.parseLong(elt.getValue());
                         if (minfresh < 0L) return false;
@@ -225,17 +225,17 @@ class CachedResponseSuitabilityChecker {
     }
 
     private boolean hasUnsupportedConditionalHeaders(HttpRequest request) {
-        return (request.getFirstHeader(HeaderConstants.IF_RANGE) != null
-                || request.getFirstHeader(HeaderConstants.IF_MATCH) != null
-                || hasValidDateField(request, HeaderConstants.IF_UNMODIFIED_SINCE));
+        return (request.getFirstHeader(HttpConstants.IF_RANGE) != null
+                || request.getFirstHeader(HttpConstants.IF_MATCH) != null
+                || hasValidDateField(request, HttpConstants.IF_UNMODIFIED_SINCE));
     }
 
     private boolean hasSupportedEtagValidator(HttpRequest request) {
-        return request.containsHeader(HeaderConstants.IF_NONE_MATCH);
+        return request.containsHeader(HttpConstants.IF_NONE_MATCH);
     }
 
     private boolean hasSupportedLastModifiedValidator(HttpRequest request) {
-        return hasValidDateField(request, HeaderConstants.IF_MODIFIED_SINCE);
+        return hasValidDateField(request, HttpConstants.IF_MODIFIED_SINCE);
     }
 
     /**
@@ -245,9 +245,9 @@ class CachedResponseSuitabilityChecker {
      * @return boolean does the etag validator match
      */
     private boolean etagValidatorMatches(HttpRequest request, HttpCacheEntry entry) {
-        Header etagHeader = entry.getFirstHeader(HeaderConstants.ETAG);
+        Header etagHeader = entry.getFirstHeader(HttpConstants.ETAG);
         String etag = (etagHeader != null) ? etagHeader.getValue() : null;
-        Header[] ifNoneMatch = request.getHeaders(HeaderConstants.IF_NONE_MATCH);
+        Header[] ifNoneMatch = request.getHeaders(HttpConstants.IF_NONE_MATCH);
         if (ifNoneMatch != null) {
             for (Header h : ifNoneMatch) {
                 for (HeaderElement elt : h.getElements()) {
@@ -271,7 +271,7 @@ class CachedResponseSuitabilityChecker {
      * @return  boolean Does the last modified header match
      */
     private boolean lastModifiedValidatorMatches(HttpRequest request, HttpCacheEntry entry, Date now) {
-        Header lastModifiedHeader = entry.getFirstHeader(HeaderConstants.LAST_MODIFIED);
+        Header lastModifiedHeader = entry.getFirstHeader(HttpConstants.LAST_MODIFIED);
         Date lastModified = null;
         try {
             if(lastModifiedHeader != null) {
@@ -285,7 +285,7 @@ class CachedResponseSuitabilityChecker {
             return false;
         }
 
-        for (Header h : request.getHeaders(HeaderConstants.IF_MODIFIED_SINCE)) {
+        for (Header h : request.getHeaders(HttpConstants.IF_MODIFIED_SINCE)) {
             try {
                 Date ifModifiedSince = DateUtils.parseDate(h.getValue());
                 if (ifModifiedSince.after(now) || lastModified.after(ifModifiedSince)) {

@@ -1,8 +1,8 @@
 package com.madrobot.net;
 
-import com.madrobot.net.HeaderConstants.HttpMethod;
+import com.madrobot.net.HttpConstants.HttpMethod;
 
-public class HttpSettings {
+public class HttpHelperSettings {
 
 	/**
 	 * Default HTTP payload buffer size 4Kb

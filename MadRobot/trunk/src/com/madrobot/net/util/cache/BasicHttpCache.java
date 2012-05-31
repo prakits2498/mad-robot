@@ -16,7 +16,7 @@ import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.protocol.HTTP;
 
-import com.madrobot.net.HeaderConstants;
+import com.madrobot.net.HttpConstants;
 
 import android.util.Log;
 
@@ -269,7 +269,7 @@ class BasicHttpCache implements HttpCache {
 		HttpCacheEntry entry = storage.getEntry(variantCacheKey);
 		if (entry == null)
 			return;
-		Header etagHeader = entry.getFirstHeader(HeaderConstants.ETAG);
+		Header etagHeader = entry.getFirstHeader(HttpConstants.ETAG);
 		if (etagHeader == null)
 			return;
 		variants.put(etagHeader.getValue(), new Variant(variantKey,

@@ -41,7 +41,7 @@ import android.util.Log;
  * Sample Usage:<br/>
  * 
  * <pre>
- * HttpTaskHelper httpTask = new HttpTaskHelper(new URI(&quot;http://www.google.com&quot;));
+ * HttpHelper httpTask = new HttpHelper(new URI(&quot;http://www.google.com&quot;));
  * // add request parameters (if any).
  * List&lt;NameValuePair&gt; requestParameter = new ArrayList&lt;NameValuePair&gt;();
  * NameValuePair param = new BasicNameValuePair(&quot;q&quot;, &quot;Android library&quot;);
@@ -57,7 +57,7 @@ import android.util.Log;
  * </p>
  * 
  */
-public class HttpTaskHelper {
+public class HttpHelper {
 
 	private static final String TAG = "MadRobot";
 
@@ -65,7 +65,7 @@ public class HttpTaskHelper {
 
 	public HttpResponse httpResponse;
 
-	private HttpSettings httpSettings = new HttpSettings();
+	private HttpHelperSettings httpSettings = new HttpHelperSettings();
 
 	private Map<String, String> requestHeader;
 	private List<NameValuePair> requestParameter;
@@ -79,7 +79,7 @@ public class HttpTaskHelper {
 	 * @param requestUrl
 	 *            request url
 	 */
-	public HttpTaskHelper(URI requestUrl) {
+	public HttpHelper(URI requestUrl) {
 		this.requestUrl = requestUrl;
 	}
 
@@ -109,7 +109,7 @@ public class HttpTaskHelper {
 	}
 
 	/**
-	 * Cancel the request after the {@link HttpTaskHelper#execute()} method is
+	 * Cancel the request after the {@link HttpHelper#execute()} method is
 	 * called
 	 */
 	public void cancel() {
@@ -120,7 +120,7 @@ public class HttpTaskHelper {
 
 	/**
 	 * 
-	 * Get the http response from {@link HttpTaskHelper#getHttpMethod()}
+	 * Get the http response from {@link HttpHelper#getHttpMethod()}
 	 * 
 	 * @return HttpEntity - the response to the request. This is always a final
 	 *         response, never an intermediate response with an 1xx status code.
@@ -149,27 +149,27 @@ public class HttpTaskHelper {
 	 * 
 	 * @return HttpClient
 	 * 
-	 * @see {@link HttpTaskHelper.HTTP_SOCKET_TIME_OUT_PARAM}
+	 * @see {@link HttpHelper.HTTP_SOCKET_TIME_OUT_PARAM}
 	 */
 	private HttpClient getHttpClient() {
 		if (httpClient == null) {
 			httpClient = new DefaultHttpClient();
 			httpClient.getParams().setParameter(
-					HeaderConstants.HTTP_SOCKET_TIME_OUT_PARAM,
+					HttpConstants.HTTP_SOCKET_TIME_OUT_PARAM,
 					httpSettings.getSocketTimeout());
-			httpClient.getParams().setParameter(HeaderConstants.HTTP_PROTOCOL_VERSION,
+			httpClient.getParams().setParameter(HttpConstants.HTTP_PROTOCOL_VERSION,
 					HttpVersion.HTTP_1_1);
 			httpClient.getParams().setParameter(
-					HeaderConstants.HTTP_SINGLE_COOKIE_PARAM,
+					HttpConstants.HTTP_SINGLE_COOKIE_PARAM,
 					httpSettings.isSingleCookieHeader());
 			httpClient.getParams().setParameter(
-					HeaderConstants.HTTP_EXPECT_CONTINUE_PARAM,
+					HttpConstants.HTTP_EXPECT_CONTINUE_PARAM,
 					httpSettings.isExpectContinue());
 		}
 		return httpClient;
 	}
 
-	public HttpSettings getHttpSettings() {
+	public HttpHelperSettings getHttpSettings() {
 		return httpSettings;
 	}
 
@@ -334,7 +334,7 @@ public class HttpTaskHelper {
 
 	}
 
-	public void setHttpSettings(HttpSettings httpSettings) {
+	public void setHttpSettings(HttpHelperSettings httpSettings) {
 		this.httpSettings = httpSettings;
 	}
 
