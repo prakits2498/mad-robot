@@ -219,9 +219,6 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 				btnAddBasket.setVisibility(View.GONE);
 				findViewById(R.id.soldOut).setVisibility(View.VISIBLE);
 				findViewById(R.id.extrasLayout).setVisibility(View.GONE);
-				// btnAddBasket.setBackgroundResource(R.drawable.sold_out);
-				// btnAddBasket.setText(R.string.sold_out);
-				// btnAddBasket.setTextColor(Color.BLACK);
 			} else {
 				btnAddBasket.setTag(detail);
 				btnAddBasket.setOnClickListener(addToBasketListner);
@@ -269,9 +266,19 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 						});
 
 			}
+			ImageView detailImage = (ImageView) findViewById(R.id.image);
+			detailImage.setOnClickListener(new View.OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					Intent intent = new Intent(TodaysMenuItemDetail.this,
+							MenuItemGallery.class);
+					startActivity(intent);
+				}
+			});
 			BitmapRequestParam req = new BitmapRequestParam();
 			req.bitmapUri = URI.create(detail.getImageUrl());
-			req.image = (ImageView) findViewById(R.id.image);
+			req.image = detailImage;// (ImageView) findViewById(R.id.image);
 			req.progress = (ProgressBar) findViewById(R.id.progress);
 			req.parent = (ViewGroup) findViewById(R.id.parent);
 			req.bitmapWidth = 300;
