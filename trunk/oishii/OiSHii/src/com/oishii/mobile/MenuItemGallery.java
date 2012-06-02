@@ -1,4 +1,4 @@
-package com.oishii.mobile;
+		package com.oishii.mobile;
 
 import android.content.Context;
 import android.content.res.TypedArray;

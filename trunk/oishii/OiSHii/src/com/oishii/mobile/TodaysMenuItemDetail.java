@@ -9,13 +9,17 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager.LayoutParams;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -25,6 +29,7 @@ import com.madrobot.di.plist.NSDictionary;
 import com.madrobot.di.plist.NSNumber;
 import com.madrobot.di.plist.NSObject;
 import com.madrobot.di.plist.PropertyListParser;
+import com.oishii.mobile.MenuItemGallery.ImageAdapter;
 import com.oishii.mobile.beans.AccountStatus;
 import com.oishii.mobile.beans.BasketItem;
 import com.oishii.mobile.beans.MenuItemDetail;
@@ -163,6 +168,18 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 		}
 	};
 
+	private void showGallery() {
+		final Dialog dialog = new Dialog(TodaysMenuItemDetail.this);
+		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.setContentView(R.layout.menugallery);
+		Gallery menuGallery = (Gallery) dialog.findViewById(R.id.gallery1);
+		menuGallery.setAdapter(new ImageAdapter(getApplicationContext()));
+		dialog.setTitle(null);
+		dialog.getWindow().setLayout(LayoutParams.FILL_PARENT,
+				LayoutParams.FILL_PARENT);
+		dialog.show();
+	}
+
 	IHttpCallback details = new IHttpCallback() {
 
 		@Override
@@ -271,9 +288,10 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 
 				@Override
 				public void onClick(View v) {
-					Intent intent = new Intent(TodaysMenuItemDetail.this,
-							MenuItemGallery.class);
-					startActivity(intent);
+					// Intent intent = new Intent(TodaysMenuItemDetail.this,
+					// MenuItemGallery.class);
+					// startActivity(intent);
+					showGallery();
 				}
 			});
 			BitmapRequestParam req = new BitmapRequestParam();
@@ -336,4 +354,46 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 		return R.layout.todays_menu_item_detail;
 	}
 
+	public class ImageAdapter extends BaseAdapter {
+		int mGalleryItemBackground;
+		private Context mContext;
+
+		private Integer[] mImageIds = { R.drawable.acc, R.drawable.acc_sel,
+				R.drawable.arrow_green, R.drawable.back,
+				R.drawable.back_selector, R.drawable.basket,
+				R.drawable.bg_selector };
+
+		public ImageAdapter(Context c) {
+			mContext = c;
+			// TypedArray attr = mContext
+			// .obtainStyledAttributes(R.styleable.HelloGallery);
+			// mGalleryItemBackground = attr.getResourceId(
+			// R.styleable.HelloGallery_android_galleryItemBackground, 0);
+			// attr.recycle();
+		}
+
+		public int getCount() {
+			return mImageIds.length;
+		}
+
+		public Object getItem(int position) {
+			return position;
+		}
+
+		public long getItemId(int position) {
+			return position;
+		}
+
+		public View getView(int position, View convertView, ViewGroup parent) {
+			ImageView imageView = new ImageView(mContext);
+
+			imageView.setImageResource(mImageIds[position]);
+			imageView.setLayoutParams(new Gallery.LayoutParams(
+					LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
+			imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+			// imageView.setBackgroundResource(mGalleryItemBackground);
+
+			return imageView;
+		}
+	}
 }
