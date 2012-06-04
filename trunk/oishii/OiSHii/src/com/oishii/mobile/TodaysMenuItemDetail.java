@@ -346,7 +346,7 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 		}
 	};
 
-	static final int OPERATION_ID=30;
+	public static final int OPERATION_ID=30;
 	
 	private void executeDetailsRequest() {
 		HttpRequestWrapper requestWrapper = new HttpRequestWrapper(
@@ -356,6 +356,7 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 		requestWrapper.operationID = OPERATION_ID;
 		requestWrapper.httpSettings
 				.setHttpMethod(ApplicationConstants.HTTP_METHOD);
+		requestWrapper.intExtra=productId;
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		NameValuePair param = new BasicNameValuePair("prodid",
 				String.valueOf(productId));

@@ -4,7 +4,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 
 import org.apache.http.HttpResponse;
 
@@ -14,6 +13,8 @@ import android.util.Log;
 
 import com.oishii.mobile.ApplicationConstants;
 import com.oishii.mobile.R;
+import com.oishii.mobile.TodaysMenuDetailList;
+import com.oishii.mobile.TodaysMenuItemDetail;
 import com.oishii.mobile.util.CarrierHelper;
 import com.oishii.mobile.util.HttpTaskHelper;
 import com.oishii.mobile.util.IOUtils;
@@ -27,34 +28,33 @@ public class HttpRequestTask extends
 	@Override
 	protected HttpResponseWrapper doInBackground(HttpRequestWrapper... params) {
 		this.wrapper = params[0];
-		Context context = params[0].ctx;
-		int operationID = params[0].operationID;
+		Context context = wrapper.ctx;
 		CarrierHelper bearerHelper = CarrierHelper.getInstance(context);
 		response = new HttpResponseWrapper();
-		response.callback = params[0].callback;
+		response.callback = wrapper.callback;
 		InputStream is = null;
 		if (bearerHelper.getCurrentCarrier() != null) {
 			HttpTaskHelper helper = new com.oishii.mobile.util.HttpTaskHelper(
-					params[0].requestURI);
-			helper.setHttpSettings(params[0].httpSettings);
-			helper.setRequestParameter(params[0].httpParams);
+					wrapper.requestURI);
+			helper.setHttpSettings(wrapper.httpSettings);
+			helper.setRequestParameter(wrapper.httpParams);
 			try {
 				HttpResponse httpEntity = helper.execute();
 				int statusCode = httpEntity.getStatusLine().getStatusCode();
 				if (statusCode == 200) {
 					is = httpEntity.getEntity().getContent();
 					if (params[0].canCache)
-						if (!hasCacheAPI(operationID, context)) {
-							is = cacheAPI(is, context, operationID);
+						if (!hasCacheAPI()) {
+							is = cacheAPI(is);
 						}
 				} else {
 					Log.e("Oishi", "Invalid response received from server!==>"
 							+ statusCode);
 					if (params[0].canCache)
-						is = getCachedAPI(operationID, context); 
+						is = getCachedAPI();
 				}
 			} catch (IOException e) {
-				response.errorMessage = R.string.error_no_data;
+				response.errorMessage = R.string.error_bad_response;
 				response.isSuccess = false;
 				e.printStackTrace();
 
@@ -62,14 +62,14 @@ public class HttpRequestTask extends
 		} else {
 			/* Load from local cache. */
 			System.out.println("No Carrier availale");
-			if (params[0].canCache)
-				is = getCachedAPI(operationID, context);
+			if (wrapper.canCache)
+				is = getCachedAPI();
 		}
 
 		if (is != null) {
 			deserialize(is);
 		} else {
-			response.errorMessage = R.string.error_bad_response;
+			response.errorMessage = R.string.error_no_data;
 			response.isSuccess = false;
 		}
 		return response;
@@ -84,7 +84,7 @@ public class HttpRequestTask extends
 			response.operationId = wrapper.operationID;
 		} else {// deserialization failed
 			Log.e("Oishi", "Error in deserialization!");
-			response.errorMessage = R.string.error_bad_response;// "Could not read server response!";
+			response.errorMessage = R.string.error_bad_response;
 			response.isSuccess = false;
 		}
 	}
@@ -98,9 +98,9 @@ public class HttpRequestTask extends
 		}
 	}
 
-	private boolean hasCacheAPI(int operationId, Context ctx) {
-		String[] file = ctx.fileList();
-		String cacheName = ApplicationConstants.operationMap.get(operationId);
+	private boolean hasCacheAPI() {
+		String[] file = wrapper.ctx.fileList();
+		String cacheName = getCachedAPIName();
 		Log.d("Oishii", "Caching API->" + cacheName);
 		for (int i = 0; i < file.length; i++) {
 			if (cacheName.equals(file[i]))
@@ -109,24 +109,38 @@ public class HttpRequestTask extends
 		return false;
 	}
 
-	private InputStream getCachedAPI(int operationId, Context ctx) {
-		String cacheName = ApplicationConstants.operationMap.get(operationId);
+	private String getCachedAPIName() {
+		switch (wrapper.operationID) {
+		case TodaysMenuDetailList.OPERATION_MENU_DETAILS:
+		case TodaysMenuItemDetail.OPERATION_ID:
+			String name = ApplicationConstants.operationMap
+					.get(wrapper.operationID) + wrapper.intExtra + ".plist";
+			return name;
+		default:
+			return ApplicationConstants.operationMap.get(wrapper.operationID);
+		}
+
+	}
+
+	private InputStream getCachedAPI() {
+		String cacheName = getCachedAPIName();
 		try {
-			return ctx.openFileInput(cacheName);
+			Log.e("Cache", "Loading Cached API "+cacheName);
+			return wrapper.ctx.openFileInput(cacheName);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			return null;
 		}
 	}
 
-	private InputStream cacheAPI(InputStream is, Context context,
-			int operationId) {
-		String apiName = ApplicationConstants.operationMap.get(operationId);
+	private InputStream cacheAPI(InputStream is) {
+		String apiName =getCachedAPIName();
 		try {
-			FileOutputStream fos = context.openFileOutput(apiName,
+			FileOutputStream fos = wrapper.ctx.openFileOutput(apiName,
 					Context.MODE_PRIVATE);
 			IOUtils.copy(is, fos);
-			return context.openFileInput(apiName);
+			Log.e("Cache", "Caching API =>"+apiName);
+			return wrapper.ctx.openFileInput(apiName);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			return is;
