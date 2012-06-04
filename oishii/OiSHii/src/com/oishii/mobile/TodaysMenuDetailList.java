@@ -45,7 +45,7 @@ public class TodaysMenuDetailList extends ListOishiBase {
 	final static String EXTRA_TITLE = "title";
 	final static String EXTRA_COLOR = "bgColor";
 	final static String EXTRA_CAT_ID = "catID";
-	static final int OPERATION_MENU_DETAILS =20;
+	public static final int OPERATION_MENU_DETAILS =20;
 	private int color;
 	private int catId;
 
@@ -171,6 +171,7 @@ public class TodaysMenuDetailList extends ListOishiBase {
 		requestWrapper.operationID = OPERATION_MENU_DETAILS;
 		requestWrapper.httpSettings
 				.setHttpMethod(ApplicationConstants.HTTP_METHOD);
+		requestWrapper.intExtra=catId;
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		NameValuePair param = new BasicNameValuePair("catID",
 				String.valueOf(catId));

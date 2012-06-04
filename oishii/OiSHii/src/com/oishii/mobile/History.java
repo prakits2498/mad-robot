@@ -166,6 +166,7 @@ public class History extends ListOishiBase {
 		HttpSettings settings = new HttpSettings();
 		requestWrapper.httpSettings
 				.setHttpMethod(ApplicationConstants.HTTP_METHOD);
+		requestWrapper.canCache=false;
 		requestWrapper.httpSettings = settings;
 		requestWrapper.operationID = OPERATION_HISTORY;
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
