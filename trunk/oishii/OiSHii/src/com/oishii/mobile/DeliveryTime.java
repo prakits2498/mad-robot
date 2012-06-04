@@ -51,10 +51,11 @@ public class DeliveryTime extends OishiiBaseActivity {
 		public void onClick(View v) {
 			switch (v.getId()) {
 			case R.id.btnContinue:
-				//start same activity for billing address.
-				Intent intent=new Intent(DeliveryTime.this,Locations.class);
+				// start same activity for billing address.
+				Intent intent = new Intent(DeliveryTime.this, Locations.class);
 				intent.putExtra(Locations.ACTION_SELECT, true);
-				intent.putExtra(Locations.ACTION_SELECT_TYPE, Locations.ACTION_SHIPPING_ADDRESS);
+				intent.putExtra(Locations.ACTION_SELECT_TYPE,
+						Locations.ACTION_SHIPPING_ADDRESS);
 				startActivity(intent);
 				break;
 			case R.id.btnSelTime:
@@ -105,23 +106,23 @@ public class DeliveryTime extends OishiiBaseActivity {
 		String timeStr;
 		for (int i = 0; i < count; i++) {
 			dict = (NSDictionary) array.objectAtIndex(i);
-			envelope.day=dict.objectForKey("Date").toString();
-			NSArray timeSlots=(NSArray) dict.objectForKey("slots");
-			
-			for(int j=0;j<timeSlots.count();j++){
-				dict=(NSDictionary) timeSlots.objectAtIndex(j);
+			envelope.day = dict.objectForKey("Date").toString();
+			NSArray timeSlots = (NSArray) dict.objectForKey("slots");
+
+			for (int j = 0; j < timeSlots.count(); j++) {
+				dict = (NSDictionary) timeSlots.objectAtIndex(j);
 				timeStr = dict.objectForKey("Time").toString();
 				if (!timeStr.contains(":")) {
 					envelope.success = false;
 					envelope.message = "Delivery Closed!";
 				} else {
-				time.add(timeStr);
+					time.add(timeStr);
 				}
 			}
-//			if (!timeStr.contains(":")) {
-//				envelope.success = false;
-//				envelope.message = "Delivery Closed!";
-//			}
+			// if (!timeStr.contains(":")) {
+			// envelope.success = false;
+			// envelope.message = "Delivery Closed!";
+			// }
 		}
 		envelope.time = time;
 		return envelope;
@@ -159,7 +160,7 @@ public class DeliveryTime extends OishiiBaseActivity {
 		public void bindUI(Object t, int operationId) {
 			hideDialog();
 			TimeEnvelope time = (TimeEnvelope) t;
-			TextView tv=(TextView) findViewById(R.id.day);
+			TextView tv = (TextView) findViewById(R.id.day);
 			tv.setText(time.day);
 			if (time.success) {
 				currentTimeDetails = time;
@@ -171,18 +172,20 @@ public class DeliveryTime extends OishiiBaseActivity {
 	};
 
 	protected void executeDeliveryTimeRequest() {
-		HttpRequestWrapper requestWrapper = new HttpRequestWrapper(getApplicationContext());
+		HttpRequestWrapper requestWrapper = new HttpRequestWrapper(
+				getApplicationContext());
 		requestWrapper.requestURI = ApplicationConstants.API_DELIVERY_TIME;
 		requestWrapper.callback = delTimeCallback;
 		requestWrapper.operationID = 45;
 		requestWrapper.httpSettings
 				.setHttpMethod(ApplicationConstants.HTTP_METHOD);
+		requestWrapper.canCache = false;
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		String platter=AccountStatus
-				.getInstance(getApplicationContext()).getBasket().isCorporate()?"1":"0";
+		String platter = AccountStatus.getInstance(getApplicationContext())
+				.getBasket().isCorporate() ? "1" : "0";
 		NameValuePair param = new BasicNameValuePair("platter", platter);
 		params.add(param);
-		requestWrapper.httpParams=params;
+		requestWrapper.httpParams = params;
 		showDialog(getString(R.string.loading_delivery_time));
 		new HttpRequestTask().execute(requestWrapper);
 	}

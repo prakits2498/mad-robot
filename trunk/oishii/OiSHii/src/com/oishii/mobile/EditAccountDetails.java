@@ -92,6 +92,7 @@ public class EditAccountDetails extends CreateAccount {
 		requestWrapper.operationID = 67;
 		requestWrapper.httpSettings
 				.setHttpMethod(ApplicationConstants.HTTP_METHOD);
+		requestWrapper.canCache=false;
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		AccountStatus stat = AccountStatus.getInstance(getApplicationContext());
 		NameValuePair param = new BasicNameValuePair("sid", stat.getSid());

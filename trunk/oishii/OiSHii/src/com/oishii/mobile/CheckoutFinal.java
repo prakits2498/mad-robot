@@ -45,49 +45,51 @@ public class CheckoutFinal extends OishiiBaseActivity {
 	class CheckOutClient extends WebViewClient {
 		public void onPageFinished(WebView view, String url) {
 			// do your stuff here
-			System.out.println("LOading complete"+url);
+			System.out.println("LOading complete" + url);
 			hideDialog();
 		}
 	}
 
-	IHttpCallback finalCallback=new IHttpCallback() {
-		
+	IHttpCallback finalCallback = new IHttpCallback() {
+
 		@Override
 		public Object populateBean(InputStream is, int operationId) {
 			// TODO Auto-generated method stub
 			String test = null;
 			try {
-				test=asString(is);
+				test = asString(is);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			return test;
 		}
-		
+
 		@Override
 		public void onFailure(int message, int operationID) {
 			// TODO Auto-generated method stub
-			
+
 		}
-		
+
 		@Override
 		public void bindUI(Object t, int operationId) {
 			// TODO Auto-generated method stub
 			hideDialog();
 			showDialog(getString(R.string.loading_directing));
-			webView.loadDataWithBaseURL(ApplicationConstants.API_FINAL_CHECKOUT.toString(), t.toString(),
-		            "text/html", HTTP.UTF_8, null);
+			webView.loadDataWithBaseURL(
+					ApplicationConstants.API_FINAL_CHECKOUT.toString(),
+					t.toString(), "text/html", HTTP.UTF_8, null);
 		}
 	};
-	
-	private void executeFinalCheckout(){
-		HttpRequestWrapper requestWrapper = new HttpRequestWrapper(getApplicationContext());
+
+	private void executeFinalCheckout() {
+		HttpRequestWrapper requestWrapper = new HttpRequestWrapper(
+				getApplicationContext());
 		requestWrapper.requestURI = ApplicationConstants.API_FINAL_CHECKOUT;
 		requestWrapper.callback = finalCallback;// validateCallback;
 		requestWrapper.operationID = 67;
-		requestWrapper.httpSettings
-				.setHttpMethod(HttpMethod.HTTP_POST);
+		requestWrapper.httpSettings.setHttpMethod(HttpMethod.HTTP_POST);
+		requestWrapper.canCache = false;
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		AccountStatus stat = AccountStatus.getInstance(getApplicationContext());
 		OishiiBasket basket = stat.getBasket();
@@ -140,19 +142,18 @@ public class CheckoutFinal extends OishiiBaseActivity {
 		requestWrapper.httpParams = params;
 		showDialog(getString(R.string.loading_processing));
 		new HttpRequestTask().execute(requestWrapper);
-//		showDialog("Loading webview");
-//		webView.loadUrl("http://google.com");
-		
-		
+		// showDialog("Loading webview");
+		// webView.loadUrl("http://google.com");
+
 	}
-	
-	
+
 	class ValidateResponse {
 		@Override
 		public String toString() {
 			return "ValidateResponse [message=" + message + ", success="
 					+ success + "]";
 		}
+
 		String message;
 		boolean success;
 	}
@@ -181,23 +182,25 @@ public class CheckoutFinal extends OishiiBaseActivity {
 
 		@Override
 		public void bindUI(Object t, int operationId) {
-			ValidateResponse resp=(ValidateResponse) t;
+			ValidateResponse resp = (ValidateResponse) t;
 			hideDialog();
-			if(resp.success){
+			if (resp.success) {
 				executeFinalCheckout();
-			}else{
+			} else {
 				showErrorDialog(resp.message);
 			}
 		}
 	};
 
 	private void executeValidateCheckout() {
-		HttpRequestWrapper requestWrapper = new HttpRequestWrapper(getApplicationContext());
+		HttpRequestWrapper requestWrapper = new HttpRequestWrapper(
+				getApplicationContext());
 		requestWrapper.requestURI = ApplicationConstants.API_VALIDATE_CHECKOUT;
 		requestWrapper.callback = validateCallback;// validateCallback;
 		requestWrapper.operationID = 67;
 		requestWrapper.httpSettings
 				.setHttpMethod(ApplicationConstants.HTTP_METHOD);
+		requestWrapper.canCache = false;
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		AccountStatus stat = AccountStatus.getInstance(getApplicationContext());
 		OishiiBasket basket = stat.getBasket();

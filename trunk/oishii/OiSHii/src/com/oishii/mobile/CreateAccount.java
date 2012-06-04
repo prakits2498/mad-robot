@@ -57,6 +57,7 @@ public class CreateAccount extends Login {
 		requestWrapper.callback = simpleResultCallback;
 		requestWrapper.operationID = OPERATION_REGISTER;
 		requestWrapper.httpSettings.setHttpMethod(ApplicationConstants.HTTP_METHOD);
+		requestWrapper.canCache=false;
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		NameValuePair param = new BasicNameValuePair("title", title.getText()
 				.toString());

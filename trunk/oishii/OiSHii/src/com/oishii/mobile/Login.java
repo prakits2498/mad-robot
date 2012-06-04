@@ -55,11 +55,13 @@ public class Login extends OishiiBaseActivity {
 	}
 
 	private void executeLoginRequest() {
-		HttpRequestWrapper requestWrapper = new HttpRequestWrapper(getApplicationContext());
+		HttpRequestWrapper requestWrapper = new HttpRequestWrapper(
+				getApplicationContext());
 		requestWrapper.requestURI = ApplicationConstants.API_LOGIN;
 		requestWrapper.callback = loginCallback;
 		requestWrapper.httpSettings
 				.setHttpMethod(ApplicationConstants.HTTP_METHOD);
+		requestWrapper.canCache = false;
 		requestWrapper.operationID = OPERATION_LOGIN;
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		NameValuePair param = new BasicNameValuePair("mac", AccountStatus
@@ -129,7 +131,8 @@ public class Login extends OishiiBaseActivity {
 	};
 
 	protected void executeAccountInfoRequest(IHttpCallback listener) {
-		HttpRequestWrapper requestWrapper = new HttpRequestWrapper(getApplicationContext());
+		HttpRequestWrapper requestWrapper = new HttpRequestWrapper(
+				getApplicationContext());
 		requestWrapper.requestURI = ApplicationConstants.API_MY_ACCOUNT;
 		requestWrapper.callback = listener;
 		HttpSettings settings = new HttpSettings();
@@ -189,7 +192,7 @@ public class Login extends OishiiBaseActivity {
 			switch (nextScreen) {
 			case R.id.basket:
 				// targetClass=;//titleString = R.string.checkout;
-				targetClass = PromoCode.class;//Basket.class;
+				targetClass = PromoCode.class;// Basket.class;
 				break;
 			case R.id.myacc:
 				targetClass = AccountDetails.class;
@@ -244,14 +247,14 @@ public class Login extends OishiiBaseActivity {
 			str = temp.objectForKey("mobile").toString();
 			address.setMobile(str);
 			str = temp.objectForKey("shipping").toString();
-			
-//			boolean isShipping = str.equals("1");
+
+			// boolean isShipping = str.equals("1");
 			address.setShipping(str);
 			str = temp.objectForKey("billing").toString();
-//			boolean isBilling = str.equals("1");
+			// boolean isBilling = str.equals("1");
 			address.setBilling(str);
 			addressList.add(address);
-			
+
 		}
 		info.setAddresses(addressList);
 		arr = (NSArray) details.objectForKey("cc");
