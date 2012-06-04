@@ -80,7 +80,7 @@ public final class CarrierHelper {
 			}
 			return carrierHandler;
 		} catch (Exception e) {
-
+			e.printStackTrace();
 			carrierHandler = null;
 			return null;
 		}

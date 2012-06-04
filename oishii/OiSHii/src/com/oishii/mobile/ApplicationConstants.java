@@ -1,6 +1,8 @@
 package com.oishii.mobile;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 import android.graphics.Color;
 
@@ -18,6 +20,10 @@ public class ApplicationConstants {
 	public static final URI API_MENU_DETAILS = URI.create(PLIST_PATH
 			+ "menuItemData.php");
 	public static final URI API_MENU_SPECIFIC_DETAILS = URI.create(PLIST_PATH
+			+ "menuDetailData.php");
+	
+	//TODO change the end point for the gallery
+	public static final URI API_MENU_GALLERY = URI.create(PLIST_PATH
 			+ "menuDetailData.php");
 	public static final URI API_SPECIAL_OFFERS = URI.create(PLIST_PATH
 			+ "specialOffers.php");
@@ -56,4 +62,10 @@ public class ApplicationConstants {
 	
 	public static final int COLOR_SNACKS = Color.parseColor("#D60C8C");
 	public static final int COLOR_DRINKS = Color.parseColor("#ff9000");
+	
+	public static Map<Integer,String> operationMap=new HashMap<Integer,String>();
+	
+	static{
+		operationMap.put(TodaysMenu.OPERATION_LIST, "todaysmenu.plist");
+	}
 }

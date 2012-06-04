@@ -11,7 +11,6 @@ import org.apache.http.message.BasicNameValuePair;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -23,17 +22,18 @@ import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.madrobot.di.plist.NSArray;
 import com.madrobot.di.plist.NSDictionary;
 import com.madrobot.di.plist.NSNumber;
 import com.madrobot.di.plist.NSObject;
 import com.madrobot.di.plist.PropertyListParser;
-import com.oishii.mobile.MenuItemGallery.ImageAdapter;
 import com.oishii.mobile.beans.AccountStatus;
 import com.oishii.mobile.beans.BasketItem;
 import com.oishii.mobile.beans.MenuItemDetail;
 import com.oishii.mobile.beans.OishiiBasket;
+import com.oishii.mobile.util.IOUtils;
 import com.oishii.mobile.util.tasks.BitmapHttpTask;
 import com.oishii.mobile.util.tasks.BitmapRequestParam;
 import com.oishii.mobile.util.tasks.HttpRequestTask;
@@ -89,8 +89,43 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 
 	}
 
+	IHttpCallback galleryCallback =new IHttpCallback() {
+		
+		@Override
+		public Object populateBean(InputStream is, int operationId) {
+			return null;
+		}
+		
+		@Override
+		public void onFailure(int message, int operationID) {
+		}
+		
+		@Override
+		public void bindUI(Object t, int operationId) {
+			showGallery();
+		}
+	};
+	
+	
+	private void executeGalleryRequest(){
+		HttpRequestWrapper requestWrapper = new HttpRequestWrapper(
+				getApplicationContext());
+		requestWrapper.requestURI = ApplicationConstants.API_MENU_GALLERY;
+		requestWrapper.callback = galleryCallback;
+		requestWrapper.operationID = 10;
+		requestWrapper.httpSettings
+				.setHttpMethod(ApplicationConstants.HTTP_METHOD);
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		NameValuePair param = new BasicNameValuePair("prodid",
+				String.valueOf(productId));
+		params.add(param);
+		requestWrapper.httpParams = params;
+		showDialog(getString(R.string.loading_gallery));
+		new HttpRequestTask().execute(requestWrapper);
+	}
+	
+	
 	View.OnClickListener addToBasketListner = new View.OnClickListener() {
-
 		@Override
 		public void onClick(View v) {
 			final MenuItemDetail item = (MenuItemDetail) v.getTag();
@@ -291,7 +326,12 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 					// Intent intent = new Intent(TodaysMenuItemDetail.this,
 					// MenuItemGallery.class);
 					// startActivity(intent);
-					showGallery();
+					if(IOUtils.isSDCardMounted()){
+//						showGallery();
+						executeGalleryRequest();
+					}else{
+						Toast.makeText(getApplicationContext(), R.string.error_no_sdcard, 4000);
+					}
 				}
 			});
 			BitmapRequestParam req = new BitmapRequestParam();
@@ -349,6 +389,8 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 		executeDetailsRequest();
 	}
 
+	
+	
 	@Override
 	protected int getChildViewLayout() {
 		return R.layout.todays_menu_item_detail;
@@ -389,7 +431,7 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 
 			imageView.setImageResource(mImageIds[position]);
 			imageView.setLayoutParams(new Gallery.LayoutParams(
-					LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
+					LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
 			imageView.setScaleType(ImageView.ScaleType.FIT_XY);
 			// imageView.setBackgroundResource(mGalleryItemBackground);
 
