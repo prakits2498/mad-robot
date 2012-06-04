@@ -14,6 +14,7 @@ public class HttpRequestWrapper {
 	public  HttpRequestWrapper(Context ctx){
 		this.ctx=ctx;
 	}
+	public boolean canCache=true;
 	public Context ctx;
 	public URI requestURI;
 	/*integer to identify the operation. an activity may user*/

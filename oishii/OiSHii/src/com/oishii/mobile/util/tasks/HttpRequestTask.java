@@ -43,22 +43,27 @@ public class HttpRequestTask extends
 				int statusCode = httpEntity.getStatusLine().getStatusCode();
 				if (statusCode == 200) {
 					is = httpEntity.getEntity().getContent();
-					if (!hasCacheAPI(operationID, context)) {
-						is = cacheAPI(is, context, operationID);
-					}
+					if (params[0].canCache)
+						if (!hasCacheAPI(operationID, context)) {
+							is = cacheAPI(is, context, operationID);
+						}
 				} else {
 					Log.e("Oishi", "Invalid response received from server!==>"
 							+ statusCode);
+					if (params[0].canCache)
+						is = getCachedAPI(operationID, context); 
 				}
 			} catch (IOException e) {
 				response.errorMessage = R.string.error_no_data;
 				response.isSuccess = false;
 				e.printStackTrace();
+
 			}
 		} else {
 			/* Load from local cache. */
 			System.out.println("No Carrier availale");
-			is = getCachedAPI(operationID, context);
+			if (params[0].canCache)
+				is = getCachedAPI(operationID, context);
 		}
 
 		if (is != null) {
