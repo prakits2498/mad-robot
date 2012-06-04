@@ -67,8 +67,6 @@ public class TodaysMenu extends ListOishiBase {
 				req.image.setTag(new Object());
 				req.progress = viewHolder.bar;
 				req.parent = viewHolder.bg;
-//				req.bitmapWidth=100;
-//				req.bitmapHeight=65;
 				new BitmapHttpTask().execute(req);
 			}
 			return view;
@@ -83,9 +81,8 @@ public class TodaysMenu extends ListOishiBase {
 		ProgressBar bar;
 	}
 
-	public final static int OPERATION_BITMAP = 10;
 
-	public final static int OPERATION_LIST = 30;
+	public final static int OPERATION_LIST = 10;
 	private ListView listview;
 
 	private void populateTodaysMenu(List<MenuData> menu) {
@@ -141,8 +138,6 @@ public class TodaysMenu extends ListOishiBase {
 				}
 				return null;
 
-			case OPERATION_BITMAP:
-				break;
 			}
 			Log.e("Oishii", "IDEALLY SHOULD NEVER GET HERE");
 			return null;

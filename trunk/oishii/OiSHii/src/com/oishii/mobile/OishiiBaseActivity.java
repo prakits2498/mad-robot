@@ -306,7 +306,6 @@ public abstract class OishiiBaseActivity extends Activity {
 
 	protected void processFailure(int message) {
 		hideDialog();
-
 		showErrorDialog(getString(message));
 	}
 
