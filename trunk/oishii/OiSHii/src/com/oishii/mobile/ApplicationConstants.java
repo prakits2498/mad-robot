@@ -67,5 +67,6 @@ public class ApplicationConstants {
 	
 	static{
 		operationMap.put(TodaysMenu.OPERATION_LIST, "todaysmenu.plist");
+		operationMap.put(TodaysMenuDetailList.OPERATION_MENU_DETAILS, "todaysmenudetail.plist");
 	}
 }

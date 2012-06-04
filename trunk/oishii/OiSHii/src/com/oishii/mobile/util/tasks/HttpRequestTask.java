@@ -7,7 +7,6 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.protocol.HttpRequestExecutor;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -55,8 +54,6 @@ public class HttpRequestTask extends
 				response.errorMessage = R.string.error_no_data;
 				response.isSuccess = false;
 				e.printStackTrace();
-			} catch (URISyntaxException e) {
-				e.printStackTrace();
 			}
 		} else {
 			/* Load from local cache. */
@@ -99,6 +96,7 @@ public class HttpRequestTask extends
 	private boolean hasCacheAPI(int operationId, Context ctx) {
 		String[] file = ctx.fileList();
 		String cacheName = ApplicationConstants.operationMap.get(operationId);
+		Log.d("Oishii", "Caching API->" + cacheName);
 		for (int i = 0; i < file.length; i++) {
 			if (cacheName.equals(file[i]))
 				return true;

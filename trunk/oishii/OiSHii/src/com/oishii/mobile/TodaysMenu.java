@@ -203,11 +203,11 @@ public class TodaysMenu extends ListOishiBase {
 		tv.setText(R.string.today);
 		TextView tv2 = (TextView) findViewById(R.id.titleSecond);
 		tv2.setText(R.string.menu);
-		if (MenuCache.getInstance().getTodayMenu() == null) {
+//		if (MenuCache.getInstance().getTodayMenu() == null) {
 			executeMenuListRequest();
-		} else {
-			populateTodaysMenu(MenuCache.getInstance().getTodayMenu());
-		}
+		// } else {
+		// populateTodaysMenu(MenuCache.getInstance().getTodayMenu());
+		// }
 	}
 
 	@Override

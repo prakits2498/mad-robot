@@ -54,8 +54,6 @@ public class BitmapHttpTask extends AsyncTask<BitmapRequestParam, Void, Bitmap> 
 						bitmapOptions);
 			} catch (IOException e) {
 				e.printStackTrace();
-			} catch (URISyntaxException e) {
-				e.printStackTrace();
 			}
 			System.out.println("REtrn resp for->" + params[0].bitmapUri);
 		}
