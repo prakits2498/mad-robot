@@ -113,7 +113,6 @@ public class HttpRequestTask extends
 		String cacheName = ApplicationConstants.operationMap.get(operationId);
 		try {
 			return ctx.openFileInput(cacheName);
-
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			return null;

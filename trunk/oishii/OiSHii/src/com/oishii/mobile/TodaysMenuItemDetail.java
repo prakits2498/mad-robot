@@ -346,12 +346,14 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 		}
 	};
 
+	static final int OPERATION_ID=30;
+	
 	private void executeDetailsRequest() {
 		HttpRequestWrapper requestWrapper = new HttpRequestWrapper(
 				getApplicationContext());
 		requestWrapper.requestURI = ApplicationConstants.API_MENU_SPECIFIC_DETAILS;
 		requestWrapper.callback = details;
-		requestWrapper.operationID = 10;
+		requestWrapper.operationID = OPERATION_ID;
 		requestWrapper.httpSettings
 				.setHttpMethod(ApplicationConstants.HTTP_METHOD);
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
