@@ -135,6 +135,7 @@ public class Login extends OishiiBaseActivity {
 				getApplicationContext());
 		requestWrapper.requestURI = ApplicationConstants.API_MY_ACCOUNT;
 		requestWrapper.callback = listener;
+		requestWrapper.canCache = false;
 		HttpSettings settings = new HttpSettings();
 		settings.setHttpMethod(ApplicationConstants.HTTP_METHOD);
 		requestWrapper.httpSettings = settings;
