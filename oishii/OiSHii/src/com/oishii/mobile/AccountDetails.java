@@ -6,6 +6,7 @@ import android.view.View;
 public class AccountDetails extends OishiiBaseActivity {
 	final int SCR_ID = 67;
 
+	
 	@Override
 	protected void hookInChildViews() {
 		findViewById(R.id.myAccDetails).setOnClickListener(
