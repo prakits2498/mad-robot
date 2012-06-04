@@ -39,8 +39,8 @@ import com.oishii.mobile.util.tasks.IHttpCallback;
 public class Locations extends Login {
 	protected static final String ACTION_SELECT = "select";
 	protected static final String ACTION_SELECT_TYPE = "select_address_type";
-	protected static final int ACTION_BILLING_ADDRESS=10;
-	protected static final int ACTION_SHIPPING_ADDRESS=30;
+	protected static final int ACTION_BILLING_ADDRESS = 10;
+	protected static final int ACTION_SHIPPING_ADDRESS = 30;
 
 	protected IHttpCallback accountCallback = new IHttpCallback() {
 
@@ -201,7 +201,8 @@ public class Locations extends Login {
 	int shipping;
 
 	private void executeAddLocation() {
-		HttpRequestWrapper requestWrapper = new HttpRequestWrapper(getApplicationContext());
+		HttpRequestWrapper requestWrapper = new HttpRequestWrapper(
+				getApplicationContext());
 
 		requestWrapper.requestURI = isAddressEdit ? ApplicationConstants.API_EDIT_LOCATION
 				: ApplicationConstants.API_ADD_LOCATION;
@@ -209,7 +210,9 @@ public class Locations extends Login {
 				: callback;
 		requestWrapper.operationID = isAddressEdit ? OPERATION_EDIT
 				: OPERATION_ADD;
-		requestWrapper.httpSettings.setHttpMethod(ApplicationConstants.HTTP_METHOD);
+		requestWrapper.canCache = false;
+		requestWrapper.httpSettings
+				.setHttpMethod(ApplicationConstants.HTTP_METHOD);
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		AccountStatus stat = AccountStatus.getInstance(getApplicationContext());
 		NameValuePair param = new BasicNameValuePair("sid", stat.getSid());
@@ -260,13 +263,15 @@ public class Locations extends Login {
 	private final static int OPERATION_DELETE = 30;
 
 	private void executeDeleteAddressRequest(int id) {
-		HttpRequestWrapper requestWrapper = new HttpRequestWrapper(getApplicationContext());
+		HttpRequestWrapper requestWrapper = new HttpRequestWrapper(
+				getApplicationContext());
 		requestWrapper.requestURI = ApplicationConstants.API_DELETE_LOCATION;
 		requestWrapper.callback = simpleResultCallback;
 		HttpSettings settings = new HttpSettings();
 		settings.setHttpMethod(ApplicationConstants.HTTP_METHOD);
 		requestWrapper.httpSettings = settings;
 		requestWrapper.operationID = OPERATION_DELETE;
+		requestWrapper.canCache = false;
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		AccountStatus accStat = AccountStatus
 				.getInstance(getApplicationContext());
@@ -288,7 +293,7 @@ public class Locations extends Login {
 
 	@Override
 	protected int getParentScreenId() {
-		return forSelection? R.id.basket:R.id.myacc;
+		return forSelection ? R.id.basket : R.id.myacc;
 	}
 
 	@Override
@@ -324,7 +329,8 @@ public class Locations extends Login {
 	}
 
 	boolean forSelection;
-int selectionType;
+	int selectionType;
+
 	@Override
 	protected void hookInChildViews() {
 		Button btnArbit = getArbitartButton();
@@ -332,13 +338,13 @@ int selectionType;
 		btnArbit.setOnClickListener(addLocation);
 		parent = (LinearLayout) findViewById(R.id.parent);
 		forSelection = getIntent().getBooleanExtra(ACTION_SELECT, false);
-		selectionType=getIntent().getIntExtra(ACTION_SELECT_TYPE, 0);
-		if(forSelection){
+		selectionType = getIntent().getIntExtra(ACTION_SELECT_TYPE, 0);
+		if (forSelection) {
 			String titleStr;
-			if(selectionType==ACTION_BILLING_ADDRESS){
-				titleStr=getString(R.string.title_sel_bill);
-			}else{
-				titleStr=getString(R.string.title_sel_ship);
+			if (selectionType == ACTION_BILLING_ADDRESS) {
+				titleStr = getString(R.string.title_sel_bill);
+			} else {
+				titleStr = getString(R.string.title_sel_ship);
 			}
 			TextView title = (TextView) findViewById(R.id.headertitle);
 			title.setText(titleStr);
@@ -380,7 +386,7 @@ int selectionType;
 			findViewById(R.id.noLocations).setVisibility(View.VISIBLE);
 		} else {
 			/* if this activity is used for selecting an address */
-			if (forSelection &&selectionType==ACTION_SHIPPING_ADDRESS) {
+			if (forSelection && selectionType == ACTION_SHIPPING_ADDRESS) {
 				chkSameBill = (CheckBox) findViewById(R.id.chkSameBill);
 				chkSameBill.setVisibility(View.VISIBLE);
 			}
@@ -407,11 +413,10 @@ int selectionType;
 				v.findViewById(R.id.sep).setVisibility(View.GONE);
 			}
 
-			
 			View view = v.findViewById(R.id.btnDelete);
 			view.setTag(new Integer(i));
 			view.setOnClickListener(deleteListener);
-			if(forSelection){
+			if (forSelection) {
 				view.setVisibility(View.GONE);
 			}
 			view = v.findViewById(R.id.btnEdit);
@@ -431,27 +436,29 @@ int selectionType;
 	View.OnClickListener selectAddressListener = new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			int addressId=(Integer)v.getTag();
-			OishiiBasket basket=AccountStatus.getInstance(getApplicationContext()).getBasket();
-			if(selectionType==ACTION_SHIPPING_ADDRESS){
+			int addressId = (Integer) v.getTag();
+			OishiiBasket basket = AccountStatus.getInstance(
+					getApplicationContext()).getBasket();
+			if (selectionType == ACTION_SHIPPING_ADDRESS) {
 				basket.setShippingAddressId(addressId);
-				if(!chkSameBill.isChecked()){
-					//start same activity for billing address.
-					Intent intent=new Intent(Locations.this,Locations.class);
+				if (!chkSameBill.isChecked()) {
+					// start same activity for billing address.
+					Intent intent = new Intent(Locations.this, Locations.class);
 					intent.putExtra(ACTION_SELECT, true);
 					intent.putExtra(ACTION_SELECT_TYPE, ACTION_BILLING_ADDRESS);
 					startActivity(intent);
-				}else{
+				} else {
 					basket.setBillingAddressId(addressId);
 					// select payment type
-					Intent intent=new Intent(Locations.this,StoredPayments.class);
+					Intent intent = new Intent(Locations.this,
+							StoredPayments.class);
 					intent.putExtra(ACTION_SELECT, true);
 					startActivity(intent);
 				}
-			}else{
+			} else {
 				basket.setBillingAddressId(addressId);
 				// select payment type
-				Intent intent=new Intent(Locations.this,StoredPayments.class);
+				Intent intent = new Intent(Locations.this, StoredPayments.class);
 				intent.putExtra(ACTION_SELECT, true);
 				startActivity(intent);
 			}

@@ -60,6 +60,7 @@ public class ChangePassword extends OishiiBaseActivity {
 		requestWrapper.operationID = OPERATION_CHG_PWD;
 		requestWrapper.httpSettings
 				.setHttpMethod(ApplicationConstants.HTTP_METHOD);
+		requestWrapper.canCache=false;
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		AccountStatus accStat = AccountStatus
 				.getInstance(getApplicationContext());
