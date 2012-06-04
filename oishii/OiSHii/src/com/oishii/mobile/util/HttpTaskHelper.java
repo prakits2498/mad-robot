@@ -102,10 +102,15 @@ public class HttpTaskHelper {
 	 * @throws URISyntaxException
 	 *             if request url syntax is wrong
 	 */
-	private void addQueryParameter() throws URISyntaxException {
-		this.requestUrl = URIUtils.createURI(this.requestUrl.getScheme(),
-				this.requestUrl.getAuthority(), -1, this.requestUrl.getPath(),
-				URLEncodedUtils.format(requestParameter, HTTP.UTF_8), null);
+	private void addQueryParameter()  {
+		try {
+			this.requestUrl = URIUtils.createURI(this.requestUrl.getScheme(),
+					this.requestUrl.getAuthority(), -1, this.requestUrl.getPath(),
+					URLEncodedUtils.format(requestParameter, HTTP.UTF_8), null);
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -144,7 +149,7 @@ public class HttpTaskHelper {
 	 * @throws URISyntaxException
 	 *             in case of request url syntax error
 	 */
-	public HttpResponse execute() throws IOException, URISyntaxException {
+	public HttpResponse execute() throws IOException {
 
 		switch (httpSettings.getHttpMethod()) {
 		case HTTP_GET:
@@ -233,8 +238,8 @@ public class HttpTaskHelper {
 	 * @throws URISyntaxException
 	 *             in case of request url syntax error
 	 */
-	private HttpResponse handleHttpDelete() throws IOException,
-			URISyntaxException {
+	private HttpResponse handleHttpDelete() throws IOException
+			 {
 
 		if (hasRequestParameter()) {
 			addQueryParameter();
@@ -259,7 +264,7 @@ public class HttpTaskHelper {
 	 * @throws URISyntaxException
 	 *             in case of request url syntax error
 	 */
-	private HttpResponse handleHttpGet() throws IOException, URISyntaxException {
+	private HttpResponse handleHttpGet() throws IOException {
 
 		if (hasRequestParameter()) {
 			addQueryParameter();
@@ -285,7 +290,7 @@ public class HttpTaskHelper {
 	 * @throws URISyntaxException
 	 *             in case of request url syntax error
 	 */
-	private HttpResponse handleHttpPost() throws IOException, URISyntaxException {
+	private HttpResponse handleHttpPost() throws IOException {
 
 		HttpPost httpPost = new HttpPost(requestUrl);
 		this.initRequest(httpPost);
