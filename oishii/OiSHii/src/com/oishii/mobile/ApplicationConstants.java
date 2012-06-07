@@ -6,7 +6,7 @@ import java.util.Map;
 
 import android.graphics.Color;
 
-import com.oishii.mobile.util.HttpSettings.HttpMethod;
+import com.madrobot.util.HttpSettings.HttpMethod;
 
 public class ApplicationConstants {
 	 static final int SPLASH_DURATION = 4000;

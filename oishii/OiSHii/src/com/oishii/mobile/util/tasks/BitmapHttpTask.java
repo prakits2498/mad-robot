@@ -2,7 +2,6 @@ package com.oishii.mobile.util.tasks;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 
 import org.apache.http.HttpResponse;
 
@@ -14,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+import com.madrobot.util.HttpTaskHelper;
 import com.oishii.mobile.R;
 
 public class BitmapHttpTask extends AsyncTask<BitmapRequestParam, Void, Bitmap> {
@@ -34,7 +34,7 @@ public class BitmapHttpTask extends AsyncTask<BitmapRequestParam, Void, Bitmap> 
 		System.out.println("Bitmap URI->" + param.bitmapUri);
 		System.out.println("Bitmap URI scheme->" + param.bitmapUri.getScheme());
 		if (param.bitmapUri.getScheme() != null) {
-			com.oishii.mobile.util.HttpTaskHelper helper = new com.oishii.mobile.util.HttpTaskHelper(
+			 HttpTaskHelper helper = new HttpTaskHelper(
 					param.bitmapUri);
 			HttpResponse entity;
 			BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();

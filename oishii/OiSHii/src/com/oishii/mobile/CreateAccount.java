@@ -12,9 +12,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.oishii.mobile.util.HttpSettings;
-import com.oishii.mobile.util.HttpSettings.HttpMethod;
-import com.oishii.mobile.util.TextUtils;
+import com.madrobot.util.HttpSettings;
+import com.madrobot.util.HttpSettings.HttpMethod;
+import com.madrobot.util.TextUtils;
 import com.oishii.mobile.util.tasks.HttpRequestTask;
 import com.oishii.mobile.util.tasks.HttpRequestWrapper;
 
