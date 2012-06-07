@@ -3,7 +3,7 @@ package com.oishii.mobile.beans;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.oishii.mobile.util.TextUtils;
+import com.madrobot.util.TextUtils;
 
 public class OishiiBasket {
 	private List<BasketItem> items = new ArrayList<BasketItem>();

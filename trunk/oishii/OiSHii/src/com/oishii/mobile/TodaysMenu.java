@@ -23,7 +23,6 @@ import com.madrobot.di.plist.NSArray;
 import com.madrobot.di.plist.NSDictionary;
 import com.madrobot.di.plist.NSObject;
 import com.madrobot.di.plist.PropertyListParser;
-import com.oishii.mobile.beans.MenuCache;
 import com.oishii.mobile.beans.MenuData;
 import com.oishii.mobile.util.tasks.BitmapHttpTask;
 import com.oishii.mobile.util.tasks.BitmapRequestParam;
@@ -106,7 +105,7 @@ public class TodaysMenu extends ListOishiBase {
 			// listview.setAdapter(adapter);
 			// listview.setOnItemClickListener(listViewClickListener);
 			List<MenuData> menuData = (List<MenuData>) t;
-			MenuCache.getInstance().setTodayMenu(menuData);
+//			MenuCache.getInstance().setTodayMenu(menuData);
 			populateTodaysMenu(menuData);
 			hideDialog();
 		}

@@ -8,7 +8,7 @@ import org.apache.http.NameValuePair;
 
 import android.content.Context;
 
-import com.oishii.mobile.util.HttpSettings;
+import com.madrobot.util.HttpSettings;
 
 public class HttpRequestWrapper {
 	public  HttpRequestWrapper(Context ctx){

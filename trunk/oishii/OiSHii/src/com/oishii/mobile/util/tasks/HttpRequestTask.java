@@ -11,13 +11,13 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.madrobot.util.CarrierHelper;
+import com.madrobot.util.HttpTaskHelper;
+import com.madrobot.util.IOUtils;
 import com.oishii.mobile.ApplicationConstants;
 import com.oishii.mobile.R;
 import com.oishii.mobile.TodaysMenuDetailList;
 import com.oishii.mobile.TodaysMenuItemDetail;
-import com.oishii.mobile.util.CarrierHelper;
-import com.oishii.mobile.util.HttpTaskHelper;
-import com.oishii.mobile.util.IOUtils;
 
 public class HttpRequestTask extends
 		AsyncTask<HttpRequestWrapper, Void, HttpResponseWrapper> {
@@ -34,7 +34,7 @@ public class HttpRequestTask extends
 		response.callback = wrapper.callback;
 		InputStream is = null;
 		if (bearerHelper.getCurrentCarrier() != null) {
-			HttpTaskHelper helper = new com.oishii.mobile.util.HttpTaskHelper(
+			HttpTaskHelper helper = new HttpTaskHelper(
 					wrapper.requestURI);
 			helper.setHttpSettings(wrapper.httpSettings);
 			helper.setRequestParameter(wrapper.httpParams);
@@ -45,6 +45,7 @@ public class HttpRequestTask extends
 					is = httpEntity.getEntity().getContent();
 					if (params[0].canCache)
 						if (!hasCacheAPI()) {
+							Log.d("Oishii", "Caching API..");
 							is = cacheAPI(is);
 						}
 				} else {
@@ -99,9 +100,8 @@ public class HttpRequestTask extends
 	}
 
 	private boolean hasCacheAPI() {
-		String[] file = wrapper.ctx.fileList();
 		String cacheName = getCachedAPIName();
-		Log.d("Oishii", "Caching API->" + cacheName);
+		String[] file = wrapper.ctx.fileList();
 		for (int i = 0; i < file.length; i++) {
 			if (cacheName.equals(file[i]))
 				return true;

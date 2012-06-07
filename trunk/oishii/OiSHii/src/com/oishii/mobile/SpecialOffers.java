@@ -17,7 +17,6 @@ import com.madrobot.di.plist.NSArray;
 import com.madrobot.di.plist.NSDictionary;
 import com.madrobot.di.plist.NSObject;
 import com.madrobot.di.plist.PropertyListParser;
-import com.oishii.mobile.beans.MenuCache;
 import com.oishii.mobile.beans.SpecialOffer;
 import com.oishii.mobile.util.tasks.HttpRequestTask;
 import com.oishii.mobile.util.tasks.HttpRequestWrapper;
@@ -32,11 +31,11 @@ public class SpecialOffers extends ListOishiBase {
 		tv.setText(R.string.special);
 		TextView tv2 = (TextView) findViewById(R.id.titleSecond);
 		tv2.setText(R.string.offers);
-		if (MenuCache.getInstance().getSplOffers() == null) {
+//		if (MenuCache.getInstance().getSplOffers() == null) {
 			executeSpecialOffersRequest();
-		}else{
-			populateOffers(MenuCache.getInstance().getSplOffers());
-		}
+//		}else{
+//			populateOffers(MenuCache.getInstance().getSplOffers());
+//		}
 	}
 
 	protected void executeSpecialOffersRequest() {
@@ -83,7 +82,7 @@ public class SpecialOffers extends ListOishiBase {
 		public void bindUI(Object t, int operationId) {
 
 			List<SpecialOffer> offers = (List<SpecialOffer>) t;
-			MenuCache.getInstance().setSplOffers(offers);
+//			MenuCache.getInstance().setSplOffers(offers);
 			populateOffers(offers);
 			hideDialog();
 		}

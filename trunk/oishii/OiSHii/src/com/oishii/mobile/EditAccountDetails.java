@@ -9,9 +9,9 @@ import org.apache.http.message.BasicNameValuePair;
 import android.view.View;
 import android.widget.EditText;
 
+import com.madrobot.util.TextUtils;
 import com.oishii.mobile.beans.AccountInformation;
 import com.oishii.mobile.beans.AccountStatus;
-import com.oishii.mobile.util.TextUtils;
 import com.oishii.mobile.util.tasks.HttpRequestTask;
 import com.oishii.mobile.util.tasks.HttpRequestWrapper;
 
