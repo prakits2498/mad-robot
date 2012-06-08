@@ -11,6 +11,7 @@ import org.apache.http.message.BasicNameValuePair;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -45,7 +46,7 @@ public class TodaysMenuDetailList extends ListOishiBase {
 	final static String EXTRA_TITLE = "title";
 	final static String EXTRA_COLOR = "bgColor";
 	final static String EXTRA_CAT_ID = "catID";
-	public static final int OPERATION_MENU_DETAILS =20;
+	public static final int OPERATION_MENU_DETAILS = 20;
 	private int color;
 	private int catId;
 
@@ -62,25 +63,28 @@ public class TodaysMenuDetailList extends ListOishiBase {
 		executeMenuDetailsRequest();
 	}
 
-	View.OnClickListener btnListener = new View.OnClickListener() {
+	View.OnClickListener detailsListener = new View.OnClickListener() {
 
 		@Override
 		public void onClick(View v) {
-			MenuItem item = (MenuItem) v.getTag();
-			Intent intent = new Intent(TodaysMenuDetailList.this,
-					TodaysMenuItemDetail.class);
-			intent.putExtra(TodaysMenuItemDetail.COLOR, color);
-			intent.putExtra(TodaysMenuItemDetail.PROD_ID, item.getId());
-			intent.putExtra(TodaysMenuItemDetail.CAT_ID, catId);
-			if (catId == ApplicationConstants.CAT_ID_DRINKS
-					|| catId == ApplicationConstants.CAT_ID_SNACKS) {
-				intent.putExtra(TodaysMenuItemDetail.SHOW_ADD_DRINKS_SNACKS,
-						false);
-			}
-			startActivity(intent);
 
+			MenuItem item = (MenuItem) v.getTag();
+			showMenuDetails(item);
 		}
 	};
+
+	private void showMenuDetails(MenuItem item) {
+		Intent intent = new Intent(TodaysMenuDetailList.this,
+				TodaysMenuItemDetail.class);
+		intent.putExtra(TodaysMenuItemDetail.COLOR, color);
+		intent.putExtra(TodaysMenuItemDetail.PROD_ID, item.getId());
+		intent.putExtra(TodaysMenuItemDetail.CAT_ID, catId);
+		if (catId == ApplicationConstants.CAT_ID_DRINKS
+				|| catId == ApplicationConstants.CAT_ID_SNACKS) {
+			intent.putExtra(TodaysMenuItemDetail.SHOW_ADD_DRINKS_SNACKS, false);
+		}
+		startActivity(intent);
+	}
 
 	View.OnClickListener addToBasketListner = new View.OnClickListener() {
 
@@ -112,12 +116,13 @@ public class TodaysMenuDetailList extends ListOishiBase {
 							basItem.setPrice(item.getPrice());
 							basItem.setProdId(item.getId());
 							basket.addItem(basItem);
-							if(catId==ApplicationConstants.CAT_ID_CORPORATE){
+							if (catId == ApplicationConstants.CAT_ID_CORPORATE) {
 								basket.setCorporate(true);
 							}
 
 							Intent intent = new Intent();
-							intent.setClass(TodaysMenuDetailList.this, Basket.class);
+							intent.setClass(TodaysMenuDetailList.this,
+									Basket.class);
 							dialog.dismiss();
 							startActivity(intent);
 						}
@@ -165,13 +170,14 @@ public class TodaysMenuDetailList extends ListOishiBase {
 	}
 
 	private void executeMenuDetailsRequest() {
-		HttpRequestWrapper requestWrapper = new HttpRequestWrapper(getApplicationContext());
+		HttpRequestWrapper requestWrapper = new HttpRequestWrapper(
+				getApplicationContext());
 		requestWrapper.requestURI = ApplicationConstants.API_MENU_DETAILS;
 		requestWrapper.callback = detailsCallback;
 		requestWrapper.operationID = OPERATION_MENU_DETAILS;
 		requestWrapper.httpSettings
 				.setHttpMethod(ApplicationConstants.HTTP_METHOD);
-		requestWrapper.intExtra=catId;
+		requestWrapper.intExtra = catId;
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		NameValuePair param = new BasicNameValuePair("catID",
 				String.valueOf(catId));
@@ -190,6 +196,16 @@ public class TodaysMenuDetailList extends ListOishiBase {
 
 			ResultContainer result = (ResultContainer) t;
 			ExpandableListView list = getExandableList(true);
+//			list.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+//
+//				@Override
+//				public boolean onChildClick(ExpandableListView parent, View v,
+//						int groupPosition, int childPosition, long id) {
+//					Log.d("Oishii"," child item clicked");
+//					showMenuDetails((MenuItem) v.getTag());
+//					return true;
+//				}
+//			});
 			MenuDetailsExpandableAdapter adapter = new MenuDetailsExpandableAdapter(
 					result.parent, result.children);
 			list.setAdapter(adapter);
@@ -304,6 +320,8 @@ public class TodaysMenuDetailList extends ListOishiBase {
 			MenuItem item = menu.get(child);
 			View v = getLayoutInflater().inflate(
 					R.layout.todays_menu_item_contents, null);
+			v.setTag(item);
+			v.setOnClickListener(detailsListener);
 			TextView tv = (TextView) v.findViewById(R.id.title);
 			tv.setText(item.getName());
 			tv = (TextView) v.findViewById(R.id.desc);
@@ -314,6 +332,7 @@ public class TodaysMenuDetailList extends ListOishiBase {
 			int itemsRemain = item.getItemsRemain();
 			if (itemsRemain == 0) {
 				tv.setText(R.string.sold_out);
+
 				btn.setVisibility(View.GONE);
 			} else {
 				btn.setTag(item);
@@ -327,7 +346,7 @@ public class TodaysMenuDetailList extends ListOishiBase {
 
 			btn = (Button) v.findViewById(R.id.detail);
 			btn.setTag(item);
-			btn.setOnClickListener(btnListener);
+			btn.setOnClickListener(detailsListener);
 
 			ProgressBar progress = (ProgressBar) v
 					.findViewById(R.id.imageProgress);
@@ -341,8 +360,8 @@ public class TodaysMenuDetailList extends ListOishiBase {
 				req.progress = progress;
 				req.parent = parent;
 				req.bean = item;
-//				req.bitmapWidth=100;
-//				req.bitmapHeight=100;
+				// req.bitmapWidth=100;
+				// req.bitmapHeight=100;
 				new BitmapHttpTask().execute(req);
 			} else {
 				System.out.println("Setting  Bitmap" + item.getBitmap());
