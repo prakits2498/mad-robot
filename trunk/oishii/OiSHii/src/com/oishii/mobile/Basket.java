@@ -120,14 +120,14 @@ public class Basket extends OishiiBaseActivity {
 				tv.setText(temp);
 				tv = (TextView) basketItem.findViewById(R.id.item);
 				tv.setText(item.getName());
-				tv.setTextColor(item.getColor());
+				// tv.setTextColor(item.getColor());
 				temp = "£" + (item.getPrice() * item.getCount());
 				tv = (TextView) basketItem.findViewById(R.id.price);
 				tv.setText(temp);
-				tv.setTag(new Integer(i));
+				tv.setTag(i);
 				tv.setOnClickListener(removeItemListener);
 				View v = basketItem.findViewById(R.id.btnDelete);
-				v.setTag(new Integer(i));
+				v.setTag(i);
 				v.setOnClickListener(removeItemListener);
 				basketParent.addView(basketItem);
 			}

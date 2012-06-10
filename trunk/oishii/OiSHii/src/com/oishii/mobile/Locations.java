@@ -414,18 +414,18 @@ public class Locations extends Login {
 			}
 
 			View view = v.findViewById(R.id.btnDelete);
-			view.setTag(new Integer(i));
+			view.setTag(i);
 			view.setOnClickListener(deleteListener);
 			if (forSelection) {
 				view.setVisibility(View.GONE);
 			}
 			view = v.findViewById(R.id.btnEdit);
-			view.setTag(new Integer(i));
+			view.setTag(i);
 			view.setOnClickListener(editListener);
 
 			if (forSelection) {
 				v.setOnClickListener(selectAddressListener);
-				v.setTag(new Integer(add.getId()));
+				v.setTag(add.getId());
 			}
 
 			parent.addView(v);

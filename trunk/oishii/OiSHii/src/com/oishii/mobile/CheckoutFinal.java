@@ -17,6 +17,7 @@ import com.madrobot.di.plist.NSNumber;
 import com.madrobot.di.plist.NSObject;
 import com.madrobot.di.plist.PropertyListParser;
 import com.madrobot.util.HttpSettings.HttpMethod;
+import com.madrobot.util.IOUtils;
 import com.oishii.mobile.beans.AccountStatus;
 import com.oishii.mobile.beans.BasketItem;
 import com.oishii.mobile.beans.OishiiBasket;
@@ -57,9 +58,8 @@ public class CheckoutFinal extends OishiiBaseActivity {
 			// TODO Auto-generated method stub
 			String test = null;
 			try {
-				test = asString(is);
+				test = IOUtils.asString(is);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			return test;
