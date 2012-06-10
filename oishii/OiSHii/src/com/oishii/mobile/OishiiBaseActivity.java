@@ -1,9 +1,6 @@
 package com.oishii.mobile;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -75,20 +72,33 @@ public abstract class OishiiBaseActivity extends Activity {
 	View menuParent;
 
 	protected void hookInViews() {
-		ViewGroup parent = (ViewGroup) View.inflate(this, R.layout.oishiibase,
-				null);
-
+		ViewGroup parent = (ViewGroup) View.inflate(this,
+				hasTitleBar() ? R.layout.oishiibase
+						: R.layout.oishii_notitle_base, null);
 		RelativeLayout contentArea = (RelativeLayout) parent
 				.findViewById(R.id.contentArea);
 		getLayoutInflater().inflate(getChildViewLayout(), contentArea);
-		TextView title = (TextView) parent.findViewById(R.id.headertitle);
-		title.setText(getTitleString());
+		if (hasTitleBar()) {
+			TextView title = (TextView) parent.findViewById(R.id.headertitle);
+			title.setText(getTitleString());
+		}
 		setContentView(parent);
 		hookInMenu();
 		hookInChildViews();
 		setMenuView();
 		setCurrentScreen();
 
+	}
+
+	protected boolean hasTitleBar() {
+		return true;
+	}
+	
+	/**
+	 * called b4 any action is taken on the menu bar item click
+	 */
+	protected void doBeforeMenuAction(){
+		
 	}
 
 	private void setCurrentScreen() {
@@ -118,6 +128,7 @@ public abstract class OishiiBaseActivity extends Activity {
 	View.OnClickListener menuListener = new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
+			doBeforeMenuAction();
 			Log.d(TAG, "Menu clicked");
 			int currentId = CurrentScreen.getInstance().getCurrentScreenID();
 			if (currentId == v.getId()) {
@@ -144,14 +155,14 @@ public abstract class OishiiBaseActivity extends Activity {
 				}
 				break;
 			case R.id.basket:
-//				if (!AccountStatus.getInstance(getApplicationContext())
-//						.isSignedIn()) {
-//
-//					clz = OutOfSession.class;
-//					intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-//				} else {
-					clz = Basket.class;
-//				}
+				// if (!AccountStatus.getInstance(getApplicationContext())
+				// .isSignedIn()) {
+				//
+				// clz = OutOfSession.class;
+				// intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+				// } else {
+				clz = Basket.class;
+				// }
 				break;
 			case R.id.history:
 				if (!AccountStatus.getInstance(getApplicationContext())
@@ -267,12 +278,14 @@ public abstract class OishiiBaseActivity extends Activity {
 	protected void setBasketPrice() {
 		OishiiBasket basket = AccountStatus
 				.getInstance(getApplicationContext()).getBasket();
-		float tot=basket.isDiscountApplied()?basket.getDiscountedTotal():basket.getCurrentTotal();
+		float tot = basket.isDiscountApplied() ? basket.getDiscountedTotal()
+				: basket.getCurrentTotal();
 		TextView total = (TextView) findViewById(R.id.totalPriceTag);
 		if (basket.getCurrentTotal() > 0.0f) {
-			total.setText("£" +tot);
+			total.setText("£" + tot);
 			total.setVisibility(View.VISIBLE);
-		} else {
+		} 
+		else {
 			total.setVisibility(View.GONE);
 		}
 	}
@@ -351,7 +364,8 @@ public abstract class OishiiBaseActivity extends Activity {
 			hideDialog();
 			SimpleResult result = (SimpleResult) t;
 			if (result.isSucess()) {
-				handleSimpleResultResponse(result.getErrorMessage(),operationId);
+				handleSimpleResultResponse(result.getErrorMessage(),
+						operationId);
 			} else {
 				showErrorDialog(result.getErrorMessage());
 			}
@@ -363,7 +377,7 @@ public abstract class OishiiBaseActivity extends Activity {
 	 * 
 	 * @param message
 	 */
-	protected void handleSimpleResultResponse(String message,int operationId) {
+	protected void handleSimpleResultResponse(String message, int operationId) {
 
 	}
 
@@ -379,118 +393,5 @@ public abstract class OishiiBaseActivity extends Activity {
 		return btnArbit;
 	}
 
-	/**
-	 * This convenience method allows to read a InputStream into a string. The
-	 * platform's default character encoding is used for converting bytes into
-	 * characters.
-	 * 
-	 * @param pStream
-	 *            The input stream to read.
-	 * @see #asString(InputStream, String)
-	 * @return The streams contents, as a string.
-	 * @throws IOException
-	 *             An I/O error occurred.
-	 */
-	public static String asString(InputStream pStream) throws IOException {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		copy(pStream, baos, true);
-		return baos.toString();
-	}
-
-	/**
-	 * Copies the contents of the given {@link InputStream} to the given
-	 * {@link OutputStream}. Shortcut for
-	 * 
-	 * <pre>
-	 * copy(pInputStream, pOutputStream, new byte[8192]);
-	 * </pre>
-	 * 
-	 * @param pInputStream
-	 *            The input stream, which is being read. It is guaranteed, that
-	 *            {@link InputStream#close()} is called on the stream.
-	 * @param pOutputStream
-	 *            The output stream, to which data should be written. May be
-	 *            null, in which case the input streams contents are simply
-	 *            discarded.
-	 * @param pClose
-	 *            True guarantees, that {@link OutputStream#close()} is called
-	 *            on the stream. False indicates, that only
-	 *            {@link OutputStream#flush()} should be called finally.
-	 * 
-	 * @return Number of bytes, which have been copied.
-	 * @throws IOException
-	 *             An I/O error occurred.
-	 */
-	public static long copy(InputStream pInputStream,
-			OutputStream pOutputStream, boolean pClose) throws IOException {
-		return copy(pInputStream, pOutputStream, pClose, new byte[1024 * 4]);
-	}
-
-	/**
-	 * Copies the contents of the given {@link InputStream} to the given
-	 * {@link OutputStream}.
-	 * 
-	 * @param pIn
-	 *            The input stream, which is being read. It is guaranteed, that
-	 *            {@link InputStream#close()} is called on the stream.
-	 * @param pOut
-	 *            The output stream, to which data should be written. May be
-	 *            null, in which case the input streams contents are simply
-	 *            discarded.
-	 * @param pClose
-	 *            True guarantees, that {@link OutputStream#close()} is called
-	 *            on the stream. False indicates, that only
-	 *            {@link OutputStream#flush()} should be called finally.
-	 * @param pBuffer
-	 *            Temporary buffer, which is to be used for copying data.
-	 * @return Number of bytes, which have been copied.
-	 * @throws IOException
-	 *             An I/O error occurred.
-	 */
-	public static long copy(InputStream pIn, OutputStream pOut, boolean pClose,
-			byte[] pBuffer) throws IOException {
-		OutputStream out = pOut;
-		InputStream in = pIn;
-		try {
-			long total = 0;
-			for (;;) {
-				int res = in.read(pBuffer);
-				if (res == -1) {
-					break;
-				}
-				if (res > 0) {
-					total += res;
-					if (out != null) {
-						out.write(pBuffer, 0, res);
-					}
-				}
-			}
-			if (out != null) {
-				if (pClose) {
-					out.close();
-				} else {
-					out.flush();
-				}
-				out = null;
-			}
-			in.close();
-			in = null;
-			return total;
-		} finally {
-			if (in != null) {
-				try {
-					in.close();
-				} catch (Throwable t) {
-					/* Ignore me */
-				}
-			}
-			if (pClose && out != null) {
-				try {
-					out.close();
-				} catch (Throwable t) {
-					/* Ignore me */
-				}
-			}
-		}
-	}
+	
 }

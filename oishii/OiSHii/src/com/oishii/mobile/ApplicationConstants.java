@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import android.graphics.Color;
+import android.util.SparseIntArray;
 
 import com.madrobot.util.HttpSettings.HttpMethod;
 
@@ -64,7 +65,6 @@ public class ApplicationConstants {
 	 static final int COLOR_DRINKS = Color.parseColor("#ff9000");
 	
 	public static final Map<Integer,String> operationMap=new HashMap<Integer,String>();
-	
 	static{
 		operationMap.put(TodaysMenu.OPERATION_LIST, "todaysmenu.plist");
 		operationMap.put(TodaysMenuDetailList.OPERATION_MENU_DETAILS, "todaysmenudetail");
