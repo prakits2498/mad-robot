@@ -104,7 +104,7 @@ class SVGHandler extends DefaultHandler {
 		private SVGStyleSet styles = null;
 		private Attributes atts;
 
-		private SVGProperties(Attributes atts) {
+		private SVGProperties(final Attributes atts) {
 			this.atts = atts;
 			String styleAttr = getStringAttr(STYLE, atts);
 			if (styleAttr != null) {
@@ -112,7 +112,7 @@ class SVGHandler extends DefaultHandler {
 			}
 		}
 
-		private String getAttr(String name) {
+		private String getAttr(final String name) {
 			String v = null;
 			if (styles != null) {
 				v = styles.getStyle(name);
@@ -123,7 +123,7 @@ class SVGHandler extends DefaultHandler {
 			return v;
 		}
 
-		private Integer getColorValue(String name) {
+		private Integer getColorValue(final String name) {
 			String v = getAttr(name);
 			if (v == null) {
 				return null;
@@ -143,7 +143,7 @@ class SVGHandler extends DefaultHandler {
 			}
 		}
 
-		private Float getFloat(String name) {
+		private Float getFloat(final String name) {
 			String v = getAttr(name);
 			if (v == null) {
 				return null;
@@ -157,7 +157,7 @@ class SVGHandler extends DefaultHandler {
 		}
 
 		@SuppressWarnings("unused")
-		private Float getFloat(String name, float defaultValue) {
+		private Float getFloat(final String name,final  float defaultValue) {
 			Float v = getFloat(name);
 			if (v == null) {
 				return defaultValue;
@@ -166,7 +166,7 @@ class SVGHandler extends DefaultHandler {
 			}
 		}
 
-		private String getString(String name) {
+		private String getString(final String name) {
 			return getAttr(name);
 		}
 	}
@@ -198,7 +198,7 @@ class SVGHandler extends DefaultHandler {
 		private boolean inText;
 		private int vAlign = 0;
 
-		public SVGText(Attributes atts) {
+		public SVGText(final Attributes atts) {
 			// Log.d(TAG, "text");
 			x = getZoomFactor(getFloatAttr(X, atts, 0f));
 			y = getZoomFactor(getFloatAttr(Y, atts, 0f));
@@ -231,7 +231,7 @@ class SVGHandler extends DefaultHandler {
 			return inText;
 		}
 
-		public void render(Canvas canvas) {
+		public void render(final Canvas canvas) {
 			if (fill != null) {
 				canvas.drawText(svgText, x, y, fill);
 			}
@@ -242,7 +242,7 @@ class SVGHandler extends DefaultHandler {
 		}
 
 		// ignore tspan elements for now
-		public void setText(char[] ch, int start, int len) {
+		public void setText(final char[] ch,final  int start,final  int len) {
 			if (isInText()) {
 				if (svgText == null) {
 					svgText = new String(ch, start, len);
@@ -365,7 +365,7 @@ class SVGHandler extends DefaultHandler {
 		return new MetaData(meta_title, meta_desc);
 	}
 
-	SVGHandler(Picture picture, int zoomFactor) {
+	SVGHandler(final Picture picture,final  int zoomFactor) {
 		this.picture = picture;
 		strokePaint = new Paint();
 		strokePaint.setAntiAlias(true);
@@ -376,7 +376,7 @@ class SVGHandler extends DefaultHandler {
 		this.zoomFactor = zoomFactor;
 	}
 
-	private void addGradient(boolean isLinear) {
+	private void addGradient(final boolean isLinear) {
 		if (gradient.id != null) {
 			if (gradient.xlink != null) {
 				SVGGradient parent = gradientRefMap.get(gradient.xlink);
@@ -415,7 +415,7 @@ class SVGHandler extends DefaultHandler {
 	}
 
 	@Override
-	public void characters(char ch[], int start, int length) {
+	public void characters(final char ch[],final  int start,final  int length) {
 		// Log.i(TAG, new String(ch) + " " + start + "/" + length);
 		if (isInMeta_Title) {
 			meta_title = new String(ch);
@@ -428,7 +428,7 @@ class SVGHandler extends DefaultHandler {
 		}
 	}
 
-	private void doColor(SVGProperties atts, Integer color, boolean fillMode,
+	private void doColor(final SVGProperties atts,final  Integer color,final  boolean fillMode,
 			Paint paint) {
 		int c = (0xFFFFFF & color) | 0xFF000000;
 		if (searchColor != null && searchColor.intValue() == c) {
@@ -447,7 +447,7 @@ class SVGHandler extends DefaultHandler {
 		}
 	}
 
-	private boolean doFill(SVGProperties atts) {
+	private boolean doFill(final SVGProperties atts) {
 		if (NONE.equals(atts.getString(DISPLAY))) {
 			return false;
 		}
@@ -502,7 +502,7 @@ class SVGHandler extends DefaultHandler {
 		}
 	}
 
-	private SVGGradient doGradient(boolean isLinear, Attributes atts) {
+	private SVGGradient doGradient(final boolean isLinear, final Attributes atts) {
 		SVGGradient gradient = new SVGGradient();
 		gradient.id = getStringAttr("id", atts);
 		gradient.isLinear = isLinear;
@@ -530,7 +530,7 @@ class SVGHandler extends DefaultHandler {
 		return gradient;
 	}
 
-	private void doLimits(float x, float y) {
+	private void doLimits(final float x,final  float y) {
 		if (x < limits.left) {
 			limits.left = x;
 		}
@@ -545,12 +545,12 @@ class SVGHandler extends DefaultHandler {
 		}
 	}
 
-	private void doLimits(float x, float y, float width, float height) {
+	private void doLimits(final float x, float y, float width, float height) {
 		doLimits(x, y);
 		doLimits(x + width, y + height);
 	}
 
-	private void doLimits(Path path) {
+	private void doLimits(final Path path) {
 		path.computeBounds(rect, false);
 		doLimits(rect.left, rect.top);
 		doLimits(rect.right, rect.bottom);
@@ -580,7 +580,7 @@ class SVGHandler extends DefaultHandler {
 	 * @param s
 	 *            the path string from the XML
 	 */
-	private Path doPath(String s) {
+	private Path doPath(final String s) {
 		int n = s.length();
 		FactoryHelper ph = new FactoryHelper(s, 0);
 		ph.skipWhitespace();
@@ -745,7 +745,7 @@ class SVGHandler extends DefaultHandler {
 		return p;
 	}
 
-	private boolean doStroke(SVGProperties atts) {
+	private boolean doStroke(final SVGProperties atts) {
 		if (whiteMode) {
 			// Never stroke in white mode
 			return false;
@@ -811,7 +811,7 @@ class SVGHandler extends DefaultHandler {
 	}
 
 	// XXX not done yet
-	private boolean doText(Attributes atts, Paint paint) {
+	private boolean doText(final Attributes atts,final  Paint paint) {
 		if (NONE.equals(atts.getValue(DISPLAY))) {
 			return false;
 		}
@@ -830,7 +830,7 @@ class SVGHandler extends DefaultHandler {
 	}
 
 	@Override
-	public void endElement(String namespaceURI, String localName, String qName) {
+	public void endElement(final String namespaceURI,final  String localName,final  String qName) {
 		if (localName.equals(TEXT)) {
 			if (text != null) {
 				text.render(canvas);
@@ -869,7 +869,7 @@ class SVGHandler extends DefaultHandler {
 		}
 	}
 
-	private Float getFloatAttr(String name, Attributes attributes) {
+	private Float getFloatAttr(final String name,final  Attributes attributes) {
 		return getFloatAttr(name, attributes, null);
 	}
 
@@ -893,7 +893,7 @@ class SVGHandler extends DefaultHandler {
 		}
 	}
 
-	private NumberParser getNumberParseAttr(String name, Attributes attributes) {
+	private NumberParser getNumberParseAttr(final String name,final  Attributes attributes) {
 		int n = attributes.getLength();
 		for (int i = 0; i < n; i++) {
 			if (attributes.getLocalName(i).equals(name)) {
@@ -903,7 +903,7 @@ class SVGHandler extends DefaultHandler {
 		return null;
 	}
 
-	private String getStringAttr(String name, Attributes attributes) {
+	private String getStringAttr(final String name,final  Attributes attributes) {
 		int n = attributes.getLength();
 		for (int i = 0; i < n; i++) {
 			if (attributes.getLocalName(i).equals(name)) {
@@ -913,7 +913,7 @@ class SVGHandler extends DefaultHandler {
 		return null;
 	}
 
-	private Align getTextAlign(Attributes atts) {
+	private Align getTextAlign(final Attributes atts) {
 		String align = getStringAttr("text-anchor", atts);
 		if (align == null) {
 			return null;
@@ -927,7 +927,7 @@ class SVGHandler extends DefaultHandler {
 		}
 	}
 
-	private Typeface getTypeFace(Attributes atts) {
+	private Typeface getTypeFace(final Attributes atts) {
 		String face = getStringAttr("font-family", atts);
 		String style = getStringAttr("font-style", atts);
 		String weight = getStringAttr("font-weight", atts);
@@ -947,7 +947,7 @@ class SVGHandler extends DefaultHandler {
 		return result;
 	}
 
-	private Float getZoomFactor(Float value) {
+	private Float getZoomFactor( Float value) {
 		if (value == null)
 			return null;
 		value = value * zoomFactor;
@@ -1008,7 +1008,7 @@ class SVGHandler extends DefaultHandler {
 		}
 	}
 
-	private NumberParser parseNumbers(String s) {
+	private NumberParser parseNumbers(final String s) {
 		// Util.debug("Parsing numbers from: '" + s + "'");
 		int n = s.length();
 		int p = 0;
@@ -1088,7 +1088,7 @@ class SVGHandler extends DefaultHandler {
 		return new NumberParser(numbers, p);
 	}
 
-	private Matrix parseTransform(String s) {
+	private Matrix parseTransform( String s) {
 		// Log.d(TAG, s);
 		Matrix matrix = new Matrix();
 		while (true) {
@@ -1105,7 +1105,7 @@ class SVGHandler extends DefaultHandler {
 		return matrix;
 	}
 
-	private Matrix parseTransformItem(String s, Matrix matrix) {
+	private Matrix parseTransformItem(final String s,final  Matrix matrix) {
 		if (s.startsWith(TRANSFORM_MATRIX)) {
 			NumberParser np = parseNumbers(s.substring(TRANSFORM_MATRIX
 					.length()));
@@ -1184,7 +1184,7 @@ class SVGHandler extends DefaultHandler {
 	 * stroke-dashoffset=n
 	 */
 
-	private void pathStyleHelper(String style, String offset) {
+	private void pathStyleHelper(final String style,final  String offset) {
 		if (style == null) {
 			return;
 		}
@@ -1453,7 +1453,7 @@ class SVGHandler extends DefaultHandler {
 	}
 
 	// XXX could be more selective using save(flags)
-	private void pushTransform(Attributes atts) {
+	private void pushTransform(final Attributes atts) {
 		final String transform = getStringAttr("transform", atts);
 		final Matrix matrix = transform == null ? IDENTITY_MATRIX
 				: parseTransform(transform);
@@ -1469,17 +1469,17 @@ class SVGHandler extends DefaultHandler {
 		// Log.d(TAG, "matrix push: " + canvas.getMatrix());
 	}
 
-	void setColorSwap(Integer searchColor, Integer replaceColor) {
+	void setColorSwap(final Integer searchColor,final  Integer replaceColor) {
 		this.searchColor = searchColor;
 		this.replaceColor = replaceColor;
 	}
 
-	void setWhiteMode(boolean whiteMode) {
+	void setWhiteMode(final boolean whiteMode) {
 		this.whiteMode = whiteMode;
 	}
 
 	@SuppressWarnings("unused")
-	private String showAttributes(Attributes a) {
+	private String showAttributes(final Attributes a) {
 		String result = "";
 		for (int i = 0; i < a.getLength(); i++) {
 			result += " " + a.getLocalName(i) + "='" + a.getValue(i) + "'";
@@ -1499,8 +1499,8 @@ class SVGHandler extends DefaultHandler {
 	private boolean isInMeta_Desc;
 
 	@Override
-	public void startElement(String namespaceURI, String localName,
-			String qName, Attributes atts) {
+	public void startElement(final String namespaceURI,final  String localName,
+			final String qName,final  Attributes atts) {
 
 		// Log.d(TAG, localName + showAttributes(atts));
 		// Reset paint opacity
@@ -1580,7 +1580,7 @@ class SVGHandler extends DefaultHandler {
 		}
 	}
 
-	private float toFloat(String s, float dflt) {
+	private float toFloat(final String s,final  float dflt) {
 		float result = dflt;
 		try {
 			result = Float.parseFloat(s);
