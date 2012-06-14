@@ -210,6 +210,16 @@ public class TodaysMenuDetailList extends ListOishiBase {
 					result.parent, result.children);
 			list.setAdapter(adapter);
 			list.setVisibility(View.VISIBLE);
+			list.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener()
+			{
+			    @Override
+			    public boolean onGroupClick(ExpandableListView parent, 
+			        View v, int groupPosition, long id)
+			    {
+			        return true;//parent.isGroupExpanded(groupPosition);
+			    }
+			});
+			list.setGroupIndicator(null);
 			int groups = result.parent.size();
 			for (int i = 0; i < groups; i++) {
 				list.expandGroup(i);
@@ -403,6 +413,7 @@ public class TodaysMenuDetailList extends ListOishiBase {
 			tv.setText(category.getName());
 			tv = (TextView) v.findViewById(R.id.mnuDesc);
 			tv.setText(category.getDescription());
+			v.setOnClickListener(simpleListener);
 			return v;
 		}
 
@@ -422,5 +433,13 @@ public class TodaysMenuDetailList extends ListOishiBase {
 	protected int getParentScreenId() {
 		return R.id.about;
 	}
+	
+	View.OnClickListener simpleListener=new View.OnClickListener() {
+		
+		@Override
+		public void onClick(View v) {
+			
+		}
+	};
 
 }
