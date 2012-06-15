@@ -2,14 +2,19 @@ package com.oishii.mobile;
 
 import java.util.List;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.oishii.mobile.beans.AccountStatus;
+import com.oishii.mobile.beans.BasketItem;
 import com.oishii.mobile.beans.OishiiBasket;
 import com.oishii.mobile.beans.SavedCard;
 
@@ -22,7 +27,7 @@ public class StoredPayments extends OishiiBaseActivity {
 		return isForSelecting ? R.id.basket : R.id.myacc;
 	}
 
-	LinearLayout parent;
+	private LinearLayout parent;
 
 	@Override
 	protected void hookInChildViews() {
@@ -55,19 +60,23 @@ public class StoredPayments extends OishiiBaseActivity {
 		LayoutInflater inflater = getLayoutInflater();
 		View v;
 		TextView tv;
-		SavedCard add;
+		SavedCard card;
 		for (int i = 0; i < size; i++) {
-			add = address.get(i);
+			card = address.get(i);
 			v = inflater.inflate(R.layout.card_field, null);
 			tv = (TextView) v.findViewById(R.id.address);
-			tv.setText(add.getNumber());
+			tv.setText(card.getNumber());
 			tv = (TextView) v.findViewById(R.id.type);
-			tv.setText(add.getType());
+			tv.setText(card.getType());
 			if (i == (address.size() - 1)) {
 				v.findViewById(R.id.sep).setVisibility(View.GONE);
 			}
+			Button removeCard=(Button) v.findViewById(R.id.btnDelete);
+			removeCard.setOnClickListener(removeCardListener);
+			removeCard.setTag(card);
 			if (isForSelecting) {
-				v.setTag(add.getToken());
+				removeCard.setVisibility(View.GONE);
+				v.setTag(card.getToken());
 				v.setOnClickListener(paymentListener);
 			}
 			parent.addView(v);
@@ -110,6 +119,14 @@ public class StoredPayments extends OishiiBaseActivity {
 		}
 	};
 
+	View.OnClickListener removeCardListener = new View.OnClickListener() {
+
+		@Override
+		public void onClick(View v) {
+			showRemovalDialog((SavedCard) v.getTag());
+		}
+	};
+
 	@Override
 	protected int getSreenID() {
 		return R.layout.saved_payments;
@@ -123,6 +140,42 @@ public class StoredPayments extends OishiiBaseActivity {
 	@Override
 	protected String getTitleString() {
 		return getString(R.string.title_sc);
+	}
+
+	private void showRemovalDialog(SavedCard card) {
+		final Dialog dialog = new Dialog(StoredPayments.this);
+		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.setContentView(R.layout.modal_dialog);
+		dialog.setTitle(null);
+		TextView tv = (TextView) dialog.findViewById(R.id.errMsg);
+		StringBuilder builder = new StringBuilder();
+		builder.append("Remove card \"");
+		builder.append("<b>");
+		builder.append(card.getNumber());
+		builder.append("\"</b>");
+		builder.append(" ?");
+		tv.setText(Html.fromHtml(builder.toString()));
+		dialog.findViewById(R.id.btnOk).setOnClickListener(
+				new View.OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						// basket.removeItem(removalIndex);
+						// populateBasket();
+						// setBasketPrice();
+						// dialog.dismiss();
+						// TODO call remove token
+					}
+				});
+		dialog.findViewById(R.id.btnCancel).setOnClickListener(
+				new View.OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						dialog.dismiss();
+					}
+				});
+		dialog.show();
 	}
 
 }
