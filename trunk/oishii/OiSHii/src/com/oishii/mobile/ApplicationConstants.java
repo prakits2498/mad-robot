@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import android.graphics.Color;
-import android.util.SparseIntArray;
 
 import com.madrobot.util.HttpSettings.HttpMethod;
 
