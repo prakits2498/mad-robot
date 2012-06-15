@@ -129,19 +129,19 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 		@Override
 		public void onClick(View v) {
 			final MenuItemDetail item = (MenuItemDetail) v.getTag();
-			final Dialog dialog = new Dialog(TodaysMenuItemDetail.this);
-			dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-			dialog.setContentView(R.layout.add_to_basket_dailog);
-			dialog.setTitle(null);
-			TextView tv = (TextView) dialog.findViewById(R.id.itemName);
-			tv.setText(item.getName());
-			final EditText number = (EditText) dialog.findViewById(R.id.number);
-			final TextView count = (TextView) dialog
-					.findViewById(R.id.itemCount);
-			dialog.findViewById(R.id.btnCheckout).setOnClickListener(
-					new View.OnClickListener() {
-						@Override
-						public void onClick(View arg0) {
+//			final Dialog dialog = new Dialog(TodaysMenuItemDetail.this);
+//			dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//			dialog.setContentView(R.layout.add_to_basket_dailog);
+//			dialog.setTitle(null);
+//			TextView tv = (TextView) dialog.findViewById(R.id.itemName);
+//			tv.setText(item.getName());
+//			final EditText number = (EditText) dialog.findViewById(R.id.number);
+//			final TextView count = (TextView) dialog
+//					.findViewById(R.id.itemCount);
+//			dialog.findViewById(R.id.btnCheckout).setOnClickListener(
+//					new View.OnClickListener() {
+//						@Override
+//						public void onClick(View arg0) {
 							AccountStatus status = AccountStatus
 									.getInstance(getApplicationContext());
 							OishiiBasket basket = status.getBasket();
@@ -150,56 +150,57 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 							}
 							BasketItem basItem = new BasketItem();
 							basItem.setColor(color);
-							int total = Integer.parseInt(number.getText()
-									.toString());
-							basItem.setCount(total);
+//							int total = Integer.parseInt(number.getText()
+//									.toString());
+//							basItem.setCount(total);
+							basItem.setCount(1);
 							basItem.setName(item.getName());
 							basItem.setPrice(item.getPrice());
 							basItem.setProdId(item.getId());
 							basket.addItem(basItem);
-
-							Intent intent = new Intent();
-							intent.setClass(TodaysMenuItemDetail.this,
-									Basket.class);
-							intent.putExtra(OutOfSession.SRC_KEY, R.id.basket);
-							dialog.dismiss();
-							startActivity(intent);
-						}
-					});
-			dialog.findViewById(R.id.add).setOnClickListener(
-					new View.OnClickListener() {
-						@Override
-						public void onClick(View arg0) {
-							int total = Integer.parseInt(number.getText()
-									.toString());
-							if (total < 0) {
-								total = 1;
-							}
-							if (total < 99)
-								total++;
-							number.setText(String.valueOf(total));
-							count.setText(total + "X");
-						}
-					});
-
-			dialog.findViewById(R.id.minus).setOnClickListener(
-					new View.OnClickListener() {
-						@Override
-						public void onClick(View v) {
-							int total = Integer.parseInt(number.getText()
-									.toString());
-							if (total > 1) {
-								total--;
-							}
-							number.setText(String.valueOf(total));
-							count.setText(total + "X");
-						}
-					});
-			LayoutParams params = getWindow().getAttributes();
-			params.height = LayoutParams.FILL_PARENT;
-			dialog.getWindow().setLayout(LayoutParams.FILL_PARENT,
-					LayoutParams.WRAP_CONTENT);
-			dialog.show();
+							setBasketPrice();
+//							Intent intent = new Intent();
+//							intent.setClass(TodaysMenuItemDetail.this,
+//									Basket.class);
+//							intent.putExtra(OutOfSession.SRC_KEY, R.id.basket);
+//							dialog.dismiss();
+//							startActivity(intent);
+//						}
+//					});
+//			dialog.findViewById(R.id.add).setOnClickListener(
+//					new View.OnClickListener() {
+//						@Override
+//						public void onClick(View arg0) {
+//							int total = Integer.parseInt(number.getText()
+//									.toString());
+//							if (total < 0) {
+//								total = 1;
+//							}
+//							if (total < 99)
+//								total++;
+//							number.setText(String.valueOf(total));
+//							count.setText(total + "X");
+//						}
+//					});
+//
+//			dialog.findViewById(R.id.minus).setOnClickListener(
+//					new View.OnClickListener() {
+//						@Override
+//						public void onClick(View v) {
+//							int total = Integer.parseInt(number.getText()
+//									.toString());
+//							if (total > 1) {
+//								total--;
+//							}
+//							number.setText(String.valueOf(total));
+//							count.setText(total + "X");
+//						}
+//					});
+//			LayoutParams params = getWindow().getAttributes();
+//			params.height = LayoutParams.FILL_PARENT;
+//			dialog.getWindow().setLayout(LayoutParams.FILL_PARENT,
+//					LayoutParams.WRAP_CONTENT);
+//			dialog.show();
 		}
 	};
 

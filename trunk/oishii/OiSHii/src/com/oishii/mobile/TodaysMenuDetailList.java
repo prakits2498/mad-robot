@@ -8,17 +8,12 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager.LayoutParams;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -30,11 +25,8 @@ import com.madrobot.di.plist.NSDictionary;
 import com.madrobot.di.plist.NSNumber;
 import com.madrobot.di.plist.NSObject;
 import com.madrobot.di.plist.PropertyListParser;
-import com.oishii.mobile.beans.AccountStatus;
-import com.oishii.mobile.beans.BasketItem;
 import com.oishii.mobile.beans.MenuItem;
 import com.oishii.mobile.beans.MenuItemCategory;
-import com.oishii.mobile.beans.OishiiBasket;
 import com.oishii.mobile.util.tasks.BitmapHttpTask;
 import com.oishii.mobile.util.tasks.BitmapRequestParam;
 import com.oishii.mobile.util.tasks.HttpRequestTask;
@@ -434,7 +426,6 @@ public class TodaysMenuDetailList extends ListOishiBase {
 	}
 
 	View.OnClickListener simpleListener = new View.OnClickListener() {
-
 		@Override
 		public void onClick(View v) {
 
