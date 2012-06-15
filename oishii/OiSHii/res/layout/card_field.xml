@@ -23,12 +23,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginRight="8dp"
+            android:layout_marginRight="5dp"
             android:layout_weight="20"
             android:singleLine="true"
             android:textColor="#385487"
             android:textSize="15sp" />
 
+        <Button
+            android:id="@+id/btnDelete"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/delete_selector"
+            android:layout_marginRight="8dp" />
     </LinearLayout>
 
     <View
