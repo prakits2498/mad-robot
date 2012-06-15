@@ -78,13 +78,13 @@
                 android:id="@+id/price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
                 android:text="Ldg"
+                android:layout_marginTop="5dp"
                 android:textColor="@android:color/black"
                 android:textStyle="bold" />
         </LinearLayout>
 
-        <Button
+<!--         <Button
             android:id="@+id/btnAddBasket"
             style="@style/primary_btn"
             android:layout_width="fill_parent"
@@ -96,7 +96,7 @@
             android:paddingRight="20dp"
             android:text="@string/add_basket"
             android:textSize="13dp" />
-
+ -->
         <Button
             android:id="@+id/detail"
             android:layout_width="fill_parent"
