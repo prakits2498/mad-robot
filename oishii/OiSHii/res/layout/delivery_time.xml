@@ -58,7 +58,8 @@
         </LinearLayout>
     </LinearLayout>
 
-    <Button
+    <!-- <Button
+        android:id="@+id/btnSelTime"
         style="@style/primary_btn"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -66,10 +67,10 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="15dp"
-        android:id="@+id/btnSelTime"
-        android:text="@string/btn_SelTime" />
+        android:text="@string/btn_SelTime" /> -->
 
     <Button
+        android:id="@+id/btnContinue"
         style="@style/primary_btn"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -78,9 +79,26 @@
         android:layout_marginRight="8dp"
         android:layout_marginTop="15dp"
         android:text="@string/btn_continue"
-        android:id="@+id/btnContinue"
-        android:visibility="gone"
-         />
+        android:visibility="gone" />
     <!-- android:visibility="gone" -->
+
+    <ListView
+        android:id="@+id/listView1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:cacheColorHint="@android:color/transparent"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="3dp"
+        android:drawSelectorOnTop="true"
+        android:fadingEdge="none"
+         android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/stroke_border"
+        android:listSelector="@drawable/selector"
+        android:scrollbarAlwaysDrawVerticalTrack="false"
+        android:scrollingCache="false"
+        android:smoothScrollbar="true"
+        android:visibility="gone" />
 
 </LinearLayout>
