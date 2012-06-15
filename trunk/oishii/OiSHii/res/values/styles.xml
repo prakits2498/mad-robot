@@ -146,6 +146,19 @@
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">18sp</item>
     </style>
+    
+        <style name="btn_plain_black">
+        <item name="android:paddingTop">3dp</item>
+        <item name="android:paddingBottom">3dp</item>
+        <item name="android:shadowColor">#000000</item>
+        <item name="android:shadowDx">0</item>
+        <item name="android:shadowDy">-2</item>
+        <item name="android:shadowRadius">0.8</item>
+        <item name="android:background">@drawable/btn_todays</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">18sp</item>
+    </style>
 
     <style name="white_text_with_shadow" parent="@style/buttonShadow">
         <item name="android:textColor">@android:color/white</item>
