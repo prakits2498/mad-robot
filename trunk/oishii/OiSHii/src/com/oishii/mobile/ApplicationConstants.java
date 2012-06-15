@@ -51,6 +51,8 @@ public class ApplicationConstants {
 			+ "checkoutValidation.php");
 	 static final URI API_FINAL_CHECKOUT = URI.create(PLIST_PATH
 			+ "checkout.php");
+	 static final URI API_REMOVE_TOKEN = URI.create(PLIST_PATH
+				+ "removeToken.php");
 	 static final HttpMethod HTTP_METHOD = HttpMethod.HTTP_GET;
 
 	/**
