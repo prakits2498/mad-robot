@@ -1,6 +1,11 @@
 package com.oishii.mobile;
 
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 
 import android.app.Dialog;
 import android.content.Intent;
@@ -17,6 +22,9 @@ import com.oishii.mobile.beans.AccountStatus;
 import com.oishii.mobile.beans.BasketItem;
 import com.oishii.mobile.beans.OishiiBasket;
 import com.oishii.mobile.beans.SavedCard;
+import com.oishii.mobile.util.tasks.HttpRequestTask;
+import com.oishii.mobile.util.tasks.HttpRequestWrapper;
+import com.oishii.mobile.util.tasks.IHttpCallback;
 
 public class StoredPayments extends OishiiBaseActivity {
 	protected static final String ACTION_SELECT = "select";
@@ -71,7 +79,7 @@ public class StoredPayments extends OishiiBaseActivity {
 			if (i == (address.size() - 1)) {
 				v.findViewById(R.id.sep).setVisibility(View.GONE);
 			}
-			Button removeCard=(Button) v.findViewById(R.id.btnDelete);
+			Button removeCard = (Button) v.findViewById(R.id.btnDelete);
 			removeCard.setOnClickListener(removeCardListener);
 			removeCard.setTag(card);
 			if (isForSelecting) {
@@ -142,7 +150,7 @@ public class StoredPayments extends OishiiBaseActivity {
 		return getString(R.string.title_sc);
 	}
 
-	private void showRemovalDialog(SavedCard card) {
+	private void showRemovalDialog(final SavedCard card) {
 		final Dialog dialog = new Dialog(StoredPayments.this);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialog.setContentView(R.layout.modal_dialog);
@@ -165,6 +173,8 @@ public class StoredPayments extends OishiiBaseActivity {
 						// setBasketPrice();
 						// dialog.dismiss();
 						// TODO call remove token
+						dialog.dismiss();
+						executeRemoveToken(card.getToken());
 					}
 				});
 		dialog.findViewById(R.id.btnCancel).setOnClickListener(
@@ -178,4 +188,46 @@ public class StoredPayments extends OishiiBaseActivity {
 		dialog.show();
 	}
 
+	IHttpCallback removeTokenCallback = new IHttpCallback() {
+
+		@Override
+		public Object populateBean(InputStream is, int operationId) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void onFailure(int message, int operationID) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void bindUI(Object t, int operationId) {
+			// TODO Auto-generated method stub
+
+		}
+	};
+
+	private void executeRemoveToken(String token) {
+		showDialog(getString(R.string.loading_token));
+		AccountStatus stat = AccountStatus.getInstance(getApplicationContext());
+		HttpRequestWrapper requestWrapper = new HttpRequestWrapper(
+				getApplicationContext());
+		requestWrapper.requestURI = ApplicationConstants.API_REMOVE_TOKEN;
+		requestWrapper.callback = removeTokenCallback;
+		requestWrapper.operationID = 589434;
+		requestWrapper.httpSettings
+				.setHttpMethod(ApplicationConstants.HTTP_METHOD);
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		NameValuePair param = new BasicNameValuePair("sid", stat.getSid());
+		params.add(param);
+		param = new BasicNameValuePair("mac", stat.getMac());
+		params.add(param);
+		param = new BasicNameValuePair("token", token);
+		params.add(param);
+		requestWrapper.httpParams = params;
+		requestWrapper.canCache=false;
+		new HttpRequestTask().execute(requestWrapper);
+	}
 }
