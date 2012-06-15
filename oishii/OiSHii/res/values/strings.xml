@@ -34,6 +34,7 @@
      <string name="loading_processing">Processing your order…</string>
      <string name="loading_directing">Directing to payment gateway…</string>
       <string name="loading_gallery">Loading menu gallery…</string>
+      <string name="loading_token">Removing saved card…</string>
     <!--  -->
     <string name="error_bad_response">Invalid server response</string>
     <string name="error_no_data">Could not connect, \nPlease check your data connectivity.</string>
