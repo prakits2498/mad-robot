@@ -7,6 +7,14 @@ public class BasketItem {
 	int color;
 	String name;
 
+	public boolean isSameItem(BasketItem item) {
+		if (item.getProdId() == prodId && item.getPrice() == this.price
+				&& item.getName().equals(this.name)) {
+			return true;
+		}
+		return false;
+	}
+
 	public int getProdId() {
 		return prodId;
 	}

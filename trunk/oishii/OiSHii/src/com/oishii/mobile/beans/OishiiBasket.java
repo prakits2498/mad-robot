@@ -9,18 +9,16 @@ public class OishiiBasket {
 	private List<BasketItem> items = new ArrayList<BasketItem>();
 	private float currentTotal;
 	private float discountedTotal;
-	private String deliveryTime="12:00";
+	private String deliveryTime = "12:00";
 	private int billingAddressId;
 	private int shippingAddressId;
 	private boolean isDiscountApplied;
 	private float discountAmount;
 	private float discount;
 	private boolean isCorporate;
-	/*save card details for this tx*/
+	/* save card details for this tx */
 	private boolean saveCC;
-	
-	
-	
+
 	public boolean isSaveCC() {
 		return saveCC;
 	}
@@ -40,14 +38,12 @@ public class OishiiBasket {
 	/**
 	 * Coupon if used
 	 */
-	private String currentCouponCode="";
-	
+	private String currentCouponCode = "";
+
 	/**
 	 * saved creditcard token if selected.
 	 */
 	private String savedToken;
-	
-	
 
 	public String getSavedToken() {
 		return savedToken;
@@ -71,7 +67,7 @@ public class OishiiBasket {
 
 	public void setDiscountAmount(float discountPercentage) {
 		this.discountAmount = discountPercentage;
-		this.discount=discountAmount;
+		this.discount = discountAmount;
 		applyDiscount();
 	}
 
@@ -79,11 +75,11 @@ public class OishiiBasket {
 	 * Apply the given discount percentage to the basket
 	 */
 	private void applyDiscount() {
-		discountedTotal=currentTotal-discountAmount;
-		/*Earlier it was percentage*/
-//		discount = (currentTotal * discountAmount) / 100;
-//		discount=(float) TextUtils.round(discount, 2);
-//		discountedTotal = currentTotal - discount;
+		discountedTotal = currentTotal - discountAmount;
+		/* Earlier it was percentage */
+		// discount = (currentTotal * discountAmount) / 100;
+		// discount=(float) TextUtils.round(discount, 2);
+		// discountedTotal = currentTotal - discount;
 		discountedTotal = (float) TextUtils.round(discountedTotal, 2);
 		isDiscountApplied = true;
 	}
@@ -142,20 +138,31 @@ public class OishiiBasket {
 
 	private void updateTotal() {
 		currentTotal = 0.0f;
-		discountAmount=0.0f;
+		discountAmount = 0.0f;
 		BasketItem item;
 		for (int i = 0; i < items.size(); i++) {
 			item = items.get(i);
 			currentTotal += item.price * item.count;
 		}
 		currentTotal = (float) TextUtils.round(currentTotal, 2);
-		if(isDiscountApplied){
+		if (isDiscountApplied) {
 			applyDiscount();
 		}
 	}
 
 	public void addItem(BasketItem item) {
-		items.add(item);
+		boolean foundExisting = false;
+		BasketItem basketItem;
+		for (int i = 0; i < items.size(); i++) {
+			basketItem = items.get(i);
+			if(basketItem.isSameItem(item)){
+				foundExisting=true;
+				basketItem.setCount(basketItem.getCount()+1);
+			}
+		}
+		if (!foundExisting) {
+			items.add(item);
+		}
 		updateTotal();
 	}
 
