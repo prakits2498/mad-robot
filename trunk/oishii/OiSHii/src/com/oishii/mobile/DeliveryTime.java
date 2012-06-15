@@ -41,7 +41,7 @@ public class DeliveryTime extends OishiiBaseActivity {
 		String format = df.format(new Date(System.currentTimeMillis()));
 		TextView date = (TextView) findViewById(R.id.day);
 		date.setText(format);
-		findViewById(R.id.btnSelTime).setOnClickListener(timeListener);
+//		findViewById(R.id.btnSelTime).setOnClickListener(timeListener);
 		findViewById(R.id.btnContinue).setOnClickListener(timeListener);
 		executeDeliveryTimeRequest();
 	}
@@ -49,38 +49,38 @@ public class DeliveryTime extends OishiiBaseActivity {
 	private View.OnClickListener timeListener = new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			switch (v.getId()) {
-			case R.id.btnContinue:
+//			switch (v.getId()) {
+//			case R.id.btnContinue:
 				// start same activity for billing address.
 				Intent intent = new Intent(DeliveryTime.this, Locations.class);
 				intent.putExtra(Locations.ACTION_SELECT, true);
 				intent.putExtra(Locations.ACTION_SELECT_TYPE,
 						Locations.ACTION_SHIPPING_ADDRESS);
 				startActivity(intent);
-				break;
-			case R.id.btnSelTime:
-				if (currentTimeDetails == null
-						|| currentTimeDetails.time == null) {
-					executeDeliveryTimeRequest();
-				} else
-					showTimeDialog();
-				break;
-			}
-		}
-	};
-	private Dialog timeDialog;
+//				break;
+//			case R.id.btnSelTime:
+//				if (currentTimeDetails == null
+//						|| currentTimeDetails.time == null) {
+//					executeDeliveryTimeRequest();
+//				} else
+//					showTimeDialog();
+//				break;
+			} 
+		};
+//	};
+//	private Dialog timeDialog;
 
-	private void showTimeDialog() {
-		timeDialog = new Dialog(DeliveryTime.this);
-		timeDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		timeDialog.setContentView(R.layout.delivery_time_dialog);
-		ListView timeList = (ListView) timeDialog.findViewById(R.id.listView1);
-		ArrayAdapter<String> timeAdapter = new ArrayAdapter<String>(this,
-				R.layout.time_listview, currentTimeDetails.time);
-		timeList.setAdapter(timeAdapter);
-		timeList.setOnItemClickListener(listClick);
-		timeDialog.show();
-	}
+//	private void showTimeDialog() {
+//		timeDialog = new Dialog(DeliveryTime.this);
+//		timeDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//		timeDialog.setContentView(R.layout.delivery_time_dialog);
+//		ListView timeList = (ListView) timeDialog.findViewById(R.id.listView1);
+//		ArrayAdapter<String> timeAdapter = new ArrayAdapter<String>(this,
+//				R.layout.time_listview, currentTimeDetails.time);
+//		timeList.setAdapter(timeAdapter);
+//		timeList.setOnItemClickListener(listClick);
+//		timeDialog.show();
+//	}
 
 	AdapterView.OnItemClickListener listClick = new AdapterView.OnItemClickListener() {
 
@@ -94,7 +94,7 @@ public class DeliveryTime extends OishiiBaseActivity {
 			TextView tv = (TextView) findViewById(R.id.time);
 			tv.setText(time);
 			findViewById(R.id.btnContinue).setVisibility(View.VISIBLE);
-			timeDialog.dismiss();
+//			timeDialog.dismiss();
 		}
 	};
 
@@ -164,9 +164,15 @@ public class DeliveryTime extends OishiiBaseActivity {
 			tv.setText(time.day);
 			if (time.success) {
 				currentTimeDetails = time;
+				ListView timeList = (ListView) findViewById(R.id.listView1);
+				timeList.setVisibility(View.VISIBLE);
+				ArrayAdapter<String> timeAdapter = new ArrayAdapter<String>(
+						getApplicationContext(), R.layout.time_listview, currentTimeDetails.time);
+				timeList.setAdapter(timeAdapter);
+				timeList.setOnItemClickListener(listClick);
 			} else {
 				showErrorDialog(time.message);
-				findViewById(R.id.btnSelTime).setVisibility(View.GONE);
+//				findViewById(R.id.btnSelTime).setVisibility(View.GONE);
 			}
 		}
 	};
