@@ -86,83 +86,83 @@ public class TodaysMenuDetailList extends ListOishiBase {
 		startActivity(intent);
 	}
 
-	View.OnClickListener addToBasketListner = new View.OnClickListener() {
-
-		@Override
-		public void onClick(View v) {
-			final MenuItem item = (MenuItem) v.getTag();
-			final Dialog dialog = new Dialog(TodaysMenuDetailList.this);
-			dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-			dialog.setContentView(R.layout.add_to_basket_dailog);
-			dialog.setTitle(null);
-			TextView tv = (TextView) dialog.findViewById(R.id.itemName);
-			tv.setText(item.getName());
-			final EditText number = (EditText) dialog.findViewById(R.id.number);
-			final TextView count = (TextView) dialog
-					.findViewById(R.id.itemCount);
-			dialog.findViewById(R.id.btnCheckout).setOnClickListener(
-					new View.OnClickListener() {
-						@Override
-						public void onClick(View arg0) {
-							AccountStatus status = AccountStatus
-									.getInstance(getApplicationContext());
-							OishiiBasket basket = status.getBasket();
-							BasketItem basItem = new BasketItem();
-							basItem.setColor(color);
-							int total = Integer.parseInt(number.getText()
-									.toString());
-							basItem.setCount(total);
-							basItem.setName(item.getName());
-							basItem.setPrice(item.getPrice());
-							basItem.setProdId(item.getId());
-							basket.addItem(basItem);
-							if (catId == ApplicationConstants.CAT_ID_CORPORATE) {
-								basket.setCorporate(true);
-							}
-
-							Intent intent = new Intent();
-							intent.setClass(TodaysMenuDetailList.this,
-									Basket.class);
-							dialog.dismiss();
-							startActivity(intent);
-						}
-					});
-			dialog.findViewById(R.id.add).setOnClickListener(
-					new View.OnClickListener() {
-						@Override
-						public void onClick(View arg0) {
-							int total = Integer.parseInt(number.getText()
-									.toString());
-							if (total < 0) {
-								total = 1;
-							}
-							if (total < 99)
-								total++;
-							number.setText(String.valueOf(total));
-							count.setText(total + "X");
-						}
-					});
-
-			dialog.findViewById(R.id.minus).setOnClickListener(
-					new View.OnClickListener() {
-						@Override
-						public void onClick(View v) {
-							int total = Integer.parseInt(number.getText()
-									.toString());
-							if (total > 1) {
-								total--;
-							}
-							number.setText(String.valueOf(total));
-							count.setText(total + "X");
-						}
-					});
-			LayoutParams params = getWindow().getAttributes();
-			params.height = LayoutParams.FILL_PARENT;
-			dialog.getWindow().setLayout(LayoutParams.FILL_PARENT,
-					LayoutParams.WRAP_CONTENT);
-			dialog.show();
-		}
-	};
+	// View.OnClickListener addToBasketListner = new View.OnClickListener() {
+	//
+	// @Override
+	// public void onClick(View v) {
+	// final MenuItem item = (MenuItem) v.getTag();
+	// final Dialog dialog = new Dialog(TodaysMenuDetailList.this);
+	// dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+	// dialog.setContentView(R.layout.add_to_basket_dailog);
+	// dialog.setTitle(null);
+	// TextView tv = (TextView) dialog.findViewById(R.id.itemName);
+	// tv.setText(item.getName());
+	// final EditText number = (EditText) dialog.findViewById(R.id.number);
+	// final TextView count = (TextView) dialog
+	// .findViewById(R.id.itemCount);
+	// dialog.findViewById(R.id.btnCheckout).setOnClickListener(
+	// new View.OnClickListener() {
+	// @Override
+	// public void onClick(View arg0) {
+	// AccountStatus status = AccountStatus
+	// .getInstance(getApplicationContext());
+	// OishiiBasket basket = status.getBasket();
+	// BasketItem basItem = new BasketItem();
+	// basItem.setColor(color);
+	// int total = Integer.parseInt(number.getText()
+	// .toString());
+	// basItem.setCount(total);
+	// basItem.setName(item.getName());
+	// basItem.setPrice(item.getPrice());
+	// basItem.setProdId(item.getId());
+	// basket.addItem(basItem);
+	// if (catId == ApplicationConstants.CAT_ID_CORPORATE) {
+	// basket.setCorporate(true);
+	// }
+	//
+	// Intent intent = new Intent();
+	// intent.setClass(TodaysMenuDetailList.this,
+	// Basket.class);
+	// dialog.dismiss();
+	// startActivity(intent);
+	// }
+	// });
+	// dialog.findViewById(R.id.add).setOnClickListener(
+	// new View.OnClickListener() {
+	// @Override
+	// public void onClick(View arg0) {
+	// int total = Integer.parseInt(number.getText()
+	// .toString());
+	// if (total < 0) {
+	// total = 1;
+	// }
+	// if (total < 99)
+	// total++;
+	// number.setText(String.valueOf(total));
+	// count.setText(total + "X");
+	// }
+	// });
+	//
+	// dialog.findViewById(R.id.minus).setOnClickListener(
+	// new View.OnClickListener() {
+	// @Override
+	// public void onClick(View v) {
+	// int total = Integer.parseInt(number.getText()
+	// .toString());
+	// if (total > 1) {
+	// total--;
+	// }
+	// number.setText(String.valueOf(total));
+	// count.setText(total + "X");
+	// }
+	// });
+	// LayoutParams params = getWindow().getAttributes();
+	// params.height = LayoutParams.FILL_PARENT;
+	// dialog.getWindow().setLayout(LayoutParams.FILL_PARENT,
+	// LayoutParams.WRAP_CONTENT);
+	// dialog.show();
+	// }
+	// };
 
 	@Override
 	protected int getSreenID() {
@@ -196,28 +196,27 @@ public class TodaysMenuDetailList extends ListOishiBase {
 
 			ResultContainer result = (ResultContainer) t;
 			ExpandableListView list = getExandableList(true);
-//			list.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-//
-//				@Override
-//				public boolean onChildClick(ExpandableListView parent, View v,
-//						int groupPosition, int childPosition, long id) {
-//					Log.d("Oishii"," child item clicked");
-//					showMenuDetails((MenuItem) v.getTag());
-//					return true;
-//				}
-//			});
+			// list.setOnChildClickListener(new
+			// ExpandableListView.OnChildClickListener() {
+			//
+			// @Override
+			// public boolean onChildClick(ExpandableListView parent, View v,
+			// int groupPosition, int childPosition, long id) {
+			// Log.d("Oishii"," child item clicked");
+			// showMenuDetails((MenuItem) v.getTag());
+			// return true;
+			// }
+			// });
 			MenuDetailsExpandableAdapter adapter = new MenuDetailsExpandableAdapter(
 					result.parent, result.children);
 			list.setAdapter(adapter);
 			list.setVisibility(View.VISIBLE);
-			list.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener()
-			{
-			    @Override
-			    public boolean onGroupClick(ExpandableListView parent, 
-			        View v, int groupPosition, long id)
-			    {
-			        return true;//parent.isGroupExpanded(groupPosition);
-			    }
+			list.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+				@Override
+				public boolean onGroupClick(ExpandableListView parent, View v,
+						int groupPosition, long id) {
+					return true;// parent.isGroupExpanded(groupPosition);
+				}
 			});
 			list.setGroupIndicator(null);
 			int groups = result.parent.size();
@@ -338,15 +337,15 @@ public class TodaysMenuDetailList extends ListOishiBase {
 			tv.setText(item.getDescription());
 			tv = (TextView) v.findViewById(R.id.left);
 			tv.setBackgroundColor(color);
-			Button btn = (Button) v.findViewById(R.id.btnAddBasket);
+			// Button btn = (Button) v.findViewById(R.id.btnAddBasket);
 			int itemsRemain = item.getItemsRemain();
 			if (itemsRemain == 0) {
 				tv.setText(R.string.sold_out);
 
-				btn.setVisibility(View.GONE);
+				// btn.setVisibility(View.GONE);
 			} else {
-				btn.setTag(item);
-				btn.setOnClickListener(addToBasketListner);
+				// btn.setTag(item);
+				// btn.setOnClickListener(addToBasketListner);
 				tv.setText(item.getItemsRemain() + " Left");
 			}
 			ImageView image = (ImageView) v.findViewById(R.id.menuImg);
@@ -354,7 +353,7 @@ public class TodaysMenuDetailList extends ListOishiBase {
 			TextView price = (TextView) v.findViewById(R.id.price);
 			price.setText("£" + item.getPrice());
 
-			btn = (Button) v.findViewById(R.id.detail);
+			Button btn = (Button) v.findViewById(R.id.detail);
 			btn.setTag(item);
 			btn.setOnClickListener(detailsListener);
 
@@ -433,12 +432,12 @@ public class TodaysMenuDetailList extends ListOishiBase {
 	protected int getParentScreenId() {
 		return R.id.about;
 	}
-	
-	View.OnClickListener simpleListener=new View.OnClickListener() {
-		
+
+	View.OnClickListener simpleListener = new View.OnClickListener() {
+
 		@Override
 		public void onClick(View v) {
-			
+
 		}
 	};
 
