@@ -1,9 +1,6 @@
 package com.oishii.mobile;
 
 import android.content.Intent;
-import android.graphics.drawable.AnimationDrawable;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.View;
 import android.widget.ImageView;
 
