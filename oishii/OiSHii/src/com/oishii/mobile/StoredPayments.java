@@ -29,16 +29,17 @@ public class StoredPayments extends OishiiBaseActivity {
 		parent = (LinearLayout) findViewById(R.id.parent);
 		isForSelecting = getIntent().getBooleanExtra(ACTION_SELECT, false);
 		if (isForSelecting) {
-			
+
 			TextView title = (TextView) findViewById(R.id.headertitle);
 			title.setText(getString(R.string.title_sel_payment));
 		}
 		populateSavedCards();
 	}
 
-	CheckBox cbSave;
+	private CheckBox cbSave;
+
 	private void populateSavedCards() {
-		
+
 		parent.removeAllViews();
 		List<SavedCard> address = AccountStatus
 				.getInstance(getApplicationContext()).getAccInformation()
@@ -72,12 +73,13 @@ public class StoredPayments extends OishiiBaseActivity {
 			parent.addView(v);
 		}
 		if (isForSelecting) {
-			OishiiBasket baskt=AccountStatus.getInstance(getApplicationContext()).getBasket();
+			OishiiBasket baskt = AccountStatus.getInstance(
+					getApplicationContext()).getBasket();
 			baskt.setSaveCC(false);
 			baskt.setSavedToken(null);
 			View view = findViewById(R.id.btn_alternate);
 			view.setVisibility(View.VISIBLE);
-			cbSave=(CheckBox) findViewById(R.id.saveCC);
+			cbSave = (CheckBox) findViewById(R.id.saveCC);
 			cbSave.setVisibility(View.VISIBLE);
 			findViewById(R.id.separator).setVisibility(View.VISIBLE);
 			view.setOnClickListener(new View.OnClickListener() {
