@@ -3,40 +3,51 @@
     android:layout_height="wrap_content"
     android:orientation="vertical" >
 
-    <LinearLayout
+    <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" >
+        
 
         <TextView
             android:id="@+id/address"
+            android:ellipsize="start"
+            android:layout_toRightOf="@+id/btnDelete"
+            android:layout_toLeftOf="@+id/type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:layout_weight="60"
+            android:layout_centerVertical="true"
+            android:singleLine="true"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
             android:textColor="@android:color/black"
             android:textSize="18sp"
             android:textStyle="bold" />
+        
+        <Button
+            android:id="@+id/btnDelete"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center_vertical"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="8dp"
+            android:layout_centerVertical="true"
+            android:background="@drawable/delete_selector" />
 
         <TextView
             android:id="@+id/type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginRight="5dp"
-            android:layout_weight="20"
+            android:layout_margin="8dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:singleLine="true"
             android:textColor="#385487"
             android:textSize="15sp" />
-
-        <Button
-            android:id="@+id/btnDelete"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_gravity="center_vertical"
-            android:background="@drawable/delete_selector"
-            android:layout_marginRight="8dp" />
-    </LinearLayout>
+    </RelativeLayout>
 
     <View
         android:id="@+id/sep"
