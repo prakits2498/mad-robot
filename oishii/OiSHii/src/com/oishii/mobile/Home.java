@@ -16,11 +16,13 @@ public class Home extends OishiiBaseActivity {
 			while (canRun) {
 				try {
 					Thread.sleep(8000);
-					setBannerImage(images[imageIndex]);
-					if (imageIndex < (images.length - 1))
-						imageIndex++;
-					else if (imageIndex == (images.length - 1)) {
-						imageIndex = 0;
+					if (canRun) {
+						setBannerImage(images[imageIndex]);
+						if (imageIndex < (images.length - 1))
+							imageIndex++;
+						else if (imageIndex == (images.length - 1)) {
+							imageIndex = 0;
+						}
 					}
 				} catch (InterruptedException e) {
 					e.printStackTrace();
