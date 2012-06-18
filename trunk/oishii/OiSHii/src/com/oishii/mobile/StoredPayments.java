@@ -1,6 +1,5 @@
 package com.oishii.mobile;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,12 +18,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.oishii.mobile.beans.AccountStatus;
-import com.oishii.mobile.beans.BasketItem;
 import com.oishii.mobile.beans.OishiiBasket;
 import com.oishii.mobile.beans.SavedCard;
 import com.oishii.mobile.util.tasks.HttpRequestTask;
 import com.oishii.mobile.util.tasks.HttpRequestWrapper;
-import com.oishii.mobile.util.tasks.IHttpCallback;
 
 public class StoredPayments extends OishiiBaseActivity {
 	protected static final String ACTION_SELECT = "select";
@@ -69,10 +66,11 @@ public class StoredPayments extends OishiiBaseActivity {
 		View v;
 		TextView tv;
 		SavedCard card;
+		int layout=isForSelecting?R.layout.card_field_selecting:R.layout.card_field;
 		for (int i = 0; i < size; i++) {
 			card = address.get(i);
 			card.setCardIndex(i);
-			v = inflater.inflate(R.layout.card_field, null);
+			v = inflater.inflate(layout, null);
 			tv = (TextView) v.findViewById(R.id.address);
 			tv.setText(card.getNumber());
 			tv = (TextView) v.findViewById(R.id.type);
