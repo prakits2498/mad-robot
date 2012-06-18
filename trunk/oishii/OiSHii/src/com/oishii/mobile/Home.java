@@ -1,5 +1,16 @@
 package com.oishii.mobile;
 
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+
+import com.oishii.mobile.util.tasks.HttpRequestTask;
+import com.oishii.mobile.util.tasks.HttpRequestWrapper;
+import com.oishii.mobile.util.tasks.IHttpCallback;
+
 import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
@@ -107,5 +118,43 @@ public class Home extends OishiiBaseActivity {
 
 		});
 	}
-
+	
+	private IHttpCallback sideCallback=new IHttpCallback() {
+		
+		@Override
+		public Object populateBean(InputStream is, int operationId) {
+			return null;
+		}
+		
+		@Override
+		public void onFailure(int message, int operationID) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+		@Override
+		public void bindUI(Object t, int operationId) {
+			// TODO Auto-generated method stub
+			
+		}
+	};
+	
+	
+	
+	private void executeSideOrderMenuRequest(int category,int operationID){
+		HttpRequestWrapper requestWrapper = new HttpRequestWrapper(
+				getApplicationContext());
+		requestWrapper.requestURI = ApplicationConstants.API_MENU_DETAILS;
+		requestWrapper.callback = sideCallback;
+		requestWrapper.operationID = operationID;
+		requestWrapper.httpSettings
+				.setHttpMethod(ApplicationConstants.HTTP_METHOD);
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		NameValuePair param = new BasicNameValuePair("catID",
+				String.valueOf(category));
+		params.add(param);
+		requestWrapper.httpParams = params;
+		requestWrapper.canCache=false;
+		new HttpRequestTask().execute(requestWrapper);
+	}
 }
