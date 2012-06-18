@@ -388,7 +388,7 @@ public class Locations extends Login {
 			/* if this activity is used for selecting an address */
 			if (forSelection && selectionType == ACTION_SHIPPING_ADDRESS) {
 				chkSameBill = (CheckBox) findViewById(R.id.chkSameBill);
-				chkSameBill.setVisibility(View.VISIBLE);
+				// chkSameBill.setVisibility(View.VISIBLE);
 			}
 			parent.setVisibility(View.VISIBLE);
 			findViewById(R.id.noLocations).setVisibility(View.GONE);
@@ -430,17 +430,20 @@ public class Locations extends Login {
 
 			parent.addView(v);
 		}
+		if (forSelection)
+			findViewById(R.id.btnContinue).setOnClickListener(
+					btnContinueListener);
 
 	}
 
-	View.OnClickListener selectAddressListener = new View.OnClickListener() {
+	View.OnClickListener btnContinueListener = new View.OnClickListener() {
+
 		@Override
 		public void onClick(View v) {
-			int addressId = (Integer) v.getTag();
 			OishiiBasket basket = AccountStatus.getInstance(
 					getApplicationContext()).getBasket();
 			if (selectionType == ACTION_SHIPPING_ADDRESS) {
-				basket.setShippingAddressId(addressId);
+				basket.setShippingAddressId(addressID);
 				if (!chkSameBill.isChecked()) {
 					// start same activity for billing address.
 					Intent intent = new Intent(Locations.this, Locations.class);
@@ -448,7 +451,7 @@ public class Locations extends Login {
 					intent.putExtra(ACTION_SELECT_TYPE, ACTION_BILLING_ADDRESS);
 					startActivity(intent);
 				} else {
-					basket.setBillingAddressId(addressId);
+					basket.setBillingAddressId(addressID);
 					// select payment type
 					Intent intent = new Intent(Locations.this,
 							StoredPayments.class);
@@ -456,12 +459,22 @@ public class Locations extends Login {
 					startActivity(intent);
 				}
 			} else {
-				basket.setBillingAddressId(addressId);
+				basket.setBillingAddressId(addressID);
 				// select payment type
 				Intent intent = new Intent(Locations.this, StoredPayments.class);
 				intent.putExtra(ACTION_SELECT, true);
 				startActivity(intent);
 			}
+		}
+	};
+
+	private int addressID;
+
+	View.OnClickListener selectAddressListener = new View.OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			addressID = (Integer) v.getTag();
+			findViewById(R.id.btnContinue).setVisibility(View.VISIBLE);
 		}
 	};
 
