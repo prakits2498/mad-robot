@@ -21,14 +21,12 @@ import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.madrobot.di.plist.NSArray;
 import com.madrobot.di.plist.NSDictionary;
 import com.madrobot.di.plist.NSNumber;
 import com.madrobot.di.plist.NSObject;
 import com.madrobot.di.plist.PropertyListParser;
-import com.madrobot.util.IOUtils;
 import com.oishii.mobile.beans.AccountStatus;
 import com.oishii.mobile.beans.BasketItem;
 import com.oishii.mobile.beans.MenuItemDetail;
@@ -319,21 +317,21 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 
 			}
 			ImageView detailImage = (ImageView) findViewById(R.id.image);
-			detailImage.setOnClickListener(new View.OnClickListener() {
-
-				@Override
-				public void onClick(View v) {
-					// Intent intent = new Intent(TodaysMenuItemDetail.this,
-					// MenuItemGallery.class);
-					// startActivity(intent);
-					if(IOUtils.isSDCardMounted()){
-//						showGallery();
-						executeGalleryRequest();
-					}else{
-						Toast.makeText(getApplicationContext(), R.string.error_no_sdcard, 4000);
-					}
-				}
-			});
+//			detailImage.setOnClickListener(new View.OnClickListener() {
+//
+//				@Override
+//				public void onClick(View v) {
+//					// Intent intent = new Intent(TodaysMenuItemDetail.this,
+//					// MenuItemGallery.class);
+//					// startActivity(intent);
+//					if(IOUtils.isSDCardMounted()){
+////						showGallery();
+//						executeGalleryRequest();
+//					}else{
+//						Toast.makeText(getApplicationContext(), R.string.error_no_sdcard, 4000);
+//					}
+//				}
+//			});
 			BitmapRequestParam req = new BitmapRequestParam();
 			req.bitmapUri = URI.create(detail.getImageUrl());
 			req.image = detailImage;// (ImageView) findViewById(R.id.image);

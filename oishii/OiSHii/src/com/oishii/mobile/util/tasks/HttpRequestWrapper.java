@@ -16,6 +16,7 @@ public class HttpRequestWrapper {
 	}
 	public boolean canCache=true;
 	public int intExtra;
+	public boolean boolExtra;
 	public Context ctx;
 	public URI requestURI;
 	/*integer to identify the operation. an activity may user*/
