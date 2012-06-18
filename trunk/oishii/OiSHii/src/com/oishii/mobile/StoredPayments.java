@@ -71,6 +71,7 @@ public class StoredPayments extends OishiiBaseActivity {
 		SavedCard card;
 		for (int i = 0; i < size; i++) {
 			card = address.get(i);
+			card.setCardIndex(i);
 			v = inflater.inflate(R.layout.card_field, null);
 			tv = (TextView) v.findViewById(R.id.address);
 			tv.setText(card.getNumber());
@@ -149,6 +150,8 @@ public class StoredPayments extends OishiiBaseActivity {
 	protected String getTitleString() {
 		return getString(R.string.title_sc);
 	}
+	
+	private int cardIndex;
 
 	private void showRemovalDialog(final SavedCard card) {
 		final Dialog dialog = new Dialog(StoredPayments.this);
@@ -165,7 +168,7 @@ public class StoredPayments extends OishiiBaseActivity {
 		tv.setText(Html.fromHtml(builder.toString()));
 		dialog.findViewById(R.id.btnOk).setOnClickListener(
 				new View.OnClickListener() {
-
+					
 					@Override
 					public void onClick(View v) {
 						// basket.removeItem(removalIndex);
@@ -174,6 +177,7 @@ public class StoredPayments extends OishiiBaseActivity {
 						// dialog.dismiss();
 						// TODO call remove token
 						dialog.dismiss();
+						cardIndex=card.getCardIndex();
 						executeRemoveToken(card.getToken());
 					}
 				});
@@ -188,26 +192,6 @@ public class StoredPayments extends OishiiBaseActivity {
 		dialog.show();
 	}
 
-	IHttpCallback removeTokenCallback = new IHttpCallback() {
-
-		@Override
-		public Object populateBean(InputStream is, int operationId) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public void onFailure(int message, int operationID) {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void bindUI(Object t, int operationId) {
-			// TODO Auto-generated method stub
-
-		}
-	};
 
 	private void executeRemoveToken(String token) {
 		showDialog(getString(R.string.loading_token));
@@ -215,7 +199,7 @@ public class StoredPayments extends OishiiBaseActivity {
 		HttpRequestWrapper requestWrapper = new HttpRequestWrapper(
 				getApplicationContext());
 		requestWrapper.requestURI = ApplicationConstants.API_REMOVE_TOKEN;
-		requestWrapper.callback = removeTokenCallback;
+		requestWrapper.callback = simpleResultCallback;
 		requestWrapper.operationID = 589434;
 		requestWrapper.httpSettings
 				.setHttpMethod(ApplicationConstants.HTTP_METHOD);
@@ -227,7 +211,20 @@ public class StoredPayments extends OishiiBaseActivity {
 		param = new BasicNameValuePair("token", token);
 		params.add(param);
 		requestWrapper.httpParams = params;
-		requestWrapper.canCache=false;
+		requestWrapper.canCache = false;
 		new HttpRequestTask().execute(requestWrapper);
+	}
+
+	/**
+	 * Sent when simple result is a success
+	 * 
+	 * @param message
+	 */
+	protected void handleSimpleResultResponse(String message, int operationId) {
+		List<SavedCard> cards = AccountStatus
+				.getInstance(getApplicationContext()).getAccInformation()
+				.getSavedCards();
+		cards.remove(cardIndex);
+		populateSavedCards();
 	}
 }
