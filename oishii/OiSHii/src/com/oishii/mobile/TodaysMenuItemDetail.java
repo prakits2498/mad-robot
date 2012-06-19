@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager.LayoutParams;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.BaseExpandableListAdapter;
@@ -208,23 +209,56 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 			// dialog.show();
 		}
 	};
+	Dialog drinkDialog;
+	Dialog snackDialog;
 
 	private void showAddDrinkDialog() {
-		Dialog dialog = new Dialog(TodaysMenuItemDetail.this);
-		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		dialog.setContentView(R.layout.sideorderdialog);
-		ListView listview=(ListView) dialog.findViewById(R.id.listView1);
-		dialog.setTitle(null);
-		ArrayList<MenuItem> result=SideOrderContainer.getInstance().getDrinksList();
+		drinkDialog = new Dialog(TodaysMenuItemDetail.this);
+		drinkDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		drinkDialog.setContentView(R.layout.sideorderdialog);
+		ListView listview = (ListView) drinkDialog.findViewById(R.id.listView1);
+		drinkDialog.setTitle(null);
+		ArrayList<MenuItem> result = SideOrderContainer.getInstance()
+				.getDrinksList();
 		ArrayAdapter<MenuItem> timeAdapter = new ArrayAdapter<MenuItem>(this,
 				R.layout.time_listview, result);
-		
 		listview.setAdapter(timeAdapter);
-		dialog.show();
+		listview.setOnItemClickListener(drinkClick);
+		drinkDialog.show();
 	}
 
-	private void showAddSnackDialog() {
+	AdapterView.OnItemClickListener drinkClick = new AdapterView.OnItemClickListener() {
 
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position,
+				long id) {
+
+			drinkDialog.dismiss();
+		}
+	};
+
+	AdapterView.OnItemClickListener snackClick = new AdapterView.OnItemClickListener() {
+
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position,
+				long id) {
+			snackDialog.dismiss();
+		}
+	};
+
+	private void showAddSnackDialog() {
+		snackDialog = new Dialog(TodaysMenuItemDetail.this);
+		snackDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		snackDialog.setContentView(R.layout.sideorderdialog);
+		ListView listview = (ListView) snackDialog.findViewById(R.id.listView1);
+		snackDialog.setTitle(null);
+		ArrayList<MenuItem> result = SideOrderContainer.getInstance()
+				.getSnacksList();
+		ArrayAdapter<MenuItem> timeAdapter = new ArrayAdapter<MenuItem>(this,
+				R.layout.time_listview, result);
+		listview.setAdapter(timeAdapter);
+		listview.setOnItemClickListener(snackClick);
+		snackDialog.show();
 	}
 
 	private void showGallery() {
@@ -305,19 +339,19 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 							@Override
 							public void onClick(View arg0) {
 								// TODO Auto-generated method stub
-//								Intent intent = new Intent(
-//										TodaysMenuItemDetail.this,
-//										TodaysMenuDetailList.class);
-//								intent.putExtra(
-//										TodaysMenuDetailList.EXTRA_TITLE,
-//										"Add a drink");
-//								intent.putExtra(
-//										TodaysMenuDetailList.EXTRA_CAT_ID,
-//										ApplicationConstants.CAT_ID_DRINKS);
-//								intent.putExtra(
-//										TodaysMenuDetailList.EXTRA_COLOR,
-//										ApplicationConstants.COLOR_DRINKS);
-//								startActivity(intent);
+								// Intent intent = new Intent(
+								// TodaysMenuItemDetail.this,
+								// TodaysMenuDetailList.class);
+								// intent.putExtra(
+								// TodaysMenuDetailList.EXTRA_TITLE,
+								// "Add a drink");
+								// intent.putExtra(
+								// TodaysMenuDetailList.EXTRA_CAT_ID,
+								// ApplicationConstants.CAT_ID_DRINKS);
+								// intent.putExtra(
+								// TodaysMenuDetailList.EXTRA_COLOR,
+								// ApplicationConstants.COLOR_DRINKS);
+								// startActivity(intent);
 								showAddDrinkDialog();
 
 							}
@@ -327,19 +361,20 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 
 							@Override
 							public void onClick(View v) {
-								Intent intent = new Intent(
-										TodaysMenuItemDetail.this,
-										TodaysMenuDetailList.class);
-								intent.putExtra(
-										TodaysMenuDetailList.EXTRA_TITLE,
-										"Add a Snack box");
-								intent.putExtra(
-										TodaysMenuDetailList.EXTRA_CAT_ID,
-										ApplicationConstants.CAT_ID_SNACKS);
-								intent.putExtra(
-										TodaysMenuDetailList.EXTRA_COLOR,
-										ApplicationConstants.COLOR_SNACKS);
-								startActivity(intent);
+								// Intent intent = new Intent(
+								// TodaysMenuItemDetail.this,
+								// TodaysMenuDetailList.class);
+								// intent.putExtra(
+								// TodaysMenuDetailList.EXTRA_TITLE,
+								// "Add a Snack box");
+								// intent.putExtra(
+								// TodaysMenuDetailList.EXTRA_CAT_ID,
+								// ApplicationConstants.CAT_ID_SNACKS);
+								// intent.putExtra(
+								// TodaysMenuDetailList.EXTRA_COLOR,
+								// ApplicationConstants.COLOR_SNACKS);
+								// startActivity(intent);
+								showAddSnackDialog();
 							}
 						});
 
