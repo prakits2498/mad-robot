@@ -155,9 +155,9 @@ public class OishiiBasket {
 		BasketItem basketItem;
 		for (int i = 0; i < items.size(); i++) {
 			basketItem = items.get(i);
-			if(basketItem.isSameItem(item)){
-				foundExisting=true;
-				basketItem.setCount(basketItem.getCount()+1);
+			if (basketItem.isSameItem(item)) {
+				foundExisting = true;
+				basketItem.setCount(basketItem.getCount() + 1);
 			}
 		}
 		if (!foundExisting) {
@@ -173,6 +173,16 @@ public class OishiiBasket {
 	public void removeItem(int index) {
 		items.remove(index);
 		updateTotal();
+	}
+
+	public void removeItemByID(int prodId) {
+		for (int i = 0; i < items.size(); i++) {
+			if (items.get(i).getProdId() == prodId) {
+				items.remove(i);
+				updateTotal();
+				break;
+			}
+		}
 	}
 
 	public void removeAllItems() {

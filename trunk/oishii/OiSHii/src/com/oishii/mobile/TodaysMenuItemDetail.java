@@ -232,7 +232,7 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
-			MenuItem item = SideOrderContainer.getInstance().getDrinksList()
+			final MenuItem item = SideOrderContainer.getInstance().getDrinksList()
 					.get(position);
 			AccountStatus status = AccountStatus
 					.getInstance(getApplicationContext());
@@ -251,10 +251,24 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 			basItem.setProdId(item.getId());
 			basket.addItem(basItem);
 			setBasketPrice();
-			TextView tv = (TextView) findViewById(R.id.drinkText);
+			final TextView tv = (TextView) findViewById(R.id.drinkText);
 			tv.setText(item.getName());
-			ImageView iv=(ImageView)findViewById(R.id.drinkIcon);
+			final ImageView iv=(ImageView)findViewById(R.id.drinkIcon);
 			iv.setImageResource(R.drawable.delete);
+			iv.setImageResource(R.drawable.delete);
+			iv.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					tv.setText("Add a Drink");
+					iv.setImageResource(R.drawable.arrow_green);
+					final OishiiBasket basket = AccountStatus.getInstance(
+							getApplicationContext()).getBasket();
+					basket.removeItemByID(item.getId());
+					setBasketPrice();
+					v.setOnClickListener(null);
+				}
+			});
 			drinkDialog.dismiss();
 		}
 	};
@@ -264,7 +278,7 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
-			MenuItem item = SideOrderContainer.getInstance().getSnacksList()
+			final MenuItem item = SideOrderContainer.getInstance().getSnacksList()
 					.get(position);
 			AccountStatus status = AccountStatus
 					.getInstance(getApplicationContext());
@@ -283,10 +297,23 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 			basItem.setProdId(item.getId());
 			basket.addItem(basItem);
 			setBasketPrice();
-			TextView tv = (TextView) findViewById(R.id.snackText);
+			final TextView tv = (TextView) findViewById(R.id.snackText);
 			tv.setText(item.getName());
-			ImageView iv=(ImageView)findViewById(R.id.snackIcon);
+			final ImageView iv=(ImageView)findViewById(R.id.snackIcon);
 			iv.setImageResource(R.drawable.delete);
+			iv.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					tv.setText("Add a Snack box");
+					iv.setImageResource(R.drawable.arrow_green);
+					final OishiiBasket basket = AccountStatus.getInstance(
+							getApplicationContext()).getBasket();
+					basket.removeItemByID(item.getId());
+					setBasketPrice();
+					v.setOnClickListener(null);
+				}
+			});
 			snackDialog.dismiss();
 		}
 	};
