@@ -114,6 +114,7 @@
                     android:layout_marginTop="8dp" >
 
                     <TextView
+                        android:id="@+id/drinkText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
@@ -123,7 +124,7 @@
                         android:textSize="15sp"
                         android:textStyle="bold" />
 
-                    <ImageView style="@style/accountdetailsImage" />
+                    <ImageView android:id="@+id/drinkIcon" style="@style/accountdetailsImage" />
                 </RelativeLayout>
 
                 <View style="@style/fieldSeparator" />
@@ -136,6 +137,7 @@
                     android:layout_marginTop="8dp" >
 
                     <TextView
+                        android:id="@+id/snackText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
@@ -145,7 +147,7 @@
                         android:textSize="15sp"
                         android:textStyle="bold" />
 
-                    <ImageView style="@style/accountdetailsImage" />
+                    <ImageView android:id="@+id/snackIcon" style="@style/accountdetailsImage" />
                 </RelativeLayout>
 
                 <View style="@style/fieldSeparator" />
