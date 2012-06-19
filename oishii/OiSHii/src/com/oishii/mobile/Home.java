@@ -87,6 +87,8 @@ public class Home extends OishiiBaseActivity {
 					@Override
 					public void onClick(View v) {
 						stopRoll();
+						executeSideOrderMenuRequest(ApplicationConstants.CAT_ID_DRINKS, drinksCallback);
+						executeSideOrderMenuRequest(ApplicationConstants.CAT_ID_SNACKS, snackCallback);
 						Intent todays = new Intent(Home.this, TodaysMenu.class);
 						startActivity(todays);
 					}
@@ -119,7 +121,7 @@ public class Home extends OishiiBaseActivity {
 		});
 	}
 	
-	private IHttpCallback sideCallback=new IHttpCallback() {
+	private IHttpCallback snackCallback=new IHttpCallback() {
 		
 		@Override
 		public Object populateBean(InputStream is, int operationId) {
@@ -139,14 +141,35 @@ public class Home extends OishiiBaseActivity {
 		}
 	};
 	
+	public IHttpCallback drinksCallback=new IHttpCallback() {
+		
+		@Override
+		public Object populateBean(InputStream is, int operationId) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		
+		@Override
+		public void onFailure(int message, int operationID) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+		@Override
+		public void bindUI(Object t, int operationId) {
+			// TODO Auto-generated method stub
+			
+		}
+	};
 	
 	
-	private void executeSideOrderMenuRequest(int category,int operationID){
+	
+	private void executeSideOrderMenuRequest(int category,IHttpCallback callback){
 		HttpRequestWrapper requestWrapper = new HttpRequestWrapper(
 				getApplicationContext());
 		requestWrapper.requestURI = ApplicationConstants.API_MENU_DETAILS;
-		requestWrapper.callback = sideCallback;
-		requestWrapper.operationID = operationID;
+		requestWrapper.callback = callback;
+		requestWrapper.operationID = TodaysMenuDetailList.OPERATION_MENU_DETAILS;
 		requestWrapper.httpSettings
 				.setHttpMethod(ApplicationConstants.HTTP_METHOD);
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -154,7 +177,6 @@ public class Home extends OishiiBaseActivity {
 				String.valueOf(category));
 		params.add(param);
 		requestWrapper.httpParams = params;
-		requestWrapper.canCache=false;
 		new HttpRequestTask().execute(requestWrapper);
 	}
 }
