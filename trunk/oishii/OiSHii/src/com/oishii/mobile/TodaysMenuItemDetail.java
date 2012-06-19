@@ -253,6 +253,8 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 			setBasketPrice();
 			TextView tv = (TextView) findViewById(R.id.drinkText);
 			tv.setText(item.getName());
+			ImageView iv=(ImageView)findViewById(R.id.drinkIcon);
+			iv.setImageResource(R.drawable.delete);
 			drinkDialog.dismiss();
 		}
 	};
@@ -283,6 +285,8 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 			setBasketPrice();
 			TextView tv = (TextView) findViewById(R.id.snackText);
 			tv.setText(item.getName());
+			ImageView iv=(ImageView)findViewById(R.id.snackIcon);
+			iv.setImageResource(R.drawable.delete);
 			snackDialog.dismiss();
 		}
 	};
