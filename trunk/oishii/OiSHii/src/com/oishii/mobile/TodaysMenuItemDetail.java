@@ -221,7 +221,7 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 		ArrayList<MenuItem> result = SideOrderContainer.getInstance()
 				.getDrinksList();
 		ArrayAdapter<MenuItem> timeAdapter = new ArrayAdapter<MenuItem>(this,
-				R.layout.time_listview, result);
+				R.layout.side_listview, result);
 		listview.setAdapter(timeAdapter);
 		listview.setOnItemClickListener(drinkClick);
 		drinkDialog.show();
@@ -232,7 +232,27 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
-
+			MenuItem item = SideOrderContainer.getInstance().getDrinksList()
+					.get(position);
+			AccountStatus status = AccountStatus
+					.getInstance(getApplicationContext());
+			OishiiBasket basket = status.getBasket();
+			if (item.getId() == ApplicationConstants.CAT_ID_CORPORATE) {
+				basket.setCorporate(true);
+			}
+			BasketItem basItem = new BasketItem();
+			basItem.setColor(color);
+			// int total = Integer.parseInt(number.getText()
+			// .toString());
+			// basItem.setCount(total);
+			basItem.setCount(1);
+			basItem.setName(item.getName());
+			basItem.setPrice(item.getPrice());
+			basItem.setProdId(item.getId());
+			basket.addItem(basItem);
+			setBasketPrice();
+			TextView tv = (TextView) findViewById(R.id.drinkText);
+			tv.setText(item.getName());
 			drinkDialog.dismiss();
 		}
 	};
@@ -242,6 +262,27 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
+			MenuItem item = SideOrderContainer.getInstance().getSnacksList()
+					.get(position);
+			AccountStatus status = AccountStatus
+					.getInstance(getApplicationContext());
+			OishiiBasket basket = status.getBasket();
+			if (item.getId() == ApplicationConstants.CAT_ID_CORPORATE) {
+				basket.setCorporate(true);
+			}
+			BasketItem basItem = new BasketItem();
+			basItem.setColor(color);
+			// int total = Integer.parseInt(number.getText()
+			// .toString());
+			// basItem.setCount(total);
+			basItem.setCount(1);
+			basItem.setName(item.getName());
+			basItem.setPrice(item.getPrice());
+			basItem.setProdId(item.getId());
+			basket.addItem(basItem);
+			setBasketPrice();
+			TextView tv = (TextView) findViewById(R.id.snackText);
+			tv.setText(item.getName());
 			snackDialog.dismiss();
 		}
 	};
@@ -255,7 +296,7 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 		ArrayList<MenuItem> result = SideOrderContainer.getInstance()
 				.getSnacksList();
 		ArrayAdapter<MenuItem> timeAdapter = new ArrayAdapter<MenuItem>(this,
-				R.layout.time_listview, result);
+				R.layout.side_listview, result);
 		listview.setAdapter(timeAdapter);
 		listview.setOnItemClickListener(snackClick);
 		snackDialog.show();
