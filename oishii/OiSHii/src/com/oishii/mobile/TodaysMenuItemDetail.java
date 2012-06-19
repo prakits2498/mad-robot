@@ -15,10 +15,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager.LayoutParams;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
+import android.widget.ExpandableListView;
 import android.widget.Gallery;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -27,10 +32,14 @@ import com.madrobot.di.plist.NSDictionary;
 import com.madrobot.di.plist.NSNumber;
 import com.madrobot.di.plist.NSObject;
 import com.madrobot.di.plist.PropertyListParser;
+import com.oishii.mobile.TodaysMenuDetailList.ResultContainer;
 import com.oishii.mobile.beans.AccountStatus;
 import com.oishii.mobile.beans.BasketItem;
+import com.oishii.mobile.beans.MenuItem;
+import com.oishii.mobile.beans.MenuItemCategory;
 import com.oishii.mobile.beans.MenuItemDetail;
 import com.oishii.mobile.beans.OishiiBasket;
+import com.oishii.mobile.beans.SideOrderContainer;
 import com.oishii.mobile.util.tasks.BitmapHttpTask;
 import com.oishii.mobile.util.tasks.BitmapRequestParam;
 import com.oishii.mobile.util.tasks.HttpRequestTask;
@@ -86,25 +95,24 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 
 	}
 
-	IHttpCallback galleryCallback =new IHttpCallback() {
-		
+	IHttpCallback galleryCallback = new IHttpCallback() {
+
 		@Override
 		public Object populateBean(InputStream is, int operationId) {
 			return null;
 		}
-		
+
 		@Override
 		public void onFailure(int message, int operationID) {
 		}
-		
+
 		@Override
 		public void bindUI(Object t, int operationId) {
 			showGallery();
 		}
 	};
-	
-	
-	private void executeGalleryRequest(){
+
+	private void executeGalleryRequest() {
 		HttpRequestWrapper requestWrapper = new HttpRequestWrapper(
 				getApplicationContext());
 		requestWrapper.requestURI = ApplicationConstants.API_MENU_GALLERY;
@@ -120,86 +128,104 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 		showDialog(getString(R.string.loading_gallery));
 		new HttpRequestTask().execute(requestWrapper);
 	}
-	
-	
+
 	View.OnClickListener addToBasketListner = new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
 			final MenuItemDetail item = (MenuItemDetail) v.getTag();
-//			final Dialog dialog = new Dialog(TodaysMenuItemDetail.this);
-//			dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-//			dialog.setContentView(R.layout.add_to_basket_dailog);
-//			dialog.setTitle(null);
-//			TextView tv = (TextView) dialog.findViewById(R.id.itemName);
-//			tv.setText(item.getName());
-//			final EditText number = (EditText) dialog.findViewById(R.id.number);
-//			final TextView count = (TextView) dialog
-//					.findViewById(R.id.itemCount);
-//			dialog.findViewById(R.id.btnCheckout).setOnClickListener(
-//					new View.OnClickListener() {
-//						@Override
-//						public void onClick(View arg0) {
-							AccountStatus status = AccountStatus
-									.getInstance(getApplicationContext());
-							OishiiBasket basket = status.getBasket();
-							if (catID == ApplicationConstants.CAT_ID_CORPORATE) {
-								basket.setCorporate(true);
-							}
-							BasketItem basItem = new BasketItem();
-							basItem.setColor(color);
-//							int total = Integer.parseInt(number.getText()
-//									.toString());
-//							basItem.setCount(total);
-							basItem.setCount(1);
-							basItem.setName(item.getName());
-							basItem.setPrice(item.getPrice());
-							basItem.setProdId(item.getId());
-							basket.addItem(basItem);
-							setBasketPrice();
-//							Intent intent = new Intent();
-//							intent.setClass(TodaysMenuItemDetail.this,
-//									Basket.class);
-//							intent.putExtra(OutOfSession.SRC_KEY, R.id.basket);
-//							dialog.dismiss();
-//							startActivity(intent);
-//						}
-//					});
-//			dialog.findViewById(R.id.add).setOnClickListener(
-//					new View.OnClickListener() {
-//						@Override
-//						public void onClick(View arg0) {
-//							int total = Integer.parseInt(number.getText()
-//									.toString());
-//							if (total < 0) {
-//								total = 1;
-//							}
-//							if (total < 99)
-//								total++;
-//							number.setText(String.valueOf(total));
-//							count.setText(total + "X");
-//						}
-//					});
-//
-//			dialog.findViewById(R.id.minus).setOnClickListener(
-//					new View.OnClickListener() {
-//						@Override
-//						public void onClick(View v) {
-//							int total = Integer.parseInt(number.getText()
-//									.toString());
-//							if (total > 1) {
-//								total--;
-//							}
-//							number.setText(String.valueOf(total));
-//							count.setText(total + "X");
-//						}
-//					});
-//			LayoutParams params = getWindow().getAttributes();
-//			params.height = LayoutParams.FILL_PARENT;
-//			dialog.getWindow().setLayout(LayoutParams.FILL_PARENT,
-//					LayoutParams.WRAP_CONTENT);
-//			dialog.show();
+			// final Dialog dialog = new Dialog(TodaysMenuItemDetail.this);
+			// dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+			// dialog.setContentView(R.layout.add_to_basket_dailog);
+			// dialog.setTitle(null);
+			// TextView tv = (TextView) dialog.findViewById(R.id.itemName);
+			// tv.setText(item.getName());
+			// final EditText number = (EditText)
+			// dialog.findViewById(R.id.number);
+			// final TextView count = (TextView) dialog
+			// .findViewById(R.id.itemCount);
+			// dialog.findViewById(R.id.btnCheckout).setOnClickListener(
+			// new View.OnClickListener() {
+			// @Override
+			// public void onClick(View arg0) {
+			AccountStatus status = AccountStatus
+					.getInstance(getApplicationContext());
+			OishiiBasket basket = status.getBasket();
+			if (catID == ApplicationConstants.CAT_ID_CORPORATE) {
+				basket.setCorporate(true);
+			}
+			BasketItem basItem = new BasketItem();
+			basItem.setColor(color);
+			// int total = Integer.parseInt(number.getText()
+			// .toString());
+			// basItem.setCount(total);
+			basItem.setCount(1);
+			basItem.setName(item.getName());
+			basItem.setPrice(item.getPrice());
+			basItem.setProdId(item.getId());
+			basket.addItem(basItem);
+			setBasketPrice();
+			// Intent intent = new Intent();
+			// intent.setClass(TodaysMenuItemDetail.this,
+			// Basket.class);
+			// intent.putExtra(OutOfSession.SRC_KEY, R.id.basket);
+			// dialog.dismiss();
+			// startActivity(intent);
+			// }
+			// });
+			// dialog.findViewById(R.id.add).setOnClickListener(
+			// new View.OnClickListener() {
+			// @Override
+			// public void onClick(View arg0) {
+			// int total = Integer.parseInt(number.getText()
+			// .toString());
+			// if (total < 0) {
+			// total = 1;
+			// }
+			// if (total < 99)
+			// total++;
+			// number.setText(String.valueOf(total));
+			// count.setText(total + "X");
+			// }
+			// });
+			//
+			// dialog.findViewById(R.id.minus).setOnClickListener(
+			// new View.OnClickListener() {
+			// @Override
+			// public void onClick(View v) {
+			// int total = Integer.parseInt(number.getText()
+			// .toString());
+			// if (total > 1) {
+			// total--;
+			// }
+			// number.setText(String.valueOf(total));
+			// count.setText(total + "X");
+			// }
+			// });
+			// LayoutParams params = getWindow().getAttributes();
+			// params.height = LayoutParams.FILL_PARENT;
+			// dialog.getWindow().setLayout(LayoutParams.FILL_PARENT,
+			// LayoutParams.WRAP_CONTENT);
+			// dialog.show();
 		}
 	};
+
+	private void showAddDrinkDialog() {
+		Dialog dialog = new Dialog(TodaysMenuItemDetail.this);
+		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.setContentView(R.layout.sideorderdialog);
+		ListView listview=(ListView) dialog.findViewById(R.id.listView1);
+		dialog.setTitle(null);
+		ArrayList<MenuItem> result=SideOrderContainer.getInstance().getDrinksList();
+		ArrayAdapter<MenuItem> timeAdapter = new ArrayAdapter<MenuItem>(this,
+				R.layout.time_listview, result);
+		
+		listview.setAdapter(timeAdapter);
+		dialog.show();
+	}
+
+	private void showAddSnackDialog() {
+
+	}
 
 	private void showGallery() {
 		final Dialog dialog = new Dialog(TodaysMenuItemDetail.this);
@@ -272,25 +298,27 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 			} else {
 				btnAddBasket.setTag(detail);
 				btnAddBasket.setOnClickListener(addToBasketListner);
+				/* add drink */
 				findViewById(R.id.drinkLayout).setOnClickListener(
 						new View.OnClickListener() {
 
 							@Override
 							public void onClick(View arg0) {
 								// TODO Auto-generated method stub
-								Intent intent = new Intent(
-										TodaysMenuItemDetail.this,
-										TodaysMenuDetailList.class);
-								intent.putExtra(
-										TodaysMenuDetailList.EXTRA_TITLE,
-										"Add a drink");
-								intent.putExtra(
-										TodaysMenuDetailList.EXTRA_CAT_ID,
-										ApplicationConstants.CAT_ID_DRINKS);
-								intent.putExtra(
-										TodaysMenuDetailList.EXTRA_COLOR,
-										ApplicationConstants.COLOR_DRINKS);
-								startActivity(intent);
+//								Intent intent = new Intent(
+//										TodaysMenuItemDetail.this,
+//										TodaysMenuDetailList.class);
+//								intent.putExtra(
+//										TodaysMenuDetailList.EXTRA_TITLE,
+//										"Add a drink");
+//								intent.putExtra(
+//										TodaysMenuDetailList.EXTRA_CAT_ID,
+//										ApplicationConstants.CAT_ID_DRINKS);
+//								intent.putExtra(
+//										TodaysMenuDetailList.EXTRA_COLOR,
+//										ApplicationConstants.COLOR_DRINKS);
+//								startActivity(intent);
+								showAddDrinkDialog();
 
 							}
 						});
@@ -317,21 +345,22 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 
 			}
 			ImageView detailImage = (ImageView) findViewById(R.id.image);
-//			detailImage.setOnClickListener(new View.OnClickListener() {
-//
-//				@Override
-//				public void onClick(View v) {
-//					// Intent intent = new Intent(TodaysMenuItemDetail.this,
-//					// MenuItemGallery.class);
-//					// startActivity(intent);
-//					if(IOUtils.isSDCardMounted()){
-////						showGallery();
-//						executeGalleryRequest();
-//					}else{
-//						Toast.makeText(getApplicationContext(), R.string.error_no_sdcard, 4000);
-//					}
-//				}
-//			});
+			// detailImage.setOnClickListener(new View.OnClickListener() {
+			//
+			// @Override
+			// public void onClick(View v) {
+			// // Intent intent = new Intent(TodaysMenuItemDetail.this,
+			// // MenuItemGallery.class);
+			// // startActivity(intent);
+			// if(IOUtils.isSDCardMounted()){
+			// // showGallery();
+			// executeGalleryRequest();
+			// }else{
+			// Toast.makeText(getApplicationContext(), R.string.error_no_sdcard,
+			// 4000);
+			// }
+			// }
+			// });
 			BitmapRequestParam req = new BitmapRequestParam();
 			req.bitmapUri = URI.create(detail.getImageUrl());
 			req.image = detailImage;// (ImageView) findViewById(R.id.image);
@@ -344,8 +373,8 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 		}
 	};
 
-	public static final int OPERATION_ID=30;
-	
+	public static final int OPERATION_ID = 30;
+
 	private void executeDetailsRequest() {
 		HttpRequestWrapper requestWrapper = new HttpRequestWrapper(
 				getApplicationContext());
@@ -354,7 +383,7 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 		requestWrapper.operationID = OPERATION_ID;
 		requestWrapper.httpSettings
 				.setHttpMethod(ApplicationConstants.HTTP_METHOD);
-		requestWrapper.intExtra=productId;
+		requestWrapper.intExtra = productId;
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		NameValuePair param = new BasicNameValuePair("prodid",
 				String.valueOf(productId));
@@ -390,8 +419,6 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 		executeDetailsRequest();
 	}
 
-	
-	
 	@Override
 	protected int getChildViewLayout() {
 		return R.layout.todays_menu_item_detail;

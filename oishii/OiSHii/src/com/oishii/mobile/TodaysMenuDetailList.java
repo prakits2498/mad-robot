@@ -185,7 +185,6 @@ public class TodaysMenuDetailList extends ListOishiBase {
 
 		@Override
 		public void bindUI(Object t, int operationId) {
-
 			ResultContainer result = (ResultContainer) t;
 			ExpandableListView list = getExandableList(true);
 			// list.setOnChildClickListener(new
@@ -240,9 +239,10 @@ public class TodaysMenuDetailList extends ListOishiBase {
 		}
 	};
 
-	private class ResultContainer {
-		private ArrayList<MenuItemCategory> parent;
-		private ArrayList<ArrayList<MenuItem>> children;
+	public static class ResultContainer {
+		
+		public ArrayList<MenuItemCategory> parent;
+		public ArrayList<ArrayList<MenuItem>> children;
 	}
 
 	private ResultContainer processPlist(NSObject obj) throws Exception {

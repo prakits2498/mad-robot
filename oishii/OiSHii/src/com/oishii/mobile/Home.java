@@ -7,13 +7,22 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
-import com.oishii.mobile.util.tasks.HttpRequestTask;
-import com.oishii.mobile.util.tasks.HttpRequestWrapper;
-import com.oishii.mobile.util.tasks.IHttpCallback;
-
 import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
+
+import com.madrobot.di.plist.NSArray;
+import com.madrobot.di.plist.NSDictionary;
+import com.madrobot.di.plist.NSNumber;
+import com.madrobot.di.plist.NSObject;
+import com.madrobot.di.plist.PropertyListParser;
+import com.oishii.mobile.TodaysMenuDetailList.ResultContainer;
+import com.oishii.mobile.beans.MenuItem;
+import com.oishii.mobile.beans.MenuItemCategory;
+import com.oishii.mobile.beans.SideOrderContainer;
+import com.oishii.mobile.util.tasks.HttpRequestTask;
+import com.oishii.mobile.util.tasks.HttpRequestWrapper;
+import com.oishii.mobile.util.tasks.IHttpCallback;
 
 public class Home extends OishiiBaseActivity {
 	private class ImageRunner extends Thread {
@@ -87,8 +96,12 @@ public class Home extends OishiiBaseActivity {
 					@Override
 					public void onClick(View v) {
 						stopRoll();
-						executeSideOrderMenuRequest(ApplicationConstants.CAT_ID_DRINKS, drinksCallback);
-						executeSideOrderMenuRequest(ApplicationConstants.CAT_ID_SNACKS, snackCallback);
+						executeSideOrderMenuRequest(
+								ApplicationConstants.CAT_ID_DRINKS,
+								drinksCallback);
+						executeSideOrderMenuRequest(
+								ApplicationConstants.CAT_ID_SNACKS,
+								snackCallback);
 						Intent todays = new Intent(Home.this, TodaysMenu.class);
 						startActivity(todays);
 					}
@@ -120,51 +133,119 @@ public class Home extends OishiiBaseActivity {
 
 		});
 	}
-	
-	private IHttpCallback snackCallback=new IHttpCallback() {
-		
+
+	private IHttpCallback snackCallback = new IHttpCallback() {
+
 		@Override
 		public Object populateBean(InputStream is, int operationId) {
+			NSObject object = null;
+			try {
+				object = PropertyListParser.parse(is);
+				if (object != null) {
+					ArrayList<MenuItem> children = processPlist(object);
+					return children;
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			return null;
 		}
-		
+
 		@Override
 		public void onFailure(int message, int operationID) {
-			// TODO Auto-generated method stub
-			
+
 		}
-		
+
 		@Override
 		public void bindUI(Object t, int operationId) {
-			// TODO Auto-generated method stub
-			
+			ArrayList<MenuItem> children = (ArrayList<MenuItem>) t;
+			SideOrderContainer container = SideOrderContainer.getInstance();
+			container.setSnacksList(children);
 		}
 	};
-	
-	public IHttpCallback drinksCallback=new IHttpCallback() {
-		
+
+	private ArrayList<MenuItem> processPlist(NSObject obj)
+			throws Exception {
+		NSArray plist = (NSArray) obj;
+		int categories = plist.count();
+		// ResultContainer container = new ResultContainer();
+		// ArrayList<MenuItemCategory> parentGroups = new
+		// ArrayList<MenuItemCategory>();
+		ArrayList<MenuItem> childGroups = new ArrayList<MenuItem>();
+
+		for (int i = 0; i < categories; i++) {
+			NSDictionary dict = (NSDictionary) plist.objectAtIndex(i);
+			// MenuItemCategory menuCategory = new MenuItemCategory();
+			NSNumber id;
+			// = (NSNumber) dict.objectForKey("id");
+			// menuCategory.setId(id.intValue());
+			// menuCategory.setName(dict.objectForKey("name").toString());
+			// menuCategory.setDescription(dict.objectForKey("shortdescription")
+			// .toString());
+			// list.add(menuCategory);
+
+			// parentGroups.add(menuCategory);
+			NSArray items = (NSArray) dict.objectForKey("items");
+//			ArrayList<MenuItem> childGroup = new ArrayList<MenuItem>();
+			int number = items.count();
+
+			for (int y = 0; y < number; y++) {
+				NSDictionary menuItems = (NSDictionary) items.objectAtIndex(y);
+				MenuItem menuItem = new MenuItem();
+				id = (NSNumber) menuItems.objectForKey("id");
+				menuItem.setId(id.intValue());
+				menuItem.setName(menuItems.objectForKey("name").toString());
+				// menuItem.setImage(menuItems.objectForKey("image").toString());
+				// menuItem.setDescription(menuItems.objectForKey(
+				// "shortdescription").toString());
+				id = (NSNumber) menuItems.objectForKey("itemsremaining");
+				menuItem.setItemsRemain(id.intValue());
+				id = (NSNumber) menuItems.objectForKey("price");
+				menuItem.setPrice(id.floatValue());
+				// menuItem.setCategory(menuCategory);
+				if (menuItem.getItemsRemain() > 0)
+					childGroups.add(menuItem);
+			}
+//			childGroups.add(childGroup);
+		}
+		// container.parent = parentGroups;
+		// container.children = childGroups;
+
+		return childGroups;
+	}
+
+	private IHttpCallback drinksCallback = new IHttpCallback() {
+
 		@Override
 		public Object populateBean(InputStream is, int operationId) {
-			// TODO Auto-generated method stub
+			NSObject object = null;
+			try {
+				object = PropertyListParser.parse(is);
+				if (object != null) {
+					ArrayList<MenuItem> children = processPlist(object);
+					return children;
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			return null;
 		}
-		
+
 		@Override
 		public void onFailure(int message, int operationID) {
-			// TODO Auto-generated method stub
-			
+
 		}
-		
+
 		@Override
 		public void bindUI(Object t, int operationId) {
-			// TODO Auto-generated method stub
-			
+			ArrayList<MenuItem> children = (ArrayList<MenuItem>) t;
+			SideOrderContainer container = SideOrderContainer.getInstance();
+			container.setDrinksList(children);
 		}
 	};
-	
-	
-	
-	private void executeSideOrderMenuRequest(int category,IHttpCallback callback){
+
+	private void executeSideOrderMenuRequest(int category,
+			IHttpCallback callback) {
 		HttpRequestWrapper requestWrapper = new HttpRequestWrapper(
 				getApplicationContext());
 		requestWrapper.requestURI = ApplicationConstants.API_MENU_DETAILS;
