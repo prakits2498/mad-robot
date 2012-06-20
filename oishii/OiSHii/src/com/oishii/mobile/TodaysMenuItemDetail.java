@@ -287,6 +287,7 @@ public class TodaysMenuItemDetail extends OishiiBaseActivity {
 				basket.setCorporate(true);
 			}
 			BasketItem basItem = new BasketItem();
+			
 			basItem.setColor(color);
 			// int total = Integer.parseInt(number.getText()
 			// .toString());
