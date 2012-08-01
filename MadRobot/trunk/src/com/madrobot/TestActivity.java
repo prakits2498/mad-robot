@@ -23,17 +23,17 @@ public class TestActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		setContentView(R.layout.main);
-		final SVGImageView iv=(SVGImageView) findViewById(R.id.image);
+//		setContentView(R.layout.main);
+//		final SVGImageView iv=(SVGImageView) findViewById(R.id.image);
 //		iv.setSVGFromResource(R.raw.gir);
-		iv.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				iv.setSVGZoomFactor(iv.getSVGZoomFactor()+10);
-				
-			}
-		});
+//		iv.setOnClickListener(new View.OnClickListener() {
+//			
+//			@Override
+//			public void onClick(View v) {
+//				iv.setSVGZoomFactor(iv.getSVGZoomFactor()+10);
+//				
+//			}
+//		});
 //		SVG svg=SVGFactory.getSVGFromResource(getResources(), R.raw.gir,50);
 //		Log.d("MadRobot","META-->"+svg.getMetaData().toString());
 //		Bitmap bitmap=svg.createBitmap(Bitmap.Config.ARGB_8888);
