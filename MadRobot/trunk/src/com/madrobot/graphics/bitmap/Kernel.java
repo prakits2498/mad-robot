@@ -1,6 +1,6 @@
 package com.madrobot.graphics.bitmap;
 
-public class Kernel implements Cloneable {
+ class Kernel implements Cloneable {
 	/** The kernel width. */
 	private final int width;
 
@@ -31,7 +31,7 @@ public class Kernel implements Cloneable {
 	 * @throws NullPointerException
 	 *             if <code>data</code> is <code>null</code>.
 	 */
-	public Kernel(int width, int height, float[] data)
+	 Kernel(int width, int height, float[] data)
 			throws IllegalArgumentException {
 		this.width = width;
 		this.height = height;
@@ -47,7 +47,7 @@ public class Kernel implements Cloneable {
 	 * 
 	 * @return The x-origin for the kernel.
 	 */
-	public final int getXOrigin() {
+	 final int getXOrigin() {
 		return (width - 1) / 2;
 	}
 
@@ -57,7 +57,7 @@ public class Kernel implements Cloneable {
 	 * 
 	 * @return The y-origin for the kernel.
 	 */
-	public final int getYOrigin() {
+	 final int getYOrigin() {
 		return (height - 1) / 2;
 	}
 
@@ -66,7 +66,7 @@ public class Kernel implements Cloneable {
 	 * 
 	 * @return The kernel width.
 	 */
-	public final int getWidth() {
+	 final int getWidth() {
 		return width;
 	}
 
@@ -75,7 +75,7 @@ public class Kernel implements Cloneable {
 	 * 
 	 * @return The kernel height.
 	 */
-	public final int getHeight() {
+	 final int getHeight() {
 		return height;
 	}
 
@@ -96,7 +96,7 @@ public class Kernel implements Cloneable {
 	 *             if <code>data.length</code> is less than the kernel's
 	 *             <code>width * height</code>.
 	 */
-	public final float[] getKernelData(float[] data)
+	 final float[] getKernelData(float[] data)
 			throws IllegalArgumentException {
 		if (data == null)
 			return this.data.clone();

@@ -3,7 +3,7 @@ package com.madrobot.graphics.bitmap;
 /**
  * A colormap which interpolates linearly between two colors.
  */
-public class LinearColormap implements Colormap {
+ class LinearColormap implements Colormap {
 
 	private int color1;
 	private int color2;
@@ -11,7 +11,7 @@ public class LinearColormap implements Colormap {
 	/**
 	 * Construct a color map with a grayscale ramp from black to white.
 	 */
-	public LinearColormap() {
+	LinearColormap() {
 		this(0xff000000, 0xffffffff);
 	}
 
@@ -23,7 +23,7 @@ public class LinearColormap implements Colormap {
 	 * @param color2
 	 *            the color corresponding to value 1 in the colormap
 	 */
-	public LinearColormap(int color1, int color2) {
+	 LinearColormap(int color1, int color2) {
 		this.color1 = color1;
 		this.color2 = color2;
 	}
@@ -34,7 +34,7 @@ public class LinearColormap implements Colormap {
 	 * @param color1
 	 *            the color corresponding to value 0 in the colormap
 	 */
-	public void setColor1(int color1) {
+	 void setColor1(int color1) {
 		this.color1 = color1;
 	}
 
@@ -43,7 +43,7 @@ public class LinearColormap implements Colormap {
 	 * 
 	 * @return the color corresponding to value 0 in the colormap
 	 */
-	public int getColor1() {
+	int getColor1() {
 		return color1;
 	}
 
@@ -53,7 +53,7 @@ public class LinearColormap implements Colormap {
 	 * @param color2
 	 *            the color corresponding to value 1 in the colormap
 	 */
-	public void setColor2(int color2) {
+	void setColor2(int color2) {
 		this.color2 = color2;
 	}
 
@@ -62,7 +62,7 @@ public class LinearColormap implements Colormap {
 	 * 
 	 * @return the color corresponding to value 1 in the colormap
 	 */
-	public int getColor2() {
+	int getColor2() {
 		return color2;
 	}
 
