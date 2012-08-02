@@ -8,7 +8,7 @@
  * Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
-package com.madrobot.location;
+package com.madrobot.hardware.location;
 
 public class UTMCoordinate {
 	/**

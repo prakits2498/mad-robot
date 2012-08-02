@@ -8,7 +8,7 @@
  * Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
-package com.madrobot.location;
+package com.madrobot.hardware.location;
 
 import static java.lang.Math.cos;
 import static java.lang.Math.pow;
