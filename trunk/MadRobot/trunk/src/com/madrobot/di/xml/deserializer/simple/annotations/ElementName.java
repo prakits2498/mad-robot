@@ -9,14 +9,14 @@
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
 
-package com.madrobot.di.xml.simpledeserializer.annotations;
+package com.madrobot.di.xml.deserializer.simple.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.madrobot.di.xml.simpledeserializer.XMLDeserializer;
+import com.madrobot.di.xml.deserializer.simple.XMLDeserializer;
 
 /**
  * Represents name of the element to which a field in model may map to. <br/>
