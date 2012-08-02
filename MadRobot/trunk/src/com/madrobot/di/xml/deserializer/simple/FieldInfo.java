@@ -9,7 +9,7 @@
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
 
-package com.madrobot.di.xml.simpledeserializer;
+package com.madrobot.di.xml.deserializer.simple;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

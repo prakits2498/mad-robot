@@ -9,7 +9,7 @@
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
 
-package com.madrobot.di.xml.simpledeserializer;
+package com.madrobot.di.xml.deserializer.simple;
 
 /**
  * Possible field types, during deserialization See {@link XMLDeserializer} for

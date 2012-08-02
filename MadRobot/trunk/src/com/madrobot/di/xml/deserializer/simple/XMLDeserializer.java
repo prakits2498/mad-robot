@@ -9,7 +9,7 @@
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
 
-package com.madrobot.di.xml.simpledeserializer;
+package com.madrobot.di.xml.deserializer.simple;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,8 +29,8 @@ import org.xmlpull.v1.XmlPullParserException;
 import android.util.Xml;
 
 import com.madrobot.di.Converter;
-import com.madrobot.di.xml.simpledeserializer.annotations.ElementName;
-import com.madrobot.di.xml.simpledeserializer.annotations.ItemType;
+import com.madrobot.di.xml.deserializer.simple.annotations.ElementName;
+import com.madrobot.di.xml.deserializer.simple.annotations.ItemType;
 
 /**
  * Helper utility to deserialize any XML content into a specified model(java
