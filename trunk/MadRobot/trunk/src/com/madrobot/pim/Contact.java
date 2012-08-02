@@ -8,7 +8,7 @@
  * Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
-package com.madrobot.device;
+package com.madrobot.pim;
 
 /**
  * Contact information

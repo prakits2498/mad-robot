@@ -8,7 +8,7 @@
  * Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
-package com.madrobot.device;
+package com.madrobot.hardware;
 
 /**
  * Contains information for a given display

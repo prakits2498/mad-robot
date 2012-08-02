@@ -8,7 +8,7 @@
  * Contributors:
  *  Elton Kent - initial API and implementation
  ******************************************************************************/
-package com.madrobot.location;
+package com.madrobot.hardware.location;
 
 public final class LocationConstants {
 	static final double DEG = 57.295779513082320876798154814105; // (180/PI)

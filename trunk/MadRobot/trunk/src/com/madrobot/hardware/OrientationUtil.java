@@ -1,4 +1,4 @@
-package com.madrobot.device;
+package com.madrobot.hardware;
 
 import android.content.Context;
 import android.hardware.Sensor;

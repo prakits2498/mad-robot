@@ -1,4 +1,4 @@
-package com.madrobot.location;
+package com.madrobot.hardware.location;
 
 import android.app.Service;
 import android.content.Context;
@@ -16,7 +16,7 @@ import android.os.RemoteException;
  * 
  * </p>
  * 
- * @see com.madrobot.device.ServiceBinder
+ * @see com.madrobot.hardware.ServiceBinder
  * @author elton.stephen.kent
  * 
  */
