@@ -1,0 +1,1 @@
+secure the resources folder in doc\ before generating a javadoc
