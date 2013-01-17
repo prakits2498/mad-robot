@@ -13,8 +13,8 @@ package com.madrobot.di.xml.io;
 
 import java.io.Writer;
 
-import com.madrobot.util.QuickWriter;
 import com.madrobot.util.collections.FastStack;
+import com.madrobot.util.collections.QuickWriter;
 
 /**
  * A simple writer that outputs XML in a pretty-printed indented stream.
@@ -23,8 +23,8 @@ import com.madrobot.util.collections.FastStack;
  * &amp; &lt; &gt; &quot; ' \r
  * </pre></code> are escaped and replaced with a suitable XML entity. To alter
  * this behavior, override the the
- * {@link #writeText(com.madrobot.util.QuickWriter, String)} and
- * {@link #writeAttributeValue(com.madrobot.util.QuickWriter, String)} methods.
+ * {@link #writeText(com.madrobot.util.collections.QuickWriter, String)} and
+ * {@link #writeAttributeValue(com.madrobot.util.collections.QuickWriter, String)} methods.
  * </p>
  * <p>
  * Note: Depending on the XML version some characters cannot be written.

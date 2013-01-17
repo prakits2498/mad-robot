@@ -25,6 +25,7 @@ import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -37,33 +38,44 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import com.madrobot.security.HexDump;
+import android.util.Log;
+
+import com.madrobot.security.HexUtils;
 import com.madrobot.text.CharUtils;
 
 public class NetUtils {
-	
 
 	/**
-	 * Decode the IP Address represented as an integer
+	 * Create and initialise sn SSLContext.
 	 * 
-	 * @param ip
-	 *            String representation of the IP address.
-	 * @return
+	 * @param protocol
+	 *            the protocol used to instatiate the context
+	 * @param keyManagers
+	 *            the array of key managers, may be {@code null} but array
+	 *            entries must not be {@code null}
+	 * @param trustManagers
+	 *            the array of trust managers, may be {@code null} but array
+	 *            entries must not be {@code null}
+	 * @return the initialised context.
+	 * @throws IOException
+	 *             this is used to wrap any {@link GeneralSecurityException}
+	 *             that occurs
 	 */
-	public static String decodeIPAddress(int ip) {
-		int[] num = new int[4];
-
-		num[0] = (ip & 0xff000000) >> 24;
-		num[1] = (ip & 0x00ff0000) >> 16;
-		num[2] = (ip & 0x0000ff00) >> 8;
-		num[3] = ip & 0x000000ff;
-
-		StringBuilder builder = new StringBuilder();
-		builder.append(num[0]).append('.').append(num[1]).append('.')
-				.append(num[2]).append('.').append(num[3]);
-
-		return builder.toString();
+	public static SSLContext createSSLContext(String protocol, KeyManager[] keyManagers,
+			TrustManager[] trustManagers) throws IOException {
+		SSLContext ctx;
+		try {
+			ctx = SSLContext.getInstance(protocol);
+			ctx.init(keyManagers, trustManagers, /* SecureRandom */null);
+		} catch (GeneralSecurityException e) {
+			IOException ioe = new IOException("Could not initialize SSL context");
+			ioe.initCause(e);
+			throw ioe;
+		}
+		return ctx;
 	}
+
+	
 
 	/**
 	 * Enable Http Response cache. Works only on Ice-cream sandwich.
@@ -83,318 +95,7 @@ public class NetUtils {
 		}
 	}
 
-	/**
-	 * Encodes an IP as an int
-	 * 
-	 * @param ip
-	 * @return the encoded IP
-	 */
-	public static int encode(Inet4Address ip) {
-		int i = 0;
-		byte[] b = ip.getAddress();
-		i |= b[0] << 24;
-		i |= b[1] << 16;
-		i |= b[2] << 8;
-		i |= b[3] << 0;
-
-		return i;
-	}
-
-	/**
-	 * Encode the given IP address segments
-	 * 
-	 * @param a
-	 * @param b
-	 * @param c
-	 * @param d
-	 * @return the encoded ip
-	 */
-	public static int encodeIPAddress(int a, int b, int c, int d) {
-		int ip = 0;
-		ip |= a << 24;
-		ip |= b << 16;
-		ip |= c << 8;
-		ip |= d;
-		return ip;
-	}
-
-	/**
-	 * Finds this device's global IP address
-	 * 
-	 * @param url
-	 *            the url to find the global IP
-	 * @return The global IP address, or null if a problem occurred
-	 */
-	public static Inet4Address getGlobalAddress(String url) {
-		try {
-			URLConnection uc = new URL(url).openConnection();
-			BufferedReader br = new BufferedReader(new InputStreamReader(
-					uc.getInputStream()));
-			return (Inet4Address) InetAddress.getByName(br.readLine());
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	/**
-	 * Finds a local, non-loopback, IPv4 address
-	 * 
-	 * @return The first non-loopback IPv4 address found, or <code>null</code>
-	 *         if no such addresses found
-	 * @throws SocketException
-	 *             If there was a problem querying the network interfaces
-	 */
-	public static InetAddress getLocalAddress() throws SocketException {
-		Enumeration<NetworkInterface> ifaces = NetworkInterface
-				.getNetworkInterfaces();
-		while (ifaces.hasMoreElements()) {
-			NetworkInterface iface = ifaces.nextElement();
-			Enumeration<InetAddress> addresses = iface.getInetAddresses();
-
-			while (addresses.hasMoreElements()) {
-				InetAddress addr = addresses.nextElement();
-				if ((addr instanceof Inet4Address) && !addr.isLoopbackAddress()) {
-					return addr;
-				}
-			}
-		}
-		return null;
-	}
-
-	private static boolean isMaskValue(String component, int size) {
-		try {
-			int value = Integer.parseInt(component);
-
-			return value >= 0 && value <= size;
-		} catch (NumberFormatException e) {
-			return false;
-		}
-	}
-
-	public static boolean isValidEmailAddress(String address) {
-		final String emailPattern = "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-		Pattern pattern = Pattern.compile(emailPattern);
-		Matcher matcher = pattern.matcher(address);
-		return matcher.matches();
-	}
-
-	/**
-	 * Validate the given IPv4 address.
-	 * 
-	 * @param address
-	 *            the IP address as a String.
-	 * 
-	 * @return true if a valid IPv4 address, false otherwise
-	 */
-	public static boolean isValidIPv4(String address) {
-		if (address.length() == 0) {
-			return false;
-		}
-
-		int octet;
-		int octets = 0;
-
-		String temp = address + ".";
-
-		int pos;
-		int start = 0;
-		while (start < temp.length()
-				&& (pos = temp.indexOf('.', start)) > start) {
-			if (octets == 4) {
-				return false;
-			}
-			try {
-				octet = Integer.parseInt(temp.substring(start, pos));
-			} catch (NumberFormatException ex) {
-				return false;
-			}
-			if (octet < 0 || octet > 255) {
-				return false;
-			}
-			start = pos + 1;
-			octets++;
-		}
-
-		return octets == 4;
-	}
-
-	public static boolean isValidIPv4WithNetmask(String address) {
-		int index = address.indexOf("/");
-		String mask = address.substring(index + 1);
-
-		return (index > 0) && isValidIPv4(address.substring(0, index))
-				&& (isValidIPv4(mask) || isMaskValue(mask, 32));
-	}
-
-	/**
-	 * Validate the given IPv6 address.
-	 * 
-	 * @param address
-	 *            the IP address as a String.
-	 * 
-	 * @return true if a valid IPv4 address, false otherwise
-	 */
-	public static boolean isValidIPv6(String address) {
-		if (address.length() == 0) {
-			return false;
-		}
-
-		int octet;
-		int octets = 0;
-
-		String temp = address + ":";
-		boolean doubleColonFound = false;
-		int pos;
-		int start = 0;
-		while (start < temp.length()
-				&& (pos = temp.indexOf(':', start)) >= start) {
-			if (octets == 8) {
-				return false;
-			}
-
-			if (start != pos) {
-				String value = temp.substring(start, pos);
-
-				if (pos == (temp.length() - 1) && value.indexOf('.') > 0) {
-					if (!isValidIPv4(value)) {
-						return false;
-					}
-
-					octets++; // add an extra one as address covers 2 words.
-				} else {
-					try {
-						octet = Integer
-								.parseInt(temp.substring(start, pos), 16);
-					} catch (NumberFormatException ex) {
-						return false;
-					}
-					if (octet < 0 || octet > 0xffff) {
-						return false;
-					}
-				}
-			} else {
-				if (pos != 1 && pos != temp.length() - 1 && doubleColonFound) {
-					return false;
-				}
-				doubleColonFound = true;
-			}
-			start = pos + 1;
-			octets++;
-		}
-
-		return octets == 8 || doubleColonFound;
-	}
-
-	public static boolean isValidIPv6WithNetmask(String address) {
-		int index = address.indexOf("/");
-		String mask = address.substring(index + 1);
-
-		return (index > 0)
-				&& (isValidIPv6(address.substring(0, index)) && (isValidIPv6(mask) || isMaskValue(
-						mask, 128)));
-	}
-
-	/**
-	 * Create and initialise sn SSLContext.
-	 * 
-	 * @param protocol
-	 *            the protocol used to instatiate the context
-	 * @param keyManagers
-	 *            the array of key managers, may be {@code null} but array
-	 *            entries must not be {@code null}
-	 * @param trustManagers
-	 *            the array of trust managers, may be {@code null} but array
-	 *            entries must not be {@code null}
-	 * @return the initialised context.
-	 * @throws IOException
-	 *             this is used to wrap any {@link GeneralSecurityException}
-	 *             that occurs
-	 */
-	public static SSLContext createSSLContext(String protocol,
-			KeyManager[] keyManagers, TrustManager[] trustManagers)
-			throws IOException {
-		SSLContext ctx;
-		try {
-			ctx = SSLContext.getInstance(protocol);
-			ctx.init(keyManagers, trustManagers, /* SecureRandom */null);
-		} catch (GeneralSecurityException e) {
-			IOException ioe = new IOException(
-					"Could not initialize SSL context");
-			ioe.initCause(e);
-			throw ioe;
-		}
-		return ctx;
-	}
-
-	/**
-	 * Makes the platform trust all SSL connections.
-	 * <p>
-	 * Warning: This should be used for development purposes only
-	 * </p>
-	 */
-	public static void trustAllSecureConnections() {
-		try {
-			HttpsURLConnection
-					.setDefaultHostnameVerifier(new HostnameVerifier() {
-						@Override
-						public boolean verify(String hostname,
-								SSLSession session) {
-							return true;
-						}
-					});
-			SSLContext context = SSLContext.getInstance("TLS");
-			context.init(null, new X509TrustManager[] { new X509TrustManager() {
-				@Override
-				public void checkClientTrusted(X509Certificate[] chain,
-						String authType) throws CertificateException {
-				}
-
-				@Override
-				public void checkServerTrusted(X509Certificate[] chain,
-						String authType) throws CertificateException {
-				}
-
-				@Override
-				public X509Certificate[] getAcceptedIssuers() {
-					return new X509Certificate[0];
-				}
-			} }, new SecureRandom());
-			HttpsURLConnection.setDefaultSSLSocketFactory(context
-					.getSocketFactory());
-		} catch (Exception e) { // should never happen
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * @return True if the url is correctly URL encoded
-	 */
-	public static boolean verifyURLEncoding(String url) {
-		int count = url.length();
-		if (count == 0) {
-			return false;
-		}
-
-		int index = url.indexOf('%');
-		while (index >= 0 && index < count) {
-			if (index < count - 2) {
-				try {
-					HexDump.parseHex(url.charAt(++index));
-					HexDump.parseHex(url.charAt(++index));
-				} catch (IllegalArgumentException e) {
-					return false;
-				}
-			} else {
-				return false;
-			}
-			index = url.indexOf('%', index + 1);
-		}
-		return true;
-	}
+	
 
 	/**
 	 * Encodes the string in the string buffer
@@ -439,7 +140,189 @@ public class NetUtils {
 	}
 
 	/**
+	 * Get the data network's IP address
+	 * 
+	 * @return
+	 */
+	public static String getCarrierAllocatedIPAddress() {
+		try {
+			for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en
+					.hasMoreElements();) {
+				NetworkInterface intf = en.nextElement();
+				System.out.println("Interface Name" + intf.getDisplayName());
+				for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr
+						.hasMoreElements();) {
+					InetAddress inetAddress = enumIpAddr.nextElement();
+
+					if (!inetAddress.isLoopbackAddress()) {
+						return inetAddress.getHostAddress().toString();
+					}
+				}
+			}
+		} catch (SocketException ex) {
+			Log.e("CDI", ex.toString());
+		}
+
+		return null;
+	}
+
+	/**
+	 * Finds this device's global IP address
+	 * 
+	 * @param url
+	 *            the url to find the global IP
+	 * @return The global IP address, or null if a problem occurred
+	 */
+	public static Inet4Address getGlobalAddress(String url) {
+		try {
+			URLConnection uc = new URL(url).openConnection();
+			BufferedReader br = new BufferedReader(new InputStreamReader(uc.getInputStream()));
+			return (Inet4Address) InetAddress.getByName(br.readLine());
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Finds a local, non-loopback, IPv4 address
+	 * 
+	 * @return The first non-loopback IPv4 address found, or <code>null</code>
+	 *         if no such addresses found
+	 * @throws SocketException
+	 *             If there was a problem querying the network interfaces
+	 */
+	public static InetAddress getLocalAddress() throws SocketException {
+		Enumeration<NetworkInterface> ifaces = NetworkInterface.getNetworkInterfaces();
+		while (ifaces.hasMoreElements()) {
+			NetworkInterface iface = ifaces.nextElement();
+			Enumeration<InetAddress> addresses = iface.getInetAddresses();
+
+			while (addresses.hasMoreElements()) {
+				InetAddress addr = addresses.nextElement();
+				if ((addr instanceof Inet4Address) && !addr.isLoopbackAddress()) {
+					return addr;
+				}
+			}
+		}
+		return null;
+	}
+
+	private static boolean isMaskValue(String component, int size) {
+		try {
+			int value = Integer.parseInt(component);
+
+			return value >= 0 && value <= size;
+		} catch (NumberFormatException e) {
+			return false;
+		}
+	}
+
+	public static boolean isValidEmailAddress(String address) {
+		final String emailPattern = "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+		Pattern pattern = Pattern.compile(emailPattern);
+		Matcher matcher = pattern.matcher(address);
+		return matcher.matches();
+	}
+
+	/**
+	 * Validate the given IPv4 address.
+	 * 
+	 * @param address
+	 *            the IP address as a String.
+	 * 
+	 * @return true if a valid IPv4 address, false otherwise
+	 */
+	public static boolean isValidIPv4(String address) {
+		String IPADDRESS_PATTERN = "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\."
+				+ "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\."
+				+ "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." + "([01]?\\d\\d?|2[0-4]\\d|25[0-5])$";
+
+		Pattern pattern = Pattern.compile(IPADDRESS_PATTERN);
+		Matcher matcher = pattern.matcher(address);
+		return matcher.matches();
+	}
+
+	public static boolean isValidIPv4WithNetmask(String address) {
+		int index = address.indexOf("/");
+		String mask = address.substring(index + 1);
+
+		return (index > 0) && isValidIPv4(address.substring(0, index))
+				&& (isValidIPv4(mask) || isMaskValue(mask, 32));
+	}
+
+	/**
+	 * Validate the given IPv6 address.
+	 * 
+	 * @param address
+	 *            the IP address as a String.
+	 * 
+	 * @return true if a valid IPv4 address, false otherwise
+	 */
+	public static boolean isValidIPv6(String address) {
+		if (address.length() == 0) {
+			return false;
+		}
+
+		int octet;
+		int octets = 0;
+
+		String temp = address + ":";
+		boolean doubleColonFound = false;
+		int pos;
+		int start = 0;
+		while (start < temp.length() && (pos = temp.indexOf(':', start)) >= start) {
+			if (octets == 8) {
+				return false;
+			}
+
+			if (start != pos) {
+				String value = temp.substring(start, pos);
+
+				if (pos == (temp.length() - 1) && value.indexOf('.') > 0) {
+					if (!isValidIPv4(value)) {
+						return false;
+					}
+
+					octets++; // add an extra one as address covers 2 words.
+				} else {
+					try {
+						octet = Integer.parseInt(temp.substring(start, pos), 16);
+					} catch (NumberFormatException ex) {
+						return false;
+					}
+					if (octet < 0 || octet > 0xffff) {
+						return false;
+					}
+				}
+			} else {
+				if (pos != 1 && pos != temp.length() - 1 && doubleColonFound) {
+					return false;
+				}
+				doubleColonFound = true;
+			}
+			start = pos + 1;
+			octets++;
+		}
+
+		return octets == 8 || doubleColonFound;
+	}
+
+	public static boolean isValidIPv6WithNetmask(String address) {
+		int index = address.indexOf("/");
+		String mask = address.substring(index + 1);
+
+		return (index > 0)
+				&& (isValidIPv6(address.substring(0, index)) && (isValidIPv6(mask) || isMaskValue(
+						mask, 128)));
+	}
+
+	/**
 	 * Uses regular expressions to validate a URL
+	 * 
 	 * @param url
 	 * @return
 	 */
@@ -448,6 +331,110 @@ public class NetUtils {
 		Pattern patt = Pattern.compile(regex);
 		Matcher matcher = patt.matcher(url);
 		return matcher.matches();
+	}
+
+	/**
+	 * Extract Http links from a given text.
+	 * <p>
+	 * Looks for the following patterns<br/>
+	 * <ul>
+	 * <li>http[s]://www.google.com</li>
+	 * <li>http[s]://www.google.com:80</li>
+	 * <li>www.google.com</li>
+	 * <li>http[s]://www.google.com/test/test.html</li>
+	 * <li>www.google.com/test/test.html</li>
+	 * <li>http[s]://google.com</li>
+	 * </ul>
+	 * It does not work for strings that contains URL's with no "http://" or
+	 * "www" preceeding the URL. Eg: URL's with just Google.com will not work.
+	 * </p>
+	 * 
+	 * @param text
+	 * @return
+	 */
+	public static ArrayList<String> extractHttpLinks(String text) {
+		ArrayList<String> links = new ArrayList<String>();
+
+		String regex = "\\(?\\b(http://|www[.]|https://)[-A-Za-z0-9+&@#/%?=~_()|!:,.;]*[-A-Za-z0-9+&@#/%=~_()|]";
+		Pattern p = Pattern.compile(regex);
+		Matcher m = p.matcher(text);
+		while (m.find()) {
+			String urlStr = m.group();
+			char[] stringArray1 = urlStr.toCharArray();
+			if (urlStr.startsWith("(") && urlStr.endsWith(")")) {
+				char[] stringArray = urlStr.toCharArray();
+				char[] newArray = new char[stringArray.length - 2];
+				System.arraycopy(stringArray, 1, newArray, 0, stringArray.length - 2);
+				urlStr = new String(newArray);
+				System.out.println("Finally Url =" + newArray.toString());
+
+			}
+			links.add(urlStr);
+		}
+		return links;
+	}
+
+	/**
+	 * Makes the platform trust all SSL connections.
+	 * <p>
+	 * Warning: This should be used for development purposes only
+	 * </p>
+	 */
+	public static void trustAllSecureConnections() {
+		try {
+			HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
+				@Override
+				public boolean verify(String hostname, SSLSession session) {
+					return true;
+				}
+			});
+			SSLContext context = SSLContext.getInstance("TLS");
+			context.init(null, new X509TrustManager[] { new X509TrustManager() {
+				@Override
+				public void checkClientTrusted(X509Certificate[] chain, String authType)
+						throws CertificateException {
+				}
+
+				@Override
+				public void checkServerTrusted(X509Certificate[] chain, String authType)
+						throws CertificateException {
+				}
+
+				@Override
+				public X509Certificate[] getAcceptedIssuers() {
+					return new X509Certificate[0];
+				}
+			} }, new SecureRandom());
+			HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
+		} catch (Exception e) { // should never happen
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * @return True if the url is correctly URL encoded
+	 */
+	public static boolean verifyURLEncoding(String url) {
+		int count = url.length();
+		if (count == 0) {
+			return false;
+		}
+
+		int index = url.indexOf('%');
+		while (index >= 0 && index < count) {
+			if (index < count - 2) {
+				try {
+					HexUtils.parseHex(url.charAt(++index));
+					HexUtils.parseHex(url.charAt(++index));
+				} catch (IllegalArgumentException e) {
+					return false;
+				}
+			} else {
+				return false;
+			}
+			index = url.indexOf('%', index + 1);
+		}
+		return true;
 	}
 
 }
