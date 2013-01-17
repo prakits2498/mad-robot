@@ -17,6 +17,8 @@ import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.Random;
 
+import com.madrobot.util.RandomString;
+
 /**
  * String manipulation utilities
  * 

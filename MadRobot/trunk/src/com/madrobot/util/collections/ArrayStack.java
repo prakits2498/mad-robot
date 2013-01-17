@@ -14,7 +14,6 @@ import java.nio.BufferUnderflowException;
 import java.util.ArrayList;
 import java.util.EmptyStackException;
 
-import com.madrobot.util.Buffer;
 
 /**
  * An implementation of the {@link java.util.Stack} API that is based on an

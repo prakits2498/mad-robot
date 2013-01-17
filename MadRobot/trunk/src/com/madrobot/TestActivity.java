@@ -10,10 +10,18 @@
  ******************************************************************************/
 package com.madrobot;
 
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 
+import com.madrobot.security.CipherUtils;
 import com.madrobot.ui.widgets.SVGImageView;
 
 public class TestActivity extends Activity {
@@ -22,6 +30,29 @@ public class TestActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		String key="Heelo";
+		try {
+			String enc=CipherUtils.encryptAEStoHEX("Welcome to Java", key);
+			System.out.println("Enc->"+enc);
+			
+			String dec=CipherUtils.decryptAESfromHEX(enc, key);
+			System.out.println("Dec->"+dec);
+		} catch (InvalidKeyException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchPaddingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalBlockSizeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (BadPaddingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 //		setContentView(R.layout.main);
 //		final SVGImageView iv=(SVGImageView) findViewById(R.id.image);

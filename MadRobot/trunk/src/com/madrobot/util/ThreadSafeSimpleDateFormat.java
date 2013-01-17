@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import com.madrobot.util.collections.Pool;
+
 /**
  * Wrapper around java.text.SimpleDateFormat that can be called by multiple
  * threads concurrently.

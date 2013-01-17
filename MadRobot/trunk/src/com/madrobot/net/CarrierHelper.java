@@ -22,6 +22,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiManager;
+import android.provider.Settings;
 
 /**
  * 
@@ -340,5 +341,20 @@ public final class CarrierHelper {
 			context.unregisterReceiver(networkChangeRecevier);
 		}
 		CarrierHelper.carrierHandler = null;
+	}
+	
+	/**
+	 * Check if airplane mode is enabled
+	 * 
+	 * @param context
+	 * @return
+	 */
+	public static boolean isAirplaneModeOn(Context context) {
+		int airPlaneFlag = Settings.System.getInt(context.getContentResolver(),
+				Settings.System.AIRPLANE_MODE_ON, 0);
+		System.out.println("Radio Cell ->"
+				+ Settings.System.getString(context.getContentResolver(),
+						Settings.System.RADIO_CELL));
+		return airPlaneFlag != 0;
 	}
 }

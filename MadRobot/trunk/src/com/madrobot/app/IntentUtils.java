@@ -37,7 +37,7 @@ public class IntentUtils {
 	}
 
 	/**
-	 * Open the android market page for the given application.
+	 * Open the android market page for the given application's context.
 	 * 
 	 * @param context
 	 *            application context

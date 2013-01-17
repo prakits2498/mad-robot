@@ -1,7 +1,7 @@
 package com.madrobot.beans;
 
 import com.madrobot.di.xml.converters.ObjectAccessException;
-import com.madrobot.util.Pool;
+import com.madrobot.util.collections.Pool;
 
 /**
  * Wrapper around {@link PropertyEditor} that can be called by multiple threads
