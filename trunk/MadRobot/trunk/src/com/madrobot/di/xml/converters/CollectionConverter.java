@@ -38,21 +38,17 @@ public class CollectionConverter extends AbstractCollectionConverter {
 		super(mapper);
 	}
 
-	protected void addCurrentElementToCollection(
-			HierarchicalStreamReader reader, UnmarshallingContext context,
-			Collection collection, Collection target) {
+	protected void addCurrentElementToCollection(HierarchicalStreamReader reader,
+			UnmarshallingContext context, Collection collection, Collection target) {
 		Object item = readItem(reader, context, collection);
 		target.add(item);
 	}
 
 	@Override
 	public boolean canConvert(Class type) {
-		return type.equals(ArrayList.class)
-				|| type.equals(HashSet.class)
-				|| type.equals(LinkedList.class)
-				|| type.equals(Vector.class)
-				|| (JVM.is14() && type.getName().equals(
-						"java.util.LinkedHashSet"));
+		return type.equals(ArrayList.class) || type.equals(HashSet.class)
+				|| type.equals(LinkedList.class) || type.equals(Vector.class)
+				|| (JVM.is14() && type.getName().equals("java.util.LinkedHashSet"));
 	}
 
 	@Override
@@ -71,8 +67,7 @@ public class CollectionConverter extends AbstractCollectionConverter {
 	}
 
 	protected void populateCollection(HierarchicalStreamReader reader,
-			UnmarshallingContext context, Collection collection,
-			Collection target) {
+			UnmarshallingContext context, Collection collection, Collection target) {
 		while (reader.hasMoreChildren()) {
 			reader.moveDown();
 			addCurrentElementToCollection(reader, context, collection, target);
@@ -81,10 +76,8 @@ public class CollectionConverter extends AbstractCollectionConverter {
 	}
 
 	@Override
-	public Object unmarshal(HierarchicalStreamReader reader,
-			UnmarshallingContext context) {
-		Collection collection = (Collection) createCollection(context
-				.getRequiredType());
+	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+		Collection collection = (Collection) createCollection(context.getRequiredType());
 		populateCollection(reader, context, collection);
 		return collection;
 	}

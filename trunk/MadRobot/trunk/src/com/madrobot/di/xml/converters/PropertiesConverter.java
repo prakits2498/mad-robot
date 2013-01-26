@@ -81,8 +81,7 @@ public class PropertiesConverter implements Converter {
 		if (defaultsField != null) {
 			Properties defaults = null;
 			try {
-				defaults = (Properties) FieldUtils.readField(defaultsField,
-						properties);
+				defaults = (Properties) FieldUtils.readField(defaultsField, properties);
 			} catch (IllegalAccessException e) {
 				e.printStackTrace();
 			}
@@ -95,8 +94,7 @@ public class PropertiesConverter implements Converter {
 	}
 
 	@Override
-	public Object unmarshal(HierarchicalStreamReader reader,
-			UnmarshallingContext context) {
+	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
 		Properties properties = new Properties();
 		Properties defaults = null;
 		while (reader.hasMoreChildren()) {

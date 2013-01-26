@@ -85,14 +85,14 @@ package com.madrobot.lang.reflect;
  * </p>
  * 
  * <pre>
- * System.out
- * 		.println(&quot;An object: &quot; + ToStringBuilder.reflectionToString(anObject));
+ * System.out.println(&quot;An object: &quot; + ToStringBuilder.reflectionToString(anObject));
  * </pre>
  * 
  * <p>
  * The exact format of the <code>toString</code> is determined by the
  * {@link ToStringStyle} passed into the constructor.
  * </p>
+ * 
  * @hide
  */
 public class ToStringBuilder implements Builder<String> {
@@ -187,8 +187,8 @@ public class ToStringBuilder implements Builder<String> {
 	 */
 	public static String reflectionToString(Object object, ToStringStyle style,
 			boolean outputTransients) {
-		return ReflectionToStringBuilder.toString(object, style,
-				outputTransients, false, null);
+		return ReflectionToStringBuilder
+				.toString(object, style, outputTransients, false, null);
 	}
 
 	/**
@@ -213,8 +213,8 @@ public class ToStringBuilder implements Builder<String> {
 	 */
 	public static <T> String reflectionToString(T object, ToStringStyle style,
 			boolean outputTransients, Class<? super T> reflectUpToClass) {
-		return ReflectionToStringBuilder.toString(object, style,
-				outputTransients, false, reflectUpToClass);
+		return ReflectionToStringBuilder.toString(object, style, outputTransients, false,
+				reflectUpToClass);
 	}
 
 	/**
@@ -323,8 +323,7 @@ public class ToStringBuilder implements Builder<String> {
 	 * @param buffer
 	 *            the <code>StringBuffer</code> to populate, may be null
 	 */
-	public ToStringBuilder(Object object, ToStringStyle style,
-			StringBuffer buffer) {
+	public ToStringBuilder(Object object, ToStringStyle style, StringBuffer buffer) {
 		if (style == null) {
 			style = getDefaultStyle();
 		}
@@ -679,8 +678,7 @@ public class ToStringBuilder implements Builder<String> {
 	 *            info
 	 * @return this
 	 */
-	public ToStringBuilder append(String fieldName, boolean[] array,
-			boolean fullDetail) {
+	public ToStringBuilder append(String fieldName, boolean[] array, boolean fullDetail) {
 		style.append(buffer, fieldName, array, Boolean.valueOf(fullDetail));
 		return this;
 	}
@@ -737,8 +735,7 @@ public class ToStringBuilder implements Builder<String> {
 	 *            info
 	 * @return this
 	 */
-	public ToStringBuilder append(String fieldName, byte[] array,
-			boolean fullDetail) {
+	public ToStringBuilder append(String fieldName, byte[] array, boolean fullDetail) {
 		style.append(buffer, fieldName, array, Boolean.valueOf(fullDetail));
 		return this;
 	}
@@ -796,8 +793,7 @@ public class ToStringBuilder implements Builder<String> {
 	 *            info
 	 * @return this
 	 */
-	public ToStringBuilder append(String fieldName, char[] array,
-			boolean fullDetail) {
+	public ToStringBuilder append(String fieldName, char[] array, boolean fullDetail) {
 		style.append(buffer, fieldName, array, Boolean.valueOf(fullDetail));
 		return this;
 	}
@@ -855,8 +851,7 @@ public class ToStringBuilder implements Builder<String> {
 	 *            info
 	 * @return this
 	 */
-	public ToStringBuilder append(String fieldName, double[] array,
-			boolean fullDetail) {
+	public ToStringBuilder append(String fieldName, double[] array, boolean fullDetail) {
 		style.append(buffer, fieldName, array, Boolean.valueOf(fullDetail));
 		return this;
 	}
@@ -914,8 +909,7 @@ public class ToStringBuilder implements Builder<String> {
 	 *            info
 	 * @return this
 	 */
-	public ToStringBuilder append(String fieldName, float[] array,
-			boolean fullDetail) {
+	public ToStringBuilder append(String fieldName, float[] array, boolean fullDetail) {
 		style.append(buffer, fieldName, array, Boolean.valueOf(fullDetail));
 		return this;
 	}
@@ -973,8 +967,7 @@ public class ToStringBuilder implements Builder<String> {
 	 *            info
 	 * @return this
 	 */
-	public ToStringBuilder append(String fieldName, int[] array,
-			boolean fullDetail) {
+	public ToStringBuilder append(String fieldName, int[] array, boolean fullDetail) {
 		style.append(buffer, fieldName, array, Boolean.valueOf(fullDetail));
 		return this;
 	}
@@ -1032,8 +1025,7 @@ public class ToStringBuilder implements Builder<String> {
 	 *            info
 	 * @return this
 	 */
-	public ToStringBuilder append(String fieldName, long[] array,
-			boolean fullDetail) {
+	public ToStringBuilder append(String fieldName, long[] array, boolean fullDetail) {
 		style.append(buffer, fieldName, array, Boolean.valueOf(fullDetail));
 		return this;
 	}
@@ -1068,8 +1060,7 @@ public class ToStringBuilder implements Builder<String> {
 	 *            info
 	 * @return this
 	 */
-	public ToStringBuilder append(String fieldName, Object obj,
-			boolean fullDetail) {
+	public ToStringBuilder append(String fieldName, Object obj, boolean fullDetail) {
 		style.append(buffer, fieldName, obj, Boolean.valueOf(fullDetail));
 		return this;
 	}
@@ -1111,8 +1102,7 @@ public class ToStringBuilder implements Builder<String> {
 	 *            info
 	 * @return this
 	 */
-	public ToStringBuilder append(String fieldName, Object[] array,
-			boolean fullDetail) {
+	public ToStringBuilder append(String fieldName, Object[] array, boolean fullDetail) {
 		style.append(buffer, fieldName, array, Boolean.valueOf(fullDetail));
 		return this;
 	}
@@ -1169,8 +1159,7 @@ public class ToStringBuilder implements Builder<String> {
 	 *            info
 	 * @return this
 	 */
-	public ToStringBuilder append(String fieldName, short[] array,
-			boolean fullDetail) {
+	public ToStringBuilder append(String fieldName, short[] array, boolean fullDetail) {
 		style.append(buffer, fieldName, array, Boolean.valueOf(fullDetail));
 		return this;
 	}

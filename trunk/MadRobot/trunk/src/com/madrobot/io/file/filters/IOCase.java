@@ -43,8 +43,7 @@ public final class IOCase implements Serializable {
 	 * If you derialize this constant of Windows, and deserialize on Unix, or
 	 * vice versa, then the value of the case-sensitivity flag will change.
 	 */
-	public static final IOCase SYSTEM = new IOCase("System",
-			!FilenameUtils.isSystemWindows());
+	public static final IOCase SYSTEM = new IOCase("System", !FilenameUtils.isSystemWindows());
 
 	/** Serialization version. */
 	private static final long serialVersionUID = -6343169151696340687L;
@@ -140,8 +139,7 @@ public final class IOCase implements Serializable {
 		if (str1 == null || str2 == null) {
 			throw new NullPointerException("The strings must not be null");
 		}
-		return sensitive ? str1.compareTo(str2) : str1
-				.compareToIgnoreCase(str2);
+		return sensitive ? str1.compareTo(str2) : str1.compareToIgnoreCase(str2);
 	}
 
 	/**
@@ -199,8 +197,7 @@ public final class IOCase implements Serializable {
 	 */
 	public boolean checkEndsWith(String str, String end) {
 		int endLen = end.length();
-		return str.regionMatches(!sensitive, str.length() - endLen, end, 0,
-				endLen);
+		return str.regionMatches(!sensitive, str.length() - endLen, end, 0, endLen);
 	}
 
 	/**
@@ -252,10 +249,8 @@ public final class IOCase implements Serializable {
 	 * @throws NullPointerException
 	 *             if either string is null
 	 */
-	public boolean checkRegionMatches(String str, int strStartIndex,
-			String search) {
-		return str.regionMatches(!sensitive, strStartIndex, search, 0,
-				search.length());
+	public boolean checkRegionMatches(String str, int strStartIndex, String search) {
+		return str.regionMatches(!sensitive, strStartIndex, search, 0, search.length());
 	}
 
 	// -----------------------------------------------------------------------

@@ -57,14 +57,13 @@ public final class XmlHeaderAwareReader extends Reader {
 	 *             occurred while reading the XML header
 	 * @since 1.3
 	 */
-	public XmlHeaderAwareReader(final InputStream in)
-			throws UnsupportedEncodingException, IOException {
+	public XmlHeaderAwareReader(final InputStream in) throws UnsupportedEncodingException,
+			IOException {
 		final PushbackInputStream[] pin = new PushbackInputStream[] { in instanceof PushbackInputStream ? (PushbackInputStream) in
 				: new PushbackInputStream(in, 64) };
 		final Map header = getHeader(pin);
 		version = Double.parseDouble((String) header.get(KEY_VERSION));
-		reader = new InputStreamReader(pin[0],
-				(String) header.get(KEY_ENCODING));
+		reader = new InputStreamReader(pin[0], (String) header.get(KEY_ENCODING));
 	}
 
 	/**
@@ -109,8 +108,7 @@ public final class XmlHeaderAwareReader extends Reader {
 			ch = (char) i;
 			switch (state) {
 			case STATE_BOM:
-				if ((ch == 0xEF && out.size() == 1)
-						|| (ch == 0xBB && out.size() == 2)
+				if ((ch == 0xEF && out.size() == 1) || (ch == 0xBB && out.size() == 2)
 						|| (ch == 0xBF && out.size() == 3)) {
 					if (ch == 0xBF) {
 						out.reset();
@@ -264,8 +262,7 @@ public final class XmlHeaderAwareReader extends Reader {
 	 * @see java.io.Reader#read(char[], int, int)
 	 */
 	@Override
-	public int read(final char[] cbuf, final int offset, final int length)
-			throws IOException {
+	public int read(final char[] cbuf, final int offset, final int length) throws IOException {
 		return reader.read(cbuf, offset, length);
 	}
 

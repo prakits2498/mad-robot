@@ -35,8 +35,7 @@ import com.madrobot.io.file.IOFileFilter;
  * <b>N.B.</b> For read-only files, use <code>CanReadFileFilter.READ_ONLY</code>.
  * 
  */
-public class CanWriteFileFilter extends AbstractFileFilter implements
-		Serializable {
+public class CanWriteFileFilter extends AbstractFileFilter implements Serializable {
 
 	/** Singleton instance of <i>writable</i> filter */
 	public static final IOFileFilter CAN_WRITE = new CanWriteFileFilter();

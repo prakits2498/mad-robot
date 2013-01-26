@@ -1,35 +1,38 @@
 package com.madrobot.security.checksum;
 
 import java.util.zip.Adler32;
+
 /**
  * Collection of checksum algorithms
+ * 
  * @author elton.stephen.kent
- *
+ * 
  */
 public class ChecksumUtils {
 
 	/**
 	 * Calculate CRC16 value of given byt
+	 * 
 	 * @param aByte
 	 * @return
 	 */
 	public static int getCRC16(byte aByte) {
-	    int a, b;
-	    int value = 0;
-	    a = (int) aByte;
-	    for (int count = 7; count >=0; count--) {
-	        a = a << 1;
-	            b = (a >>> 8) & 1;
-	        if ((value & 0x8000) != 0) {
-	        value = ((value << 1) + b) ^ 0x1021;
-	        } else {
-	        value = (value << 1) + b;
-	        }
-	    }
-	    value = value & 0xffff;
-	    return value;
-	    }
-	
+		int a, b;
+		int value = 0;
+		a = aByte;
+		for (int count = 7; count >= 0; count--) {
+			a = a << 1;
+			b = (a >>> 8) & 1;
+			if ((value & 0x8000) != 0) {
+				value = ((value << 1) + b) ^ 0x1021;
+			} else {
+				value = (value << 1) + b;
+			}
+		}
+		value = value & 0xffff;
+		return value;
+	}
+
 	/**
 	 * Luhn Algorithm implementation.
 	 * 
@@ -69,7 +72,7 @@ public class ChecksumUtils {
 		}
 		return checksum;
 	}
-	
+
 	/**
 	 * Calculates the CRC32 value
 	 * 
@@ -79,7 +82,7 @@ public class ChecksumUtils {
 	public static int getCRC32(final byte[] data) {
 		return getCRC32(data, 0, data.length);
 	}
-	
+
 	/**
 	 * Calculates the CRC32 value. This function doesn't use a table for reasons
 	 * of memory saving.
@@ -110,10 +113,16 @@ public class ChecksumUtils {
 		return crc ^ 0xFFFFFFFF;
 	}
 
+	/**
+	 * Compute Adler32 for the given array of bytes.
+	 * 
+	 * @param buf
+	 * @return
+	 */
 	public static long getAdler32(byte[] buf) {
 		Adler32 adler = new Adler32();
 		adler.update(buf);
 		return adler.getValue();
 	}
-	
+
 }

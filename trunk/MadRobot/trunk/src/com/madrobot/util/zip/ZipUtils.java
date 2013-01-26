@@ -20,12 +20,11 @@ import java.util.zip.InflaterInputStream;
 import com.madrobot.io.file.BinaryFileFunctions;
 
 public class ZipUtils extends BinaryFileFunctions {
-	public byte[] compressLZW(byte src[], int LZWMinimumCodeSize,
-			int byteOrder, boolean earlyLimit) throws IOException
+	public byte[] compressLZW(byte src[], int LZWMinimumCodeSize, int byteOrder,
+			boolean earlyLimit) throws IOException
 
 	{
-		LZWCompressor compressor = new LZWCompressor(LZWMinimumCodeSize,
-				byteOrder, earlyLimit);
+		LZWCompressor compressor = new LZWCompressor(LZWMinimumCodeSize, byteOrder, earlyLimit);
 
 		byte compressed[] = compressor.compress(src);
 
@@ -37,19 +36,18 @@ public class ZipUtils extends BinaryFileFunctions {
 		return unpacked;
 	}
 
-	public byte[] decompressLZW(byte compressed[], int LZWMinimumCodeSize,
-			int expectedSize, int byteOrder) throws IOException {
+	public byte[] decompressLZW(byte compressed[], int LZWMinimumCodeSize, int expectedSize,
+			int byteOrder) throws IOException {
 		InputStream is = new ByteArrayInputStream(compressed);
 
-		LZWDecompressor decompressor = new LZWDecompressor(LZWMinimumCodeSize,
-				byteOrder);
+		LZWDecompressor decompressor = new LZWDecompressor(LZWMinimumCodeSize, byteOrder);
 		byte[] result = decompressor.decompress(is, expectedSize);
 
 		return result;
 	}
 
-	public byte[] decompressPackBits(byte compressed[], int expectedSize,
-			int byteOrder) throws IOException {
+	public byte[] decompressPackBits(byte compressed[], int expectedSize, int byteOrder)
+			throws IOException {
 		byte unpacked[] = new PackBits().decompress(compressed, expectedSize);
 		return unpacked;
 	}

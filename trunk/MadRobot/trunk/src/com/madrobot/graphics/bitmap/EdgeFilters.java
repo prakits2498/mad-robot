@@ -60,8 +60,8 @@ public class EdgeFilters {
 	 * @param outputConfig
 	 * @return
 	 */
-	public static Bitmap detectEdge(Bitmap src, float[] vEdgeMatrix,
-			float[] hEdgeMatrix, Bitmap.Config outputConfig) {
+	public static Bitmap detectEdge(Bitmap src, float[] vEdgeMatrix, float[] hEdgeMatrix,
+			Bitmap.Config outputConfig) {
 		int index = 0;
 		int width = src.getWidth();
 		int height = src.getHeight();
@@ -111,8 +111,7 @@ public class EdgeFilters {
 			}
 
 		}
-		return Bitmap.createBitmap(outPixels, src.getWidth(), src.getHeight(),
-				outputConfig);
+		return Bitmap.createBitmap(outPixels, src.getWidth(), src.getHeight(), outputConfig);
 	}
 
 	/**
@@ -132,9 +131,8 @@ public class EdgeFilters {
 	 * @param outputConfig
 	 * @return
 	 */
-	public static Bitmap emboss(Bitmap src, float lightDirection,
-			float lightElevation, float bumpHeight, boolean emboss,
-			Bitmap.Config outputConfig) {
+	public static Bitmap emboss(Bitmap src, float lightDirection, float lightElevation,
+			float bumpHeight, boolean emboss, Bitmap.Config outputConfig) {
 		int width = src.getWidth();
 		int height = src.getHeight();
 		int index = 0;
@@ -173,20 +171,17 @@ public class EdgeFilters {
 
 			for (int x = 0; x < width; x++, s1++, s2++, s3++) {
 				if (y != 0 && y < height - 2 && x != 0 && x < width - 2) {
-					Nx = bumpPixels[s1 - 1] + bumpPixels[s2 - 1]
-							+ bumpPixels[s3 - 1] - bumpPixels[s1 + 1]
-							- bumpPixels[s2 + 1] - bumpPixels[s3 + 1];
-					Ny = bumpPixels[s3 - 1] + bumpPixels[s3]
-							+ bumpPixels[s3 + 1] - bumpPixels[s1 - 1]
-							- bumpPixels[s1] - bumpPixels[s1 + 1];
+					Nx = bumpPixels[s1 - 1] + bumpPixels[s2 - 1] + bumpPixels[s3 - 1]
+							- bumpPixels[s1 + 1] - bumpPixels[s2 + 1] - bumpPixels[s3 + 1];
+					Ny = bumpPixels[s3 - 1] + bumpPixels[s3] + bumpPixels[s3 + 1]
+							- bumpPixels[s1 - 1] - bumpPixels[s1] - bumpPixels[s1 + 1];
 
 					if (Nx == 0 && Ny == 0)
 						shade = background;
 					else if ((NdotL = Nx * Lx + Ny * Ly + NzLz) < 0)
 						shade = 0;
 					else
-						shade = (int) (NdotL / Math.sqrt(Nx * Nx + Ny * Ny
-								+ Nz2));
+						shade = (int) (NdotL / Math.sqrt(Nx * Nx + Ny * Ny + Nz2));
 				} else
 					shade = background;
 
@@ -201,12 +196,10 @@ public class EdgeFilters {
 					b = (b * shade) >> 8;
 					outPixels[index++] = a | (r << 16) | (g << 8) | b;
 				} else
-					outPixels[index++] = 0xff000000 | (shade << 16)
-							| (shade << 8) | shade;
+					outPixels[index++] = 0xff000000 | (shade << 16) | (shade << 8) | shade;
 			}
 		}
-		return Bitmap.createBitmap(outPixels, src.getWidth(), src.getHeight(),
-				outputConfig);
+		return Bitmap.createBitmap(outPixels, src.getWidth(), src.getHeight(), outputConfig);
 	}
 
 	/**
@@ -238,10 +231,9 @@ public class EdgeFilters {
 	 */
 	public static Bitmap bump(Bitmap src, int edgeAction, boolean processAlpha,
 			boolean premultiplyAlpha, Bitmap.Config outputConfig) {
-		float[] embossMatrix = { -1.0f, -1.0f, 0.0f, -1.0f, 1.0f, 1.0f, 0.0f,
-				1.0f, 1.0f };
-		return ConvolveUtils.doConvolve(embossMatrix, src, edgeAction,
-				processAlpha, premultiplyAlpha, outputConfig);
+		float[] embossMatrix = { -1.0f, -1.0f, 0.0f, -1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f };
+		return ConvolveUtils.doConvolve(embossMatrix, src, edgeAction, processAlpha,
+				premultiplyAlpha, outputConfig);
 	}
 
 	private static void brightness(int[] row) {
@@ -295,8 +287,8 @@ public class EdgeFilters {
 
 				int gradient = (int) (0.5f * Math.max((max - l), (l - min)));
 
-				int r = ((row1[x - 1] + row1[x] + row1[x + 1] + row2[x - 1]
-						- (8 * row2[x]) + row2[x + 1] + row3[x - 1] + row3[x] + row3[x + 1]) > 0) ? gradient
+				int r = ((row1[x - 1] + row1[x] + row1[x + 1] + row2[x - 1] - (8 * row2[x])
+						+ row2[x + 1] + row3[x - 1] + row3[x] + row3[x + 1]) > 0) ? gradient
 						: (128 + gradient);
 				pixels[x] = r;
 			}
@@ -329,9 +321,8 @@ public class EdgeFilters {
 			for (int x = 1; x < width - 1; x++) {
 				int r = row2[x];
 				r = (((r <= 128) && ((row1[x - 1] > 128) || (row1[x] > 128)
-						|| (row1[x + 1] > 128) || (row2[x - 1] > 128)
-						|| (row2[x + 1] > 128) || (row3[x - 1] > 128)
-						|| (row3[x] > 128) || (row3[x + 1] > 128))) ? ((r >= 128) ? (r - 128)
+						|| (row1[x + 1] > 128) || (row2[x - 1] > 128) || (row2[x + 1] > 128)
+						|| (row3[x - 1] > 128) || (row3[x] > 128) || (row3[x + 1] > 128))) ? ((r >= 128) ? (r - 128)
 						: r)
 						: 0);
 

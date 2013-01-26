@@ -91,38 +91,36 @@ public class ResumableHttpFileUploader {
 		 *             if the entire message couldn't be received in the
 		 *             allotted timeout.
 		 */
-		public String receiveMessage(long timeoutMs)
-				throws InterruptedException, ExecutionException,
-				TimeoutException {
-			return Executors.newSingleThreadExecutor()
-					.submit(new Callable<String>() {
+		public String receiveMessage(long timeoutMs) throws InterruptedException,
+				ExecutionException, TimeoutException {
+			return Executors.newSingleThreadExecutor().submit(new Callable<String>() {
 
-						public String call() throws Exception {
-							int received = 0;
-							StringBuilder message = new StringBuilder();
-							while (received < contentLength) {
-								int avail = inputStream.available();
-								if (avail > 0) {
-									byte[] buf = new byte[avail];
-									received += inputStream.read(buf, 0, avail);
-									message.append(new String(buf));
-								} else {
-									Thread.sleep(10L);
-								}
-							}
-							return message.toString();
+				@Override
+				public String call() throws Exception {
+					int received = 0;
+					StringBuilder message = new StringBuilder();
+					while (received < contentLength) {
+						int avail = inputStream.available();
+						if (avail > 0) {
+							byte[] buf = new byte[avail];
+							received += inputStream.read(buf, 0, avail);
+							message.append(new String(buf));
+						} else {
+							Thread.sleep(10L);
 						}
-					}).get(timeoutMs, TimeUnit.MILLISECONDS);
+					}
+					return message.toString();
+				}
+			}).get(timeoutMs, TimeUnit.MILLISECONDS);
 		}
 	}
 
-
-//	/**
-//	 * Http request type to use in upload requests.
-//	 */
-//	public enum RequestMethod {
-//		POST, PUT
-//	}
+	// /**
+	// * Http request type to use in upload requests.
+	// */
+	// public enum RequestMethod {
+	// POST, PUT
+	// }
 
 	/**
 	 * Default maximum number of bytes that will be uploaded to the server in
@@ -253,12 +251,12 @@ public class ResumableHttpFileUploader {
 		private IOProgressCallback progressListener;
 		private long chunkSize = DEFAULT_MAX_CHUNK_SIZE;
 		private long progressIntervalMillis = DEFAULT_PROGRESS_INTERVAL_MS;
-		private HttpHelperSettings settings=new HttpHelperSettings();
+		private HttpHelperSettings settings = new HttpHelperSettings();
 		{
-		settings.setHttpMethod(HttpMethod.PUT);
+			settings.setHttpMethod(HttpMethod.PUT);
 		}
-		private HttpHelperSettings requestMethod =settings;// RequestMethod.PUT;
-		
+		private HttpHelperSettings requestMethod = settings;// RequestMethod.PUT;
+
 		private BackoffPolicy backoffPolicy = BackoffPolicy.DEFAULT;
 
 		/**
@@ -311,8 +309,7 @@ public class ResumableHttpFileUploader {
 		 * @param urlConnectionFactory
 		 * @return this
 		 */
-		public Builder setUrlConnectionFactory(
-				UrlConnectionFactory urlConnectionFactory) {
+		public Builder setUrlConnectionFactory(UrlConnectionFactory urlConnectionFactory) {
 			this.urlConnectionFactory = urlConnectionFactory;
 			return this;
 		}
@@ -384,8 +381,7 @@ public class ResumableHttpFileUploader {
 		 * @throws IOException
 		 */
 		public ResumableHttpFileUploader build() throws IOException {
-			ResumableHttpFileUploader uploader = new ResumableHttpFileUploader(
-					this);
+			ResumableHttpFileUploader uploader = new ResumableHttpFileUploader(this);
 			uploader.callback = progressListener;
 			return uploader;
 		}
@@ -410,11 +406,10 @@ public class ResumableHttpFileUploader {
 	 * @deprecated Please use {@link ResumableHttpFileUploader.Builder}
 	 */
 	@Deprecated
-	public ResumableHttpFileUploader(URL url, File file,
-			ExecutorService executor, IOProgressCallback progressListener,
-			long progressIntervalMillis) throws IOException {
-		this(new Builder().setUrl(url).setFile(file)
-				.setExecutorService(executor)
+	public ResumableHttpFileUploader(URL url, File file, ExecutorService executor,
+			IOProgressCallback progressListener, long progressIntervalMillis)
+			throws IOException {
+		this(new Builder().setUrl(url).setFile(file).setExecutorService(executor)
 				.setProgressListener(progressListener)
 				.setProgressIntervalMillis(progressIntervalMillis));
 	}
@@ -441,11 +436,10 @@ public class ResumableHttpFileUploader {
 	 * @deprecated Please use {@link ResumableHttpFileUploader.Builder}
 	 */
 	@Deprecated
-	public ResumableHttpFileUploader(URL url, File file,
-			ExecutorService executor, IOProgressCallback progressListener,
-			long chunkSize, long progressIntervalMillis) throws IOException {
-		this(new Builder().setUrl(url).setFile(file)
-				.setExecutorService(executor)
+	public ResumableHttpFileUploader(URL url, File file, ExecutorService executor,
+			IOProgressCallback progressListener, long chunkSize, long progressIntervalMillis)
+			throws IOException {
+		this(new Builder().setUrl(url).setFile(file).setExecutorService(executor)
 				.setProgressListener(progressListener).setChunkSize(chunkSize)
 				.setProgressIntervalMillis(progressIntervalMillis));
 	}
@@ -470,18 +464,15 @@ public class ResumableHttpFileUploader {
 		backoffPolicy = builder.backoffPolicy;
 
 		// Ensure a valid URL is passed.
-		checkArgument(url != null && url.getHost() != null
-				&& url.getHost().length() > 0 && url.getPath() != null
-				&& url.getPath().length() > 0,
+		checkArgument(url != null && url.getHost() != null && url.getHost().length() > 0
+				&& url.getPath() != null && url.getPath().length() > 0,
 				"The url must be non null and have a non-empty host and path.");
 
 		// Ensure a valid executor.
-		checkArgument(executor != null,
-				"Must provide a non-null executor service.");
+		checkArgument(executor != null, "Must provide a non-null executor service.");
 
 		// Ensure non-null factories.
-		checkArgument(urlConnectionFactory != null,
-				"Factories must be non-null.");
+		checkArgument(urlConnectionFactory != null, "Factories must be non-null.");
 
 		// Add method override if using POST.
 		if (HttpMethod.POST.equals(httpRequestMethod.getHttpMethod())) {
@@ -567,9 +558,8 @@ public class ResumableHttpFileUploader {
 				setUploadState(IOState.CLIENT_ERROR);
 			} catch (InterruptedException e) {
 				setUploadState(IOState.CLIENT_ERROR);
-				throw new IllegalStateException(
-						"InterruptedException even though "
-								+ "upload is done (should never get here).");
+				throw new IllegalStateException("InterruptedException even though "
+						+ "upload is done (should never get here).");
 			}
 		}
 		return null;
@@ -612,8 +602,7 @@ public class ResumableHttpFileUploader {
 	 * begin sending bytes. This method does not block.
 	 */
 	public void resume() {
-		if (uploadState.equals(IOState.PAUSED)
-				|| uploadState.equals(IOState.NOT_STARTED)) {
+		if (uploadState.equals(IOState.PAUSED) || uploadState.equals(IOState.NOT_STARTED)) {
 			upload(true);
 		}
 	}
@@ -689,8 +678,7 @@ public class ResumableHttpFileUploader {
 	 */
 	void sendCompletionNotification() {
 		if (progressListener != null) {
-			new NotificationTask(this, progressListener, progressNotifier)
-					.run();
+			new NotificationTask(this, progressListener, progressNotifier).run();
 		}
 	}
 
@@ -712,7 +700,7 @@ public class ResumableHttpFileUploader {
 	 */
 	synchronized void setUploadState(IOState state) {
 		uploadState = state;
-		if(callback!=null)
+		if (callback != null)
 			callback.setIOState(state);
 	}
 
@@ -744,14 +732,13 @@ public class ResumableHttpFileUploader {
 	 */
 	private void upload(boolean resume) {
 		setUploadState(IOState.IN_PROGRESS);
-		ResumableHttpUploadTask task = new ResumableHttpUploadTask(
-				urlConnectionFactory, this,callback, resume);
+		ResumableHttpUploadTask task = new ResumableHttpUploadTask(urlConnectionFactory, this,
+				callback, resume);
 
 		if (progressListener != null) {
 			progressNotifier = new Timer();
-			progressNotifier.schedule(new NotificationTask(this,
-					progressListener, progressNotifier), 0,
-					progressIntervalMillis);
+			progressNotifier.schedule(new NotificationTask(this, progressListener,
+					progressNotifier), 0, progressIntervalMillis);
 		}
 
 		uploadResultFuture = executor.submit(task);

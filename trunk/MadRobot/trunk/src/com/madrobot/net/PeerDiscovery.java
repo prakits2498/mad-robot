@@ -148,19 +148,17 @@ public class PeerDiscovery {
 							data[0] = RESPONSE_PACKET;
 							encode(peerData, data, 1);
 
-							DatagramPacket tx = new DatagramPacket(data,
-									data.length, rx.getAddress(), port);
+							DatagramPacket tx = new DatagramPacket(data, data.length,
+									rx.getAddress(), port);
 
 							lastResponseDestination = rx.getAddress();
 
 							bcastSocket.send(tx);
 						} else if (buffy[0] == RESPONSE_PACKET) {
 							if ((responseList != null)
-									&& !rx.getAddress().equals(
-											lastResponseDestination)) {
+									&& !rx.getAddress().equals(lastResponseDestination)) {
 								synchronized (responseList) {
-									responseList.add(new Peer(rx.getAddress(),
-											recData));
+									responseList.add(new Peer(rx.getAddress(), recData));
 								}
 							}
 						}
@@ -268,8 +266,7 @@ public class PeerDiscovery {
 		data[0] = QUERY_PACKET;
 		encode(group, data, 1);
 
-		DatagramPacket tx = new DatagramPacket(data, data.length,
-				broadcastAddress);
+		DatagramPacket tx = new DatagramPacket(data, data.length, broadcastAddress);
 
 		bcastSocket.send(tx);
 

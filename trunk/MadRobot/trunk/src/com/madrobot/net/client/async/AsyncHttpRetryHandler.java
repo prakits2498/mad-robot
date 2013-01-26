@@ -65,12 +65,10 @@ class AsyncHttpRetryHandler implements HttpRequestRetryHandler {
 	}
 
 	@Override
-	public boolean retryRequest(IOException exception, int executionCount,
-			HttpContext context) {
+	public boolean retryRequest(IOException exception, int executionCount, HttpContext context) {
 		boolean retry;
 
-		Boolean b = (Boolean) context
-				.getAttribute(ExecutionContext.HTTP_REQ_SENT);
+		Boolean b = (Boolean) context.getAttribute(ExecutionContext.HTTP_REQ_SENT);
 		boolean sent = (b != null && b.booleanValue());
 
 		if (executionCount > maxRetries) {

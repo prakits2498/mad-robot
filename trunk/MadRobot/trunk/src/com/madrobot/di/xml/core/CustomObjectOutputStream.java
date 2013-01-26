@@ -95,11 +95,10 @@ public class CustomObjectOutputStream extends ObjectOutputStream {
 		void writeToStream(Object object) throws IOException;
 	}
 
-	private static final String DATA_HOLDER_KEY = CustomObjectOutputStream.class
-			.getName();
+	private static final String DATA_HOLDER_KEY = CustomObjectOutputStream.class.getName();
 
-	public static synchronized CustomObjectOutputStream getInstance(
-			DataHolder whereFrom, StreamCallback callback) {
+	public static synchronized CustomObjectOutputStream getInstance(DataHolder whereFrom,
+			StreamCallback callback) {
 		try {
 			CustomObjectOutputStream result = (CustomObjectOutputStream) whereFrom
 					.get(DATA_HOLDER_KEY);
@@ -127,8 +126,8 @@ public class CustomObjectOutputStream extends ObjectOutputStream {
 	 * @see #getInstance(com.madrobot.di.xml.converters.DataHolder,
 	 *      com.madrobot.di.xml.core.thoughtworks.xstream.core.util.CustomObjectOutputStream.StreamCallback)
 	 */
-	public CustomObjectOutputStream(StreamCallback callback)
-			throws IOException, SecurityException {
+	public CustomObjectOutputStream(StreamCallback callback) throws IOException,
+			SecurityException {
 		this.callbacks.push(callback);
 	}
 

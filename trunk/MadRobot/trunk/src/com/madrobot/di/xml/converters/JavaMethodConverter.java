@@ -43,21 +43,20 @@ public class JavaMethodConverter implements Converter {
 			MarshallingContext context) {
 		if (source instanceof Method) {
 			Method method = (Method) source;
-			String declaringClassName = javaClassConverter.toString(method
-					.getDeclaringClass());
+			String declaringClassName = javaClassConverter
+					.toString(method.getDeclaringClass());
 			marshalMethod(writer, declaringClassName, method.getName(),
 					method.getParameterTypes());
 		} else {
 			Constructor method = (Constructor) source;
-			String declaringClassName = javaClassConverter.toString(method
-					.getDeclaringClass());
-			marshalMethod(writer, declaringClassName, null,
-					method.getParameterTypes());
+			String declaringClassName = javaClassConverter
+					.toString(method.getDeclaringClass());
+			marshalMethod(writer, declaringClassName, null, method.getParameterTypes());
 		}
 	}
 
-	private void marshalMethod(HierarchicalStreamWriter writer,
-			String declaringClassName, String methodName, Class[] parameterTypes) {
+	private void marshalMethod(HierarchicalStreamWriter writer, String declaringClassName,
+			String methodName, Class[] parameterTypes) {
 
 		writer.startNode("class");
 		writer.setValue(declaringClassName);
@@ -80,16 +79,13 @@ public class JavaMethodConverter implements Converter {
 	}
 
 	@Override
-	public Object unmarshal(HierarchicalStreamReader reader,
-			UnmarshallingContext context) {
+	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
 		try {
-			boolean isMethodNotConstructor = context.getRequiredType().equals(
-					Method.class);
+			boolean isMethodNotConstructor = context.getRequiredType().equals(Method.class);
 
 			reader.moveDown();
 			String declaringClassName = reader.getValue();
-			Class declaringClass = (Class) javaClassConverter
-					.fromString(declaringClassName);
+			Class declaringClass = (Class) javaClassConverter.fromString(declaringClassName);
 			reader.moveUp();
 
 			String methodName = null;
@@ -104,8 +100,7 @@ public class JavaMethodConverter implements Converter {
 			while (reader.hasMoreChildren()) {
 				reader.moveDown();
 				String parameterTypeName = reader.getValue();
-				parameterTypeList.add(javaClassConverter
-						.fromString(parameterTypeName));
+				parameterTypeList.add(javaClassConverter.fromString(parameterTypeName));
 				reader.moveUp();
 			}
 			Class[] parameterTypes = (Class[]) parameterTypeList
@@ -113,8 +108,7 @@ public class JavaMethodConverter implements Converter {
 			reader.moveUp();
 
 			if (isMethodNotConstructor) {
-				return declaringClass.getDeclaredMethod(methodName,
-						parameterTypes);
+				return declaringClass.getDeclaredMethod(methodName, parameterTypes);
 			} else {
 				return declaringClass.getDeclaredConstructor(parameterTypes);
 			}

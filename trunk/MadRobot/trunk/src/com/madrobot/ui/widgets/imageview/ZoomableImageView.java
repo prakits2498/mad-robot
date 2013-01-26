@@ -1,10 +1,12 @@
-package com.madrobot.ui.widgets;
+package com.madrobot.ui.widgets.imageview;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
@@ -19,30 +21,29 @@ import android.widget.ImageView;
  * @author elton.stephen.kent
  * 
  */
+@TargetApi(Build.VERSION_CODES.FROYO)
 public class ZoomableImageView extends ImageView {
 	private enum Command {
 		Center, Layout, Move, Reset, Zoom,
 	};
 
-	private class GestureListener extends
-			GestureDetector.SimpleOnGestureListener {
+	private class GestureListener extends GestureDetector.SimpleOnGestureListener {
 
 		@Override
 		public boolean onDoubleTap(MotionEvent e) {
 			float scale = getScale();
 			float targetScale = scale;
 			targetScale = onDoubleTapPost(scale, getMaxZoom());
-			targetScale = Math.min(getMaxZoom(),
-					Math.max(targetScale, MIN_ZOOM));
+			targetScale = Math.min(getMaxZoom(), Math.max(targetScale, MIN_ZOOM));
 			mCurrentScaleFactor = targetScale;
 			zoomTo(targetScale, e.getX(), e.getY(), 200);
 			invalidate();
 			return super.onDoubleTap(e);
 		}
 
+		@TargetApi(Build.VERSION_CODES.FROYO)
 		@Override
-		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-				float velocityY) {
+		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 			if (e1.getPointerCount() > 1 || e2.getPointerCount() > 1)
 				return false;
 			if (mScaleDetector.isInProgress())
@@ -58,9 +59,10 @@ public class ZoomableImageView extends ImageView {
 			return super.onFling(e1, e2, velocityX, velocityY);
 		}
 
+		@TargetApi(Build.VERSION_CODES.FROYO)
 		@Override
-		public boolean onScroll(MotionEvent e1, MotionEvent e2,
-				float distanceX, float distanceY) {
+		public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
+				float distanceY) {
 			if (e1 == null || e2 == null)
 				return false;
 			if (e1.getPointerCount() > 1 || e2.getPointerCount() > 1)
@@ -80,20 +82,19 @@ public class ZoomableImageView extends ImageView {
 		void onBitmapChanged(Bitmap bitmap);
 	}
 
-	private class ScaleListener extends
-			ScaleGestureDetector.SimpleOnScaleGestureListener {
+	@TargetApi(Build.VERSION_CODES.FROYO)
+	private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
 
+		@TargetApi(Build.VERSION_CODES.FROYO)
 		@SuppressWarnings("unused")
 		@Override
 		public boolean onScale(ScaleGestureDetector detector) {
 			float span = detector.getCurrentSpan() - detector.getPreviousSpan();
 			float targetScale = mCurrentScaleFactor * detector.getScaleFactor();
 			if (true) {
-				targetScale = Math.min(getMaxZoom(),
-						Math.max(targetScale, MIN_ZOOM));
+				targetScale = Math.min(getMaxZoom(), Math.max(targetScale, MIN_ZOOM));
 				zoomTo(targetScale, detector.getFocusX(), detector.getFocusY());
-				mCurrentScaleFactor = Math.min(getMaxZoom(),
-						Math.max(targetScale, MIN_ZOOM));
+				mCurrentScaleFactor = Math.min(getMaxZoom(), Math.max(targetScale, MIN_ZOOM));
 				mDoubleTapDirection = 1;
 				invalidate();
 				return true;
@@ -163,8 +164,8 @@ public class ZoomableImageView extends ImageView {
 		if (mBitmapDisplayed.getBitmap() == null)
 			return null;
 		Matrix m = getImageViewMatrix();
-		RectF rect = new RectF(0, 0, mBitmapDisplayed.getBitmap().getWidth(),
-				mBitmapDisplayed.getBitmap().getHeight());
+		RectF rect = new RectF(0, 0, mBitmapDisplayed.getBitmap().getWidth(), mBitmapDisplayed
+				.getBitmap().getHeight());
 		m.mapRect(rect);
 		return rect;
 	}
@@ -219,8 +220,7 @@ public class ZoomableImageView extends ImageView {
 	 * @param bitmap
 	 * @param matrix
 	 */
-	private void getProperBaseMatrix(ZoomableImageViewRotateBitmap bitmap,
-			Matrix matrix) {
+	private void getProperBaseMatrix(ZoomableImageViewRotateBitmap bitmap, Matrix matrix) {
 		float viewWidth = getWidth();
 		float viewHeight = getHeight();
 		float w = bitmap.getWidth();
@@ -231,8 +231,8 @@ public class ZoomableImageView extends ImageView {
 		float scale = Math.min(widthScale, heightScale);
 		matrix.postConcat(bitmap.getRotateMatrix());
 		matrix.postScale(scale, scale);
-		matrix.postTranslate((viewWidth - w * scale) / MAX_ZOOM,
-				(viewHeight - h * scale) / MAX_ZOOM);
+		matrix.postTranslate((viewWidth - w * scale) / MAX_ZOOM, (viewHeight - h * scale)
+				/ MAX_ZOOM);
 	}
 
 	public float getScale() {
@@ -248,6 +248,7 @@ public class ZoomableImageView extends ImageView {
 		return mMatrixValues[whichValue];
 	}
 
+	@TargetApi(Build.VERSION_CODES.FROYO)
 	private void init() {
 		setScaleType(ImageView.ScaleType.MATRIX);
 		mTouchSlop = ViewConfiguration.getTouchSlop();
@@ -255,8 +256,7 @@ public class ZoomableImageView extends ImageView {
 		mScaleListener = new ScaleListener();
 
 		mScaleDetector = new ScaleGestureDetector(getContext(), mScaleListener);
-		mGestureDetector = new GestureDetector(getContext(), mGestureListener,
-				null, true);
+		mGestureDetector = new GestureDetector(getContext(), mGestureListener, null, true);
 		mCurrentScaleFactor = 1f;
 		mDoubleTapDirection = 1;
 	}
@@ -286,8 +286,7 @@ public class ZoomableImageView extends ImageView {
 	}
 
 	@Override
-	protected void onLayout(boolean changed, int left, int top, int right,
-			int bottom) {
+	protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
 		super.onLayout(changed, left, top, right, bottom);
 		mThisWidth = right - left;
 		mThisHeight = bottom - top;
@@ -302,22 +301,23 @@ public class ZoomableImageView extends ImageView {
 		}
 	}
 
+	@TargetApi(Build.VERSION_CODES.FROYO)
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		mScaleDetector.onTouchEvent(event);
 		if (!mScaleDetector.isInProgress())
 			mGestureDetector.onTouchEvent(event);
 		int action = event.getAction();
-		switch (action & MotionEvent.ACTION_MASK) {
-		case MotionEvent.ACTION_UP:
+		int mask = action & MotionEvent.ACTION_MASK;
+		if (mask == MotionEvent.ACTION_UP) {
 			if (getScale() < 1f) {
 				zoomTo(1f, 50);
 			}
-			break;
 		}
 		return true;
 	}
 
+	@TargetApi(Build.VERSION_CODES.FROYO)
 	private void onZoom(float scale) {
 		// super.onZoom( scale );
 		if (!mScaleDetector.isInProgress())
@@ -346,8 +346,7 @@ public class ZoomableImageView extends ImageView {
 		panBy(x, y);
 	}
 
-	private void scrollBy(float distanceX, float distanceY,
-			final float durationMs) {
+	private void scrollBy(float distanceX, float distanceY, final float durationMs) {
 		final float dx = distanceX;
 		final float dy = distanceY;
 		final long startTime = System.currentTimeMillis();
@@ -398,8 +397,7 @@ public class ZoomableImageView extends ImageView {
 	}
 
 	public void setImageBitmapReset(final Bitmap bitmap, final boolean reset) {
-		setImageRotateBitmapReset(new ZoomableImageViewRotateBitmap(bitmap, 0),
-				reset);
+		setImageRotateBitmapReset(new ZoomableImageViewRotateBitmap(bitmap, 0), reset);
 	}
 
 	// protected void onZoom(float scale) {
@@ -407,16 +405,15 @@ public class ZoomableImageView extends ImageView {
 
 	public void setImageBitmapReset(final Bitmap bitmap, final int rotation,
 			final boolean reset) {
-		setImageRotateBitmapReset(new ZoomableImageViewRotateBitmap(bitmap,
-				rotation), reset);
+		setImageRotateBitmapReset(new ZoomableImageViewRotateBitmap(bitmap, rotation), reset);
 	}
 
 	private void setImageMatrix(Command command, Matrix matrix) {
 		setImageMatrix(matrix);
 	}
 
-	private void setImageRotateBitmapReset(
-			final ZoomableImageViewRotateBitmap bitmap, final boolean reset) {
+	private void setImageRotateBitmapReset(final ZoomableImageViewRotateBitmap bitmap,
+			final boolean reset) {
 
 		final int viewWidth = getWidth();
 		if (viewWidth <= 0) {
@@ -424,8 +421,7 @@ public class ZoomableImageView extends ImageView {
 
 				@Override
 				public void run() {
-					setImageBitmapReset(bitmap.getBitmap(),
-							bitmap.getRotation(), reset);
+					setImageBitmapReset(bitmap.getBitmap(), bitmap.getRotation(), reset);
 				}
 			};
 			return;
@@ -466,8 +462,7 @@ public class ZoomableImageView extends ImageView {
 			scrollRect.left = 0;
 		if (bitmapRect.top + scrollRect.top >= 0 && bitmapRect.bottom > height)
 			scrollRect.top = (int) (0 - bitmapRect.top);
-		if (bitmapRect.bottom + scrollRect.top <= (height - 0)
-				&& bitmapRect.top < 0)
+		if (bitmapRect.bottom + scrollRect.top <= (height - 0) && bitmapRect.top < 0)
 			scrollRect.top = (int) ((height - 0) - bitmapRect.bottom);
 		if (bitmapRect.left + scrollRect.left >= 0)
 			scrollRect.left = (int) (0 - bitmapRect.left);

@@ -47,8 +47,7 @@ public class ClassLoaderUtils {
 			return specifiedLoader;
 		}
 		if (useContextClassLoader) {
-			ClassLoader classLoader = Thread.currentThread()
-					.getContextClassLoader();
+			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 			if (classLoader != null) {
 				return classLoader;
 			}
@@ -66,8 +65,7 @@ public class ClassLoaderUtils {
 	 * <li>The System class loader.
 	 * </ul>
 	 */
-	public static ClassLoader getClassLoader(ClassLoader specifiedLoader,
-			Class callingClass) {
+	public static ClassLoader getClassLoader(ClassLoader specifiedLoader, Class callingClass) {
 		if (specifiedLoader != null) {
 			return specifiedLoader;
 		}
@@ -102,9 +100,8 @@ public class ClassLoaderUtils {
 	 * <li>otherwise use the class loader which loaded this class.</li>
 	 * </ol>
 	 */
-	public static Class loadClass(String className,
-			ClassLoader specifiedLoader, boolean useContextLoader,
-			Class callingClass) throws ClassNotFoundException {
+	public static Class loadClass(String className, ClassLoader specifiedLoader,
+			boolean useContextLoader, Class callingClass) throws ClassNotFoundException {
 		Class clazz = null;
 		if (specifiedLoader != null) {
 			try {
@@ -114,8 +111,7 @@ public class ClassLoaderUtils {
 			}
 		}
 		if (clazz == null && useContextLoader) {
-			ClassLoader contextLoader = Thread.currentThread()
-					.getContextClassLoader();
+			ClassLoader contextLoader = Thread.currentThread().getContextClassLoader();
 			if (contextLoader != null) {
 				try {
 					clazz = contextLoader.loadClass(className);

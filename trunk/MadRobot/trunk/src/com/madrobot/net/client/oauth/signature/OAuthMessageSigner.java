@@ -38,8 +38,8 @@ public abstract class OAuthMessageSigner implements Serializable {
 		return tokenSecret;
 	}
 
-	private void readObject(java.io.ObjectInputStream stream)
-			throws IOException, ClassNotFoundException {
+	private void readObject(java.io.ObjectInputStream stream) throws IOException,
+			ClassNotFoundException {
 		stream.defaultReadObject();
 	}
 
@@ -51,7 +51,6 @@ public abstract class OAuthMessageSigner implements Serializable {
 		this.tokenSecret = tokenSecret;
 	}
 
-	public abstract String sign(HttpRequest request,
-			HttpParameters requestParameters)
+	public abstract String sign(HttpRequest request, HttpParameters requestParameters)
 			throws OAuthMessageSignerException;
 }

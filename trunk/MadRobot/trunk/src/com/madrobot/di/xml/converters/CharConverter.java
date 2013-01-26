@@ -47,8 +47,7 @@ public class CharConverter implements Converter, SingleValueConverter {
 	}
 
 	@Override
-	public Object unmarshal(HierarchicalStreamReader reader,
-			UnmarshallingContext context) {
+	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
 		String nullAttribute = reader.getAttribute("null");
 		if (nullAttribute != null && nullAttribute.equals("true")) {
 			return new Character('\0');

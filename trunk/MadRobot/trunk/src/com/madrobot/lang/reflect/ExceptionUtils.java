@@ -36,10 +36,9 @@ public class ExceptionUtils {
 	 * </p>
 	 */
 	// TODO: Remove in Lang 4.0
-	private static final String[] CAUSE_METHOD_NAMES = { "getCause",
-			"getNextException", "getTargetException", "getException",
-			"getSourceException", "getRootCause", "getCausedByException",
-			"getNested", "getLinkedException", "getNestedException",
+	private static final String[] CAUSE_METHOD_NAMES = { "getCause", "getNextException",
+			"getTargetException", "getException", "getSourceException", "getRootCause",
+			"getCausedByException", "getNested", "getLinkedException", "getNestedException",
 			"getLinkedCause", "getThrowable", };
 
 	/**
@@ -160,8 +159,7 @@ public class ExceptionUtils {
 	 * @return the wrapped exception, or <code>null</code> if not found
 	 */
 	// TODO: Remove in Lang 4.0
-	private static Throwable getCauseUsingMethodName(Throwable throwable,
-			String methodName) {
+	private static Throwable getCauseUsingMethodName(Throwable throwable, String methodName) {
 		Method method = null;
 		try {
 			method = throwable.getClass().getMethod(methodName, (Class[]) null);
@@ -171,11 +169,13 @@ public class ExceptionUtils {
 			// exception ignored
 		}
 
-		if (method != null
-				&& Throwable.class.isAssignableFrom(method.getReturnType())) {
+		if (method != null && Throwable.class.isAssignableFrom(method.getReturnType())) {
 			try {
-				return (Throwable) method.invoke(throwable,
-						new Class[0]/*ArrayUtils.EMPTY_OBJECT_ARRAY*/);
+				return (Throwable) method.invoke(throwable, new Class[0]/*
+																		 * ArrayUtils
+																		 * .
+																		 * EMPTY_OBJECT_ARRAY
+																		 */);
 			} catch (IllegalAccessException ignored) {
 				// exception ignored
 			} catch (IllegalArgumentException ignored) {
@@ -297,7 +297,7 @@ public class ExceptionUtils {
 	 */
 	public static String[] getRootCauseStackTrace(Throwable throwable) {
 		if (throwable == null) {
-			return  new String[0];//ArrayUtils.EMPTY_STRING_ARRAY;
+			return new String[0];// ArrayUtils.EMPTY_STRING_ARRAY;
 		}
 		Throwable throwables[] = getThrowables(throwable);
 		int count = throwables.length;
@@ -403,7 +403,7 @@ public class ExceptionUtils {
 	 */
 	public static String[] getStackFrames(Throwable throwable) {
 		if (throwable == null) {
-			return  new String[0];// ArrayUtils.EMPTY_STRING_ARRAY;
+			return new String[0];// ArrayUtils.EMPTY_STRING_ARRAY;
 		}
 		return getStackFrames(getStackTrace(throwable));
 	}
@@ -543,8 +543,8 @@ public class ExceptionUtils {
 	 * @return index of the <code>type</code> within throwables nested withing
 	 *         the specified <code>throwable</code>
 	 */
-	private static int indexOf(Throwable throwable, Class<?> type,
-			int fromIndex, boolean subclass) {
+	private static int indexOf(Throwable throwable, Class<?> type, int fromIndex,
+			boolean subclass) {
 		if (throwable == null || type == null) {
 			return -1;
 		}
@@ -623,8 +623,7 @@ public class ExceptionUtils {
 	 *            treated as zero, larger than chain size returns -1
 	 * @return the index into the throwable chain, -1 if no match or null input
 	 */
-	public static int indexOfThrowable(Throwable throwable, Class<?> clazz,
-			int fromIndex) {
+	public static int indexOfThrowable(Throwable throwable, Class<?> clazz, int fromIndex) {
 		return indexOf(throwable, clazz, fromIndex, false);
 	}
 
@@ -680,8 +679,7 @@ public class ExceptionUtils {
 	 * @return the index into the throwable chain, -1 if no match or null input
 	 * @since 2.1
 	 */
-	public static int indexOfType(Throwable throwable, Class<?> type,
-			int fromIndex) {
+	public static int indexOfType(Throwable throwable, Class<?> type, int fromIndex) {
 		return indexOf(throwable, type, fromIndex, true);
 	}
 
@@ -747,14 +745,12 @@ public class ExceptionUtils {
 	 *             if the stream is <code>null</code>
 	 * @since 2.0
 	 */
-	public static void printRootCauseStackTrace(Throwable throwable,
-			PrintStream stream) {
+	public static void printRootCauseStackTrace(Throwable throwable, PrintStream stream) {
 		if (throwable == null) {
 			return;
 		}
 		if (stream == null) {
-			throw new IllegalArgumentException(
-					"The PrintStream must not be null");
+			throw new IllegalArgumentException("The PrintStream must not be null");
 		}
 		String trace[] = getRootCauseStackTrace(throwable);
 		for (int i = 0; i < trace.length; i++) {
@@ -793,14 +789,12 @@ public class ExceptionUtils {
 	 *             if the writer is <code>null</code>
 	 * @since 2.0
 	 */
-	public static void printRootCauseStackTrace(Throwable throwable,
-			PrintWriter writer) {
+	public static void printRootCauseStackTrace(Throwable throwable, PrintWriter writer) {
 		if (throwable == null) {
 			return;
 		}
 		if (writer == null) {
-			throw new IllegalArgumentException(
-					"The PrintWriter must not be null");
+			throw new IllegalArgumentException("The PrintWriter must not be null");
 		}
 		String trace[] = getRootCauseStackTrace(throwable);
 		for (int i = 0; i < trace.length; i++) {
@@ -822,8 +816,7 @@ public class ExceptionUtils {
 	 *             if either argument is null
 	 * @since 2.0
 	 */
-	public static void removeCommonFrames(List<String> causeFrames,
-			List<String> wrapperFrames) {
+	public static void removeCommonFrames(List<String> causeFrames, List<String> wrapperFrames) {
 		if (causeFrames == null || wrapperFrames == null) {
 			throw new IllegalArgumentException("The List must not be null");
 		}

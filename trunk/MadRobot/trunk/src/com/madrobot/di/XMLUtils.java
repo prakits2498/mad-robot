@@ -40,8 +40,7 @@ public final class XMLUtils {
 	 * @return AttributeSet representation of the xml stream
 	 * @throws XmlPullParserException
 	 */
-	public static AttributeSet getAttributeSet(InputStream is)
-			throws XmlPullParserException {
+	public static AttributeSet getAttributeSet(InputStream is) throws XmlPullParserException {
 		XmlPullParser parser = Xml.newPullParser();
 		parser.setInput(is, null);
 		AttributeSet set = Xml.asAttributeSet(parser);
@@ -58,8 +57,8 @@ public final class XMLUtils {
 	 * @throws SAXException
 	 * @throws IOException
 	 */
-	public static Document loadDoc(InputStream is)
-			throws ParserConfigurationException, SAXException, IOException {
+	public static Document loadDoc(InputStream is) throws ParserConfigurationException,
+			SAXException, IOException {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = factory.newDocumentBuilder();
 		return builder.parse(is);
@@ -108,8 +107,7 @@ public final class XMLUtils {
 				break;
 			default:
 				if (ch < ' ' || ch > 127) {
-					buff.append("&#x").append(Integer.toHexString(ch))
-							.append(';');
+					buff.append("&#x").append(Integer.toHexString(ch)).append(';');
 				} else {
 					buff.append(ch);
 				}
@@ -129,7 +127,9 @@ public final class XMLUtils {
 
 	/**
 	 * Remove any xml tags from a String. Same as HtmlW's method.
-	 * @param str input string
+	 * 
+	 * @param str
+	 *            input string
 	 * @return text with all xml tags removed.
 	 */
 	public static String removeXml(String str) {
@@ -151,17 +151,19 @@ public final class XMLUtils {
 		}
 		return buffer.toString();
 	}
+
 	private static XmlPullParserFactory sFactory;
+
 	/**
-     * Build and return a new {@link XmlPullParser} with the given
-     * {@link InputStream} assigned to it.
-     */
-    public static XmlPullParser newPullParser(InputStream input) throws XmlPullParserException {
-        if (sFactory == null) {
-            sFactory = XmlPullParserFactory.newInstance();
-        }
-        final XmlPullParser parser = sFactory.newPullParser();
-        parser.setInput(input, null);
-        return parser;
-    }
+	 * Build and return a new {@link XmlPullParser} with the given
+	 * {@link InputStream} assigned to it.
+	 */
+	public static XmlPullParser newPullParser(InputStream input) throws XmlPullParserException {
+		if (sFactory == null) {
+			sFactory = XmlPullParserFactory.newInstance();
+		}
+		final XmlPullParser parser = sFactory.newPullParser();
+		parser.setInput(input, null);
+		return parser;
+	}
 }

@@ -119,8 +119,7 @@ public class StopWatch {
 	 * @return the time in nanoseconds
 	 */
 	public long getNanoTime() {
-		if (this.runningState == STATE_STOPPED
-				|| this.runningState == STATE_SUSPENDED) {
+		if (this.runningState == STATE_STOPPED || this.runningState == STATE_SUSPENDED) {
 			return this.stopTime - this.startTime;
 		} else if (this.runningState == STATE_UNSTARTED) {
 			return 0;
@@ -146,8 +145,7 @@ public class StopWatch {
 	 */
 	public long getSplitNanoTime() {
 		if (this.splitState != STATE_SPLIT) {
-			throw new IllegalStateException(
-					"Stopwatch must be split to get the split time. ");
+			throw new IllegalStateException("Stopwatch must be split to get the split time. ");
 		}
 		return this.stopTime - this.startTime;
 	}
@@ -230,8 +228,7 @@ public class StopWatch {
 	 */
 	public void resume() {
 		if (this.runningState != STATE_SUSPENDED) {
-			throw new IllegalStateException(
-					"Stopwatch must be suspended to resume. ");
+			throw new IllegalStateException("Stopwatch must be suspended to resume. ");
 		}
 		this.startTime += (System.nanoTime() - this.stopTime);
 		this.runningState = STATE_RUNNING;
@@ -273,8 +270,7 @@ public class StopWatch {
 	 */
 	public void start() {
 		if (this.runningState == STATE_STOPPED) {
-			throw new IllegalStateException(
-					"Stopwatch must be reset before being restarted. ");
+			throw new IllegalStateException("Stopwatch must be reset before being restarted. ");
 		}
 		if (this.runningState != STATE_UNSTARTED) {
 			throw new IllegalStateException("Stopwatch already started. ");
@@ -297,8 +293,7 @@ public class StopWatch {
 	 *             if the StopWatch is not running.
 	 */
 	public void stop() {
-		if (this.runningState != STATE_RUNNING
-				&& this.runningState != STATE_SUSPENDED) {
+		if (this.runningState != STATE_RUNNING && this.runningState != STATE_SUSPENDED) {
 			throw new IllegalStateException("Stopwatch is not running. ");
 		}
 		if (this.runningState == STATE_RUNNING) {
@@ -322,8 +317,7 @@ public class StopWatch {
 	 */
 	public void suspend() {
 		if (this.runningState != STATE_RUNNING) {
-			throw new IllegalStateException(
-					"Stopwatch must be running to suspend. ");
+			throw new IllegalStateException("Stopwatch must be running to suspend. ");
 		}
 		this.stopTime = System.nanoTime();
 		this.runningState = STATE_SUSPENDED;

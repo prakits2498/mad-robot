@@ -21,8 +21,7 @@ import java.util.TreeSet;
  * 
  */
 @SuppressWarnings("serial")
-public class HttpParameters implements Map<String, SortedSet<String>>,
-		Serializable {
+public class HttpParameters implements Map<String, SortedSet<String>>, Serializable {
 
 	private TreeMap<String, SortedSet<String>> wrappedMap = new TreeMap<String, SortedSet<String>>();
 
@@ -140,8 +139,7 @@ public class HttpParameters implements Map<String, SortedSet<String>>,
 		return wrappedMap.put(key, value);
 	}
 
-	public SortedSet<String> put(String key, SortedSet<String> values,
-			boolean percentEncode) {
+	public SortedSet<String> put(String key, SortedSet<String> values, boolean percentEncode) {
 		if (percentEncode) {
 			remove(key);
 			for (String v : values) {
@@ -184,8 +182,7 @@ public class HttpParameters implements Map<String, SortedSet<String>>,
 		SortedSet<String> values = wrappedMap.get(key);
 		if (values == null) {
 			values = new TreeSet<String>();
-			wrappedMap.put(percentEncode ? OAuth.percentEncode(key) : key,
-					values);
+			wrappedMap.put(percentEncode ? OAuth.percentEncode(key) : key, values);
 		}
 		if (value != null) {
 			value = percentEncode ? OAuth.percentEncode(value) : value;

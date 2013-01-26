@@ -71,8 +71,7 @@ class PercentEscaper extends UnicodeEscaper {
 	 */
 	public static final String SAFEQUERYSTRINGCHARS_URLENCODER = "-_.!~*'()@:$,;/?:";
 
-	private static final char[] UPPER_HEX_DIGITS = "0123456789ABCDEF"
-			.toCharArray();
+	private static final char[] UPPER_HEX_DIGITS = "0123456789ABCDEF".toCharArray();
 
 	// In some uri escapers spaces are escaped to '+'
 	private static final char[] URI_ESCAPED_SPACE = { '+' };
@@ -229,8 +228,7 @@ class PercentEscaper extends UnicodeEscaper {
 		} else {
 			// If this ever happens it is due to bug in UnicodeEscaper, not bad
 			// input.
-			throw new IllegalArgumentException(
-					"Invalid unicode character value " + cp);
+			throw new IllegalArgumentException("Invalid unicode character value " + cp);
 		}
 	}
 

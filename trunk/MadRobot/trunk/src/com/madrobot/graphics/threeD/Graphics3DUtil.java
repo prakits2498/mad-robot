@@ -56,9 +56,9 @@ public class Graphics3DUtil {
 	 * @param height
 	 *            of the 3D rect
 	 */
-	public final static void draw3DRect(final Canvas canvas,
-			int highLightColor, int shadowColor, final boolean isRaised,
-			int lineWidth, float x, float y, final int width, final int height) {
+	public final static void draw3DRect(final Canvas canvas, int highLightColor,
+			int shadowColor, final boolean isRaised, int lineWidth, float x, float y,
+			final int width, final int height) {
 		Paint paint = new Paint();
 		paint.setAntiAlias(true);
 
@@ -89,8 +89,7 @@ public class Graphics3DUtil {
 			lineWidth--;
 			if (bBevelled) {
 				// soften the bevel by slightly fading the colors
-				highLightColor = ColorUtils
-						.adjustBrightness(highLightColor, 10);
+				highLightColor = ColorUtils.adjustBrightness(highLightColor, 10);
 				shadowColor = ColorUtils.adjustBrightness(shadowColor, 10);
 			} else if (lineWidth == nHalfWidth) {
 				int tmp = highLightColor;

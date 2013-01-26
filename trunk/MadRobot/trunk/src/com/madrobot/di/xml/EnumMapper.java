@@ -55,40 +55,36 @@ class EnumMapper extends MapperWrapper implements Caching {
 	}
 
 	@Override
-	public SingleValueConverter getConverterFromAttribute(Class definedIn,
-			String attribute, Class type) {
-		SingleValueConverter converter = getLocalConverter(attribute, type,
-				definedIn);
-		return converter == null ? super.getConverterFromAttribute(definedIn,
-				attribute, type) : converter;
+	public SingleValueConverter getConverterFromAttribute(Class definedIn, String attribute,
+			Class type) {
+		SingleValueConverter converter = getLocalConverter(attribute, type, definedIn);
+		return converter == null ? super.getConverterFromAttribute(definedIn, attribute, type)
+				: converter;
 	}
 
 	@Override
-	public SingleValueConverter getConverterFromItemType(String fieldName,
-			Class type, Class definedIn) {
-		SingleValueConverter converter = getLocalConverter(fieldName, type,
-				definedIn);
-		return converter == null ? super.getConverterFromItemType(fieldName,
-				type, definedIn) : converter;
+	public SingleValueConverter getConverterFromItemType(String fieldName, Class type,
+			Class definedIn) {
+		SingleValueConverter converter = getLocalConverter(fieldName, type, definedIn);
+		return converter == null ? super.getConverterFromItemType(fieldName, type, definedIn)
+				: converter;
 	}
 
-	private SingleValueConverter getLocalConverter(String fieldName,
-			Class type, Class definedIn) {
+	private SingleValueConverter getLocalConverter(String fieldName, Class type,
+			Class definedIn) {
 		if (attributeMapper != null
 				&& Enum.class.isAssignableFrom(type)
-				&& attributeMapper.shouldLookForSingleValueConverter(fieldName,
-						type, definedIn)) {
+				&& attributeMapper.shouldLookForSingleValueConverter(fieldName, type,
+						definedIn)) {
 			synchronized (enumConverterMap) {
-				SingleValueConverter singleValueConverter = enumConverterMap
-						.get(type);
+				SingleValueConverter singleValueConverter = enumConverterMap.get(type);
 				if (singleValueConverter == null) {
-					singleValueConverter = super.getConverterFromItemType(
-							fieldName, type, definedIn);
+					singleValueConverter = super.getConverterFromItemType(fieldName, type,
+							definedIn);
 					if (singleValueConverter == null) {
 						@SuppressWarnings("unchecked")
 						Class<? extends Enum> enumType = type;
-						singleValueConverter = new EnumSingleValueConverter(
-								enumType);
+						singleValueConverter = new EnumSingleValueConverter(enumType);
 					}
 					enumConverterMap.put(type, singleValueConverter);
 				}
@@ -100,8 +96,7 @@ class EnumMapper extends MapperWrapper implements Caching {
 
 	@Override
 	public boolean isImmutableValueType(Class type) {
-		return (Enum.class.isAssignableFrom(type))
-				|| super.isImmutableValueType(type);
+		return (Enum.class.isAssignableFrom(type)) || super.isImmutableValueType(type);
 	}
 
 	private Object readResolve() {
@@ -115,8 +110,7 @@ class EnumMapper extends MapperWrapper implements Caching {
 		if (type == null) {
 			return super.serializedClass(type);
 		}
-		if (Enum.class.isAssignableFrom(type)
-				&& type.getSuperclass() != Enum.class) {
+		if (Enum.class.isAssignableFrom(type) && type.getSuperclass() != Enum.class) {
 			return super.serializedClass(type.getSuperclass());
 		} else if (EnumSet.class.isAssignableFrom(type)) {
 			return super.serializedClass(EnumSet.class);

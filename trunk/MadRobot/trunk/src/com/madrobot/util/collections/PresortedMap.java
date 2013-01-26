@@ -63,8 +63,7 @@ public class PresortedMap implements SortedMap {
 	}
 
 	private PresortedMap(Comparator comparator, PresortedMap.ArraySet set) {
-		this.comparator = comparator != null ? comparator
-				: new ArraySetComparator(set);
+		this.comparator = comparator != null ? comparator : new ArraySetComparator(set);
 		this.set = set;
 	}
 

@@ -21,8 +21,8 @@ public class QueryStringSigningStrategy implements SigningStrategy {
 			HttpParameters requestParameters) {
 
 		// add the signature
-		StringBuilder sb = new StringBuilder(OAuth.addQueryParameters(
-				request.getRequestUrl(), OAuth.OAUTH_SIGNATURE, signature));
+		StringBuilder sb = new StringBuilder(OAuth.addQueryParameters(request.getRequestUrl(),
+				OAuth.OAUTH_SIGNATURE, signature));
 
 		// add the optional OAuth parameters
 		if (requestParameters.containsKey(OAuth.OAUTH_TOKEN)) {
@@ -44,8 +44,7 @@ public class QueryStringSigningStrategy implements SigningStrategy {
 		sb.append("&");
 		sb.append(requestParameters.getAsQueryString(OAuth.OAUTH_VERSION));
 		sb.append("&");
-		sb.append(requestParameters
-				.getAsQueryString(OAuth.OAUTH_SIGNATURE_METHOD));
+		sb.append(requestParameters.getAsQueryString(OAuth.OAUTH_SIGNATURE_METHOD));
 		sb.append("&");
 		sb.append(requestParameters.getAsQueryString(OAuth.OAUTH_TIMESTAMP));
 		sb.append("&");

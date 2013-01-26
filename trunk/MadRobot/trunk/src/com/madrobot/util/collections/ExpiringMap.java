@@ -47,8 +47,7 @@ public class ExpiringMap<K, V> implements Map<K, V> {
 		 * 
 		 */
 		public Expirer() {
-			expirerThread = new Thread(this, "ExpiringMapExpirer-"
-					+ expirerCount++);
+			expirerThread = new Thread(this, "ExpiringMapExpirer-" + expirerCount++);
 			expirerThread.setDaemon(true);
 		}
 
@@ -234,8 +233,7 @@ public class ExpiringMap<K, V> implements Map<K, V> {
 
 		ExpiringObject(K key, V value, long lastAccessTime) {
 			if (value == null) {
-				throw new IllegalArgumentException(
-						"An expiring object cannot be null.");
+				throw new IllegalArgumentException("An expiring object cannot be null.");
 			}
 
 			this.key = key;
@@ -310,8 +308,8 @@ public class ExpiringMap<K, V> implements Map<K, V> {
 	}
 
 	private ExpiringMap(ConcurrentHashMap<K, ExpiringObject> delegate,
-			CopyOnWriteArrayList<ExpirationListener<V>> expirationListeners,
-			int timeToLive, int expirationInterval) {
+			CopyOnWriteArrayList<ExpirationListener<V>> expirationListeners, int timeToLive,
+			int expirationInterval) {
 		this.delegate = delegate;
 		this.expirationListeners = expirationListeners;
 
@@ -418,8 +416,8 @@ public class ExpiringMap<K, V> implements Map<K, V> {
 
 	@Override
 	public V put(K key, V value) {
-		ExpiringObject answer = delegate.put(key, new ExpiringObject(key,
-				value, System.currentTimeMillis()));
+		ExpiringObject answer = delegate.put(key,
+				new ExpiringObject(key, value, System.currentTimeMillis()));
 		if (answer == null) {
 			return null;
 		}

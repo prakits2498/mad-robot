@@ -158,8 +158,7 @@ public class LineIterator implements Iterator<String> {
 	 */
 	@Override
 	public void remove() {
-		throw new UnsupportedOperationException(
-				"Remove unsupported on LineIterator");
+		throw new UnsupportedOperationException("Remove unsupported on LineIterator");
 	}
 
 	// -----------------------------------------------------------------------

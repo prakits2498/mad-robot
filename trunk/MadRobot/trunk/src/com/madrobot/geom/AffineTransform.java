@@ -276,8 +276,7 @@ public class AffineTransform implements Cloneable, Serializable {
 	 * @param m12
 	 *            the y translation component
 	 */
-	public AffineTransform(float m00, float m10, float m01, float m11,
-			float m02, float m12) {
+	public AffineTransform(float m00, float m10, float m01, float m11, float m02, float m12) {
 		this.m00 = m00;
 		this.m10 = m10;
 		this.m01 = m01;
@@ -339,8 +338,8 @@ public class AffineTransform implements Cloneable, Serializable {
 	 * @param m12
 	 *            the y translation component
 	 */
-	public AffineTransform(double m00, double m10, double m01, double m11,
-			double m02, double m12) {
+	public AffineTransform(double m00, double m10, double m01, double m11, double m02,
+			double m12) {
 		this.m00 = m00;
 		this.m10 = m10;
 		this.m01 = m01;
@@ -452,8 +451,7 @@ public class AffineTransform implements Cloneable, Serializable {
 	 *            the y coordinate of the pivot point
 	 * @return the rotating transform
 	 */
-	public static AffineTransform getRotateInstance(double theta, double x,
-			double y) {
+	public static AffineTransform getRotateInstance(double theta, double x, double y) {
 		AffineTransform t = new AffineTransform();
 		t.setToTranslation(x, y);
 		t.rotate(theta);
@@ -807,9 +805,8 @@ public class AffineTransform implements Cloneable, Serializable {
 		m10 = s;
 		m11 = c;
 		m12 = 0;
-		type = (c == 1 ? TYPE_IDENTITY
-				: c == 0 || c == -1 ? TYPE_QUADRANT_ROTATION
-						: TYPE_GENERAL_ROTATION);
+		type = (c == 1 ? TYPE_IDENTITY : c == 0 || c == -1 ? TYPE_QUADRANT_ROTATION
+				: TYPE_GENERAL_ROTATION);
 	}
 
 	/**
@@ -869,8 +866,7 @@ public class AffineTransform implements Cloneable, Serializable {
 		m00 = sx;
 		m01 = m02 = m10 = m12 = 0;
 		m11 = sy;
-		type = (sx != sy ? TYPE_GENERAL_SCALE : sx == 1 ? TYPE_IDENTITY
-				: TYPE_UNIFORM_SCALE);
+		type = (sx != sy ? TYPE_GENERAL_SCALE : sx == 1 ? TYPE_IDENTITY : TYPE_UNIFORM_SCALE);
 	}
 
 	/**
@@ -937,8 +933,8 @@ public class AffineTransform implements Cloneable, Serializable {
 	 * @param m12
 	 *            the y translation component
 	 */
-	public void setTransform(double m00, double m10, double m01, double m11,
-			double m02, double m12) {
+	public void setTransform(double m00, double m10, double m01, double m11, double m02,
+			double m12) {
 		this.m00 = m00;
 		this.m10 = m10;
 		this.m01 = m01;
@@ -1120,8 +1116,7 @@ public class AffineTransform implements Cloneable, Serializable {
 	 * @throws ArrayStoreException
 	 *             if new points are incompatible with dst
 	 */
-	public void transform(PointF[] src, int srcOff, PointF[] dst, int dstOff,
-			int num) {
+	public void transform(PointF[] src, int srcOff, PointF[] dst, int dstOff, int num) {
 		while (--num >= 0)
 			dst[dstOff] = transform(src[srcOff++], dst[dstOff++]);
 	}
@@ -1148,10 +1143,8 @@ public class AffineTransform implements Cloneable, Serializable {
 	 * @throws ArrayIndexOutOfBoundsException
 	 *             if array bounds are exceeded
 	 */
-	public void transform(float[] srcPts, int srcOff, float[] dstPts,
-			int dstOff, int num) {
-		if (srcPts == dstPts && dstOff > srcOff && num > 1
-				&& srcOff + 2 * num > dstOff) {
+	public void transform(float[] srcPts, int srcOff, float[] dstPts, int dstOff, int num) {
+		if (srcPts == dstPts && dstOff > srcOff && num > 1 && srcOff + 2 * num > dstOff) {
 			float[] f = new float[2 * num];
 			System.arraycopy(srcPts, srcOff, f, 0, 2 * num);
 			srcPts = f;
@@ -1186,10 +1179,8 @@ public class AffineTransform implements Cloneable, Serializable {
 	 * @throws ArrayIndexOutOfBoundsException
 	 *             if array bounds are exceeded
 	 */
-	public void transform(double[] srcPts, int srcOff, double[] dstPts,
-			int dstOff, int num) {
-		if (srcPts == dstPts && dstOff > srcOff && num > 1
-				&& srcOff + 2 * num > dstOff) {
+	public void transform(double[] srcPts, int srcOff, double[] dstPts, int dstOff, int num) {
+		if (srcPts == dstPts && dstOff > srcOff && num > 1 && srcOff + 2 * num > dstOff) {
 			double[] d = new double[2 * num];
 			System.arraycopy(srcPts, srcOff, d, 0, 2 * num);
 			srcPts = d;
@@ -1222,8 +1213,7 @@ public class AffineTransform implements Cloneable, Serializable {
 	 * @throws ArrayIndexOutOfBoundsException
 	 *             if array bounds are exceeded
 	 */
-	public void transform(float[] srcPts, int srcOff, double[] dstPts,
-			int dstOff, int num) {
+	public void transform(float[] srcPts, int srcOff, double[] dstPts, int dstOff, int num) {
 		while (--num >= 0) {
 			float x = srcPts[srcOff++];
 			float y = srcPts[srcOff++];
@@ -1252,8 +1242,7 @@ public class AffineTransform implements Cloneable, Serializable {
 	 * @throws ArrayIndexOutOfBoundsException
 	 *             if array bounds are exceeded
 	 */
-	public void transform(double[] srcPts, int srcOff, float[] dstPts,
-			int dstOff, int num) {
+	public void transform(double[] srcPts, int srcOff, float[] dstPts, int dstOff, int num) {
 		while (--num >= 0) {
 			double x = srcPts[srcOff++];
 			double y = srcPts[srcOff++];
@@ -1307,8 +1296,8 @@ public class AffineTransform implements Cloneable, Serializable {
 	 *             if the inverse does not exist
 	 * @see #getDeterminant()
 	 */
-	public void inverseTransform(double[] srcPts, int srcOff, double[] dstPts,
-			int dstOff, int num) {
+	public void inverseTransform(double[] srcPts, int srcOff, double[] dstPts, int dstOff,
+			int num) {
 		createInverse().transform(srcPts, srcOff, dstPts, dstOff, num);
 	}
 
@@ -1371,10 +1360,9 @@ public class AffineTransform implements Cloneable, Serializable {
 	 * @throws ArrayIndexOutOfBoundsException
 	 *             if array bounds are exceeded
 	 */
-	public void deltaTransform(double[] srcPts, int srcOff, double[] dstPts,
-			int dstOff, int num) {
-		if (srcPts == dstPts && dstOff > srcOff && num > 1
-				&& srcOff + 2 * num > dstOff) {
+	public void deltaTransform(double[] srcPts, int srcOff, double[] dstPts, int dstOff,
+			int num) {
+		if (srcPts == dstPts && dstOff > srcOff && num > 1 && srcOff + 2 * num > dstOff) {
 			double[] d = new double[2 * num];
 			System.arraycopy(srcPts, srcOff, d, 0, 2 * num);
 			srcPts = d;
@@ -1396,8 +1384,8 @@ public class AffineTransform implements Cloneable, Serializable {
 	 */
 	@Override
 	public String toString() {
-		return "AffineTransform[[" + m00 + ", " + m01 + ", " + m02 + "], ["
-				+ m10 + ", " + m11 + ", " + m12 + "]]";
+		return "AffineTransform[[" + m00 + ", " + m01 + ", " + m02 + "], [" + m10 + ", " + m11
+				+ ", " + m12 + "]]";
 	}
 
 	/**
@@ -1471,8 +1459,7 @@ public class AffineTransform implements Cloneable, Serializable {
 		if (!(obj instanceof AffineTransform))
 			return false;
 		AffineTransform t = (AffineTransform) obj;
-		return (m00 == t.m00 && m01 == t.m01 && m02 == t.m02 && m10 == t.m10
-				&& m11 == t.m11 && m12 == t.m12);
+		return (m00 == t.m00 && m01 == t.m01 && m02 == t.m02 && m10 == t.m10 && m11 == t.m11 && m12 == t.m12);
 	}
 
 	/**
@@ -1515,8 +1502,7 @@ public class AffineTransform implements Cloneable, Serializable {
 	 * @throws IOException
 	 *             if there is a problem deserializing
 	 */
-	private void readObject(ObjectInputStream s) throws ClassNotFoundException,
-			IOException {
+	private void readObject(ObjectInputStream s) throws ClassNotFoundException, IOException {
 		s.defaultReadObject();
 		updateType();
 	}

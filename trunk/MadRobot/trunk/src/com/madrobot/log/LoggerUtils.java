@@ -24,8 +24,7 @@ public class LoggerUtils {
 	public static BufferedReader getLogcatOutput() throws IOException {
 		Process process = getLogcatProcess();
 		if (process != null)
-			return new BufferedReader(new InputStreamReader(
-					process.getInputStream()), 1024);
+			return new BufferedReader(new InputStreamReader(process.getInputStream()), 1024);
 		else
 			return null;
 	}

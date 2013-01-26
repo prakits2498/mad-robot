@@ -52,10 +52,8 @@ public final class LocationUtils {
 	 */
 	public static final double LONGITUDE_MIN = -180;
 
-	private static double curvature(double e1f, double e2f, double e3f,
-			double e4f, double p) {
-		return e1f * p - e2f * sin(2. * p) + e3f * sin(4. * p) - e4f
-				* sin(6. * p);
+	private static double curvature(double e1f, double e2f, double e3f, double e4f, double p) {
+		return e1f * p - e2f * sin(2. * p) + e3f * sin(4. * p) - e4f * sin(6. * p);
 	}
 
 	private static double E1F(double d) {
@@ -83,12 +81,11 @@ public final class LocationUtils {
 	 * @param lat2
 	 * @return
 	 */
-	public static double getBearing(double lon1, double lat1, double lon2,
-			double lat2) {
+	public static double getBearing(double lon1, double lat1, double lon2, double lat2) {
 		double dLon = Math.toRadians((lon2 - lon1));
 		double y = Math.sin(dLon) * Math.cos(lat2);
-		double x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1)
-				* Math.cos(lat2) * Math.cos(dLon);
+		double x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2)
+				* Math.cos(dLon);
 		return Math.toDegrees(Math.atan2(y, x));
 	}
 
@@ -147,18 +144,14 @@ public final class LocationUtils {
 		int y = (utm.getY() - 130000000) / 10;
 
 		double M0 = LocationConstants.UTM_CURVATURE;
-		double M = M0
-				+ ((y - LocationConstants.UTMK_HEIGHT) / LocationConstants.UTMK_SCALE);
-		double u1 = M
-				/ (LocationConstants.E_R_WGS84 * E1F(LocationConstants.UTM_HOR));
+		double M = M0 + ((y - LocationConstants.UTMK_HEIGHT) / LocationConstants.UTMK_SCALE);
+		double u1 = M / (LocationConstants.E_R_WGS84 * E1F(LocationConstants.UTM_HOR));
 
 		double temp = sqrt(1. - LocationConstants.UTM_HOR);
 		double e1 = (1 - temp) / (1 + temp);
 
-		double v1 = (((3. * e1) / 2.) - ((27. * pow(e1, 3.)) / 32.))
-				* sin(2. * u1);
-		double v2 = (((21. * pow(e1, 2.)) / 16.) - ((55. * pow(e1, 4.)) / 32.))
-				* sin(4. * u1);
+		double v1 = (((3. * e1) / 2.) - ((27. * pow(e1, 3.)) / 32.)) * sin(2. * u1);
+		double v2 = (((21. * pow(e1, 2.)) / 16.) - ((55. * pow(e1, 4.)) / 32.)) * sin(4. * u1);
 		double v3 = ((151. * pow(e1, 3.)) / 96.) * sin(6. * u1);
 		double v4 = ((1097. * pow(e1, 4.)) / 512.) * sin(8. * u1);
 
@@ -174,8 +167,7 @@ public final class LocationUtils {
 				/ (1. - LocationConstants.UTM_HOR * (sq1 * sq1));
 		double C1 = LocationConstants.UTM_VER * (cq1 * cq1);
 		double T1 = tq1 * tq1;
-		double D = (x - LocationConstants.UTMK_WIDTH)
-				/ (N1 * LocationConstants.UTMK_SCALE);
+		double D = (x - LocationConstants.UTMK_WIDTH) / (N1 * LocationConstants.UTMK_SCALE);
 
 		double dLat = q1
 				- ((N1 * tq1) / R1)
@@ -205,16 +197,13 @@ public final class LocationUtils {
 		return location;
 	}
 
-	public static Location getMidPoint(double lon1, double lat1, double lon2,
-			double lat2) {
+	public static Location getMidPoint(double lon1, double lat1, double lon2, double lat2) {
 		// double dLat = Math.toRadians((lat2 - lat1));
 		double dLon = Math.toRadians((lon2 - lon1));
 		double Bx = Math.cos(lat2) * Math.cos(dLon);
 		double By = Math.cos(lat2) * Math.sin(dLon);
-		double lat3 = Math.atan2(
-				Math.sin(lat1) + Math.sin(lat2),
-				Math.sqrt((Math.cos(lat1) + Bx) * (Math.cos(lat1) + Bx) + By
-						* By));
+		double lat3 = Math.atan2(Math.sin(lat1) + Math.sin(lat2),
+				Math.sqrt((Math.cos(lat1) + Bx) * (Math.cos(lat1) + Bx) + By * By));
 		double lon3 = lon1 + Math.atan2(By, Math.cos(lat1) + Bx);
 		Location location = new Location(LOCATION_PROVIDER);
 		location.setLatitude(lat3);
@@ -243,28 +232,20 @@ public final class LocationUtils {
 		double tlat = tan(lat);
 
 		double T = tlat * tlat;
-		double C = LocationConstants.UTM_HOR
-				/ (1.0 - LocationConstants.UTM_HOR) * (clat * clat);
-		double A = (lon - LocationConstants.UTMK_LON * LocationConstants.RAD)
-				* clat;
+		double C = LocationConstants.UTM_HOR / (1.0 - LocationConstants.UTM_HOR)
+				* (clat * clat);
+		double A = (lon - LocationConstants.UTMK_LON * LocationConstants.RAD) * clat;
 		double N = LocationConstants.E_R_WGS84
 				/ sqrt(1.0 - (LocationConstants.UTM_HOR * slat * slat));
 		double M = LocationConstants.E_R_WGS84
-				* curvature(E1F(LocationConstants.UTM_HOR),
-						E2F(LocationConstants.UTM_HOR),
-						E3F(LocationConstants.UTM_HOR),
-						E4F(LocationConstants.UTM_HOR), lat);
+				* curvature(E1F(LocationConstants.UTM_HOR), E2F(LocationConstants.UTM_HOR),
+						E3F(LocationConstants.UTM_HOR), E4F(LocationConstants.UTM_HOR), lat);
 
 		double M0 = LocationConstants.UTM_CURVATURE;
 
 		double x = LocationConstants.UTMK_SCALE
 				* N
-				* (A + A * A * A / 6. * (1. - T + C) + A
-						* A
-						* A
-						* A
-						* A
-						/ 120.
+				* (A + A * A * A / 6. * (1. - T + C) + A * A * A * A * A / 120.
 						* (5. - 18. * T + T * T + 72. * C - 58. * LocationConstants.UTM_VER))
 				+ LocationConstants.UTMK_WIDTH;
 		double y = LocationConstants.UTMK_SCALE
@@ -306,14 +287,11 @@ public final class LocationUtils {
 	 * @throws IllegalArgumentException
 	 *             if one of the arguments is null
 	 */
-	public static double haversineDistance(double lon1, double lat1,
-			double lon2, double lat2) {
+	public static double haversineDistance(double lon1, double lat1, double lon2, double lat2) {
 		double dLat = Math.toRadians(lat2 - lat1);
 		double dLon = Math.toRadians(lon2 - lon1);
-		double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
-				+ Math.cos(Math.toRadians(lat1))
-				* Math.cos(Math.toRadians(lat2)) * Math.sin(dLon / 2)
-				* Math.sin(dLon / 2);
+		double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(Math.toRadians(lat1))
+				* Math.cos(Math.toRadians(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
 		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
 		return c * LocationConstants.EQUATORIALRADIUS;
@@ -332,8 +310,8 @@ public final class LocationUtils {
 	 *            the great circle bearing
 	 * @return a coordinate at the specified bearing
 	 */
-	public static Location getPointOnGreatCircle(double latitude,
-			double longitude, double d, double bearing) {
+	public static Location getPointOnGreatCircle(double latitude, double longitude, double d,
+			double bearing) {
 		double angularDistance = d / LocationConstants.EARTH_RADIUS_KM;
 
 		double lon1 = Math.toRadians(longitude);
@@ -346,11 +324,9 @@ public final class LocationUtils {
 		double cosD = Math.cos(angularDistance);
 		double brng = Math.toRadians(bearing);
 
-		double lat2 = Math.asin((sinLat * cosD)
-				+ (cosLat * sinD * Math.cos(brng)));
+		double lat2 = Math.asin((sinLat * cosD) + (cosLat * sinD * Math.cos(brng)));
 		double lon2 = lon1
-				+ Math.atan2(Math.sin(brng) * sinD * cosLat, cosD - sinLat
-						* Math.sin(lat2));
+				+ Math.atan2(Math.sin(brng) * sinD * cosLat, cosD - sinLat * Math.sin(lat2));
 
 		Location location = new Location(LOCATION_PROVIDER);
 		location.setLatitude(lat2);
@@ -381,8 +357,7 @@ public final class LocationUtils {
 	 * @return true of {@code location} is better than
 	 *         {@code currentBestLocation}
 	 */
-	public static boolean isBetterLocation(Location location,
-			Location currentBestLocation) {
+	public static boolean isBetterLocation(Location location, Location currentBestLocation) {
 		final int TWO_MINUTES = 1000 * 60 * 2;
 		if (currentBestLocation == null) {
 			// A new location is always better than no location
@@ -407,8 +382,7 @@ public final class LocationUtils {
 		}
 
 		// Check whether the new location fix is more or less accurate
-		int accuracyDelta = (int) (location.getAccuracy() - currentBestLocation
-				.getAccuracy());
+		int accuracyDelta = (int) (location.getAccuracy() - currentBestLocation.getAccuracy());
 		boolean isLessAccurate = accuracyDelta > 0;
 		boolean isMoreAccurate = accuracyDelta < 0;
 		boolean isSignificantlyLessAccurate = accuracyDelta > 200;
@@ -423,8 +397,7 @@ public final class LocationUtils {
 			return true;
 		} else if (isNewer && !isLessAccurate) {
 			return true;
-		} else if (isNewer && !isSignificantlyLessAccurate
-				&& isFromSameProvider) {
+		} else if (isNewer && !isSignificantlyLessAccurate && isFromSameProvider) {
 			return true;
 		}
 		return false;
@@ -447,8 +420,7 @@ public final class LocationUtils {
 	 * @return latitude degrees
 	 */
 	public static double latitudeDistance(int meters) {
-		return (meters * 360)
-				/ (2 * Math.PI * LocationConstants.EQUATORIALRADIUS);
+		return (meters * 360) / (2 * Math.PI * LocationConstants.EQUATORIALRADIUS);
 	}
 
 	/**
@@ -465,10 +437,9 @@ public final class LocationUtils {
 	 * @param lat2
 	 * @return Distance in Km
 	 */
-	public static double lawOfCosineDistance(double lon1, double lat1,
-			double lon2, double lat2) {
-		return Math.acos(Math.sin(lat1) * Math.sin(lat2) + Math.cos(lat1)
-				* Math.cos(lat2) * Math.cos(lon2 - lon1)) * 6371;
+	public static double lawOfCosineDistance(double lon1, double lat1, double lon2, double lat2) {
+		return Math.acos(Math.sin(lat1) * Math.sin(lat2) + Math.cos(lat1) * Math.cos(lat2)
+				* Math.cos(lon2 - lon1)) * 6371;
 	}
 
 	/**
@@ -483,8 +454,8 @@ public final class LocationUtils {
 	 */
 	public static double longitudeDistance(int meters, double latitude) {
 		return (meters * 360)
-				/ (2 * Math.PI * LocationConstants.EQUATORIALRADIUS * Math
-						.cos(Math.toRadians(latitude)));
+				/ (2 * Math.PI * LocationConstants.EQUATORIALRADIUS * Math.cos(Math
+						.toRadians(latitude)));
 	}
 
 	/**
@@ -499,8 +470,8 @@ public final class LocationUtils {
 	 */
 	public static double longitudeDistance(int meters, int latitude) {
 		return (meters * 360)
-				/ (2 * Math.PI * LocationConstants.EQUATORIALRADIUS * Math
-						.cos(Math.toRadians(intToDouble(latitude))));
+				/ (2 * Math.PI * LocationConstants.EQUATORIALRADIUS * Math.cos(Math
+						.toRadians(intToDouble(latitude))));
 	}
 
 	/**
@@ -512,18 +483,15 @@ public final class LocationUtils {
 	 */
 	public static String toGPX(final List<Location> g) {
 		StringBuilder sb = new StringBuilder();
-		sb.append(
-				"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>")
+		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>")
 				.append("\n");
 		sb.append(
 				"<gpx xmlns=\"http://www.topografix.com/GPX/1/1\" creator=\"byHand\" "
 						+ "version=\"1.1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
 						+ "xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 "
-						+ "http://www.topografix.com/GPX/1/1/gpx.xsd\">")
-				.append("\n");
+						+ "http://www.topografix.com/GPX/1/1/gpx.xsd\">").append("\n");
 		for (Location c : g) {
-			sb.append("\t<wpt ").append("lat=\"").append(c.getLatitude())
-					.append("\" ");
+			sb.append("\t<wpt ").append("lat=\"").append(c.getLatitude()).append("\" ");
 			sb.append("lon=\"").append(c.getLongitude()).append("\"/>");
 			sb.append("\n");
 		}
@@ -569,11 +537,9 @@ public final class LocationUtils {
 	 */
 	public static double validateLongitude(double lon) {
 		if (lon < LONGITUDE_MIN) {
-			throw new IllegalArgumentException("invalid longitude value: "
-					+ lon);
+			throw new IllegalArgumentException("invalid longitude value: " + lon);
 		} else if (lon > LONGITUDE_MAX) {
-			throw new IllegalArgumentException("invalid longitude value: "
-					+ lon);
+			throw new IllegalArgumentException("invalid longitude value: " + lon);
 		} else {
 			return lon;
 		}
@@ -602,10 +568,8 @@ public final class LocationUtils {
 	public static double vincentyDistance(Location gc1, Location gc2) {
 		double f = 1 / LocationConstants.INVERSEFLATTENING;
 		double L = Math.toRadians(gc2.getLongitude() - gc1.getLongitude());
-		double U1 = Math.atan((1 - f)
-				* Math.tan(Math.toRadians(gc1.getLatitude())));
-		double U2 = Math.atan((1 - f)
-				* Math.tan(Math.toRadians(gc2.getLatitude())));
+		double U1 = Math.atan((1 - f) * Math.tan(Math.toRadians(gc1.getLatitude())));
+		double U2 = Math.atan((1 - f) * Math.tan(Math.toRadians(gc2.getLatitude())));
 		double sinU1 = Math.sin(U1), cosU1 = Math.cos(U1);
 		double sinU2 = Math.sin(U2), cosU2 = Math.cos(U2);
 
@@ -636,10 +600,8 @@ public final class LocationUtils {
 					+ (1 - C)
 					* f
 					* sinAlpha
-					* (sigma + C
-							* sinSigma
-							* (cos2SigmaM + C * cosSigma
-									* (-1 + 2 * cos2SigmaM * cos2SigmaM)));
+					* (sigma + C * sinSigma
+							* (cos2SigmaM + C * cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM)));
 		} while ((Math.abs(lambda - lambdaP) > 1e-12) && (--iterLimit > 0));
 
 		if (iterLimit == 0) {
@@ -650,15 +612,13 @@ public final class LocationUtils {
 				* (Math.pow(LocationConstants.EQUATORIALRADIUS, 2) - Math.pow(
 						LocationConstants.POLARRADIUS, 2))
 				/ Math.pow(LocationConstants.POLARRADIUS, 2);
-		double A = 1 + uSq / 16384
-				* (4096 + uSq * (-768 + uSq * (320 - 175 * uSq)));
+		double A = 1 + uSq / 16384 * (4096 + uSq * (-768 + uSq * (320 - 175 * uSq)));
 		double B = uSq / 1024 * (256 + uSq * (-128 + uSq * (74 - 47 * uSq)));
 		double deltaSigma = B
 				* sinSigma
 				* (cos2SigmaM + B
 						/ 4
-						* (cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM) - B
-								/ 6 * cos2SigmaM
+						* (cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM) - B / 6 * cos2SigmaM
 								* (-3 + 4 * sinSigma * sinSigma)
 								* (-3 + 4 * cos2SigmaM * cos2SigmaM)));
 		double s = LocationConstants.POLARRADIUS * A * (sigma - deltaSigma);
@@ -700,8 +660,8 @@ public final class LocationUtils {
 	 * @return an array of LatLon representing the points that estimate the
 	 *         circular region
 	 */
-	public static Location[] getCircularRegion(int numberOfPoints,
-			double centerLatitude, double centerLongitude, double radius) {
+	public static Location[] getCircularRegion(int numberOfPoints, double centerLatitude,
+			double centerLongitude, double radius) {
 		if (radius >= LocationConstants.HALF_EARTH_CIRCUMFERENCE) {
 			Location[] points = new Location[5];
 			points[0] = new Location(LOCATION_PROVIDER);
@@ -722,8 +682,7 @@ public final class LocationUtils {
 		// plus one to add closing point
 		Location[] points = new Location[numberOfPoints + 1];
 		for (int i = 0; i < 360; i += (360 / numberOfPoints)) {
-			points[i] = getPointOnGreatCircle(centerLatitude, centerLongitude,
-					radius, i);
+			points[i] = getPointOnGreatCircle(centerLatitude, centerLongitude, radius, i);
 		}
 
 		points[numberOfPoints] = points[0];

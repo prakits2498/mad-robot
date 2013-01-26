@@ -18,10 +18,9 @@ import java.util.Map;
  * Maintains the current {@link Path} as a stream is moved through.
  * 
  * <p>
- * Can be linked to a
- * {@link com.madrobot.di.xml.io.HierarchicalStreamWriter} or
- * {@link com.madrobot.di.xml.io.HierarchicalStreamReader} by wrapping
- * them with a {@link PathTrackingWriter} or {@link PathTrackingReader}.
+ * Can be linked to a {@link com.madrobot.di.xml.io.HierarchicalStreamWriter} or
+ * {@link com.madrobot.di.xml.io.HierarchicalStreamReader} by wrapping them with
+ * a {@link PathTrackingWriter} or {@link PathTrackingReader}.
  * </p>
  * 
  * <h3>Example</h3>
@@ -163,8 +162,7 @@ public class PathTracker {
 			indexMapStack[pointer] = indexMap;
 		}
 		if (indexMap.containsKey(name)) {
-			indexMap.put(name,
-					new Integer(((Integer) indexMap.get(name)).intValue() + 1));
+			indexMap.put(name, new Integer(((Integer) indexMap.get(name)).intValue() + 1));
 		} else {
 			indexMap.put(name, new Integer(1));
 		}

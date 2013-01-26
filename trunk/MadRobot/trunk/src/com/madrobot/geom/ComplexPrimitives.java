@@ -35,8 +35,7 @@ public class ComplexPrimitives {
 	 *            distance length from 1, 0.0 will put it at point 1.
 	 * @return Array of the five coordinates [x,y,...].
 	 */
-	public static int[] createArrow(int[] x, int[] y, double length,
-			double angle, double inset) {
+	public static int[] createArrow(int[] x, int[] y, double length, double angle, double inset) {
 		int[] arrow = new int[10];
 
 		int x0 = x[x.length - 1];
@@ -56,10 +55,8 @@ public class ComplexPrimitives {
 		// Polyline angle
 		double v = dx == 0.0 ? Math.PI / 2.0 : Math.atan(Math.abs(dy / dx));
 
-		v = (dx > 0.0) && (dy <= 0.0) ? Math.PI + v
-				: (dx > 0.0) && (dy >= 0.0) ? Math.PI - v : (dx <= 0.0)
-						&& (dy < 0.0) ? -v : (dx <= 0.0) && (dy > 0.0) ? +v
-						: 0.0;
+		v = (dx > 0.0) && (dy <= 0.0) ? Math.PI + v : (dx > 0.0) && (dy >= 0.0) ? Math.PI - v
+				: (dx <= 0.0) && (dy < 0.0) ? -v : (dx <= 0.0) && (dy > 0.0) ? +v : 0.0;
 
 		double v0 = v + angle;
 		double v1 = v - angle;
@@ -101,8 +98,8 @@ public class ComplexPrimitives {
 	 *            Second angle of sector (in radians).
 	 * @return Geometry of secor [x,y,...]
 	 */
-	public static int[] createSector(int x0, int y0, int dx, int dy,
-			double angle0, double angle1) {
+	public static int[] createSector(int x0, int y0, int dx, int dy, double angle0,
+			double angle1) {
 		// Determine a sensible number of points for arc
 		double angleSpan = Math.abs(angle1 - angle0);
 		double arcDistance = Math.max(dx, dy) * angleSpan;
@@ -148,8 +145,7 @@ public class ComplexPrimitives {
 	 *            Number of arms.
 	 * @return Geometry of star [x,y,x,y,...].
 	 */
-	public static int[] createStar(int x0, int y0, int innerRadius,
-			int outerRadius, int nArms) {
+	public static int[] createStar(int x0, int y0, int innerRadius, int outerRadius, int nArms) {
 		int nPoints = nArms * 2 + 1;
 
 		int[] xy = new int[nPoints * 2];

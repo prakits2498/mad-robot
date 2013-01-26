@@ -25,8 +25,8 @@ public class RectangleUtils {
 	 * @param r2Height
 	 * @return
 	 */
-	public static boolean isInside(final int r1X, final int r1Y, int r1Width,
-			int r1Height, int r2X, int r2Y, int r2Width, int r2Height) {
+	public static boolean isInside(final int r1X, final int r1Y, int r1Width, int r1Height,
+			int r2X, int r2Y, int r2Width, int r2Height) {
 		if ((r2Width | r2Height | r1Width | r1Height) < 0) {
 			return false;
 		}
@@ -64,8 +64,8 @@ public class RectangleUtils {
 	 *            ,y Point to check.
 	 * @return True if the point is inside the rectangle, false otherwise.
 	 */
-	public static boolean isPointInsideRectangle(float x0, float y0, float x1,
-			float y1, float x, float y) {
+	public static boolean isPointInsideRectangle(float x0, float y0, float x1, float y1,
+			float x, float y) {
 		return (x >= x0) && (x < x1) && (y >= y0) && (y < y1);
 	}
 
@@ -80,8 +80,8 @@ public class RectangleUtils {
 	 *            (inclusive).
 	 * @return True if the polyline intersects the rectangle, false otherwise.
 	 */
-	public static boolean isPolylineIntersectingRectangle(float[] x, float[] y,
-			float x0, float y0, float x1, float y1) {
+	public static boolean isPolylineIntersectingRectangle(float[] x, float[] y, float x0,
+			float y0, float x1, float y1) {
 		if (x.length == 0) {
 			return false;
 		}
@@ -94,8 +94,8 @@ public class RectangleUtils {
 
 		for (int i = 1; i < x.length; i++) {
 			if ((x[i - 1] != x[i]) || (y[i - 1] != y[i])) {
-				if (LineUtils.isLineIntersectingRectangle(x[i - 1], y[i - 1],
-						x[i], y[i], x0, y0, x1, y1)) {
+				if (LineUtils.isLineIntersectingRectangle(x[i - 1], y[i - 1], x[i], y[i], x0,
+						y0, x1, y1)) {
 					return true;
 				}
 			}
@@ -121,8 +121,8 @@ public class RectangleUtils {
 	 *            of the rectangle
 	 * @return
 	 */
-	public static boolean withinBounds(final float px, final float py,
-			final float x, final int y, int width, int height) {
+	public static boolean withinBounds(final float px, final float py, final float x,
+			final int y, int width, int height) {
 		if ((width | height) < 0) {
 			return false;
 		}
@@ -131,8 +131,7 @@ public class RectangleUtils {
 		} else {
 			width += x;
 			height += y;
-			return ((width < x) || (width > px))
-					&& ((height < y) || (height > py));
+			return ((width < x) || (width > px)) && ((height < y) || (height > py));
 		}
 	}
 

@@ -79,8 +79,8 @@ public class Model {
 			}
 			gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
 			gl.glNormalPointer(GL10.GL_FLOAT, 0, t.getNormalBuffer());
-			gl.glDrawElements(GL10.GL_TRIANGLES, t.getFacesCount(),
-					GL10.GL_UNSIGNED_SHORT, t.getFaceBuffer());
+			gl.glDrawElements(GL10.GL_TRIANGLES, t.getFacesCount(), GL10.GL_UNSIGNED_SHORT,
+					t.getFaceBuffer());
 			// gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
 			// gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
 			gl.glDisableClientState(GL10.GL_NORMAL_ARRAY);

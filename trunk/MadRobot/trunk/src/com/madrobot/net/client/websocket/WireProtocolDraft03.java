@@ -47,8 +47,7 @@ public class WireProtocolDraft03 extends WireProtocol {
 	}
 
 	@Override
-	public Message readMessage(WebSocket socket, DataInputStream input)
-			throws Exception {
+	public Message readMessage(WebSocket socket, DataInputStream input) throws Exception {
 		for (;;) {
 			int header1, header2;
 			try {
@@ -104,8 +103,7 @@ public class WireProtocolDraft03 extends WireProtocol {
 				byte[] closeCookie = socket.getCloseCookie();
 				// System.out.println("Close message.  Cookie=" + new
 				// String(closeCookie) + ", contents=" + new String(contents));
-				if (closeCookie == null
-						|| !Arrays.equals(contents, closeCookie)) {
+				if (closeCookie == null || !Arrays.equals(contents, closeCookie)) {
 					// This is not an ACK of our close
 					// Need to send a close ACK
 					socket.getTransmissionQueue().addHead(
@@ -115,9 +113,8 @@ public class WireProtocolDraft03 extends WireProtocol {
 					// wait for it.
 					int expectClose = input.read();
 					if (expectClose != -1)
-						throw new IOException(
-								"Protocol error.  Expected EOF.  Got "
-										+ expectClose);
+						throw new IOException("Protocol error.  Expected EOF.  Got "
+								+ expectClose);
 					return null;
 				} else {
 					// This is an ack of a previous close we sent. The writer
@@ -133,8 +130,8 @@ public class WireProtocolDraft03 extends WireProtocol {
 	}
 
 	@Override
-	public boolean sendMessage(WebSocket socket, DataOutputStream out,
-			Message message) throws Exception {
+	public boolean sendMessage(WebSocket socket, DataOutputStream out, Message message)
+			throws Exception {
 		int opcode = message.getOpcode();
 		byte[] data = message.getMessageData();
 		if (data == null)

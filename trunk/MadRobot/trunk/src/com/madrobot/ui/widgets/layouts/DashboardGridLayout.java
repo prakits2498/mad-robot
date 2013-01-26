@@ -1,4 +1,4 @@
-package com.madrobot.ui.widgets;
+package com.madrobot.ui.widgets.layouts;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -27,8 +27,8 @@ import android.view.ViewGroup;
  * <td><b>DashboardLayout with 12 widgets</b></td>
  * </tr>
  * <tr>
- * <td><img src="../../../../resources/dashboard_layout1.png"></td>
- * <td><img src="../../../../resources/dashboard_layout2.png"></td>
+ * <td><img src="../../../../../resources/dashboard_layout1.png"></td>
+ * <td><img src="../../../../../resources/dashboard_layout2.png"></td>
  * </tr>
  * </table>
  * <br/>
@@ -38,12 +38,13 @@ import android.view.ViewGroup;
  * <td><b>DashboardLayout with 24 widgets</b></td>
  * </tr>
  * <tr>
- * <td><img src="../../../../resources/dashboard_layout3.png"></td>
- * <td><img src="../../../../resources/dashboard_layout4.png"></td>
+ * <td><img src="../../../../../resources/dashboard_layout3.png"></td>
+ * <td><img src="../../../../../resources/dashboard_layout4.png"></td>
  * </tr>
- * </table><br/>
+ * </table>
+ * <br/>
  * DashboardLayout with a whole lot more<br/>
- * <img src="../../../../resources/dashboard_layout5.png">
+ * <img src="../../../../../resources/dashboard_layout5.png">
  * </p>
  * 
  */
@@ -88,8 +89,7 @@ public class DashboardGridLayout extends ViewGroup {
 			child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
 
 			mMaxChildWidth = Math.max(mMaxChildWidth, child.getMeasuredWidth());
-			mMaxChildHeight = Math.max(mMaxChildHeight,
-					child.getMeasuredHeight());
+			mMaxChildHeight = Math.max(mMaxChildHeight, child.getMeasuredHeight());
 		}
 
 		// Measure again for each child to be exactly the same size.
@@ -208,9 +208,8 @@ public class DashboardGridLayout extends ViewGroup {
 			left = hSpace * (col + 1) + width * col;
 			top = vSpace * (row + 1) + height * row;
 
-			child.layout(left, top, (hSpace == 0 && col == cols - 1) ? r
-					: (left + width), (vSpace == 0 && row == rows - 1) ? b
-					: (top + height));
+			child.layout(left, top, (hSpace == 0 && col == cols - 1) ? r : (left + width),
+					(vSpace == 0 && row == rows - 1) ? b : (top + height));
 			++visibleIndex;
 		}
 	}

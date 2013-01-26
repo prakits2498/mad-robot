@@ -81,13 +81,13 @@ public class StatefulWriter extends WriterWrapper {
 	public void addAttribute(String name, String value) {
 		checkClosed();
 		if (state != STATE_NODE_START) {
-			throw new StreamException(new IllegalStateException(
-					"Writing attribute '" + name + "' without an opened node"));
+			throw new StreamException(new IllegalStateException("Writing attribute '" + name
+					+ "' without an opened node"));
 		}
 		Set currentAttributes = (Set) attributes.peek();
 		if (currentAttributes.contains(name)) {
-			throw new StreamException(new IllegalStateException(
-					"Writing attribute '" + name + "' twice"));
+			throw new StreamException(new IllegalStateException("Writing attribute '" + name
+					+ "' twice"));
 		}
 		currentAttributes.add(name);
 		super.addAttribute(name, value);
@@ -95,8 +95,7 @@ public class StatefulWriter extends WriterWrapper {
 
 	private void checkClosed() {
 		if (state == STATE_CLOSED) {
-			throw new StreamException(new IOException(
-					"Writing on a closed stream"));
+			throw new StreamException(new IOException("Writing on a closed stream"));
 		}
 	}
 
@@ -115,8 +114,7 @@ public class StatefulWriter extends WriterWrapper {
 	public void endNode() {
 		checkClosed();
 		if (balance-- == 0) {
-			throw new StreamException(new IllegalStateException(
-					"Unbalanced node"));
+			throw new StreamException(new IllegalStateException("Unbalanced node"));
 		}
 		attributes.popSilently();
 		state = STATE_NODE_END;

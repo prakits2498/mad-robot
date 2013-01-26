@@ -127,8 +127,7 @@ public interface OAuthConsumer extends Serializable {
 	 * @throws OAuthExpectationFailedException
 	 * @throws OAuthCommunicationException
 	 */
-	public HttpRequest sign(HttpRequest request)
-			throws OAuthMessageSignerException,
+	public HttpRequest sign(HttpRequest request) throws OAuthMessageSignerException,
 			OAuthExpectationFailedException, OAuthCommunicationException;
 
 	/**

@@ -103,8 +103,8 @@ public class JavaBeanConverter implements Converter {
 		if (classAttribute != null) {
 			return mapper.realClass(classAttribute);
 		} else {
-			return mapper.defaultImplementationOf(beanProvider.getPropertyType(
-					result, fieldName));
+			return mapper.defaultImplementationOf(beanProvider.getPropertyType(result,
+					fieldName));
 		}
 	}
 
@@ -117,46 +117,40 @@ public class JavaBeanConverter implements Converter {
 	}
 
 	@Override
-	public void marshal(final Object source,
-			final HierarchicalStreamWriter writer,
+	public void marshal(final Object source, final HierarchicalStreamWriter writer,
 			final MarshallingContext context) {
 		final String classAttributeName = classAttributeIdentifier != null ? classAttributeIdentifier
 				: mapper.aliasForSystemAttribute("class");
-		beanProvider.visitSerializableProperties(source,
-				new JavaBeanProvider.Visitor() {
-					@Override
-					public boolean shouldVisit(String name, Class definedIn) {
-						return mapper.shouldSerializeMember(definedIn, name);
-					}
+		beanProvider.visitSerializableProperties(source, new JavaBeanProvider.Visitor() {
+			@Override
+			public boolean shouldVisit(String name, Class definedIn) {
+				return mapper.shouldSerializeMember(definedIn, name);
+			}
 
-					@Override
-					public void visit(String propertyName, Class fieldType,
-							Class definedIn, Object newObj) {
-						if (newObj != null) {
-							writeField(propertyName, fieldType, newObj,
-									definedIn);
-						}
-					}
+			@Override
+			public void visit(String propertyName, Class fieldType, Class definedIn,
+					Object newObj) {
+				if (newObj != null) {
+					writeField(propertyName, fieldType, newObj, definedIn);
+				}
+			}
 
-					private void writeField(String propertyName,
-							Class fieldType, Object newObj, Class definedIn) {
-						String serializedMember = mapper.serializedMember(
-								source.getClass(), propertyName);
-						ExtendedHierarchicalStreamWriterHelper.startNode(
-								writer, serializedMember, fieldType);
-						Class actualType = newObj.getClass();
-						Class defaultType = mapper
-								.defaultImplementationOf(fieldType);
-						if (!actualType.equals(defaultType)
-								&& classAttributeName != null) {
-							writer.addAttribute(classAttributeName,
-									mapper.serializedClass(actualType));
-						}
-						context.convertAnother(newObj);
+			private void writeField(String propertyName, Class fieldType, Object newObj,
+					Class definedIn) {
+				String serializedMember = mapper.serializedMember(source.getClass(),
+						propertyName);
+				ExtendedHierarchicalStreamWriterHelper.startNode(writer, serializedMember,
+						fieldType);
+				Class actualType = newObj.getClass();
+				Class defaultType = mapper.defaultImplementationOf(fieldType);
+				if (!actualType.equals(defaultType) && classAttributeName != null) {
+					writer.addAttribute(classAttributeName, mapper.serializedClass(actualType));
+				}
+				context.convertAnother(newObj);
 
-						writer.endNode();
-					}
-				});
+				writer.endNode();
+			}
+		});
 	}
 
 	@Override
@@ -167,8 +161,7 @@ public class JavaBeanConverter implements Converter {
 			@Override
 			public boolean add(Object e) {
 				if (!super.add(e)) {
-					throw new DuplicatePropertyException(
-							((FastField) e).getName());
+					throw new DuplicatePropertyException(((FastField) e).getName());
 				}
 				return true;
 			}
@@ -178,12 +171,11 @@ public class JavaBeanConverter implements Converter {
 		while (reader.hasMoreChildren()) {
 			reader.moveDown();
 
-			String propertyName = mapper.realMember(resultType,
-					reader.getNodeName());
+			String propertyName = mapper.realMember(resultType, reader.getNodeName());
 
 			if (mapper.shouldSerializeMember(resultType, propertyName)) {
-				boolean propertyExistsInClass = beanProvider
-						.propertyDefinedInClass(propertyName, resultType);
+				boolean propertyExistsInClass = beanProvider.propertyDefinedInClass(
+						propertyName, resultType);
 
 				if (propertyExistsInClass) {
 					Class type = determineType(reader, result, propertyName);
@@ -191,8 +183,7 @@ public class JavaBeanConverter implements Converter {
 					beanProvider.writeProperty(result, propertyName, value);
 					seenProperties.add(new FastField(resultType, propertyName));
 				} else {
-					throw new MissingFieldException(resultType.getName(),
-							propertyName);
+					throw new MissingFieldException(resultType.getName(), propertyName);
 				}
 			}
 			reader.moveUp();

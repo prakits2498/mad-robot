@@ -36,10 +36,9 @@ public class SVG {
 
 		@Override
 		public String toString() {
-			return "MetaData [title=" + title + ", description=" + description
-					+ "]";
+			return "MetaData [title=" + title + ", description=" + description + "]";
 		}
-		
+
 	}
 
 	private MetaData data;

@@ -63,8 +63,7 @@ class PackageAliasingMapper extends MapperWrapper implements Serializable {
 		packageToName = new TreeMap(REVERSE);
 		packageToName.putAll((Map) in.readObject());
 		nameToPackage = new HashMap();
-		for (final Iterator iter = packageToName.keySet().iterator(); iter
-				.hasNext();) {
+		for (final Iterator iter = packageToName.keySet().iterator(); iter.hasNext();) {
 			final Object type = iter.next();
 			nameToPackage.put(packageToName.get(type), type);
 		}
@@ -76,14 +75,12 @@ class PackageAliasingMapper extends MapperWrapper implements Serializable {
 		int dot = -1;
 		do {
 			dot = elementName.lastIndexOf('.', length);
-			final String name = dot < 0 ? ""
-					: elementName.substring(0, dot) + '.';
+			final String name = dot < 0 ? "" : elementName.substring(0, dot) + '.';
 			final String packageName = (String) nameToPackage.get(name);
 
 			if (packageName != null) {
 				elementName = packageName
-						+ (dot < 0 ? elementName : elementName
-								.substring(dot + 1));
+						+ (dot < 0 ? elementName : elementName.substring(dot + 1));
 				break;
 			}
 			length = dot - 1;
@@ -102,8 +99,7 @@ class PackageAliasingMapper extends MapperWrapper implements Serializable {
 			final String pkg = dot < 0 ? "" : className.substring(0, dot + 1);
 			final String alias = (String) packageToName.get(pkg);
 			if (alias != null) {
-				return alias
-						+ (dot < 0 ? className : className.substring(dot + 1));
+				return alias + (dot < 0 ? className : className.substring(dot + 1));
 			}
 			length = dot - 1;
 		} while (dot >= 0);

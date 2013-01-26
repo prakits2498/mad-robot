@@ -91,8 +91,7 @@ public class XmlFriendlyNameCoder implements NameCoder, Cloneable {
 		list.add(0xF900, 0xFDCF);
 		list.add(0xFDF0, 0xFFFD);
 		list.add(0x10000, 0xEFFFF);
-		XML_NAME_START_CHAR_BOUNDS = (IntPair[]) list.toArray(new IntPair[list
-				.size()]);
+		XML_NAME_START_CHAR_BOUNDS = (IntPair[]) list.toArray(new IntPair[list.size()]);
 
 		list.clear();
 		list.add('-');
@@ -101,8 +100,7 @@ public class XmlFriendlyNameCoder implements NameCoder, Cloneable {
 		list.add('\u00b7');
 		list.add(0x0300, 0x036F);
 		list.add(0x203F, 0x2040);
-		XML_NAME_CHAR_EXTRA_BOUNDS = (IntPair[]) list.toArray(new IntPair[list
-				.size()]);
+		XML_NAME_CHAR_EXTRA_BOUNDS = (IntPair[]) list.toArray(new IntPair[list.size()]);
 	}
 
 	private static boolean isInNameCharBounds(int cp, IntPair[] nameCharBounds) {
@@ -153,8 +151,7 @@ public class XmlFriendlyNameCoder implements NameCoder, Cloneable {
 	 * @param escapeCharReplacement
 	 * @since 1.4
 	 */
-	public XmlFriendlyNameCoder(String dollarReplacement,
-			String escapeCharReplacement) {
+	public XmlFriendlyNameCoder(String dollarReplacement, String escapeCharReplacement) {
 		this(dollarReplacement, escapeCharReplacement, "_.");
 	}
 
@@ -167,8 +164,8 @@ public class XmlFriendlyNameCoder implements NameCoder, Cloneable {
 	 * @param escapeCharReplacement
 	 * @since 1.4
 	 */
-	public XmlFriendlyNameCoder(String dollarReplacement,
-			String escapeCharReplacement, String hexPrefix) {
+	public XmlFriendlyNameCoder(String dollarReplacement, String escapeCharReplacement,
+			String hexPrefix) {
 		this.dollarReplacement = dollarReplacement;
 		this.escapeCharReplacement = escapeCharReplacement;
 		this.hexPrefix = hexPrefix;
@@ -183,8 +180,7 @@ public class XmlFriendlyNameCoder implements NameCoder, Cloneable {
 			return coder;
 
 		} catch (CloneNotSupportedException e) {
-			throw new ObjectAccessException(
-					"Cannot clone XmlFriendlyNameCoder", e);
+			throw new ObjectAccessException("Cannot clone XmlFriendlyNameCoder", e);
 		}
 	}
 
@@ -200,8 +196,7 @@ public class XmlFriendlyNameCoder implements NameCoder, Cloneable {
 		String s = (String) unescapeCache.get(name);
 		if (s == null) {
 			final char dollarReplacementFirstChar = dollarReplacement.charAt(0);
-			final char escapeReplacementFirstChar = escapeCharReplacement
-					.charAt(0);
+			final char escapeReplacementFirstChar = escapeCharReplacement.charAt(0);
 			final char hexPrefixFirstChar = hexPrefix.charAt(0);
 			final int length = name.length();
 
@@ -211,8 +206,7 @@ public class XmlFriendlyNameCoder implements NameCoder, Cloneable {
 			for (; i < length; i++) {
 				char c = name.charAt(i);
 				// We'll do a quick check for potential match
-				if (c == dollarReplacementFirstChar
-						|| c == escapeReplacementFirstChar
+				if (c == dollarReplacementFirstChar || c == escapeReplacementFirstChar
 						|| c == hexPrefixFirstChar) {
 					// and if it might be a match, just quit, will check later
 					// on
@@ -234,12 +228,10 @@ public class XmlFriendlyNameCoder implements NameCoder, Cloneable {
 
 			for (; i < length; i++) {
 				char c = name.charAt(i);
-				if (c == dollarReplacementFirstChar
-						&& name.startsWith(dollarReplacement, i)) {
+				if (c == dollarReplacementFirstChar && name.startsWith(dollarReplacement, i)) {
 					i += dollarReplacement.length() - 1;
 					result.append('$');
-				} else if (c == hexPrefixFirstChar
-						&& name.startsWith(hexPrefix, i)) {
+				} else if (c == hexPrefixFirstChar && name.startsWith(hexPrefix, i)) {
 					i += hexPrefix.length();
 					c = (char) Integer.parseInt(name.substring(i, i + 4), 16);
 					i += 3;
@@ -308,8 +300,7 @@ public class XmlFriendlyNameCoder implements NameCoder, Cloneable {
 					result.append(dollarReplacement);
 				} else if (c == '_') {
 					result.append(escapeCharReplacement);
-				} else if ((i == 0 && !isXmlNameStartChar(c))
-						|| (i > 0 && !isXmlNameChar(c))) {
+				} else if ((i == 0 && !isXmlNameStartChar(c)) || (i > 0 && !isXmlNameChar(c))) {
 					result.append(hexPrefix);
 					if (c < 16)
 						result.append("000");

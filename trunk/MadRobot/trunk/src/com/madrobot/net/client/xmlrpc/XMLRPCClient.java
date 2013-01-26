@@ -190,8 +190,7 @@ public class XMLRPCClient extends XMLRPCCommon {
 	 * @param HttpClient
 	 *            to use
 	 */
-	public XMLRPCClient(String url, String username, String password,
-			HttpClient client) {
+	public XMLRPCClient(String url, String username, String password, HttpClient client) {
 		this(URI.create(url), username, password, client);
 	}
 
@@ -205,8 +204,7 @@ public class XMLRPCClient extends XMLRPCCommon {
 	public XMLRPCClient(URI uri) {
 		SchemeRegistry registry = new SchemeRegistry();
 		registry.register(new Scheme("http", new PlainSocketFactory(), 80));
-		registry.register(new Scheme("https", SSLSocketFactory
-				.getSocketFactory(), 443));
+		registry.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), 443));
 
 		postMethod = new HttpPost(uri);
 		postMethod.addHeader("Content-Type", "text/xml");
@@ -216,8 +214,8 @@ public class XMLRPCClient extends XMLRPCCommon {
 		// two second delay between sending http POST request and POST body
 		httpParams = postMethod.getParams();
 		HttpProtocolParams.setUseExpectContinue(httpParams, false);
-		this.client = new DefaultHttpClient(new ThreadSafeClientConnManager(
-				httpParams, registry), httpParams);
+		this.client = new DefaultHttpClient(new ThreadSafeClientConnManager(httpParams,
+				registry), httpParams);
 	}
 
 	/**
@@ -256,11 +254,9 @@ public class XMLRPCClient extends XMLRPCCommon {
 	public XMLRPCClient(URI uri, String username, String password) {
 		this(uri);
 
-		((DefaultHttpClient) client).getCredentialsProvider()
-				.setCredentials(
-						new AuthScope(uri.getHost(), uri.getPort(),
-								AuthScope.ANY_REALM),
-						new UsernamePasswordCredentials(username, password));
+		((DefaultHttpClient) client).getCredentialsProvider().setCredentials(
+				new AuthScope(uri.getHost(), uri.getPort(), AuthScope.ANY_REALM),
+				new UsernamePasswordCredentials(username, password));
 	}
 
 	/**
@@ -276,15 +272,12 @@ public class XMLRPCClient extends XMLRPCCommon {
 	 * @param HttpClient
 	 *            to use
 	 */
-	public XMLRPCClient(URI uri, String username, String password,
-			HttpClient client) {
+	public XMLRPCClient(URI uri, String username, String password, HttpClient client) {
 		this(uri, client);
 
-		((DefaultHttpClient) this.client).getCredentialsProvider()
-				.setCredentials(
-						new AuthScope(uri.getHost(), uri.getPort(),
-								AuthScope.ANY_REALM),
-						new UsernamePasswordCredentials(username, password));
+		((DefaultHttpClient) this.client).getCredentialsProvider().setCredentials(
+				new AuthScope(uri.getHost(), uri.getPort(), AuthScope.ANY_REALM),
+				new UsernamePasswordCredentials(username, password));
 	}
 
 	/**
@@ -339,8 +332,7 @@ public class XMLRPCClient extends XMLRPCCommon {
 	 * @param HttpClient
 	 *            to use
 	 */
-	public XMLRPCClient(URL url, String username, String password,
-			HttpClient client) {
+	public XMLRPCClient(URL url, String username, String password, HttpClient client) {
 		this(URI.create(url.toExternalForm()), username, password, client);
 	}
 
@@ -383,8 +375,7 @@ public class XMLRPCClient extends XMLRPCCommon {
 	 * @return deserialized method return value
 	 * @throws XMLRPCException
 	 */
-	public Object call(String method, Object p0, Object p1)
-			throws XMLRPCException {
+	public Object call(String method, Object p0, Object p1) throws XMLRPCException {
 		Object[] params = { p0, p1, };
 		return callEx(method, params);
 	}
@@ -403,8 +394,7 @@ public class XMLRPCClient extends XMLRPCCommon {
 	 * @return deserialized method return value
 	 * @throws XMLRPCException
 	 */
-	public Object call(String method, Object p0, Object p1, Object p2)
-			throws XMLRPCException {
+	public Object call(String method, Object p0, Object p1, Object p2) throws XMLRPCException {
 		Object[] params = { p0, p1, p2, };
 		return callEx(method, params);
 	}
@@ -449,8 +439,8 @@ public class XMLRPCClient extends XMLRPCCommon {
 	 * @return deserialized method return value
 	 * @throws XMLRPCException
 	 */
-	public Object call(String method, Object p0, Object p1, Object p2,
-			Object p3, Object p4) throws XMLRPCException {
+	public Object call(String method, Object p0, Object p1, Object p2, Object p3, Object p4)
+			throws XMLRPCException {
 		Object[] params = { p0, p1, p2, p3, p4, };
 		return callEx(method, params);
 	}
@@ -475,8 +465,8 @@ public class XMLRPCClient extends XMLRPCCommon {
 	 * @return deserialized method return value
 	 * @throws XMLRPCException
 	 */
-	public Object call(String method, Object p0, Object p1, Object p2,
-			Object p3, Object p4, Object p5) throws XMLRPCException {
+	public Object call(String method, Object p0, Object p1, Object p2, Object p3, Object p4,
+			Object p5) throws XMLRPCException {
 		Object[] params = { p0, p1, p2, p3, p4, p5, };
 		return callEx(method, params);
 	}
@@ -503,8 +493,8 @@ public class XMLRPCClient extends XMLRPCCommon {
 	 * @return deserialized method return value
 	 * @throws XMLRPCException
 	 */
-	public Object call(String method, Object p0, Object p1, Object p2,
-			Object p3, Object p4, Object p5, Object p6) throws XMLRPCException {
+	public Object call(String method, Object p0, Object p1, Object p2, Object p3, Object p4,
+			Object p5, Object p6) throws XMLRPCException {
 		Object[] params = { p0, p1, p2, p3, p4, p5, p6, };
 		return callEx(method, params);
 	}
@@ -533,9 +523,8 @@ public class XMLRPCClient extends XMLRPCCommon {
 	 * @return deserialized method return value
 	 * @throws XMLRPCException
 	 */
-	public Object call(String method, Object p0, Object p1, Object p2,
-			Object p3, Object p4, Object p5, Object p6, Object p7)
-			throws XMLRPCException {
+	public Object call(String method, Object p0, Object p1, Object p2, Object p3, Object p4,
+			Object p5, Object p6, Object p7) throws XMLRPCException {
 		Object[] params = { p0, p1, p2, p3, p4, p5, p6, p7, };
 		return callEx(method, params);
 	}
@@ -590,12 +579,8 @@ public class XMLRPCClient extends XMLRPCCommon {
 			// by the basic authentication mechanism of DefaultHttpClient
 			if (this.httpPreAuth == true) {
 				String auth = this.username + ":" + this.password;
-				postMethod
-						.addHeader(
-								"Authorization",
-								"Basic "
-										+ Base64.encode(auth.getBytes(),
-												Base64.DEFAULT).toString());
+				postMethod.addHeader("Authorization",
+						"Basic " + Base64.encode(auth.getBytes(), Base64.DEFAULT).toString());
 			}
 
 			// Log.d(Tag.LOG, "ros HTTP POST");
@@ -607,18 +592,16 @@ public class XMLRPCClient extends XMLRPCCommon {
 			int statusCode = response.getStatusLine().getStatusCode();
 			// Log.d(Tag.LOG, "ros status code:" + statusCode);
 			if (statusCode != HttpStatus.SC_OK) {
-				throw new XMLRPCException("HTTP status code: " + statusCode
-						+ " != " + HttpStatus.SC_OK);
+				throw new XMLRPCException("HTTP status code: " + statusCode + " != "
+						+ HttpStatus.SC_OK);
 			}
 
 			// parse response stuff
 			//
 			// setup pull parser
-			XmlPullParser pullParser = XmlPullParserFactory.newInstance()
-					.newPullParser();
+			XmlPullParser pullParser = XmlPullParserFactory.newInstance().newPullParser();
 			entity = response.getEntity();
-			Reader reader = new InputStreamReader(new BufferedInputStream(
-					entity.getContent()));
+			Reader reader = new InputStreamReader(new BufferedInputStream(entity.getContent()));
 			// for testing purposes only
 			// reader = new
 			// StringReader("<?xml version='1.0'?><methodResponse><params><param><value>\n\n\n</value></param></params></methodResponse>");
@@ -626,8 +609,7 @@ public class XMLRPCClient extends XMLRPCCommon {
 
 			// lets start pulling...
 			pullParser.nextTag();
-			pullParser.require(XmlPullParser.START_TAG, null,
-					Tag.METHOD_RESPONSE);
+			pullParser.require(XmlPullParser.START_TAG, null, Tag.METHOD_RESPONSE);
 
 			pullParser.nextTag(); // either Tag.PARAMS (<params>) or Tag.FAULT
 									// (<fault>)
@@ -672,15 +654,14 @@ public class XMLRPCClient extends XMLRPCCommon {
 		}
 	}
 
-	private String methodCall(String method, Object[] params)
-			throws IllegalArgumentException, IllegalStateException, IOException {
+	private String methodCall(String method, Object[] params) throws IllegalArgumentException,
+			IllegalStateException, IOException {
 		StringWriter bodyWriter = new StringWriter();
 		serializer.setOutput(bodyWriter);
 		serializer.startDocument(null, null);
 		serializer.startTag(null, Tag.METHOD_CALL);
 		// set method name
-		serializer.startTag(null, Tag.METHOD_NAME).text(method)
-				.endTag(null, Tag.METHOD_NAME);
+		serializer.startTag(null, Tag.METHOD_NAME).text(method).endTag(null, Tag.METHOD_NAME);
 
 		serializeParams(params);
 
@@ -723,13 +704,10 @@ public class XMLRPCClient extends XMLRPCCommon {
 			this.username = username;
 			this.password = password;
 		} else {
-			((DefaultHttpClient) client)
-					.getCredentialsProvider()
-					.setCredentials(
-							new AuthScope(postMethod.getURI().getHost(),
-									postMethod.getURI().getPort(),
-									AuthScope.ANY_REALM),
-							new UsernamePasswordCredentials(username, password));
+			((DefaultHttpClient) client).getCredentialsProvider().setCredentials(
+					new AuthScope(postMethod.getURI().getHost(),
+							postMethod.getURI().getPort(), AuthScope.ANY_REALM),
+					new UsernamePasswordCredentials(username, password));
 		}
 	}
 

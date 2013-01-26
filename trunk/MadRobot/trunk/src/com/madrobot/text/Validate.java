@@ -134,8 +134,8 @@ public class Validate {
 	 *             if the value falls out of the boundaries
 	 * @see #exclusiveBetween(Object, Object, Comparable)
 	 */
-	public static <T> void exclusiveBetween(T start, T end,
-			Comparable<T> value, String message, Object... values) {
+	public static <T> void exclusiveBetween(T start, T end, Comparable<T> value,
+			String message, Object... values) {
 		if (value.compareTo(start) <= 0 || value.compareTo(end) >= 0) {
 			throw new IllegalArgumentException(String.format(message, values));
 		}
@@ -193,8 +193,8 @@ public class Validate {
 	 *             if the value falls out of the boundaries
 	 * @see #inclusiveBetween(Object, Object, Comparable)
 	 */
-	public static <T> void inclusiveBetween(T start, T end,
-			Comparable<T> value, String message, Object... values) {
+	public static <T> void inclusiveBetween(T start, T end, Comparable<T> value,
+			String message, Object... values) {
 		if (value.compareTo(start) < 0 || value.compareTo(end) > 0) {
 			throw new IllegalArgumentException(String.format(message, values));
 		}
@@ -227,8 +227,8 @@ public class Validate {
 	 */
 	public static void isAssignableFrom(Class<?> superType, Class<?> type) {
 		if (superType.isAssignableFrom(type) == false) {
-			throw new IllegalArgumentException(String.format(
-					DEFAULT_IS_ASSIGNABLE_EX_MESSAGE, superType.getName()));
+			throw new IllegalArgumentException(String.format(DEFAULT_IS_ASSIGNABLE_EX_MESSAGE,
+					superType.getName()));
 		}
 	}
 
@@ -264,8 +264,8 @@ public class Validate {
 	 *             if argument can not be converted to the specified class
 	 * @see #isAssignableFrom(Class, Class)
 	 */
-	public static void isAssignableFrom(Class<?> superType, Class<?> type,
-			String message, Object... values) {
+	public static void isAssignableFrom(Class<?> superType, Class<?> type, String message,
+			Object... values) {
 		if (superType.isAssignableFrom(type) == false) {
 			throw new IllegalArgumentException(String.format(message, values));
 		}
@@ -313,8 +313,8 @@ public class Validate {
 	 * </p>
 	 * 
 	 * <pre>
-	 * Validate.isInstanceOf(OkClass.classs, object,
-	 * 		&quot;Wrong class, object is of class %s&quot;, object.getClass().getName());
+	 * Validate.isInstanceOf(OkClass.classs, object, &quot;Wrong class, object is of class %s&quot;, object
+	 * 		.getClass().getName());
 	 * </pre>
 	 * 
 	 * @param type
@@ -329,8 +329,7 @@ public class Validate {
 	 *             if argument is not of specified class
 	 * @see #isInstanceOf(Class, Object)
 	 */
-	public static void isInstanceOf(Class<?> type, Object o, String message,
-			Object... values) {
+	public static void isInstanceOf(Class<?> type, Object o, String message, Object... values) {
 		if (type.isInstance(o) == false) {
 			throw new IllegalArgumentException(String.format(message, values));
 		}
@@ -404,8 +403,7 @@ public class Validate {
 	 */
 	public static void isTrue(boolean expression, String message, double value) {
 		if (expression == false) {
-			throw new IllegalArgumentException(String.format(message,
-					new Double(value)));
+			throw new IllegalArgumentException(String.format(message, new Double(value)));
 		}
 	}
 
@@ -441,8 +439,7 @@ public class Validate {
 	 */
 	public static void isTrue(boolean expression, String message, long value) {
 		if (expression == false) {
-			throw new IllegalArgumentException(String.format(message,
-					Long.valueOf(value)));
+			throw new IllegalArgumentException(String.format(message, Long.valueOf(value)));
 		}
 	}
 
@@ -459,8 +456,7 @@ public class Validate {
 	 * </p>
 	 * 
 	 * <pre>
-	 * Validate.isTrue(i &gt;= min &amp;&amp; i &lt;= max, &quot;The value must be between %d and %d&quot;,
-	 * 		min, max);
+	 * Validate.isTrue(i &gt;= min &amp;&amp; i &lt;= max, &quot;The value must be between %d and %d&quot;, min, max);
 	 * Validate.isTrue(myObject.isOk(), &quot;The object is not okay&quot;);
 	 * </pre>
 	 * 
@@ -476,8 +472,7 @@ public class Validate {
 	 * @see #isTrue(boolean, String, long)
 	 * @see #isTrue(boolean, String, double)
 	 */
-	public static void isTrue(boolean expression, String message,
-			Object... values) {
+	public static void isTrue(boolean expression, String message, Object... values) {
 		if (expression == false) {
 			throw new IllegalArgumentException(String.format(message, values));
 		}
@@ -507,8 +502,8 @@ public class Validate {
 	 */
 	public static void matchesPattern(CharSequence input, String pattern) {
 		if (Pattern.matches(pattern, input) == false) {
-			throw new IllegalArgumentException(String.format(
-					DEFAULT_MATCHES_PATTERN_EX, input, pattern));
+			throw new IllegalArgumentException(String.format(DEFAULT_MATCHES_PATTERN_EX,
+					input, pattern));
 		}
 	}
 
@@ -542,8 +537,8 @@ public class Validate {
 	 *             if the character sequence does not match the pattern
 	 * @see #matchesPattern(CharSequence, String)
 	 */
-	public static void matchesPattern(CharSequence input, String pattern,
-			String message, Object... values) {
+	public static void matchesPattern(CharSequence input, String pattern, String message,
+			Object... values) {
 		if (Pattern.matches(pattern, input) == false) {
 			throw new IllegalArgumentException(String.format(message, values));
 		}
@@ -583,8 +578,7 @@ public class Validate {
 	 * @see #noNullElements(Iterable, String, Object...)
 	 */
 	public static <T extends Iterable<?>> T noNullElements(T iterable) {
-		return noNullElements(iterable,
-				DEFAULT_NO_NULL_ELEMENTS_COLLECTION_EX_MESSAGE);
+		return noNullElements(iterable, DEFAULT_NO_NULL_ELEMENTS_COLLECTION_EX_MESSAGE);
 	}
 
 	// notBlank string
@@ -597,8 +591,7 @@ public class Validate {
 	 * otherwise throwing an exception with the specified message.
 	 * 
 	 * <pre>
-	 * Validate.noNullElements(myCollection,
-	 * 		&quot;The collection contains null at position %d&quot;);
+	 * Validate.noNullElements(myCollection, &quot;The collection contains null at position %d&quot;);
 	 * </pre>
 	 * 
 	 * <p>
@@ -623,16 +616,14 @@ public class Validate {
 	 *             if an element is <code>null</code>
 	 * @see #noNullElements(Iterable)
 	 */
-	public static <T extends Iterable<?>> T noNullElements(T iterable,
-			String message, Object... values) {
+	public static <T extends Iterable<?>> T noNullElements(T iterable, String message,
+			Object... values) {
 		Validate.notNull(iterable);
 		int i = 0;
 		for (Iterator<?> it = iterable.iterator(); it.hasNext(); i++) {
 			if (it.next() == null) {
-				Object[] values2 = ArrayUtils
-						.addAll(values, Integer.valueOf(i));
-				throw new IllegalArgumentException(String.format(message,
-						values2));
+				Object[] values2 = ArrayUtils.addAll(values, Integer.valueOf(i));
+				throw new IllegalArgumentException(String.format(message, values2));
 			}
 		}
 		return iterable;
@@ -708,14 +699,12 @@ public class Validate {
 	 *             if an element is <code>null</code>
 	 * @see #noNullElements(Object[])
 	 */
-	public static <T> T[] noNullElements(T[] array, String message,
-			Object... values) {
+	public static <T> T[] noNullElements(T[] array, String message, Object... values) {
 		Validate.notNull(array);
 		for (int i = 0; i < array.length; i++) {
 			if (array[i] == null) {
 				Object[] values2 = ArrayUtils.add(values, Integer.valueOf(i));
-				throw new IllegalArgumentException(String.format(message,
-						values2));
+				throw new IllegalArgumentException(String.format(message, values2));
 			}
 		}
 		return array;
@@ -910,8 +899,8 @@ public class Validate {
 	 *             if the collection is empty
 	 * @see #notEmpty(Object[])
 	 */
-	public static <T extends Collection<?>> T notEmpty(T collection,
-			String message, Object... values) {
+	public static <T extends Collection<?>> T notEmpty(T collection, String message,
+			Object... values) {
 		if (collection == null) {
 			throw new NullPointerException(String.format(message, values));
 		}
@@ -944,8 +933,7 @@ public class Validate {
 	 *             if the map is empty
 	 * @see #notEmpty(Object[])
 	 */
-	public static <T extends Map<?, ?>> T notEmpty(T map, String message,
-			Object... values) {
+	public static <T extends Map<?, ?>> T notEmpty(T map, String message, Object... values) {
 		if (map == null) {
 			throw new NullPointerException(String.format(message, values));
 		}
@@ -1140,8 +1128,7 @@ public class Validate {
 	 * @see #validIndex(Collection, int, String, Object...)
 	 */
 	public static <T extends Collection<?>> T validIndex(T collection, int index) {
-		return validIndex(collection, index,
-				DEFAULT_VALID_INDEX_COLLECTION_EX_MESSAGE,
+		return validIndex(collection, index, DEFAULT_VALID_INDEX_COLLECTION_EX_MESSAGE,
 				Integer.valueOf(index));
 	}
 
@@ -1181,8 +1168,7 @@ public class Validate {
 	 * @see #validIndex(CharSequence, int, String, Object...)
 	 */
 	public static <T extends CharSequence> T validIndex(T chars, int index) {
-		return validIndex(chars, index,
-				DEFAULT_VALID_INDEX_CHAR_SEQUENCE_EX_MESSAGE,
+		return validIndex(chars, index, DEFAULT_VALID_INDEX_CHAR_SEQUENCE_EX_MESSAGE,
 				Integer.valueOf(index));
 	}
 
@@ -1216,8 +1202,8 @@ public class Validate {
 	 *             if the index is invalid
 	 * @see #validIndex(Collection, int)
 	 */
-	public static <T extends Collection<?>> T validIndex(T collection,
-			int index, String message, Object... values) {
+	public static <T extends Collection<?>> T validIndex(T collection, int index,
+			String message, Object... values) {
 		Validate.notNull(collection);
 		if (index < 0 || index >= collection.size()) {
 			throw new IndexOutOfBoundsException(String.format(message, values));
@@ -1256,8 +1242,8 @@ public class Validate {
 	 *             if the index is invalid
 	 * @see #validIndex(CharSequence, int)
 	 */
-	public static <T extends CharSequence> T validIndex(T chars, int index,
-			String message, Object... values) {
+	public static <T extends CharSequence> T validIndex(T chars, int index, String message,
+			Object... values) {
 		Validate.notNull(chars);
 		if (index < 0 || index >= chars.length()) {
 			throw new IndexOutOfBoundsException(String.format(message, values));
@@ -1333,8 +1319,7 @@ public class Validate {
 	 *             if the index is invalid
 	 * @see #validIndex(Object[], int)
 	 */
-	public static <T> T[] validIndex(T[] array, int index, String message,
-			Object... values) {
+	public static <T> T[] validIndex(T[] array, int index, String message, Object... values) {
 		Validate.notNull(array);
 		if (index < 0 || index >= array.length) {
 			throw new IndexOutOfBoundsException(String.format(message, values));
@@ -1394,8 +1379,7 @@ public class Validate {
 	 *             if expression is <code>false</code>
 	 * @see #validState(boolean)
 	 */
-	public static void validState(boolean expression, String message,
-			Object... values) {
+	public static void validState(boolean expression, String message, Object... values) {
 		if (expression == false) {
 			throw new IllegalStateException(String.format(message, values));
 		}

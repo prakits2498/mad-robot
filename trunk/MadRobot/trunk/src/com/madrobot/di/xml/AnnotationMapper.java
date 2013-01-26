@@ -66,8 +66,7 @@ class AnnotationMapper extends MapperWrapper implements AnnotationConfiguration 
 			if (name.startsWith("java.") || name.startsWith("javax.")) {
 				return false;
 			}
-			final boolean ret = annotatedTypes.contains(type) ? false : super
-					.add(type);
+			final boolean ret = annotatedTypes.contains(type) ? false : super.add(type);
 			if (ret) {
 				final Include inc = type.getAnnotation(Include.class);
 				if (inc != null) {
@@ -103,10 +102,8 @@ class AnnotationMapper extends MapperWrapper implements AnnotationConfiguration 
 	 *            the next {@link Mapper} in the chain
 	 * @since 1.3
 	 */
-	public AnnotationMapper(final Mapper wrapped,
-			final ConverterRegistry converterRegistry,
-			final ConverterLookup converterLookup,
-			final ClassLoader classLoader,
+	public AnnotationMapper(final Mapper wrapped, final ConverterRegistry converterRegistry,
+			final ConverterLookup converterLookup, final ClassLoader classLoader,
 			final ReflectionProvider reflectionProvider, final JVM jvm) {
 		super(wrapped);
 		this.converterRegistry = converterRegistry;
@@ -118,8 +115,7 @@ class AnnotationMapper extends MapperWrapper implements AnnotationConfiguration 
 		attributeMapper = (AttributeMapper) lookupMapperOfType(AttributeMapper.class);
 		localConversionMapper = (LocalConversionMapper) lookupMapperOfType(LocalConversionMapper.class);
 		locked = true;
-		arguments = new Object[] { this, classLoader, reflectionProvider, jvm,
-				converterLookup };
+		arguments = new Object[] { this, classLoader, reflectionProvider, jvm, converterLookup };
 	}
 
 	private void addParametrizedTypes(Type type, final Set<Class<?>> types) {
@@ -131,8 +127,7 @@ class AnnotationMapper extends MapperWrapper implements AnnotationConfiguration 
 				if (o instanceof Class) {
 					return types.add((Class<?>) o);
 				}
-				return o == null || processedTypes.contains(o) ? false : super
-						.add(o);
+				return o == null || processedTypes.contains(o) ? false : super.add(o);
 			}
 
 		};
@@ -142,8 +137,7 @@ class AnnotationMapper extends MapperWrapper implements AnnotationConfiguration 
 				final Class<?> clazz = (Class<?>) type;
 				types.add(clazz);
 				if (!clazz.isPrimitive()) {
-					final TypeVariable<?>[] typeParameters = clazz
-							.getTypeParameters();
+					final TypeVariable<?>[] typeParameters = clazz.getTypeParameters();
 					for (final TypeVariable<?> typeVariable : typeParameters) {
 						localTypes.add(typeVariable);
 					}
@@ -161,8 +155,7 @@ class AnnotationMapper extends MapperWrapper implements AnnotationConfiguration 
 			} else if (type instanceof ParameterizedType) {
 				final ParameterizedType parametrizedType = (ParameterizedType) type;
 				localTypes.add(parametrizedType.getRawType());
-				final Type[] actualArguments = parametrizedType
-						.getActualTypeArguments();
+				final Type[] actualArguments = parametrizedType.getActualTypeArguments();
 				for (final Type actualArgument : actualArguments) {
 					localTypes.add(actualArgument);
 				}
@@ -186,8 +179,7 @@ class AnnotationMapper extends MapperWrapper implements AnnotationConfiguration 
 		locked = !mode;
 	}
 
-	private Converter cacheConverter(final UseConverter annotation,
-			final Class targetType) {
+	private Converter cacheConverter(final UseConverter annotation, final Class targetType) {
 		Converter result = null;
 		final Object[] args;
 		final List<Object> parameter = new ArrayList<Object>();
@@ -216,10 +208,8 @@ class AnnotationMapper extends MapperWrapper implements AnnotationConfiguration 
 				}
 			}
 		}
-		final Class<? extends ConverterMatcher> converterType = annotation
-				.value();
-		Map<List<Object>, Converter> converterMapping = converterCache
-				.get(converterType);
+		final Class<? extends ConverterMatcher> converterType = annotation.value();
+		Map<List<Object>, Converter> converterMapping = converterCache.get(converterType);
 		if (converterMapping != null) {
 			result = converterMapping.get(parameter);
 		}
@@ -228,8 +218,7 @@ class AnnotationMapper extends MapperWrapper implements AnnotationConfiguration 
 			if (size > 0) {
 				args = new Object[arguments.length + size];
 				System.arraycopy(arguments, 0, args, size, arguments.length);
-				System.arraycopy(parameter.toArray(new Object[size]), 0, args,
-						0, size);
+				System.arraycopy(parameter.toArray(new Object[size]), 0, args, 0, size);
 			} else {
 				args = arguments;
 			}
@@ -243,15 +232,13 @@ class AnnotationMapper extends MapperWrapper implements AnnotationConfiguration 
 							.newInstance(converterType, args, usedArgs);
 					converter = new SingleValueConverterWrapper(svc);
 				} else {
-					converter = (Converter) ClassUtils.newInstance(
-							converterType, args, usedArgs);
+					converter = (Converter) ClassUtils.newInstance(converterType, args,
+							usedArgs);
 				}
 			} catch (final Exception e) {
-				throw new InitializationException(
-						"Cannot instantiate converter "
-								+ converterType.getName()
-								+ (targetType != null ? " for type "
-										+ targetType.getName() : ""), e);
+				throw new InitializationException("Cannot instantiate converter "
+						+ converterType.getName()
+						+ (targetType != null ? " for type " + targetType.getName() : ""), e);
 			}
 			if (converterMapping == null) {
 				converterMapping = new HashMap<List<Object>, Converter>();
@@ -286,34 +273,30 @@ class AnnotationMapper extends MapperWrapper implements AnnotationConfiguration 
 	}
 
 	@Override
-	public Converter getLocalConverter(final Class definedIn,
-			final String fieldName) {
+	public Converter getLocalConverter(final Class definedIn, final String fieldName) {
 		if (!locked) {
 			processAnnotations(definedIn);
 		}
 		return super.getLocalConverter(definedIn, fieldName);
 	}
 
-	private void processAliasAnnotation(final Class<?> type,
-			final Set<Class<?>> types) {
+	private void processAliasAnnotation(final Class<?> type, final Set<Class<?>> types) {
 		final Alias aliasAnnotation = type.getAnnotation(Alias.class);
 		if (aliasAnnotation != null) {
 			if (classAliasingMapper == null) {
-				throw new InitializationException("No "
-						+ ClassAliasingMapper.class.getName() + " available");
+				throw new InitializationException("No " + ClassAliasingMapper.class.getName()
+						+ " available");
 			}
 			if (aliasAnnotation.impl() != Void.class) {
 				// Alias for Interface/Class with an impl
-				classAliasingMapper
-						.addClassAlias(aliasAnnotation.value(), type);
-				defaultImplementationsMapper.addDefaultImplementation(
-						aliasAnnotation.impl(), type);
+				classAliasingMapper.addClassAlias(aliasAnnotation.value(), type);
+				defaultImplementationsMapper.addDefaultImplementation(aliasAnnotation.impl(),
+						type);
 				if (type.isInterface()) {
 					types.add(aliasAnnotation.impl()); // alias Interface's impl
 				}
 			} else {
-				classAliasingMapper
-						.addClassAlias(aliasAnnotation.value(), type);
+				classAliasingMapper.addClassAlias(aliasAnnotation.value(), type);
 			}
 		}
 	}
@@ -345,12 +328,11 @@ class AnnotationMapper extends MapperWrapper implements AnnotationConfiguration 
 	}
 
 	private void processAsAttributeAnnotation(final Field field) {
-		final AsAttribute asAttributeAnnotation = field
-				.getAnnotation(AsAttribute.class);
+		final AsAttribute asAttributeAnnotation = field.getAnnotation(AsAttribute.class);
 		if (asAttributeAnnotation != null) {
 			if (attributeMapper == null) {
-				throw new InitializationException("No "
-						+ AttributeMapper.class.getName() + " available");
+				throw new InitializationException("No " + AttributeMapper.class.getName()
+						+ " available");
 			}
 			attributeMapper.addAttributeFor(field);
 		}
@@ -401,10 +383,8 @@ class AnnotationMapper extends MapperWrapper implements AnnotationConfiguration 
 
 	private void processConverterAnnotations(final Class<?> type) {
 		if (converterRegistry != null) {
-			final Converters convertersAnnotation = type
-					.getAnnotation(Converters.class);
-			final UseConverter converterAnnotation = type
-					.getAnnotation(UseConverter.class);
+			final Converters convertersAnnotation = type.getAnnotation(Converters.class);
+			final UseConverter converterAnnotation = type.getAnnotation(UseConverter.class);
 			final List<UseConverter> annotations = convertersAnnotation != null ? new ArrayList<UseConverter>(
 					Arrays.asList(convertersAnnotation.value()))
 					: new ArrayList<UseConverter>();
@@ -415,15 +395,12 @@ class AnnotationMapper extends MapperWrapper implements AnnotationConfiguration 
 				final Converter converter = cacheConverter(annotation,
 						converterAnnotation != null ? type : null);
 				if (converter != null) {
-					if (converterAnnotation != null
-							|| converter.canConvert(type)) {
-						converterRegistry.registerConverter(converter,
-								annotation.priority());
+					if (converterAnnotation != null || converter.canConvert(type)) {
+						converterRegistry.registerConverter(converter, annotation.priority());
 					} else {
 						throw new InitializationException("Converter "
 								+ annotation.value().getName()
-								+ " cannot handle annotated class "
-								+ type.getName());
+								+ " cannot handle annotated class " + type.getName());
 					}
 				}
 			}
@@ -434,8 +411,8 @@ class AnnotationMapper extends MapperWrapper implements AnnotationConfiguration 
 		final Alias aliasAnnotation = field.getAnnotation(Alias.class);
 		if (aliasAnnotation != null) {
 			if (fieldAliasingMapper == null) {
-				throw new InitializationException("No "
-						+ FieldAliasingMapper.class.getName() + " available");
+				throw new InitializationException("No " + FieldAliasingMapper.class.getName()
+						+ " available");
 			}
 			fieldAliasingMapper.addFieldAlias(aliasAnnotation.value(),
 					field.getDeclaringClass(), field.getName());
@@ -447,8 +424,7 @@ class AnnotationMapper extends MapperWrapper implements AnnotationConfiguration 
 		if (implicitAnnotation != null) {
 			if (implicitCollectionMapper == null) {
 				throw new InitializationException("No "
-						+ ImplicitCollectionMapper.class.getName()
-						+ " available");
+						+ ImplicitCollectionMapper.class.getName() + " available");
 			}
 			final String fieldName = field.getName();
 			final String itemFieldName = implicitAnnotation.itemFieldName();
@@ -468,20 +444,18 @@ class AnnotationMapper extends MapperWrapper implements AnnotationConfiguration 
 				implicitCollectionMapper
 						.add(field.getDeclaringClass(),
 								fieldName,
-								itemFieldName != null
-										&& !"".equals(itemFieldName) ? itemFieldName
+								itemFieldName != null && !"".equals(itemFieldName) ? itemFieldName
 										: null,
 								itemType,
-								keyFieldName != null
-										&& !"".equals(keyFieldName) ? keyFieldName
+								keyFieldName != null && !"".equals(keyFieldName) ? keyFieldName
 										: null);
 			} else {
 				if (itemFieldName != null && !"".equals(itemFieldName)) {
-					implicitCollectionMapper.add(field.getDeclaringClass(),
-							fieldName, itemFieldName, itemType);
+					implicitCollectionMapper.add(field.getDeclaringClass(), fieldName,
+							itemFieldName, itemType);
 				} else {
-					implicitCollectionMapper.add(field.getDeclaringClass(),
-							fieldName, itemType);
+					implicitCollectionMapper.add(field.getDeclaringClass(), fieldName,
+							itemType);
 				}
 			}
 		}
@@ -490,30 +464,26 @@ class AnnotationMapper extends MapperWrapper implements AnnotationConfiguration 
 	private void processLocalConverterAnnotation(final Field field) {
 		final UseConverter annotation = field.getAnnotation(UseConverter.class);
 		if (annotation != null) {
-			final Converter converter = cacheConverter(annotation,
-					field.getType());
+			final Converter converter = cacheConverter(annotation, field.getType());
 			if (converter != null) {
 				if (localConversionMapper == null) {
 					throw new InitializationException("No "
-							+ LocalConversionMapper.class.getName()
-							+ " available");
+							+ LocalConversionMapper.class.getName() + " available");
 				}
-				localConversionMapper.registerLocalConverter(
-						field.getDeclaringClass(), field.getName(), converter);
+				localConversionMapper.registerLocalConverter(field.getDeclaringClass(),
+						field.getName(), converter);
 			}
 		}
 	}
 
 	private void processOmitFieldAnnotation(final Field field) {
-		final OmitField omitFieldAnnotation = field
-				.getAnnotation(OmitField.class);
+		final OmitField omitFieldAnnotation = field.getAnnotation(OmitField.class);
 		if (omitFieldAnnotation != null) {
 			if (fieldAliasingMapper == null) {
-				throw new InitializationException("No "
-						+ FieldAliasingMapper.class.getName() + " available");
+				throw new InitializationException("No " + FieldAliasingMapper.class.getName()
+						+ " available");
 			}
-			fieldAliasingMapper.omitField(field.getDeclaringClass(),
-					field.getName());
+			fieldAliasingMapper.omitField(field.getDeclaringClass(), field.getName());
 		}
 	}
 

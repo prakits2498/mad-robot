@@ -28,9 +28,9 @@ class GaussianUtils {
 	 * @param edgeAction
 	 *            what to do at the edges
 	 */
-	static void convolveAndTranspose(Kernel kernel, int[] inPixels,
-			int[] outPixels, int width, int height, boolean alpha,
-			boolean premultiply, boolean unpremultiply, int edgeAction) {
+	static void convolveAndTranspose(Kernel kernel, int[] inPixels, int[] outPixels,
+			int width, int height, boolean alpha, boolean premultiply, boolean unpremultiply,
+			int edgeAction) {
 		float[] matrix = kernel.getKernelData(null);
 		int cols = kernel.getWidth();
 		int cols2 = cols / 2;
@@ -113,8 +113,7 @@ class GaussianUtils {
 			if (distance > radius2)
 				matrix[index] = 0;
 			else
-				matrix[index] = (float) Math.exp(-(distance) / sigma22)
-						/ sqrtSigmaPi2;
+				matrix[index] = (float) Math.exp(-(distance) / sigma22) / sqrtSigmaPi2;
 			total += matrix[index];
 			index++;
 		}

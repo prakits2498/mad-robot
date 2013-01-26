@@ -23,8 +23,8 @@ public class OrientationUtil implements SensorEventListener {
 	public static Animation getRotationAnimation(Side oldside, Side newside) {
 		RotateAnimation retval = null;
 		if (oldside == null || newside == null) {
-			retval = new RotateAnimation(0, 0, Animation.RELATIVE_TO_SELF,
-					0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+			retval = new RotateAnimation(0, 0, Animation.RELATIVE_TO_SELF, 0.5f,
+					Animation.RELATIVE_TO_SELF, 0.5f);
 		} else {
 			final int olddegree = toDegrees(oldside);
 			int newdegree = toDegrees(newside);
@@ -33,9 +33,8 @@ public class OrientationUtil implements SensorEventListener {
 			} else if (olddegree == 270 && newdegree == 0) {
 				newdegree = 360;
 			}
-			retval = new RotateAnimation(olddegree, newdegree,
-					Animation.RELATIVE_TO_SELF, 0.5f,
-					Animation.RELATIVE_TO_SELF, 0.5f);
+			retval = new RotateAnimation(olddegree, newdegree, Animation.RELATIVE_TO_SELF,
+					0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
 
 			retval.setDuration(500);
 			retval.setFillEnabled(true);
@@ -74,8 +73,7 @@ public class OrientationUtil implements SensorEventListener {
 	private SensorManager mSensorManager;
 
 	public OrientationUtil(Context context) {
-		mSensorManager = (SensorManager) context
-				.getSystemService(Context.SENSOR_SERVICE);
+		mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
 		mSensorManager.registerListener(this,
 				mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
 				SensorManager.SENSOR_DELAY_NORMAL);

@@ -29,6 +29,7 @@ import java.util.Vector;
  * 
  * <p>
  * Creating a server is as simple specifying the port and the root directory.
+ * 
  * <pre>
  * HTTPServer server=new HttpServer(8090,new File("/sdcard/myhtmlfiles/");
  * server.start();
@@ -57,27 +58,24 @@ public class HTTPServer {
 	 *            Header entries, percent decoded
 	 * @return HTTP response, see class Response for details
 	 */
-	protected Response serve(String uri, String method, Properties header,
-			Properties parms, Properties files) {
+	protected Response serve(String uri, String method, Properties header, Properties parms,
+			Properties files) {
 		myOut.println(method + " '" + uri + "' ");
 
 		Enumeration e = header.propertyNames();
 		while (e.hasMoreElements()) {
 			String value = (String) e.nextElement();
-			myOut.println("  HDR: '" + value + "' = '"
-					+ header.getProperty(value) + "'");
+			myOut.println("  HDR: '" + value + "' = '" + header.getProperty(value) + "'");
 		}
 		e = parms.propertyNames();
 		while (e.hasMoreElements()) {
 			String value = (String) e.nextElement();
-			myOut.println("  PRM: '" + value + "' = '"
-					+ parms.getProperty(value) + "'");
+			myOut.println("  PRM: '" + value + "' = '" + parms.getProperty(value) + "'");
 		}
 		e = files.propertyNames();
 		while (e.hasMoreElements()) {
 			String value = (String) e.nextElement();
-			myOut.println("  UPLOADED: '" + value + "' = '"
-					+ files.getProperty(value) + "'");
+			myOut.println("  UPLOADED: '" + value + "' = '" + files.getProperty(value) + "'");
 		}
 
 		return serveFile(uri, header, myRootDir, true);
@@ -152,7 +150,8 @@ public class HTTPServer {
 			HTTP_RANGE_NOT_SATISFIABLE = "MadRobot-HttpServer: 416 Requested Range Not Satisfiable",
 			HTTP_REDIRECT = "MadRobot-HttpServer: 301 Moved Permanently",
 			HTTP_NOTMODIFIED = "MadRobot-HttpServer: 304 Not Modified",
-			HTTP_FORBIDDEN = "MadRobot-HttpServer: 403 Forbidden", HTTP_NOTFOUND = "MadRobot-HttpServer: 404 Not Found",
+			HTTP_FORBIDDEN = "MadRobot-HttpServer: 403 Forbidden",
+			HTTP_NOTFOUND = "MadRobot-HttpServer: 404 Not Found",
 			HTTP_BADREQUEST = "MadRobot-HttpServer: 400 Bad Request",
 			HTTP_INTERNALERROR = "MadRobot-HttpServer: 500 Internal Server Error",
 			HTTP_NOTIMPLEMENTED = "MadRobot-HttpServer: 501 Not Implemented";
@@ -160,10 +159,8 @@ public class HTTPServer {
 	/**
 	 * Common mime types for dynamic content
 	 */
-	public static final String MIME_PLAINTEXT = "text/plain",
-			MIME_HTML = "text/html",
-			MIME_DEFAULT_BINARY = "application/octet-stream",
-			MIME_XML = "text/xml";
+	public static final String MIME_PLAINTEXT = "text/plain", MIME_HTML = "text/html",
+			MIME_DEFAULT_BINARY = "application/octet-stream", MIME_XML = "text/xml";
 
 	// ==================================================
 	// Socket & server code
@@ -176,7 +173,7 @@ public class HTTPServer {
 	 */
 	public HTTPServer(int port, File wwwroot) {
 		myTcpPort = port;
-		if (wwwroot != null||wwwroot.isDirectory()) {
+		if (wwwroot != null || wwwroot.isDirectory()) {
 			this.myRootDir = wwwroot;
 		} else {
 			throw new IllegalArgumentException("Invalid www root");
@@ -186,11 +183,13 @@ public class HTTPServer {
 
 	/**
 	 * Start the http server
+	 * 
 	 * @throws IOException
 	 */
 	public void start() throws IOException {
 		myServerSocket = new ServerSocket(myTcpPort);
 		myThread = new Thread(new Runnable() {
+			@Override
 			public void run() {
 				try {
 					while (true) {
@@ -229,6 +228,7 @@ public class HTTPServer {
 			t.start();
 		}
 
+		@Override
 		public void run() {
 			try {
 				InputStream is = mySocket.getInputStream();
@@ -245,10 +245,8 @@ public class HTTPServer {
 					return;
 
 				// Create a BufferedReader for parsing the header.
-				ByteArrayInputStream hbis = new ByteArrayInputStream(buf, 0,
-						rlen);
-				BufferedReader hin = new BufferedReader(new InputStreamReader(
-						hbis));
+				ByteArrayInputStream hbis = new ByteArrayInputStream(buf, 0, rlen);
+				BufferedReader hin = new BufferedReader(new InputStreamReader(hbis));
 				Properties pre = new Properties();
 				Properties parms = new Properties();
 				Properties header = new Properties();
@@ -275,8 +273,7 @@ public class HTTPServer {
 				boolean sbfound = false;
 				while (splitbyte < rlen) {
 					if (buf[splitbyte] == '\r' && buf[++splitbyte] == '\n'
-							&& buf[++splitbyte] == '\r'
-							&& buf[++splitbyte] == '\n') {
+							&& buf[++splitbyte] == '\r' && buf[++splitbyte] == '\n') {
 						sbfound = true;
 						break;
 					}
@@ -315,17 +312,14 @@ public class HTTPServer {
 
 				// Create a BufferedReader for easily reading it as string.
 				ByteArrayInputStream bin = new ByteArrayInputStream(fbuf);
-				BufferedReader in = new BufferedReader(new InputStreamReader(
-						bin));
+				BufferedReader in = new BufferedReader(new InputStreamReader(bin));
 
 				// If the method is POST, there may be parameters
 				// in data section, too, read it:
 				if (method.equalsIgnoreCase("POST")) {
 					String contentType = "";
-					String contentTypeHeader = header
-							.getProperty("content-type");
-					StringTokenizer st = new StringTokenizer(contentTypeHeader,
-							"; ");
+					String contentTypeHeader = header.getProperty("content-type");
+					StringTokenizer st = new StringTokenizer(contentTypeHeader, "; ");
 					if (st.hasMoreTokens()) {
 						contentType = st.nextToken();
 					}
@@ -375,10 +369,8 @@ public class HTTPServer {
 				is.close();
 			} catch (IOException ioe) {
 				try {
-					sendError(
-							HTTP_INTERNALERROR,
-							"SERVER INTERNAL ERROR: IOException: "
-									+ ioe.getMessage());
+					sendError(HTTP_INTERNALERROR,
+							"SERVER INTERNAL ERROR: IOException: " + ioe.getMessage());
 				} catch (Throwable t) {
 				}
 			} catch (InterruptedException ie) {
@@ -390,9 +382,8 @@ public class HTTPServer {
 		 * Decodes the sent headers and loads the data into java Properties' key
 		 * - value pairs
 		 **/
-		private void decodeHeader(BufferedReader in, Properties pre,
-				Properties parms, Properties header)
-				throws InterruptedException {
+		private void decodeHeader(BufferedReader in, Properties pre, Properties parms,
+				Properties header) throws InterruptedException {
 			try {
 				// Read the request line
 				String inLine = in.readLine();
@@ -429,19 +420,16 @@ public class HTTPServer {
 					while (line != null && line.trim().length() > 0) {
 						int p = line.indexOf(':');
 						if (p >= 0)
-							header.put(line.substring(0, p).trim()
-									.toLowerCase(), line.substring(p + 1)
-									.trim());
+							header.put(line.substring(0, p).trim().toLowerCase(), line
+									.substring(p + 1).trim());
 						line = in.readLine();
 					}
 				}
 
 				pre.put("uri", uri);
 			} catch (IOException ioe) {
-				sendError(
-						HTTP_INTERNALERROR,
-						"SERVER INTERNAL ERROR: IOException: "
-								+ ioe.getMessage());
+				sendError(HTTP_INTERNALERROR,
+						"SERVER INTERNAL ERROR: IOException: " + ioe.getMessage());
 			}
 		}
 
@@ -449,12 +437,10 @@ public class HTTPServer {
 		 * Decodes the Multipart Body data and put it into java Properties' key
 		 * - value pairs.
 		 **/
-		private void decodeMultipartData(String boundary, byte[] fbuf,
-				BufferedReader in, Properties parms, Properties files)
-				throws InterruptedException {
+		private void decodeMultipartData(String boundary, byte[] fbuf, BufferedReader in,
+				Properties parms, Properties files) throws InterruptedException {
 			try {
-				int[] bpositions = getBoundaryPositions(fbuf,
-						boundary.getBytes());
+				int[] bpositions = getBoundaryPositions(fbuf, boundary.getBytes());
 				int boundarycount = 1;
 				String mpline = in.readLine();
 				while (mpline != null) {
@@ -468,37 +454,32 @@ public class HTTPServer {
 					while (mpline != null && mpline.trim().length() > 0) {
 						int p = mpline.indexOf(':');
 						if (p != -1)
-							item.put(mpline.substring(0, p).trim()
-									.toLowerCase(), mpline.substring(p + 1)
-									.trim());
+							item.put(mpline.substring(0, p).trim().toLowerCase(), mpline
+									.substring(p + 1).trim());
 						mpline = in.readLine();
 					}
 					if (mpline != null) {
-						String contentDisposition = item
-								.getProperty("content-disposition");
+						String contentDisposition = item.getProperty("content-disposition");
 						if (contentDisposition == null) {
 							sendError(
 									HTTP_BADREQUEST,
 									"BAD REQUEST: Content type is multipart/form-data but no content-disposition info found. Usage: GET /example/file.html");
 						}
-						StringTokenizer st = new StringTokenizer(
-								contentDisposition, "; ");
+						StringTokenizer st = new StringTokenizer(contentDisposition, "; ");
 						Properties disposition = new Properties();
 						while (st.hasMoreTokens()) {
 							String token = st.nextToken();
 							int p = token.indexOf('=');
 							if (p != -1)
-								disposition.put(token.substring(0, p).trim()
-										.toLowerCase(), token.substring(p + 1)
-										.trim());
+								disposition.put(token.substring(0, p).trim().toLowerCase(),
+										token.substring(p + 1).trim());
 						}
 						String pname = disposition.getProperty("name");
 						pname = pname.substring(1, pname.length() - 1);
 
 						String value = "";
 						if (item.getProperty("content-type") == null) {
-							while (mpline != null
-									&& mpline.indexOf(boundary) == -1) {
+							while (mpline != null && mpline.indexOf(boundary) == -1) {
 								mpline = in.readLine();
 								if (mpline != null) {
 									int d = mpline.indexOf(boundary);
@@ -510,8 +491,7 @@ public class HTTPServer {
 							}
 						} else {
 							if (boundarycount > bpositions.length)
-								sendError(HTTP_INTERNALERROR,
-										"Error processing request");
+								sendError(HTTP_INTERNALERROR, "Error processing request");
 							int offset = stripMultipartHeaders(fbuf,
 									bpositions[boundarycount - 2]);
 							String path = saveTmpFile(fbuf, offset,
@@ -521,17 +501,14 @@ public class HTTPServer {
 							value = value.substring(1, value.length() - 1);
 							do {
 								mpline = in.readLine();
-							} while (mpline != null
-									&& mpline.indexOf(boundary) == -1);
+							} while (mpline != null && mpline.indexOf(boundary) == -1);
 						}
 						parms.put(pname, value);
 					}
 				}
 			} catch (IOException ioe) {
-				sendError(
-						HTTP_INTERNALERROR,
-						"SERVER INTERNAL ERROR: IOException: "
-								+ ioe.getMessage());
+				sendError(HTTP_INTERNALERROR,
+						"SERVER INTERNAL ERROR: IOException: " + ioe.getMessage());
 			}
 		}
 
@@ -574,8 +551,7 @@ public class HTTPServer {
 			if (len > 0) {
 				String tmpdir = System.getProperty("java.io.tmpdir");
 				try {
-					File temp = File.createTempFile("NanoHTTPD", "", new File(
-							tmpdir));
+					File temp = File.createTempFile("NanoHTTPD", "", new File(tmpdir));
 					OutputStream fstream = new FileOutputStream(temp);
 					fstream.write(b, offset, len);
 					fstream.close();
@@ -594,8 +570,7 @@ public class HTTPServer {
 		private int stripMultipartHeaders(byte[] b, int offset) {
 			int i = 0;
 			for (i = offset; i < b.length; i++) {
-				if (b[i] == '\r' && b[++i] == '\n' && b[++i] == '\r'
-						&& b[++i] == '\n')
+				if (b[i] == '\r' && b[++i] == '\n' && b[++i] == '\r' && b[++i] == '\n')
 					break;
 			}
 			return i + 1;
@@ -615,8 +590,7 @@ public class HTTPServer {
 						sb.append(' ');
 						break;
 					case '%':
-						sb.append((char) Integer.parseInt(
-								str.substring(i + 1, i + 3), 16));
+						sb.append((char) Integer.parseInt(str.substring(i + 1, i + 3), 16));
 						i += 2;
 						break;
 					default:
@@ -638,8 +612,7 @@ public class HTTPServer {
 		 * the simplicity of Properties -- if you need multiples, you might want
 		 * to replace the Properties with a Hashtable of Vectors or such.
 		 */
-		private void decodeParms(String parms, Properties p)
-				throws InterruptedException {
+		private void decodeParms(String parms, Properties p) throws InterruptedException {
 			if (parms == null)
 				return;
 
@@ -657,8 +630,7 @@ public class HTTPServer {
 		 * Returns an error message as a HTTP response and throws
 		 * InterruptedException to stop further request processing.
 		 */
-		private void sendError(String status, String msg)
-				throws InterruptedException {
+		private void sendError(String status, String msg) throws InterruptedException {
 			sendResponse(status, MIME_PLAINTEXT, null,
 					new ByteArrayInputStream(msg.getBytes()));
 			throw new InterruptedException();
@@ -667,8 +639,8 @@ public class HTTPServer {
 		/**
 		 * Sends given response to the socket.
 		 */
-		private void sendResponse(String status, String mime,
-				Properties header, InputStream data) {
+		private void sendResponse(String status, String mime, Properties header,
+				InputStream data) {
 			try {
 				if (status == null)
 					throw new Error("sendResponse(): Status can't be null.");
@@ -702,8 +674,7 @@ public class HTTPServer {
 					byte[] buff = new byte[theBufferSize];
 					while (pending > 0) {
 						int read = data.read(buff, 0,
-								((pending > theBufferSize) ? theBufferSize
-										: pending));
+								((pending > theBufferSize) ? theBufferSize : pending));
 						if (read <= 0)
 							break;
 						out.write(buff, 0, read);
@@ -778,16 +749,14 @@ public class HTTPServer {
 				uri = uri.substring(0, uri.indexOf('?'));
 
 			// Prohibit getting out of current directory
-			if (uri.startsWith("..") || uri.endsWith("..")
-					|| uri.indexOf("../") >= 0)
+			if (uri.startsWith("..") || uri.endsWith("..") || uri.indexOf("../") >= 0)
 				res = new Response(HTTP_FORBIDDEN, MIME_PLAINTEXT,
 						"FORBIDDEN: Won't serve ../ for security reasons.");
 		}
 
 		File f = new File(homeDir, uri);
 		if (res == null && !f.exists())
-			res = new Response(HTTP_NOTFOUND, MIME_PLAINTEXT,
-					"Error 404, file not found.");
+			res = new Response(HTTP_NOTFOUND, MIME_PLAINTEXT, "Error 404, file not found.");
 
 		// List the directory, if necessary
 		if (res == null && f.isDirectory()) {
@@ -796,8 +765,8 @@ public class HTTPServer {
 			if (!uri.endsWith("/")) {
 				uri += "/";
 				res = new Response(HTTP_REDIRECT, MIME_HTML,
-						"<html><body>Redirected: <a href=\"" + uri + "\">"
-								+ uri + "</a></body></html>");
+						"<html><body>Redirected: <a href=\"" + uri + "\">" + uri
+								+ "</a></body></html>");
 				res.addHeader("Location", uri);
 			}
 
@@ -810,15 +779,13 @@ public class HTTPServer {
 				// No index file, list the directory if it is readable
 				else if (allowDirectoryListing && f.canRead()) {
 					String[] files = f.list();
-					String msg = "<html><body><h1>Directory " + uri
-							+ "</h1><br/>";
+					String msg = "<html><body><h1>Directory " + uri + "</h1><br/>";
 
 					if (uri.length() > 1) {
 						String u = uri.substring(0, uri.length() - 1);
 						int slash = u.lastIndexOf('/');
 						if (slash >= 0 && slash < u.length())
-							msg += "<b><a href=\""
-									+ uri.substring(0, slash + 1)
+							msg += "<b><a href=\"" + uri.substring(0, slash + 1)
 									+ "\">..</a></b><br/>";
 					}
 
@@ -831,8 +798,8 @@ public class HTTPServer {
 								files[i] += "/";
 							}
 
-							msg += "<a href=\"" + encodeUri(uri + files[i])
-									+ "\">" + files[i] + "</a>";
+							msg += "<a href=\"" + encodeUri(uri + files[i]) + "\">" + files[i]
+									+ "</a>";
 
 							// Show file size
 							if (curFile.isFile()) {
@@ -841,11 +808,10 @@ public class HTTPServer {
 								if (len < 1024)
 									msg += len + " bytes";
 								else if (len < 1024 * 1024)
-									msg += len / 1024 + "."
-											+ (len % 1024 / 10 % 100) + " KB";
+									msg += len / 1024 + "." + (len % 1024 / 10 % 100) + " KB";
 								else
-									msg += len / (1024 * 1024) + "." + len
-											% (1024 * 1024) / 10 % 100 + " MB";
+									msg += len / (1024 * 1024) + "." + len % (1024 * 1024)
+											/ 10 % 100 + " MB";
 
 								msg += ")</font>";
 							}
@@ -869,14 +835,15 @@ public class HTTPServer {
 				String mime = null;
 				int dot = f.getCanonicalPath().lastIndexOf('.');
 				if (dot >= 0)
-					mime = (String) theMimeTypes.get(f.getCanonicalPath()
-							.substring(dot + 1).toLowerCase());
+					mime = (String) theMimeTypes.get(f.getCanonicalPath().substring(dot + 1)
+							.toLowerCase());
 				if (mime == null)
 					mime = MIME_DEFAULT_BINARY;
 
 				// Calculate etag
-				String etag = Integer.toHexString((f.getAbsolutePath()
-						+ f.lastModified() + "" + f.length()).hashCode());
+				String etag = Integer
+						.toHexString((f.getAbsolutePath() + f.lastModified() + "" + f.length())
+								.hashCode());
 
 				// Support (simple) skipping:
 				long startFrom = 0;
@@ -888,10 +855,8 @@ public class HTTPServer {
 						int minus = range.indexOf('-');
 						try {
 							if (minus > 0) {
-								startFrom = Long.parseLong(range.substring(0,
-										minus));
-								endAt = Long.parseLong(range
-										.substring(minus + 1));
+								startFrom = Long.parseLong(range.substring(0, minus));
+								endAt = Long.parseLong(range.substring(minus + 1));
 							}
 						} catch (NumberFormatException nfe) {
 						}
@@ -903,8 +868,7 @@ public class HTTPServer {
 				long fileLen = f.length();
 				if (range != null && startFrom >= 0) {
 					if (startFrom >= fileLen) {
-						res = new Response(HTTP_RANGE_NOT_SATISFIABLE,
-								MIME_PLAINTEXT, "");
+						res = new Response(HTTP_RANGE_NOT_SATISFIABLE, MIME_PLAINTEXT, "");
 						res.addHeader("Content-Range", "bytes 0-0/" + fileLen);
 						res.addHeader("ETag", etag);
 					} else {
@@ -916,6 +880,7 @@ public class HTTPServer {
 
 						final long dataLen = newLen;
 						FileInputStream fis = new FileInputStream(f) {
+							@Override
 							public int available() throws IOException {
 								return (int) dataLen;
 							}
@@ -924,16 +889,15 @@ public class HTTPServer {
 
 						res = new Response(HTTP_PARTIALCONTENT, mime, fis);
 						res.addHeader("Content-Length", "" + dataLen);
-						res.addHeader("Content-Range", "bytes " + startFrom
-								+ "-" + endAt + "/" + fileLen);
+						res.addHeader("Content-Range", "bytes " + startFrom + "-" + endAt
+								+ "/" + fileLen);
 						res.addHeader("ETag", etag);
 					}
 				} else {
 					if (etag.equals(header.getProperty("if-none-match")))
 						res = new Response(HTTP_NOTMODIFIED, mime, "");
 					else {
-						res = new Response(HTTP_OK, mime,
-								new FileInputStream(f));
+						res = new Response(HTTP_OK, mime, new FileInputStream(f));
 						res.addHeader("Content-Length", "" + fileLen);
 						res.addHeader("ETag", etag);
 					}
@@ -955,19 +919,16 @@ public class HTTPServer {
 	 */
 	private static Hashtable theMimeTypes = new Hashtable();
 	static {
-		StringTokenizer st = new StringTokenizer("css		text/css "
-				+ "htm		text/html " + "html		text/html " + "xml		text/xml "
-				+ "txt		text/plain " + "asc		text/plain " + "gif		image/gif "
-				+ "jpg		image/jpeg " + "jpeg		image/jpeg " + "png		image/png "
-				+ "mp3		audio/mpeg " + "m3u		audio/mpeg-url "
-				+ "mp4		video/mp4 " + "ogv		video/ogg " + "flv		video/x-flv "
-				+ "mov		video/quicktime "
-				+ "swf		application/x-shockwave-flash "
-				+ "js			application/javascript " + "pdf		application/pdf "
-				+ "doc		application/msword " + "ogg		application/x-ogg "
-				+ "zip		application/octet-stream "
-				+ "exe		application/octet-stream "
-				+ "class		application/octet-stream ");
+		StringTokenizer st = new StringTokenizer("css		text/css " + "htm		text/html "
+				+ "html		text/html " + "xml		text/xml " + "txt		text/plain "
+				+ "asc		text/plain " + "gif		image/gif " + "jpg		image/jpeg "
+				+ "jpeg		image/jpeg " + "png		image/png " + "mp3		audio/mpeg "
+				+ "m3u		audio/mpeg-url " + "mp4		video/mp4 " + "ogv		video/ogg "
+				+ "flv		video/x-flv " + "mov		video/quicktime "
+				+ "swf		application/x-shockwave-flash " + "js			application/javascript "
+				+ "pdf		application/pdf " + "doc		application/msword "
+				+ "ogg		application/x-ogg " + "zip		application/octet-stream "
+				+ "exe		application/octet-stream " + "class		application/octet-stream ");
 		while (st.hasMoreTokens())
 			theMimeTypes.put(st.nextToken(), st.nextToken());
 	}
@@ -982,8 +943,7 @@ public class HTTPServer {
 	 */
 	private static java.text.SimpleDateFormat gmtFrmt;
 	static {
-		gmtFrmt = new java.text.SimpleDateFormat(
-				"E, d MMM yyyy HH:mm:ss 'GMT'", Locale.US);
+		gmtFrmt = new java.text.SimpleDateFormat("E, d MMM yyyy HH:mm:ss 'GMT'", Locale.US);
 		gmtFrmt.setTimeZone(TimeZone.getTimeZone("GMT"));
 	}
 

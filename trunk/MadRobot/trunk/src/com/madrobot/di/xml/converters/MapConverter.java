@@ -59,8 +59,8 @@ public class MapConverter extends AbstractCollectionConverter {
 		Map map = (Map) source;
 		for (Iterator iterator = map.entrySet().iterator(); iterator.hasNext();) {
 			Map.Entry entry = (Map.Entry) iterator.next();
-			ExtendedHierarchicalStreamWriterHelper.startNode(writer, mapper()
-					.serializedClass(Map.Entry.class), Map.Entry.class);
+			ExtendedHierarchicalStreamWriterHelper.startNode(writer,
+					mapper().serializedClass(Map.Entry.class), Map.Entry.class);
 
 			writeItem(entry.getKey(), context, writer);
 			writeItem(entry.getValue(), context, writer);
@@ -69,13 +69,13 @@ public class MapConverter extends AbstractCollectionConverter {
 		}
 	}
 
-	protected void populateMap(HierarchicalStreamReader reader,
-			UnmarshallingContext context, Map map) {
+	protected void populateMap(HierarchicalStreamReader reader, UnmarshallingContext context,
+			Map map) {
 		populateMap(reader, context, map, map);
 	}
 
-	protected void populateMap(HierarchicalStreamReader reader,
-			UnmarshallingContext context, Map map, Map target) {
+	protected void populateMap(HierarchicalStreamReader reader, UnmarshallingContext context,
+			Map map, Map target) {
 		while (reader.hasMoreChildren()) {
 			reader.moveDown();
 			putCurrentEntryIntoMap(reader, context, map, target);
@@ -97,8 +97,7 @@ public class MapConverter extends AbstractCollectionConverter {
 	}
 
 	@Override
-	public Object unmarshal(HierarchicalStreamReader reader,
-			UnmarshallingContext context) {
+	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
 		Map map = (Map) createCollection(context.getRequiredType());
 		populateMap(reader, context, map);
 		return map;

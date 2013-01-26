@@ -29,6 +29,7 @@ import java.util.Random;
  * <p>
  * #ThreadSafe#
  * </p>
+ * 
  * @author elton.stephen.kent
  */
 public class RandomString {
@@ -137,8 +138,7 @@ public class RandomString {
 	 *            characters
 	 * @return the random string
 	 */
-	public static String random(int count, int start, int end, boolean letters,
-			boolean numbers) {
+	public static String random(int count, int start, int end, boolean letters, boolean numbers) {
 		return random(count, start, end, letters, numbers, null, RANDOM);
 	}
 
@@ -231,9 +231,8 @@ public class RandomString {
 		if (count == 0) {
 			return "";
 		} else if (count < 0) {
-			throw new IllegalArgumentException(
-					"Requested random string length " + count
-							+ " is less than 0.");
+			throw new IllegalArgumentException("Requested random string length " + count
+					+ " is less than 0.");
 		}
 		if ((start == 0) && (end == 0)) {
 			end = 'z' + 1;
@@ -254,8 +253,7 @@ public class RandomString {
 			} else {
 				ch = chars[random.nextInt(gap) + start];
 			}
-			if ((letters && Character.isLetter(ch))
-					|| (numbers && Character.isDigit(ch))
+			if ((letters && Character.isLetter(ch)) || (numbers && Character.isDigit(ch))
 					|| (!letters && !numbers)) {
 				if (ch >= 56320 && ch <= 57343) {
 					if (count == 0) {

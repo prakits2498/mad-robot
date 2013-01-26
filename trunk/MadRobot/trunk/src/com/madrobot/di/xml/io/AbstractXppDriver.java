@@ -49,8 +49,7 @@ public abstract class AbstractXppDriver extends AbstractDriver {
 	 *             if the parser cannot be created
 	 * @since 1.4
 	 */
-	protected abstract XmlPullParser createParser()
-			throws XmlPullParserException;
+	protected abstract XmlPullParser createParser() throws XmlPullParserException;
 
 	/**
 	 * {@inheritDoc}

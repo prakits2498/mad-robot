@@ -5,7 +5,7 @@ package com.madrobot.graphics.bitmap;
  * values to colors. This is similar to the ColorModel class but works with
  * floating point values.
  */
- interface Colormap {
+interface Colormap {
 	/**
 	 * Convert a value in the range 0..1 to an RGB color.
 	 * 

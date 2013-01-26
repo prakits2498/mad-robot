@@ -71,8 +71,7 @@ public final class DBUtils {
 		MethodUtils.flushCaches();
 	}
 
-	public static List<String> getColumns(final SQLiteDatabase db,
-			final String tableName) {
+	public static List<String> getColumns(final SQLiteDatabase db, final String tableName) {
 		List<String> ar = null;
 		Cursor c = null;
 		try {
@@ -127,8 +126,7 @@ public final class DBUtils {
 			for (int column = 0; column < numcolumns; column++) {
 				String columnValue = cursor.getString(column);
 				if (columnValue != null) {
-					columnValue = columnValue.substring(0,
-							Math.min(20, columnValue.length()));
+					columnValue = columnValue.substring(0, Math.min(20, columnValue.length()));
 				}
 				retval.append(String.format("%-20s |", columnValue));
 			}
@@ -166,8 +164,7 @@ public final class DBUtils {
 			throws IOException {
 
 		// Path to the just created empty db
-		File dbDir = new File("data/data/" + context.getPackageName()
-				+ "/databases/");
+		File dbDir = new File("data/data/" + context.getPackageName() + "/databases/");
 		dbDir.mkdirs();
 		String outFileName = dbDir.getAbsolutePath() + dbName;
 		IOUtils.copy(context.getAssets().open(dbName), new File(outFileName));

@@ -48,8 +48,7 @@ public class ArrayConverter extends AbstractCollectionConverter {
 	}
 
 	@Override
-	public Object unmarshal(HierarchicalStreamReader reader,
-			UnmarshallingContext context) {
+	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
 		// read the items from xml into a list
 		List items = new ArrayList();
 		while (reader.hasMoreChildren()) {
@@ -63,8 +62,8 @@ public class ArrayConverter extends AbstractCollectionConverter {
 		// now convertAnother the list into an array
 		// (this has to be done as a separate list as the array size is not
 		// known until all items have been read)
-		Object array = Array.newInstance(context.getRequiredType()
-				.getComponentType(), items.size());
+		Object array = Array.newInstance(context.getRequiredType().getComponentType(),
+				items.size());
 		int i = 0;
 		for (Iterator iterator = items.iterator(); iterator.hasNext();) {
 			Array.set(array, i++, iterator.next());

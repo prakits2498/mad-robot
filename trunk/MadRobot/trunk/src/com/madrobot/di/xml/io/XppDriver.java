@@ -49,8 +49,7 @@ public class XppDriver extends AbstractXppDriver {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected synchronized XmlPullParser createParser()
-			throws XmlPullParserException {
+	protected synchronized XmlPullParser createParser() throws XmlPullParserException {
 		if (factory == null) {
 			factory = XmlPullParserFactory.newInstance(null, XppDriver.class);
 		}

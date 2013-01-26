@@ -28,8 +28,8 @@ public class TriangleUtils {
 	 * @return <code>true</code> if (x,y) lies within the a-b-c triangle,
 	 *         <code>false</code> otherwise
 	 */
-	public static boolean contains(float x, float y, float ax, float ay,
-			float bx, float by, float cx, float cy) {
+	public static boolean contains(float x, float y, float ax, float ay, float bx, float by,
+			float cx, float cy) {
 		int cc1 = LineUtils.relativeCCW(ax, ay, bx, by, x, y);
 		int cc2 = LineUtils.relativeCCW(bx, by, cx, cy, x, y);
 
@@ -41,13 +41,13 @@ public class TriangleUtils {
 		return false;
 	}
 
-	public static boolean contains(PointF point, float ax, float ay, float bx,
-			float by, float cx, float cy) {
+	public static boolean contains(PointF point, float ax, float ay, float bx, float by,
+			float cx, float cy) {
 		return contains(point.x, point.y, ax, ay, bx, by, cx, cy);
 	}
 
-	private static boolean sameSide(int p1x, int p1y, int p2x, int p2y,
-			int l1x, int l1y, int l2x, int l2y) {
+	private static boolean sameSide(int p1x, int p1y, int p2x, int p2y, int l1x, int l1y,
+			int l2x, int l2y) {
 		long lhs = ((p1x - l1x) * (l2y - l1y) - (l2x - l1x) * (p1y - l1y));
 		long rhs = ((p2x - l1x) * (l2y - l1y) - (l2x - l1x) * (p2y - l1y));
 		long product = lhs * rhs;
@@ -76,10 +76,9 @@ public class TriangleUtils {
 	 *            The y of the 3rd point of the triangle
 	 * @return true when the point is within the given triangle
 	 */
-	public static boolean withinBounds(int px, int py, int ax, int ay, int bx,
-			int by, int cx, int cy) {
-		if ((px < Math.min(ax, Math.min(bx, cx)))
-				|| (px > Math.max(ax, Math.max(bx, cx)))
+	public static boolean withinBounds(int px, int py, int ax, int ay, int bx, int by, int cx,
+			int cy) {
+		if ((px < Math.min(ax, Math.min(bx, cx))) || (px > Math.max(ax, Math.max(bx, cx)))
 				|| (py < Math.min(ay, Math.min(by, cy)))
 				|| (py > Math.max(ay, Math.max(by, cy)))) {
 			return false;

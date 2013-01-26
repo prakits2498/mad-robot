@@ -37,8 +37,7 @@ public interface IXMLRPCSerializer {
 
 	String TYPE_STRUCT = "struct";
 
-	Object deserialize(XmlPullParser parser) throws XmlPullParserException,
-			IOException;
+	Object deserialize(XmlPullParser parser) throws XmlPullParserException, IOException;
 
 	void serialize(XmlSerializer serializer, Object object) throws IOException;
 }

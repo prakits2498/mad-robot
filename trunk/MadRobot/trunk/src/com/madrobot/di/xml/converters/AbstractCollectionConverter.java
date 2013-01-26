@@ -45,11 +45,9 @@ public abstract class AbstractCollectionConverter implements Converter {
 		try {
 			return defaultType.newInstance();
 		} catch (InstantiationException e) {
-			throw new ConversionException("Cannot instantiate "
-					+ defaultType.getName(), e);
+			throw new ConversionException("Cannot instantiate " + defaultType.getName(), e);
 		} catch (IllegalAccessException e) {
-			throw new ConversionException("Cannot instantiate "
-					+ defaultType.getName(), e);
+			throw new ConversionException("Cannot instantiate " + defaultType.getName(), e);
 		}
 	}
 
@@ -58,11 +56,11 @@ public abstract class AbstractCollectionConverter implements Converter {
 	}
 
 	@Override
-	public abstract void marshal(Object source,
-			HierarchicalStreamWriter writer, MarshallingContext context);
+	public abstract void marshal(Object source, HierarchicalStreamWriter writer,
+			MarshallingContext context);
 
-	protected Object readItem(HierarchicalStreamReader reader,
-			UnmarshallingContext context, Object current) {
+	protected Object readItem(HierarchicalStreamReader reader, UnmarshallingContext context,
+			Object current) {
 		Class type = HierarchicalStreams.readClassType(reader, mapper());
 		return context.convertAnother(current, type);
 	}
@@ -78,13 +76,11 @@ public abstract class AbstractCollectionConverter implements Converter {
 		if (item == null) {
 			// todo: this is duplicated in TreeMarshaller.start()
 			String name = mapper().serializedClass(null);
-			ExtendedHierarchicalStreamWriterHelper.startNode(writer, name,
-					Mapper.Null.class);
+			ExtendedHierarchicalStreamWriterHelper.startNode(writer, name, Mapper.Null.class);
 			writer.endNode();
 		} else {
 			String name = mapper().serializedClass(item.getClass());
-			ExtendedHierarchicalStreamWriterHelper.startNode(writer, name,
-					item.getClass());
+			ExtendedHierarchicalStreamWriterHelper.startNode(writer, name, item.getClass());
 			context.convertAnother(item);
 			writer.endNode();
 		}

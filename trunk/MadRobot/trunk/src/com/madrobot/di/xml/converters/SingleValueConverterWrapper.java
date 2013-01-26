@@ -22,8 +22,8 @@ import com.madrobot.di.xml.io.HierarchicalStreamWriter;
  * @see com.madrobot.di.xml.converters.Converter
  * @see com.madrobot.di.xml.converters.SingleValueConverter
  */
-public class SingleValueConverterWrapper implements Converter,
-		SingleValueConverter, ErrorReporter {
+public class SingleValueConverterWrapper implements Converter, SingleValueConverter,
+		ErrorReporter {
 
 	private final SingleValueConverter wrapped;
 
@@ -61,8 +61,7 @@ public class SingleValueConverterWrapper implements Converter,
 	}
 
 	@Override
-	public Object unmarshal(HierarchicalStreamReader reader,
-			UnmarshallingContext context) {
+	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
 		return fromString(reader.getValue());
 	}
 }

@@ -1,4 +1,4 @@
-package com.madrobot.ui.widgets;
+package com.madrobot.ui.widgets.imageview;
 
 import android.graphics.Bitmap;
 import android.graphics.Matrix;

@@ -192,8 +192,8 @@ public class Path {
 	}
 
 	private String normalize(String s, int start, int end) {
-		if (end - start > 3 && s.charAt(end - 3) == '['
-				&& s.charAt(end - 2) == '1' && s.charAt(end - 1) == ']') {
+		if (end - start > 3 && s.charAt(end - 3) == '[' && s.charAt(end - 2) == '1'
+				&& s.charAt(end - 1) == ']') {
 			this.pathAsString = null;
 			return s.substring(start, end - 3);
 		} else {

@@ -1,4 +1,3 @@
-
 package com.madrobot.net.util.cache;
 
 import java.io.IOException;
@@ -37,9 +36,8 @@ class AsynchronousValidationRequest implements Runnable {
 	 * @param identifier
 	 */
 	AsynchronousValidationRequest(AsynchronousValidator parent,
-			CachingHttpClient cachingClient, HttpHost target,
-			HttpRequest request, HttpContext context,
-			HttpCacheEntry cacheEntry, String identifier) {
+			CachingHttpClient cachingClient, HttpHost target, HttpRequest request,
+			HttpContext context, HttpCacheEntry cacheEntry, String identifier) {
 		this.parent = parent;
 		this.cachingClient = cachingClient;
 		this.target = target;
@@ -49,18 +47,15 @@ class AsynchronousValidationRequest implements Runnable {
 		this.identifier = identifier;
 	}
 
+	@Override
 	public void run() {
 		try {
-			cachingClient.revalidateCacheEntry(target, request, context,
-					cacheEntry);
+			cachingClient.revalidateCacheEntry(target, request, context, cacheEntry);
 		} catch (IOException ioe) {
-			android.util.Log
-					.d(TAG,
-							"Asynchronous revalidation failed due to exception: "
-									+ ioe);
+			android.util.Log.d(TAG, "Asynchronous revalidation failed due to exception: "
+					+ ioe);
 		} catch (ProtocolException pe) {
-			Log.e(TAG,"ProtocolException thrown during asynchronous revalidation: "
-					+ pe);
+			Log.e(TAG, "ProtocolException thrown during asynchronous revalidation: " + pe);
 		} finally {
 			parent.markComplete(identifier);
 		}

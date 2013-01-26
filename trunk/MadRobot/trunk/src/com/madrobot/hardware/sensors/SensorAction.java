@@ -18,7 +18,7 @@ import android.hardware.SensorManager;
  * 		
  * 		@Override
  * 		public boolean onTilt(SensorEvent event, int direction) {
- *			//return true if TILT was consumed
+ * 		//return true if TILT was consumed
  * 			return false;
  * 		}
  * 		
@@ -74,16 +74,15 @@ import android.hardware.SensorManager;
  *  private SensorEventListener listener=new SensorEventListener() {
  *         public void onSensorChanged(SensorEvent e) {
  *          </code>
- * 			</pre>
- * 			<b>action.determineSensorAction(e);</b>
- * 			<code>
+ * </pre>
+ * 
+ * <b>action.determineSensorAction(e);</b> <code>
  * 			<pre>
  *  		..
  *  		..
  *  		 }
  *   		}
- * 			</code>
- * 			</pre>
+ * 			</code> </pre>
  * 
  * </p>
  * 
@@ -134,8 +133,7 @@ public class SensorAction {
 		this.sal = sal;
 	}
 
-	private void detectFlip(long now, long diff, float x, float y, float z,
-			SensorEvent event) {
+	private void detectFlip(long now, long diff, float x, float y, float z, SensorEvent event) {
 
 		if (diff < TIME_THRESHOLD) {
 			return;
@@ -201,8 +199,7 @@ public class SensorAction {
 		}
 	}
 
-	private void detectShake(long now, long diff, float x, float y, float z,
-			SensorEvent event) {
+	private void detectShake(long now, long diff, float x, float y, float z, SensorEvent event) {
 
 		if (diff < TIME_THRESHOLD) {
 			return;
@@ -218,12 +215,10 @@ public class SensorAction {
 			shakeCount = 0;
 		}
 
-		final float speed = Math.abs(x + y + z - lastX - lastY - lastZ) / diff
-				* 10000;
+		final float speed = Math.abs(x + y + z - lastX - lastY - lastZ) / diff * 10000;
 		//
 		if (speed > SPEED_THRESHOLD) {
-			if ((++shakeCount >= SHAKE_COUNT)
-					&& (now - lastShake > SHAKE_DURATION)) {
+			if ((++shakeCount >= SHAKE_COUNT) && (now - lastShake > SHAKE_DURATION)) {
 				lastShake = now;
 				shakeCount = 0;
 				//
@@ -241,8 +236,8 @@ public class SensorAction {
 		lastTime = now;
 	}
 
-	private void detectTilt(long now, long diff, float azimuth, float pitch,
-			float roll, SensorEvent event) {
+	private void detectTilt(long now, long diff, float azimuth, float pitch, float roll,
+			SensorEvent event) {
 
 		final float resetThreshold = 3.0f;
 

@@ -31,8 +31,7 @@ import com.madrobot.util.collections.PresortedMap;
  */
 public class TreeMapConverter extends MapConverter {
 
-	private static final class NullComparator extends Mapper.Null implements
-			Comparator {
+	private static final class NullComparator extends Mapper.Null implements Comparator {
 		@Override
 		public int compare(Object o1, Object o2) {
 			Comparable c1 = (Comparable) o1;
@@ -84,12 +83,12 @@ public class TreeMapConverter extends MapConverter {
 		super.marshal(source, writer, context);
 	}
 
-	protected void marshalComparator(Comparator comparator,
-			HierarchicalStreamWriter writer, MarshallingContext context) {
+	protected void marshalComparator(Comparator comparator, HierarchicalStreamWriter writer,
+			MarshallingContext context) {
 		if (comparator != null) {
 			writer.startNode("comparator");
-			writer.addAttribute(mapper().aliasForSystemAttribute("class"),
-					mapper().serializedClass(comparator.getClass()));
+			writer.addAttribute(mapper().aliasForSystemAttribute("class"), mapper()
+					.serializedClass(comparator.getClass()));
 			context.convertAnother(comparator);
 			writer.endNode();
 		}
@@ -130,14 +129,11 @@ public class TreeMapConverter extends MapConverter {
 	}
 
 	@Override
-	public Object unmarshal(HierarchicalStreamReader reader,
-			UnmarshallingContext context) {
+	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
 		TreeMap result = comparatorField != null ? new TreeMap() : null;
-		final Comparator comparator = unmarshalComparator(reader, context,
-				result);
+		final Comparator comparator = unmarshalComparator(reader, context, result);
 		if (result == null) {
-			result = comparator == null ? new TreeMap() : new TreeMap(
-					comparator);
+			result = comparator == null ? new TreeMap() : new TreeMap(comparator);
 		}
 		populateTreeMap(reader, context, result, comparator);
 		return result;
@@ -149,10 +145,8 @@ public class TreeMapConverter extends MapConverter {
 		if (reader.hasMoreChildren()) {
 			reader.moveDown();
 			if (reader.getNodeName().equals("comparator")) {
-				Class comparatorClass = HierarchicalStreams.readClassType(
-						reader, mapper());
-				comparator = (Comparator) context.convertAnother(result,
-						comparatorClass);
+				Class comparatorClass = HierarchicalStreams.readClassType(reader, mapper());
+				comparator = (Comparator) context.convertAnother(result, comparatorClass);
 			} else if (reader.getNodeName().equals("no-comparator")) { // pre
 																		// 1.4
 																		// format

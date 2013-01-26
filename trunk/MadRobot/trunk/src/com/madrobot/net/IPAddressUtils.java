@@ -4,8 +4,9 @@ import java.net.Inet4Address;
 
 /**
  * IP 4/6 Address encoding/decoding, validation utilities.
+ * 
  * @author elton.stephen.kent
- *
+ * 
  */
 public class IPAddressUtils {
 

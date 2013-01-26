@@ -26,8 +26,7 @@ public class SelfStreamingInstanceChecker implements Converter {
 	private Converter defaultConverter;
 	private final Object self;
 
-	public SelfStreamingInstanceChecker(Converter defaultConverter,
-			Object xstream) {
+	public SelfStreamingInstanceChecker(Converter defaultConverter, Object xstream) {
 		this.defaultConverter = defaultConverter;
 		this.self = xstream;
 	}
@@ -41,15 +40,13 @@ public class SelfStreamingInstanceChecker implements Converter {
 	public void marshal(Object source, HierarchicalStreamWriter writer,
 			MarshallingContext context) {
 		if (source == self) {
-			throw new ConversionException(
-					"Cannot marshal the XStream instance in action");
+			throw new ConversionException("Cannot marshal the XStream instance in action");
 		}
 		defaultConverter.marshal(source, writer, context);
 	}
 
 	@Override
-	public Object unmarshal(HierarchicalStreamReader reader,
-			UnmarshallingContext context) {
+	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
 		return defaultConverter.unmarshal(reader, context);
 	}
 

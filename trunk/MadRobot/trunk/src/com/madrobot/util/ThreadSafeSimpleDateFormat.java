@@ -31,15 +31,15 @@ public class ThreadSafeSimpleDateFormat {
 	private final Pool pool;
 	private final TimeZone timeZone;
 
-	public ThreadSafeSimpleDateFormat(String format, TimeZone timeZone,
-			int initialPoolSize, int maxPoolSize, final boolean lenient) {
+	public ThreadSafeSimpleDateFormat(String format, TimeZone timeZone, int initialPoolSize,
+			int maxPoolSize, final boolean lenient) {
 		formatString = format;
 		this.timeZone = timeZone;
 		pool = new Pool(initialPoolSize, maxPoolSize, new Pool.Factory() {
 			@Override
 			public Object newInstance() {
-				SimpleDateFormat dateFormat = new SimpleDateFormat(
-						formatString, Locale.ENGLISH);
+				SimpleDateFormat dateFormat = new SimpleDateFormat(formatString,
+						Locale.ENGLISH);
 				dateFormat.setLenient(lenient);
 				return dateFormat;
 			}

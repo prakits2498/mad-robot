@@ -44,8 +44,7 @@ class CachingMapper extends MapperWrapper implements Caching {
 
 	@Override
 	public Class realClass(String elementName) {
-		WeakReference reference = (WeakReference) realClassCache
-				.get(elementName);
+		WeakReference reference = (WeakReference) realClassCache.get(elementName);
 		if (reference != null) {
 			Class cached = (Class) reference.get();
 			if (cached != null) {

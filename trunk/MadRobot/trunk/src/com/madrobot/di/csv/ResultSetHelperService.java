@@ -132,8 +132,7 @@ public class ResultSetHelperService implements ResultSetHelper {
 	}
 
 	@Override
-	public String[] getColumnValues(ResultSet rs) throws SQLException,
-			IOException {
+	public String[] getColumnValues(ResultSet rs) throws SQLException, IOException {
 
 		List<String> values = new ArrayList<String>();
 		ResultSetMetaData metadata = rs.getMetaData();
@@ -150,8 +149,7 @@ public class ResultSetHelperService implements ResultSetHelper {
 		return decimal == null ? "" : decimal.toString();
 	}
 
-	private String handleDate(ResultSet rs, int columnIndex)
-			throws SQLException {
+	private String handleDate(ResultSet rs, int columnIndex) throws SQLException {
 		java.sql.Date date = rs.getDate(columnIndex);
 		String value = null;
 		if (date != null) {
@@ -161,14 +159,12 @@ public class ResultSetHelperService implements ResultSetHelper {
 		return value;
 	}
 
-	private String handleInteger(ResultSet rs, int columnIndex)
-			throws SQLException {
+	private String handleInteger(ResultSet rs, int columnIndex) throws SQLException {
 		int i = rs.getInt(columnIndex);
 		return rs.wasNull() ? "" : Integer.toString(i);
 	}
 
-	private String handleLong(ResultSet rs, int columnIndex)
-			throws SQLException {
+	private String handleLong(ResultSet rs, int columnIndex) throws SQLException {
 		long lv = rs.getLong(columnIndex);
 		return rs.wasNull() ? "" : Long.toString(lv);
 	}
@@ -182,8 +178,7 @@ public class ResultSetHelperService implements ResultSetHelper {
 	}
 
 	private String handleTimestamp(Timestamp timestamp) {
-		SimpleDateFormat timeFormat = new SimpleDateFormat(
-				"dd-MMM-yyyy HH:mm:ss");
+		SimpleDateFormat timeFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
 		return timestamp == null ? null : timeFormat.format(timestamp);
 	}
 }

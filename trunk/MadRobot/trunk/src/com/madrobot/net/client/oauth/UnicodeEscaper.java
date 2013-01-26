@@ -97,8 +97,7 @@ abstract class UnicodeEscaper implements Escaper {
 	protected static final int codePointAt(CharSequence seq, int index, int end) {
 		if (index < end) {
 			char c1 = seq.charAt(index++);
-			if (c1 < Character.MIN_HIGH_SURROGATE
-					|| c1 > Character.MAX_LOW_SURROGATE) {
+			if (c1 < Character.MIN_HIGH_SURROGATE || c1 > Character.MAX_LOW_SURROGATE) {
 				// Fast path (first test is probably all we need to do)
 				return c1;
 			} else if (c1 <= Character.MAX_HIGH_SURROGATE) {
@@ -112,15 +111,11 @@ abstract class UnicodeEscaper implements Escaper {
 				if (Character.isLowSurrogate(c2)) {
 					return Character.toCodePoint(c1, c2);
 				}
-				throw new IllegalArgumentException(
-						"Expected low surrogate but got char '" + c2
-								+ "' with value " + (int) c2 + " at index "
-								+ index);
+				throw new IllegalArgumentException("Expected low surrogate but got char '"
+						+ c2 + "' with value " + (int) c2 + " at index " + index);
 			} else {
-				throw new IllegalArgumentException(
-						"Unexpected low surrogate character '" + c1
-								+ "' with value " + (int) c1 + " at index "
-								+ (index - 1));
+				throw new IllegalArgumentException("Unexpected low surrogate character '" + c1
+						+ "' with value " + (int) c1 + " at index " + (index - 1));
 			}
 		}
 		throw new IndexOutOfBoundsException("Index exceeds specified range");
@@ -199,11 +194,11 @@ abstract class UnicodeEscaper implements Escaper {
 					// so we have to do some extra work first.
 					if (!Character.isLowSurrogate(c)) {
 						throw new IllegalArgumentException(
-								"Expected low surrogate character but got '"
-										+ c + "' with value " + (int) c);
+								"Expected low surrogate character but got '" + c
+										+ "' with value " + (int) c);
 					}
-					char[] escaped = escape(Character.toCodePoint(
-							(char) pendingHighSurrogate, c));
+					char[] escaped = escape(Character.toCodePoint((char) pendingHighSurrogate,
+							c));
 					if (escaped != null) {
 						outputChars(escaped, escaped.length);
 					} else {
@@ -217,8 +212,8 @@ abstract class UnicodeEscaper implements Escaper {
 				} else {
 					if (Character.isLowSurrogate(c)) {
 						throw new IllegalArgumentException(
-								"Unexpected low surrogate character '" + c
-										+ "' with value " + (int) c);
+								"Unexpected low surrogate character '" + c + "' with value "
+										+ (int) c);
 					}
 					// This is a normal (non surrogate) char.
 					char[] escaped = escape(c);
@@ -237,8 +232,7 @@ abstract class UnicodeEscaper implements Escaper {
 			}
 
 			@Override
-			public Appendable append(CharSequence csq, int start, int end)
-					throws IOException {
+			public Appendable append(CharSequence csq, int start, int end) throws IOException {
 				int index = start;
 				if (index < end) {
 					// This is a little subtle: index must never reference the
@@ -255,8 +249,7 @@ abstract class UnicodeEscaper implements Escaper {
 						char c = csq.charAt(index++);
 						if (!Character.isLowSurrogate(c)) {
 							throw new IllegalArgumentException(
-									"Expected low surrogate character but got "
-											+ c);
+									"Expected low surrogate character but got " + c);
 						}
 						char[] escaped = escape(Character.toCodePoint(
 								(char) pendingHighSurrogate, c));
@@ -308,8 +301,7 @@ abstract class UnicodeEscaper implements Escaper {
 						}
 						// Update our index past the escaped character and
 						// continue.
-						index += (Character.isSupplementaryCodePoint(cp) ? 2
-								: 1);
+						index += (Character.isSupplementaryCodePoint(cp) ? 2 : 1);
 						unescapedChunkStart = index;
 					}
 				}
@@ -419,8 +411,7 @@ abstract class UnicodeEscaper implements Escaper {
 		while (index < end) {
 			int cp = codePointAt(s, index, end);
 			if (cp < 0) {
-				throw new IllegalArgumentException(
-						"Trailing high surrogate at end of input");
+				throw new IllegalArgumentException("Trailing high surrogate at end of input");
 			}
 			char[] escaped = escape(cp);
 			if (escaped != null) {
@@ -440,13 +431,11 @@ abstract class UnicodeEscaper implements Escaper {
 					destIndex += charsSkipped;
 				}
 				if (escaped.length > 0) {
-					System.arraycopy(escaped, 0, dest, destIndex,
-							escaped.length);
+					System.arraycopy(escaped, 0, dest, destIndex, escaped.length);
 					destIndex += escaped.length;
 				}
 			}
-			unescapedChunkStart = index
-					+ (Character.isSupplementaryCodePoint(cp) ? 2 : 1);
+			unescapedChunkStart = index + (Character.isSupplementaryCodePoint(cp) ? 2 : 1);
 			index = nextEscapeIndex(s, unescapedChunkStart, end);
 		}
 

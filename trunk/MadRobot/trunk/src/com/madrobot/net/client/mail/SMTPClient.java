@@ -398,7 +398,7 @@ public class SMTPClient extends SMTP {
 			return null;
 		}
 
-		return new DotTerminatedMessageWriter(_writer);
+		return new DotTerminatedMessageWriter(writer);
 	}
 
 	/***
@@ -482,8 +482,8 @@ public class SMTPClient extends SMTP {
 	 *                If an I/O error occurs while either sending a command to
 	 *                the server or receiving a reply from the server.
 	 ***/
-	public boolean sendSimpleMessage(String sender, String recipient,
-			String message) throws IOException {
+	public boolean sendSimpleMessage(String sender, String recipient, String message)
+			throws IOException {
 		if (!setSender(sender)) {
 			return false;
 		}
@@ -520,8 +520,8 @@ public class SMTPClient extends SMTP {
 	 *                If an I/O error occurs while either sending a command to
 	 *                the server or receiving a reply from the server.
 	 ***/
-	public boolean sendSimpleMessage(String sender, String[] recipients,
-			String message) throws IOException {
+	public boolean sendSimpleMessage(String sender, String[] recipients, String message)
+			throws IOException {
 		boolean oneSuccess = false;
 		int count;
 

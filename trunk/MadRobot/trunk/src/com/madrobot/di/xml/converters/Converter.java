@@ -23,29 +23,28 @@ import com.madrobot.di.xml.io.HierarchicalStreamWriter;
  * </p>
  * <p/>
  * <p>
- * If working with the high level {@link com.madrobot.di.xml.XMLWizard}
- * facade, you can register new converters using the XStream.registerConverter()
- * method.
+ * If working with the high level {@link com.madrobot.di.xml.XMLWizard} facade,
+ * you can register new converters using the XStream.registerConverter() method.
  * </p>
  * <p/>
  * <p>
  * If working with the lower level API, the
- * {@link com.madrobot.di.xml.converters.ConverterLookup} implementation
- * is responsible for looking up the appropriate converter.
+ * {@link com.madrobot.di.xml.converters.ConverterLookup} implementation is
+ * responsible for looking up the appropriate converter.
  * </p>
  * <p/>
  * <p>
  * Converters for object that can store all information in a single value should
  * implement {@link com.madrobot.di.xml.converters.SingleValueConverter}.
  * <p>
- * {@link com.madrobot.di.xml.converters.AbstractSingleValueConverter}
- * provides a starting point.
+ * {@link com.madrobot.di.xml.converters.AbstractSingleValueConverter} provides
+ * a starting point.
  * </p>
  * <p/>
  * <p>
- * {@link com.madrobot.di.xml.converters.AbstractCollectionConverter}
- * provides a starting point for objects that hold a collection of other objects
- * (such as Lists and Maps).
+ * {@link com.madrobot.di.xml.converters.AbstractCollectionConverter} provides a
+ * starting point for objects that hold a collection of other objects (such as
+ * Lists and Maps).
  * </p>
  * 
  * @author Joe Walnes
@@ -67,8 +66,7 @@ public interface Converter extends ConverterMatcher {
 	 *            A context that allows nested objects to be processed by
 	 *            XMLWizard.
 	 */
-	void marshal(Object source, HierarchicalStreamWriter writer,
-			MarshallingContext context);
+	void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context);
 
 	/**
 	 * Convert textual data back into an object.
@@ -78,7 +76,6 @@ public interface Converter extends ConverterMatcher {
 	 * @param context
 	 * @return The resulting object.
 	 */
-	Object unmarshal(HierarchicalStreamReader reader,
-			UnmarshallingContext context);
+	Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context);
 
 }

@@ -32,8 +32,7 @@ public final class EchoUDPClient extends DiscardUDPClient {
 	/*** The default echo port. It is set to 7 according to RFC 862. ***/
 	public static final int DEFAULT_PORT = 7;
 
-	private final DatagramPacket __receivePacket = new DatagramPacket(
-			new byte[0], 0);
+	private final DatagramPacket __receivePacket = new DatagramPacket(new byte[0], 0);
 
 	/*** Same as <code> receive(data, data.length)</code> ***/
 	public int receive(byte[] data) throws IOException {
@@ -79,8 +78,7 @@ public final class EchoUDPClient extends DiscardUDPClient {
 	 *                If an error occurs during the datagram send operation.
 	 ***/
 	@Override
-	public void send(byte[] data, int length, InetAddress host)
-			throws IOException {
+	public void send(byte[] data, int length, InetAddress host) throws IOException {
 		send(data, length, host, DEFAULT_PORT);
 	}
 

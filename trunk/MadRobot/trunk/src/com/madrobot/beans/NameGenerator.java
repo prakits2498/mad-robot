@@ -90,8 +90,7 @@ class NameGenerator {
 			String className = unqualifiedClassName(type);
 
 			Object size = nameToCount.get(className);
-			int instanceNumber = (size == null) ? 0 : ((Integer) size)
-					.intValue() + 1;
+			int instanceNumber = (size == null) ? 0 : ((Integer) size).intValue() + 1;
 			nameToCount.put(className, new Integer(instanceNumber));
 
 			result = className + instanceNumber;

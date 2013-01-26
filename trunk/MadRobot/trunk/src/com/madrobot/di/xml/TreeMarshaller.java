@@ -39,8 +39,8 @@ class TreeMarshaller implements MarshallingContext {
 
 	protected HierarchicalStreamWriter writer;
 
-	TreeMarshaller(HierarchicalStreamWriter writer,
-			ConverterLookup converterLookup, Mapper mapper) {
+	TreeMarshaller(HierarchicalStreamWriter writer, ConverterLookup converterLookup,
+			Mapper mapper) {
 		this.writer = writer;
 		this.converterLookup = converterLookup;
 		this.mapper = mapper;

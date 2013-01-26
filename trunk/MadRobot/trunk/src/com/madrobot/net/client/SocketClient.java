@@ -46,8 +46,7 @@ public abstract class SocketClient {
 			.getDefault();
 
 	/** The default SocketFactory shared by all SocketClient instances. */
-	private static final SocketFactory __DEFAULT_SOCKET_FACTORY = SocketFactory
-			.getDefault();
+	private static final SocketFactory __DEFAULT_SOCKET_FACTORY = SocketFactory.getDefault();
 
 	/** The socket's connect timeout (0 = infinite timeout) */
 	private static final int DEFAULT_CONNECT_TIMEOUT = 0;
@@ -59,7 +58,7 @@ public abstract class SocketClient {
 	public static final String NETASCII_EOL = "\r\n";
 
 	/** The default port the client should connect to. */
-	protected int _defaultPort_;
+	protected int defaultPort;
 
 	/** The socket's InputStream. */
 	protected InputStream _input_;
@@ -97,7 +96,7 @@ public abstract class SocketClient {
 		_input_ = null;
 		_output_ = null;
 		_timeout_ = 0;
-		_defaultPort_ = 0;
+		defaultPort = 0;
 		_socketFactory_ = __DEFAULT_SOCKET_FACTORY;
 		_serverSocketFactory_ = __DEFAULT_SERVER_SOCKET_FACTORY;
 	}
@@ -159,7 +158,7 @@ public abstract class SocketClient {
 	 *                derived from it.
 	 */
 	public void connect(InetAddress host) throws SocketException, IOException {
-		connect(host, _defaultPort_);
+		connect(host, defaultPort);
 	}
 
 	/**
@@ -180,8 +179,7 @@ public abstract class SocketClient {
 	 *                only want to catch IOException since SocketException is
 	 *                derived from it.
 	 */
-	public void connect(InetAddress host, int port) throws SocketException,
-			IOException {
+	public void connect(InetAddress host, int port) throws SocketException, IOException {
 		_socket_ = _socketFactory_.createSocket();
 		if (receiveBufferSize != -1) {
 			_socket_.setReceiveBufferSize(receiveBufferSize);
@@ -215,8 +213,8 @@ public abstract class SocketClient {
 	 *                only want to catch IOException since SocketException is
 	 *                derived from it.
 	 */
-	public void connect(InetAddress host, int port, InetAddress localAddr,
-			int localPort) throws SocketException, IOException {
+	public void connect(InetAddress host, int port, InetAddress localAddr, int localPort)
+			throws SocketException, IOException {
 		_socket_ = _socketFactory_.createSocket();
 		if (receiveBufferSize != -1) {
 			_socket_.setReceiveBufferSize(receiveBufferSize);
@@ -248,7 +246,7 @@ public abstract class SocketClient {
 	 *                If the hostname cannot be resolved.
 	 */
 	public void connect(String hostname) throws SocketException, IOException {
-		connect(hostname, _defaultPort_);
+		connect(hostname, defaultPort);
 	}
 
 	/**
@@ -271,8 +269,7 @@ public abstract class SocketClient {
 	 * @exception UnknownHostException
 	 *                If the hostname cannot be resolved.
 	 */
-	public void connect(String hostname, int port) throws SocketException,
-			IOException {
+	public void connect(String hostname, int port) throws SocketException, IOException {
 		connect(InetAddress.getByName(hostname), port);
 	}
 
@@ -300,8 +297,8 @@ public abstract class SocketClient {
 	 * @exception UnknownHostException
 	 *                If the hostname cannot be resolved.
 	 */
-	public void connect(String hostname, int port, InetAddress localAddr,
-			int localPort) throws SocketException, IOException {
+	public void connect(String hostname, int port, InetAddress localAddr, int localPort)
+			throws SocketException, IOException {
 		connect(InetAddress.getByName(hostname), port, localAddr, localPort);
 	}
 
@@ -337,13 +334,13 @@ public abstract class SocketClient {
 
 	/**
 	 * Returns the current value of the default port (stored in
-	 * {@link #_defaultPort_ _defaultPort_ }).
+	 * {@link #defaultPort _defaultPort_ }).
 	 * <p>
 	 * 
 	 * @return The current value of the default port.
 	 */
 	public int getDefaultPort() {
-		return _defaultPort_;
+		return defaultPort;
 	}
 
 	/**
@@ -489,7 +486,7 @@ public abstract class SocketClient {
 
 	/**
 	 * Sets the default port the SocketClient should connect to when a port is
-	 * not specified. The {@link #_defaultPort_ _defaultPort_ } variable stores
+	 * not specified. The {@link #defaultPort _defaultPort_ } variable stores
 	 * this value. If never set, the default port is equal to zero.
 	 * <p>
 	 * 
@@ -497,7 +494,7 @@ public abstract class SocketClient {
 	 *            The default port to set.
 	 */
 	public void setDefaultPort(int port) {
-		_defaultPort_ = port;
+		defaultPort = port;
 	}
 
 	/**

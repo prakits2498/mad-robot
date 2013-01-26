@@ -58,8 +58,7 @@ public class BlurFilters {
 	public static final Bitmap fastGaussianBlur(Bitmap bitmap, int brightness,
 			Bitmap.Config outputConfig) {
 		byte[][] filter = { { 1, 2, 1 }, { 2, 4, 2 }, { 1, 2, 1 } };
-		return BitmapFilters.applyFilter(bitmap, brightness, filter,
-				outputConfig);
+		return BitmapFilters.applyFilter(bitmap, brightness, filter, outputConfig);
 	}
 
 	/**
@@ -73,25 +72,22 @@ public class BlurFilters {
 	 * @param outputConfig
 	 * @return
 	 */
-	public static Bitmap gaussianBlur(Bitmap src, int radius,
-			boolean convolveAlpha, boolean premultiplyAlpha,
-			Bitmap.Config outputConfig) {
+	public static Bitmap gaussianBlur(Bitmap src, int radius, boolean convolveAlpha,
+			boolean premultiplyAlpha, Bitmap.Config outputConfig) {
 		int width = src.getWidth();
 		int height = src.getHeight();
 		int[] inPixels = BitmapUtils.getPixels(src);
 		int[] outPixels = new int[inPixels.length];
 		Kernel kernel = GaussianUtils.makeKernel(radius);
 		if (radius > 0) {
-			GaussianUtils.convolveAndTranspose(kernel, inPixels, outPixels,
-					width, height, convolveAlpha, convolveAlpha
-							&& premultiplyAlpha, false,
+			GaussianUtils.convolveAndTranspose(kernel, inPixels, outPixels, width, height,
+					convolveAlpha, convolveAlpha && premultiplyAlpha, false,
 					BitmapFilters.CLAMP_EDGES);
-			GaussianUtils.convolveAndTranspose(kernel, outPixels, inPixels,
-					height, width, convolveAlpha, false, convolveAlpha
-							&& premultiplyAlpha, BitmapFilters.CLAMP_EDGES);
+			GaussianUtils.convolveAndTranspose(kernel, outPixels, inPixels, height, width,
+					convolveAlpha, false, convolveAlpha && premultiplyAlpha,
+					BitmapFilters.CLAMP_EDGES);
 		}
-		return Bitmap.createBitmap(inPixels, src.getWidth(), src.getHeight(),
-				outputConfig);
+		return Bitmap.createBitmap(inPixels, src.getWidth(), src.getHeight(), outputConfig);
 	}
 
 	/**
@@ -113,9 +109,8 @@ public class BlurFilters {
 	 * @param outputConfig
 	 * @return
 	 */
-	public static Bitmap motionBlur(Bitmap src, float angle, float distance,
-			float rotation, float zoom, boolean premultiplyAlpha,
-			boolean wrapEdges, Bitmap.Config outputConfig) {
+	public static Bitmap motionBlur(Bitmap src, float angle, float distance, float rotation,
+			float zoom, boolean premultiplyAlpha, boolean wrapEdges, Bitmap.Config outputConfig) {
 		int width = src.getWidth();
 		int height = src.getHeight();
 		int[] inPixels = BitmapUtils.getPixels(src);
@@ -128,8 +123,7 @@ public class BlurFilters {
 		float imageRadius = (float) Math.sqrt(cx * cx + cy * cy);
 		float translateX = (float) (distance * Math.cos(angle));
 		float translateY = (float) (distance * -Math.sin(angle));
-		float maxDistance = distance + Math.abs(rotation * imageRadius) + zoom
-				* imageRadius;
+		float maxDistance = distance + Math.abs(rotation * imageRadius) + zoom * imageRadius;
 		int repetitions = (int) maxDistance;
 		AffineTransform t = new AffineTransform();
 		PointF p = new PointF();
@@ -192,8 +186,7 @@ public class BlurFilters {
 		if (premultiplyAlpha)
 			ImageMath.unpremultiply(outPixels, 0, inPixels.length);
 
-		return Bitmap.createBitmap(outPixels, src.getWidth(), src.getHeight(),
-				outputConfig);
+		return Bitmap.createBitmap(outPixels, src.getWidth(), src.getHeight(), outputConfig);
 	}
 
 	/**
@@ -233,8 +226,8 @@ public class BlurFilters {
 	 * @param outputConfig
 	 * @return
 	 */
-	public static Bitmap boxBlur(Bitmap bitmap, float hRadius, float vRadius,
-			int iterations, boolean premultiplyAlpha, Bitmap.Config outputConfig) {
+	public static Bitmap boxBlur(Bitmap bitmap, float hRadius, float vRadius, int iterations,
+			boolean premultiplyAlpha, Bitmap.Config outputConfig) {
 
 		int width = bitmap.getWidth();
 		int height = bitmap.getHeight();
@@ -270,8 +263,7 @@ public class BlurFilters {
 	 * @param radius
 	 *            the radius of blur
 	 */
-	public static void blur(int[] in, int[] out, int width, int height,
-			float radius) {
+	public static void blur(int[] in, int[] out, int width, int height, float radius) {
 		int widthMinus1 = width - 1;
 		int r = (int) radius;
 		int tableSize = 2 * r + 1;
@@ -295,8 +287,8 @@ public class BlurFilters {
 			}
 
 			for (int x = 0; x < width; x++) {
-				out[outIndex] = (divide[ta] << 24) | (divide[tr] << 16)
-						| (divide[tg] << 8) | divide[tb];
+				out[outIndex] = (divide[ta] << 24) | (divide[tr] << 16) | (divide[tg] << 8)
+						| divide[tb];
 
 				int i1 = x + r + 1;
 				if (i1 > widthMinus1)
@@ -317,8 +309,7 @@ public class BlurFilters {
 		}
 	}
 
-	public static void blurFractional(int[] in, int[] out, int width,
-			int height, float radius) {
+	public static void blurFractional(int[] in, int[] out, int width, int height, float radius) {
 		radius -= (int) radius;
 		float f = 1.0f / (1 + 2 * radius);
 		int inIndex = 0;

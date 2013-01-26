@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Enumeration;
 import java.util.StringTokenizer;
 
 /***
@@ -173,7 +172,6 @@ public class POP3Client extends POP3 {
 	 ***/
 	public POP3MessageInfo[] listMessages() throws IOException {
 		POP3MessageInfo[] messages;
-		Enumeration<String> en;
 		int line;
 
 		if (getState() != TRANSACTION_STATE) {
@@ -185,15 +183,16 @@ public class POP3Client extends POP3 {
 		getAdditionalReply();
 
 		// This could be a zero length array if no messages present
-		messages = new POP3MessageInfo[_replyLines.size() - 2];
-		en = _replyLines.elements();
+		messages = new POP3MessageInfo[replyLines.size() - 2];
+		// en = _replyLines.elements();
 
 		// Skip first line
-		en.nextElement();
-
-		// Fetch lines.
-		for (line = 0; line < messages.length; line++) {
-			messages[line] = __parseStatus(en.nextElement());
+		// en.nextElement();
+		for (int i = 1; i < replyLines.size(); i++) {
+			// Fetch lines.
+			for (line = 0; line < messages.length; line++) {
+				messages[line] = __parseStatus(replyLines.get(i));
+			}
 		}
 
 		return messages;
@@ -218,8 +217,7 @@ public class POP3Client extends POP3 {
 	 *                If a network I/O error occurs in the process of sending
 	 *                the list unique identifier command.
 	 ***/
-	public POP3MessageInfo listUniqueIdentifier(int messageId)
-			throws IOException {
+	public POP3MessageInfo listUniqueIdentifier(int messageId) throws IOException {
 		if (getState() != TRANSACTION_STATE) {
 			return null;
 		}
@@ -250,7 +248,6 @@ public class POP3Client extends POP3 {
 	 ***/
 	public POP3MessageInfo[] listUniqueIdentifiers() throws IOException {
 		POP3MessageInfo[] messages;
-		Enumeration<String> en;
 		int line;
 
 		if (getState() != TRANSACTION_STATE) {
@@ -262,15 +259,13 @@ public class POP3Client extends POP3 {
 		getAdditionalReply();
 
 		// This could be a zero length array if no messages present
-		messages = new POP3MessageInfo[_replyLines.size() - 2];
-		en = _replyLines.elements();
+		messages = new POP3MessageInfo[replyLines.size() - 2];
 
-		// Skip first line
-		en.nextElement();
-
-		// Fetch lines.
-		for (line = 0; line < messages.length; line++) {
-			messages[line] = __parseUID(en.nextElement());
+		for (int i = 1; i < replyLines.size(); i++) {
+			// Fetch lines.
+			for (line = 0; line < messages.length; line++) {
+				messages[line] = __parseUID(replyLines.get(i));
+			}
 		}
 
 		return messages;
@@ -351,8 +346,8 @@ public class POP3Client extends POP3 {
 	 *                If the MD5 encryption algorithm cannot be instantiated by
 	 *                the Java runtime system.
 	 ***/
-	public boolean login(String username, String timestamp, String secret)
-			throws IOException, NoSuchAlgorithmException {
+	public boolean login(String username, String timestamp, String secret) throws IOException,
+			NoSuchAlgorithmException {
 		int i;
 		byte[] digest;
 		StringBuilder buffer, digestBuffer;
@@ -515,13 +510,12 @@ public class POP3Client extends POP3 {
 	 *                If a network I/O error occurs in the process of sending
 	 *                the top command.
 	 ***/
-	public Reader retrieveMessageTop(int messageId, int numLines)
-			throws IOException {
+	public Reader retrieveMessageTop(int messageId, int numLines) throws IOException {
 		if ((numLines < 0) || (getState() != TRANSACTION_STATE)) {
 			return null;
 		}
-		if (sendCommand(POP3Command.TOP, Integer.toString(messageId) + " "
-				+ Integer.toString(numLines)) != POP3Reply.OK) {
+		if (sendCommand(POP3Command.TOP,
+				Integer.toString(messageId) + " " + Integer.toString(numLines)) != POP3Reply.OK) {
 			return null;
 		}
 

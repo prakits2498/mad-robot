@@ -50,16 +50,13 @@ public class StackTraceElementConverter extends AbstractSingleValueConverter {
 			} else {
 				if (matcher.group(4) != null) {
 					int lineNumber = Integer.parseInt(matcher.group(5));
-					return FACTORY.element(declaringClass, methodName,
-							fileName, lineNumber);
+					return FACTORY.element(declaringClass, methodName, fileName, lineNumber);
 				} else {
-					return FACTORY
-							.element(declaringClass, methodName, fileName);
+					return FACTORY.element(declaringClass, methodName, fileName);
 				}
 			}
 		} else {
-			throw new ConversionException(
-					"Could not parse StackTraceElement : " + str);
+			throw new ConversionException("Could not parse StackTraceElement : " + str);
 		}
 	}
 

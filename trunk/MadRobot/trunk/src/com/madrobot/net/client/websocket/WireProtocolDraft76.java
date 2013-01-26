@@ -23,8 +23,7 @@ public class WireProtocolDraft76 extends WireProtocol {
 	}
 
 	@Override
-	public Message readMessage(WebSocket socket, DataInputStream input)
-			throws Exception {
+	public Message readMessage(WebSocket socket, DataInputStream input) throws Exception {
 		for (;;) {
 			int frameType;
 
@@ -56,8 +55,7 @@ public class WireProtocolDraft76 extends WireProtocol {
 						// Closing handshake has not yet started - start closing
 						// handshake
 						// This is for a close by the other end
-						Message closeMessage = new Message(0xff, new byte[0],
-								false);
+						Message closeMessage = new Message(0xff, new byte[0], false);
 						socket.getTransmissionQueue().addHead(closeMessage);
 						socket.setReadyState(WebSocket.CLOSING);
 
@@ -91,8 +89,8 @@ public class WireProtocolDraft76 extends WireProtocol {
 				}
 
 				if (frameType == 0) {
-					Message message = new Message(Message.OPCODE_TEXT,
-							accum.toByteArray(), true);
+					Message message = new Message(Message.OPCODE_TEXT, accum.toByteArray(),
+							true);
 					return message;
 				}
 			}
@@ -100,8 +98,8 @@ public class WireProtocolDraft76 extends WireProtocol {
 	}
 
 	@Override
-	public boolean sendMessage(WebSocket socket, DataOutputStream output,
-			Message message) throws Exception {
+	public boolean sendMessage(WebSocket socket, DataOutputStream output, Message message)
+			throws Exception {
 		int opcode = message.getOpcode();
 		if (opcode == Message.OPCODE_PING)
 			return true; // Just ignore
@@ -115,8 +113,7 @@ public class WireProtocolDraft76 extends WireProtocol {
 			return false;
 		} else {
 			if (opcode != Message.OPCODE_TEXT) {
-				throw new IllegalArgumentException(
-						"Draft76 only supports text messages");
+				throw new IllegalArgumentException("Draft76 only supports text messages");
 			}
 
 			output.write(0);

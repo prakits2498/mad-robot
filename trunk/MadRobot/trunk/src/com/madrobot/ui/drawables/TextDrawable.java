@@ -84,8 +84,7 @@ public class TextDrawable extends Drawable
 	}
 
 	protected void computeTextHeight() {
-		mHeight = (int) Math.max(getTextSize(), getNumLines()
-				* getTextSize());
+		mHeight = (int) Math.max(getTextSize(), getNumLines() * getTextSize());
 	}
 
 	protected void computeTextWidth() {
@@ -97,8 +96,7 @@ public class TextDrawable extends Drawable
 				int start = 0;
 				for (int i = 0; i < linesBreak.size(); i++) {
 					int nextBreak = ((Integer) linesBreak.get(i)).intValue();
-					maxWidth = (int) Math.max(maxWidth,
-							getTextWidth(start, nextBreak));
+					maxWidth = (int) Math.max(maxWidth, getTextWidth(start, nextBreak));
 					start = nextBreak + 1;
 				}
 
@@ -127,8 +125,8 @@ public class TextDrawable extends Drawable
 			if (!mTextHint)
 				canvas.drawText(mText, dstRect.left, dstRect.top - metrics.top
 						- metrics.bottom, mStrokePaint);
-			canvas.drawText(mText, dstRect.left, dstRect.top - metrics.top
-					- metrics.bottom, mPaint);
+			canvas.drawText(mText, dstRect.left, dstRect.top - metrics.top - metrics.bottom,
+					mPaint);
 		} else {
 			int start = 0;
 			float top = dstRect.top;
@@ -156,8 +154,8 @@ public class TextDrawable extends Drawable
 				float left = dstRect.left + lastRect.width() + 2.0F;
 				float top = dstRect.top;
 				float right = dstRect.left + lastRect.width() + 4F;
-				float bottom = dstRect.top - metrics.top
-						* (numLines - 1) - metrics.top - metrics.bottom;
+				float bottom = dstRect.top - metrics.top * (numLines - 1) - metrics.top
+						- metrics.bottom;
 				canvas.drawRect(left, top, right, bottom, mStrokePaint);
 				canvas.drawRect(left, top, right, bottom, mPaint);
 			}
@@ -258,8 +256,8 @@ public class TextDrawable extends Drawable
 	}
 
 	public void setBounds(float left, float top, float right, float bottom) {
-		if (left != mBoundsF.left || top != mBoundsF.top
-				|| right != mBoundsF.right || bottom != mBoundsF.bottom) {
+		if (left != mBoundsF.left || top != mBoundsF.top || right != mBoundsF.right
+				|| bottom != mBoundsF.bottom) {
 			mBoundsF.set(left, top, right, bottom);
 			setTextSize(bottom - top);
 		}

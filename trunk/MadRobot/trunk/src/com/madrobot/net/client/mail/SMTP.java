@@ -66,32 +66,22 @@ import com.madrobot.net.client.SocketClient;
  * @see com.madrobot.net.client.mail.MalformedServerReplyException
  ***/
 
-public class SMTP extends SocketClient {
+public class SMTP extends MailClient {
 	// We have to ensure that the protocol communication is in ASCII
 	// but we use ISO-8859-1 just in case 8-bit characters cross
 	// the wire.
-	private static final String __DEFAULT_ENCODING = "ISO-8859-1";
+	private static final String DEFAULT_ENCODING = "ISO-8859-1";
 
 	/*** The default SMTP port (25). ***/
 	public static final int DEFAULT_PORT = 25;
 
-	private StringBuffer __commandBuffer;
+	boolean newReplyString;
 
-	/***
-	 * A ProtocolCommandSupport object used to manage the registering of
-	 * ProtocolCommandListeners and te firing of ProtocolCommandEvents.
-	 ***/
-	protected ProtocolCommandSupport _commandSupport_;
-
-	boolean _newReplyString;
-	BufferedReader _reader;
 	int _replyCode;
-	ArrayList<String> _replyLines;
-	String _replyString;
-	BufferedWriter _writer;
+	String replyString;
 
 	/** The encoding to use (user-settable) */
-	private String encoding = __DEFAULT_ENCODING;
+	private String encoding = DEFAULT_ENCODING;
 
 	/***
 	 * The default SMTP constructor. Sets the default port to
@@ -99,12 +89,16 @@ public class SMTP extends SocketClient {
 	 * saving SMTP reply information.
 	 ***/
 	public SMTP() {
-		setDefaultPort(DEFAULT_PORT);
-		__commandBuffer = new StringBuffer();
-		_replyLines = new ArrayList<String>();
-		_newReplyString = false;
-		_replyString = null;
-		_commandSupport_ = new ProtocolCommandSupport(this);
+		this(DEFAULT_PORT);
+	}
+
+	public SMTP(int port) {
+		super(port);
+		commandBuffer = new StringBuffer();
+		replyLines = new ArrayList<String>();
+		newReplyString = false;
+		replyString = null;
+		commandSupport = new ProtocolCommandSupport(this);
 	}
 
 	/**
@@ -121,22 +115,20 @@ public class SMTP extends SocketClient {
 	private void __getReply() throws IOException {
 		int length;
 
-		_newReplyString = true;
-		_replyLines.clear();
+		newReplyString = true;
+		replyLines.clear();
 
-		String line = _reader.readLine();
+		String line = reader.readLine();
 
 		if (line == null) {
-			throw new SMTPConnectionClosedException(
-					"Connection closed without indication.");
+			throw new SMTPConnectionClosedException("Connection closed without indication.");
 		}
 
 		// In case we run into an anomaly we don't want fatal index exceptions
 		// to be thrown.
 		length = line.length();
 		if (length < 3) {
-			throw new MalformedServerReplyException("Truncated server reply: "
-					+ line);
+			throw new MalformedServerReplyException("Truncated server reply: " + line);
 		}
 
 		try {
@@ -147,19 +139,19 @@ public class SMTP extends SocketClient {
 					"Could not parse response code.\nServer Reply: " + line);
 		}
 
-		_replyLines.add(line);
+		replyLines.add(line);
 
 		// Get extra lines if message continues.
 		if ((length > 3) && (line.charAt(3) == '-')) {
 			do {
-				line = _reader.readLine();
+				line = reader.readLine();
 
 				if (line == null) {
 					throw new SMTPConnectionClosedException(
 							"Connection closed without indication.");
 				}
 
-				_replyLines.add(line);
+				replyLines.add(line);
 
 				// The length() check handles problems that could arise from
 				// readLine()
@@ -173,8 +165,8 @@ public class SMTP extends SocketClient {
 			// line.startsWith(code)));
 		}
 
-		if (_commandSupport_.getListenerCount() > 0) {
-			_commandSupport_.fireReplyReceived(_replyCode, getReplyString());
+		if (commandSupport.getListenerCount() > 0) {
+			commandSupport.fireReplyReceived(_replyCode, getReplyString());
 		}
 
 		if (_replyCode == SMTPReply.SERVICE_NOT_AVAILABLE) {
@@ -185,31 +177,30 @@ public class SMTP extends SocketClient {
 
 	private int __sendCommand(int command, String args, boolean includeSpace)
 			throws IOException {
-		return __sendCommand(SMTPCommand.getCommand(command), args,
-				includeSpace);
+		return __sendCommand(SMTPCommand.getCommand(command), args, includeSpace);
 	}
 
 	private int __sendCommand(String command, String args, boolean includeSpace)
 			throws IOException {
 		String message;
 
-		__commandBuffer.setLength(0);
-		__commandBuffer.append(command);
+		commandBuffer.setLength(0);
+		commandBuffer.append(command);
 
 		if (args != null) {
 			if (includeSpace) {
-				__commandBuffer.append(' ');
+				commandBuffer.append(' ');
 			}
-			__commandBuffer.append(args);
+			commandBuffer.append(args);
 		}
 
-		__commandBuffer.append(SocketClient.NETASCII_EOL);
+		commandBuffer.append(SocketClient.NETASCII_EOL);
 
-		_writer.write(message = __commandBuffer.toString());
-		_writer.flush();
+		writer.write(message = commandBuffer.toString());
+		writer.flush();
 
-		if (_commandSupport_.getListenerCount() > 0) {
-			_commandSupport_.fireCommandSent(command, message);
+		if (commandSupport.getListenerCount() > 0) {
+			commandSupport.fireCommandSent(command, message);
 		}
 
 		__getReply();
@@ -220,22 +211,22 @@ public class SMTP extends SocketClient {
 	@Override
 	protected void _connectAction_() throws IOException {
 		super._connectAction_();
-		_reader = new BufferedReader(new InputStreamReader(_input_, encoding));
-		_writer = new BufferedWriter(new OutputStreamWriter(_output_, encoding));
+		reader = new BufferedReader(new InputStreamReader(_input_, encoding));
+		writer = new BufferedWriter(new OutputStreamWriter(_output_, encoding));
 		__getReply();
 
 	}
 
 	/***
 	 * Adds a ProtocolCommandListener. Delegates this task to
-	 * {@link #_commandSupport_ _commandSupport_ }.
+	 * {@link #commandSupport _commandSupport_ }.
 	 * <p>
 	 * 
 	 * @param listener
 	 *            The ProtocolCommandListener to add.
 	 ***/
 	public void addProtocolCommandListener(ProtocolCommandListener listener) {
-		_commandSupport_.addProtocolCommandListener(listener);
+		commandSupport.addProtocolCommandListener(listener);
 	}
 
 	/***
@@ -271,11 +262,11 @@ public class SMTP extends SocketClient {
 	@Override
 	public void disconnect() throws IOException {
 		super.disconnect();
-		_reader = null;
-		_writer = null;
-		_replyString = null;
-		_replyLines.clear();
-		_newReplyString = false;
+		reader = null;
+		writer = null;
+		replyString = null;
+		replyLines.clear();
+		newReplyString = false;
 	}
 
 	/***
@@ -347,20 +338,20 @@ public class SMTP extends SocketClient {
 	public String getReplyString() {
 		StringBuilder buffer;
 
-		if (!_newReplyString) {
-			return _replyString;
+		if (!newReplyString) {
+			return replyString;
 		}
 
 		buffer = new StringBuilder();
 
-		for (String line : _replyLines) {
+		for (String line : replyLines) {
 			buffer.append(line);
 			buffer.append(SocketClient.NETASCII_EOL);
 		}
 
-		_newReplyString = false;
+		newReplyString = false;
 
-		return (_replyString = buffer.toString());
+		return (replyString = buffer.toString());
 	}
 
 	/***
@@ -372,7 +363,7 @@ public class SMTP extends SocketClient {
 	 * @return The lines of text from the last SMTP response as an array.
 	 ***/
 	public String[] getReplyStrings() {
-		return _replyLines.toArray(new String[_replyLines.size()]);
+		return replyLines.toArray(new String[replyLines.size()]);
 	}
 
 	/***
@@ -525,14 +516,14 @@ public class SMTP extends SocketClient {
 
 	/***
 	 * Removes a ProtocolCommandListener. Delegates this task to
-	 * {@link #_commandSupport_ _commandSupport_ }.
+	 * {@link #commandSupport _commandSupport_ }.
 	 * <p>
 	 * 
 	 * @param listener
 	 *            The ProtocolCommandListener to remove.
 	 ***/
 	public void removeProtocolCommandistener(ProtocolCommandListener listener) {
-		_commandSupport_.removeProtocolCommandListener(listener);
+		commandSupport.removeProtocolCommandListener(listener);
 	}
 
 	/***
@@ -622,6 +613,7 @@ public class SMTP extends SocketClient {
 	 *                If an I/O error occurs while either sending the command or
 	 *                receiving the server reply.
 	 ***/
+	@Override
 	public int sendCommand(int command) throws IOException {
 		return sendCommand(command, null);
 	}

@@ -49,11 +49,9 @@ public class BitSetConverter implements Converter {
 	}
 
 	@Override
-	public Object unmarshal(HierarchicalStreamReader reader,
-			UnmarshallingContext context) {
+	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
 		BitSet result = new BitSet();
-		StringTokenizer tokenizer = new StringTokenizer(reader.getValue(), ",",
-				false);
+		StringTokenizer tokenizer = new StringTokenizer(reader.getValue(), ",", false);
 		while (tokenizer.hasMoreTokens()) {
 			int index = Integer.parseInt(tokenizer.nextToken());
 			result.set(index);

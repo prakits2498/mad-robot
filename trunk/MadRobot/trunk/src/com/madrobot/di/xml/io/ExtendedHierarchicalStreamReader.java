@@ -14,8 +14,7 @@ package com.madrobot.di.xml.io;
 /**
  * @since 1.4.2
  */
-public interface ExtendedHierarchicalStreamReader extends
-		HierarchicalStreamReader {
+public interface ExtendedHierarchicalStreamReader extends HierarchicalStreamReader {
 
 	/**
 	 * Peek the name of the next child. In situation where

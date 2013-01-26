@@ -15,15 +15,13 @@ public final class PrimitiveUtils {
 
 	static {
 		final Class[][] boxing = new Class[][] { { Byte.TYPE, Byte.class },
-				{ Character.TYPE, Character.class },
-				{ Short.TYPE, Short.class }, { Integer.TYPE, Integer.class },
-				{ Long.TYPE, Long.class }, { Float.TYPE, Float.class },
-				{ Double.TYPE, Double.class }, { Boolean.TYPE, Boolean.class },
-				{ Void.TYPE, Void.class }, };
-		final Character[] representingChars = { new Character('B'),
-				new Character('C'), new Character('S'), new Character('I'),
-				new Character('J'), new Character('F'), new Character('D'),
-				new Character('Z'), null };
+				{ Character.TYPE, Character.class }, { Short.TYPE, Short.class },
+				{ Integer.TYPE, Integer.class }, { Long.TYPE, Long.class },
+				{ Float.TYPE, Float.class }, { Double.TYPE, Double.class },
+				{ Boolean.TYPE, Boolean.class }, { Void.TYPE, Void.class }, };
+		final Character[] representingChars = { new Character('B'), new Character('C'),
+				new Character('S'), new Character('I'), new Character('J'),
+				new Character('F'), new Character('D'), new Character('Z'), null };
 		for (int i = 0; i < boxing.length; i++) {
 			final Class primitiveType = boxing[i][0];
 			final Class boxedType = boxing[i][1];
@@ -83,11 +81,10 @@ public final class PrimitiveUtils {
 	}
 
 	private static byte[] toByta(final long data) {
-		return new byte[] { (byte) (data >> 56 & 0xff),
-				(byte) (data >> 48 & 0xff), (byte) (data >> 40 & 0xff),
-				(byte) (data >> 32 & 0xff), (byte) (data >> 24 & 0xff),
-				(byte) (data >> 16 & 0xff), (byte) (data >> 8 & 0xff),
-				(byte) (data >> 0 & 0xff), };
+		return new byte[] { (byte) (data >> 56 & 0xff), (byte) (data >> 48 & 0xff),
+				(byte) (data >> 40 & 0xff), (byte) (data >> 32 & 0xff),
+				(byte) (data >> 24 & 0xff), (byte) (data >> 16 & 0xff),
+				(byte) (data >> 8 & 0xff), (byte) (data >> 0 & 0xff), };
 	}
 
 	public static byte[] toByteArray(final double data) {

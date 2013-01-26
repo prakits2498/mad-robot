@@ -25,23 +25,20 @@ public class CommonsHttpOAuthProvider extends AbstractOAuthProvider {
 
 	public CommonsHttpOAuthProvider(String requestTokenEndpointUrl,
 			String accessTokenEndpointUrl, String authorizationWebsiteUrl) {
-		super(requestTokenEndpointUrl, accessTokenEndpointUrl,
-				authorizationWebsiteUrl);
+		super(requestTokenEndpointUrl, accessTokenEndpointUrl, authorizationWebsiteUrl);
 		this.httpClient = new DefaultHttpClient();
 	}
 
 	public CommonsHttpOAuthProvider(String requestTokenEndpointUrl,
 			String accessTokenEndpointUrl, String authorizationWebsiteUrl,
 			HttpClient httpClient) {
-		super(requestTokenEndpointUrl, accessTokenEndpointUrl,
-				authorizationWebsiteUrl);
+		super(requestTokenEndpointUrl, accessTokenEndpointUrl, authorizationWebsiteUrl);
 		this.httpClient = httpClient;
 	}
 
 	@Override
 	protected void closeConnection(HttpRequest request,
-			com.madrobot.net.client.oauth.HttpResponse response)
-			throws Exception {
+			com.madrobot.net.client.oauth.HttpResponse response) throws Exception {
 		if (response != null) {
 			HttpEntity entity = ((HttpResponse) response.unwrap()).getEntity();
 			if (entity != null) {
@@ -63,10 +60,9 @@ public class CommonsHttpOAuthProvider extends AbstractOAuthProvider {
 	}
 
 	@Override
-	protected com.madrobot.net.client.oauth.HttpResponse sendRequest(
-			HttpRequest request) throws Exception {
-		HttpResponse response = httpClient.execute((HttpUriRequest) request
-				.unwrap());
+	protected com.madrobot.net.client.oauth.HttpResponse sendRequest(HttpRequest request)
+			throws Exception {
+		HttpResponse response = httpClient.execute((HttpUriRequest) request.unwrap());
 		return new HttpResponseAdapter(response);
 	}
 

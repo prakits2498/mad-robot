@@ -30,8 +30,8 @@ import org.apache.http.message.BasicNameValuePair;
  * params.put(&quot;profile_picture&quot;, new File(&quot;pic.jpg&quot;)); // Upload a File
  * params.put(&quot;profile_picture2&quot;, someInputStream); // Upload an InputStream
  * params.put(&quot;profile_picture3&quot;, new ByteArrayInputStream(someBytes)); // Upload
- * 																		// some
- * 																		// bytes
+ * // some
+ * // bytes
  * 
  * AsyncHttpClient client = new AsyncHttpClient();
  * client.post(&quot;http://myendpoint.com&quot;, params, responseHandler);
@@ -107,26 +107,23 @@ public class AsyncHttpRequestParams {
 			AsyncHttpSimpleMultipartEntity multipartEntity = new AsyncHttpSimpleMultipartEntity();
 
 			// Add string params
-			for (ConcurrentHashMap.Entry<String, String> entry : urlParams
-					.entrySet()) {
+			for (ConcurrentHashMap.Entry<String, String> entry : urlParams.entrySet()) {
 				multipartEntity.addPart(entry.getKey(), entry.getValue());
 			}
 
 			// Add file params
 			int currentIndex = 0;
 			int lastIndex = fileParams.entrySet().size() - 1;
-			for (ConcurrentHashMap.Entry<String, FileWrapper> entry : fileParams
-					.entrySet()) {
+			for (ConcurrentHashMap.Entry<String, FileWrapper> entry : fileParams.entrySet()) {
 				FileWrapper file = entry.getValue();
 				if (file.inputStream != null) {
 					boolean isLast = currentIndex == lastIndex;
 					if (file.contentType != null) {
-						multipartEntity.addPart(entry.getKey(),
-								file.getFileName(), file.inputStream,
-								file.contentType, isLast);
+						multipartEntity.addPart(entry.getKey(), file.getFileName(),
+								file.inputStream, file.contentType, isLast);
 					} else {
-						multipartEntity.addPart(entry.getKey(),
-								file.getFileName(), file.inputStream, isLast);
+						multipartEntity.addPart(entry.getKey(), file.getFileName(),
+								file.inputStream, isLast);
 					}
 				}
 				currentIndex++;
@@ -147,8 +144,7 @@ public class AsyncHttpRequestParams {
 	protected List<BasicNameValuePair> getParamsList() {
 		List<BasicNameValuePair> lparams = new LinkedList<BasicNameValuePair>();
 
-		for (ConcurrentHashMap.Entry<String, String> entry : urlParams
-				.entrySet()) {
+		for (ConcurrentHashMap.Entry<String, String> entry : urlParams.entrySet()) {
 			lparams.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
 		}
 
@@ -214,8 +210,7 @@ public class AsyncHttpRequestParams {
 	 * @param contentType
 	 *            the content type of the file, eg. application/json
 	 */
-	public void put(String key, InputStream stream, String fileName,
-			String contentType) {
+	public void put(String key, InputStream stream, String fileName, String contentType) {
 		if (key != null && stream != null) {
 			fileParams.put(key, new FileWrapper(stream, fileName, contentType));
 		}
@@ -249,8 +244,7 @@ public class AsyncHttpRequestParams {
 	@Override
 	public String toString() {
 		StringBuilder result = new StringBuilder();
-		for (ConcurrentHashMap.Entry<String, String> entry : urlParams
-				.entrySet()) {
+		for (ConcurrentHashMap.Entry<String, String> entry : urlParams.entrySet()) {
 			if (result.length() > 0)
 				result.append("&");
 
@@ -259,8 +253,7 @@ public class AsyncHttpRequestParams {
 			result.append(entry.getValue());
 		}
 
-		for (ConcurrentHashMap.Entry<String, FileWrapper> entry : fileParams
-				.entrySet()) {
+		for (ConcurrentHashMap.Entry<String, FileWrapper> entry : fileParams.entrySet()) {
 			if (result.length() > 0)
 				result.append("&");
 

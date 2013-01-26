@@ -20,8 +20,7 @@ import com.madrobot.lang.reflect.ObjectUtils;
  * 
  * @since 1.4
  */
-public abstract class AbstractReader implements
-		ExtendedHierarchicalStreamReader {
+public abstract class AbstractReader implements ExtendedHierarchicalStreamReader {
 
 	private NameCoder nameCoder;
 

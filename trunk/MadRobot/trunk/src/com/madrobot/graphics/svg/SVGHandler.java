@@ -128,12 +128,10 @@ class SVGHandler extends DefaultHandler {
 			if (v == null) {
 				return null;
 				/* color is represented as #RRGGBB */
-			} else if (v.startsWith("#")
-					&& (v.length() == 4 || v.length() == 7)) {
+			} else if (v.startsWith("#") && (v.length() == 4 || v.length() == 7)) {
 				try {
 					int result = Integer.parseInt(v.substring(1), 16);
-					return v.length() == 4 ? ColorUtils.hex3Tohex6(result)
-							: result;
+					return v.length() == 4 ? ColorUtils.hex3Tohex6(result) : result;
 				} catch (NumberFormatException nfe) {
 					return null;
 				}
@@ -157,7 +155,7 @@ class SVGHandler extends DefaultHandler {
 		}
 
 		@SuppressWarnings("unused")
-		private Float getFloat(final String name,final  float defaultValue) {
+		private Float getFloat(final String name, final float defaultValue) {
 			Float v = getFloat(name);
 			if (v == null) {
 				return defaultValue;
@@ -242,7 +240,7 @@ class SVGHandler extends DefaultHandler {
 		}
 
 		// ignore tspan elements for now
-		public void setText(final char[] ch,final  int start,final  int len) {
+		public void setText(final char[] ch, final int start, final int len) {
 			if (isInText()) {
 				if (svgText == null) {
 					svgText = new String(ch, start, len);
@@ -365,7 +363,7 @@ class SVGHandler extends DefaultHandler {
 		return new MetaData(meta_title, meta_desc);
 	}
 
-	SVGHandler(final Picture picture,final  int zoomFactor) {
+	SVGHandler(final Picture picture, final int zoomFactor) {
 		this.picture = picture;
 		strokePaint = new Paint();
 		strokePaint.setAntiAlias(true);
@@ -399,11 +397,11 @@ class SVGHandler extends DefaultHandler {
 			}
 			Shader g = null;
 			if (isLinear) {
-				g = new LinearGradient(gradient.x1, gradient.y1, gradient.x2,
-						gradient.y2, colors, positions, Shader.TileMode.CLAMP);
-			} else {
-				g = new RadialGradient(gradient.x, gradient.y, gradient.radius,
+				g = new LinearGradient(gradient.x1, gradient.y1, gradient.x2, gradient.y2,
 						colors, positions, Shader.TileMode.CLAMP);
+			} else {
+				g = new RadialGradient(gradient.x, gradient.y, gradient.radius, colors,
+						positions, Shader.TileMode.CLAMP);
 			}
 			if (gradient.matrix != null) {
 				g.setLocalMatrix(gradient.matrix);
@@ -415,7 +413,7 @@ class SVGHandler extends DefaultHandler {
 	}
 
 	@Override
-	public void characters(final char ch[],final  int start,final  int length) {
+	public void characters(final char ch[], final int start, final int length) {
 		// Log.i(TAG, new String(ch) + " " + start + "/" + length);
 		if (isInMeta_Title) {
 			meta_title = new String(ch);
@@ -428,8 +426,8 @@ class SVGHandler extends DefaultHandler {
 		}
 	}
 
-	private void doColor(final SVGProperties atts,final  Integer color,final  boolean fillMode,
-			Paint paint) {
+	private void doColor(final SVGProperties atts, final Integer color,
+			final boolean fillMode, Paint paint) {
 		int c = (0xFFFFFF & color) | 0xFF000000;
 		if (searchColor != null && searchColor.intValue() == c) {
 			c = replaceColor;
@@ -437,8 +435,7 @@ class SVGHandler extends DefaultHandler {
 		paint.setColor(c);
 		Float opacity = atts.getFloat("opacity");
 		if (opacity == null) {
-			opacity = atts.getFloat(fillMode ? "fill-opacity"
-					: "stroke-opacity");
+			opacity = atts.getFloat(fillMode ? "fill-opacity" : "stroke-opacity");
 		}
 		if (opacity == null) {
 			paint.setAlpha(255);
@@ -460,8 +457,7 @@ class SVGHandler extends DefaultHandler {
 		if (fillString != null) {
 			if (fillString.startsWith("url(#")) {
 				// It's a gradient fill, look it up in our map
-				String id = fillString.substring("url(#".length(),
-						fillString.length() - 1);
+				String id = fillString.substring("url(#".length(), fillString.length() - 1);
 				Shader shader = this.gradientMap.get(id);
 				if (shader != null) {
 					fillPaint.setShader(shader);
@@ -483,8 +479,7 @@ class SVGHandler extends DefaultHandler {
 					doColor(atts, color, true, fillPaint);
 					return true;
 				} else {
-					Log.d(TAG, "Unrecognized fill color, using black: "
-							+ fillString);
+					Log.d(TAG, "Unrecognized fill color, using black: " + fillString);
 					doColor(atts, Color.BLACK, true, fillPaint);
 					return true;
 				}
@@ -530,7 +525,7 @@ class SVGHandler extends DefaultHandler {
 		return gradient;
 	}
 
-	private void doLimits(final float x,final  float y) {
+	private void doLimits(final float x, final float y) {
 		if (x < limits.left) {
 			limits.left = x;
 		}
@@ -726,8 +721,8 @@ class SVGHandler extends DefaultHandler {
 					x += lastX;
 					y += lastY;
 				}
-				GraphicsUtils.drawArc(p, lastX, lastY, x, y, rx, ry, theta,
-						largeArc == 1, sweepArc == 1);
+				GraphicsUtils.drawArc(p, lastX, lastY, x, y, rx, ry, theta, largeArc == 1,
+						sweepArc == 1);
 				lastX = x;
 				lastY = y;
 				break;
@@ -778,8 +773,7 @@ class SVGHandler extends DefaultHandler {
 			strokePaint.setStrokeJoin(Paint.Join.BEVEL);
 		}
 
-		pathStyleHelper(atts.getString(STROKE_DASH_ARRAY),
-				atts.getString(STROKE_DASH_OFFSET));
+		pathStyleHelper(atts.getString(STROKE_DASH_ARRAY), atts.getString(STROKE_DASH_OFFSET));
 
 		String strokeString = atts.getAttr(STROKE);
 		if (strokeString != null) {
@@ -792,8 +786,7 @@ class SVGHandler extends DefaultHandler {
 					doColor(atts, color, false, strokePaint);
 					return true;
 				} else {
-					Log.d(TAG, "Unrecognized stroke color, using none: "
-							+ strokeString);
+					Log.d(TAG, "Unrecognized stroke color, using none: " + strokeString);
 					strokePaint.setColor(Color.TRANSPARENT);
 					return false;
 				}
@@ -811,7 +804,7 @@ class SVGHandler extends DefaultHandler {
 	}
 
 	// XXX not done yet
-	private boolean doText(final Attributes atts,final  Paint paint) {
+	private boolean doText(final Attributes atts, final Paint paint) {
 		if (NONE.equals(atts.getValue(DISPLAY))) {
 			return false;
 		}
@@ -830,7 +823,8 @@ class SVGHandler extends DefaultHandler {
 	}
 
 	@Override
-	public void endElement(final String namespaceURI,final  String localName,final  String qName) {
+	public void endElement(final String namespaceURI, final String localName,
+			final String qName) {
 		if (localName.equals(TEXT)) {
 			if (text != null) {
 				text.render(canvas);
@@ -869,12 +863,11 @@ class SVGHandler extends DefaultHandler {
 		}
 	}
 
-	private Float getFloatAttr(final String name,final  Attributes attributes) {
+	private Float getFloatAttr(final String name, final Attributes attributes) {
 		return getFloatAttr(name, attributes, null);
 	}
 
-	private Float getFloatAttr(String name, Attributes attributes,
-			Float defaultValue) {
+	private Float getFloatAttr(String name, Attributes attributes, Float defaultValue) {
 		String v = getStringAttr(name, attributes);
 		if (v == null) {
 			return defaultValue;
@@ -893,7 +886,7 @@ class SVGHandler extends DefaultHandler {
 		}
 	}
 
-	private NumberParser getNumberParseAttr(final String name,final  Attributes attributes) {
+	private NumberParser getNumberParseAttr(final String name, final Attributes attributes) {
 		int n = attributes.getLength();
 		for (int i = 0; i < n; i++) {
 			if (attributes.getLocalName(i).equals(name)) {
@@ -903,7 +896,7 @@ class SVGHandler extends DefaultHandler {
 		return null;
 	}
 
-	private String getStringAttr(final String name,final  Attributes attributes) {
+	private String getStringAttr(final String name, final Attributes attributes) {
 		int n = attributes.getLength();
 		for (int i = 0; i < n; i++) {
 			if (attributes.getLocalName(i).equals(name)) {
@@ -947,7 +940,7 @@ class SVGHandler extends DefaultHandler {
 		return result;
 	}
 
-	private Float getZoomFactor( Float value) {
+	private Float getZoomFactor(Float value) {
 		if (value == null)
 			return null;
 		value = value * zoomFactor;
@@ -980,9 +973,8 @@ class SVGHandler extends DefaultHandler {
 		}
 		for (int i = 0; i < atts.getLength(); i++) {
 			String attrQName = atts.getQName(i);
-			if (!X.equals(attrQName) && !Y.equals(attrQName)
-					&& !WIDTH.equals(attrQName) && !HEIGHT.equals(attrQName)
-					&& !"xlink:href".equals(attrQName)
+			if (!X.equals(attrQName) && !Y.equals(attrQName) && !WIDTH.equals(attrQName)
+					&& !HEIGHT.equals(attrQName) && !"xlink:href".equals(attrQName)
 					&& !"transform".equals(attrQName)) {
 				sb.append(" ");
 				sb.append(attrQName);
@@ -1088,7 +1080,7 @@ class SVGHandler extends DefaultHandler {
 		return new NumberParser(numbers, p);
 	}
 
-	private Matrix parseTransform( String s) {
+	private Matrix parseTransform(String s) {
 		// Log.d(TAG, s);
 		Matrix matrix = new Matrix();
 		while (true) {
@@ -1105,10 +1097,9 @@ class SVGHandler extends DefaultHandler {
 		return matrix;
 	}
 
-	private Matrix parseTransformItem(final String s,final  Matrix matrix) {
+	private Matrix parseTransformItem(final String s, final Matrix matrix) {
 		if (s.startsWith(TRANSFORM_MATRIX)) {
-			NumberParser np = parseNumbers(s.substring(TRANSFORM_MATRIX
-					.length()));
+			NumberParser np = parseNumbers(s.substring(TRANSFORM_MATRIX.length()));
 			if (np.numbers.size() == 6) {
 				Matrix mat = new Matrix();
 				mat.setValues(new float[] {
@@ -1123,8 +1114,7 @@ class SVGHandler extends DefaultHandler {
 				matrix.preConcat(mat);
 			}
 		} else if (s.startsWith(TRANSFORM_TRANSLATE)) {
-			NumberParser np = parseNumbers(s.substring(TRANSFORM_TRANSLATE
-					.length()));
+			NumberParser np = parseNumbers(s.substring(TRANSFORM_TRANSLATE.length()));
 			if (np.numbers.size() > 0) {
 				float tx = getZoomFactor(np.numbers.get(0));
 				float ty = 0;
@@ -1134,8 +1124,7 @@ class SVGHandler extends DefaultHandler {
 				matrix.preTranslate(tx, ty);
 			}
 		} else if (s.startsWith(TRANSFORM_SCALE)) {
-			NumberParser np = parseNumbers(s
-					.substring(TRANSFORM_SCALE.length()));
+			NumberParser np = parseNumbers(s.substring(TRANSFORM_SCALE.length()));
 			if (np.numbers.size() > 0) {
 				float sx = np.numbers.get(0);
 				float sy = sx;
@@ -1145,22 +1134,19 @@ class SVGHandler extends DefaultHandler {
 				matrix.preScale(sx, sy);
 			}
 		} else if (s.startsWith(TRANSFORM_SKEW_X)) {
-			NumberParser np = parseNumbers(s.substring(TRANSFORM_SKEW_X
-					.length()));
+			NumberParser np = parseNumbers(s.substring(TRANSFORM_SKEW_X.length()));
 			if (np.numbers.size() > 0) {
 				float angle = np.numbers.get(0);
 				matrix.preSkew((float) Math.tan(angle), 0);
 			}
 		} else if (s.startsWith(TRANSFORM_SKEW_Y)) {
-			NumberParser np = parseNumbers(s.substring(TRANSFORM_SKEW_Y
-					.length()));
+			NumberParser np = parseNumbers(s.substring(TRANSFORM_SKEW_Y.length()));
 			if (np.numbers.size() > 0) {
 				float angle = np.numbers.get(0);
 				matrix.preSkew(0, (float) Math.tan(angle));
 			}
 		} else if (s.startsWith(TRANSFORM_ROTATE)) {
-			NumberParser np = parseNumbers(s.substring(TRANSFORM_ROTATE
-					.length()));
+			NumberParser np = parseNumbers(s.substring(TRANSFORM_ROTATE.length()));
 			if (np.numbers.size() > 0) {
 				float angle = np.numbers.get(0);
 				float cx = 0;
@@ -1184,7 +1170,7 @@ class SVGHandler extends DefaultHandler {
 	 * stroke-dashoffset=n
 	 */
 
-	private void pathStyleHelper(final String style,final  String offset) {
+	private void pathStyleHelper(final String style, final String offset) {
 		if (style == null) {
 			return;
 		}
@@ -1252,12 +1238,11 @@ class SVGHandler extends DefaultHandler {
 		Float centerY = getZoomFactor(getFloatAttr("cy", atts));
 		Float radiusX = getZoomFactor(getFloatAttr("rx", atts));
 		Float radiusY = getZoomFactor(getFloatAttr("ry", atts));
-		if (centerX != null && centerY != null && radiusX != null
-				&& radiusY != null) {
+		if (centerX != null && centerY != null && radiusX != null && radiusY != null) {
 			pushTransform(atts);
 			SVGProperties props = new SVGProperties(atts);
-			rect.set(centerX - radiusX, centerY - radiusY, centerX + radiusX,
-					centerY + radiusY);
+			rect.set(centerX - radiusX, centerY - radiusY, centerX + radiusX, centerY
+					+ radiusY);
 			if (doFill(props)) {
 				doLimits(centerX - radiusX, centerY - radiusY);
 				doLimits(centerX + radiusX, centerY + radiusY);
@@ -1344,8 +1329,7 @@ class SVGHandler extends DefaultHandler {
 			if (points.size() > 1) {
 				pushTransform(atts);
 				SVGProperties props = new SVGProperties(atts);
-				p.moveTo(getZoomFactor(points.get(0)),
-						getZoomFactor(points.get(1)));
+				p.moveTo(getZoomFactor(points.get(0)), getZoomFactor(points.get(1)));
 				for (int i = 2; i < points.size(); i += 2) {
 					float x = getZoomFactor(points.get(i));
 					float y = getZoomFactor(points.get(i + 1));
@@ -1455,8 +1439,7 @@ class SVGHandler extends DefaultHandler {
 	// XXX could be more selective using save(flags)
 	private void pushTransform(final Attributes atts) {
 		final String transform = getStringAttr("transform", atts);
-		final Matrix matrix = transform == null ? IDENTITY_MATRIX
-				: parseTransform(transform);
+		final Matrix matrix = transform == null ? IDENTITY_MATRIX : parseTransform(transform);
 		pushed++;
 		canvas.save(); // Canvas.MATRIX_SAVE_FLAG);
 
@@ -1469,7 +1452,7 @@ class SVGHandler extends DefaultHandler {
 		// Log.d(TAG, "matrix push: " + canvas.getMatrix());
 	}
 
-	void setColorSwap(final Integer searchColor,final  Integer replaceColor) {
+	void setColorSwap(final Integer searchColor, final Integer replaceColor) {
 		this.searchColor = searchColor;
 		this.replaceColor = replaceColor;
 	}
@@ -1491,16 +1474,16 @@ class SVGHandler extends DefaultHandler {
 	private void showBounds(String text, Path p) {
 		RectF b = new RectF();
 		p.computeBounds(b, true);
-		Log.d(TAG, text + " bounds: " + b.left + "," + b.bottom + " to "
-				+ b.right + "," + b.top);
+		Log.d(TAG, text + " bounds: " + b.left + "," + b.bottom + " to " + b.right + ","
+				+ b.top);
 	}
 
 	private boolean isInMeta_Title;
 	private boolean isInMeta_Desc;
 
 	@Override
-	public void startElement(final String namespaceURI,final  String localName,
-			final String qName,final  Attributes atts) {
+	public void startElement(final String namespaceURI, final String localName,
+			final String qName, final Attributes atts) {
 
 		// Log.d(TAG, localName + showAttributes(atts));
 		// Reset paint opacity
@@ -1541,8 +1524,7 @@ class SVGHandler extends DefaultHandler {
 						"Height and width not specified in <SVG> tag. Default values (100,100) set.");
 				width = height = 100f;
 			}
-			canvas = picture
-					.beginRecording(width.intValue(), height.intValue());
+			canvas = picture.beginRecording(width.intValue(), height.intValue());
 
 		} else if (localName.equals(DEFS)) {
 			inDefsElement = true;
@@ -1568,8 +1550,7 @@ class SVGHandler extends DefaultHandler {
 			processCircle(atts);
 		} else if (!hidden && localName.equals(ELLIPSE)) {
 			processEllipse(atts);
-		} else if (!hidden
-				&& (localName.equals(POLYGON) || localName.equals(POLYLINE))) {
+		} else if (!hidden && (localName.equals(POLYGON) || localName.equals(POLYLINE))) {
 			processPolygon(atts, localName);
 		} else if (!hidden && localName.equals(PATH)) {
 			processPath(atts);
@@ -1580,7 +1561,7 @@ class SVGHandler extends DefaultHandler {
 		}
 	}
 
-	private float toFloat(final String s,final  float dflt) {
+	private float toFloat(final String s, final float dflt) {
 		float result = dflt;
 		try {
 			result = Float.parseFloat(s);

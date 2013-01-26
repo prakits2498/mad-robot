@@ -90,8 +90,7 @@ public class DatabaseBuilder {
 	 * @throws DBException
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends DatabaseClient> String getSQLCreate(String table)
-			throws DBException {
+	public <T extends DatabaseClient> String getSQLCreate(String table) throws DBException {
 		StringBuilder sb = null;
 		Class<T> c = getClassBySqlName(table);
 		T e = null;

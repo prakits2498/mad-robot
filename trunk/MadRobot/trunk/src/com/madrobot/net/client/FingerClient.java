@@ -96,8 +96,7 @@ public class FingerClient extends SocketClient {
 	 * @exception IOException
 	 *                If an I/O error during the operation.
 	 ***/
-	public InputStream getInputStream(boolean longOutput, String username)
-			throws IOException {
+	public InputStream getInputStream(boolean longOutput, String username) throws IOException {
 		return getInputStream(longOutput, username, null);
 	}
 
@@ -120,8 +119,8 @@ public class FingerClient extends SocketClient {
 	 * @exception IOException
 	 *                If an I/O error during the operation.
 	 ***/
-	public InputStream getInputStream(boolean longOutput, String username,
-			String encoding) throws IOException {
+	public InputStream getInputStream(boolean longOutput, String username, String encoding)
+			throws IOException {
 		DataOutputStream output;
 		StringBuilder buffer = new StringBuilder(64);
 		if (longOutput) {
@@ -130,8 +129,8 @@ public class FingerClient extends SocketClient {
 		buffer.append(username);
 		buffer.append(SocketClient.NETASCII_EOL);
 
-		byte[] encodedQuery = (encoding == null ? buffer.toString().getBytes()
-				: buffer.toString().getBytes(encoding));
+		byte[] encodedQuery = (encoding == null ? buffer.toString().getBytes() : buffer
+				.toString().getBytes(encoding));
 
 		output = new DataOutputStream(new BufferedOutputStream(_output_, 1024));
 		output.write(encodedQuery, 0, encodedQuery.length);
@@ -176,8 +175,7 @@ public class FingerClient extends SocketClient {
 		StringBuilder result = new StringBuilder(__buffer.length);
 		BufferedReader input;
 
-		input = new BufferedReader(new InputStreamReader(getInputStream(
-				longOutput, username)));
+		input = new BufferedReader(new InputStreamReader(getInputStream(longOutput, username)));
 
 		try {
 			while (true) {

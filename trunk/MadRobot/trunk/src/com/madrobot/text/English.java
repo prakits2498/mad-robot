@@ -74,7 +74,6 @@ public final class English {
 		return result.toString();
 	}
 
-	
 	public static void longToEnglish(long i, StringBuilder result) {
 		if (i == 0) {
 			result.append("zero");

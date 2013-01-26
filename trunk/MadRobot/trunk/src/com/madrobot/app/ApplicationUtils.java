@@ -73,18 +73,20 @@ public final class ApplicationUtils {
 	 * isApplicationRunning(getApplicationContext(),"com.android.browser");
 	 * </code>
 	 * </p>
+	 * 
 	 * @param context
 	 * @param packageName
 	 * @return
 	 */
-	public static boolean isApplicationRunning(Context context,
-			String packageName) {
-		ActivityManager manager=(ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-		List<ActivityManager.RunningAppProcessInfo> procInfos = manager.getRunningAppProcesses();
-		for(int i = 0; i < procInfos.size(); i++){
-	        if(procInfos.get(i).processName.equals(packageName)) {
-	        	return true;
-	        }
+	public static boolean isApplicationRunning(Context context, String packageName) {
+		ActivityManager manager = (ActivityManager) context
+				.getSystemService(Context.ACTIVITY_SERVICE);
+		List<ActivityManager.RunningAppProcessInfo> procInfos = manager
+				.getRunningAppProcesses();
+		for (int i = 0; i < procInfos.size(); i++) {
+			if (procInfos.get(i).processName.equals(packageName)) {
+				return true;
+			}
 		}
 		return false;
 

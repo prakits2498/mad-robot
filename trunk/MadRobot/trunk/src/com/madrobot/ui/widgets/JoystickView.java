@@ -302,42 +302,33 @@ public class JoystickView extends View {
 	private void initAttributes(Context context, AttributeSet attrs) {
 		TypedArray styledAttrs = context.obtainStyledAttributes(attrs,
 				R.styleable.JoystickView);
-		bgColor = styledAttrs.getColor(R.styleable.JoystickView_bgColor,
-				bgColor);
-		int alpha = styledAttrs.getInt(R.styleable.JoystickView_bgAlpha,
-				bgAlpha);
+		bgColor = styledAttrs.getColor(R.styleable.JoystickView_bgColor, bgColor);
+		int alpha = styledAttrs.getInt(R.styleable.JoystickView_bgAlpha, bgAlpha);
 		if (alpha < 0 || alpha > 255) {
 			alpha = 255;
 		}
 		bgAlpha = alpha;
-		handleColor = styledAttrs.getColor(
-				R.styleable.JoystickView_handleColor, handleColor);
-		float clickThresh = styledAttrs.getFloat(
-				R.styleable.JoystickView_clickThreshold, clickThreshold);
+		handleColor = styledAttrs.getColor(R.styleable.JoystickView_handleColor, handleColor);
+		float clickThresh = styledAttrs.getFloat(R.styleable.JoystickView_clickThreshold,
+				clickThreshold);
 		if (clickThresh < 0 || clickThresh > 1.0f) {
 			clickThresh = clickThreshold;
 		}
 		clickThreshold = clickThresh;
-		autoReturnToCenter = styledAttrs
-				.getBoolean(R.styleable.JoystickView_autoReturnToCenter,
-						autoReturnToCenter);
-		userCoordinateSystem = styledAttrs
-				.getInt(R.styleable.JoystickView_coordinateSystem,
-						COORDINATE_CARTESIAN);
-		yAxisInverted = styledAttrs.getBoolean(
-				R.styleable.JoystickView_yAxisInverted, true);
-		moveResolution = styledAttrs.getFloat(
-				R.styleable.JoystickView_moveResolution, moveResolution);
-		canVibrate = styledAttrs.getBoolean(R.styleable.JoystickView_vibrate,
-				false);
-		vibrateDuration = styledAttrs.getInt(
-				R.styleable.JoystickView_vibrateDuration, 300);
+		autoReturnToCenter = styledAttrs.getBoolean(
+				R.styleable.JoystickView_autoReturnToCenter, autoReturnToCenter);
+		userCoordinateSystem = styledAttrs.getInt(R.styleable.JoystickView_coordinateSystem,
+				COORDINATE_CARTESIAN);
+		yAxisInverted = styledAttrs.getBoolean(R.styleable.JoystickView_yAxisInverted, true);
+		moveResolution = styledAttrs.getFloat(R.styleable.JoystickView_moveResolution,
+				moveResolution);
+		canVibrate = styledAttrs.getBoolean(R.styleable.JoystickView_vibrate, false);
+		vibrateDuration = styledAttrs.getInt(R.styleable.JoystickView_vibrateDuration, 300);
 
 	}
 
 	private void initJoystickView() {
-		vibrator = (Vibrator) getContext().getSystemService(
-				Context.VIBRATOR_SERVICE);
+		vibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
 		setFocusable(true);
 
 		dbgPaint1 = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -407,30 +398,25 @@ public class JoystickView extends View {
 		canvas.drawCircle(handleX, handleY, handleRadius, handlePaint);
 
 		if (D) {
-			canvas.drawRect(1, 1, getMeasuredWidth() - 1,
-					getMeasuredHeight() - 1, dbgPaint1);
+			canvas.drawRect(1, 1, getMeasuredWidth() - 1, getMeasuredHeight() - 1, dbgPaint1);
 
 			canvas.drawCircle(handleX, handleY, 3, dbgPaint1);
 
 			if (movementConstraint == CONSTRAIN_CIRCLE) {
 				canvas.drawCircle(cX, cY, this.movementRadius, dbgPaint1);
 			} else {
-				canvas.drawRect(cX - movementRadius, cY - movementRadius, cX
-						+ movementRadius, cY + movementRadius, dbgPaint1);
+				canvas.drawRect(cX - movementRadius, cY - movementRadius, cX + movementRadius,
+						cY + movementRadius, dbgPaint1);
 			}
 
 			// Origin to touch point
 			canvas.drawLine(cX, cY, handleX, handleY, dbgPaint2);
 
 			int baseY = (touchY < 0 ? cY + handleRadius : cY - handleRadius);
-			canvas.drawText(
-					String.format("%s (%.0f,%.0f)", TAG, touchX, touchY),
+			canvas.drawText(String.format("%s (%.0f,%.0f)", TAG, touchX, touchY),
 					handleX - 20, baseY - 7, dbgPaint2);
-			canvas.drawText(
-					"("
-							+ String.format("%.0f, %.1f", radial,
-									angle * 57.2957795) + (char) 0x00B0 + ")",
-					handleX - 20, baseY + 15, dbgPaint2);
+			canvas.drawText("(" + String.format("%.0f, %.1f", radial, angle * 57.2957795)
+					+ (char) 0x00B0 + ")", handleX - 20, baseY + 15, dbgPaint2);
 		}
 
 		// Log.d(TAG, String.format("touch(%f,%f)", touchX, touchY));
@@ -439,8 +425,7 @@ public class JoystickView extends View {
 	}
 
 	@Override
-	protected void onLayout(boolean changed, int left, int top, int right,
-			int bottom) {
+	protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
 		super.onLayout(changed, left, top, right, bottom);
 
 		int d = Math.min(getMeasuredWidth(), getMeasuredHeight());
@@ -649,8 +634,7 @@ public class JoystickView extends View {
 	}
 
 	public void setMovementConstraint(int movementConstraint) {
-		if (movementConstraint < CONSTRAIN_BOX
-				|| movementConstraint > CONSTRAIN_CIRCLE)
+		if (movementConstraint < CONSTRAIN_BOX || movementConstraint > CONSTRAIN_CIRCLE)
 			Log.e(TAG, "invalid value for movementConstraint");
 		else
 			this.movementConstraint = movementConstraint;

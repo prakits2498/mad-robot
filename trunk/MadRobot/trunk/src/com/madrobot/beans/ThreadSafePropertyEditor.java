@@ -25,8 +25,7 @@ public class ThreadSafePropertyEditor {
 	private final Class editorType;
 	private final Pool pool;
 
-	public ThreadSafePropertyEditor(Class type, int initialPoolSize,
-			int maxPoolSize) {
+	public ThreadSafePropertyEditor(Class type, int initialPoolSize, int maxPoolSize) {
 		if (!PropertyEditor.class.isAssignableFrom(type)) {
 			throw new IllegalArgumentException(type.getName() + " is not a "
 					+ PropertyEditor.class.getName());
@@ -38,13 +37,11 @@ public class ThreadSafePropertyEditor {
 				try {
 					return editorType.newInstance();
 				} catch (InstantiationException e) {
-					throw new ObjectAccessException(
-							"Could not call default constructor of "
-									+ editorType.getName(), e);
+					throw new ObjectAccessException("Could not call default constructor of "
+							+ editorType.getName(), e);
 				} catch (IllegalAccessException e) {
-					throw new ObjectAccessException(
-							"Could not call default constructor of "
-									+ editorType.getName(), e);
+					throw new ObjectAccessException("Could not call default constructor of "
+							+ editorType.getName(), e);
 				}
 			}
 

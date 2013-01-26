@@ -22,8 +22,7 @@ import java.util.List;
  * @see FileFilterUtils#suffixFileFilter(String)
  * @see FileFilterUtils#suffixFileFilter(String, IOCase)
  */
-public class SuffixFileFilter extends AbstractFileFilter implements
-		Serializable {
+public class SuffixFileFilter extends AbstractFileFilter implements Serializable {
 
 	/** The filename suffixes to search for */
 	private final String[] suffixes;
@@ -60,8 +59,7 @@ public class SuffixFileFilter extends AbstractFileFilter implements
 			throw new IllegalArgumentException("The suffix must not be null");
 		}
 		this.suffixes = new String[] { suffix };
-		this.caseSensitivity = caseSensitivity == null ? IOCase.SENSITIVE
-				: caseSensitivity;
+		this.caseSensitivity = caseSensitivity == null ? IOCase.SENSITIVE : caseSensitivity;
 	}
 
 	/**
@@ -96,13 +94,11 @@ public class SuffixFileFilter extends AbstractFileFilter implements
 	 */
 	public SuffixFileFilter(String[] suffixes, IOCase caseSensitivity) {
 		if (suffixes == null) {
-			throw new IllegalArgumentException(
-					"The array of suffixes must not be null");
+			throw new IllegalArgumentException("The array of suffixes must not be null");
 		}
 		this.suffixes = new String[suffixes.length];
 		System.arraycopy(suffixes, 0, this.suffixes, 0, suffixes.length);
-		this.caseSensitivity = caseSensitivity == null ? IOCase.SENSITIVE
-				: caseSensitivity;
+		this.caseSensitivity = caseSensitivity == null ? IOCase.SENSITIVE : caseSensitivity;
 	}
 
 	/**
@@ -135,12 +131,10 @@ public class SuffixFileFilter extends AbstractFileFilter implements
 	 */
 	public SuffixFileFilter(List<String> suffixes, IOCase caseSensitivity) {
 		if (suffixes == null) {
-			throw new IllegalArgumentException(
-					"The list of suffixes must not be null");
+			throw new IllegalArgumentException("The list of suffixes must not be null");
 		}
 		this.suffixes = suffixes.toArray(new String[suffixes.size()]);
-		this.caseSensitivity = caseSensitivity == null ? IOCase.SENSITIVE
-				: caseSensitivity;
+		this.caseSensitivity = caseSensitivity == null ? IOCase.SENSITIVE : caseSensitivity;
 	}
 
 	/**

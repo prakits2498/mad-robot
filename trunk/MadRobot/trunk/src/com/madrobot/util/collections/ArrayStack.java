@@ -14,7 +14,6 @@ import java.nio.BufferUnderflowException;
 import java.util.ArrayList;
 import java.util.EmptyStackException;
 
-
 /**
  * An implementation of the {@link java.util.Stack} API that is based on an
  * <code>ArrayList</code> instead of a <code>Vector</code>, so it is not

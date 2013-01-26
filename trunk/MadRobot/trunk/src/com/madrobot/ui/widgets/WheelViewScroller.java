@@ -83,20 +83,18 @@ class WheelViewScroller {
 	// gesture listener
 	private SimpleOnGestureListener gestureListener = new SimpleOnGestureListener() {
 		@Override
-		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-				float velocityY) {
+		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 			lastScrollY = 0;
 			final int maxY = 0x7FFFFFFF;
 			final int minY = -maxY;
-			scroller.fling(0, lastScrollY, 0, (int) -velocityY, 0, 0, minY,
-					maxY);
+			scroller.fling(0, lastScrollY, 0, (int) -velocityY, 0, 0, minY, maxY);
 			setNextMessage(MESSAGE_SCROLL);
 			return true;
 		}
 
 		@Override
-		public boolean onScroll(MotionEvent e1, MotionEvent e2,
-				float distanceX, float distanceY) {
+		public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
+				float distanceY) {
 			// Do scrolling in onTouchEvent() since onScroll() are not call
 			// immediately
 			// when user touch and move the wheel
@@ -187,8 +185,7 @@ class WheelViewScroller {
 			break;
 		}
 
-		if (!gestureDetector.onTouchEvent(event)
-				&& event.getAction() == MotionEvent.ACTION_UP) {
+		if (!gestureDetector.onTouchEvent(event) && event.getAction() == MotionEvent.ACTION_UP) {
 			justify();
 		}
 
@@ -208,8 +205,7 @@ class WheelViewScroller {
 
 		lastScrollY = 0;
 
-		scroller.startScroll(0, 0, 0, distance, time != 0 ? time
-				: SCROLLING_DURATION);
+		scroller.startScroll(0, 0, 0, distance, time != 0 ? time : SCROLLING_DURATION);
 		setNextMessage(MESSAGE_SCROLL);
 
 		startScrolling();

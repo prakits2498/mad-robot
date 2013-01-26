@@ -52,8 +52,7 @@ public class MethodDescriptor extends FeatureDescriptor {
 	 * @param parameterDescriptors
 	 *            Descriptive information for each of the method's parameters.
 	 */
-	public MethodDescriptor(Method method,
-			ParameterDescriptor parameterDescriptors[]) {
+	public MethodDescriptor(Method method, ParameterDescriptor parameterDescriptors[]) {
 		setName(method.getName());
 		setMethod(method);
 		this.parameterDescriptors = parameterDescriptors;
@@ -74,8 +73,7 @@ public class MethodDescriptor extends FeatureDescriptor {
 			int len = old.parameterDescriptors.length;
 			parameterDescriptors = new ParameterDescriptor[len];
 			for (int i = 0; i < len; i++) {
-				parameterDescriptors[i] = new ParameterDescriptor(
-						old.parameterDescriptors[i]);
+				parameterDescriptors[i] = new ParameterDescriptor(old.parameterDescriptors[i]);
 			}
 		}
 	}
@@ -120,16 +118,15 @@ public class MethodDescriptor extends FeatureDescriptor {
 						// This block should never execute unless the
 						// classloader
 						// that loaded the argument classes disappears.
-						method = MethodUtils
-								.findAccessibleMethodIncludeInterfaces(cls,
-										getName(), i, null);
+						method = MethodUtils.findAccessibleMethodIncludeInterfaces(cls,
+								getName(), i, null);
 						if (method != null) {
 							break;
 						}
 					}
 				} else {
-					method = MethodUtils.findAccessibleMethodIncludeInterfaces(
-							cls, getName(), params.length, params);
+					method = MethodUtils.findAccessibleMethodIncludeInterfaces(cls, getName(),
+							params.length, params);
 				}
 				setMethod(method);
 			}

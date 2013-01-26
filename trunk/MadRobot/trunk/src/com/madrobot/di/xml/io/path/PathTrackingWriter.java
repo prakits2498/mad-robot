@@ -29,8 +29,7 @@ public class PathTrackingWriter extends WriterWrapper {
 	private final boolean isNameEncoding;
 	private final PathTracker pathTracker;
 
-	public PathTrackingWriter(HierarchicalStreamWriter writer,
-			PathTracker pathTracker) {
+	public PathTrackingWriter(HierarchicalStreamWriter writer, PathTracker pathTracker) {
 		super(writer);
 		this.isNameEncoding = writer.underlyingWriter() instanceof AbstractWriter;
 		this.pathTracker = pathTracker;
@@ -44,15 +43,15 @@ public class PathTrackingWriter extends WriterWrapper {
 
 	@Override
 	public void startNode(String name) {
-		pathTracker.pushElement(isNameEncoding ? ((AbstractWriter) wrapped
-				.underlyingWriter()).encodeNode(name) : name);
+		pathTracker.pushElement(isNameEncoding ? ((AbstractWriter) wrapped.underlyingWriter())
+				.encodeNode(name) : name);
 		super.startNode(name);
 	}
 
 	@Override
 	public void startNode(String name, Class clazz) {
-		pathTracker.pushElement(isNameEncoding ? ((AbstractWriter) wrapped
-				.underlyingWriter()).encodeNode(name) : name);
+		pathTracker.pushElement(isNameEncoding ? ((AbstractWriter) wrapped.underlyingWriter())
+				.encodeNode(name) : name);
 		super.startNode(name, clazz);
 	}
 }

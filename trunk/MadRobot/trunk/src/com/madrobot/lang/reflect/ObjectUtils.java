@@ -141,17 +141,14 @@ public class ObjectUtils {
 					final Method clone = o.getClass().getMethod("clone");
 					result = clone.invoke(o);
 				} catch (final NoSuchMethodException e) {
-					throw new CloneFailedException("Cloneable type "
-							+ o.getClass().getName() + " has no clone method",
-							e);
+					throw new CloneFailedException("Cloneable type " + o.getClass().getName()
+							+ " has no clone method", e);
 				} catch (final IllegalAccessException e) {
-					throw new CloneFailedException(
-							"Cannot clone Cloneable type "
-									+ o.getClass().getName(), e);
+					throw new CloneFailedException("Cannot clone Cloneable type "
+							+ o.getClass().getName(), e);
 				} catch (final InvocationTargetException e) {
-					throw new CloneFailedException(
-							"Exception cloning Cloneable type "
-									+ o.getClass().getName(), e.getCause());
+					throw new CloneFailedException("Exception cloning Cloneable type "
+							+ o.getClass().getName(), e.getCause());
 				}
 			}
 			@SuppressWarnings("unchecked")
@@ -333,8 +330,7 @@ public class ObjectUtils {
 	 */
 	public static void identityToString(StringBuffer buffer, Object object) {
 		if (object == null) {
-			throw new NullPointerException(
-					"Cannot get the toString of a null identity");
+			throw new NullPointerException("Cannot get the toString of a null identity");
 		}
 		buffer.append(object.getClass().getName()).append('@')
 				.append(Integer.toHexString(System.identityHashCode(object)));

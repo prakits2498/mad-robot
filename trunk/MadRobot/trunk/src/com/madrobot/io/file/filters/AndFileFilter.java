@@ -17,8 +17,8 @@ import com.madrobot.io.file.IOFileFilter;
  * 
  * @see FileFilterUtils#and(IOFileFilter...)
  */
-public class AndFileFilter extends AbstractFileFilter implements
-		ConditionalFileFilter, Serializable {
+public class AndFileFilter extends AbstractFileFilter implements ConditionalFileFilter,
+		Serializable {
 
 	/** The list of file filters. */
 	private final List<IOFileFilter> fileFilters;

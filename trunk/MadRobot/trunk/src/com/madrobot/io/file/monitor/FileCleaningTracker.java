@@ -128,8 +128,7 @@ public class FileCleaningTracker {
 	/**
 	 * Collection of File paths that failed to delete.
 	 */
-	final List<String> deleteFailures = Collections
-			.synchronizedList(new ArrayList<String>());
+	final List<String> deleteFailures = Collections.synchronizedList(new ArrayList<String>());
 	/**
 	 * Whether to terminate the thread when the tracking is complete.
 	 */
@@ -147,8 +146,7 @@ public class FileCleaningTracker {
 	/**
 	 * Collection of <code>Tracker</code> instances in existence.
 	 */
-	final Collection<Tracker> trackers = Collections
-			.synchronizedSet(new HashSet<Tracker>()); // synchronized
+	final Collection<Tracker> trackers = Collections.synchronizedSet(new HashSet<Tracker>()); // synchronized
 
 	/**
 	 * Adds a tracker to the list of trackers.
@@ -258,8 +256,7 @@ public class FileCleaningTracker {
 	 * @throws NullPointerException
 	 *             if the file is null
 	 */
-	public void track(File file, Object marker,
-			FileDeleteStrategy deleteStrategy) {
+	public void track(File file, Object marker, FileDeleteStrategy deleteStrategy) {
 		if (file == null) {
 			throw new NullPointerException("The file must not be null");
 		}
@@ -296,8 +293,7 @@ public class FileCleaningTracker {
 	 * @throws NullPointerException
 	 *             if the path is null
 	 */
-	public void track(String path, Object marker,
-			FileDeleteStrategy deleteStrategy) {
+	public void track(String path, Object marker, FileDeleteStrategy deleteStrategy) {
 		if (path == null) {
 			throw new NullPointerException("The path must not be null");
 		}

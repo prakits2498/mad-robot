@@ -26,8 +26,7 @@ import com.madrobot.di.xml.io.HierarchicalStreamWriter;
  * @author Joe Walnes
  * @author J&ouml;rg Schaible
  */
-public class EncodedByteArrayConverter implements Converter,
-		SingleValueConverter {
+public class EncodedByteArrayConverter implements Converter, SingleValueConverter {
 
 	// private static final Base64Encoder base64 = new Base64Encoder();
 	private static final ByteConverter byteConverter = new ByteConverter();
@@ -54,8 +53,7 @@ public class EncodedByteArrayConverter implements Converter,
 	}
 
 	@Override
-	public Object unmarshal(HierarchicalStreamReader reader,
-			UnmarshallingContext context) {
+	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
 		String data = reader.getValue(); // needs to be called before
 											// hasMoreChildren.
 		if (!reader.hasMoreChildren()) {
@@ -67,8 +65,8 @@ public class EncodedByteArrayConverter implements Converter,
 		}
 	}
 
-	private Object unmarshalIndividualByteElements(
-			HierarchicalStreamReader reader, UnmarshallingContext context) {
+	private Object unmarshalIndividualByteElements(HierarchicalStreamReader reader,
+			UnmarshallingContext context) {
 		List bytes = new ArrayList(); // have to create a temporary list because
 										// don't know the size of the array
 		boolean firstIteration = true;

@@ -19,9 +19,11 @@ import java.io.InputStream;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
+import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
@@ -32,12 +34,18 @@ import android.util.Log;
 import com.madrobot.io.IOUtils;
 import com.madrobot.math.MathUtils;
 
+/**
+ * Common bitmap utilities like scaling, rounding corners,transparency
+ * 
+ * @author ekent4
+ * 
+ */
 public final class BitmapUtils {
 
 	private static final int bottom = 8 * 1024;
 
-	public static void addBitmapLayer(Bitmap src, Bitmap layer, int left,
-			int top) throws IllegalArgumentException {
+	public static void addBitmapLayer(Bitmap src, Bitmap layer, int left, int top)
+			throws IllegalArgumentException {
 		if (!src.isMutable()) {
 			throw new IllegalArgumentException("Bitmap is not mutable");
 		}
@@ -56,8 +64,8 @@ public final class BitmapUtils {
 	 * @param outputConfig
 	 * @return
 	 */
-	public static Bitmap crop(Bitmap bitmap, int x, int y, int width,
-			int height, Bitmap.Config outputConfig) {
+	public static Bitmap crop(Bitmap bitmap, int x, int y, int width, int height,
+			Bitmap.Config outputConfig) {
 		return Bitmap.createBitmap(bitmap, x, y, width, height, null, false);
 	}
 
@@ -113,8 +121,7 @@ public final class BitmapUtils {
 	 * @param destHeight
 	 * @return
 	 */
-	public static Bitmap resizeBitmap(Bitmap input, int destWidth,
-			int destHeight) {
+	public static Bitmap resizeBitmap(Bitmap input, int destWidth, int destHeight) {
 		int srcWidth = input.getWidth();
 		int srcHeight = input.getHeight();
 		boolean needsResize = false;
@@ -133,8 +140,7 @@ public final class BitmapUtils {
 			destHeight = srcHeight;
 		}
 		if (needsResize) {
-			Bitmap output = Bitmap.createScaledBitmap(input, destWidth,
-					destHeight, true);
+			Bitmap output = Bitmap.createScaledBitmap(input, destWidth, destHeight, true);
 			return output;
 		} else {
 			return input;
@@ -172,8 +178,7 @@ public final class BitmapUtils {
 	 * @param dest
 	 *            the converted array int[argb.getHeight()][argb.getWidth()];
 	 */
-	public static final void convertTo2D(int[] argb, int srcWidth,
-			int srcHeight, int[][] dest) {
+	public static final void convertTo2D(int[] argb, int srcWidth, int srcHeight, int[][] dest) {
 		for (int i = 0; i < srcHeight; i++) {
 			for (int j = 0; j < srcWidth; j++) {
 				dest[i][j] = argb[i * srcWidth + j];
@@ -200,8 +205,7 @@ public final class BitmapUtils {
 		return BitmapFactory.decodeByteArray(data, 0, data.length);
 	}
 
-	public static Bitmap getBitmap(int[] pixels, int width, int height,
-			Bitmap.Config config) {
+	public static Bitmap getBitmap(int[] pixels, int width, int height, Bitmap.Config config) {
 		return Bitmap.createBitmap(pixels, width, height, config);
 	}
 
@@ -224,8 +228,7 @@ public final class BitmapUtils {
 	 * @param compressionFormat
 	 * @return
 	 */
-	public static byte[] getByteArray(Bitmap bitmap,
-			Bitmap.CompressFormat compressionFormat) {
+	public static byte[] getByteArray(Bitmap bitmap, Bitmap.CompressFormat compressionFormat) {
 		java.io.ByteArrayOutputStream stream = new java.io.ByteArrayOutputStream();
 		bitmap.compress(compressionFormat, 100, stream);
 		return stream.toByteArray();
@@ -270,8 +273,7 @@ public final class BitmapUtils {
 	 *            the heigth of the rgb source
 	 * @return the new height of the rgb data.
 	 */
-	public static int getRotatedHeight(int degree, int width, int heigth,
-			double angle) {
+	public static int getRotatedHeight(int degree, int width, int heigth, double angle) {
 		double degreeCos = Math.cos(Math.PI * angle / 180);
 		double degreeSin = Math.sin(Math.PI * angle / 180);
 		if (degree == -90 || degree == 90 || degree == 270 || degree == -270) {
@@ -318,8 +320,7 @@ public final class BitmapUtils {
 	 *            the heigth of the rgb source
 	 * @return the new width of the rgb data.
 	 */
-	public static int getRotatedWidth(int degree, int width, int heigth,
-			double angle) {
+	public static int getRotatedWidth(int degree, int width, int heigth, double angle) {
 		double degreeCos = Math.cos(Math.PI * angle / 180);
 		double degreeSin = Math.sin(Math.PI * angle / 180);
 		if (degree == -90 || degree == 90 || degree == 270 || degree == -270) {
@@ -359,24 +360,101 @@ public final class BitmapUtils {
 		return (int) (maxX - minX);
 	}
 
-	public static Bitmap getRoundedCornerBitmap(Bitmap bitmap, int pixels) {
-		Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
-				bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+	/**
+	 * Scale a bitmap and give it specific values for each rounded corner.
+	 * <p>
+	 * The flexibility to individually specify the corner radius for each corner
+	 * is illustrated below.<br/>
+	 * <img src="../../../../resources/bitmapcorner.png"><br/>
+	 * This bitmap has the following values for the corners</br>
+	 * <ul>
+	 * <li>Upper Left -10.0f</li>
+	 * <li>Upper Right -25.0f</li>
+	 * <li>Lower Right -15f</li>
+	 * <li>Lower Left-5.0f</li>
+	 * </ul>
+	 * 
+	 * </p>
+	 * 
+	 * @param context
+	 *            Context object used to ascertain display density.
+	 * @param bitmap
+	 *            The original bitmap that will be scaled and have rounded
+	 *            corners applied to it.
+	 * @param upperLeft
+	 *            Corner radius for upper left.
+	 * @param upperRight
+	 *            Corner radius for upper right.
+	 * @param lowerRight
+	 *            Corner radius for lower right.
+	 * @param lowerLeft
+	 *            Corner radius for lower left.
+	 * @param endWidth
+	 *            Width to which to scale original bitmap. If the width of the
+	 *            ImageView is 50dp, just give 50.
+	 * @param endHeight
+	 *            Height to which to scale original bitmap.If the height of the
+	 *            ImageView is 50dp, just give 50.
+	 * @return Scaled bitmap with rounded corners.
+	 */
+	public static Bitmap getRoundedCornerBitmap(Context context, Bitmap bitmap,
+			float upperLeft, float upperRight, float lowerRight, float lowerLeft,
+			int endWidth, int endHeight) {
+		float densityMultiplier = context.getResources().getDisplayMetrics().density;
+
+		// scale incoming bitmap to appropriate px size given arguments and
+		// display dpi
+		bitmap = Bitmap.createScaledBitmap(bitmap, Math.round(endWidth * densityMultiplier),
+				Math.round(endHeight * densityMultiplier), true);
+
+		// create empty bitmap for drawing
+		Bitmap output = Bitmap.createBitmap(Math.round(endWidth * densityMultiplier),
+				Math.round(endHeight * densityMultiplier), Config.ARGB_8888);
+
+		// get canvas for empty bitmap
 		Canvas canvas = new Canvas(output);
+		int width = canvas.getWidth();
+		int height = canvas.getHeight();
 
-		final int color = 0xff424242;
-		final Paint paint = new Paint();
-		final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-		final RectF rectF = new RectF(rect);
-		final float roundPx = pixels;
+		// scale the rounded corners appropriately given dpi
+		upperLeft *= densityMultiplier;
+		upperRight *= densityMultiplier;
+		lowerRight *= densityMultiplier;
+		lowerLeft *= densityMultiplier;
 
+		Paint paint = new Paint();
 		paint.setAntiAlias(true);
-		canvas.drawARGB(0, 0, 0, 0);
-		paint.setColor(color);
-		canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
+		paint.setColor(Color.WHITE);
 
+		// fill the canvas with transparency
+		canvas.drawARGB(0, 0, 0, 0);
+
+		// draw the rounded corners around the image rect. clockwise, starting
+		// in upper left.
+		canvas.drawCircle(upperLeft, upperLeft, upperLeft, paint);
+		canvas.drawCircle(width - upperRight, upperRight, upperRight, paint);
+		canvas.drawCircle(width - lowerRight, height - lowerRight, lowerRight, paint);
+		canvas.drawCircle(lowerLeft, height - lowerLeft, lowerLeft, paint);
+
+		// fill in all the gaps between circles. clockwise, starting at top.
+		RectF rectT = new RectF(upperLeft, 0, width - upperRight, height / 2);
+		RectF rectR = new RectF(width / 2, upperRight, width, height - lowerRight);
+		RectF rectB = new RectF(lowerLeft, height / 2, width - lowerRight, height);
+		RectF rectL = new RectF(0, upperLeft, width / 2, height - lowerLeft);
+
+		canvas.drawRect(rectT, paint);
+		canvas.drawRect(rectR, paint);
+		canvas.drawRect(rectB, paint);
+		canvas.drawRect(rectL, paint);
+
+		// set up the rect for the image
+		Rect imageRect = new Rect(0, 0, width, height);
+
+		// set up paint object such that it only paints on Color.WHITE
 		paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
-		canvas.drawBitmap(bitmap, rect, rect, paint);
+		// draw resized bitmap onto imageRect in canvas, using paint as
+		// configured above
+		canvas.drawBitmap(bitmap, imageRect, imageRect, paint);
 
 		return output;
 	}
@@ -395,13 +473,12 @@ public final class BitmapUtils {
 	 *            extract vertically.
 	 * @return
 	 */
-	public static Bitmap[] getTiles(Bitmap bitmap, int number, int tileWidth,
-			int tileHeight, boolean fromHorizontal) {
+	public static Bitmap[] getTiles(Bitmap bitmap, int number, int tileWidth, int tileHeight,
+			boolean fromHorizontal) {
 		Bitmap[] tiles = new Bitmap[number];
 		for (int i = 0; i < number; i++) {
-			tiles[i] = Bitmap.createBitmap(bitmap, fromHorizontal ? i
-					* tileWidth : 0, fromHorizontal ? 0 : i * tileHeight,
-					tileWidth, tileHeight);
+			tiles[i] = Bitmap.createBitmap(bitmap, fromHorizontal ? i * tileWidth : 0,
+					fromHorizontal ? 0 : i * tileHeight, tileWidth, tileHeight);
 		}
 		return tiles;
 	}
@@ -417,8 +494,7 @@ public final class BitmapUtils {
 		option.inSampleSize = 1;
 		Bitmap image = null;
 		try {
-			image = BitmapFactory.decodeStream(new FileInputStream(file), null,
-					option);
+			image = BitmapFactory.decodeStream(new FileInputStream(file), null, option);
 			Thread.sleep(4);
 		} catch (Exception e) {
 			Log.e("Blog/DM", "Execption : " + e);
@@ -447,8 +523,8 @@ public final class BitmapUtils {
 	 * @param newRgbData
 	 *            the new rgbdata has to be initialised
 	 */
-	public static void scale(int opacity, int[] rgbData, int newWidth,
-			int newHeight, int oldWidth, int oldHeight, int[] newRgbData) {
+	public static void scale(int opacity, int[] rgbData, int newWidth, int newHeight,
+			int oldWidth, int oldHeight, int[] newRgbData) {
 		int currentX = 0, currentY = 0;
 		int oldLenght = rgbData.length;
 		int newLength = newRgbData.length;
@@ -497,8 +573,8 @@ public final class BitmapUtils {
 	 * @param newRgbData
 	 *            the new rgbdata has to be initialised
 	 */
-	public static void scale(int[] rgbData, int newWidth, int newHeight,
-			int oldWidth, int oldHeight, int[] newRgbData) {
+	public static void scale(int[] rgbData, int newWidth, int newHeight, int oldWidth,
+			int oldHeight, int[] newRgbData) {
 
 		int x, y, dy;
 		int srcOffset;
@@ -545,8 +621,8 @@ public final class BitmapUtils {
 	 *            the y position of the pixel to be scaled.
 	 * @return position of the scaled pixel in the old rgb data array.
 	 */
-	public static int scaledPixel(int oldLength, int oldWidth, int oldHeigth,
-			int newWidth, int newHeigth, int currentX, int currentY) {
+	public static int scaledPixel(int oldLength, int oldWidth, int oldHeigth, int newWidth,
+			int newHeigth, int currentX, int currentY) {
 		int targetArrayIndex;
 		int verticalShrinkFactorPercent = ((newHeigth * 100) / oldHeigth);
 		int horizontalScaleFactorPercent = ((newWidth * 100) / oldWidth);
@@ -575,16 +651,15 @@ public final class BitmapUtils {
 	 *            Bitmap configuration of the output bitmap
 	 * @return the resulting image
 	 */
-	public static Bitmap scaleToFit(Bitmap source, int availableWidth,
-			int availableHeight, Bitmap.Config outputConfig) {
+	public static Bitmap scaleToFit(Bitmap source, int availableWidth, int availableHeight,
+			Bitmap.Config outputConfig) {
 		int sourceWidth = source.getWidth();
 		int sourceHeight = source.getHeight();
 
 		if (sourceWidth > availableWidth || sourceHeight > availableHeight) {
 			int[] rgbData = getPixels(source);
 
-			double availableRatio = (double) availableWidth
-					/ (double) availableHeight;
+			double availableRatio = (double) availableWidth / (double) availableHeight;
 			double sourceRatio = (double) sourceWidth / (double) sourceHeight;
 
 			int targetWidth = availableWidth;
@@ -597,10 +672,8 @@ public final class BitmapUtils {
 			}
 
 			int[] newRgbData = new int[targetWidth * targetHeight];
-			scale(rgbData, targetWidth, targetHeight, sourceWidth,
-					sourceHeight, newRgbData);
-			return getBitmap(newRgbData, targetWidth, targetHeight,
-					outputConfig);
+			scale(rgbData, targetWidth, targetHeight, sourceWidth, sourceHeight, newRgbData);
+			return getBitmap(newRgbData, targetWidth, targetHeight, outputConfig);
 		}
 
 		return source;
@@ -622,8 +695,8 @@ public final class BitmapUtils {
 	 *            the source heigth of the rgb data.
 	 * @return stretched rgb data array.
 	 */
-	public static int[] stretchHorizontal(int[] argbArray,
-			int leftStrechFactor, int rightStrechFactor, int width, int heigth) {
+	public static int[] stretchHorizontal(int[] argbArray, int leftStrechFactor,
+			int rightStrechFactor, int width, int heigth) {
 		int newHeigthLeft = (heigth * leftStrechFactor) / 100;
 		int newHeigthRight = (heigth * rightStrechFactor) / 100;
 		int procentualScalingWidth;
@@ -636,9 +709,8 @@ public final class BitmapUtils {
 			biggerHeigth = newHeigthLeft;
 		}
 		int[] newArgbArray = new int[biggerHeigth * width];
-		return stretchHorizontal(argbArray, newHeigthLeft, newHeigthRight,
-				biggerHeigth, width, heigth, procentualScalingWidth,
-				newArgbArray);
+		return stretchHorizontal(argbArray, newHeigthLeft, newHeigthRight, biggerHeigth,
+				width, heigth, procentualScalingWidth, newArgbArray);
 	}
 
 	/**
@@ -688,8 +760,8 @@ public final class BitmapUtils {
 		for (int i = 0; i < length; i++) {
 
 			if (startColumn <= idY && endColumn >= idY) {
-				newArgbArray[whereIamAt] = argbArray[scaledPixel(oldLength,
-						width, heigth, width, newHeigth, x, y)];
+				newArgbArray[whereIamAt] = argbArray[scaledPixel(oldLength, width, heigth,
+						width, newHeigth, x, y)];
 				y = (y + 1) % newHeigth;
 			} else {
 				newArgbArray[whereIamAt] = 000000;
@@ -742,9 +814,8 @@ public final class BitmapUtils {
 			biggerWidth = newWidthTop;
 		}
 		int[] newArgbArray = new int[biggerWidth * heigth];
-		return stretchVertical(argbArray, newWidthTop, newWidthBottom,
-				biggerWidth, width, heigth, procentualScalingHeight,
-				newArgbArray);
+		return stretchVertical(argbArray, newWidthTop, newWidthBottom, biggerWidth, width,
+				heigth, procentualScalingHeight, newArgbArray);
 	}
 
 	/**
@@ -771,9 +842,9 @@ public final class BitmapUtils {
 	 *            the new rgb data where the changes getting in.
 	 * @return return filled the newArgbArray with stretched changes.
 	 */
-	public static int[] stretchVertical(int[] argbArray, int newWidthTop,
-			int newWidthBottom, int biggerWidth, int width, int heigth,
-			int procentualScalingHeight, int[] newArgbArray) {
+	public static int[] stretchVertical(int[] argbArray, int newWidthTop, int newWidthBottom,
+			int biggerWidth, int width, int heigth, int procentualScalingHeight,
+			int[] newArgbArray) {
 		if (procentualScalingHeight == 0) {
 			procentualScalingHeight++;
 		}
@@ -801,9 +872,8 @@ public final class BitmapUtils {
 			}
 			if (outsideCurrentX >= sum1 && outsideCurrentX < sum2) {
 				insideCurrentX = (insideCurrentX + 1) % newWidthTop;
-				newArgbArray[i] = argbArray[scaledPixel(oldLength, width,
-						heigth, newWidthTop, heigth, insideCurrentX,
-						insideCurrentY)];
+				newArgbArray[i] = argbArray[scaledPixel(oldLength, width, heigth, newWidthTop,
+						heigth, insideCurrentX, insideCurrentY)];
 			} else {
 				newArgbArray[i] = 000000;
 			}
@@ -924,14 +994,12 @@ public final class BitmapUtils {
 	 * @throws llegalArgumentException
 	 *             if the file specified is a directory
 	 */
-	public static void writeBitmapToFile(Bitmap bitmap, File file)
-			throws IOException {
+	public static void writeBitmapToFile(Bitmap bitmap, File file) throws IOException {
 		if (!file.isDirectory()) {
 			throw new IllegalArgumentException("File is a directory");
 		}
-		Bitmap.CompressFormat format = (file.getPath().endsWith("jpg") || file
-				.getPath().endsWith("JPG")) ? CompressFormat.JPEG
-				: CompressFormat.PNG;
+		Bitmap.CompressFormat format = (file.getPath().endsWith("jpg") || file.getPath()
+				.endsWith("JPG")) ? CompressFormat.JPEG : CompressFormat.PNG;
 		final FileOutputStream fos = new FileOutputStream(file);
 		bitmap.compress(format, 100, fos);
 		fos.close();
@@ -953,6 +1021,12 @@ public final class BitmapUtils {
 		for (int i = 0; i < row.length; i++) {
 			int nRow = column * width;
 			argb[nRow + i] = row[i];
+		}
+	}
+
+	public static void recycleBitmap(Bitmap bitmap) {
+		if (bitmap != null) {
+			bitmap.recycle();
 		}
 	}
 

@@ -45,14 +45,15 @@ import com.madrobot.ui.UIUtils;
  * <center><OBJECT CLASSID="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
  * WIDTH="725" HEIGHT="461" CODEBASE=
  * "http://active.macromedia.com/flash5/cabs/swflash.cab#version=7,0,0,0">
- * <PARAM NAME=movie VALUE="../../../../resources/demos/coverflow.swf"> <PARAM NAME=play VALUE=true> <PARAM
- * NAME=loop VALUE=false> <PARAM NAME=wmode VALUE=transparent> <PARAM
- * NAME=quality VALUE=low> <EMBED SRC="../../../../resources/demos/coverflow.swf" WIDTH=725 HEIGHT=461
+ * <PARAM NAME=movie VALUE="../../../../resources/demos/coverflow.swf"> <PARAM
+ * NAME=play VALUE=true> <PARAM NAME=loop VALUE=false> <PARAM NAME=wmode
+ * VALUE=transparent> <PARAM NAME=quality VALUE=low> <EMBED
+ * SRC="../../../../resources/demos/coverflow.swf" WIDTH=725 HEIGHT=461
  * quality=low loop=false wmode=transparent TYPE="application/x-shockwave-flash"
  * PLUGINSPAGE=
  * "http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash"
- * > </EMBED> </OBJECT></center> <SCRIPT src='../../../../resources/demos/pagecurl.js'></script>
- * <br/>
+ * > </EMBED> </OBJECT></center> <SCRIPT
+ * src='../../../../resources/demos/pagecurl.js'></script> <br/>
  * 
  * <b>Using the CoverFlowGallery</b><br/>
  * <p>
@@ -154,8 +155,7 @@ public class CoverFlowGallery extends Gallery {
 	 * @return The centre of this Coverflow.
 	 */
 	private int getCenterOfCoverflow() {
-		return (getWidth() - getPaddingLeft() - getPaddingRight()) / 2
-				+ getPaddingLeft();
+		return (getWidth() - getPaddingLeft() - getPaddingRight()) / 2 + getPaddingLeft();
 	}
 
 	/**
@@ -178,8 +178,7 @@ public class CoverFlowGallery extends Gallery {
 		} else {
 			rotationAngle = (int) (((float) (mCoveflowCenter - childCenter) / childWidth) * mMaxRotationAngle);
 			if (Math.abs(rotationAngle) > mMaxRotationAngle) {
-				rotationAngle = (rotationAngle < 0) ? -mMaxRotationAngle
-						: mMaxRotationAngle;
+				rotationAngle = (rotationAngle < 0) ? -mMaxRotationAngle : mMaxRotationAngle;
 			}
 			transformImageBitmap((ImageView) child, t, rotationAngle);
 		}
@@ -208,10 +207,8 @@ public class CoverFlowGallery extends Gallery {
 	private void initAttributes(Context context, AttributeSet attrs) {
 		TypedArray styledAttrs = context.obtainStyledAttributes(attrs,
 				R.styleable.CoverFlowGallery);
-		mMaxRotationAngle = styledAttrs.getInt(
-				R.styleable.CoverFlowGallery_rotationAngle, 60);
-		mMaxZoom = -styledAttrs.getInt(
-				R.styleable.CoverFlowGallery_centerViewZoom, 120);
+		mMaxRotationAngle = styledAttrs.getInt(R.styleable.CoverFlowGallery_rotationAngle, 60);
+		mMaxZoom = -styledAttrs.getInt(R.styleable.CoverFlowGallery_centerViewZoom, 120);
 	}
 
 	/**
@@ -264,8 +261,7 @@ public class CoverFlowGallery extends Gallery {
 	 * @param rotationAngle
 	 *            the Angle by which to rotate the Bitmap
 	 */
-	private void transformImageBitmap(ImageView child, Transformation t,
-			int rotationAngle) {
+	private void transformImageBitmap(ImageView child, Transformation t, int rotationAngle) {
 		mCamera.save();
 		final Matrix imageMatrix = t.getMatrix();
 		;

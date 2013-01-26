@@ -127,8 +127,7 @@ public class WeakCache extends AbstractMap {
 
 	private Object iterate(Visitor visitor, int type) {
 		Object result = null;
-		for (Iterator iter = map.entrySet().iterator(); result == null
-				&& iter.hasNext();) {
+		for (Iterator iter = map.entrySet().iterator(); result == null && iter.hasNext();) {
 			Map.Entry entry = (Map.Entry) iter.next();
 			Reference reference = (Reference) entry.getValue();
 			Object element = reference.get();

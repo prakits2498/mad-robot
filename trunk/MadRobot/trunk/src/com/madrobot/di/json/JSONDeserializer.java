@@ -59,8 +59,7 @@ public final class JSONDeserializer {
 
 	}
 
-	private String convertStreamToString(final InputStream is)
-			throws IOException {
+	private String convertStreamToString(final InputStream is) throws IOException {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 		StringBuilder sb = new StringBuilder();
 		String line = null;
@@ -91,11 +90,9 @@ public final class JSONDeserializer {
 	 * @throws IOException
 	 *             If an exception occurs during reading
 	 */
-	public <T> T deserialize(final Class<T> objType,
-			final InputStream jsonContentStream) throws JSONException,
-			IOException {
-		return deserialize(objType, new JSONObject(
-				convertStreamToString(jsonContentStream)));
+	public <T> T deserialize(final Class<T> objType, final InputStream jsonContentStream)
+			throws JSONException, IOException {
+		return deserialize(objType, new JSONObject(convertStreamToString(jsonContentStream)));
 	}
 
 	/**
@@ -168,8 +165,8 @@ public final class JSONDeserializer {
 	 * @throws JSONException
 	 *             If an exception occurs during parsing
 	 */
-	private void deserialize(Object obj, JSONObject jsonObject,
-			Stack<Class<?>> stack) throws JSONException {
+	private void deserialize(Object obj, JSONObject jsonObject, Stack<Class<?>> stack)
+			throws JSONException {
 
 		Iterator<?> iterator = jsonObject.keys();
 		Class<?> userClass = stack.peek();
@@ -190,10 +187,9 @@ public final class JSONDeserializer {
 					if (jsonElement instanceof JSONObject) {
 						if (!Converter.isPseudoPrimitive(classType)) {
 
-							String setMethodName = getSetMethodName(fieldName,
+							String setMethodName = getSetMethodName(fieldName, classType);
+							Method setMethod = userClass.getDeclaredMethod(setMethodName,
 									classType);
-							Method setMethod = userClass.getDeclaredMethod(
-									setMethodName, classType);
 
 							JSONObject fieldObject = (JSONObject) jsonElement;
 
@@ -203,14 +199,12 @@ public final class JSONDeserializer {
 
 							setMethod.invoke(obj, itemObj);
 						} else {
-							Log.e(TAG, "Expecting composite type for "
-									+ fieldName);
+							Log.e(TAG, "Expecting composite type for " + fieldName);
 						}
 					} else if (jsonElement instanceof JSONArray) {
 						if (Converter.isCollectionType(classType)) {
 							if (field.isAnnotationPresent(ItemType.class)) {
-								ItemType itemType = field
-										.getAnnotation(ItemType.class);
+								ItemType itemType = field.getAnnotation(ItemType.class);
 								Class<?> itemValueType = itemType.value();
 								int size = itemType.size();
 
@@ -225,33 +219,26 @@ public final class JSONDeserializer {
 									Object value = fieldArrayObject.get(index);
 									if (value instanceof JSONObject) {
 										stack.push(itemValueType);
-										Object itemObj = itemValueType
-												.newInstance();
-										deserialize(itemObj,
-												(JSONObject) value, stack);
+										Object itemObj = itemValueType.newInstance();
+										deserialize(itemObj, (JSONObject) value, stack);
 
 										String addMethodName = getAddMethodName(fieldName);
-										Method addMethod = userClass
-												.getDeclaredMethod(
-														addMethodName,
-														itemValueType);
+										Method addMethod = userClass.getDeclaredMethod(
+												addMethodName, itemValueType);
 										addMethod.invoke(obj, itemObj);
 									}
 								}
 							}
 						} else {
-							Log.e(TAG, "Expecting collection type for "
-									+ fieldName);
+							Log.e(TAG, "Expecting collection type for " + fieldName);
 						}
 					} else if (Converter.isPseudoPrimitive(classType)) {
 
-						Object value = Converter.convertTo(jsonObject, key,
-								classType, field);
+						Object value = Converter.convertTo(jsonObject, key, classType, field);
 
-						String setMethodName = getSetMethodName(fieldName,
+						String setMethodName = getSetMethodName(fieldName, classType);
+						Method setMethod = userClass.getDeclaredMethod(setMethodName,
 								classType);
-						Method setMethod = userClass.getDeclaredMethod(
-								setMethodName, classType);
 						setMethod.invoke(obj, value);
 					} else {
 						Log.e(TAG, "Unknown datatype");
@@ -273,8 +260,7 @@ public final class JSONDeserializer {
 	}
 
 	private String getAddMethodName(String fieldName) {
-		return "add" + Character.toUpperCase(fieldName.charAt(0))
-				+ fieldName.substring(1);
+		return "add" + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
 	}
 
 	private Field getField(final Class<?> userClass, final String jsonKey)
@@ -286,8 +272,7 @@ public final class JSONDeserializer {
 				targetField = field;
 				break;
 			} else if (field.isAnnotationPresent(SerializedName.class)) {
-				SerializedName serializedNameObj = field
-						.getAnnotation(SerializedName.class);
+				SerializedName serializedNameObj = field.getAnnotation(SerializedName.class);
 				if (serializedNameObj.value().equals(jsonKey)) {
 					targetField = field;
 					break;
@@ -301,8 +286,7 @@ public final class JSONDeserializer {
 		return targetField;
 	}
 
-	private String getSetMethodName(final String fieldName,
-			final Class<?> classType) {
+	private String getSetMethodName(final String fieldName, final Class<?> classType) {
 		String methodName = null;
 		if (Converter.isBoolean(classType) && fieldName.startsWith("is")) {
 			methodName = "set" + Character.toUpperCase(fieldName.charAt(2))

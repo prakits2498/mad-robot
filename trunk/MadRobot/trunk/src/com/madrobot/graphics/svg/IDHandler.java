@@ -16,7 +16,7 @@ class IDHandler extends DefaultHandler {
 		int level;
 		StringBuilder sb;
 
-		 IdRecording(String id) {
+		IdRecording(String id) {
 			this.id = id;
 			this.level = 0;
 			this.sb = new StringBuilder();
@@ -31,8 +31,8 @@ class IDHandler extends DefaultHandler {
 	 * @param qName
 	 *            (unused)
 	 */
-	private void appendElementString(StringBuilder sb, String namespaceURI,
-			String localName, String qName, Attributes atts) {
+	private void appendElementString(StringBuilder sb, String namespaceURI, String localName,
+			String qName, Attributes atts) {
 		sb.append("<");
 		sb.append(localName);
 		for (int i = 0; i < atts.getLength(); i++) {
@@ -46,8 +46,8 @@ class IDHandler extends DefaultHandler {
 	}
 
 	@Override
-	public void startElement(String namespaceURI, String localName,
-			String qName, Attributes atts) {
+	public void startElement(String namespaceURI, String localName, String qName,
+			Attributes atts) {
 		String id = atts.getValue("id");
 		if (id != null) {
 			IdRecording ir = new IdRecording(id);

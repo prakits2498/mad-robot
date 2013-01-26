@@ -74,8 +74,7 @@ public class TreeSetConverter extends CollectionConverter {
 	public void marshal(Object source, HierarchicalStreamWriter writer,
 			MarshallingContext context) {
 		SortedSet sortedSet = (SortedSet) source;
-		treeMapConverter.marshalComparator(sortedSet.comparator(), writer,
-				context);
+		treeMapConverter.marshalComparator(sortedSet.comparator(), writer, context);
 		super.marshal(source, writer, context);
 	}
 
@@ -104,8 +103,7 @@ public class TreeSetConverter extends CollectionConverter {
 			}
 
 			@Override
-			protected void putCurrentEntryIntoMap(
-					HierarchicalStreamReader reader,
+			protected void putCurrentEntryIntoMap(HierarchicalStreamReader reader,
 					UnmarshallingContext context, Map map, Map target) {
 				Object key = readItem(reader, context, map);
 				target.put(key, key);
@@ -115,23 +113,21 @@ public class TreeSetConverter extends CollectionConverter {
 	}
 
 	@Override
-	public Object unmarshal(HierarchicalStreamReader reader,
-			UnmarshallingContext context) {
+	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
 		TreeSet result = null;
 		final TreeMap treeMap;
-		Comparator unmarshalledComparator = treeMapConverter
-				.unmarshalComparator(reader, context, null);
+		Comparator unmarshalledComparator = treeMapConverter.unmarshalComparator(reader,
+				context, null);
 		boolean inFirstElement = unmarshalledComparator instanceof Mapper.Null;
 		Comparator comparator = inFirstElement ? null : unmarshalledComparator;
 		if (sortedMapField != null) {
-			TreeSet possibleResult = comparator == null ? new TreeSet()
-					: new TreeSet(comparator);
+			TreeSet possibleResult = comparator == null ? new TreeSet() : new TreeSet(
+					comparator);
 			Object backingMap = null;
 			try {
 				backingMap = sortedMapField.get(possibleResult);
 			} catch (IllegalAccessException e) {
-				throw new ConversionException(
-						"Cannot get backing map of TreeSet", e);
+				throw new ConversionException("Cannot get backing map of TreeSet", e);
 			}
 			if (backingMap instanceof TreeMap) {
 				treeMap = (TreeMap) backingMap;
@@ -144,8 +140,7 @@ public class TreeSetConverter extends CollectionConverter {
 		}
 		if (treeMap == null) {
 			final PresortedSet set = new PresortedSet(comparator);
-			result = comparator == null ? new TreeSet() : new TreeSet(
-					comparator);
+			result = comparator == null ? new TreeSet() : new TreeSet(comparator);
 			if (inFirstElement) {
 				// we are already within the first element
 				addCurrentElementToCollection(reader, context, result, set);
@@ -157,8 +152,7 @@ public class TreeSetConverter extends CollectionConverter {
 									// internally optimized
 			}
 		} else {
-			treeMapConverter.populateTreeMap(reader, context, treeMap,
-					unmarshalledComparator);
+			treeMapConverter.populateTreeMap(reader, context, treeMap, unmarshalledComparator);
 		}
 		return result;
 	}

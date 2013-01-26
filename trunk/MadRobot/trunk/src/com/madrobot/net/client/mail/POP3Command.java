@@ -19,8 +19,8 @@ package com.madrobot.net.client.mail;
  ***/
 
 public final class POP3Command {
-	static final String[] _commands = { "USER", "PASS", "QUIT", "STAT", "LIST",
-			"RETR", "DELE", "NOOP", "RSET", "APOP", "TOP", "UIDL" };
+	static final String[] _commands = { "USER", "PASS", "QUIT", "STAT", "LIST", "RETR",
+			"DELE", "NOOP", "RSET", "APOP", "TOP", "UIDL" };
 	/*** Authorization. ***/
 	public static final int APOP = 9;
 	/*** Delete message(s). ***/

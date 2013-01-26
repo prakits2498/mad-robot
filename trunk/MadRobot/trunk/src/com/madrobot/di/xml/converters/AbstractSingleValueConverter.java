@@ -24,8 +24,7 @@ package com.madrobot.di.xml.converters;
  * @author Mauro Talevi
  * @see com.madrobot.di.xml.converters.SingleValueConverter
  */
-public abstract class AbstractSingleValueConverter implements
-		SingleValueConverter {
+public abstract class AbstractSingleValueConverter implements SingleValueConverter {
 
 	@Override
 	public abstract boolean canConvert(Class type);

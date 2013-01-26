@@ -19,15 +19,14 @@ public class MediaUtils {
 	 * @param context
 	 */
 	public List<File> getAllExternalImages(Context context) {
-		Cursor c = context.getContentResolver().query(
-				Images.Media.EXTERNAL_CONTENT_URI, null, null, null, null);
+		Cursor c = context.getContentResolver().query(Images.Media.EXTERNAL_CONTENT_URI, null,
+				null, null, null);
 		if (c != null) {
 			c.moveToFirst();
 			List<File> imageList = new ArrayList<File>();
 			while (c.isAfterLast() == false) {
 				long id = c.getLong(c.getColumnIndex(BaseColumns._ID));
-				Uri imageUri = Uri.parse(Images.Media.EXTERNAL_CONTENT_URI
-						+ "/" + id);
+				Uri imageUri = Uri.parse(Images.Media.EXTERNAL_CONTENT_URI + "/" + id);
 				String uri = imageUri.toString();
 				if (uri.startsWith(ContentResolver.SCHEME_CONTENT)
 						|| uri.startsWith(ContentResolver.SCHEME_FILE)) {

@@ -40,8 +40,7 @@ public class AndroidWebSocketClient extends WebSocket {
 	 * @param url
 	 * @param requestedProtocols
 	 */
-	public AndroidWebSocketClient(Handler handler, String url,
-			String... requestedProtocols) {
+	public AndroidWebSocketClient(Handler handler, String url, String... requestedProtocols) {
 		super(url, requestedProtocols);
 		this.handler = new Handler();
 	}

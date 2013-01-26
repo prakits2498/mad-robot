@@ -99,8 +99,7 @@ public class StringConverter extends AbstractSingleValueConverter {
 
 	@Override
 	public Object fromString(final String str) {
-		if (cache != null && str != null
-				&& (lengthLimit < 0 || str.length() <= lengthLimit)) {
+		if (cache != null && str != null && (lengthLimit < 0 || str.length() <= lengthLimit)) {
 			String s = (String) cache.get(str);
 
 			if (s == null) {

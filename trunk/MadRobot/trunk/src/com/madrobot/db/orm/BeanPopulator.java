@@ -76,8 +76,8 @@ public class BeanPopulator {
 	 * @throws SQLException
 	 *             if an error occurs setting the property.
 	 */
-	private static void callSetter(Object target, PropertyDescriptor prop,
-			Object value) throws SQLException {
+	private static void callSetter(Object target, PropertyDescriptor prop, Object value)
+			throws SQLException {
 
 		Method setter = prop.getWriteMethod();
 
@@ -91,14 +91,11 @@ public class BeanPopulator {
 			if (value != null) {
 				if (value instanceof java.util.Date) {
 					if (params[0].getName().equals("java.sql.Date")) {
-						value = new java.sql.Date(
-								((java.util.Date) value).getTime());
+						value = new java.sql.Date(((java.util.Date) value).getTime());
 					} else if (params[0].getName().equals("java.sql.Time")) {
-						value = new java.sql.Time(
-								((java.util.Date) value).getTime());
+						value = new java.sql.Time(((java.util.Date) value).getTime());
 					} else if (params[0].getName().equals("java.sql.Timestamp")) {
-						value = new java.sql.Timestamp(
-								((java.util.Date) value).getTime());
+						value = new java.sql.Timestamp(((java.util.Date) value).getTime());
 					}
 				}
 			}
@@ -112,16 +109,13 @@ public class BeanPopulator {
 			}
 
 		} catch (IllegalArgumentException e) {
-			throw new SQLException("Cannot set " + prop.getName() + ": "
-					+ e.getMessage());
+			throw new SQLException("Cannot set " + prop.getName() + ": " + e.getMessage());
 
 		} catch (IllegalAccessException e) {
-			throw new SQLException("Cannot set " + prop.getName() + ": "
-					+ e.getMessage());
+			throw new SQLException("Cannot set " + prop.getName() + ": " + e.getMessage());
 
 		} catch (InvocationTargetException e) {
-			throw new SQLException("Cannot set " + prop.getName() + ": "
-					+ e.getMessage());
+			throw new SQLException("Cannot set " + prop.getName() + ": " + e.getMessage());
 		}
 	}
 
@@ -146,9 +140,9 @@ public class BeanPopulator {
 	 * @throws IllegalAccessException
 	 *             if the bean class is not public
 	 */
-	private static <T> T createBean(ResultSet rs, Class<T> type,
-			PropertyDescriptor[] props, int[] columnToProperty)
-			throws SQLException, IllegalAccessException, InstantiationException {
+	private static <T> T createBean(ResultSet rs, Class<T> type, PropertyDescriptor[] props,
+			int[] columnToProperty) throws SQLException, IllegalAccessException,
+			InstantiationException {
 
 		T bean = ClassUtils.newInstance(type);
 
@@ -170,8 +164,7 @@ public class BeanPopulator {
 		return bean;
 	}
 
-	private static Object[] getMethodParamter(Method method, Cursor cursor,
-			int columnIndex) {
+	private static Object[] getMethodParamter(Method method, Cursor cursor, int columnIndex) {
 		// method.get
 		Class[] paramTypes = method.getParameterTypes();
 		if (paramTypes != null) {
@@ -237,8 +230,7 @@ public class BeanPopulator {
 		} else if (type.equals(Byte.TYPE) && Byte.class.isInstance(value)) {
 			return true;
 
-		} else if (type.equals(Character.TYPE)
-				&& Character.class.isInstance(value)) {
+		} else if (type.equals(Character.TYPE) && Character.class.isInstance(value)) {
 			return true;
 
 		} else if (type.equals(Boolean.TYPE) && Boolean.class.isInstance(value)) {
@@ -293,18 +285,16 @@ public class BeanPopulator {
 		return columnToProperty;
 	}
 
-	private static void populateBean(Object bean, Cursor cursor,
-			String[] columns, PropertyDescriptor[] propDesc)
-			throws IllegalArgumentException, IllegalAccessException,
-			InvocationTargetException {
+	private static void populateBean(Object bean, Cursor cursor, String[] columns,
+			PropertyDescriptor[] propDesc) throws IllegalArgumentException,
+			IllegalAccessException, InvocationTargetException {
 		for (int i = 0; i < columns.length; i++) {
 			for (int j = 0; j < propDesc.length; j++) {
 				if (columns[i].equalsIgnoreCase(propDesc[j].getName())) {
 					Method method = propDesc[j].getWriteMethod();
 					if (method != null) {
 						int columnIndex = cursor.getColumnIndex(columns[i]);
-						Object[] params = getMethodParamter(method, cursor,
-								columnIndex);
+						Object[] params = getMethodParamter(method, cursor, columnIndex);
 						if (params != null)
 							method.invoke(bean, params);
 					}
@@ -345,8 +335,8 @@ public class BeanPopulator {
 	 *         index after optional type processing or <code>null</code> if the
 	 *         column value was SQL NULL.
 	 */
-	private static Object processColumn(ResultSet rs, int index,
-			Class<?> propType) throws SQLException {
+	private static Object processColumn(ResultSet rs, int index, Class<?> propType)
+			throws SQLException {
 
 		if (!propType.isPrimitive() && rs.getObject(index) == null) {
 			return null;
@@ -359,19 +349,16 @@ public class BeanPopulator {
 		if (propType.equals(String.class)) {
 			return rs.getString(index);
 
-		} else if (propType.equals(Integer.TYPE)
-				|| propType.equals(Integer.class)) {
+		} else if (propType.equals(Integer.TYPE) || propType.equals(Integer.class)) {
 			return (rs.getInt(index));
 
-		} else if (propType.equals(Boolean.TYPE)
-				|| propType.equals(Boolean.class)) {
+		} else if (propType.equals(Boolean.TYPE) || propType.equals(Boolean.class)) {
 			return (rs.getBoolean(index));
 
 		} else if (propType.equals(Long.TYPE) || propType.equals(Long.class)) {
 			return (rs.getLong(index));
 
-		} else if (propType.equals(Double.TYPE)
-				|| propType.equals(Double.class)) {
+		} else if (propType.equals(Double.TYPE) || propType.equals(Double.class)) {
 			return (rs.getDouble(index));
 
 		} else if (propType.equals(Float.TYPE) || propType.equals(Float.class)) {
@@ -452,9 +439,8 @@ public class BeanPopulator {
 	 *             If the mentioned <code>type</code> is not accessible.
 	 * @throws IntrospectionException
 	 */
-	public static <T> T toBean(ResultSet rs, Class<T> type)
-			throws IllegalAccessException, InstantiationException,
-			IntrospectionException, SQLException {
+	public static <T> T toBean(ResultSet rs, Class<T> type) throws IllegalAccessException,
+			InstantiationException, IntrospectionException, SQLException {
 
 		PropertyDescriptor[] props = propertyDescriptors(type);
 
@@ -541,9 +527,8 @@ public class BeanPopulator {
 	 * @throws IllegalArgumentException
 	 */
 	public static <T> List<T> toBeanList(Cursor cursor, Class<T> type)
-			throws IllegalAccessException, InstantiationException,
-			IntrospectionException, IllegalArgumentException,
-			InvocationTargetException {
+			throws IllegalAccessException, InstantiationException, IntrospectionException,
+			IllegalArgumentException, InvocationTargetException {
 		List results = new ArrayList();
 		if (cursor.getCount() == 0)
 			return results;
@@ -601,9 +586,8 @@ public class BeanPopulator {
 	 * @throws IntrospectionException
 	 * @see DBUtils#toBean(ResultSet, Class)
 	 */
-	public static <T> List<T> toBeanList(ResultSet rs, Class<T> type)
-			throws SQLException, IllegalAccessException,
-			InstantiationException, IntrospectionException {
+	public static <T> List<T> toBeanList(ResultSet rs, Class<T> type) throws SQLException,
+			IllegalAccessException, InstantiationException, IntrospectionException {
 		List<T> results = new ArrayList<T>();
 
 		if (!rs.next()) {

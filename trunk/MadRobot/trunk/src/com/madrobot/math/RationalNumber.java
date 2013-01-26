@@ -21,8 +21,8 @@ public class RationalNumber extends Number {
 		// safer than constructor - handles values outside min/max range.
 		// also does some simple finding of common denominators.
 
-		if ((n > Integer.MAX_VALUE) || (n < Integer.MIN_VALUE)
-				|| (d > Integer.MAX_VALUE) || (d < Integer.MIN_VALUE)) {
+		if ((n > Integer.MAX_VALUE) || (n < Integer.MIN_VALUE) || (d > Integer.MAX_VALUE)
+				|| (d < Integer.MIN_VALUE)) {
 			while (((n > Integer.MAX_VALUE) || (n < Integer.MIN_VALUE)
 					|| (d > Integer.MAX_VALUE) || (d < Integer.MIN_VALUE))
 					&& (Math.abs(n) > 1) && (Math.abs(d) > 1)) {
@@ -33,8 +33,8 @@ public class RationalNumber extends Number {
 			}
 
 			if (d == 0) {
-				throw new NumberFormatException("Invalid value, numerator: "
-						+ n + ", divisor: " + d);
+				throw new NumberFormatException("Invalid value, numerator: " + n
+						+ ", divisor: " + d);
 			}
 		}
 
@@ -111,7 +111,7 @@ public class RationalNumber extends Number {
 		if ((numerator % divisor) == 0) {
 			return nf.format(numerator / divisor);
 		}
-		return numerator + "/" + divisor + " ("
-				+ nf.format((double) numerator / divisor) + ")";
+		return numerator + "/" + divisor + " (" + nf.format((double) numerator / divisor)
+				+ ")";
 	}
 }

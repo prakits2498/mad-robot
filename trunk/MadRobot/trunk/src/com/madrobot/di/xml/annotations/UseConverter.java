@@ -23,17 +23,16 @@ import com.madrobot.di.xml.converters.ConverterMatcher;
  * Annotation to declare a converter. The annotation supports additionally the
  * injection of various constructor arguments provided by XMLWizard:
  * <ul>
- * <li>{@link com.madrobot.di.xml.Mapper}: The current mapper chain of
- * the XMLWizard instance.</li>
+ * <li>{@link com.madrobot.di.xml.Mapper}: The current mapper chain of the
+ * XMLWizard instance.</li>
  * <li>{@link ClassLoader}: The class loader used by the XMLWizard instance to
  * deserialize the objects.</li>
- * <li>{@link com.madrobot.di.xml.converters.ReflectionProvider}: The
- * reflection provider used by the reflection based converters of the current
- * XMLWizard instance.</li>
- * <li>{@link com.madrobot.di.xml.converters.ConverterLookup}: The lookup
- * for converters handling a special type.</li>
- * <li>{@link com.madrobot.di.xml.core.JVM}: Utility e.g. to load
- * classes.</li>
+ * <li>{@link com.madrobot.di.xml.converters.ReflectionProvider}: The reflection
+ * provider used by the reflection based converters of the current XMLWizard
+ * instance.</li>
+ * <li>{@link com.madrobot.di.xml.converters.ConverterLookup}: The lookup for
+ * converters handling a special type.</li>
+ * <li>{@link com.madrobot.di.xml.core.JVM}: Utility e.g. to load classes.</li>
  * <li>All elements provided with the individual arrays of this annotation.</li>
  * <li>{@link Class}: The type of the element where the annotation is declared.
  * Note, that this argument is not supported when using
@@ -42,9 +41,9 @@ import com.madrobot.di.xml.converters.ConverterMatcher;
  * <p>
  * Note, the annotation matches a {@link ConverterMatcher}.
  * {@link com.madrobot.di.xml.converters.ConverterMatcher} as well as
- * {@link com.madrobot.di.xml.converters.SingleValueConverter} extend
- * this interface. The {@link com.madrobot.di.xml.AnnotationMapper} can
- * only handle these two <strong>known</strong> types.
+ * {@link com.madrobot.di.xml.converters.SingleValueConverter} extend this
+ * interface. The {@link com.madrobot.di.xml.AnnotationMapper} can only handle
+ * these two <strong>known</strong> types.
  * </p>
  * 
  */

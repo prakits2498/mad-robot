@@ -28,8 +28,7 @@ public class PathTrackingReader extends ReaderWrapper {
 
 	private final PathTracker pathTracker;
 
-	public PathTrackingReader(HierarchicalStreamReader reader,
-			PathTracker pathTracker) {
+	public PathTrackingReader(HierarchicalStreamReader reader, PathTracker pathTracker) {
 		super(reader);
 		this.pathTracker = pathTracker;
 		pathTracker.pushElement(getNodeName());

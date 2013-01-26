@@ -25,6 +25,5 @@ import java.sql.SQLException;
 public interface ResultSetHelper {
 	public String[] getColumnNames(ResultSet rs) throws SQLException;
 
-	public String[] getColumnValues(ResultSet rs) throws SQLException,
-			IOException;
+	public String[] getColumnValues(ResultSet rs) throws SQLException, IOException;
 }

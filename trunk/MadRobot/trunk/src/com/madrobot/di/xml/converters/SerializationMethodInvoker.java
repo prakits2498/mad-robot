@@ -49,19 +49,17 @@ public class SerializationMethodInvoker implements Caching {
 		}
 	}
 
-	public void callReadObject(Class type, Object object,
-			ObjectInputStream stream) {
+	public void callReadObject(Class type, Object object, ObjectInputStream stream) {
 		try {
 			Method readObjectMethod = getMethod(type, "readObject",
 					new Class[] { ObjectInputStream.class }, false);
 			readObjectMethod.invoke(object, new Object[] { stream });
 		} catch (IllegalAccessException e) {
-			throw new ConversionException("Could not call "
-					+ object.getClass().getName() + ".readObject()", e);
+			throw new ConversionException("Could not call " + object.getClass().getName()
+					+ ".readObject()", e);
 		} catch (InvocationTargetException e) {
-			throw new ConversionException("Could not call "
-					+ object.getClass().getName() + ".readObject()",
-					e.getTargetException());
+			throw new ConversionException("Could not call " + object.getClass().getName()
+					+ ".readObject()", e.getTargetException());
 		}
 	}
 
@@ -73,8 +71,7 @@ public class SerializationMethodInvoker implements Caching {
 		if (result == null) {
 			return null;
 		} else {
-			Method readResolveMethod = getMethod(result.getClass(),
-					"readResolve", null, true);
+			Method readResolveMethod = getMethod(result.getClass(), "readResolve", null, true);
 			if (readResolveMethod != null) {
 				try {
 					return readResolveMethod.invoke(result, EMPTY_ARGS);
@@ -92,19 +89,17 @@ public class SerializationMethodInvoker implements Caching {
 		}
 	}
 
-	public void callWriteObject(Class type, Object instance,
-			ObjectOutputStream stream) {
+	public void callWriteObject(Class type, Object instance, ObjectOutputStream stream) {
 		try {
 			Method readObjectMethod = getMethod(type, "writeObject",
 					new Class[] { ObjectOutputStream.class }, false);
 			readObjectMethod.invoke(instance, new Object[] { stream });
 		} catch (IllegalAccessException e) {
-			throw new ConversionException("Could not call "
-					+ instance.getClass().getName() + ".writeObject()", e);
+			throw new ConversionException("Could not call " + instance.getClass().getName()
+					+ ".writeObject()", e);
 		} catch (InvocationTargetException e) {
-			throw new ConversionException("Could not call "
-					+ instance.getClass().getName() + ".writeObject()",
-					e.getTargetException());
+			throw new ConversionException("Could not call " + instance.getClass().getName()
+					+ ".writeObject()", e.getTargetException());
 		}
 	}
 
@@ -112,15 +107,14 @@ public class SerializationMethodInvoker implements Caching {
 		if (object == null) {
 			return null;
 		} else {
-			Method writeReplaceMethod = getMethod(object.getClass(),
-					"writeReplace", null, true);
+			Method writeReplaceMethod = getMethod(object.getClass(), "writeReplace", null,
+					true);
 			if (writeReplaceMethod != null) {
 				try {
 					return writeReplaceMethod.invoke(object, EMPTY_ARGS);
 				} catch (IllegalAccessException e) {
 					throw new ObjectAccessException("Could not call "
-							+ object.getClass().getName() + ".writeReplace()",
-							e);
+							+ object.getClass().getName() + ".writeReplace()", e);
 				} catch (InvocationTargetException e) {
 					throw new ObjectAccessException("Could not call "
 							+ object.getClass().getName() + ".writeReplace()",
@@ -159,17 +153,17 @@ public class SerializationMethodInvoker implements Caching {
 			boolean includeBaseclasses) {
 		Method method = getMethod(type, name, parameterTypes);
 		return method == NO_METHOD
-				|| (!includeBaseclasses && !method.getDeclaringClass().equals(
-						type)) ? null : method;
+				|| (!includeBaseclasses && !method.getDeclaringClass().equals(type)) ? null
+				: method;
 	}
 
 	public boolean supportsReadObject(Class type, boolean includeBaseClasses) {
-		return getMethod(type, "readObject",
-				new Class[] { ObjectInputStream.class }, includeBaseClasses) != null;
+		return getMethod(type, "readObject", new Class[] { ObjectInputStream.class },
+				includeBaseClasses) != null;
 	}
 
 	public boolean supportsWriteObject(Class type, boolean includeBaseClasses) {
-		return getMethod(type, "writeObject",
-				new Class[] { ObjectOutputStream.class }, includeBaseClasses) != null;
+		return getMethod(type, "writeObject", new Class[] { ObjectOutputStream.class },
+				includeBaseClasses) != null;
 	}
 }

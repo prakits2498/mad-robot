@@ -106,8 +106,7 @@ class WheelViewRecycler {
 	 *            the range of current wheel items
 	 * @return the new value of first item number
 	 */
-	int recycleItems(LinearLayout layout, int firstItem,
-			WheelViewItemsRange range) {
+	int recycleItems(LinearLayout layout, int firstItem, WheelViewItemsRange range) {
 		int index = firstItem;
 		for (int i = 0; i < layout.getChildCount();) {
 			if (!range.contains(index)) {

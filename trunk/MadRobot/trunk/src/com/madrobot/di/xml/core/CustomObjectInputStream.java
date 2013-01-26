@@ -108,8 +108,7 @@ public class CustomObjectInputStream extends ObjectInputStream {
 				throws NotActiveException, InvalidObjectException;
 	}
 
-	private static final String DATA_HOLDER_KEY = CustomObjectInputStream.class
-			.getName();
+	private static final String DATA_HOLDER_KEY = CustomObjectInputStream.class.getName();
 
 	/**
 	 * @deprecated As of 1.4 use
@@ -121,16 +120,13 @@ public class CustomObjectInputStream extends ObjectInputStream {
 		return getInstance(whereFrom, callback, null);
 	}
 
-	public static synchronized CustomObjectInputStream getInstance(
-			DataHolder whereFrom,
-			CustomObjectInputStream.StreamCallback callback,
-			ClassLoader classLoaderReference) {
+	public static synchronized CustomObjectInputStream getInstance(DataHolder whereFrom,
+			CustomObjectInputStream.StreamCallback callback, ClassLoader classLoaderReference) {
 		try {
 			CustomObjectInputStream result = (CustomObjectInputStream) whereFrom
 					.get(DATA_HOLDER_KEY);
 			if (result == null) {
-				result = new CustomObjectInputStream(callback,
-						classLoaderReference);
+				result = new CustomObjectInputStream(callback, classLoaderReference);
 				whereFrom.put(DATA_HOLDER_KEY, result);
 			} else {
 				result.pushCallback(callback);
@@ -152,8 +148,8 @@ public class CustomObjectInputStream extends ObjectInputStream {
 	 * 
 	 * @see #getInstance(DataHolder, StreamCallback, ClassLoader)
 	 */
-	public CustomObjectInputStream(StreamCallback callback,
-			ClassLoader classLoader) throws IOException, SecurityException {
+	public CustomObjectInputStream(StreamCallback callback, ClassLoader classLoader)
+			throws IOException, SecurityException {
 		super();
 		this.callbacks.push(callback);
 		this.classLoader = classLoader;
@@ -216,8 +212,8 @@ public class CustomObjectInputStream extends ObjectInputStream {
 	public int read(byte[] buf, int off, int len) throws IOException {
 		byte[] b = (byte[]) peekCallback().readFromStream();
 		if (b.length != len) {
-			throw new StreamCorruptedException("Expected " + len
-					+ " bytes from stream, got " + b.length);
+			throw new StreamCorruptedException("Expected " + len + " bytes from stream, got "
+					+ b.length);
 		}
 		System.arraycopy(b, 0, buf, off, len);
 		return len;
@@ -318,8 +314,8 @@ public class CustomObjectInputStream extends ObjectInputStream {
 	}
 
 	@Override
-	public void registerValidation(ObjectInputValidation validation,
-			int priority) throws NotActiveException, InvalidObjectException {
+	public void registerValidation(ObjectInputValidation validation, int priority)
+			throws NotActiveException, InvalidObjectException {
 		peekCallback().registerValidation(validation, priority);
 	}
 

@@ -143,8 +143,7 @@ public class FileFilterUtils {
 	 *             contains a <code>null</code> value.
 	 * @since 2.0
 	 */
-	public static List<File> filterList(IOFileFilter filter,
-			Iterable<File> files) {
+	public static List<File> filterList(IOFileFilter filter, Iterable<File> files) {
 		return filter(filter, files, new ArrayList<File>());
 	}
 
@@ -290,8 +289,7 @@ public class FileFilterUtils {
 		if (files != null) {
 			for (File file : files) {
 				if (file == null) {
-					throw new IllegalArgumentException(
-							"file collection contains null");
+					throw new IllegalArgumentException("file collection contains null");
 				}
 				if (filter.accept(file)) {
 					acceptedFiles.add(file);
@@ -326,8 +324,7 @@ public class FileFilterUtils {
 	 * @see PrefixFileFilter
 	 * @since 2.0
 	 */
-	public static IOFileFilter prefixFileFilter(String prefix,
-			IOCase caseSensitivity) {
+	public static IOFileFilter prefixFileFilter(String prefix, IOCase caseSensitivity) {
 		return new PrefixFileFilter(prefix, caseSensitivity);
 	}
 
@@ -356,8 +353,7 @@ public class FileFilterUtils {
 	 * @see SuffixFileFilter
 	 * @since 2.0
 	 */
-	public static IOFileFilter suffixFileFilter(String suffix,
-			IOCase caseSensitivity) {
+	public static IOFileFilter suffixFileFilter(String suffix, IOCase caseSensitivity) {
 		return new SuffixFileFilter(suffix, caseSensitivity);
 	}
 
@@ -386,8 +382,7 @@ public class FileFilterUtils {
 	 * @see NameFileFilter
 	 * @since 2.0
 	 */
-	public static IOFileFilter nameFileFilter(String name,
-			IOCase caseSensitivity) {
+	public static IOFileFilter nameFileFilter(String name, IOCase caseSensitivity) {
 		return new NameFileFilter(name, caseSensitivity);
 	}
 
@@ -425,8 +420,7 @@ public class FileFilterUtils {
 	 * @deprecated use {@link #and(IOFileFilter...)}
 	 */
 	@Deprecated
-	public static IOFileFilter andFileFilter(IOFileFilter filter1,
-			IOFileFilter filter2) {
+	public static IOFileFilter andFileFilter(IOFileFilter filter1, IOFileFilter filter2) {
 		return new AndFileFilter(filter1, filter2);
 	}
 
@@ -443,8 +437,7 @@ public class FileFilterUtils {
 	 * @deprecated use {@link #or(IOFileFilter...)}
 	 */
 	@Deprecated
-	public static IOFileFilter orFileFilter(IOFileFilter filter1,
-			IOFileFilter filter2) {
+	public static IOFileFilter orFileFilter(IOFileFilter filter1, IOFileFilter filter2) {
 		return new OrFileFilter(filter1, filter2);
 	}
 
@@ -497,8 +490,7 @@ public class FileFilterUtils {
 		List<IOFileFilter> list = new ArrayList<IOFileFilter>(filters.length);
 		for (int i = 0; i < filters.length; i++) {
 			if (filters[i] == null) {
-				throw new IllegalArgumentException("The filter[" + i
-						+ "] is null");
+				throw new IllegalArgumentException("The filter[" + i + "] is null");
 			}
 			list.add(filters[i]);
 		}
@@ -574,8 +566,7 @@ public class FileFilterUtils {
 	 * @see AgeFileFilter
 	 * @since 1.2
 	 */
-	public static IOFileFilter ageFileFilter(Date cutoffDate,
-			boolean acceptOlder) {
+	public static IOFileFilter ageFileFilter(Date cutoffDate, boolean acceptOlder) {
 		return new AgeFileFilter(cutoffDate, acceptOlder);
 	}
 
@@ -606,8 +597,7 @@ public class FileFilterUtils {
 	 * @see AgeFileFilter
 	 * @since 1.2
 	 */
-	public static IOFileFilter ageFileFilter(File cutoffReference,
-			boolean acceptOlder) {
+	public static IOFileFilter ageFileFilter(File cutoffReference, boolean acceptOlder) {
 		return new AgeFileFilter(cutoffReference, acceptOlder);
 	}
 
@@ -637,8 +627,7 @@ public class FileFilterUtils {
 	 * @see SizeFileFilter
 	 * @since 1.2
 	 */
-	public static IOFileFilter sizeFileFilter(long threshold,
-			boolean acceptLarger) {
+	public static IOFileFilter sizeFileFilter(long threshold, boolean acceptLarger) {
 		return new SizeFileFilter(threshold, acceptLarger);
 	}
 
@@ -654,22 +643,20 @@ public class FileFilterUtils {
 	 * @see SizeFileFilter
 	 * @since 1.3
 	 */
-	public static IOFileFilter sizeRangeFileFilter(long minSizeInclusive,
-			long maxSizeInclusive) {
+	public static IOFileFilter sizeRangeFileFilter(long minSizeInclusive, long maxSizeInclusive) {
 		IOFileFilter minimumFilter = new SizeFileFilter(minSizeInclusive, true);
-		IOFileFilter maximumFilter = new SizeFileFilter(maxSizeInclusive + 1L,
-				false);
+		IOFileFilter maximumFilter = new SizeFileFilter(maxSizeInclusive + 1L, false);
 		return new AndFileFilter(minimumFilter, maximumFilter);
 	}
 
 	// -----------------------------------------------------------------------
 	/* Constructed on demand and then cached */
-	private static final IOFileFilter cvsFilter = notFileFilter(and(
-			directoryFileFilter(), nameFileFilter("CVS")));
+	private static final IOFileFilter cvsFilter = notFileFilter(and(directoryFileFilter(),
+			nameFileFilter("CVS")));
 
 	/* Constructed on demand and then cached */
-	private static final IOFileFilter svnFilter = notFileFilter(and(
-			directoryFileFilter(), nameFileFilter(".svn")));
+	private static final IOFileFilter svnFilter = notFileFilter(and(directoryFileFilter(),
+			nameFileFilter(".svn")));
 
 	/**
 	 * Decorates a filter to make it ignore CVS directories. Passing in

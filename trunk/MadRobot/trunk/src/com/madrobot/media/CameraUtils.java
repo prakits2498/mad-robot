@@ -40,8 +40,8 @@ public final class CameraUtils {
 		setFlashlight(true);
 	}
 
-	private static Point findBestPreviewSizeValue(
-			CharSequence previewSizeValueString, Point screenResolution) {
+	private static Point findBestPreviewSizeValue(CharSequence previewSizeValueString,
+			Point screenResolution) {
 		int bestX = 0;
 		int bestY = 0;
 		int diff = Integer.MAX_VALUE;
@@ -122,8 +122,7 @@ public final class CameraUtils {
 		WindowManager manager = (WindowManager) context
 				.getSystemService(Context.WINDOW_SERVICE);
 		Display display = manager.getDefaultDisplay();
-		Point screenResolution = new Point(display.getWidth(),
-				display.getHeight());
+		Point screenResolution = new Point(display.getWidth(), display.getHeight());
 		Point cameraResolution = getCameraResolution(params, screenResolution);
 		cam.release();
 		cam = null;
@@ -136,8 +135,8 @@ public final class CameraUtils {
 			return null;
 		}
 
-		Method getServiceMethod = maybeGetMethod(serviceManagerClass,
-				"getService", String.class);
+		Method getServiceMethod = maybeGetMethod(serviceManagerClass, "getService",
+				String.class);
 		if (getServiceMethod == null) {
 			return null;
 		}
@@ -152,8 +151,8 @@ public final class CameraUtils {
 			return null;
 		}
 
-		Method asInterfaceMethod = maybeGetMethod(iHardwareServiceStubClass,
-				"asInterface", IBinder.class);
+		Method asInterfaceMethod = maybeGetMethod(iHardwareServiceStubClass, "asInterface",
+				IBinder.class);
 		if (asInterfaceMethod == null) {
 			return null;
 		}
@@ -192,8 +191,7 @@ public final class CameraUtils {
 		}
 	}
 
-	private static Method maybeGetMethod(Class<?> clazz, String name,
-			Class<?>... argClasses) {
+	private static Method maybeGetMethod(Class<?> clazz, String name, Class<?>... argClasses) {
 		try {
 			return clazz.getMethod(name, argClasses);
 		} catch (NoSuchMethodException nsme) {

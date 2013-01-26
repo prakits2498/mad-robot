@@ -87,10 +87,8 @@ public class Histogram {
 			}
 			mean[i] /= numSamples;
 		}
-		minValue[GRAY] = Math.min(Math.min(minValue[RED], minValue[GREEN]),
-				minValue[BLUE]);
-		maxValue[GRAY] = Math.max(Math.max(maxValue[RED], maxValue[GREEN]),
-				maxValue[BLUE]);
+		minValue[GRAY] = Math.min(Math.min(minValue[RED], minValue[GREEN]), minValue[BLUE]);
+		maxValue[GRAY] = Math.max(Math.max(maxValue[RED], maxValue[GREEN]), maxValue[BLUE]);
 	}
 
 	public boolean isGray() {
@@ -108,8 +106,7 @@ public class Histogram {
 	}
 
 	public int getFrequency(int channel, int value) {
-		if (numSamples < 1 || channel < 0 || channel > 2 || value < 0
-				|| value > 255)
+		if (numSamples < 1 || channel < 0 || channel > 2 || value < 0 || value > 255)
 			return -1;
 		return histogram[channel][value];
 	}

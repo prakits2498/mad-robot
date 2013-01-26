@@ -22,8 +22,7 @@ import com.madrobot.io.file.IOFileFilter;
  * 
  * @see FileFilterUtils#directoryFileFilter()
  */
-public class DirectoryFileFilter extends AbstractFileFilter implements
-		Serializable {
+public class DirectoryFileFilter extends AbstractFileFilter implements Serializable {
 
 	/**
 	 * Singleton instance of directory filter.
