@@ -110,4 +110,42 @@
         <attr name="svgZoomFactor" format="integer" />
     </declare-styleable>
 
+    <!-- Attributes for com.madrobot.ui.widgets.imageview.GIFImageView -->
+    <declare-styleable name="GIFImageView">
+
+        <!-- Identifier for the image that represents the GIFImageView's content. -->
+        <attr name="gifImage" format="reference" />
+        <!-- Autostart animation if the gif is animated -->
+        <attr name="startAnimating" format="boolean" />
+    </declare-styleable>
+    <declare-styleable name="ScrollingInfoListView">
+        <attr name="scrollBarPanel" format="reference" />
+        <attr name="scrollBarPanelInAnimation" format="reference" />
+        <attr name="scrollBarPanelOutAnimation" format="reference" />
+    </declare-styleable>
+    
+    
+    <!--  Attributes for com.madrobot.ui.widgets.listview.FlipView-->
+    <declare-styleable name="FlipView">
+        <!-- Flip orientation -->
+        <attr name="flipMode" format="enum">
+            <enum name="vertical" value="0" />
+            <enum name="horizontal" value="1" />
+        </attr>
+        <!-- Bitmap format when animating. The  lighter formats increase performance but degrade look -->
+        <attr name="animationBitmapFormat" format="enum">
+            <enum name="ARGB_8888" value="0" />
+            <enum name="ARGB_4444" value="1" />
+            <enum name="RGB_565" value="2" />
+        </attr>
+        <!-- Acceleration by which the views are flipped -->
+        <attr name="flipAcceleration" format="float" />
+        
+        <attr name="movementRate" format="float" />
+        <attr name="maxTipAngle" format="integer" />
+        <!-- Minimum pixels to initiate movement distance -->
+        <attr name="minimunMovement" format="float" />
+        <attr name="touchMovementAngle" format="integer" />
+    </declare-styleable>
+
 </resources>
