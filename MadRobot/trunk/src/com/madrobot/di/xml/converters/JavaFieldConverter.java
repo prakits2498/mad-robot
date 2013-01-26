@@ -49,13 +49,11 @@ public class JavaFieldConverter implements Converter {
 	}
 
 	@Override
-	public Object unmarshal(HierarchicalStreamReader reader,
-			UnmarshallingContext context) {
+	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
 		String methodName = null;
 		String declaringClassName = null;
 
-		while ((methodName == null || declaringClassName == null)
-				&& reader.hasMoreChildren()) {
+		while ((methodName == null || declaringClassName == null) && reader.hasMoreChildren()) {
 			reader.moveDown();
 
 			if (reader.getNodeName().equals("name")) {
@@ -66,8 +64,7 @@ public class JavaFieldConverter implements Converter {
 			reader.moveUp();
 		}
 
-		Class declaringClass = (Class) javaClassConverter
-				.fromString(declaringClassName);
+		Class declaringClass = (Class) javaClassConverter.fromString(declaringClassName);
 		try {
 			return declaringClass.getDeclaredField(methodName);
 		} catch (NoSuchFieldException e) {

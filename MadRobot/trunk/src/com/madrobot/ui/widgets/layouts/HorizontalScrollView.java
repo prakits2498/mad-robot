@@ -1,4 +1,4 @@
-package com.madrobot.ui.widgets;
+package com.madrobot.ui.widgets.layouts;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -48,9 +48,9 @@ import com.madrobot.R;
  * 					.. contents of second page
  * 				&lt;/LinearLayout>
  * 				<!--This is page3. Can be any View/viewgroup -->
- * 				&lt;LinearLayout android:id="@+id/page1 android:layout_width="fill_parent" android:layout_height="fill_parent">
+ * 				&lt;RelativeLayout android:id="@+id/page1 android:layout_width="fill_parent" android:layout_height="fill_parent">
  * 					.. contents of third page
- * 				&lt;/LinearLayout>
+ * 				&lt;/RelativeLayout>
  * 			&lt;/HorizontalScrollView>
  * </pre>
  * 
@@ -152,16 +152,13 @@ public class HorizontalScrollView extends ViewGroup {
 	 * @param defStyle
 	 *            Unused.
 	 */
-	public HorizontalScrollView(Context context, AttributeSet attrs,
-			int defStyle) {
+	public HorizontalScrollView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 
-		TypedArray a = context.obtainStyledAttributes(attrs,
-				R.styleable.HorizontalScrollView);
-		pageWidthSpec = a.getDimensionPixelSize(
-				R.styleable.HorizontalScrollView_pageWidth, SPEC_UNDEFINED);
-		snapVelocity = a.getInt(R.styleable.HorizontalScrollView_snapVelocity,
-				1000);
+		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.HorizontalScrollView);
+		pageWidthSpec = a.getDimensionPixelSize(R.styleable.HorizontalScrollView_pageWidth,
+				SPEC_UNDEFINED);
+		snapVelocity = a.getInt(R.styleable.HorizontalScrollView_snapVelocity, 1000);
 		pageAnimationDuration = a.getInt(
 				R.styleable.HorizontalScrollView_pageAnimationDuration, 600);
 		a.recycle();
@@ -322,8 +319,7 @@ public class HorizontalScrollView extends ViewGroup {
 	private void init() {
 		mScroller = new Scroller(getContext());
 		mCurrentPage = 0;
-		final ViewConfiguration configuration = ViewConfiguration
-				.get(getContext());
+		final ViewConfiguration configuration = ViewConfiguration.get(getContext());
 		mTouchSlop = configuration.getScaledTouchSlop();
 		mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
 	}
@@ -427,8 +423,7 @@ public class HorizontalScrollView extends ViewGroup {
 	}
 
 	@Override
-	protected void onLayout(boolean changed, int left, int top, int right,
-			int bottom) {
+	protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
 		int childLeft = 0;
 
 		final int count = getChildCount();
@@ -436,8 +431,7 @@ public class HorizontalScrollView extends ViewGroup {
 			final View child = getChildAt(i);
 			if (child.getVisibility() != View.GONE) {
 				final int childWidth = child.getMeasuredWidth();
-				child.layout(childLeft, 0, childLeft + childWidth,
-						child.getMeasuredHeight());
+				child.layout(childLeft, 0, childLeft + childWidth, child.getMeasuredHeight());
 				childLeft += childWidth;
 			}
 		}
@@ -447,16 +441,13 @@ public class HorizontalScrollView extends ViewGroup {
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 		final int width = MeasureSpec.getSize(widthMeasureSpec);
-		pageWidth = pageWidthSpec == SPEC_UNDEFINED ? getMeasuredWidth()
-				: pageWidthSpec;
+		pageWidth = pageWidthSpec == SPEC_UNDEFINED ? getMeasuredWidth() : pageWidthSpec;
 		pageWidth = Math.min(pageWidth, getMeasuredWidth());
 
 		final int count = getChildCount();
 		for (int i = 0; i < count; i++) {
-			getChildAt(i)
-					.measure(
-							MeasureSpec.makeMeasureSpec(pageWidth,
-									MeasureSpec.EXACTLY), heightMeasureSpec);
+			getChildAt(i).measure(MeasureSpec.makeMeasureSpec(pageWidth, MeasureSpec.EXACTLY),
+					heightMeasureSpec);
 		}
 
 		if (mFirstLayout) {
@@ -473,8 +464,7 @@ public class HorizontalScrollView extends ViewGroup {
 					Context.WINDOW_SERVICE)).getDefaultDisplay();
 			int displayWidth = display.getWidth();
 
-			mNextPage = Math
-					.max(0, Math.min(mCurrentPage, getChildCount() - 1));
+			mNextPage = Math.max(0, Math.min(mCurrentPage, getChildCount() - 1));
 			final int newX = mNextPage * displayWidth;
 			final int delta = newX - getScrollX();
 			mScroller.startScroll(getScrollX(), 0, delta, 0, 0);
@@ -484,16 +474,14 @@ public class HorizontalScrollView extends ViewGroup {
 	}
 
 	@Override
-	protected boolean onRequestFocusInDescendants(int direction,
-			Rect previouslyFocusedRect) {
+	protected boolean onRequestFocusInDescendants(int direction, Rect previouslyFocusedRect) {
 		int focusablePage;
 		if (mNextPage != INVALID_PAGE) {
 			focusablePage = mNextPage;
 		} else {
 			focusablePage = mCurrentPage;
 		}
-		getChildAt(focusablePage)
-				.requestFocus(direction, previouslyFocusedRect);
+		getChildAt(focusablePage).requestFocus(direction, previouslyFocusedRect);
 		return false;
 	}
 
@@ -570,8 +558,7 @@ public class HorizontalScrollView extends ViewGroup {
 				}
 
 				else if (getScrollX() < 0
-						|| getScrollX() > getChildAt(getChildCount() - 1)
-								.getLeft()) {
+						|| getScrollX() > getChildAt(getChildCount() - 1).getLeft()) {
 					deltaX /= 2;
 				}
 
@@ -589,8 +576,7 @@ public class HorizontalScrollView extends ViewGroup {
 				if (velocityX > snapVelocity && mCurrentPage > 0) {
 					// Fling hard enough to move left
 					snapToPage(mCurrentPage - 1);
-				} else if (velocityX < -snapVelocity
-						&& mCurrentPage < getChildCount() - 1) {
+				} else if (velocityX < -snapVelocity && mCurrentPage < getChildCount() - 1) {
 					// Fling hard enough to move right
 					snapToPage(mCurrentPage + 1);
 				} else {
@@ -620,8 +606,7 @@ public class HorizontalScrollView extends ViewGroup {
 	}
 
 	@Override
-	public boolean requestChildRectangleOnScreen(View child, Rect rectangle,
-			boolean immediate) {
+	public boolean requestChildRectangleOnScreen(View child, Rect rectangle, boolean immediate) {
 		int screen = indexOfChild(child);
 		if (screen != mCurrentPage || !mScroller.isFinished()) {
 			return true;
@@ -680,8 +665,7 @@ public class HorizontalScrollView extends ViewGroup {
 		mNextPage = whichPage;
 
 		View focusedChild = getFocusedChild();
-		if (focusedChild != null && changingPages
-				&& focusedChild == getChildAt(mCurrentPage)) {
+		if (focusedChild != null && changingPages && focusedChild == getChildAt(mCurrentPage)) {
 			focusedChild.clearFocus();
 			getChildAt(mNextPage).requestFocus();
 		}

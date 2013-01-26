@@ -26,8 +26,7 @@ import com.madrobot.util.collections.OrderRetainingMap;
  * 
  * @see ErrorWriter
  */
-public class ConversionException extends XMLWizardException implements
-		ErrorWriter {
+public class ConversionException extends XMLWizardException implements ErrorWriter {
 
 	private static final String SEPARATOR = "\n-------------------------------";
 	private Map stuff = new OrderRetainingMap();
@@ -84,8 +83,7 @@ public class ConversionException extends XMLWizardException implements
 			String k = (String) iterator.next();
 			String v = get(k);
 			result.append('\n').append(k);
-			result.append("                    ".substring(Math.min(20,
-					k.length())));
+			result.append("                    ".substring(Math.min(20, k.length())));
 			result.append(": ").append(v);
 		}
 		result.append(SEPARATOR);

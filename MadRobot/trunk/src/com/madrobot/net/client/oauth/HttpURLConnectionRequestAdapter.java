@@ -17,10 +17,8 @@ public class HttpURLConnectionRequestAdapter implements HttpRequest {
 
 	@Override
 	public Map<String, String> getAllHeaders() {
-		Map<String, List<String>> origHeaders = connection
-				.getRequestProperties();
-		Map<String, String> headers = new HashMap<String, String>(
-				origHeaders.size());
+		Map<String, List<String>> origHeaders = connection.getRequestProperties();
+		Map<String, String> headers = new HashMap<String, String>(origHeaders.size());
 		for (String name : origHeaders.keySet()) {
 			List<String> values = origHeaders.get(name);
 			if (!values.isEmpty()) {

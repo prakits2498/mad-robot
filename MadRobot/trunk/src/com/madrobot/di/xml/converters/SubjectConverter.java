@@ -47,15 +47,13 @@ public class SubjectConverter extends AbstractCollectionConverter {
 			MarshallingContext context) {
 		Subject subject = (Subject) source;
 		marshalPrincipals(subject.getPrincipals(), writer, context);
-		marshalPublicCredentials(subject.getPublicCredentials(), writer,
-				context);
-		marshalPrivateCredentials(subject.getPrivateCredentials(), writer,
-				context);
+		marshalPublicCredentials(subject.getPublicCredentials(), writer, context);
+		marshalPrivateCredentials(subject.getPrivateCredentials(), writer, context);
 		marshalReadOnly(subject.isReadOnly(), writer);
 	}
 
-	protected void marshalPrincipals(Set principals,
-			HierarchicalStreamWriter writer, MarshallingContext context) {
+	protected void marshalPrincipals(Set principals, HierarchicalStreamWriter writer,
+			MarshallingContext context) {
 		writer.startNode("principals");
 		for (final Iterator iter = principals.iterator(); iter.hasNext();) {
 			final Object principal = iter.next(); // pre jdk 1.4 a Principal was
@@ -73,15 +71,13 @@ public class SubjectConverter extends AbstractCollectionConverter {
 			HierarchicalStreamWriter writer, MarshallingContext context) {
 	};
 
-	protected void marshalReadOnly(boolean readOnly,
-			HierarchicalStreamWriter writer) {
+	protected void marshalReadOnly(boolean readOnly, HierarchicalStreamWriter writer) {
 		writer.startNode("readOnly");
 		writer.setValue(String.valueOf(readOnly));
 		writer.endNode();
 	};
 
-	protected Set populateSet(HierarchicalStreamReader reader,
-			UnmarshallingContext context) {
+	protected Set populateSet(HierarchicalStreamReader reader, UnmarshallingContext context) {
 		Set set = new HashSet();
 		reader.moveDown();
 		while (reader.hasMoreChildren()) {
@@ -95,14 +91,12 @@ public class SubjectConverter extends AbstractCollectionConverter {
 	}
 
 	@Override
-	public Object unmarshal(HierarchicalStreamReader reader,
-			UnmarshallingContext context) {
+	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
 		Set principals = unmarshalPrincipals(reader, context);
 		Set publicCredentials = unmarshalPublicCredentials(reader, context);
 		Set privateCredentials = unmarshalPrivateCredentials(reader, context);
 		boolean readOnly = unmarshalReadOnly(reader);
-		return new Subject(readOnly, principals, publicCredentials,
-				privateCredentials);
+		return new Subject(readOnly, principals, publicCredentials, privateCredentials);
 	};
 
 	protected Set unmarshalPrincipals(HierarchicalStreamReader reader,

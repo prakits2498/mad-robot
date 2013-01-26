@@ -63,8 +63,8 @@ public class AlphaPatternDrawable extends Drawable {
 			return;
 		}
 
-		mBitmap = Bitmap.createBitmap(getBounds().width(),
-				getBounds().height(), Config.ARGB_8888);
+		mBitmap = Bitmap.createBitmap(getBounds().width(), getBounds().height(),
+				Config.ARGB_8888);
 		Canvas canvas = new Canvas(mBitmap);
 
 		Rect r = new Rect();
@@ -111,8 +111,7 @@ public class AlphaPatternDrawable extends Drawable {
 
 	@Override
 	public void setAlpha(int alpha) {
-		throw new UnsupportedOperationException(
-				"Alpha is not supported by this drawwable.");
+		throw new UnsupportedOperationException("Alpha is not supported by this drawwable.");
 	}
 
 	@Override

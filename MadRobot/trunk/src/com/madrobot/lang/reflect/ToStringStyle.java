@@ -47,8 +47,7 @@ import java.util.WeakHashMap;
  * 
  * <pre>
  * public class MyStyle extends ToStringStyle {
- * 	protected void appendDetail(StringBuffer buffer, String fieldName,
- * 			Object value) {
+ * 	protected void appendDetail(StringBuffer buffer, String fieldName, Object value) {
  * 		if (value instanceof Date) {
  * 			value = new SimpleDateFormat(&quot;yyyy-MM-dd&quot;).format(value);
  * 		}
@@ -58,6 +57,7 @@ import java.util.WeakHashMap;
  * </pre>
  * 
  * </p>
+ * 
  * @hide
  */
 public abstract class ToStringStyle implements Serializable {
@@ -343,7 +343,7 @@ public abstract class ToStringStyle implements Serializable {
 	 * John Doe,33,false
 	 * </pre>
 	 */
-public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
+	public static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 
 	/**
 	 * <p>
@@ -565,8 +565,7 @@ public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 	 *            <code>true</code> for detail, <code>false</code> for summary
 	 *            info, <code>null</code> for style decides
 	 */
-	void append(StringBuffer buffer, String fieldName, boolean[] array,
-			Boolean fullDetail) {
+	void append(StringBuffer buffer, String fieldName, boolean[] array, Boolean fullDetail) {
 		appendFieldStart(buffer, fieldName);
 
 		if (array == null) {
@@ -615,8 +614,7 @@ public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 	 *            <code>true</code> for detail, <code>false</code> for summary
 	 *            info, <code>null</code> for style decides
 	 */
-	void append(StringBuffer buffer, String fieldName, byte[] array,
-			Boolean fullDetail) {
+	void append(StringBuffer buffer, String fieldName, byte[] array, Boolean fullDetail) {
 		appendFieldStart(buffer, fieldName);
 
 		if (array == null) {
@@ -665,8 +663,7 @@ public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 	 *            <code>true</code> for detail, <code>false</code> for summary
 	 *            info, <code>null</code> for style decides
 	 */
-	void append(StringBuffer buffer, String fieldName, char[] array,
-			Boolean fullDetail) {
+	void append(StringBuffer buffer, String fieldName, char[] array, Boolean fullDetail) {
 		appendFieldStart(buffer, fieldName);
 
 		if (array == null) {
@@ -717,8 +714,7 @@ public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 	 *            <code>true</code> for detail, <code>false</code> for summary
 	 *            info, <code>null</code> for style decides
 	 */
-	void append(StringBuffer buffer, String fieldName, double[] array,
-			Boolean fullDetail) {
+	void append(StringBuffer buffer, String fieldName, double[] array, Boolean fullDetail) {
 		appendFieldStart(buffer, fieldName);
 
 		if (array == null) {
@@ -769,8 +765,7 @@ public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 	 *            <code>true</code> for detail, <code>false</code> for summary
 	 *            info, <code>null</code> for style decides
 	 */
-	void append(StringBuffer buffer, String fieldName, float[] array,
-			Boolean fullDetail) {
+	void append(StringBuffer buffer, String fieldName, float[] array, Boolean fullDetail) {
 		appendFieldStart(buffer, fieldName);
 
 		if (array == null) {
@@ -821,8 +816,7 @@ public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 	 *            <code>true</code> for detail, <code>false</code> for summary
 	 *            info, <code>null</code> for style decides
 	 */
-	void append(StringBuffer buffer, String fieldName, int[] array,
-			Boolean fullDetail) {
+	void append(StringBuffer buffer, String fieldName, int[] array, Boolean fullDetail) {
 		appendFieldStart(buffer, fieldName);
 
 		if (array == null) {
@@ -873,8 +867,7 @@ public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 	 *            <code>true</code> for detail, <code>false</code> for summary
 	 *            info, <code>null</code> for style decides
 	 */
-	void append(StringBuffer buffer, String fieldName, long[] array,
-			Boolean fullDetail) {
+	void append(StringBuffer buffer, String fieldName, long[] array, Boolean fullDetail) {
 		appendFieldStart(buffer, fieldName);
 
 		if (array == null) {
@@ -907,8 +900,7 @@ public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 	 *            <code>true</code> for detail, <code>false</code> for summary
 	 *            info, <code>null</code> for style decides
 	 */
-	public void append(StringBuffer buffer, String fieldName, Object value,
-			Boolean fullDetail) {
+	public void append(StringBuffer buffer, String fieldName, Object value, Boolean fullDetail) {
 		appendFieldStart(buffer, fieldName);
 
 		if (value == null) {
@@ -938,8 +930,7 @@ public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 	 *            <code>true</code> for detail, <code>false</code> for summary
 	 *            info, <code>null</code> for style decides
 	 */
-	void append(StringBuffer buffer, String fieldName, Object[] array,
-			Boolean fullDetail) {
+	void append(StringBuffer buffer, String fieldName, Object[] array, Boolean fullDetail) {
 		appendFieldStart(buffer, fieldName);
 
 		if (array == null) {
@@ -990,8 +981,7 @@ public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 	 *            <code>true</code> for detail, <code>false</code> for summary
 	 *            info, <code>null</code> for style decides
 	 */
-	void append(StringBuffer buffer, String fieldName, short[] array,
-			Boolean fullDetail) {
+	void append(StringBuffer buffer, String fieldName, short[] array, Boolean fullDetail) {
 		appendFieldStart(buffer, fieldName);
 
 		if (array == null) {
@@ -1073,8 +1063,7 @@ public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 	 * 
 	 * @since 2.2
 	 */
-	protected void appendCyclicObject(StringBuffer buffer, String fieldName,
-			Object value) {
+	protected void appendCyclicObject(StringBuffer buffer, String fieldName, Object value) {
 		ObjectUtils.identityToString(buffer, value);
 	}
 
@@ -1090,8 +1079,7 @@ public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 	 * @param value
 	 *            the value to add to the <code>toString</code>
 	 */
-	protected void appendDetail(StringBuffer buffer, String fieldName,
-			boolean value) {
+	protected void appendDetail(StringBuffer buffer, String fieldName, boolean value) {
 		buffer.append(value);
 	}
 
@@ -1109,8 +1097,7 @@ public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 	 *            the array to add to the <code>toString</code>, not
 	 *            <code>null</code>
 	 */
-	protected void appendDetail(StringBuffer buffer, String fieldName,
-			boolean[] array) {
+	protected void appendDetail(StringBuffer buffer, String fieldName, boolean[] array) {
 		buffer.append(arrayStart);
 		for (int i = 0; i < array.length; i++) {
 			if (i > 0) {
@@ -1135,8 +1122,7 @@ public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 	 * @param value
 	 *            the value to add to the <code>toString</code>
 	 */
-	protected void appendDetail(StringBuffer buffer, String fieldName,
-			byte value) {
+	protected void appendDetail(StringBuffer buffer, String fieldName, byte value) {
 		buffer.append(value);
 	}
 
@@ -1154,8 +1140,7 @@ public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 	 *            the array to add to the <code>toString</code>, not
 	 *            <code>null</code>
 	 */
-	protected void appendDetail(StringBuffer buffer, String fieldName,
-			byte[] array) {
+	protected void appendDetail(StringBuffer buffer, String fieldName, byte[] array) {
 		buffer.append(arrayStart);
 		for (int i = 0; i < array.length; i++) {
 			if (i > 0) {
@@ -1178,8 +1163,7 @@ public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 	 * @param value
 	 *            the value to add to the <code>toString</code>
 	 */
-	protected void appendDetail(StringBuffer buffer, String fieldName,
-			char value) {
+	protected void appendDetail(StringBuffer buffer, String fieldName, char value) {
 		buffer.append(value);
 	}
 
@@ -1199,8 +1183,7 @@ public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 	 *            the array to add to the <code>toString</code>, not
 	 *            <code>null</code>
 	 */
-	protected void appendDetail(StringBuffer buffer, String fieldName,
-			char[] array) {
+	protected void appendDetail(StringBuffer buffer, String fieldName, char[] array) {
 		buffer.append(arrayStart);
 		for (int i = 0; i < array.length; i++) {
 			if (i > 0) {
@@ -1224,8 +1207,7 @@ public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 	 *            the <code>Collection</code> to add to the
 	 *            <code>toString</code>, not <code>null</code>
 	 */
-	protected void appendDetail(StringBuffer buffer, String fieldName,
-			Collection<?> coll) {
+	protected void appendDetail(StringBuffer buffer, String fieldName, Collection<?> coll) {
 		buffer.append(coll);
 	}
 
@@ -1241,8 +1223,7 @@ public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 	 * @param value
 	 *            the value to add to the <code>toString</code>
 	 */
-	protected void appendDetail(StringBuffer buffer, String fieldName,
-			double value) {
+	protected void appendDetail(StringBuffer buffer, String fieldName, double value) {
 		buffer.append(value);
 	}
 
@@ -1262,8 +1243,7 @@ public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 	 *            the array to add to the <code>toString</code>, not
 	 *            <code>null</code>
 	 */
-	protected void appendDetail(StringBuffer buffer, String fieldName,
-			double[] array) {
+	protected void appendDetail(StringBuffer buffer, String fieldName, double[] array) {
 		buffer.append(arrayStart);
 		for (int i = 0; i < array.length; i++) {
 			if (i > 0) {
@@ -1304,8 +1284,7 @@ public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 	 *            the array to add to the <code>toString</code>, not
 	 *            <code>null</code>
 	 */
-	protected void appendDetail(StringBuffer buffer, String fieldName,
-			float[] array) {
+	protected void appendDetail(StringBuffer buffer, String fieldName, float[] array) {
 		buffer.append(arrayStart);
 		for (int i = 0; i < array.length; i++) {
 			if (i > 0) {
@@ -1348,8 +1327,7 @@ public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 	 *            the array to add to the <code>toString</code>, not
 	 *            <code>null</code>
 	 */
-	protected void appendDetail(StringBuffer buffer, String fieldName,
-			int[] array) {
+	protected void appendDetail(StringBuffer buffer, String fieldName, int[] array) {
 		buffer.append(arrayStart);
 		for (int i = 0; i < array.length; i++) {
 			if (i > 0) {
@@ -1372,8 +1350,7 @@ public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 	 * @param value
 	 *            the value to add to the <code>toString</code>
 	 */
-	protected void appendDetail(StringBuffer buffer, String fieldName,
-			long value) {
+	protected void appendDetail(StringBuffer buffer, String fieldName, long value) {
 		buffer.append(value);
 	}
 
@@ -1393,8 +1370,7 @@ public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 	 *            the array to add to the <code>toString</code>, not
 	 *            <code>null</code>
 	 */
-	protected void appendDetail(StringBuffer buffer, String fieldName,
-			long[] array) {
+	protected void appendDetail(StringBuffer buffer, String fieldName, long[] array) {
 		buffer.append(arrayStart);
 		for (int i = 0; i < array.length; i++) {
 			if (i > 0) {
@@ -1418,8 +1394,7 @@ public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 	 *            the <code>Map</code> to add to the <code>toString</code>, not
 	 *            <code>null</code>
 	 */
-	protected void appendDetail(StringBuffer buffer, String fieldName,
-			Map<?, ?> map) {
+	protected void appendDetail(StringBuffer buffer, String fieldName, Map<?, ?> map) {
 		buffer.append(map);
 	}
 
@@ -1437,8 +1412,7 @@ public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 	 *            the value to add to the <code>toString</code>, not
 	 *            <code>null</code>
 	 */
-	protected void appendDetail(StringBuffer buffer, String fieldName,
-			Object value) {
+	protected void appendDetail(StringBuffer buffer, String fieldName, Object value) {
 		buffer.append(value);
 	}
 
@@ -1458,8 +1432,7 @@ public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 	 *            the array to add to the <code>toString</code>, not
 	 *            <code>null</code>
 	 */
-	protected void appendDetail(StringBuffer buffer, String fieldName,
-			Object[] array) {
+	protected void appendDetail(StringBuffer buffer, String fieldName, Object[] array) {
 		buffer.append(arrayStart);
 		for (int i = 0; i < array.length; i++) {
 			Object item = array[i];
@@ -1488,8 +1461,7 @@ public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 	 * @param value
 	 *            the value to add to the <code>toString</code>
 	 */
-	protected void appendDetail(StringBuffer buffer, String fieldName,
-			short value) {
+	protected void appendDetail(StringBuffer buffer, String fieldName, short value) {
 		buffer.append(value);
 	}
 
@@ -1507,8 +1479,7 @@ public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 	 *            the array to add to the <code>toString</code>, not
 	 *            <code>null</code>
 	 */
-	protected void appendDetail(StringBuffer buffer, String fieldName,
-			short[] array) {
+	protected void appendDetail(StringBuffer buffer, String fieldName, short[] array) {
 		buffer.append(arrayStart);
 		for (int i = 0; i < array.length; i++) {
 			if (i > 0) {
@@ -1633,8 +1604,8 @@ public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 	 * @param detail
 	 *            output detail or not
 	 */
-	protected void appendInternal(StringBuffer buffer, String fieldName,
-			Object value, boolean detail) {
+	protected void appendInternal(StringBuffer buffer, String fieldName, Object value,
+			boolean detail) {
 		if (isRegistered(value)
 				&& !(value instanceof Number || value instanceof Boolean || value instanceof Character)) {
 			appendCyclicObject(buffer, fieldName, value);
@@ -1648,16 +1619,14 @@ public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 				if (detail) {
 					appendDetail(buffer, fieldName, (Collection<?>) value);
 				} else {
-					appendSummarySize(buffer, fieldName,
-							((Collection<?>) value).size());
+					appendSummarySize(buffer, fieldName, ((Collection<?>) value).size());
 				}
 
 			} else if (value instanceof Map<?, ?>) {
 				if (detail) {
 					appendDetail(buffer, fieldName, (Map<?, ?>) value);
 				} else {
-					appendSummarySize(buffer, fieldName,
-							((Map<?, ?>) value).size());
+					appendSummarySize(buffer, fieldName, ((Map<?, ?>) value).size());
 				}
 
 			} else if (value instanceof long[]) {
@@ -1790,8 +1759,7 @@ public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 	 *            the array to add to the <code>toString</code>, not
 	 *            <code>null</code>
 	 */
-	protected void appendSummary(StringBuffer buffer, String fieldName,
-			boolean[] array) {
+	protected void appendSummary(StringBuffer buffer, String fieldName, boolean[] array) {
 		appendSummarySize(buffer, fieldName, array.length);
 	}
 
@@ -1811,8 +1779,7 @@ public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 	 *            the array to add to the <code>toString</code>, not
 	 *            <code>null</code>
 	 */
-	protected void appendSummary(StringBuffer buffer, String fieldName,
-			byte[] array) {
+	protected void appendSummary(StringBuffer buffer, String fieldName, byte[] array) {
 		appendSummarySize(buffer, fieldName, array.length);
 	}
 
@@ -1830,8 +1797,7 @@ public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 	 *            the array to add to the <code>toString</code>, not
 	 *            <code>null</code>
 	 */
-	protected void appendSummary(StringBuffer buffer, String fieldName,
-			char[] array) {
+	protected void appendSummary(StringBuffer buffer, String fieldName, char[] array) {
 		appendSummarySize(buffer, fieldName, array.length);
 	}
 
@@ -1849,8 +1815,7 @@ public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 	 *            the array to add to the <code>toString</code>, not
 	 *            <code>null</code>
 	 */
-	protected void appendSummary(StringBuffer buffer, String fieldName,
-			double[] array) {
+	protected void appendSummary(StringBuffer buffer, String fieldName, double[] array) {
 		appendSummarySize(buffer, fieldName, array.length);
 	}
 
@@ -1868,8 +1833,7 @@ public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 	 *            the array to add to the <code>toString</code>, not
 	 *            <code>null</code>
 	 */
-	protected void appendSummary(StringBuffer buffer, String fieldName,
-			float[] array) {
+	protected void appendSummary(StringBuffer buffer, String fieldName, float[] array) {
 		appendSummarySize(buffer, fieldName, array.length);
 	}
 
@@ -1887,8 +1851,7 @@ public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 	 *            the array to add to the <code>toString</code>, not
 	 *            <code>null</code>
 	 */
-	protected void appendSummary(StringBuffer buffer, String fieldName,
-			int[] array) {
+	protected void appendSummary(StringBuffer buffer, String fieldName, int[] array) {
 		appendSummarySize(buffer, fieldName, array.length);
 	}
 
@@ -1906,8 +1869,7 @@ public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 	 *            the array to add to the <code>toString</code>, not
 	 *            <code>null</code>
 	 */
-	protected void appendSummary(StringBuffer buffer, String fieldName,
-			long[] array) {
+	protected void appendSummary(StringBuffer buffer, String fieldName, long[] array) {
 		appendSummarySize(buffer, fieldName, array.length);
 	}
 
@@ -1925,8 +1887,7 @@ public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 	 *            the value to add to the <code>toString</code>, not
 	 *            <code>null</code>
 	 */
-	protected void appendSummary(StringBuffer buffer, String fieldName,
-			Object value) {
+	protected void appendSummary(StringBuffer buffer, String fieldName, Object value) {
 		buffer.append(summaryObjectStartText);
 		buffer.append(getShortClassName(value.getClass()));
 		buffer.append(summaryObjectEndText);
@@ -1946,8 +1907,7 @@ public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 	 *            the array to add to the <code>toString</code>, not
 	 *            <code>null</code>
 	 */
-	protected void appendSummary(StringBuffer buffer, String fieldName,
-			Object[] array) {
+	protected void appendSummary(StringBuffer buffer, String fieldName, Object[] array) {
 		appendSummarySize(buffer, fieldName, array.length);
 	}
 
@@ -1965,8 +1925,7 @@ public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 	 *            the array to add to the <code>toString</code>, not
 	 *            <code>null</code>
 	 */
-	protected void appendSummary(StringBuffer buffer, String fieldName,
-			short[] array) {
+	protected void appendSummary(StringBuffer buffer, String fieldName, short[] array) {
 		appendSummarySize(buffer, fieldName, array.length);
 	}
 
@@ -1995,8 +1954,7 @@ public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 	 * @param size
 	 *            the size to append
 	 */
-	protected void appendSummarySize(StringBuffer buffer, String fieldName,
-			int size) {
+	protected void appendSummarySize(StringBuffer buffer, String fieldName, int size) {
 		buffer.append(sizeStartText);
 		buffer.append(size);
 		buffer.append(sizeEndText);
@@ -2386,8 +2344,8 @@ public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 	 *            <code>null</code>
 	 * @since 2.0
 	 */
-	protected void reflectionAppendArrayDetail(StringBuffer buffer,
-			String fieldName, Object array) {
+	protected void reflectionAppendArrayDetail(StringBuffer buffer, String fieldName,
+			Object array) {
 		buffer.append(arrayStart);
 		int length = Array.getLength(array);
 		for (int i = 0; i < length; i++) {
@@ -2422,8 +2380,7 @@ public	static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
 		if (len > 0 && sepLen > 0 && len >= sepLen) {
 			boolean match = true;
 			for (int i = 0; i < sepLen; i++) {
-				if (buffer.charAt(len - 1 - i) != fieldSeparator.charAt(sepLen
-						- 1 - i)) {
+				if (buffer.charAt(len - 1 - i) != fieldSeparator.charAt(sepLen - 1 - i)) {
 					match = false;
 					break;
 				}

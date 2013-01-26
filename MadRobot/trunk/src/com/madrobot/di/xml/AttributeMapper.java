@@ -68,8 +68,7 @@ class AttributeMapper extends MapperWrapper {
 	 * @since 1.3
 	 */
 	public void addAttributeFor(Class definedIn, String fieldName) {
-		fieldToUseAsAttribute.add(reflectionProvider.getField(definedIn,
-				fieldName));
+		fieldToUseAsAttribute.add(reflectionProvider.getField(definedIn, fieldName));
 	}
 
 	/**
@@ -93,15 +92,14 @@ class AttributeMapper extends MapperWrapper {
 	 */
 	@Deprecated
 	@Override
-	public SingleValueConverter getConverterFromAttribute(Class definedIn,
-			String attribute) {
+	public SingleValueConverter getConverterFromAttribute(Class definedIn, String attribute) {
 		Field field = reflectionProvider.getField(definedIn, attribute);
 		return getConverterFromAttribute(definedIn, attribute, field.getType());
 	}
 
 	@Override
-	public SingleValueConverter getConverterFromAttribute(Class definedIn,
-			String attribute, Class type) {
+	public SingleValueConverter getConverterFromAttribute(Class definedIn, String attribute,
+			Class type) {
 		if (shouldLookForSingleValueConverter(attribute, type, definedIn)) {
 			SingleValueConverter converter = getLocalConverterFromItemType(type);
 			if (converter != null) {
@@ -146,8 +144,7 @@ class AttributeMapper extends MapperWrapper {
 	 */
 	@Deprecated
 	@Override
-	public SingleValueConverter getConverterFromItemType(String fieldName,
-			Class type) {
+	public SingleValueConverter getConverterFromItemType(String fieldName, Class type) {
 		if (fieldNameToTypeMap.get(fieldName) == type) {
 			return getLocalConverterFromItemType(type);
 		} else {
@@ -156,8 +153,8 @@ class AttributeMapper extends MapperWrapper {
 	}
 
 	@Override
-	public SingleValueConverter getConverterFromItemType(String fieldName,
-			Class type, Class definedIn) {
+	public SingleValueConverter getConverterFromItemType(String fieldName, Class type,
+			Class definedIn) {
 		if (shouldLookForSingleValueConverter(fieldName, type, definedIn)) {
 			SingleValueConverter converter = getLocalConverterFromItemType(type);
 			if (converter != null) {
@@ -184,11 +181,10 @@ class AttributeMapper extends MapperWrapper {
 		this.converterLookup = converterLookup;
 	}
 
-	public boolean shouldLookForSingleValueConverter(String fieldName,
-			Class type, Class definedIn) {
+	public boolean shouldLookForSingleValueConverter(String fieldName, Class type,
+			Class definedIn) {
 		Field field = reflectionProvider.getField(definedIn, fieldName);
 		return fieldToUseAsAttribute.contains(field)
-				|| fieldNameToTypeMap.get(fieldName) == type
-				|| typeSet.contains(type);
+				|| fieldNameToTypeMap.get(fieldName) == type || typeSet.contains(type);
 	}
 }

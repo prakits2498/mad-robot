@@ -34,8 +34,7 @@ public class PointUtils {
 		return new PointF(newX, newY);
 	}
 
-	public static PointF rotate(float px, float py, float ox, float oy,
-			float cos, float sin) {
+	public static PointF rotate(float px, float py, float ox, float oy, float cos, float sin) {
 		float x = px - ox;
 		float y = py - oy;
 		px = ((x * cos) - (y * sin));
@@ -88,8 +87,7 @@ public class PointUtils {
 	 *            the sine of the rotation angle
 	 * @return The new coordinate of <code>point</code>
 	 */
-	public static PointF rotate(PointF point, PointF origin, float cos,
-			float sin) {
+	public static PointF rotate(PointF point, PointF origin, float cos, float sin) {
 		return rotate(point.x, point.y, origin.x, origin.y, cos, sin);
 	}
 

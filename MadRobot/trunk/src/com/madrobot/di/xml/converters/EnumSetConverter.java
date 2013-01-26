@@ -50,8 +50,7 @@ public class EnumSetConverter implements Converter {
 				}
 			}
 			if (assumedTypeField == null) {
-				throw new ExceptionInInitializerError(
-						"Cannot detect element type of EnumSet");
+				throw new ExceptionInInitializerError("Cannot detect element type of EnumSet");
 			}
 		} catch (SecurityException ex) {
 			// ignore, no access possible with current SecurityManager
@@ -98,22 +97,19 @@ public class EnumSetConverter implements Converter {
 		}
 		String attributeName = mapper.aliasForSystemAttribute("enum-type");
 		if (attributeName != null) {
-			writer.addAttribute(attributeName,
-					mapper.serializedClass(enumTypeForSet));
+			writer.addAttribute(attributeName, mapper.serializedClass(enumTypeForSet));
 		}
 		writer.setValue(joinEnumValues(set));
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public Object unmarshal(HierarchicalStreamReader reader,
-			UnmarshallingContext context) {
+	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
 		String attributeName = mapper.aliasForSystemAttribute("enum-type");
 		if (attributeName == null) {
 			throw new ConversionException("No EnumType specified for EnumSet");
 		}
-		Class enumTypeForSet = mapper.realClass(reader
-				.getAttribute(attributeName));
+		Class enumTypeForSet = mapper.realClass(reader.getAttribute(attributeName));
 		EnumSet set = EnumSet.noneOf(enumTypeForSet);
 		String[] enumValues = reader.getValue().split(",");
 		for (int i = 0; i < enumValues.length; i++) {

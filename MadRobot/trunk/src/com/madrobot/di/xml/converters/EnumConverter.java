@@ -40,8 +40,7 @@ public class EnumConverter implements Converter {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public Object unmarshal(HierarchicalStreamReader reader,
-			UnmarshallingContext context) {
+	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
 		Class type = context.getRequiredType();
 		if (type.getSuperclass() != Enum.class) {
 			type = type.getSuperclass(); // polymorphic enums

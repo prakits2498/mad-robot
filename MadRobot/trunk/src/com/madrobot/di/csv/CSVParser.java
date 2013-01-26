@@ -75,8 +75,7 @@ public class CSVParser {
 	 * Constructs CSVParser using a comma for the separator.
 	 */
 	public CSVParser() {
-		this(DEFAULT_SEPARATOR, DEFAULT_QUOTE_CHARACTER,
-				DEFAULT_ESCAPE_CHARACTER);
+		this(DEFAULT_SEPARATOR, DEFAULT_QUOTE_CHARACTER, DEFAULT_ESCAPE_CHARACTER);
 	}
 
 	/**
@@ -128,10 +127,8 @@ public class CSVParser {
 	 * @param strictQuotes
 	 *            if true, characters outside the quotes are ignored
 	 */
-	public CSVParser(char separator, char quotechar, char escape,
-			boolean strictQuotes) {
-		this(separator, quotechar, escape, strictQuotes,
-				DEFAULT_IGNORE_LEADING_WHITESPACE);
+	public CSVParser(char separator, char quotechar, char escape, boolean strictQuotes) {
+		this(separator, quotechar, escape, strictQuotes, DEFAULT_IGNORE_LEADING_WHITESPACE);
 	}
 
 	/**
@@ -149,15 +146,14 @@ public class CSVParser {
 	 * @param ignoreLeadingWhiteSpace
 	 *            if true, white space in front of a quote in a field is ignored
 	 */
-	public CSVParser(char separator, char quotechar, char escape,
-			boolean strictQuotes, boolean ignoreLeadingWhiteSpace) {
+	public CSVParser(char separator, char quotechar, char escape, boolean strictQuotes,
+			boolean ignoreLeadingWhiteSpace) {
 		if (anyCharactersAreTheSame(separator, quotechar, escape)) {
 			throw new UnsupportedOperationException(
 					"The separator, quote, and escape characters must be different!");
 		}
 		if (separator == NULL_CHARACTER) {
-			throw new UnsupportedOperationException(
-					"The separator character must be defined!");
+			throw new UnsupportedOperationException("The separator character must be defined!");
 		}
 		this.separator = separator;
 		this.quotechar = quotechar;
@@ -166,10 +162,8 @@ public class CSVParser {
 		this.ignoreLeadingWhiteSpace = ignoreLeadingWhiteSpace;
 	}
 
-	private boolean anyCharactersAreTheSame(char separator, char quotechar,
-			char escape) {
-		return isSameCharacter(separator, quotechar)
-				|| isSameCharacter(separator, escape)
+	private boolean anyCharactersAreTheSame(char separator, char quotechar, char escape) {
+		return isSameCharacter(separator, quotechar) || isSameCharacter(separator, escape)
 				|| isSameCharacter(quotechar, escape);
 	}
 
@@ -203,14 +197,12 @@ public class CSVParser {
 	 *            current index in line
 	 * @return true if the following character is a quote
 	 */
-	protected boolean isNextCharacterEscapable(String nextLine,
-			boolean inQuotes, int i) {
+	protected boolean isNextCharacterEscapable(String nextLine, boolean inQuotes, int i) {
 		return inQuotes // we are in quotes, therefore there can be escaped
 						// quotes in here.
 				&& nextLine.length() > (i + 1) // there is indeed another
 												// character to check.
-				&& (nextLine.charAt(i + 1) == quotechar || nextLine
-						.charAt(i + 1) == this.escape);
+				&& (nextLine.charAt(i + 1) == quotechar || nextLine.charAt(i + 1) == this.escape);
 	}
 
 	/**
@@ -224,8 +216,7 @@ public class CSVParser {
 	 *            current index in line
 	 * @return true if the following character is a quote
 	 */
-	private boolean isNextCharacterEscapedQuote(String nextLine,
-			boolean inQuotes, int i) {
+	private boolean isNextCharacterEscapedQuote(String nextLine, boolean inQuotes, int i) {
 		return inQuotes // we are in quotes, therefore there can be escaped
 						// quotes in here.
 				&& nextLine.length() > (i + 1) // there is indeed another
@@ -258,8 +249,7 @@ public class CSVParser {
 	 * @throws IOException
 	 *             if bad things happen during the read
 	 */
-	private String[] parseLine(String nextLine, boolean multi)
-			throws IOException {
+	private String[] parseLine(String nextLine, boolean multi) throws IOException {
 
 		if (!multi && pending != null) {
 			pending = null;
@@ -292,8 +282,7 @@ public class CSVParser {
 					i++;
 				}
 			} else if (c == quotechar) {
-				if (isNextCharacterEscapedQuote(nextLine, inQuotes || inField,
-						i)) {
+				if (isNextCharacterEscapedQuote(nextLine, inQuotes || inField, i)) {
 					sb.append(nextLine.charAt(i + 1));
 					i++;
 				} else {
@@ -357,8 +346,7 @@ public class CSVParser {
 				sb = null; // this partial content is not to be added to field
 							// list yet
 			} else {
-				throw new IOException(
-						"Un-terminated quoted field at end of CSV line");
+				throw new IOException("Un-terminated quoted field at end of CSV line");
 			}
 		}
 		if (sb != null) {

@@ -62,8 +62,7 @@ public abstract class AbstractOAuthConsumer implements OAuthConsumer {
 	 * Collects OAuth Authorization header parameters as per OAuth Core 1.0 spec
 	 * section 9.1.1
 	 */
-	protected void collectHeaderParameters(HttpRequest request,
-			HttpParameters out) {
+	protected void collectHeaderParameters(HttpRequest request, HttpParameters out) {
 		HttpParameters headerParams = OAuth.oauthHeaderToParamsMap(request
 				.getHeader(OAuth.HTTP_AUTHORIZATION_HEADER));
 		out.putAll(headerParams, false);
@@ -73,8 +72,7 @@ public abstract class AbstractOAuthConsumer implements OAuthConsumer {
 	 * Collects HTTP GET query string parameters as per OAuth Core 1.0 spec
 	 * section 9.1.1
 	 */
-	protected void collectQueryParameters(HttpRequest request,
-			HttpParameters out) {
+	protected void collectQueryParameters(HttpRequest request, HttpParameters out) {
 
 		String url = request.getRequestUrl();
 		int q = url.indexOf('?');
@@ -105,8 +103,7 @@ public abstract class AbstractOAuthConsumer implements OAuthConsumer {
 			out.put(OAuth.OAUTH_CONSUMER_KEY, consumerKey, true);
 		}
 		if (!out.containsKey(OAuth.OAUTH_SIGNATURE_METHOD)) {
-			out.put(OAuth.OAUTH_SIGNATURE_METHOD,
-					messageSigner.getSignatureMethod(), true);
+			out.put(OAuth.OAUTH_SIGNATURE_METHOD, messageSigner.getSignatureMethod(), true);
 		}
 		if (!out.containsKey(OAuth.OAUTH_TIMESTAMP)) {
 			out.put(OAuth.OAUTH_TIMESTAMP, generateTimestamp(), true);
@@ -185,8 +182,7 @@ public abstract class AbstractOAuthConsumer implements OAuthConsumer {
 	}
 
 	@Override
-	public HttpRequest sign(HttpRequest request)
-			throws OAuthMessageSignerException,
+	public HttpRequest sign(HttpRequest request) throws OAuthMessageSignerException,
 			OAuthExpectationFailedException, OAuthCommunicationException {
 		if (consumerKey == null) {
 			throw new OAuthExpectationFailedException("consumer key not set");

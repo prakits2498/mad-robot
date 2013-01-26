@@ -70,8 +70,7 @@ class ClassAliasingMapper extends MapperWrapper {
 		if (alias != null) {
 			return alias;
 		} else {
-			for (final Iterator iter = typeToName.keySet().iterator(); iter
-					.hasNext();) {
+			for (final Iterator iter = typeToName.keySet().iterator(); iter.hasNext();) {
 				final Class compatibleType = (Class) iter.next();
 				if (compatibleType.isAssignableFrom(type)) {
 					return (String) typeToName.get(compatibleType);

@@ -55,8 +55,7 @@ public final class FastField {
 
 	@Override
 	public int hashCode() {
-		return name.hashCode()
-				^ (declaringClass == null ? 0 : declaringClass.hashCode());
+		return name.hashCode() ^ (declaringClass == null ? 0 : declaringClass.hashCode());
 	}
 
 	@Override

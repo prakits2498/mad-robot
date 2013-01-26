@@ -42,8 +42,7 @@ public class ModelPart {
 		this.vnPointer = vnPointer;
 		this.material = material;
 
-		ByteBuffer byteBuf = ByteBuffer
-				.allocateDirect(vnPointer.size() * 4 * 3);
+		ByteBuffer byteBuf = ByteBuffer.allocateDirect(vnPointer.size() * 4 * 3);
 		byteBuf.order(ByteOrder.nativeOrder());
 		normalBuffer = byteBuf.asFloatBuffer();
 		for (int i = 0; i < vnPointer.size(); i++) {

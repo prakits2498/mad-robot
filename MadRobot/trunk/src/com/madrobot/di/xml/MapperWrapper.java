@@ -70,14 +70,13 @@ abstract class MapperWrapper implements Mapper {
 	 */
 	@Deprecated
 	@Override
-	public SingleValueConverter getConverterFromAttribute(Class type,
-			String attribute) {
+	public SingleValueConverter getConverterFromAttribute(Class type, String attribute) {
 		return wrapped.getConverterFromAttribute(type, attribute);
 	}
 
 	@Override
-	public SingleValueConverter getConverterFromAttribute(Class definedIn,
-			String attribute, Class type) {
+	public SingleValueConverter getConverterFromAttribute(Class definedIn, String attribute,
+			Class type) {
 		return wrapped.getConverterFromAttribute(definedIn, attribute, type);
 	}
 
@@ -107,34 +106,30 @@ abstract class MapperWrapper implements Mapper {
 	 */
 	@Deprecated
 	@Override
-	public SingleValueConverter getConverterFromItemType(String fieldName,
-			Class type) {
+	public SingleValueConverter getConverterFromItemType(String fieldName, Class type) {
 		return wrapped.getConverterFromItemType(fieldName, type);
 	}
 
 	@Override
-	public SingleValueConverter getConverterFromItemType(String fieldName,
-			Class type, Class definedIn) {
+	public SingleValueConverter getConverterFromItemType(String fieldName, Class type,
+			Class definedIn) {
 		return wrapped.getConverterFromItemType(fieldName, type, definedIn);
 	}
 
 	@Override
-	public String getFieldNameForItemTypeAndName(Class definedIn,
-			Class itemType, String itemFieldName) {
-		return wrapped.getFieldNameForItemTypeAndName(definedIn, itemType,
-				itemFieldName);
-	}
-
-	@Override
-	public ImplicitCollectionMapping getImplicitCollectionDefForFieldName(
-			Class itemType, String fieldName) {
-		return wrapped
-				.getImplicitCollectionDefForFieldName(itemType, fieldName);
-	}
-
-	@Override
-	public Class getItemTypeForItemFieldName(Class definedIn,
+	public String getFieldNameForItemTypeAndName(Class definedIn, Class itemType,
 			String itemFieldName) {
+		return wrapped.getFieldNameForItemTypeAndName(definedIn, itemType, itemFieldName);
+	}
+
+	@Override
+	public ImplicitCollectionMapping getImplicitCollectionDefForFieldName(Class itemType,
+			String fieldName) {
+		return wrapped.getImplicitCollectionDefForFieldName(itemType, fieldName);
+	}
+
+	@Override
+	public Class getItemTypeForItemFieldName(Class definedIn, String itemFieldName) {
 		return wrapped.getItemTypeForItemFieldName(definedIn, itemFieldName);
 	}
 
@@ -150,8 +145,7 @@ abstract class MapperWrapper implements Mapper {
 
 	@Override
 	public Mapper lookupMapperOfType(Class type) {
-		return type.isAssignableFrom(getClass()) ? this : wrapped
-				.lookupMapperOfType(type);
+		return type.isAssignableFrom(getClass()) ? this : wrapped.lookupMapperOfType(type);
 	}
 
 	@Override

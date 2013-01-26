@@ -54,18 +54,18 @@ public class AsyncHttpSimpleMultipartEntity implements HttpEntity {
 		}
 	}
 
-	public void addPart(final String key, final String fileName,
-			final InputStream fin, final boolean isLast) {
+	public void addPart(final String key, final String fileName, final InputStream fin,
+			final boolean isLast) {
 		addPart(key, fileName, fin, "application/octet-stream", isLast);
 	}
 
-	public void addPart(final String key, final String fileName,
-			final InputStream fin, String type, final boolean isLast) {
+	public void addPart(final String key, final String fileName, final InputStream fin,
+			String type, final boolean isLast) {
 		writeFirstBoundaryIfNeeds();
 		try {
 			type = "Content-Type: " + type + "\r\n";
-			out.write(("Content-Disposition: form-data; name=\"" + key
-					+ "\"; filename=\"" + fileName + "\"\r\n").getBytes());
+			out.write(("Content-Disposition: form-data; name=\"" + key + "\"; filename=\""
+					+ fileName + "\"\r\n").getBytes());
 			out.write(type.getBytes());
 			out.write("Content-Transfer-Encoding: binary\r\n\r\n".getBytes());
 
@@ -89,8 +89,7 @@ public class AsyncHttpSimpleMultipartEntity implements HttpEntity {
 	}
 
 	@Override
-	public void consumeContent() throws IOException,
-			UnsupportedOperationException {
+	public void consumeContent() throws IOException, UnsupportedOperationException {
 		if (isStreaming()) {
 			throw new UnsupportedOperationException(
 					"Streaming entity does not implement #consumeContent()");
@@ -98,8 +97,7 @@ public class AsyncHttpSimpleMultipartEntity implements HttpEntity {
 	}
 
 	@Override
-	public InputStream getContent() throws IOException,
-			UnsupportedOperationException {
+	public InputStream getContent() throws IOException, UnsupportedOperationException {
 		return new ByteArrayInputStream(out.toByteArray());
 	}
 
@@ -116,8 +114,7 @@ public class AsyncHttpSimpleMultipartEntity implements HttpEntity {
 
 	@Override
 	public Header getContentType() {
-		return new BasicHeader("Content-Type", "multipart/form-data; boundary="
-				+ boundary);
+		return new BasicHeader("Content-Type", "multipart/form-data; boundary=" + boundary);
 	}
 
 	@Override

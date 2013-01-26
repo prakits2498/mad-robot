@@ -33,8 +33,8 @@ public class BinaryFileFunctions implements BinaryConstants {
 		return compareBytes(a, 0, b, 0, a.length);
 	}
 
-	public static final boolean compareBytes(byte a[], int aStart, byte b[],
-			int bStart, int length) {
+	public static final boolean compareBytes(byte a[], int aStart, byte b[], int bStart,
+			int length) {
 		if (a.length < (aStart + length)) {
 			return false;
 		}
@@ -94,8 +94,8 @@ public class BinaryFileFunctions implements BinaryConstants {
 		return compareByteArrays(a, 0, b, 0, a.length);
 	}
 
-	public final boolean compareByteArrays(byte a[], int aStart, byte b[],
-			int bStart, int length) {
+	public final boolean compareByteArrays(byte a[], int aStart, byte b[], int bStart,
+			int length) {
 		if (a.length < (aStart + length)) {
 			return false;
 		}
@@ -115,13 +115,12 @@ public class BinaryFileFunctions implements BinaryConstants {
 		return true;
 	}
 
-	protected final double convertByteArrayToDouble(String name, byte bytes[],
-			int byteOrder) {
+	protected final double convertByteArrayToDouble(String name, byte bytes[], int byteOrder) {
 		return convertByteArrayToDouble(name, bytes, 0, byteOrder);
 	}
 
-	protected final double convertByteArrayToDouble(String name, byte bytes[],
-			int start, int byteOrder) {
+	protected final double convertByteArrayToDouble(String name, byte bytes[], int start,
+			int byteOrder) {
 		// TODO: not tested; probably wrong.
 
 		byte byte0 = bytes[start + 0];
@@ -137,16 +136,14 @@ public class BinaryFileFunctions implements BinaryConstants {
 
 		if (byteOrder == BYTE_ORDER_MOTOROLA) // motorola, big endian
 		{
-			bits = ((0xff & byte0) << 56) | ((0xff & byte1) << 48)
-					| ((0xff & byte2) << 40) | ((0xff & byte3) << 32)
-					| ((0xff & byte4) << 24) | ((0xff & byte5) << 16)
+			bits = ((0xff & byte0) << 56) | ((0xff & byte1) << 48) | ((0xff & byte2) << 40)
+					| ((0xff & byte3) << 32) | ((0xff & byte4) << 24) | ((0xff & byte5) << 16)
 					| ((0xff & byte6) << 8) | ((0xff & byte7) << 0);
 
 		} else {
 			// intel, little endian
-			bits = ((0xff & byte7) << 56) | ((0xff & byte6) << 48)
-					| ((0xff & byte5) << 40) | ((0xff & byte4) << 32)
-					| ((0xff & byte3) << 24) | ((0xff & byte2) << 16)
+			bits = ((0xff & byte7) << 56) | ((0xff & byte6) << 48) | ((0xff & byte5) << 40)
+					| ((0xff & byte4) << 32) | ((0xff & byte3) << 24) | ((0xff & byte2) << 16)
 					| ((0xff & byte1) << 8) | ((0xff & byte0) << 0);
 		}
 
@@ -197,8 +194,8 @@ public class BinaryFileFunctions implements BinaryConstants {
 		// return result;
 	}
 
-	protected final double[] convertByteArrayToDoubleArray(String name,
-			byte bytes[], int start, int length, int byteOrder) {
+	protected final double[] convertByteArrayToDoubleArray(String name, byte bytes[],
+			int start, int length, int byteOrder) {
 		int expectedLength = start + length * 8;
 
 		if (bytes.length < expectedLength) {
@@ -210,20 +207,18 @@ public class BinaryFileFunctions implements BinaryConstants {
 		double result[] = new double[length];
 
 		for (int i = 0; i < length; i++) {
-			result[i] = convertByteArrayToDouble(name, bytes, start + i * 8,
-					byteOrder);
+			result[i] = convertByteArrayToDouble(name, bytes, start + i * 8, byteOrder);
 		}
 
 		return result;
 	}
 
-	protected final float convertByteArrayToFloat(String name, byte bytes[],
-			int byteOrder) {
+	protected final float convertByteArrayToFloat(String name, byte bytes[], int byteOrder) {
 		return convertByteArrayToFloat(name, bytes, 0, byteOrder);
 	}
 
-	protected final float convertByteArrayToFloat(String name, byte bytes[],
-			int start, int byteOrder) {
+	protected final float convertByteArrayToFloat(String name, byte bytes[], int start,
+			int byteOrder) {
 		// TODO: not tested; probably wrong.
 
 		byte byte0 = bytes[start + 0];
@@ -235,12 +230,12 @@ public class BinaryFileFunctions implements BinaryConstants {
 
 		if (byteOrder == BYTE_ORDER_MOTOROLA) // motorola, big endian
 		{
-			bits = ((0xff & byte0) << 24) | ((0xff & byte1) << 16)
-					| ((0xff & byte2) << 8) | ((0xff & byte3) << 0);
+			bits = ((0xff & byte0) << 24) | ((0xff & byte1) << 16) | ((0xff & byte2) << 8)
+					| ((0xff & byte3) << 0);
 		} else {
 			// intel, little endian
-			bits = ((0xff & byte3) << 24) | ((0xff & byte2) << 16)
-					| ((0xff & byte1) << 8) | ((0xff & byte0) << 0);
+			bits = ((0xff & byte3) << 24) | ((0xff & byte2) << 16) | ((0xff & byte1) << 8)
+					| ((0xff & byte0) << 0);
 		}
 
 		float result = Float.intBitsToFloat(bits);
@@ -251,8 +246,8 @@ public class BinaryFileFunctions implements BinaryConstants {
 		return result;
 	}
 
-	protected final float[] convertByteArrayToFloatArray(String name,
-			byte bytes[], int start, int length, int byteOrder) {
+	protected final float[] convertByteArrayToFloatArray(String name, byte bytes[], int start,
+			int length, int byteOrder) {
 		int expectedLength = start + length * 4;
 
 		if (bytes.length < expectedLength) {
@@ -264,20 +259,18 @@ public class BinaryFileFunctions implements BinaryConstants {
 		float result[] = new float[length];
 
 		for (int i = 0; i < length; i++) {
-			result[i] = convertByteArrayToFloat(name, bytes, start + i * 4,
-					byteOrder);
+			result[i] = convertByteArrayToFloat(name, bytes, start + i * 4, byteOrder);
 		}
 
 		return result;
 	}
 
-	protected final int convertByteArrayToInt(String name, byte bytes[],
-			int byteOrder) {
+	protected final int convertByteArrayToInt(String name, byte bytes[], int byteOrder) {
 		return convertByteArrayToInt(name, bytes, 0, byteOrder);
 	}
 
-	protected final int convertByteArrayToInt(String name, byte bytes[],
-			int start, int byteOrder) {
+	protected final int convertByteArrayToInt(String name, byte bytes[], int start,
+			int byteOrder) {
 		byte byte0 = bytes[start + 0];
 		byte byte1 = bytes[start + 1];
 		byte byte2 = bytes[start + 2];
@@ -287,12 +280,12 @@ public class BinaryFileFunctions implements BinaryConstants {
 
 		if (byteOrder == BYTE_ORDER_MOTOROLA) // motorola, big endian
 		{
-			result = ((0xff & byte0) << 24) | ((0xff & byte1) << 16)
-					| ((0xff & byte2) << 8) | ((0xff & byte3) << 0);
+			result = ((0xff & byte0) << 24) | ((0xff & byte1) << 16) | ((0xff & byte2) << 8)
+					| ((0xff & byte3) << 0);
 		} else {
 			// intel, little endian
-			result = ((0xff & byte3) << 24) | ((0xff & byte2) << 16)
-					| ((0xff & byte1) << 8) | ((0xff & byte0) << 0);
+			result = ((0xff & byte3) << 24) | ((0xff & byte2) << 16) | ((0xff & byte1) << 8)
+					| ((0xff & byte0) << 0);
 		}
 
 		if (debug) {
@@ -302,8 +295,8 @@ public class BinaryFileFunctions implements BinaryConstants {
 		return result;
 	}
 
-	protected final int[] convertByteArrayToIntArray(String name, byte bytes[],
-			int start, int length, int byteOrder) {
+	protected final int[] convertByteArrayToIntArray(String name, byte bytes[], int start,
+			int length, int byteOrder) {
 		int expectedLength = start + length * 4;
 
 		if (bytes.length < expectedLength) {
@@ -315,28 +308,27 @@ public class BinaryFileFunctions implements BinaryConstants {
 		int result[] = new int[length];
 
 		for (int i = 0; i < length; i++) {
-			result[i] = convertByteArrayToInt(name, bytes, start + i * 4,
-					byteOrder);
+			result[i] = convertByteArrayToInt(name, bytes, start + i * 4, byteOrder);
 		}
 
 		return result;
 	}
 
-	protected final RationalNumber convertByteArrayToRational(String name,
-			byte bytes[], int byteOrder) {
+	protected final RationalNumber convertByteArrayToRational(String name, byte bytes[],
+			int byteOrder) {
 		return convertByteArrayToRational(name, bytes, 0, byteOrder);
 	}
 
-	protected final RationalNumber convertByteArrayToRational(String name,
-			byte bytes[], int start, int byteOrder) {
+	protected final RationalNumber convertByteArrayToRational(String name, byte bytes[],
+			int start, int byteOrder) {
 		int numerator = convertByteArrayToInt(name, bytes, start + 0, byteOrder);
 		int divisor = convertByteArrayToInt(name, bytes, start + 4, byteOrder);
 
 		return new RationalNumber(numerator, divisor);
 	}
 
-	protected final RationalNumber[] convertByteArrayToRationalArray(
-			String name, byte bytes[], int start, int length, int byteOrder) {
+	protected final RationalNumber[] convertByteArrayToRationalArray(String name,
+			byte bytes[], int start, int length, int byteOrder) {
 		int expectedLength = start + length * 8;
 
 		if (bytes.length < expectedLength) {
@@ -348,23 +340,22 @@ public class BinaryFileFunctions implements BinaryConstants {
 		RationalNumber result[] = new RationalNumber[length];
 
 		for (int i = 0; i < length; i++) {
-			result[i] = convertByteArrayToRational(name, bytes, start + i * 8,
-					byteOrder);
+			result[i] = convertByteArrayToRational(name, bytes, start + i * 8, byteOrder);
 		}
 
 		return result;
 	}
 
-	protected final int convertByteArrayToShort(String name, byte bytes[],
-			int byteOrder) throws IOException {
+	protected final int convertByteArrayToShort(String name, byte bytes[], int byteOrder)
+			throws IOException {
 		return convertByteArrayToShort(name, 0, bytes, byteOrder);
 	}
 
-	protected final int convertByteArrayToShort(String name, int index,
-			byte bytes[], int byteOrder) throws IOException {
+	protected final int convertByteArrayToShort(String name, int index, byte bytes[],
+			int byteOrder) throws IOException {
 		if (index + 1 >= bytes.length) {
-			throw new IOException("Index out of bounds. Array size: "
-					+ bytes.length + ", index: " + index);
+			throw new IOException("Index out of bounds. Array size: " + bytes.length
+					+ ", index: " + index);
 		}
 
 		int byte0 = 0xff & bytes[index + 0];
@@ -386,9 +377,8 @@ public class BinaryFileFunctions implements BinaryConstants {
 		return result;
 	}
 
-	protected final int[] convertByteArrayToShortArray(String name,
-			byte bytes[], int start, int length, int byteOrder)
-			throws IOException
+	protected final int[] convertByteArrayToShortArray(String name, byte bytes[], int start,
+			int length, int byteOrder) throws IOException
 
 	{
 		int expectedLength = start + length * 2;
@@ -402,15 +392,13 @@ public class BinaryFileFunctions implements BinaryConstants {
 		int result[] = new int[length];
 
 		for (int i = 0; i < length; i++) {
-			result[i] = convertByteArrayToShort(name, start + i * 2, bytes,
-					byteOrder);
+			result[i] = convertByteArrayToShort(name, start + i * 2, bytes, byteOrder);
 		}
 
 		return result;
 	}
 
-	protected final byte[] convertDoubleArrayToByteArray(double values[],
-			int byteOrder) {
+	protected final byte[] convertDoubleArrayToByteArray(double values[], int byteOrder) {
 		// TODO: not tested; probably wrong.
 		byte result[] = new byte[values.length * 8];
 		for (int i = 0; i < values.length; i++) {
@@ -472,8 +460,7 @@ public class BinaryFileFunctions implements BinaryConstants {
 		return result;
 	}
 
-	protected final byte[] convertFloatArrayToByteArray(float values[],
-			int byteOrder) {
+	protected final byte[] convertFloatArrayToByteArray(float values[], int byteOrder) {
 		// TODO: not tested; probably wrong.
 		byte result[] = new byte[values.length * 4];
 		for (int i = 0; i < values.length; i++) {
@@ -519,8 +506,7 @@ public class BinaryFileFunctions implements BinaryConstants {
 		return result;
 	}
 
-	protected final byte[] convertIntArrayToByteArray(int values[],
-			int byteOrder) {
+	protected final byte[] convertIntArrayToByteArray(int values[], int byteOrder) {
 		byte result[] = new byte[values.length * 4];
 
 		for (int i = 0; i < values.length; i++) {
@@ -547,23 +533,21 @@ public class BinaryFileFunctions implements BinaryConstants {
 		return result;
 	}
 
-	protected final byte[] convertRationalArrayToByteArray(
-			RationalNumber numbers[], int byteOrder) throws IOException {
+	protected final byte[] convertRationalArrayToByteArray(RationalNumber numbers[],
+			int byteOrder) throws IOException {
 		// Debug.debug("convertRationalArrayToByteArray 2");
 		byte result[] = new byte[numbers.length * 8];
 
 		for (int i = 0; i < numbers.length; i++) {
-			writeIntInToByteArray(numbers[i].numerator, result, i * 8,
-					byteOrder);
-			writeIntInToByteArray(numbers[i].divisor, result, i * 8 + 4,
-					byteOrder);
+			writeIntInToByteArray(numbers[i].numerator, result, i * 8, byteOrder);
+			writeIntInToByteArray(numbers[i].divisor, result, i * 8 + 4, byteOrder);
 		}
 
 		return result;
 	}
 
-	protected final byte[] convertRationalToByteArray(RationalNumber number,
-			int byteOrder) throws IOException {
+	protected final byte[] convertRationalToByteArray(RationalNumber number, int byteOrder)
+			throws IOException {
 		byte result[] = new byte[8];
 
 		writeIntInToByteArray(number.numerator, result, 0, byteOrder);
@@ -572,8 +556,7 @@ public class BinaryFileFunctions implements BinaryConstants {
 		return result;
 	}
 
-	protected final byte[] convertShortArrayToByteArray(int values[],
-			int byteOrder) {
+	protected final byte[] convertShortArrayToByteArray(int values[], int byteOrder) {
 		byte result[] = new byte[values.length * 2];
 
 		for (int i = 0; i < values.length; i++) {
@@ -607,8 +590,7 @@ public class BinaryFileFunctions implements BinaryConstants {
 		return result;
 	}
 
-	public final void copyStreamToStream(InputStream is, OutputStream os)
-			throws IOException {
+	public final void copyStreamToStream(InputStream is, OutputStream os) throws IOException {
 		byte buffer[] = new byte[1024];
 		int read;
 		while ((read = is.read(buffer)) > 0) {
@@ -628,8 +610,7 @@ public class BinaryFileFunctions implements BinaryConstants {
 		debugNumber(pw, msg, data, 1);
 	}
 
-	public final void debugNumber(PrintWriter pw, String msg, int data,
-			int bytes) {
+	public final void debugNumber(PrintWriter pw, String msg, int data, int bytes) {
 		pw.print(msg + ": " + data + " (");
 		int byteData = data;
 		for (int i = 0; i < bytes; i++) {
@@ -640,8 +621,8 @@ public class BinaryFileFunctions implements BinaryConstants {
 			pw.print((char) singleByte + " [" + singleByte + "]");
 			byteData >>= 8;
 		}
-		pw.println(") [0x" + Integer.toHexString(data) + ", "
-				+ Integer.toBinaryString(data) + "]");
+		pw.println(") [0x" + Integer.toHexString(data) + ", " + Integer.toBinaryString(data)
+				+ "]");
 		pw.flush();
 	}
 
@@ -691,8 +672,8 @@ public class BinaryFileFunctions implements BinaryConstants {
 		return debug;
 	}
 
-	protected final byte[] getRAFBytes(RandomAccessFile raf, long pos,
-			int length, String exception) throws IOException {
+	protected final byte[] getRAFBytes(RandomAccessFile raf, long pos, int length,
+			String exception) throws IOException {
 		if (debug) {
 			System.out.println("getRAFBytes pos" + ": " + pos);
 			System.out.println("getRAFBytes length" + ": " + length);
@@ -727,21 +708,19 @@ public class BinaryFileFunctions implements BinaryConstants {
 	}
 
 	protected final void printCharQuad(PrintWriter pw, String msg, int i) {
-		pw.println(msg + ": '" + (char) (0xff & (i >> 24))
-				+ (char) (0xff & (i >> 16)) + (char) (0xff & (i >> 8))
-				+ (char) (0xff & (i >> 0)) + "'");
+		pw.println(msg + ": '" + (char) (0xff & (i >> 24)) + (char) (0xff & (i >> 16))
+				+ (char) (0xff & (i >> 8)) + (char) (0xff & (i >> 0)) + "'");
 
 	}
 
 	protected final void printCharQuad(String msg, int i) {
-		System.out.println(msg + ": '" + (char) (0xff & (i >> 24))
-				+ (char) (0xff & (i >> 16)) + (char) (0xff & (i >> 8))
-				+ (char) (0xff & (i >> 0)) + "'");
+		System.out.println(msg + ": '" + (char) (0xff & (i >> 24)) + (char) (0xff & (i >> 16))
+				+ (char) (0xff & (i >> 8)) + (char) (0xff & (i >> 0)) + "'");
 
 	}
 
-	protected final int read2Bytes(String name, InputStream is,
-			String exception, int byteOrder) throws IOException {
+	protected final int read2Bytes(String name, InputStream is, String exception, int byteOrder)
+			throws IOException {
 		int size = 2;
 		byte bytes[] = new byte[size];
 
@@ -758,8 +737,8 @@ public class BinaryFileFunctions implements BinaryConstants {
 		return convertByteArrayToShort(name, bytes, byteOrder);
 	}
 
-	protected final int read3Bytes(String name, InputStream is,
-			String exception, int byteOrder) throws IOException, IOException {
+	protected final int read3Bytes(String name, InputStream is, String exception, int byteOrder)
+			throws IOException, IOException {
 		byte byte0 = (byte) is.read();
 		byte byte1 = (byte) is.read();
 		byte byte2 = (byte) is.read();
@@ -767,12 +746,10 @@ public class BinaryFileFunctions implements BinaryConstants {
 		int result;
 
 		if (byteOrder == BYTE_ORDER_MOTOROLA) {
-			result = ((0xff & byte0) << 16) | ((0xff & byte1) << 8)
-					| ((0xff & byte2) << 0);
+			result = ((0xff & byte0) << 16) | ((0xff & byte1) << 8) | ((0xff & byte2) << 0);
 		} else {
 			// intel, little endian
-			result = ((0xff & byte2) << 16) | ((0xff & byte1) << 8)
-					| ((0xff & byte0) << 0);
+			result = ((0xff & byte2) << 16) | ((0xff & byte1) << 8) | ((0xff & byte0) << 0);
 		}
 
 		if (debug) {
@@ -798,8 +775,8 @@ public class BinaryFileFunctions implements BinaryConstants {
 		// return convertByteArrayToInt(name, bytes, 0, 3, byteOrder);
 	}
 
-	protected final int read4Bytes(String name, InputStream is,
-			String exception, int byteOrder) throws IOException {
+	protected final int read4Bytes(String name, InputStream is, String exception, int byteOrder)
+			throws IOException {
 		int size = 4;
 		byte bytes[] = new byte[size];
 
@@ -816,8 +793,8 @@ public class BinaryFileFunctions implements BinaryConstants {
 		return convertByteArrayToInt(name, bytes, byteOrder);
 	}
 
-	public final void readAndVerifyBytes(InputStream is, byte expected[],
-			String exception) throws IOException {
+	public final void readAndVerifyBytes(InputStream is, byte expected[], String exception)
+			throws IOException {
 		for (int i = 0; i < expected.length; i++) {
 			int data = is.read();
 			byte b = (byte) (0xff & data);
@@ -838,8 +815,8 @@ public class BinaryFileFunctions implements BinaryConstants {
 		}
 	}
 
-	protected final void readAndVerifyBytes(String name, InputStream is,
-			byte expected[], String exception) throws IOException {
+	protected final void readAndVerifyBytes(String name, InputStream is, byte expected[],
+			String exception) throws IOException {
 		byte bytes[] = readByteArray(name, expected.length, is, exception);
 
 		for (int i = 0; i < expected.length; i++) {
@@ -869,11 +846,11 @@ public class BinaryFileFunctions implements BinaryConstants {
 		return (byte) (0xff & result);
 	}
 
-	public final byte[] readBytearray(String name, byte bytes[], int start,
-			int count) throws IOException {
+	public final byte[] readBytearray(String name, byte bytes[], int start, int count)
+			throws IOException {
 		if (bytes.length < (start + count)) {
-			throw new IOException("Invalid read. bytes.length: " + bytes.length
-					+ ", start: " + start + ", count: " + count);
+			throw new IOException("Invalid read. bytes.length: " + bytes.length + ", start: "
+					+ start + ", count: " + count);
 			// return null;
 		}
 
@@ -893,8 +870,8 @@ public class BinaryFileFunctions implements BinaryConstants {
 		return readByteArray(name, length, is, exception);
 	}
 
-	public final byte[] readByteArray(String name, int length, InputStream is,
-			String exception) throws IOException {
+	public final byte[] readByteArray(String name, int length, InputStream is, String exception)
+			throws IOException {
 		byte result[] = new byte[length];
 
 		int read = 0;
@@ -932,8 +909,7 @@ public class BinaryFileFunctions implements BinaryConstants {
 		}
 	}
 
-	protected final void scanForByte(InputStream is, byte value)
-			throws IOException {
+	protected final void scanForByte(InputStream is, byte value) throws IOException {
 		int count = 0;
 		for (int i = 0; count < 3; i++)
 		// while(count<3)
@@ -989,8 +965,8 @@ public class BinaryFileFunctions implements BinaryConstants {
 		return true;
 	}
 
-	protected final void writeIntInToByteArray(int value, byte bytes[],
-			int start, int byteOrder) {
+	protected final void writeIntInToByteArray(int value, byte bytes[], int start,
+			int byteOrder) {
 		if (byteOrder == BYTE_ORDER_MOTOROLA) // motorola, big endian
 		{
 			bytes[start + 0] = (byte) (value >> 24);

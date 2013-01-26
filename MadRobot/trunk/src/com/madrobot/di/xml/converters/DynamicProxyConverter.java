@@ -33,8 +33,7 @@ public class DynamicProxyConverter implements Converter {
 
 	private static final InvocationHandler DUMMY = new InvocationHandler() {
 		@Override
-		public Object invoke(Object proxy, Method method, Object[] args)
-				throws Throwable {
+		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 			return null;
 		}
 	};
@@ -62,8 +61,7 @@ public class DynamicProxyConverter implements Converter {
 		this.mapper = mapper;
 	}
 
-	private void addInterfacesToXml(Object source,
-			HierarchicalStreamWriter writer) {
+	private void addInterfacesToXml(Object source, HierarchicalStreamWriter writer) {
 		Class[] interfaces = source.getClass().getInterfaces();
 		for (int i = 0; i < interfaces.length; i++) {
 			Class currentInterface = interfaces[i];
@@ -75,15 +73,13 @@ public class DynamicProxyConverter implements Converter {
 
 	@Override
 	public boolean canConvert(Class type) {
-		return type.equals(DynamicProxyMapper.DynamicProxy.class)
-				|| Proxy.isProxyClass(type);
+		return type.equals(DynamicProxyMapper.DynamicProxy.class) || Proxy.isProxyClass(type);
 	}
 
 	@Override
 	public void marshal(Object source, HierarchicalStreamWriter writer,
 			MarshallingContext context) {
-		InvocationHandler invocationHandler = Proxy
-				.getInvocationHandler(source);
+		InvocationHandler invocationHandler = Proxy.getInvocationHandler(source);
 		addInterfacesToXml(source, writer);
 		writer.startNode("handler");
 		String attributeName = mapper.aliasForSystemAttribute("class");
@@ -96,8 +92,7 @@ public class DynamicProxyConverter implements Converter {
 	}
 
 	@Override
-	public Object unmarshal(HierarchicalStreamReader reader,
-			UnmarshallingContext context) {
+	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
 		List interfaces = new ArrayList();
 		InvocationHandler handler = null;
 		Class handlerType = null;
@@ -109,23 +104,19 @@ public class DynamicProxyConverter implements Converter {
 			} else if (elementName.equals("handler")) {
 				String attributeName = mapper.aliasForSystemAttribute("class");
 				if (attributeName != null) {
-					handlerType = mapper.realClass(reader
-							.getAttribute(attributeName));
+					handlerType = mapper.realClass(reader.getAttribute(attributeName));
 					break;
 				}
 			}
 			reader.moveUp();
 		}
 		if (handlerType == null) {
-			throw new ConversionException(
-					"No InvocationHandler specified for dynamic proxy");
+			throw new ConversionException("No InvocationHandler specified for dynamic proxy");
 		}
 		Class[] interfacesAsArray = new Class[interfaces.size()];
 		interfaces.toArray(interfacesAsArray);
-		Object proxy = Proxy.newProxyInstance(classLoader, interfacesAsArray,
-				DUMMY);
-		handler = (InvocationHandler) context
-				.convertAnother(proxy, handlerType);
+		Object proxy = Proxy.newProxyInstance(classLoader, interfacesAsArray, DUMMY);
+		handler = (InvocationHandler) context.convertAnother(proxy, handlerType);
 		reader.moveUp();
 		try {
 			FieldUtils.writeField(HANDLER, proxy, handler);

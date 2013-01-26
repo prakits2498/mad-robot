@@ -95,23 +95,20 @@ public class PolygonUtils {
 	 *            Preallocated to int[2]
 	 * @return True if point is within polyline, false otherwise
 	 */
-	public static boolean findPolygonPosition(int[] x, int[] y, double length,
-			int[] position) {
+	public static boolean findPolygonPosition(int[] x, int[] y, double length, int[] position) {
 		if (length < 0) {
 			return false;
 		}
 
 		double accumulatedLength = 0.0;
 		for (int i = 1; i < x.length; i++) {
-			double legLength = LineUtils.length(new PointF(x[i - 1], y[i - 1]),
-					new PointF(x[i], y[i]));
+			double legLength = LineUtils.length(new PointF(x[i - 1], y[i - 1]), new PointF(
+					x[i], y[i]));
 			if (legLength + accumulatedLength >= length) {
 				double part = length - accumulatedLength;
 				double fraction = part / legLength;
-				position[0] = (int) Math.round(x[i - 1] + fraction
-						* (x[i] - x[i - 1]));
-				position[1] = (int) Math.round(y[i - 1] + fraction
-						* (y[i] - y[i - 1]));
+				position[0] = (int) Math.round(x[i - 1] + fraction * (x[i] - x[i - 1]));
+				position[1] = (int) Math.round(y[i - 1] + fraction * (y[i] - y[i - 1]));
 				return true;
 			}
 
@@ -134,8 +131,8 @@ public class PolygonUtils {
 	 *             if <code>x</code> or <code>y</code> is null or their array
 	 *             lengths do not match
 	 */
-	public static boolean isPointInsidePolygon(float[] x, float[] y,
-			PointF point) throws IllegalArgumentException {
+	public static boolean isPointInsidePolygon(float[] x, float[] y, PointF point)
+			throws IllegalArgumentException {
 		if (isValidPolygon(x, y))
 			throw new IllegalArgumentException(
 					"points length do not match or one of the points is null");
@@ -183,8 +180,8 @@ public class PolygonUtils {
 		translate(x, y, point.x, point.y);
 	}
 
-	public static void rotate(float[] x, float[] y, float ox, float oy,
-			float cos, float sin) throws IllegalArgumentException {
+	public static void rotate(float[] x, float[] y, float ox, float oy, float cos, float sin)
+			throws IllegalArgumentException {
 		if (isValidPolygon(x, y))
 			throw new IllegalArgumentException(
 					"points length do not match or one of the points is null");

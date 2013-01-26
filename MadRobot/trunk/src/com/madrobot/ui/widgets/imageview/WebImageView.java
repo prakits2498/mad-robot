@@ -1,4 +1,4 @@
-package com.madrobot.ui.widgets;
+package com.madrobot.ui.widgets.imageview;
 
 import java.net.URI;
 
@@ -62,23 +62,20 @@ public class WebImageView extends ViewSwitcher implements TaskNotifier {
 		TypedArray styledAttrs = context.obtainStyledAttributes(attributes,
 				R.styleable.WebImageView);
 
-		int progressDrawableId = styledAttrs.getInt(
-				R.styleable.WebImageView_progressDrawable, 0);
+		int progressDrawableId = styledAttrs.getInt(R.styleable.WebImageView_progressDrawable,
+				0);
 
-		int errorDrawableId = styledAttrs.getInt(
-				R.styleable.WebImageView_errorDrawable, 0);
+		int errorDrawableId = styledAttrs.getInt(R.styleable.WebImageView_errorDrawable, 0);
 
 		Drawable progressDrawable = null;
 		if (progressDrawableId > 0) {
-			progressDrawable = context.getResources().getDrawable(
-					progressDrawableId);
+			progressDrawable = context.getResources().getDrawable(progressDrawableId);
 		}
 		Drawable errorDrawable = null;
 		if (errorDrawableId > 0) {
 			errorDrawable = context.getResources().getDrawable(errorDrawableId);
 		}
-		initialize(context,
-				styledAttrs.getString(R.styleable.WebImageView_imageUrl),
+		initialize(context, styledAttrs.getString(R.styleable.WebImageView_imageUrl),
 				progressDrawable, errorDrawable,
 				styledAttrs.getBoolean(R.styleable.WebImageView_autoLoad, true));
 		// styles.recycle();
@@ -146,8 +143,7 @@ public class WebImageView extends ViewSwitcher implements TaskNotifier {
 	private void addImageView(Context context) {
 		imageView = new ImageView(context);
 		imageView.setScaleType(scaleType);
-		LayoutParams lp = new LayoutParams(
-				android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
+		LayoutParams lp = new LayoutParams(android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
 				android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
 		lp.gravity = Gravity.CENTER;
 		addView(imageView, 1, lp);
@@ -164,8 +160,7 @@ public class WebImageView extends ViewSwitcher implements TaskNotifier {
 				((AnimationDrawable) progressDrawable).start();
 			}
 		}
-		LayoutParams lp = new LayoutParams(
-				progressDrawable.getIntrinsicWidth(),
+		LayoutParams lp = new LayoutParams(progressDrawable.getIntrinsicWidth(),
 				progressDrawable.getIntrinsicHeight());
 		lp.gravity = Gravity.CENTER;
 		addView(loadingSpinner, 0, lp);
@@ -180,8 +175,8 @@ public class WebImageView extends ViewSwitcher implements TaskNotifier {
 		return imageUrl;
 	}
 
-	private void initialize(Context context, String imageUrl,
-			Drawable progressDrawable, Drawable errorDrawable, boolean autoLoad) {
+	private void initialize(Context context, String imageUrl, Drawable progressDrawable,
+			Drawable errorDrawable, boolean autoLoad) {
 		this.imageUrl = imageUrl;
 		this.progressDrawable = progressDrawable;
 		this.errorDrawable = errorDrawable;
@@ -289,8 +284,7 @@ public class WebImageView extends ViewSwitcher implements TaskNotifier {
 	 *            the resource of the placeholder image drawable
 	 */
 	public void setNoImageDrawable(int imageResourceId) {
-		imageView.setImageDrawable(getContext().getResources().getDrawable(
-				imageResourceId));
+		imageView.setImageDrawable(getContext().getResources().getDrawable(imageResourceId));
 		setDisplayedChild(1);
 	}
 }

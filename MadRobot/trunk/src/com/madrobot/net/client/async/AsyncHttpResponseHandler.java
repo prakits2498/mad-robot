@@ -194,8 +194,7 @@ public class AsyncHttpResponseHandler {
 	//
 
 	protected void sendFailureMessage(Throwable e, String responseBody) {
-		sendMessage(obtainMessage(FAILURE_MESSAGE, new Object[] { e,
-				responseBody }));
+		sendMessage(obtainMessage(FAILURE_MESSAGE, new Object[] { e, responseBody }));
 	}
 
 	protected void sendFinishMessage() {
@@ -226,8 +225,8 @@ public class AsyncHttpResponseHandler {
 		}
 
 		if (status.getStatusCode() >= 300) {
-			sendFailureMessage(new HttpResponseException(
-					status.getStatusCode(), status.getReasonPhrase()),
+			sendFailureMessage(
+					new HttpResponseException(status.getStatusCode(), status.getReasonPhrase()),
 					responseBody);
 		} else {
 			sendSuccessMessage(responseBody);

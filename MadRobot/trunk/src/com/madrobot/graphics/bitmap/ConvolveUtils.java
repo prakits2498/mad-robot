@@ -5,9 +5,8 @@ import android.graphics.Bitmap;
 import com.madrobot.graphics.ColorUtils;
 
 class ConvolveUtils {
-	static Bitmap doConvolve(float[] matrix, Bitmap src, int edgeAction,
-			boolean processAlpha, boolean premultiplyAlpha,
-			Bitmap.Config outputConfig) {
+	static Bitmap doConvolve(float[] matrix, Bitmap src, int edgeAction, boolean processAlpha,
+			boolean premultiplyAlpha, Bitmap.Config outputConfig) {
 		Kernel kernel = new Kernel(3, 3, matrix);
 		int width = src.getWidth();
 		int height = src.getHeight();
@@ -15,13 +14,11 @@ class ConvolveUtils {
 		int[] outPixels = new int[inPixels.length];
 		if (premultiplyAlpha)
 			ImageMath.premultiply(inPixels, 0, inPixels.length);
-		convolve(kernel, inPixels, outPixels, width, height, processAlpha,
-				edgeAction);
+		convolve(kernel, inPixels, outPixels, width, height, processAlpha, edgeAction);
 		if (premultiplyAlpha)
 			ImageMath.unpremultiply(outPixels, 0, outPixels.length);
 
-		return Bitmap.createBitmap(outPixels, src.getWidth(), src.getHeight(),
-				outputConfig);
+		return Bitmap.createBitmap(outPixels, src.getWidth(), src.getHeight(), outputConfig);
 	}
 
 	/**
@@ -42,17 +39,14 @@ class ConvolveUtils {
 	 * @param edgeAction
 	 *            what to do at the edges
 	 */
-	static void convolve(Kernel kernel, int[] inPixels, int[] outPixels,
-			int width, int height, boolean alpha, int edgeAction) {
+	static void convolve(Kernel kernel, int[] inPixels, int[] outPixels, int width,
+			int height, boolean alpha, int edgeAction) {
 		if (kernel.getHeight() == 1)
-			convolveH(kernel, inPixels, outPixels, width, height, alpha,
-					edgeAction);
+			convolveH(kernel, inPixels, outPixels, width, height, alpha, edgeAction);
 		else if (kernel.getWidth() == 1)
-			convolveV(kernel, inPixels, outPixels, width, height, alpha,
-					edgeAction);
+			convolveV(kernel, inPixels, outPixels, width, height, alpha, edgeAction);
 		else
-			convolveHV(kernel, inPixels, outPixels, width, height, alpha,
-					edgeAction);
+			convolveHV(kernel, inPixels, outPixels, width, height, alpha, edgeAction);
 	}
 
 	/**
@@ -73,8 +67,8 @@ class ConvolveUtils {
 	 * @param edgeAction
 	 *            what to do at the edges
 	 */
-	static void convolveHV(Kernel kernel, int[] inPixels, int[] outPixels,
-			int width, int height, boolean alpha, int edgeAction) {
+	static void convolveHV(Kernel kernel, int[] inPixels, int[] outPixels, int width,
+			int height, boolean alpha, int edgeAction) {
 		int index = 0;
 		float[] matrix = kernel.getKernelData(null);
 		int rows = kernel.getHeight();
@@ -146,8 +140,8 @@ class ConvolveUtils {
 	 * @param edgeAction
 	 *            what to do at the edges
 	 */
-	static void convolveH(Kernel kernel, int[] inPixels, int[] outPixels,
-			int width, int height, boolean alpha, int edgeAction) {
+	static void convolveH(Kernel kernel, int[] inPixels, int[] outPixels, int width,
+			int height, boolean alpha, int edgeAction) {
 		int index = 0;
 		float[] matrix = kernel.getKernelData(null);
 		int cols = kernel.getWidth();
@@ -208,8 +202,8 @@ class ConvolveUtils {
 	 * @param edgeAction
 	 *            what to do at the edges
 	 */
-	static void convolveV(Kernel kernel, int[] inPixels, int[] outPixels,
-			int width, int height, boolean alpha, int edgeAction) {
+	static void convolveV(Kernel kernel, int[] inPixels, int[] outPixels, int width,
+			int height, boolean alpha, int edgeAction) {
 		int index = 0;
 		float[] matrix = kernel.getKernelData(null);
 		int rows = kernel.getHeight();

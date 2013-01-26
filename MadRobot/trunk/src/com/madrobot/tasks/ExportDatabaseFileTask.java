@@ -40,8 +40,7 @@ import com.madrobot.io.file.FileUtils;
  */
 public class ExportDatabaseFileTask extends AbstractTask {// AsyncTask<String,
 															// Void, Boolean> {
-	private static final String TAG = ExportDatabaseFileTask.class
-			.getSimpleName();
+	private static final String TAG = ExportDatabaseFileTask.class.getSimpleName();
 
 	public ExportDatabaseFileTask(Context context, TaskNotifier notifier) {
 		super(context, notifier);

@@ -85,8 +85,7 @@ public class FileDeleteStrategy {
 	 * The singleton instance for normal file deletion, which does not permit
 	 * the deletion of directories that are not empty.
 	 */
-	public static final FileDeleteStrategy NORMAL = new FileDeleteStrategy(
-			"Normal");
+	public static final FileDeleteStrategy NORMAL = new FileDeleteStrategy("Normal");
 
 	/** The name of the strategy. */
 	private final String name;

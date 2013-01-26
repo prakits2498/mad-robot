@@ -41,8 +41,8 @@ public class FastByteArrayOutputStream extends OutputStream {
 	@Override
 	public void write(int value) throws IOException {
 		if (count >= bytes.length) {
-			throw new IOException("Write exceeded expected length (" + count
-					+ ", " + bytes.length + ")");
+			throw new IOException("Write exceeded expected length (" + count + ", "
+					+ bytes.length + ")");
 		}
 
 		bytes[count] = (byte) value;

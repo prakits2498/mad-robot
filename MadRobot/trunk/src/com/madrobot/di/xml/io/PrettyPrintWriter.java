@@ -24,7 +24,8 @@ import com.madrobot.util.collections.QuickWriter;
  * </pre></code> are escaped and replaced with a suitable XML entity. To alter
  * this behavior, override the the
  * {@link #writeText(com.madrobot.util.collections.QuickWriter, String)} and
- * {@link #writeAttributeValue(com.madrobot.util.collections.QuickWriter, String)} methods.
+ * {@link #writeAttributeValue(com.madrobot.util.collections.QuickWriter, String)}
+ * methods.
  * </p>
  * <p>
  * Note: Depending on the XML version some characters cannot be written.
@@ -90,8 +91,8 @@ public class PrettyPrintWriter extends AbstractWriter {
 	 * @deprecated As of 1.3
 	 */
 	@Deprecated
-	public PrettyPrintWriter(Writer writer, char[] lineIndenter,
-			String newLine, XmlFriendlyNameCoder replacer) {
+	public PrettyPrintWriter(Writer writer, char[] lineIndenter, String newLine,
+			XmlFriendlyNameCoder replacer) {
 		this(writer, XML_QUIRKS, lineIndenter, replacer, newLine);
 	}
 
@@ -112,8 +113,7 @@ public class PrettyPrintWriter extends AbstractWriter {
 	/**
 	 * @since 1.4
 	 */
-	public PrettyPrintWriter(Writer writer, int mode, char[] lineIndenter,
-			NameCoder nameCoder) {
+	public PrettyPrintWriter(Writer writer, int mode, char[] lineIndenter, NameCoder nameCoder) {
 		this(writer, mode, lineIndenter, nameCoder, "\n");
 	}
 
@@ -162,8 +162,7 @@ public class PrettyPrintWriter extends AbstractWriter {
 	 *             instead
 	 */
 	@Deprecated
-	public PrettyPrintWriter(Writer writer, int mode,
-			XmlFriendlyNameCoder replacer) {
+	public PrettyPrintWriter(Writer writer, int mode, XmlFriendlyNameCoder replacer) {
 		this(writer, mode, new char[] { ' ', ' ' }, replacer);
 	}
 
@@ -304,8 +303,7 @@ public class PrettyPrintWriter extends AbstractWriter {
 				if (mode == XML_QUIRKS) {
 					this.writer.write(NULL);
 				} else {
-					throw new StreamException(
-							"Invalid character 0x0 in XML stream");
+					throw new StreamException("Invalid character 0x0 in XML stream");
 				}
 				break;
 			case '&':
@@ -343,11 +341,10 @@ public class PrettyPrintWriter extends AbstractWriter {
 					this.writer.write(c);
 				} else {
 					if (mode == XML_1_0) {
-						if (c < 9 || c == '\u000b' || c == '\u000c'
-								|| c == '\u000e' || c == '\u000f') {
+						if (c < 9 || c == '\u000b' || c == '\u000c' || c == '\u000e'
+								|| c == '\u000f') {
 							throw new StreamException("Invalid character 0x"
-									+ Integer.toHexString(c)
-									+ " in XML 1.0 stream");
+									+ Integer.toHexString(c) + " in XML 1.0 stream");
 						}
 					}
 					if (mode != XML_QUIRKS) {

@@ -89,6 +89,7 @@ import com.madrobot.ui.drawables.AlphaPatternDrawable;
  * </tr>
  * </table>
  * </p>
+ * 
  */
 public class ColorPickerView extends View {
 
@@ -237,8 +238,7 @@ public class ColorPickerView extends View {
 	}
 
 	private float calculateRequiredOffset() {
-		float offset = Math.max(paletteCircleTrackerRadius,
-				RECTANGLE_TRACKER_OFFSET);
+		float offset = Math.max(paletteCircleTrackerRadius, RECTANGLE_TRACKER_OFFSET);
 		offset = Math.max(offset, BORDER_WIDTH_PX * mDensity);
 
 		return offset * 1.5f;
@@ -269,9 +269,8 @@ public class ColorPickerView extends View {
 
 		if (BORDER_WIDTH_PX > 0) {
 			mBorderPaint.setColor(mBorderColor);
-			canvas.drawRect(rect.left - BORDER_WIDTH_PX, rect.top
-					- BORDER_WIDTH_PX, rect.right + BORDER_WIDTH_PX,
-					rect.bottom + BORDER_WIDTH_PX, mBorderPaint);
+			canvas.drawRect(rect.left - BORDER_WIDTH_PX, rect.top - BORDER_WIDTH_PX,
+					rect.right + BORDER_WIDTH_PX, rect.bottom + BORDER_WIDTH_PX, mBorderPaint);
 		}
 
 		mAlphaPattern.draw(canvas);
@@ -280,16 +279,16 @@ public class ColorPickerView extends View {
 		int color = Color.HSVToColor(hsv);
 		int acolor = Color.HSVToColor(0, hsv);
 
-		mAlphaShader = new LinearGradient(rect.left, rect.top, rect.right,
-				rect.top, color, acolor, TileMode.CLAMP);
+		mAlphaShader = new LinearGradient(rect.left, rect.top, rect.right, rect.top, color,
+				acolor, TileMode.CLAMP);
 
 		mAlphaPaint.setShader(mAlphaShader);
 
 		canvas.drawRect(rect, mAlphaPaint);
 
 		if (mAlphaSliderText != null && mAlphaSliderText != "") {
-			canvas.drawText(mAlphaSliderText, rect.centerX(), rect.centerY()
-					+ 4 * mDensity, mAlphaTextPaint);
+			canvas.drawText(mAlphaSliderText, rect.centerX(), rect.centerY() + 4 * mDensity,
+					mAlphaTextPaint);
 		}
 
 		float rectWidth = 4 * mDensity / 2;
@@ -312,14 +311,13 @@ public class ColorPickerView extends View {
 
 		if (BORDER_WIDTH_PX > 0) {
 			mBorderPaint.setColor(mBorderColor);
-			canvas.drawRect(rect.left - BORDER_WIDTH_PX, rect.top
-					- BORDER_WIDTH_PX, rect.right + BORDER_WIDTH_PX,
-					rect.bottom + BORDER_WIDTH_PX, mBorderPaint);
+			canvas.drawRect(rect.left - BORDER_WIDTH_PX, rect.top - BORDER_WIDTH_PX,
+					rect.right + BORDER_WIDTH_PX, rect.bottom + BORDER_WIDTH_PX, mBorderPaint);
 		}
 
 		if (mHueShader == null) {
-			mHueShader = new LinearGradient(rect.left, rect.top, rect.left,
-					rect.bottom, buildHueColorArray(), null, TileMode.CLAMP);
+			mHueShader = new LinearGradient(rect.left, rect.top, rect.left, rect.bottom,
+					buildHueColorArray(), null, TileMode.CLAMP);
 			mHuePaint.setShader(mHueShader);
 		}
 
@@ -345,20 +343,19 @@ public class ColorPickerView extends View {
 
 		if (BORDER_WIDTH_PX > 0) {
 			mBorderPaint.setColor(mBorderColor);
-			canvas.drawRect(mDrawingRect.left, mDrawingRect.top, rect.right
-					+ BORDER_WIDTH_PX, rect.bottom + BORDER_WIDTH_PX,
-					mBorderPaint);
+			canvas.drawRect(mDrawingRect.left, mDrawingRect.top, rect.right + BORDER_WIDTH_PX,
+					rect.bottom + BORDER_WIDTH_PX, mBorderPaint);
 		}
 
 		if (mValShader == null) {
-			mValShader = new LinearGradient(rect.left, rect.top, rect.left,
-					rect.bottom, 0xffffffff, 0xff000000, TileMode.CLAMP);
+			mValShader = new LinearGradient(rect.left, rect.top, rect.left, rect.bottom,
+					0xffffffff, 0xff000000, TileMode.CLAMP);
 		}
 
 		int rgb = Color.HSVToColor(new float[] { mHue, 1f, 1f });
 
-		mSatShader = new LinearGradient(rect.left, rect.top, rect.right,
-				rect.top, 0xffffffff, rgb, TileMode.CLAMP);
+		mSatShader = new LinearGradient(rect.left, rect.top, rect.right, rect.top, 0xffffffff,
+				rgb, TileMode.CLAMP);
 		ComposeShader mShader = new ComposeShader(mValShader, mSatShader,
 				PorterDuff.Mode.MULTIPLY);
 		mSatValPaint.setShader(mShader);
@@ -372,8 +369,7 @@ public class ColorPickerView extends View {
 				mSatValTrackerPaint);
 
 		mSatValTrackerPaint.setColor(trackerOuterColor);
-		canvas.drawCircle(p.x, p.y, paletteCircleTrackerRadius,
-				mSatValTrackerPaint);
+		canvas.drawCircle(p.x, p.y, paletteCircleTrackerRadius, mSatValTrackerPaint);
 
 	}
 
@@ -474,24 +470,20 @@ public class ColorPickerView extends View {
 	private void initAttributes(Context context, AttributeSet attrs) {
 		TypedArray styledAttrs = context.obtainStyledAttributes(attrs,
 				R.styleable.ColorPickerView);
-		mBorderColor = styledAttrs.getColor(
-				R.styleable.ColorPickerView_borderColor, mBorderColor);
+		mBorderColor = styledAttrs.getColor(R.styleable.ColorPickerView_borderColor,
+				mBorderColor);
 		trackerInnerColor = styledAttrs.getColor(
-				R.styleable.ColorPickerView_selectorInnerColor,
-				trackerInnerColor);
+				R.styleable.ColorPickerView_selectorInnerColor, trackerInnerColor);
 		trackerOuterColor = styledAttrs.getColor(
-				R.styleable.ColorPickerView_selectorOuterColor,
-				trackerOuterColor);
+				R.styleable.ColorPickerView_selectorOuterColor, trackerOuterColor);
 		mSliderTrackerColor = styledAttrs.getColor(
-				R.styleable.ColorPickerView_sliderPanelSelectorColor,
-				mSliderTrackerColor);
+				R.styleable.ColorPickerView_sliderPanelSelectorColor, mSliderTrackerColor);
 		mPanelPadding = styledAttrs.getDimension(
 				R.styleable.ColorPickerView_sliderPanelPadding, mPanelPadding);
-		huePanelWidth = styledAttrs.getDimension(
-				R.styleable.ColorPickerView_sliderPanelWidth, huePanelWidth);
+		huePanelWidth = styledAttrs.getDimension(R.styleable.ColorPickerView_sliderPanelWidth,
+				huePanelWidth);
 		paletteCircleTrackerRadius = styledAttrs.getDimension(
-				R.styleable.ColorPickerView_selectorRadius,
-				paletteCircleTrackerRadius);
+				R.styleable.ColorPickerView_selectorRadius, paletteCircleTrackerRadius);
 	}
 
 	private void initPaintTools() {
@@ -662,8 +654,8 @@ public class ColorPickerView extends View {
 		if (update) {
 
 			if (mListener != null) {
-				mListener.onColorChanged(Color.HSVToColor(mAlpha, new float[] {
-						mHue, mSat, mVal }));
+				mListener.onColorChanged(Color.HSVToColor(mAlpha, new float[] { mHue, mSat,
+						mVal }));
 			}
 
 			invalidate();
@@ -755,8 +747,8 @@ public class ColorPickerView extends View {
 		if (update) {
 
 			if (mListener != null) {
-				mListener.onColorChanged(Color.HSVToColor(mAlpha, new float[] {
-						mHue, mSat, mVal }));
+				mListener.onColorChanged(Color.HSVToColor(mAlpha, new float[] { mHue, mSat,
+						mVal }));
 			}
 
 			invalidate();
@@ -939,8 +931,8 @@ public class ColorPickerView extends View {
 		mVal = hsv[2];
 
 		if (callback && mListener != null) {
-			mListener.onColorChanged(Color.HSVToColor(mAlpha, new float[] {
-					mHue, mSat, mVal }));
+			mListener.onColorChanged(Color
+					.HSVToColor(mAlpha, new float[] { mHue, mSat, mVal }));
 		}
 
 		invalidate();
@@ -979,9 +971,8 @@ public class ColorPickerView extends View {
 		mAlphaRect = new RectF(left, top, right, bottom);
 
 		mAlphaPattern = new AlphaPatternDrawable((int) (5 * mDensity));
-		mAlphaPattern.setBounds(Math.round(mAlphaRect.left),
-				Math.round(mAlphaRect.top), Math.round(mAlphaRect.right),
-				Math.round(mAlphaRect.bottom));
+		mAlphaPattern.setBounds(Math.round(mAlphaRect.left), Math.round(mAlphaRect.top),
+				Math.round(mAlphaRect.right), Math.round(mAlphaRect.bottom));
 
 	}
 

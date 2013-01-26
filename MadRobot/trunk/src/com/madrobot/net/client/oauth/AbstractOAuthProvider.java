@@ -64,8 +64,7 @@ public abstract class AbstractOAuthProvider implements OAuthProvider {
 	 * @throws Exception
 	 *             if something breaks
 	 */
-	protected abstract HttpRequest createRequest(String endpointUrl)
-			throws Exception;
+	protected abstract HttpRequest createRequest(String endpointUrl) throws Exception;
 
 	@Override
 	public String getAccessTokenEndpointUrl() {
@@ -105,13 +104,13 @@ public abstract class AbstractOAuthProvider implements OAuthProvider {
 		return responseParameters;
 	}
 
-	protected void handleUnexpectedResponse(int statusCode,
-			HttpResponse response) throws Exception {
+	protected void handleUnexpectedResponse(int statusCode, HttpResponse response)
+			throws Exception {
 		if (response == null) {
 			return;
 		}
-		BufferedReader reader = new BufferedReader(new InputStreamReader(
-				response.getContent()));
+		BufferedReader reader = new BufferedReader(
+				new InputStreamReader(response.getContent()));
 		StringBuilder responseBody = new StringBuilder();
 
 		String line = reader.readLine();
@@ -124,9 +123,8 @@ public abstract class AbstractOAuthProvider implements OAuthProvider {
 		case 401:
 			throw new OAuthNotAuthorizedException(responseBody.toString());
 		default:
-			throw new OAuthCommunicationException(
-					"Service provider responded in error: " + statusCode + " ("
-							+ response.getReasonPhrase() + ")",
+			throw new OAuthCommunicationException("Service provider responded in error: "
+					+ statusCode + " (" + response.getReasonPhrase() + ")",
 					responseBody.toString());
 		}
 	}
@@ -153,41 +151,37 @@ public abstract class AbstractOAuthProvider implements OAuthProvider {
 		}
 
 		if (isOAuth10a && oauthVerifier != null) {
-			retrieveToken(consumer, accessTokenEndpointUrl,
-					OAuth.OAUTH_VERIFIER, oauthVerifier);
+			retrieveToken(consumer, accessTokenEndpointUrl, OAuth.OAUTH_VERIFIER,
+					oauthVerifier);
 		} else {
 			retrieveToken(consumer, accessTokenEndpointUrl);
 		}
 	}
 
 	@Override
-	public String retrieveRequestToken(OAuthConsumer consumer,
-			String callbackUrl) throws OAuthMessageSignerException,
-			OAuthNotAuthorizedException, OAuthExpectationFailedException,
-			OAuthCommunicationException {
+	public String retrieveRequestToken(OAuthConsumer consumer, String callbackUrl)
+			throws OAuthMessageSignerException, OAuthNotAuthorizedException,
+			OAuthExpectationFailedException, OAuthCommunicationException {
 
 		// invalidate current credentials, if any
 		consumer.setTokenWithSecret(null, null);
 
 		// 1.0a expects the callback to be sent while getting the request token.
 		// 1.0 service providers would simply ignore this parameter.
-		retrieveToken(consumer, requestTokenEndpointUrl, OAuth.OAUTH_CALLBACK,
-				callbackUrl);
+		retrieveToken(consumer, requestTokenEndpointUrl, OAuth.OAUTH_CALLBACK, callbackUrl);
 
-		String callbackConfirmed = responseParameters
-				.getFirst(OAuth.OAUTH_CALLBACK_CONFIRMED);
+		String callbackConfirmed = responseParameters.getFirst(OAuth.OAUTH_CALLBACK_CONFIRMED);
 		responseParameters.remove(OAuth.OAUTH_CALLBACK_CONFIRMED);
 		isOAuth10a = Boolean.TRUE.toString().equals(callbackConfirmed);
 
 		// 1.0 service providers expect the callback as part of the auth URL,
 		// Do not send when 1.0a.
 		if (isOAuth10a) {
-			return OAuth.addQueryParameters(authorizationWebsiteUrl,
-					OAuth.OAUTH_TOKEN, consumer.getToken());
+			return OAuth.addQueryParameters(authorizationWebsiteUrl, OAuth.OAUTH_TOKEN,
+					consumer.getToken());
 		} else {
-			return OAuth.addQueryParameters(authorizationWebsiteUrl,
-					OAuth.OAUTH_TOKEN, consumer.getToken(),
-					OAuth.OAUTH_CALLBACK, callbackUrl);
+			return OAuth.addQueryParameters(authorizationWebsiteUrl, OAuth.OAUTH_TOKEN,
+					consumer.getToken(), OAuth.OAUTH_CALLBACK, callbackUrl);
 		}
 	}
 
@@ -239,10 +233,8 @@ public abstract class AbstractOAuthProvider implements OAuthProvider {
 			OAuthExpectationFailedException {
 		Map<String, String> defaultHeaders = getRequestHeaders();
 
-		if (consumer.getConsumerKey() == null
-				|| consumer.getConsumerSecret() == null) {
-			throw new OAuthExpectationFailedException(
-					"Consumer key or secret not set");
+		if (consumer.getConsumerKey() == null || consumer.getConsumerSecret() == null) {
+			throw new OAuthExpectationFailedException("Consumer key or secret not set");
 		}
 
 		HttpRequest request = null;
@@ -273,8 +265,7 @@ public abstract class AbstractOAuthProvider implements OAuthProvider {
 
 			boolean requestHandled = false;
 			if (this.listener != null) {
-				requestHandled = this.listener.onResponseReceived(request,
-						response);
+				requestHandled = this.listener.onResponseReceived(request, response);
 			}
 			if (requestHandled) {
 				return;
@@ -284,8 +275,7 @@ public abstract class AbstractOAuthProvider implements OAuthProvider {
 				handleUnexpectedResponse(statusCode, response);
 			}
 
-			HttpParameters responseParams = OAuth.decodeForm(response
-					.getContent());
+			HttpParameters responseParams = OAuth.decodeForm(response.getContent());
 
 			String token = responseParams.getFirst(OAuth.OAUTH_TOKEN);
 			String secret = responseParams.getFirst(OAuth.OAUTH_TOKEN_SECRET);
@@ -327,8 +317,7 @@ public abstract class AbstractOAuthProvider implements OAuthProvider {
 	 * @throws Exception
 	 *             if something breaks
 	 */
-	protected abstract HttpResponse sendRequest(HttpRequest request)
-			throws Exception;
+	protected abstract HttpResponse sendRequest(HttpRequest request) throws Exception;
 
 	@Override
 	public void setListener(OAuthProviderListener listener) {

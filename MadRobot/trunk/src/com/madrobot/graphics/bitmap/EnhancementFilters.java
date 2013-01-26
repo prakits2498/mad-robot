@@ -57,17 +57,14 @@ public class EnhancementFilters {
 	 * @param outputConfig
 	 * @return
 	 */
-	public static Bitmap sharpen(Bitmap src, int edgeAction,
-			boolean processAlpha, boolean premultiplyAlpha,
-			Bitmap.Config outputConfig) {
-		float[] sharpenMatrix = { 0.0f, -0.2f, 0.0f, -0.2f, 1.8f, -0.2f, 0.0f,
-				-0.2f, 0.0f };
-		return ConvolveUtils.doConvolve(sharpenMatrix, src, edgeAction,
-				processAlpha, premultiplyAlpha, outputConfig);
+	public static Bitmap sharpen(Bitmap src, int edgeAction, boolean processAlpha,
+			boolean premultiplyAlpha, Bitmap.Config outputConfig) {
+		float[] sharpenMatrix = { 0.0f, -0.2f, 0.0f, -0.2f, 1.8f, -0.2f, 0.0f, -0.2f, 0.0f };
+		return ConvolveUtils.doConvolve(sharpenMatrix, src, edgeAction, processAlpha,
+				premultiplyAlpha, outputConfig);
 	}
 
-	private static float transferBiasGainFunction(float f, float gain,
-			float bias) {
+	private static float transferBiasGainFunction(float f, float gain, float bias) {
 		f = ImageMath.gain(f, gain);
 		f = ImageMath.bias(f, bias);
 		return f;
@@ -76,8 +73,8 @@ public class EnhancementFilters {
 	private static int[] makeGainBiasTable(float gain, float bias) {
 		int[] table = new int[256];
 		for (int i = 0; i < 256; i++)
-			table[i] = ColorUtils.clamp((int) (255 * transferBiasGainFunction(
-					i / 255.0f, gain, bias)));
+			table[i] = ColorUtils.clamp((int) (255 * transferBiasGainFunction(i / 255.0f,
+					gain, bias)));
 		return table;
 	}
 
@@ -114,8 +111,8 @@ public class EnhancementFilters {
 
 			}
 		}
-		return Bitmap.createBitmap(inPixels, meta.bitmapWidth,
-				meta.bitmapHeight, outputConfig.config);
+		return Bitmap.createBitmap(inPixels, meta.bitmapWidth, meta.bitmapHeight,
+				outputConfig.config);
 	}
 
 	/**
@@ -134,8 +131,8 @@ public class EnhancementFilters {
 	 * @param outputConfig
 	 * @return
 	 */
-	public static Bitmap correctGamma(Bitmap src, float rGamma, float gGamma,
-			float bGamma, OutputConfiguration outputConfig) {
+	public static Bitmap correctGamma(Bitmap src, float rGamma, float gGamma, float bGamma,
+			OutputConfiguration outputConfig) {
 		int[] rTable, gTable, bTable;
 		rTable = makeGammaTable(rGamma);
 		if (gGamma == rGamma)
@@ -168,8 +165,8 @@ public class EnhancementFilters {
 
 			}
 		}
-		return Bitmap.createBitmap(inPixels, meta.bitmapWidth,
-				meta.bitmapHeight, outputConfig.config);
+		return Bitmap.createBitmap(inPixels, meta.bitmapWidth, meta.bitmapHeight,
+				outputConfig.config);
 	}
 
 	private static int[] makeGammaTable(float gamma) {
@@ -219,16 +216,15 @@ public class EnhancementFilters {
 		if (outputConfig.canRecycleSrc) {
 			src.recycle();
 		}
-		return Bitmap.createBitmap(inPixels, meta.bitmapWidth,
-				meta.bitmapHeight, outputConfig.config);
+		return Bitmap.createBitmap(inPixels, meta.bitmapWidth, meta.bitmapHeight,
+				outputConfig.config);
 	}
 
 	private static int[] makeExposureTable(float exposure) {
 		int[] table = new int[256];
 		for (int i = 0; i < 256; i++)
 			table[i] = com.madrobot.graphics.ColorUtils
-					.clamp((int) (255 * exposureTransferFunction(i / 255.0f,
-							exposure)));
+					.clamp((int) (255 * exposureTransferFunction(i / 255.0f, exposure)));
 		return table;
 	}
 
@@ -288,13 +284,12 @@ public class EnhancementFilters {
 						}
 					}
 				}
-				outPixels[index] = (inPixels[index] & 0xff000000)
-						| (smooth(r) << 16) | (smooth(g) << 8) | smooth(b);
+				outPixels[index] = (inPixels[index] & 0xff000000) | (smooth(r) << 16)
+						| (smooth(g) << 8) | smooth(b);
 				index++;
 			}
 		}
-		return Bitmap.createBitmap(outPixels, src.getWidth(), src.getHeight(),
-				outputConfig);
+		return Bitmap.createBitmap(outPixels, src.getWidth(), src.getHeight(), outputConfig);
 	}
 
 	private static int smooth(int[] v) {
@@ -385,8 +380,8 @@ public class EnhancementFilters {
 					ob = pepperAndSalt(ob, b[2][w], b[0][e]);
 				}
 
-				outPixels[index] = (inPixels[index] & 0xff000000) | (or << 16)
-						| (og << 8) | ob;
+				outPixels[index] = (inPixels[index] & 0xff000000) | (or << 16) | (og << 8)
+						| ob;
 				index++;
 			}
 			short[] t;
@@ -404,8 +399,7 @@ public class EnhancementFilters {
 			b[2] = t;
 		}
 
-		return Bitmap.createBitmap(outPixels, src.getWidth(), src.getHeight(),
-				outputConfig);
+		return Bitmap.createBitmap(outPixels, src.getWidth(), src.getHeight(), outputConfig);
 	}
 
 	private static short pepperAndSalt(short c, short v1, short v2) {
@@ -436,8 +430,7 @@ public class EnhancementFilters {
 		int[] argb = BitmapUtils.getPixels(src);
 		BitmapMeta meta = outputConfig.getBitmapMeta(src);
 		int[] rTable, gTable, bTable;
-		rTable = gTable = bTable = makeBrightnessContrastTable(brightness,
-				contrast);
+		rTable = gTable = bTable = makeBrightnessContrastTable(brightness, contrast);
 		int position, rgb, a, r, g, b;
 		for (int y = meta.y; y < meta.targetHeight; y++) {
 			for (int x = meta.x; x < meta.targetWidth; x++) {
@@ -460,18 +453,16 @@ public class EnhancementFilters {
 				outputConfig.config);
 	}
 
-	private static int[] makeBrightnessContrastTable(float brightness,
-			float contrast) {
+	private static int[] makeBrightnessContrastTable(float brightness, float contrast) {
 		int[] table = new int[256];
 		for (int i = 0; i < 256; i++)
-			table[i] = ColorUtils
-					.clamp((int) (255 * brightnessContrastTransferFunction(
-							i / 255.0f, brightness, contrast)));
+			table[i] = ColorUtils.clamp((int) (255 * brightnessContrastTransferFunction(
+					i / 255.0f, brightness, contrast)));
 		return table;
 	}
 
-	private static float brightnessContrastTransferFunction(float f,
-			float brightness, float contrast) {
+	private static float brightnessContrastTransferFunction(float f, float brightness,
+			float contrast) {
 		f = f * brightness;
 		f = (f - 0.5f) * contrast + 0.5f;
 		return f;
@@ -490,8 +481,8 @@ public class EnhancementFilters {
 	 * @param outputConfig
 	 * @return
 	 */
-	public static Bitmap adjustHSB(Bitmap src, float hFactor, float sFactor,
-			float bFactor, OutputConfiguration outputConfig) {
+	public static Bitmap adjustHSB(Bitmap src, float hFactor, float sFactor, float bFactor,
+			OutputConfiguration outputConfig) {
 		int[] argb = BitmapUtils.getPixels(src);
 		BitmapMeta meta = outputConfig.getBitmapMeta(src);
 		int position, rgb;
@@ -542,8 +533,8 @@ public class EnhancementFilters {
 	 * @param outputConfig
 	 * @return
 	 */
-	public static Bitmap adjustRGB(Bitmap src, float rFactor, float gFactor,
-			float bFactor, OutputConfiguration outputConfig) {
+	public static Bitmap adjustRGB(Bitmap src, float rFactor, float gFactor, float bFactor,
+			OutputConfiguration outputConfig) {
 		rFactor = 1 + rFactor;
 		gFactor = 1 + gFactor;
 		bFactor = 1 + bFactor;

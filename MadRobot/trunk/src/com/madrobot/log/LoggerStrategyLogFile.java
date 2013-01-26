@@ -30,8 +30,7 @@ import com.madrobot.io.file.SDCardUtils;
  */
 public class LoggerStrategyLogFile extends LogMethod implements LoggerStrategy {
 	private File currentLogFile;
-	private final String[] LEVELS = { "Verbose", "Debug", "Info", "Warn",
-			"Error" };
+	private final String[] LEVELS = { "Verbose", "Debug", "Info", "Warn", "Error" };
 	private File logDirectory;
 	private boolean noSdCard;
 	protected FileWriter writer;
@@ -46,8 +45,7 @@ public class LoggerStrategyLogFile extends LogMethod implements LoggerStrategy {
 	 * 
 	 */
 	public LoggerStrategyLogFile(String directory, String fileName) {
-		logDirectory = new File(Environment.getExternalStorageDirectory(),
-				directory);
+		logDirectory = new File(Environment.getExternalStorageDirectory(), directory);
 		if (SDCardUtils.canWrite()) {
 			try {
 				String fname = fileName;// "log_" + new Date().getTime() +
@@ -146,9 +144,8 @@ public class LoggerStrategyLogFile extends LogMethod implements LoggerStrategy {
 	private void writeImpl(int level, String tag, String message) {
 		if (writer != null) {
 			try {
-				writer.write("[" + formatDate(new Date()) + "] "
-						+ levelToString(level) + " [" + tag + "] " + message
-						+ "\r\n");
+				writer.write("[" + formatDate(new Date()) + "] " + levelToString(level) + " ["
+						+ tag + "] " + message + "\r\n");
 				writer.flush();
 			} catch (IOException e) {
 				e.printStackTrace();

@@ -14,8 +14,7 @@ public class MathUtils {
 	/**
 	 * Equivalent to Math.max(low, Math.min(high, amount));
 	 */
-	public static float constrain(final float amount, final float low,
-			final float high) {
+	public static float constrain(final float amount, final float low, final float high) {
 		return amount < low ? low : amount > high ? high : amount;
 	}
 
@@ -78,8 +77,7 @@ public class MathUtils {
 		}
 
 		if (exp >= 128) {
-			return (mant > 0) ? Float.POSITIVE_INFINITY
-					: Float.NEGATIVE_INFINITY;
+			return (mant > 0) ? Float.POSITIVE_INFINITY : Float.NEGATIVE_INFINITY;
 		}
 
 		if (exp == 0) {

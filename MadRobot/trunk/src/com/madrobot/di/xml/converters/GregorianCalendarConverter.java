@@ -35,22 +35,19 @@ public class GregorianCalendarConverter implements Converter {
 	public void marshal(Object source, HierarchicalStreamWriter writer,
 			MarshallingContext context) {
 		GregorianCalendar calendar = (GregorianCalendar) source;
-		ExtendedHierarchicalStreamWriterHelper.startNode(writer, "time",
-				long.class);
+		ExtendedHierarchicalStreamWriterHelper.startNode(writer, "time", long.class);
 		long timeInMillis = calendar.getTime().getTime(); // calendar.getTimeInMillis()
 															// not available
 															// under JDK 1.3
 		writer.setValue(String.valueOf(timeInMillis));
 		writer.endNode();
-		ExtendedHierarchicalStreamWriterHelper.startNode(writer, "timezone",
-				String.class);
+		ExtendedHierarchicalStreamWriterHelper.startNode(writer, "timezone", String.class);
 		writer.setValue(calendar.getTimeZone().getID());
 		writer.endNode();
 	}
 
 	@Override
-	public Object unmarshal(HierarchicalStreamReader reader,
-			UnmarshallingContext context) {
+	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
 		reader.moveDown();
 		long timeInMillis = Long.parseLong(reader.getValue());
 		reader.moveUp();

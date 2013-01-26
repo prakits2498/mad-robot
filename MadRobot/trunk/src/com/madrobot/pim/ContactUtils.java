@@ -31,8 +31,8 @@ public final class ContactUtils {
 
 	public static List<Contact> fetchContacts(Context context) {
 		ContentResolver cr = context.getContentResolver();
-		Cursor namesCursor = cr.query(ContactsContract.Contacts.CONTENT_URI,
-				null, null, null, null);
+		Cursor namesCursor = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null,
+				null);
 		try {
 			return BeanPopulator.toBeanList(namesCursor, Contact.class);
 		} catch (IllegalArgumentException e) {
@@ -58,8 +58,7 @@ public final class ContactUtils {
 	 *            Phone number to save
 	 */
 	public static void saveToContact(Context context, String number) {
-		Intent intent = new Intent(Contacts.Intents.Insert.ACTION,
-				Contacts.People.CONTENT_URI);
+		Intent intent = new Intent(Contacts.Intents.Insert.ACTION, Contacts.People.CONTENT_URI);
 		intent.putExtra(Contacts.Intents.Insert.PHONE, number);
 		context.startActivity(intent);
 	}

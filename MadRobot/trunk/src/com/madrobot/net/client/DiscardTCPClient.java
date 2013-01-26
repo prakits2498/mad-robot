@@ -44,7 +44,7 @@ public class DiscardTCPClient extends SocketClient {
 	 * You should NOT close the OutputStream when you're finished reading from
 	 * it. Rather, you should call
 	 * {@link com.madrobot.io.net.client.net.SocketClient#disconnect disconnect
-	 * } to clean up properly.
+	 * * } to clean up properly.
 	 * <p>
 	 * 
 	 * @return An OutputStream through which you can write data to the server.

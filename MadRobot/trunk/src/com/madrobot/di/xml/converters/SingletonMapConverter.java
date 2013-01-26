@@ -32,8 +32,7 @@ import com.madrobot.di.xml.io.HierarchicalStreamReader;
  */
 public class SingletonMapConverter extends MapConverter {
 
-	private static final Class MAP = Collections.singletonMap(Boolean.TRUE,
-			null).getClass();
+	private static final Class MAP = Collections.singletonMap(Boolean.TRUE, null).getClass();
 
 	/**
 	 * Construct a SingletonMapConverter.
@@ -51,8 +50,7 @@ public class SingletonMapConverter extends MapConverter {
 	}
 
 	@Override
-	public Object unmarshal(HierarchicalStreamReader reader,
-			UnmarshallingContext context) {
+	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
 		reader.moveDown();
 		reader.moveDown();
 		Object key = readItem(reader, context, null);

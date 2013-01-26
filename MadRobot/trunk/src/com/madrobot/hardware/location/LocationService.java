@@ -71,8 +71,7 @@ public class LocationService extends Service {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		mLocationManager = (LocationManager) this
-				.getSystemService(Context.LOCATION_SERVICE);
+		mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 		mBestLocation = null; // mLocationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
 		if (mBestLocation == null) {
 			mBestLocation = mLocationManager
@@ -82,10 +81,10 @@ public class LocationService extends Service {
 			mBestLocation = mLocationManager
 					.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 		}
-		mLocationManager.requestLocationUpdates(
-				LocationManager.NETWORK_PROVIDER, 0, 0, mLocationListener);
-		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-				0, 0, mLocationListener);
+		mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0,
+				mLocationListener);
+		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0,
+				mLocationListener);
 		// mLocationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER,
 		// 0, 0, mLocationListener);
 	}

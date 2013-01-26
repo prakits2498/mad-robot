@@ -69,8 +69,8 @@ public final class LZWDecompressor {
 			table[codes] = bytes;
 			codes++;
 		} else {
-			throw new IOException("AddStringToTable: codes: " + codes
-					+ " code_size: " + codeSize);
+			throw new IOException("AddStringToTable: codes: " + codes + " code_size: "
+					+ codeSize);
 		}
 
 		checkCodeSize();
@@ -102,8 +102,7 @@ public final class LZWDecompressor {
 		incrementCodeSize();
 	}
 
-	public byte[] decompress(InputStream is, int expectedLength)
-			throws IOException {
+	public byte[] decompress(InputStream is, int expectedLength) throws IOException {
 		int code, oldCode = -1;
 		BitInputStream mbis = new BitInputStream(is, byteOrder);
 		if (tiffLZWMode) {
@@ -196,15 +195,14 @@ public final class LZWDecompressor {
 
 	private final byte[] stringFromCode(int code) throws IOException {
 		if ((code >= codes) || (code < 0)) {
-			throw new IOException("Bad Code: " + code + " codes: " + codes
-					+ " code_size: " + codeSize + ", table: " + table.length);
+			throw new IOException("Bad Code: " + code + " codes: " + codes + " code_size: "
+					+ codeSize + ", table: " + table.length);
 		}
 
 		return table[code];
 	}
 
-	private final void writeToResult(OutputStream os, byte bytes[])
-			throws IOException {
+	private final void writeToResult(OutputStream os, byte bytes[]) throws IOException {
 		os.write(bytes);
 		written += bytes.length;
 	}

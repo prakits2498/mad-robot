@@ -44,8 +44,7 @@ class SignatureBaseString {
 			String normalizedUrl = normalizeRequestUrl();
 			String normalizedParams = normalizeRequestParameters();
 
-			return request.getMethod() + '&'
-					+ OAuth.percentEncode(normalizedUrl) + '&'
+			return request.getMethod() + '&' + OAuth.percentEncode(normalizedUrl) + '&'
 					+ OAuth.percentEncode(normalizedParams);
 		} catch (Exception e) {
 			throw new OAuthMessageSignerException(e);

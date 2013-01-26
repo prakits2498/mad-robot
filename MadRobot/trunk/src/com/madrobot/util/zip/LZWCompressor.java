@@ -102,8 +102,8 @@ public class LZWCompressor {
 		this(initialCodeSize, byteOrder, earlyLimit, null);
 	}
 
-	public LZWCompressor(int initialCodeSize, int byteOrder,
-			boolean earlyLimit, Listener listener) {
+	public LZWCompressor(int initialCodeSize, int byteOrder, boolean earlyLimit,
+			Listener listener) {
 		this.listener = listener;
 		this.byteOrder = byteOrder;
 		this.earlyLimit = earlyLimit;
@@ -120,14 +120,13 @@ public class LZWCompressor {
 		InitializeStringTable();
 	}
 
-	private final boolean addTableEntry(BitOutputStream bos, byte bytes[],
-			int start, int length) throws IOException {
+	private final boolean addTableEntry(BitOutputStream bos, byte bytes[], int start,
+			int length) throws IOException {
 		Object key = arrayToKey(bytes, start, length);
 		return addTableEntry(bos, key);
 	}
 
-	private final boolean addTableEntry(BitOutputStream bos, Object key)
-			throws IOException {
+	private final boolean addTableEntry(BitOutputStream bos, Object key) throws IOException {
 		boolean cleared = false;
 
 		{
@@ -168,8 +167,7 @@ public class LZWCompressor {
 		incrementCodeSize();
 	}
 
-	private final int codeFromString(byte bytes[], int start, int length)
-			throws IOException {
+	private final int codeFromString(byte bytes[], int start, int length) throws IOException {
 		Object key = arrayToKey(bytes, start, length);
 		Object o = map.get(key);
 		if (o == null) {
@@ -249,13 +247,11 @@ public class LZWCompressor {
 		writeCode(bos, clearCode);
 	}
 
-	private final void writeCode(BitOutputStream bos, int code)
-			throws IOException {
+	private final void writeCode(BitOutputStream bos, int code) throws IOException {
 		bos.writeBits(code, codeSize);
 	}
 
-	private final void writeDataCode(BitOutputStream bos, int code)
-			throws IOException {
+	private final void writeDataCode(BitOutputStream bos, int code) throws IOException {
 		if (null != listener) {
 			listener.dataCode(code);
 		}

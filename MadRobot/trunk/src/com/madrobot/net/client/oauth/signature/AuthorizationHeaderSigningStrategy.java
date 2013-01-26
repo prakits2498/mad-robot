@@ -27,22 +27,18 @@ public class AuthorizationHeaderSigningStrategy implements SigningStrategy {
 			sb.append(", ");
 		}
 		if (requestParameters.containsKey(OAuth.OAUTH_CALLBACK)) {
-			sb.append(requestParameters
-					.getAsHeaderElement(OAuth.OAUTH_CALLBACK));
+			sb.append(requestParameters.getAsHeaderElement(OAuth.OAUTH_CALLBACK));
 			sb.append(", ");
 		}
 		if (requestParameters.containsKey(OAuth.OAUTH_VERIFIER)) {
-			sb.append(requestParameters
-					.getAsHeaderElement(OAuth.OAUTH_VERIFIER));
+			sb.append(requestParameters.getAsHeaderElement(OAuth.OAUTH_VERIFIER));
 			sb.append(", ");
 		}
-		sb.append(requestParameters
-				.getAsHeaderElement(OAuth.OAUTH_CONSUMER_KEY));
+		sb.append(requestParameters.getAsHeaderElement(OAuth.OAUTH_CONSUMER_KEY));
 		sb.append(", ");
 		sb.append(requestParameters.getAsHeaderElement(OAuth.OAUTH_VERSION));
 		sb.append(", ");
-		sb.append(requestParameters
-				.getAsHeaderElement(OAuth.OAUTH_SIGNATURE_METHOD));
+		sb.append(requestParameters.getAsHeaderElement(OAuth.OAUTH_SIGNATURE_METHOD));
 		sb.append(", ");
 		sb.append(requestParameters.getAsHeaderElement(OAuth.OAUTH_TIMESTAMP));
 		sb.append(", ");

@@ -110,8 +110,7 @@ public class ImageMath {
 	 *            the input parameter
 	 * @return the output value
 	 */
-	public static float smoothPulse(float a1, float a2, float b1, float b2,
-			float x) {
+	public static float smoothPulse(float a1, float a2, float b1, float b2, float x) {
 		if (x < a1 || x >= b2)
 			return 0;
 		if (x >= a2) {
@@ -338,8 +337,7 @@ public class ImageMath {
 	 *            array of four ARGB values in the order NW, NE, SW, SE
 	 * @return the interpolated value
 	 */
-	public static int bilinearInterpolate(float x, float y, int nw, int ne,
-			int sw, int se) {
+	public static int bilinearInterpolate(float x, float y, int nw, int ne, int sw, int se) {
 		float m0, m1;
 		int a0 = (nw >> 24) & 0xff;
 		int r0 = (nw >> 16) & 0xff;
@@ -478,8 +476,7 @@ public class ImageMath {
 				break;
 		if (span > numKnots - 3)
 			span = numKnots - 3;
-		float t = (x - xknots[span])
-				/ (xknots[span + 1] - xknots[span]);
+		float t = (x - xknots[span]) / (xknots[span + 1] - xknots[span]);
 		span--;
 		if (span < 0) {
 			span = 0;
@@ -563,8 +560,7 @@ public class ImageMath {
 	 *            the array of knot y values
 	 * @return the spline value
 	 */
-	public static int colorSpline(int x, int numKnots, int[] xknots,
-			int[] yknots) {
+	public static int colorSpline(int x, int numKnots, int[] xknots, int[] yknots) {
 		int span;
 		int numSpans = numKnots - 3;
 		float k0, k1, k2, k3;
@@ -578,8 +574,7 @@ public class ImageMath {
 				break;
 		if (span > numKnots - 3)
 			span = numKnots - 3;
-		float t = (float) (x - xknots[span])
-				/ (xknots[span + 1] - xknots[span]);
+		float t = (float) (x - xknots[span]) / (xknots[span + 1] - xknots[span]);
 		span--;
 		if (span < 0) {
 			span = 0;
@@ -626,8 +621,8 @@ public class ImageMath {
 	 * @param out
 	 *            an array of output positions for each pixel
 	 */
-	public static void resample(int[] source, int[] dest, int length,
-			int offset, int stride, float[] out) {
+	public static void resample(int[] source, int[] dest, int length, int offset, int stride,
+			float[] out) {
 		int i, j;
 		float sizfac;
 		float inSegment;

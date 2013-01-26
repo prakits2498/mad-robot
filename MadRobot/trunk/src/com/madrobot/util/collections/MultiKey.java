@@ -113,8 +113,7 @@ public class MultiKey implements Serializable {
 	 * @param key5
 	 *            the fifth key
 	 */
-	public MultiKey(Object key1, Object key2, Object key3, Object key4,
-			Object key5) {
+	public MultiKey(Object key1, Object key2, Object key3, Object key4, Object key5) {
 		this(new Object[] { key1, key2, key3, key4, key5 }, false);
 	}
 
@@ -167,8 +166,7 @@ public class MultiKey implements Serializable {
 	public MultiKey(Object[] keys, boolean makeClone) {
 		super();
 		if (keys == null) {
-			throw new IllegalArgumentException(
-					"The array of keys must not be null");
+			throw new IllegalArgumentException("The array of keys must not be null");
 		}
 		if (makeClone) {
 			this.keys = keys.clone();

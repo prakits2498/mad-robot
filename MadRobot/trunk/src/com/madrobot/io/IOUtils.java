@@ -71,8 +71,7 @@ public class IOUtils {
 	 * @throws IOException
 	 *             An I/O error occurred.
 	 */
-	public static String asString(InputStream pStream, String pEncoding)
-			throws IOException {
+	public static String asString(InputStream pStream, String pEncoding) throws IOException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		copy(pStream, baos, true);
 		return baos.toString(pEncoding);
@@ -147,8 +146,7 @@ public class IOUtils {
 	 * @throws IOException
 	 *             if an I/O error occurs
 	 */
-	public static int copy(InputStream input, OutputStream output)
-			throws IOException {
+	public static int copy(InputStream input, OutputStream output) throws IOException {
 		long count = copyLarge(input, output);
 		if (count > Integer.MAX_VALUE) {
 			return -1;
@@ -186,8 +184,8 @@ public class IOUtils {
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public static int copy(InputStream input, File file)
-			throws FileNotFoundException, IOException {
+	public static int copy(InputStream input, File file) throws FileNotFoundException,
+			IOException {
 		return copy(input, new FileOutputStream(file));
 	}
 
@@ -215,10 +213,9 @@ public class IOUtils {
 	 * @throws IOException
 	 *             An I/O error occurred.
 	 */
-	public static long copy(InputStream pInputStream,
-			OutputStream pOutputStream, boolean pClose) throws IOException {
-		return copy(pInputStream, pOutputStream, pClose,
-				new byte[DEFAULT_BUFFER_SIZE]);
+	public static long copy(InputStream pInputStream, OutputStream pOutputStream,
+			boolean pClose) throws IOException {
+		return copy(pInputStream, pOutputStream, pClose, new byte[DEFAULT_BUFFER_SIZE]);
 	}
 
 	/**
@@ -242,8 +239,8 @@ public class IOUtils {
 	 * @throws IOException
 	 *             An I/O error occurred.
 	 */
-	public static long copy(InputStream pIn, OutputStream pOut, boolean pClose,
-			byte[] pBuffer) throws IOException {
+	public static long copy(InputStream pIn, OutputStream pOut, boolean pClose, byte[] pBuffer)
+			throws IOException {
 		OutputStream out = pOut;
 		InputStream in = pIn;
 		try {
@@ -289,8 +286,7 @@ public class IOUtils {
 		}
 	}
 
-	public static void copy(InputStream in, OutputStream out,
-			IOProgressCallback callback) {
+	public static void copy(InputStream in, OutputStream out, IOProgressCallback callback) {
 		try {
 			byte[] buff = new byte[1024];
 			int bytesRead = 0;
@@ -323,8 +319,7 @@ public class IOUtils {
 	 * @throws IOException
 	 *             if an I/O error occurs
 	 */
-	private static long copyLarge(InputStream input, OutputStream output)
-			throws IOException {
+	private static long copyLarge(InputStream input, OutputStream output) throws IOException {
 		byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
 		long count = 0;
 		int n = 0;
@@ -350,9 +345,8 @@ public class IOUtils {
 	 * @throws DbException
 	 *             if serialization fails
 	 */
-	public static Object deserialize(byte[] data)
-			throws StreamCorruptedException, IOException,
-			ClassNotFoundException {
+	public static Object deserialize(byte[] data) throws StreamCorruptedException,
+			IOException, ClassNotFoundException {
 		ByteArrayInputStream in = new ByteArrayInputStream(data);
 		ObjectInputStream is = new ObjectInputStream(in);
 		return is.readObject();
@@ -369,8 +363,7 @@ public class IOUtils {
 	 * @param buf
 	 *            the char array to use as a buffer
 	 */
-	public static void flow(Reader reader, Writer writer, char[] buf)
-			throws IOException {
+	public static void flow(Reader reader, Writer writer, char[] buf) throws IOException {
 		int numRead;
 		while ((numRead = reader.read(buf)) >= 0) {
 			writer.write(buf, 0, numRead);
@@ -385,8 +378,8 @@ public class IOUtils {
 	 * @return
 	 * @throws IOException
 	 */
-	public static boolean isStreamsEqual(InputStream stream1,
-			InputStream stream2) throws IOException {
+	public static boolean isStreamsEqual(InputStream stream1, InputStream stream2)
+			throws IOException {
 		byte[] buf1 = new byte[4096];
 		byte[] buf2 = new byte[4096];
 		boolean done1 = false;
@@ -436,8 +429,7 @@ public class IOUtils {
 	 * @param os
 	 * @throws IOException
 	 */
-	public static void performStreamPiping(InputStream is, OutputStream os)
-			throws IOException {
+	public static void performStreamPiping(InputStream is, OutputStream os) throws IOException {
 		byte[] buf = new byte[2048];
 		while (is.read(buf) != -1) {
 			os.write(buf);
@@ -624,10 +616,8 @@ public class IOUtils {
 	 * @return an input stream
 	 * @since 1.1
 	 */
-	public static InputStream toInputStream(String input, String encoding)
-			throws IOException {
-		byte[] bytes = encoding != null ? input.getBytes(encoding) : input
-				.getBytes();
+	public static InputStream toInputStream(String input, String encoding) throws IOException {
+		byte[] bytes = encoding != null ? input.getBytes(encoding) : input.getBytes();
 		return new ByteArrayInputStream(bytes);
 	}
 

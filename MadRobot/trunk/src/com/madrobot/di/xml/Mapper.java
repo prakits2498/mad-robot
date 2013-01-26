@@ -106,8 +106,7 @@ public interface Mapper {
 	 *             {@link #getConverterFromAttribute(Class, String, Class)}
 	 */
 	@Deprecated
-	SingleValueConverter getConverterFromAttribute(Class definedIn,
-			String attribute);
+	SingleValueConverter getConverterFromAttribute(Class definedIn, String attribute);
 
 	/**
 	 * Returns which converter to use for an specific attribute in a type.
@@ -120,8 +119,8 @@ public interface Mapper {
 	 *            the type the converter should create
 	 * @since 1.3.1
 	 */
-	SingleValueConverter getConverterFromAttribute(Class definedIn,
-			String attribute, Class type);
+	SingleValueConverter getConverterFromAttribute(Class definedIn, String attribute,
+			Class type);
 
 	/**
 	 * @deprecated As of 1.3, use
@@ -157,8 +156,7 @@ public interface Mapper {
 	 *         be used for this field.
 	 * @since 1.2.2
 	 */
-	SingleValueConverter getConverterFromItemType(String fieldName, Class type,
-			Class definedIn);
+	SingleValueConverter getConverterFromItemType(String fieldName, Class type, Class definedIn);
 
 	/**
 	 * Get the name of the field that acts as the default collection for an
@@ -171,11 +169,10 @@ public interface Mapper {
 	 * @param itemFieldName
 	 *            optional item element name
 	 */
-	String getFieldNameForItemTypeAndName(Class definedIn, Class itemType,
-			String itemFieldName);
+	String getFieldNameForItemTypeAndName(Class definedIn, Class itemType, String itemFieldName);
 
-	ImplicitCollectionMapping getImplicitCollectionDefForFieldName(
-			Class itemType, String fieldName);
+	ImplicitCollectionMapping getImplicitCollectionDefForFieldName(Class itemType,
+			String fieldName);
 
 	Class getItemTypeForItemFieldName(Class definedIn, String itemFieldName);
 

@@ -64,8 +64,7 @@ public class SVGFactory {
 	 * @throws SVGException
 	 *             if there is an error while parsing.
 	 */
-	public static SVG getSVGFromString(String svgData, int zoomFactor)
-			throws SVGException {
+	public static SVG getSVGFromString(String svgData, int zoomFactor) throws SVGException {
 		return getSVGFromByteArray(svgData.getBytes(), zoomFactor);
 	}
 
@@ -81,10 +80,8 @@ public class SVGFactory {
 	 * @return
 	 * @throws SVGException
 	 */
-	public static SVG getSVGFromByteArray(byte[] svgData, int zoomFactor)
-			throws SVGException {
-		return SVGFactory.parse(new ByteArrayInputStream(svgData), 0, 0, false,
-				zoomFactor);
+	public static SVG getSVGFromByteArray(byte[] svgData, int zoomFactor) throws SVGException {
+		return SVGFactory.parse(new ByteArrayInputStream(svgData), 0, 0, false, zoomFactor);
 	}
 
 	/**
@@ -107,10 +104,9 @@ public class SVGFactory {
 	 * @throws SVGException
 	 *             if there is an error while parsing.
 	 */
-	public static SVG getSVGFromResource(Resources resources, int resId,
-			int zoomFactor) throws SVGException {
-		return SVGFactory.parse(resources.openRawResource(resId), 0, 0, false,
-				zoomFactor);
+	public static SVG getSVGFromResource(Resources resources, int resId, int zoomFactor)
+			throws SVGException {
+		return SVGFactory.parse(resources.openRawResource(resId), 0, 0, false, zoomFactor);
 	}
 
 	/**
@@ -135,8 +131,8 @@ public class SVGFactory {
 	 * @throws IOException
 	 *             if there was a problem reading the file.
 	 */
-	public static SVG getSVGFromAsset(AssetManager assetMngr, String svgPath,
-			int zoomFactor) throws SVGException, IOException {
+	public static SVG getSVGFromAsset(AssetManager assetMngr, String svgPath, int zoomFactor)
+			throws SVGException, IOException {
 		InputStream inputStream = assetMngr.open(svgPath);
 		SVG svg = getSVGFromInputStream(inputStream, zoomFactor);
 		inputStream.close();
@@ -167,11 +163,9 @@ public class SVGFactory {
 	 * @throws SVGException
 	 *             if there is an error while parsing.
 	 */
-	public static SVG getSVGFromInputStream(InputStream svgData,
-			int searchColor, int replaceColor, int zoomFactor)
-			throws SVGException {
-		return SVGFactory.parse(svgData, searchColor, replaceColor, false,
-				zoomFactor);
+	public static SVG getSVGFromInputStream(InputStream svgData, int searchColor,
+			int replaceColor, int zoomFactor) throws SVGException {
+		return SVGFactory.parse(svgData, searchColor, replaceColor, false, zoomFactor);
 	}
 
 	/**
@@ -196,10 +190,10 @@ public class SVGFactory {
 	 * @throws SVGException
 	 *             if there is an error while parsing.
 	 */
-	public static SVG getSVGFromString(String svgData, int searchColor,
-			int replaceColor, int zoomFactor) throws SVGException {
-		return SVGFactory.parse(new ByteArrayInputStream(svgData.getBytes()),
-				searchColor, replaceColor, false, zoomFactor);
+	public static SVG getSVGFromString(String svgData, int searchColor, int replaceColor,
+			int zoomFactor) throws SVGException {
+		return SVGFactory.parse(new ByteArrayInputStream(svgData.getBytes()), searchColor,
+				replaceColor, false, zoomFactor);
 	}
 
 	/**
@@ -226,11 +220,10 @@ public class SVGFactory {
 	 * @throws SVGException
 	 *             if there is an error while parsing.
 	 */
-	public static SVG getSVGFromResource(Resources resources, int resId,
-			int searchColor, int replaceColor, int zoomFactor)
-			throws SVGException {
-		return SVGFactory.parse(resources.openRawResource(resId), searchColor,
-				replaceColor, false, zoomFactor);
+	public static SVG getSVGFromResource(Resources resources, int resId, int searchColor,
+			int replaceColor, int zoomFactor) throws SVGException {
+		return SVGFactory.parse(resources.openRawResource(resId), searchColor, replaceColor,
+				false, zoomFactor);
 	}
 
 	/**
@@ -259,20 +252,17 @@ public class SVGFactory {
 	 * @throws IOException
 	 *             if there was a problem reading the file.
 	 */
-	public static SVG getSVGFromAsset(AssetManager assetMngr, String svgPath,
-			int searchColor, int replaceColor, int zoomFactor)
-			throws SVGException, IOException {
+	public static SVG getSVGFromAsset(AssetManager assetMngr, String svgPath, int searchColor,
+			int replaceColor, int zoomFactor) throws SVGException, IOException {
 		InputStream inputStream = assetMngr.open(svgPath);
-		SVG svg = getSVGFromInputStream(inputStream, searchColor, replaceColor,
-				zoomFactor);
+		SVG svg = getSVGFromInputStream(inputStream, searchColor, replaceColor, zoomFactor);
 		inputStream.close();
 		return svg;
 	}
 
-	private static SVG parse(InputStream in, Integer searchColor,
-			Integer replaceColor, boolean whiteMode, int zoomFactor)
-			throws SVGException {
-		if(zoomFactor<0){
+	private static SVG parse(InputStream in, Integer searchColor, Integer replaceColor,
+			boolean whiteMode, int zoomFactor) throws SVGException {
+		if (zoomFactor < 0) {
 			throw new IllegalArgumentException("Zoom factor should be > 0");
 		}
 		// Util.debug("Parsing SVG...");
@@ -298,8 +288,7 @@ public class SVGFactory {
 			xr.parse(new InputSource(cin.getCopy()));
 			// Util.debug("Parsing complete in " + (System.currentTimeMillis() -
 			// start) + " millis.");
-			SVG result = new SVG(picture, svgHandler.getMetaData(),
-					svgHandler.bounds);
+			SVG result = new SVG(picture, svgHandler.getMetaData(), svgHandler.bounds);
 			// Skip bounds if it was an empty pic
 			if (!Float.isInfinite(svgHandler.limits.top)) {
 				result.setLimits(svgHandler.limits);

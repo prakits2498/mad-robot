@@ -31,10 +31,9 @@ public class BitmapFilters {
 	public static Bitmap applyFilter(Bitmap bitmap, int value, byte[][] filter,
 			Bitmap.Config outputConfig) {
 		int[] argbData = BitmapUtils.getPixels(bitmap);
-		applyFilter(filter, value, argbData, bitmap.getWidth(),
-				bitmap.getHeight());
-		return Bitmap.createBitmap(argbData, bitmap.getWidth(),
-				bitmap.getHeight(), outputConfig);
+		applyFilter(filter, value, argbData, bitmap.getWidth(), bitmap.getHeight());
+		return Bitmap.createBitmap(argbData, bitmap.getWidth(), bitmap.getHeight(),
+				outputConfig);
 
 	}
 
@@ -53,8 +52,8 @@ public class BitmapFilters {
 	 * @param n4
 	 *            the weight for pixel (r,c+5)
 	 */
-	public static final Bitmap deBlurHorizontalHalftone(Bitmap bitmap, int n0,
-			int n1, int n2, int n3, int n4, Bitmap.Config outputConfig) {
+	public static final Bitmap deBlurHorizontalHalftone(Bitmap bitmap, int n0, int n1, int n2,
+			int n3, int n4, Bitmap.Config outputConfig) {
 		int sum = n0 + n1 + n2 + n3 + n4;
 		n0 = 8 * n0 / sum;
 		n1 = 8 * n1 / sum;
@@ -78,43 +77,32 @@ public class BitmapFilters {
 				}
 				int nDiff = bVal - bNewVal;
 				if (j < bitmap.getWidth() - 1) {
-					bData[nRow + j + 1] = Math.max(
-							Integer.MIN_VALUE,
-							Math.min(Integer.MAX_VALUE, bData[nRow + j + 1]
-									+ n0 * nDiff / 8));
+					bData[nRow + j + 1] = Math.max(Integer.MIN_VALUE,
+							Math.min(Integer.MAX_VALUE, bData[nRow + j + 1] + n0 * nDiff / 8));
 				}
 				if (j < bitmap.getWidth() - 2) {
-					bData[nRow + j + 2] = Math.max(
-							Integer.MIN_VALUE,
-							Math.min(Integer.MAX_VALUE, bData[nRow + j + 2]
-									+ n1 * nDiff / 8));
+					bData[nRow + j + 2] = Math.max(Integer.MIN_VALUE,
+							Math.min(Integer.MAX_VALUE, bData[nRow + j + 2] + n1 * nDiff / 8));
 
 				}
 				if (j < bitmap.getWidth() - 3) {
-					bData[nRow + j + 3] = Math.max(
-							Integer.MIN_VALUE,
-							Math.min(Integer.MAX_VALUE, bData[nRow + j + 3]
-									+ n2 * nDiff / 8));
+					bData[nRow + j + 3] = Math.max(Integer.MIN_VALUE,
+							Math.min(Integer.MAX_VALUE, bData[nRow + j + 3] + n2 * nDiff / 8));
 
 				}
 				if (j < bitmap.getWidth() - 4) {
-					bData[nRow + j + 4] = Math.max(
-							Integer.MIN_VALUE,
-							Math.min(Integer.MAX_VALUE, bData[nRow + j + 4]
-									+ n3 * nDiff / 8));
+					bData[nRow + j + 4] = Math.max(Integer.MIN_VALUE,
+							Math.min(Integer.MAX_VALUE, bData[nRow + j + 4] + n3 * nDiff / 8));
 
 				}
 				if (j < bitmap.getWidth() - 5) {
-					bData[nRow + j + 5] = Math.max(
-							Integer.MIN_VALUE,
-							Math.min(Integer.MAX_VALUE, bData[nRow + j + 5]
-									+ n4 * nDiff / 8));
+					bData[nRow + j + 5] = Math.max(Integer.MIN_VALUE,
+							Math.min(Integer.MAX_VALUE, bData[nRow + j + 5] + n4 * nDiff / 8));
 
 				}
 			}
 		}
-		return Bitmap.createBitmap(bData, bitmap.getWidth(),
-				bitmap.getHeight(), outputConfig);
+		return Bitmap.createBitmap(bData, bitmap.getWidth(), bitmap.getHeight(), outputConfig);
 
 	}
 
@@ -143,8 +131,8 @@ public class BitmapFilters {
 	 * @throws IllegalArgumentException
 	 *             if the filter matrix length is an even number
 	 */
-	private final static void applyFilter(byte[][] filterMatrix,
-			int brightness, int[] argbData, int width, int height) {
+	private final static void applyFilter(byte[][] filterMatrix, int brightness,
+			int[] argbData, int width, int height) {
 		// ############ tested by $t3p#3n on 29-july-08 #################//
 		int COLOR_BIT_MASK = 0x000000FF;
 		// check whether the matrix is ok
@@ -188,8 +176,7 @@ public class BitmapFilters {
 
 						// take the Data from the little buffer and skale the
 						// color
-						currentPixel = tmpRect[fRow * width + col + fCol
-								- fwRadius + 1];
+						currentPixel = tmpRect[fRow * width + col + fCol - fwRadius + 1];
 						if (((currentPixel >>> 24) & COLOR_BIT_MASK) != 0) {
 							newTran += filterMatrix[fRow][fCol]
 									* ((currentPixel >>> 24) & COLOR_BIT_MASK);
@@ -214,19 +201,17 @@ public class BitmapFilters {
 				newRed = Math.max(0, Math.min(255, newRed));
 				newGreen = Math.max(0, Math.min(255, newGreen));
 				newBlue = Math.max(0, Math.min(255, newBlue));
-				argbData[(row) * width + col] = (newTran << 24 | newRed << 16
-						| newGreen << 8 | newBlue);
+				argbData[(row) * width + col] = (newTran << 24 | newRed << 16 | newGreen << 8 | newBlue);
 
 			}
 
 			// shift the buffer if we are not near the end
 			if (row + fhRadius != height) {
-				System.arraycopy(tmpRect, width, tmpRect, 0, width
-						* (filterMatrix.length - 1)); // shift
+				System.arraycopy(tmpRect, width, tmpRect, 0, width * (filterMatrix.length - 1)); // shift
 				// it
 				// back
-				System.arraycopy(argbData, width * (row + fhRadius), tmpRect,
-						width * (filterMatrix.length - 1), width); // add
+				System.arraycopy(argbData, width * (row + fhRadius), tmpRect, width
+						* (filterMatrix.length - 1), width); // add
 				// new
 				// data
 			}

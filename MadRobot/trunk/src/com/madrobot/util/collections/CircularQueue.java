@@ -20,8 +20,7 @@ import java.util.Queue;
  * A unbounded circular queue based on array.
  * 
  */
-public class CircularQueue<E> extends AbstractList<E> implements Queue<E>,
-		Serializable {
+public class CircularQueue<E> extends AbstractList<E> implements Queue<E>, Serializable {
 	/** Minimal size of the underlying array */
 	private static final int DEFAULT_CAPACITY = 4;
 
@@ -98,11 +97,10 @@ public class CircularQueue<E> extends AbstractList<E> implements Queue<E>,
 			if (realIdx >= first) {
 				System.arraycopy(items, 0, items, 1, last);
 				items[0] = items[items.length - 1];
-				System.arraycopy(items, realIdx, items, realIdx + 1,
-						items.length - realIdx - 1);
+				System.arraycopy(items, realIdx, items, realIdx + 1, items.length - realIdx
+						- 1);
 			} else {
-				System.arraycopy(items, realIdx, items, realIdx + 1, last
-						- realIdx);
+				System.arraycopy(items, realIdx, items, realIdx + 1, last - realIdx);
 			}
 		}
 
@@ -258,13 +256,11 @@ public class CircularQueue<E> extends AbstractList<E> implements Queue<E>,
 			System.arraycopy(items, first, items, first + 1, realIdx - first);
 		} else {
 			if (realIdx >= first) {
-				System.arraycopy(items, first, items, first + 1, realIdx
-						- first);
+				System.arraycopy(items, first, items, first + 1, realIdx - first);
 			} else {
 				System.arraycopy(items, 0, items, 1, realIdx);
 				items[0] = items[items.length - 1];
-				System.arraycopy(items, first, items, first + 1, items.length
-						- first - 1);
+				System.arraycopy(items, first, items, first + 1, items.length - first - 1);
 			}
 		}
 
@@ -343,7 +339,6 @@ public class CircularQueue<E> extends AbstractList<E> implements Queue<E>,
 
 	@Override
 	public String toString() {
-		return "first=" + first + ", last=" + last + ", size=" + size()
-				+ ", mask = " + mask;
+		return "first=" + first + ", last=" + last + ", size=" + size() + ", mask = " + mask;
 	}
 }

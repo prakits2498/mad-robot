@@ -27,9 +27,8 @@ abstract class MemberUtils {
 			| Modifier.PRIVATE;
 
 	/** Array of primitive number types ordered by "promotability" */
-	private static final Class<?>[] ORDERED_PRIMITIVE_TYPES = { Byte.TYPE,
-			Short.TYPE, Character.TYPE, Integer.TYPE, Long.TYPE, Float.TYPE,
-			Double.TYPE };
+	private static final Class<?>[] ORDERED_PRIMITIVE_TYPES = { Byte.TYPE, Short.TYPE,
+			Character.TYPE, Integer.TYPE, Long.TYPE, Float.TYPE, Double.TYPE };
 
 	/**
 	 * Compare the relative fitness of two sets of parameter types in terms of
@@ -46,8 +45,7 @@ abstract class MemberUtils {
 	 *            /<code>right</code>
 	 * @return int consistent with <code>compare</code> semantics
 	 */
-	static int compareParameterTypes(Class<?>[] left, Class<?>[] right,
-			Class<?>[] actual) {
+	static int compareParameterTypes(Class<?>[] left, Class<?>[] right, Class<?>[] actual) {
 		float leftCost = getTotalTransformationCost(actual, left);
 		float rightCost = getTotalTransformationCost(actual, right);
 		return leftCost < rightCost ? -1 : rightCost < leftCost ? 1 : 0;
@@ -64,15 +62,13 @@ abstract class MemberUtils {
 	 *            The destination class
 	 * @return The cost of transforming an object
 	 */
-	private static float getObjectTransformationCost(Class<?> srcClass,
-			Class<?> destClass) {
+	private static float getObjectTransformationCost(Class<?> srcClass, Class<?> destClass) {
 		if (destClass.isPrimitive()) {
 			return getPrimitivePromotionCost(srcClass, destClass);
 		}
 		float cost = 0.0f;
 		while (destClass != null && !destClass.equals(srcClass)) {
-			if (destClass.isInterface()
-					&& ClassUtils.isAssignable(srcClass, destClass)) {
+			if (destClass.isInterface() && ClassUtils.isAssignable(srcClass, destClass)) {
 				// slight penalty for interface match.
 				// we still want an exact match to override an interface match,
 				// but
@@ -134,8 +130,7 @@ abstract class MemberUtils {
 	 *            The destination arguments
 	 * @return The total transformation cost
 	 */
-	private static float getTotalTransformationCost(Class<?>[] srcArgs,
-			Class<?>[] destArgs) {
+	private static float getTotalTransformationCost(Class<?>[] srcArgs, Class<?>[] destArgs) {
 		float totalCost = 0.0f;
 		for (int i = 0; i < srcArgs.length; i++) {
 			Class<?> srcClass, destClass;
@@ -154,8 +149,7 @@ abstract class MemberUtils {
 	 * @return true if <code>m</code> is accessible
 	 */
 	static boolean isAccessible(Member m) {
-		return m != null && Modifier.isPublic(m.getModifiers())
-				&& !m.isSynthetic();
+		return m != null && Modifier.isPublic(m.getModifiers()) && !m.isSynthetic();
 	}
 
 	/**

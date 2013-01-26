@@ -31,10 +31,8 @@ class DefaultImplementationsMapper extends MapperWrapper {
 		addDefaults();
 	}
 
-	public void addDefaultImplementation(Class defaultImplementation,
-			Class ofType) {
-		if (defaultImplementation != null
-				&& defaultImplementation.isInterface()) {
+	public void addDefaultImplementation(Class defaultImplementation, Class ofType) {
+		if (defaultImplementation != null && defaultImplementation.isInterface()) {
 			throw new InitializationException(
 					"Default implementation is not a concrete class: "
 							+ defaultImplementation.getName());
@@ -68,8 +66,7 @@ class DefaultImplementationsMapper extends MapperWrapper {
 
 	private Object readResolve() {
 		implToType = new HashMap();
-		for (final Iterator iter = typeToImpl.keySet().iterator(); iter
-				.hasNext();) {
+		for (final Iterator iter = typeToImpl.keySet().iterator(); iter.hasNext();) {
 			final Object type = iter.next();
 			implToType.put(typeToImpl.get(type), type);
 		}

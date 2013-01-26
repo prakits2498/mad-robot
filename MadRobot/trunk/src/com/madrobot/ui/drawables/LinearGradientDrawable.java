@@ -38,8 +38,7 @@ public class LinearGradientDrawable extends Drawable {
 	 * @param positions
 	 *            the positions
 	 */
-	public LinearGradientDrawable(Orientation orientation, int[] colors,
-			float[] positions) {
+	public LinearGradientDrawable(Orientation orientation, int[] colors, float[] positions) {
 		mOrientation = orientation;
 		mColors = colors;
 		mPositions = positions;
@@ -80,8 +79,8 @@ public class LinearGradientDrawable extends Drawable {
 			Rect bounds = getBounds();
 			float inset = 0;
 
-			mRect.set(bounds.left + inset, bounds.top + inset, bounds.right
-					- inset, bounds.bottom - inset);
+			mRect.set(bounds.left + inset, bounds.top + inset, bounds.right - inset,
+					bounds.bottom - inset);
 
 			final int[] colors = mColors;
 
@@ -141,8 +140,8 @@ public class LinearGradientDrawable extends Drawable {
 					break;
 				}
 
-				mFillPaint.setShader(new LinearGradient(x0, y0, x1, y1, colors,
-						mPositions, Shader.TileMode.CLAMP));
+				mFillPaint.setShader(new LinearGradient(x0, y0, x1, y1, colors, mPositions,
+						Shader.TileMode.CLAMP));
 			}
 		}
 		return !mRect.isEmpty();

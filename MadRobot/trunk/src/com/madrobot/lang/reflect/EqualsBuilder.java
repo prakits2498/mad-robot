@@ -63,9 +63,8 @@ import com.madrobot.lang.ArrayUtils;
  * 		return false;
  * 	}
  * 	MyClass rhs = (MyClass) obj;
- * 	return new EqualsBuilder().appendSuper(super.equals(obj))
- * 			.append(field1, rhs.field1).append(field2, rhs.field2)
- * 			.append(field3, rhs.field3).isEquals();
+ * 	return new EqualsBuilder().appendSuper(super.equals(obj)).append(field1, rhs.field1)
+ * 			.append(field2, rhs.field2).append(field3, rhs.field3).isEquals();
  * }
  * </pre>
  * 
@@ -87,6 +86,7 @@ import com.madrobot.lang.ArrayUtils;
  * 	return EqualsBuilder.reflectionEquals(this, obj);
  * }
  * </pre>
+ * 
  * @hide
  * 
  */
@@ -171,11 +171,9 @@ public class EqualsBuilder implements Builder<Boolean> {
 	static boolean isRegistered(Object lhs, Object rhs) {
 		Set<Pair<IDKey, IDKey>> registry = getRegistry();
 		Pair<IDKey, IDKey> pair = getRegisterPair(lhs, rhs);
-		Pair<IDKey, IDKey> swappedPair = new Pair<IDKey, IDKey>(pair.first,
-				pair.second);
+		Pair<IDKey, IDKey> swappedPair = new Pair<IDKey, IDKey>(pair.first, pair.second);
 
-		return registry != null
-				&& (registry.contains(pair) || registry.contains(swappedPair));
+		return registry != null && (registry.contains(pair) || registry.contains(swappedPair));
 	}
 
 	/**
@@ -197,9 +195,8 @@ public class EqualsBuilder implements Builder<Boolean> {
 	 * @param excludeFields
 	 *            array of field names to exclude from testing
 	 */
-	private static void reflectionAppend(Object lhs, Object rhs,
-			Class<?> clazz, EqualsBuilder builder, boolean useTransients,
-			String[] excludeFields) {
+	private static void reflectionAppend(Object lhs, Object rhs, Class<?> clazz,
+			EqualsBuilder builder, boolean useTransients, String[] excludeFields) {
 
 		if (isRegistered(lhs, rhs)) {
 			return;
@@ -213,8 +210,7 @@ public class EqualsBuilder implements Builder<Boolean> {
 				Field f = fields[i];
 				if (!ArrayUtils.contains(excludeFields, f.getName())
 						&& (f.getName().indexOf('$') == -1)
-						&& (useTransients || !Modifier.isTransient(f
-								.getModifiers()))
+						&& (useTransients || !Modifier.isTransient(f.getModifiers()))
 						&& (!Modifier.isStatic(f.getModifiers()))) {
 					try {
 						builder.append(f.get(lhs), f.get(rhs));
@@ -223,8 +219,7 @@ public class EqualsBuilder implements Builder<Boolean> {
 						// instead
 						// throw a runtime exception in case the impossible
 						// happens.
-						throw new InternalError(
-								"Unexpected IllegalAccessException");
+						throw new InternalError("Unexpected IllegalAccessException");
 					}
 				}
 			}
@@ -296,8 +291,7 @@ public class EqualsBuilder implements Builder<Boolean> {
 	 *            whether to include transient fields
 	 * @return <code>true</code> if the two Objects have tested equals.
 	 */
-	public static boolean reflectionEquals(Object lhs, Object rhs,
-			boolean testTransients) {
+	public static boolean reflectionEquals(Object lhs, Object rhs, boolean testTransients) {
 		return reflectionEquals(lhs, rhs, testTransients, null, null);
 	}
 
@@ -338,10 +332,9 @@ public class EqualsBuilder implements Builder<Boolean> {
 	 * @return <code>true</code> if the two Objects have tested equals.
 	 * @since 2.0
 	 */
-	public static boolean reflectionEquals(Object lhs, Object rhs,
-			boolean testTransients, Class<?> reflectUpToClass) {
-		return reflectionEquals(lhs, rhs, testTransients, reflectUpToClass,
-				null);
+	public static boolean reflectionEquals(Object lhs, Object rhs, boolean testTransients,
+			Class<?> reflectUpToClass) {
+		return reflectionEquals(lhs, rhs, testTransients, reflectUpToClass, null);
 	}
 
 	// -------------------------------------------------------------------------
@@ -385,9 +378,8 @@ public class EqualsBuilder implements Builder<Boolean> {
 	 * @return <code>true</code> if the two Objects have tested equals.
 	 * @since 2.0
 	 */
-	public static boolean reflectionEquals(Object lhs, Object rhs,
-			boolean testTransients, Class<?> reflectUpToClass,
-			String[] excludeFields) {
+	public static boolean reflectionEquals(Object lhs, Object rhs, boolean testTransients,
+			Class<?> reflectUpToClass, String[] excludeFields) {
 		if (lhs == rhs) {
 			return true;
 		}
@@ -419,13 +411,11 @@ public class EqualsBuilder implements Builder<Boolean> {
 		}
 		EqualsBuilder equalsBuilder = new EqualsBuilder();
 		try {
-			reflectionAppend(lhs, rhs, testClass, equalsBuilder,
-					testTransients, excludeFields);
-			while (testClass.getSuperclass() != null
-					&& testClass != reflectUpToClass) {
+			reflectionAppend(lhs, rhs, testClass, equalsBuilder, testTransients, excludeFields);
+			while (testClass.getSuperclass() != null && testClass != reflectUpToClass) {
 				testClass = testClass.getSuperclass();
-				reflectionAppend(lhs, rhs, testClass, equalsBuilder,
-						testTransients, excludeFields);
+				reflectionAppend(lhs, rhs, testClass, equalsBuilder, testTransients,
+						excludeFields);
 			}
 		} catch (IllegalArgumentException e) {
 			// In this case, we tried to test a subclass vs. a superclass and
@@ -505,8 +495,7 @@ public class EqualsBuilder implements Builder<Boolean> {
 	 *            array of field names to exclude from testing
 	 * @return <code>true</code> if the two Objects have tested equals.
 	 */
-	public static boolean reflectionEquals(Object lhs, Object rhs,
-			String[] excludeFields) {
+	public static boolean reflectionEquals(Object lhs, Object rhs, String[] excludeFields) {
 		return reflectionEquals(lhs, rhs, false, null, excludeFields);
 	}
 
@@ -779,8 +768,7 @@ public class EqualsBuilder implements Builder<Boolean> {
 		if (isEquals == false) {
 			return this;
 		}
-		return append(Double.doubleToLongBits(lhs),
-				Double.doubleToLongBits(rhs));
+		return append(Double.doubleToLongBits(lhs), Double.doubleToLongBits(rhs));
 	}
 
 	/**

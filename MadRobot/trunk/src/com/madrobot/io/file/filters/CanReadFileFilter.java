@@ -45,8 +45,7 @@ import com.madrobot.io.file.IOFileFilter;
  * 
  * @version $Id$
  */
-public class CanReadFileFilter extends AbstractFileFilter implements
-		Serializable {
+public class CanReadFileFilter extends AbstractFileFilter implements Serializable {
 
 	/** Singleton instance of <i>readable</i> filter */
 	public static final IOFileFilter CAN_READ = new CanReadFileFilter();

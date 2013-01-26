@@ -28,8 +28,7 @@ import com.madrobot.util.collections.OrderRetainingMap;
  * 
  */
 public class PropertyDictionary implements Caching {
-	private transient Map propertyNameCache = Collections
-			.synchronizedMap(new HashMap());
+	private transient Map propertyNameCache = Collections.synchronizedMap(new HashMap());
 	private final PropertySorter sorter;
 
 	public PropertyDictionary() {
@@ -92,8 +91,7 @@ public class PropertyDictionary implements Caching {
 						+ type.getName(), e);
 			}
 			nameMap = new OrderRetainingMap();
-			PropertyDescriptor[] propertyDescriptors = beanInfo
-					.getPropertyDescriptors();
+			PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
 			for (int i = 0; i < propertyDescriptors.length; i++) {
 				PropertyDescriptor descriptor = propertyDescriptors[i];
 				nameMap.put(descriptor.getName(), descriptor);
@@ -120,8 +118,7 @@ public class PropertyDictionary implements Caching {
 	 * @param name
 	 */
 	public PropertyDescriptor propertyDescriptor(Class type, String name) {
-		PropertyDescriptor descriptor = (PropertyDescriptor) buildMap(type)
-				.get(name);
+		PropertyDescriptor descriptor = (PropertyDescriptor) buildMap(type).get(name);
 		if (descriptor == null) {
 			throw new MissingFieldException(type.getName(), name);
 		}

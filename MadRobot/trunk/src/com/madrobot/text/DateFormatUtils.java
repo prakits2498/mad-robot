@@ -108,8 +108,8 @@ public class DateFormatUtils {
 	 * SMTP (and probably other) date headers. The format used is
 	 * <tt>EEE, dd MMM yyyy HH:mm:ss Z</tt> in US locale.
 	 */
-	public static final FastDateFormat SMTP_DATETIME_FORMAT = FastDateFormat
-			.getInstance("EEE, dd MMM yyyy HH:mm:ss Z", Locale.US);
+	public static final FastDateFormat SMTP_DATETIME_FORMAT = FastDateFormat.getInstance(
+			"EEE, dd MMM yyyy HH:mm:ss Z", Locale.US);
 
 	/**
 	 * <p>
@@ -162,8 +162,7 @@ public class DateFormatUtils {
 	 * @see FastDateFormat#format(Calendar)
 	 * @since 2.4
 	 */
-	public static String format(Calendar calendar, String pattern,
-			TimeZone timeZone) {
+	public static String format(Calendar calendar, String pattern, TimeZone timeZone) {
 		return format(calendar, pattern, timeZone, null);
 	}
 
@@ -184,10 +183,9 @@ public class DateFormatUtils {
 	 * @see FastDateFormat#format(Calendar)
 	 * @since 2.4
 	 */
-	public static String format(Calendar calendar, String pattern,
-			TimeZone timeZone, Locale locale) {
-		FastDateFormat df = FastDateFormat.getInstance(pattern, timeZone,
-				locale);
+	public static String format(Calendar calendar, String pattern, TimeZone timeZone,
+			Locale locale) {
+		FastDateFormat df = FastDateFormat.getInstance(pattern, timeZone, locale);
 		return df.format(calendar);
 	}
 
@@ -255,10 +253,8 @@ public class DateFormatUtils {
 	 *            the locale to use, may be <code>null</code>
 	 * @return the formatted date
 	 */
-	public static String format(Date date, String pattern, TimeZone timeZone,
-			Locale locale) {
-		FastDateFormat df = FastDateFormat.getInstance(pattern, timeZone,
-				locale);
+	public static String format(Date date, String pattern, TimeZone timeZone, Locale locale) {
+		FastDateFormat df = FastDateFormat.getInstance(pattern, timeZone, locale);
 		return df.format(date);
 	}
 
@@ -326,8 +322,7 @@ public class DateFormatUtils {
 	 *            the locale to use, may be <code>null</code>
 	 * @return the formatted date
 	 */
-	public static String format(long millis, String pattern, TimeZone timeZone,
-			Locale locale) {
+	public static String format(long millis, String pattern, TimeZone timeZone, Locale locale) {
 		return format(new Date(millis), pattern, timeZone, locale);
 	}
 
@@ -392,8 +387,7 @@ public class DateFormatUtils {
 	 * @return the formatted date
 	 */
 	public static String formatUTC(long millis, String pattern, Locale locale) {
-		return format(new Date(millis), pattern, DateUtils.UTC_TIME_ZONE,
-				locale);
+		return format(new Date(millis), pattern, DateUtils.UTC_TIME_ZONE, locale);
 	}
 
 	// -----------------------------------------------------------------------

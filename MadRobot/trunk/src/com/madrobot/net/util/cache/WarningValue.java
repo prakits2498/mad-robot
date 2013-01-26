@@ -73,8 +73,7 @@ class WarningValue {
 		while (offs < src.length()) {
 			switch (src.charAt(offs)) {
 			case '\r':
-				if (offs + 2 >= src.length()
-						|| src.charAt(offs + 1) != '\n'
+				if (offs + 2 >= src.length() || src.charAt(offs + 1) != '\n'
 						|| (src.charAt(offs + 2) != ' ' && src.charAt(offs + 2) != '\t')) {
 					return;
 				}
@@ -111,10 +110,9 @@ class WarningValue {
 	 * "/" | "[" | "]" | "?" | "=" | "{" | "}" | SP | HT
 	 */
 	private boolean isSeparator(char c) {
-		return (c == '(' || c == ')' || c == '<' || c == '>' || c == '@'
-				|| c == ',' || c == ';' || c == ':' || c == '\\' || c == '\"'
-				|| c == '/' || c == '[' || c == ']' || c == '?' || c == '='
-				|| c == '{' || c == '}' || c == ' ' || c == '\t');
+		return (c == '(' || c == ')' || c == '<' || c == '>' || c == '@' || c == ','
+				|| c == ';' || c == ':' || c == '\\' || c == '\"' || c == '/' || c == '['
+				|| c == ']' || c == '?' || c == '=' || c == '{' || c == '}' || c == ' ' || c == '\t');
 	}
 
 	/*
@@ -136,11 +134,9 @@ class WarningValue {
 
 	private static final String TOPLABEL = "\\p{Alpha}([\\p{Alnum}-]*\\p{Alnum})?";
 	private static final String DOMAINLABEL = "\\p{Alnum}([\\p{Alnum}-]*\\p{Alnum})?";
-	private static final String HOSTNAME = "(" + DOMAINLABEL + "\\.)*"
-			+ TOPLABEL + "\\.?";
+	private static final String HOSTNAME = "(" + DOMAINLABEL + "\\.)*" + TOPLABEL + "\\.?";
 	private static final String IPV4ADDRESS = "\\d+\\.\\d+\\.\\d+\\.\\d+";
-	private static final String HOST = "(" + HOSTNAME + ")|(" + IPV4ADDRESS
-			+ ")";
+	private static final String HOST = "(" + HOSTNAME + ")|(" + IPV4ADDRESS + ")";
 	private static final String PORT = "\\d*";
 	private static final String HOSTPORT = "(" + HOST + ")(\\:" + PORT + ")?";
 	private static final Pattern HOSTPORT_PATTERN = Pattern.compile(HOSTPORT);
@@ -183,8 +179,7 @@ class WarningValue {
 		boolean foundEnd = false;
 		while (offs < src.length() && !foundEnd) {
 			char c = src.charAt(offs);
-			if (offs + 1 < src.length() && c == '\\'
-					&& isChar(src.charAt(offs + 1))) {
+			if (offs + 1 < src.length() && c == '\\' && isChar(src.charAt(offs + 1))) {
 				offs += 2; // consume quoted-pair
 			} else if (c == '\"') {
 				foundEnd = true;
@@ -215,14 +210,14 @@ class WarningValue {
 	private static final String DATE3 = "(" + MONTH + ") ( |\\d)\\d";
 	private static final String DATE2 = "\\d{2}-(" + MONTH + ")-\\d{2}";
 	private static final String DATE1 = "\\d{2} (" + MONTH + ") \\d{4}";
-	private static final String ASCTIME_DATE = "(" + WKDAY + ") (" + DATE3
-			+ ") (" + TIME + ") \\d{4}";
-	private static final String RFC850_DATE = "(" + WEEKDAY + "), (" + DATE2
-			+ ") (" + TIME + ") GMT";
-	private static final String RFC1123_DATE = "(" + WKDAY + "), (" + DATE1
-			+ ") (" + TIME + ") GMT";
-	private static final String HTTP_DATE = "(" + RFC1123_DATE + ")|("
-			+ RFC850_DATE + ")|(" + ASCTIME_DATE + ")";
+	private static final String ASCTIME_DATE = "(" + WKDAY + ") (" + DATE3 + ") (" + TIME
+			+ ") \\d{4}";
+	private static final String RFC850_DATE = "(" + WEEKDAY + "), (" + DATE2 + ") (" + TIME
+			+ ") GMT";
+	private static final String RFC1123_DATE = "(" + WKDAY + "), (" + DATE1 + ") (" + TIME
+			+ ") GMT";
+	private static final String HTTP_DATE = "(" + RFC1123_DATE + ")|(" + RFC850_DATE + ")|("
+			+ ASCTIME_DATE + ")";
 	private static final String WARN_DATE = "\"(" + HTTP_DATE + ")\"";
 	private static final Pattern WARN_DATE_PATTERN = Pattern.compile(WARN_DATE);
 
@@ -250,8 +245,7 @@ class WarningValue {
 		consumeWarnCode();
 		consumeWarnAgent();
 		consumeWarnText();
-		if (offs + 1 < src.length() && src.charAt(offs) == ' '
-				&& src.charAt(offs + 1) == '\"') {
+		if (offs + 1 < src.length() && src.charAt(offs) == ' ' && src.charAt(offs + 1) == '\"') {
 			consumeCharacter(' ');
 			consumeWarnDate();
 		}
@@ -274,8 +268,7 @@ class WarningValue {
 	protected void consumeWarnCode() {
 		if (offs + 4 > src.length() || !Character.isDigit(src.charAt(offs))
 				|| !Character.isDigit(src.charAt(offs + 1))
-				|| !Character.isDigit(src.charAt(offs + 2))
-				|| src.charAt(offs + 3) != ' ') {
+				|| !Character.isDigit(src.charAt(offs + 2)) || src.charAt(offs + 3) != ' ') {
 			parseError();
 		}
 		warnCode = Integer.parseInt(src.substring(offs, offs + 3));
@@ -350,8 +343,8 @@ class WarningValue {
 	@Override
 	public String toString() {
 		if (warnDate != null) {
-			return String.format("%d %s %s \"%s\"", warnCode, warnAgent,
-					warnText, DateUtils.formatDate(warnDate));
+			return String.format("%d %s %s \"%s\"", warnCode, warnAgent, warnText,
+					DateUtils.formatDate(warnDate));
 		} else {
 			return String.format("%d %s %s", warnCode, warnAgent, warnText);
 		}

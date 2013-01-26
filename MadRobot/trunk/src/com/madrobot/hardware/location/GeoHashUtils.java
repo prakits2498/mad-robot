@@ -17,9 +17,9 @@ import java.util.Map;
  */
 public class GeoHashUtils {
 
-	private static final char[] BASE_32 = { '0', '1', '2', '3', '4', '5', '6',
-			'7', '8', '9', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'j', 'k', 'm',
-			'n', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
+	private static final char[] BASE_32 = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+			'b', 'c', 'd', 'e', 'f', 'g', 'h', 'j', 'k', 'm', 'n', 'p', 'q', 'r', 's', 't',
+			'u', 'v', 'w', 'x', 'y', 'z' };
 
 	private final static Map<Character, Integer> DECODE_MAP = new HashMap<Character, Integer>();
 
@@ -108,8 +108,7 @@ public class GeoHashUtils {
 		double latitude;
 		double longitude;
 		for (int i = 0; i < geohash.length(); i++) {
-			final int cd = DECODE_MAP.get(Character.valueOf(geohash.charAt(i)))
-					.intValue();
+			final int cd = DECODE_MAP.get(Character.valueOf(geohash.charAt(i))).intValue();
 
 			for (int mask : BITS) {
 				if (isEven) {

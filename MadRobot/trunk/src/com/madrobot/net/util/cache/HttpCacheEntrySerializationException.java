@@ -1,4 +1,3 @@
-
 package com.madrobot.net.util.cache;
 
 import java.io.IOException;
@@ -9,15 +8,15 @@ import java.io.IOException;
  */
 public class HttpCacheEntrySerializationException extends IOException {
 
-    private static final long serialVersionUID = 9219188365878433519L;
+	private static final long serialVersionUID = 9219188365878433519L;
 
-    public HttpCacheEntrySerializationException(final String message) {
-        super();
-    }
+	public HttpCacheEntrySerializationException(final String message) {
+		super();
+	}
 
-    public HttpCacheEntrySerializationException(final String message, final Throwable cause) {
-        super(message);
-        initCause(cause);
-    }
+	public HttpCacheEntrySerializationException(final String message, final Throwable cause) {
+		super(message);
+		initCause(cause);
+	}
 
 }

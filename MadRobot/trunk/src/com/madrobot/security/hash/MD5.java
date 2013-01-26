@@ -14,20 +14,19 @@ package com.madrobot.security.hash;
  * MD5 hash implementation
  * <p>
  * Message-Digest algorithm 5 implementation, It is really fast and optimized
- * for constrained devices
+ * for devices
  * </p>
  */
 public class MD5 {
-	private static final char[] HEX_CHARS = { '0', '1', '2', '3', '4', '5',
-			'6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', };
+	private static final char[] HEX_CHARS = { '0', '1', '2', '3', '4', '5', '6', '7', '8',
+			'9', 'a', 'b', 'c', 'd', 'e', 'f', };
 
 	/**
 	 * Padding for Final()
 	 */
-	private static byte padding[] = { (byte) 0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-			0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	private static byte padding[] = { (byte) 0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
 	/**
 	 * Turns array of bytes into string representing each byte as unsigned hex
@@ -121,8 +120,7 @@ public class MD5 {
 	 * only the main driver.
 	 */
 
-	private final void Decode(final byte buffer[], final int shift,
-			final int[] out) {
+	private final void Decode(final byte buffer[], final int shift, final int[] out) {
 		/*
 		 * len += shift; for (int i = 0; shift < len; i++, shift += 4) { out[i]
 		 * = ((int) (buffer[shift] & 0xff)) | (((int) (buffer[shift + 1] &
@@ -132,68 +130,37 @@ public class MD5 {
 
 		// unrolled loop (original loop shown above)
 		out[0] = ((buffer[shift] & 0xff)) | (((buffer[shift + 1] & 0xff)) << 8)
-				| (((buffer[shift + 2] & 0xff)) << 16)
-				| ((buffer[shift + 3]) << 24);
-		out[1] = ((buffer[shift + 4] & 0xff))
-				| (((buffer[shift + 5] & 0xff)) << 8)
-				| (((buffer[shift + 6] & 0xff)) << 16)
-				| ((buffer[shift + 7]) << 24);
-		out[2] = ((buffer[shift + 8] & 0xff))
-				| (((buffer[shift + 9] & 0xff)) << 8)
-				| (((buffer[shift + 10] & 0xff)) << 16)
-				| ((buffer[shift + 11]) << 24);
-		out[3] = ((buffer[shift + 12] & 0xff))
-				| (((buffer[shift + 13] & 0xff)) << 8)
-				| (((buffer[shift + 14] & 0xff)) << 16)
-				| ((buffer[shift + 15]) << 24);
-		out[4] = ((buffer[shift + 16] & 0xff))
-				| (((buffer[shift + 17] & 0xff)) << 8)
-				| (((buffer[shift + 18] & 0xff)) << 16)
-				| ((buffer[shift + 19]) << 24);
-		out[5] = ((buffer[shift + 20] & 0xff))
-				| (((buffer[shift + 21] & 0xff)) << 8)
-				| (((buffer[shift + 22] & 0xff)) << 16)
-				| ((buffer[shift + 23]) << 24);
-		out[6] = ((buffer[shift + 24] & 0xff))
-				| (((buffer[shift + 25] & 0xff)) << 8)
-				| (((buffer[shift + 26] & 0xff)) << 16)
-				| ((buffer[shift + 27]) << 24);
-		out[7] = ((buffer[shift + 28] & 0xff))
-				| (((buffer[shift + 29] & 0xff)) << 8)
-				| (((buffer[shift + 30] & 0xff)) << 16)
-				| ((buffer[shift + 31]) << 24);
-		out[8] = ((buffer[shift + 32] & 0xff))
-				| (((buffer[shift + 33] & 0xff)) << 8)
-				| (((buffer[shift + 34] & 0xff)) << 16)
-				| ((buffer[shift + 35]) << 24);
-		out[9] = ((buffer[shift + 36] & 0xff))
-				| (((buffer[shift + 37] & 0xff)) << 8)
-				| (((buffer[shift + 38] & 0xff)) << 16)
-				| ((buffer[shift + 39]) << 24);
-		out[10] = ((buffer[shift + 40] & 0xff))
-				| (((buffer[shift + 41] & 0xff)) << 8)
-				| (((buffer[shift + 42] & 0xff)) << 16)
-				| ((buffer[shift + 43]) << 24);
-		out[11] = ((buffer[shift + 44] & 0xff))
-				| (((buffer[shift + 45] & 0xff)) << 8)
-				| (((buffer[shift + 46] & 0xff)) << 16)
-				| ((buffer[shift + 47]) << 24);
-		out[12] = ((buffer[shift + 48] & 0xff))
-				| (((buffer[shift + 49] & 0xff)) << 8)
-				| (((buffer[shift + 50] & 0xff)) << 16)
-				| ((buffer[shift + 51]) << 24);
-		out[13] = ((buffer[shift + 52] & 0xff))
-				| (((buffer[shift + 53] & 0xff)) << 8)
-				| (((buffer[shift + 54] & 0xff)) << 16)
-				| ((buffer[shift + 55]) << 24);
-		out[14] = ((buffer[shift + 56] & 0xff))
-				| (((buffer[shift + 57] & 0xff)) << 8)
-				| (((buffer[shift + 58] & 0xff)) << 16)
-				| ((buffer[shift + 59]) << 24);
-		out[15] = ((buffer[shift + 60] & 0xff))
-				| (((buffer[shift + 61] & 0xff)) << 8)
-				| (((buffer[shift + 62] & 0xff)) << 16)
-				| ((buffer[shift + 63]) << 24);
+				| (((buffer[shift + 2] & 0xff)) << 16) | ((buffer[shift + 3]) << 24);
+		out[1] = ((buffer[shift + 4] & 0xff)) | (((buffer[shift + 5] & 0xff)) << 8)
+				| (((buffer[shift + 6] & 0xff)) << 16) | ((buffer[shift + 7]) << 24);
+		out[2] = ((buffer[shift + 8] & 0xff)) | (((buffer[shift + 9] & 0xff)) << 8)
+				| (((buffer[shift + 10] & 0xff)) << 16) | ((buffer[shift + 11]) << 24);
+		out[3] = ((buffer[shift + 12] & 0xff)) | (((buffer[shift + 13] & 0xff)) << 8)
+				| (((buffer[shift + 14] & 0xff)) << 16) | ((buffer[shift + 15]) << 24);
+		out[4] = ((buffer[shift + 16] & 0xff)) | (((buffer[shift + 17] & 0xff)) << 8)
+				| (((buffer[shift + 18] & 0xff)) << 16) | ((buffer[shift + 19]) << 24);
+		out[5] = ((buffer[shift + 20] & 0xff)) | (((buffer[shift + 21] & 0xff)) << 8)
+				| (((buffer[shift + 22] & 0xff)) << 16) | ((buffer[shift + 23]) << 24);
+		out[6] = ((buffer[shift + 24] & 0xff)) | (((buffer[shift + 25] & 0xff)) << 8)
+				| (((buffer[shift + 26] & 0xff)) << 16) | ((buffer[shift + 27]) << 24);
+		out[7] = ((buffer[shift + 28] & 0xff)) | (((buffer[shift + 29] & 0xff)) << 8)
+				| (((buffer[shift + 30] & 0xff)) << 16) | ((buffer[shift + 31]) << 24);
+		out[8] = ((buffer[shift + 32] & 0xff)) | (((buffer[shift + 33] & 0xff)) << 8)
+				| (((buffer[shift + 34] & 0xff)) << 16) | ((buffer[shift + 35]) << 24);
+		out[9] = ((buffer[shift + 36] & 0xff)) | (((buffer[shift + 37] & 0xff)) << 8)
+				| (((buffer[shift + 38] & 0xff)) << 16) | ((buffer[shift + 39]) << 24);
+		out[10] = ((buffer[shift + 40] & 0xff)) | (((buffer[shift + 41] & 0xff)) << 8)
+				| (((buffer[shift + 42] & 0xff)) << 16) | ((buffer[shift + 43]) << 24);
+		out[11] = ((buffer[shift + 44] & 0xff)) | (((buffer[shift + 45] & 0xff)) << 8)
+				| (((buffer[shift + 46] & 0xff)) << 16) | ((buffer[shift + 47]) << 24);
+		out[12] = ((buffer[shift + 48] & 0xff)) | (((buffer[shift + 49] & 0xff)) << 8)
+				| (((buffer[shift + 50] & 0xff)) << 16) | ((buffer[shift + 51]) << 24);
+		out[13] = ((buffer[shift + 52] & 0xff)) | (((buffer[shift + 53] & 0xff)) << 8)
+				| (((buffer[shift + 54] & 0xff)) << 16) | ((buffer[shift + 55]) << 24);
+		out[14] = ((buffer[shift + 56] & 0xff)) | (((buffer[shift + 57] & 0xff)) << 8)
+				| (((buffer[shift + 58] & 0xff)) << 16) | ((buffer[shift + 59]) << 24);
+		out[15] = ((buffer[shift + 60] & 0xff)) | (((buffer[shift + 61] & 0xff)) << 8)
+				| (((buffer[shift + 62] & 0xff)) << 16) | ((buffer[shift + 63]) << 24);
 	}
 
 	private byte[] Encode(int input[], int len) {
@@ -227,8 +194,7 @@ public class MD5 {
 		if (finals == null) {
 			fin = new MD5State(state);
 
-			int[] count_ints = { (int) (fin.getCount() << 3),
-					(int) (fin.getCount() >> 29) };
+			int[] count_ints = { (int) (fin.getCount() << 3), (int) (fin.getCount() >> 29) };
 			bits = Encode(count_ints, 8);
 
 			index = (int) (fin.getCount() & 0x3f);

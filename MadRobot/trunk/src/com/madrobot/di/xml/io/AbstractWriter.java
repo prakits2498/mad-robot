@@ -20,8 +20,7 @@ import com.madrobot.lang.reflect.ObjectUtils;
  * 
  * @since 1.4
  */
-public abstract class AbstractWriter implements
-		ExtendedHierarchicalStreamWriter {
+public abstract class AbstractWriter implements ExtendedHierarchicalStreamWriter {
 
 	private NameCoder nameCoder;
 

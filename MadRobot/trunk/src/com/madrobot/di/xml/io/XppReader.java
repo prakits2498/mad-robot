@@ -117,8 +117,8 @@ public class XppReader extends AbstractPullReader {
 	protected XmlPullParser createParser() {
 		Exception exception = null;
 		try {
-			return (XmlPullParser) Class.forName("org.xmlpull.mxp1.MXParser",
-					true, XmlPullParser.class.getClassLoader()).newInstance();
+			return (XmlPullParser) Class.forName("org.xmlpull.mxp1.MXParser", true,
+					XmlPullParser.class.getClassLoader()).newInstance();
 		} catch (InstantiationException e) {
 			exception = e;
 		} catch (IllegalAccessException e) {
@@ -126,8 +126,7 @@ public class XppReader extends AbstractPullReader {
 		} catch (ClassNotFoundException e) {
 			exception = e;
 		}
-		throw new StreamException("Cannot create Xpp3 parser instance.",
-				exception);
+		throw new StreamException("Cannot create Xpp3 parser instance.", exception);
 	}
 
 	@Override

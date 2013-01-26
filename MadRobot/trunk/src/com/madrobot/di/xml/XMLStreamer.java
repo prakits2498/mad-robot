@@ -46,8 +46,8 @@ class XMLStreamer {
 	 *             if the object cannot be deserialized
 	 * @since 1.2
 	 */
-	Object fromXML(HierarchicalStreamDriver driver, Reader xml)
-			throws IOException, ClassNotFoundException {
+	Object fromXML(HierarchicalStreamDriver driver, Reader xml) throws IOException,
+			ClassNotFoundException {
 		XMLWizard outer = new XMLWizard(driver);
 		HierarchicalStreamReader reader = driver.createReader(xml);
 		ObjectInputStream configIn = outer.createObjectInputStream(reader);
@@ -76,15 +76,14 @@ class XMLStreamer {
 	 * @since 1.2
 	 * @see #toXML(XMLWizard, Object, Writer)
 	 */
-	Object fromXML(HierarchicalStreamDriver driver, String xml)
-			throws ClassNotFoundException, ObjectStreamException {
+	Object fromXML(HierarchicalStreamDriver driver, String xml) throws ClassNotFoundException,
+			ObjectStreamException {
 		try {
 			return fromXML(driver, new StringReader(xml));
 		} catch (ObjectStreamException e) {
 			throw e;
 		} catch (IOException e) {
-			throw new ConversionException(
-					"Unexpeced IO error from a StringReader", e);
+			throw new ConversionException("Unexpeced IO error from a StringReader", e);
 		}
 	}
 
@@ -120,15 +119,13 @@ class XMLStreamer {
 	 * @since 1.2
 	 * @see #toXML(XMLWizard, Object, Writer)
 	 */
-	Object fromXML(String xml) throws ClassNotFoundException,
-			ObjectStreamException {
+	Object fromXML(String xml) throws ClassNotFoundException, ObjectStreamException {
 		try {
 			return fromXML(new StringReader(xml));
 		} catch (ObjectStreamException e) {
 			throw e;
 		} catch (IOException e) {
-			throw new ConversionException(
-					"Unexpeced IO error from a StringReader", e);
+			throw new ConversionException("Unexpeced IO error from a StringReader", e);
 		}
 	}
 
@@ -149,8 +146,7 @@ class XMLStreamer {
 		} catch (ObjectStreamException e) {
 			throw e;
 		} catch (IOException e) {
-			throw new ConversionException(
-					"Unexpeced IO error from a StringWriter", e);
+			throw new ConversionException("Unexpeced IO error from a StringWriter", e);
 		}
 		return writer.toString();
 	}

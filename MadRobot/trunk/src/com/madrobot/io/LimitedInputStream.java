@@ -19,8 +19,7 @@ import java.io.InputStream;
  * An input stream, which limits its data size. This stream is used, if the
  * content length is unknown.
  */
-public abstract class LimitedInputStream extends FilterInputStream implements
-		Closeable {
+public abstract class LimitedInputStream extends FilterInputStream implements Closeable {
 	/**
 	 * Whether this stream is already closed.
 	 */
@@ -95,8 +94,7 @@ public abstract class LimitedInputStream extends FilterInputStream implements
 	 * @throws IOException
 	 *             The called method is expected to raise an IOException.
 	 */
-	protected abstract void raiseError(long pSizeMax, long pCount)
-			throws IOException;
+	protected abstract void raiseError(long pSizeMax, long pCount) throws IOException;
 
 	/**
 	 * Reads the next byte of data from this input stream. The value byte is

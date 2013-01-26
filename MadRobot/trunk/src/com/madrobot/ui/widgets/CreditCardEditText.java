@@ -65,13 +65,12 @@ public class CreditCardEditText extends
 	@Override
 	protected void doCustomize(Context context) {
 		setInputType(InputType.TYPE_CLASS_PHONE);
-		setFilters(new InputFilter[] { new DigitsLengthFilter(
-				new MaxDigitsGetter() {
-					@Override
-					public int getMax(CharSequence source) {
-						return getMaxLength();
-					}
-				}) {
+		setFilters(new InputFilter[] { new DigitsLengthFilter(new MaxDigitsGetter() {
+			@Override
+			public int getMax(CharSequence source) {
+				return getMaxLength();
+			}
+		}) {
 			@Override
 			protected String getFormattedDigits(Spanned dest) {
 				return source;
@@ -83,8 +82,7 @@ public class CreditCardEditText extends
 		super.doCustomize(context);
 		addTextChangedListener(new FormattedTextWatcher() {
 			@Override
-			public void onTextChanged(CharSequence arg0, int arg1, int arg2,
-					int arg3) {
+			public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
 				int sourceIndex = arg0.toString().replace(" ", "").length();
 				if (arg3 == 1 && arg2 == 0) {
 					source = source.subSequence(0, sourceIndex - 1).toString()
@@ -98,13 +96,12 @@ public class CreditCardEditText extends
 
 	private String doObscure(String formatted) {
 		char[] chars = formatted.toCharArray();
-		int trailing = (getCardType() != null && getCardType()
-				.equalsIgnoreCase(AMEX_CREDIT)) ? 3 : 4;
+		int trailing = (getCardType() != null && getCardType().equalsIgnoreCase(AMEX_CREDIT)) ? 3
+				: 4;
 
 		for (int i = formatted.length(); i > 0; i--) {
 			char c = chars[i - 1];
-			if (c != ' ' && i < getMaxLength(true, true) - trailing
-					&& i < formatted.length())
+			if (c != ' ' && i < getMaxLength(true, true) - trailing && i < formatted.length())
 				chars[i - 1] = '*';
 		}
 		return new String(chars);
@@ -140,8 +137,7 @@ public class CreditCardEditText extends
 	protected String getFormatted(String typedText) {
 		String regex = "(\\d{0,4})(\\d{0,4})(\\d{0,4})(\\d{0,4})";
 		String replace = "$1 $2 $3 $4";
-		if (getCardType() != null
-				&& getCardType().equalsIgnoreCase(AMEX_CREDIT)) {
+		if (getCardType() != null && getCardType().equalsIgnoreCase(AMEX_CREDIT)) {
 			regex = "(\\d{0,4})(\\d{0,6})(\\d{0,5})";
 			replace = "$1 $2 $3";
 		}
@@ -154,8 +150,7 @@ public class CreditCardEditText extends
 	}
 
 	protected int getMaxLength(boolean padded, boolean isCredit) {
-		if (isCredit && getCardType() != null
-				&& getCardType().equalsIgnoreCase(AMEX_CREDIT))
+		if (isCredit && getCardType() != null && getCardType().equalsIgnoreCase(AMEX_CREDIT))
 			return LENGTH_AMEX + (padded ? 2 : 0);
 		else
 			return LENGTH + (padded ? 3 : 0);

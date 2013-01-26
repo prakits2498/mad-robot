@@ -108,8 +108,7 @@ public final class OBJFileLoader {
 					if (tokens[1].matches("[0-9]+/[0-9]+")) {// if: v/vt
 						if (c == 4) {// 3 faces
 							for (int i = 1; i < c; i++) {
-								Short s = Short
-										.valueOf(tokens[i].split("/")[0]);
+								Short s = Short.valueOf(tokens[i].split("/")[0]);
 								s--;
 								faces.add(s);
 								s = Short.valueOf(tokens[i].split("/")[1]);
@@ -120,8 +119,7 @@ public final class OBJFileLoader {
 							ArrayList<Short> tmpFaces = new ArrayList<Short>();
 							ArrayList<Short> tmpVt = new ArrayList<Short>();
 							for (int i = 1; i < tokens.length; i++) {
-								Short s = Short
-										.valueOf(tokens[i].split("/")[0]);
+								Short s = Short.valueOf(tokens[i].split("/")[0]);
 								s--;
 								tmpFaces.add(s);
 								s = Short.valueOf(tokens[i].split("/")[1]);
@@ -135,8 +133,7 @@ public final class OBJFileLoader {
 					if (tokens[1].matches("[0-9]+//[0-9]+")) {// f: v//vn
 						if (c == 4) {// 3 faces
 							for (int i = 1; i < c; i++) {
-								Short s = Short
-										.valueOf(tokens[i].split("//")[0]);
+								Short s = Short.valueOf(tokens[i].split("//")[0]);
 								s--;
 								faces.add(s);
 								s = Short.valueOf(tokens[i].split("//")[1]);
@@ -147,8 +144,7 @@ public final class OBJFileLoader {
 							ArrayList<Short> tmpFaces = new ArrayList<Short>();
 							ArrayList<Short> tmpVn = new ArrayList<Short>();
 							for (int i = 1; i < tokens.length; i++) {
-								Short s = Short
-										.valueOf(tokens[i].split("//")[0]);
+								Short s = Short.valueOf(tokens[i].split("//")[0]);
 								s--;
 								tmpFaces.add(s);
 								s = Short.valueOf(tokens[i].split("//")[1]);
@@ -164,8 +160,7 @@ public final class OBJFileLoader {
 
 						if (c == 4) {// 3 faces
 							for (int i = 1; i < c; i++) {
-								Short s = Short
-										.valueOf(tokens[i].split("/")[0]);
+								Short s = Short.valueOf(tokens[i].split("/")[0]);
 								s--;
 								faces.add(s);
 								s = Short.valueOf(tokens[i].split("/")[1]);
@@ -180,8 +175,7 @@ public final class OBJFileLoader {
 							ArrayList<Short> tmpVn = new ArrayList<Short>();
 							// Vector<Short> tmpVt=new Vector<Short>();
 							for (int i = 1; i < tokens.length; i++) {
-								Short s = Short
-										.valueOf(tokens[i].split("/")[0]);
+								Short s = Short.valueOf(tokens[i].split("/")[0]);
 								s--;
 								tmpFaces.add(s);
 								// s=Short.valueOf(tokens[i].split("/")[1]);

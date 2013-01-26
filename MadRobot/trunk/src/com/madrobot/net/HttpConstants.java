@@ -73,15 +73,15 @@ public class HttpConstants {
 	public static final String CACHE_CONTROL_PROXY_REVALIDATE = "proxy-revalidate";
 	public static final String STALE_IF_ERROR = "stale-if-error";
 	public static final String STALE_WHILE_REVALIDATE = "stale-while-revalidate";
-	
+
 	public static final String HTTP_EXPECT_CONTINUE_PARAM = "http.protocol.expect-continue";
 	public static final String HTTP_SINGLE_COOKIE_PARAM = "http.protocol.single-cookie-header";
 	/**
 	 * HTTP session socket time-out key
 	 */
 	public static final String HTTP_SOCKET_TIME_OUT_PARAM = "http.socket.timeout";
-	public static final String HTTP_PROTOCOL_VERSION ="http.protocol.version";
-	
+	public static final String HTTP_PROTOCOL_VERSION = "http.protocol.version";
+
 	/**
 	 * Header constants
 	 */

@@ -31,13 +31,11 @@ package com.madrobot.di.xml.io;
  * @since 1.2
  */
 public class HierarchicalStreamCopier {
-	public void copy(HierarchicalStreamReader source,
-			HierarchicalStreamWriter destination) {
+	public void copy(HierarchicalStreamReader source, HierarchicalStreamWriter destination) {
 		destination.startNode(source.getNodeName());
 		int attributeCount = source.getAttributeCount();
 		for (int i = 0; i < attributeCount; i++) {
-			destination.addAttribute(source.getAttributeName(i),
-					source.getAttribute(i));
+			destination.addAttribute(source.getAttributeName(i), source.getAttribute(i));
 		}
 		String value = source.getValue();
 		if (value != null && value.length() > 0) {

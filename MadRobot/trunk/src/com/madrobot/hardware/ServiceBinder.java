@@ -44,8 +44,7 @@ public class ServiceBinder<T extends IInterface> {
 				}
 
 			} catch (Exception e) {
-				Log.e(ServiceBinder.class.getName(),
-						"Unable to bind to service", e);
+				Log.e(ServiceBinder.class.getName(), "Unable to bind to service", e);
 			}
 
 		}
@@ -60,16 +59,14 @@ public class ServiceBinder<T extends IInterface> {
 
 	private T mServiceInterface;
 
-	public ServiceBinder(Context context,
-			Class<? extends Service> serviceClass,
+	public ServiceBinder(Context context, Class<? extends Service> serviceClass,
 			Class<? extends IInterface> interfaceClass, Runnable onServiceReady) {
 		mContext = context;
 		mServiceClass = serviceClass;
 		mInterfaceClass = interfaceClass;
 		mOnServiceReady = onServiceReady;
 		Intent serviceIntent = new Intent(context, mServiceClass);
-		context.bindService(serviceIntent, mServiceConnection,
-				Context.BIND_AUTO_CREATE);
+		context.bindService(serviceIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
 	}
 
 	public T getServiceInterface() {

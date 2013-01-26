@@ -90,22 +90,20 @@ public class ExternalizableConverter implements Converter {
 						writer.startNode("null");
 						writer.endNode();
 					} else {
-						ExtendedHierarchicalStreamWriterHelper.startNode(
-								writer,
-								mapper.serializedClass(object.getClass()),
-								object.getClass());
+						ExtendedHierarchicalStreamWriterHelper.startNode(writer,
+								mapper.serializedClass(object.getClass()), object.getClass());
 						context.convertAnother(object);
 						writer.endNode();
 					}
 				}
 			};
-			CustomObjectOutputStream objectOutput = CustomObjectOutputStream
-					.getInstance(context, callback);
+			CustomObjectOutputStream objectOutput = CustomObjectOutputStream.getInstance(
+					context, callback);
 			externalizable.writeExternal(objectOutput);
 			objectOutput.popCallback();
 		} catch (IOException e) {
-			throw new ConversionException("Cannot serialize "
-					+ source.getClass().getName() + " using Externalization", e);
+			throw new ConversionException("Cannot serialize " + source.getClass().getName()
+					+ " using Externalization", e);
 		}
 	}
 
@@ -141,23 +139,20 @@ public class ExternalizableConverter implements Converter {
 				@Override
 				public Object readFromStream() {
 					reader.moveDown();
-					Class type = HierarchicalStreams.readClassType(reader,
-							mapper);
-					Object streamItem = context.convertAnother(externalizable,
-							type);
+					Class type = HierarchicalStreams.readClassType(reader, mapper);
+					Object streamItem = context.convertAnother(externalizable, type);
 					reader.moveUp();
 					return streamItem;
 				}
 
 				@Override
-				public void registerValidation(
-						ObjectInputValidation validation, int priority)
+				public void registerValidation(ObjectInputValidation validation, int priority)
 						throws NotActiveException {
 					throw new NotActiveException("stream inactive");
 				}
 			};
-			CustomObjectInputStream objectInput = CustomObjectInputStream
-					.getInstance(context, callback, classLoader);
+			CustomObjectInputStream objectInput = CustomObjectInputStream.getInstance(context,
+					callback, classLoader);
 			externalizable.readExternal(objectInput);
 			objectInput.popCallback();
 			return externalizable;
@@ -165,20 +160,15 @@ public class ExternalizableConverter implements Converter {
 			throw new ConversionException("Cannot construct " + type.getClass()
 					+ ", missing default constructor", e);
 		} catch (InvocationTargetException e) {
-			throw new ConversionException(
-					"Cannot construct " + type.getClass(), e);
+			throw new ConversionException("Cannot construct " + type.getClass(), e);
 		} catch (InstantiationException e) {
-			throw new ConversionException(
-					"Cannot construct " + type.getClass(), e);
+			throw new ConversionException("Cannot construct " + type.getClass(), e);
 		} catch (IllegalAccessException e) {
-			throw new ConversionException(
-					"Cannot construct " + type.getClass(), e);
+			throw new ConversionException("Cannot construct " + type.getClass(), e);
 		} catch (IOException e) {
-			throw new ConversionException("Cannot externalize "
-					+ type.getClass(), e);
+			throw new ConversionException("Cannot externalize " + type.getClass(), e);
 		} catch (ClassNotFoundException e) {
-			throw new ConversionException("Cannot externalize "
-					+ type.getClass(), e);
+			throw new ConversionException("Cannot externalize " + type.getClass(), e);
 		}
 	}
 }

@@ -10,7 +10,6 @@ import com.madrobot.io.IOUtils.IOState;
  */
 public interface IOProgressCallback {
 
-
 	/**
 	 * Called when the I/O operation is completed.
 	 */

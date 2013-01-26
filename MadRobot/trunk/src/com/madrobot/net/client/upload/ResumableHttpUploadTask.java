@@ -14,347 +14,371 @@ import com.madrobot.io.IOUtils.IOState;
 import com.madrobot.net.client.upload.ResumableHttpFileUploader.ResponseMessage;
 
 /**
- * Task for generating HTTP requests used to upload files and resume uploads
- * for partially uploaded files.  Performs the blocking upload work of
- * {@link ResumableHttpFileUploader} instances.  Typically these tasks are
+ * Task for generating HTTP requests used to upload files and resume uploads for
+ * partially uploaded files. Performs the blocking upload work of
+ * {@link ResumableHttpFileUploader} instances. Typically these tasks are
  * submitted to an executor service with multiple threads, allowing
  * {@link ResumableHttpFileUploader} instances to execute asynchronously.
  */
 class ResumableHttpUploadTask implements Callable<ResponseMessage> {
 
-  /**
-   * Uploader which created this task, and with which the resultant HTTP
-   * requests should be associated (e.g., progress, state, etc.).
-   */
-  private final ResumableHttpFileUploader uploader;
+	/**
+	 * Uploader which created this task, and with which the resultant HTTP
+	 * requests should be associated (e.g., progress, state, etc.).
+	 */
+	private final ResumableHttpFileUploader uploader;
 
-  /**
-   * Identifies if the upload should be resumed or not.
-   */
-  private final boolean resume;
+	/**
+	 * Identifies if the upload should be resumed or not.
+	 */
+	private final boolean resume;
 
-  /**
-   * Factory for creating HTTP connections.
-   */
-  private final UrlConnectionFactory urlConnectionFactory;
+	/**
+	 * Factory for creating HTTP connections.
+	 */
+	private final UrlConnectionFactory urlConnectionFactory;
 
-  /**
-   * Content length header name.
-   */
-  private static final String CONTENT_LENGTH_HEADER_NAME = "Content-Length";
+	/**
+	 * Content length header name.
+	 */
+	private static final String CONTENT_LENGTH_HEADER_NAME = "Content-Length";
 
-  /**
-   * Content range header name.
-   */
-  private static final String CONTENT_RANGE_HEADER_NAME = "Content-Range";
-  
-  private IOProgressCallback callBack;
- 
-  /**
-   * Constructs an upload task.
-   *
-   * @param uploader with which this task should be associated
-   * @param resume <code>true</code> if this upload should be resumed
-   */
-  ResumableHttpUploadTask(UrlConnectionFactory urlConnectionFactory,
-      ResumableHttpFileUploader uploader,IOProgressCallback progressCallback, boolean resume) {
-    this.urlConnectionFactory = urlConnectionFactory;
-    this.uploader = uploader;
-    this.resume = resume;
-    this.callBack=progressCallback;
-  }
+	/**
+	 * Content range header name.
+	 */
+	private static final String CONTENT_RANGE_HEADER_NAME = "Content-Range";
 
-  public ResponseMessage call() throws Exception {
-    return upload();
-  }
+	private IOProgressCallback callBack;
 
-  /**
-   * Makes an HTTP request to determine the range of bytes for this upload that
-   * the server has already received. The index of the first byte not yet
-   * received by the server is returned.  This method ignores several possible
-   * server errors and returns <code>0</code> in those cases.  If the server
-   * errors persist, they can be appropriately handled in the {@link #upload()}
-   * method (where this method should be called from).
-   *
-   * @return the index of the first byte not yet received by the server for this
-   *     upload
-   * @throws IOException if the HTTP request cannot be made
-   */
-  private long getNextStartByteFromServer() throws IOException {
-    HttpURLConnection connection =
-        urlConnectionFactory.create(uploader.getUrl());
-    connection.setRequestMethod(uploader.getHttpSettings().toString());
-    connection.setRequestProperty(CONTENT_LENGTH_HEADER_NAME, "0");
-    connection.connect();
+	/**
+	 * Constructs an upload task.
+	 * 
+	 * @param uploader
+	 *            with which this task should be associated
+	 * @param resume
+	 *            <code>true</code> if this upload should be resumed
+	 */
+	ResumableHttpUploadTask(UrlConnectionFactory urlConnectionFactory,
+			ResumableHttpFileUploader uploader, IOProgressCallback progressCallback,
+			boolean resume) {
+		this.urlConnectionFactory = urlConnectionFactory;
+		this.uploader = uploader;
+		this.resume = resume;
+		this.callBack = progressCallback;
+	}
 
-    if (connection.getResponseCode() != 308) {
-      return 0L;
-    }
+	@Override
+	public ResponseMessage call() throws Exception {
+		return upload();
+	}
 
-    return getNextByteIndexFromRangeHeader(connection.getHeaderField("Range"));
-  }
+	/**
+	 * Makes an HTTP request to determine the range of bytes for this upload
+	 * that the server has already received. The index of the first byte not yet
+	 * received by the server is returned. This method ignores several possible
+	 * server errors and returns <code>0</code> in those cases. If the server
+	 * errors persist, they can be appropriately handled in the
+	 * {@link #upload()} method (where this method should be called from).
+	 * 
+	 * @return the index of the first byte not yet received by the server for
+	 *         this upload
+	 * @throws IOException
+	 *             if the HTTP request cannot be made
+	 */
+	private long getNextStartByteFromServer() throws IOException {
+		HttpURLConnection connection = urlConnectionFactory.create(uploader.getUrl());
+		connection.setRequestMethod(uploader.getHttpSettings().toString());
+		connection.setRequestProperty(CONTENT_LENGTH_HEADER_NAME, "0");
+		connection.connect();
 
-  /**
-   * Returns the next byte index identifying data that the server has not
-   * yet received, obtained from an HTTP Range header (e.g., a header of
-   * "Range: 0-55" would cause 56 to be returned).  <code>null</code> or
-   * malformed headers cause 0 to be returned.
-   *
-   * @param rangeHeader in the server response
-   * @return the byte index beginning where the server has yet to receive data
-   */
-  private long getNextByteIndexFromRangeHeader(String rangeHeader) {
-    if (rangeHeader == null || rangeHeader.indexOf('-') == -1) {
+		if (connection.getResponseCode() != 308) {
+			return 0L;
+		}
 
-      // No valid range header, start from the beginning of the file.
-      return 0L;
-    }
+		return getNextByteIndexFromRangeHeader(connection.getHeaderField("Range"));
+	}
 
-    Matcher rangeMatcher =
-        Pattern.compile("[0-9]+-[0-9]+").matcher(rangeHeader);
-    if (!rangeMatcher.find(1)) {
+	/**
+	 * Returns the next byte index identifying data that the server has not yet
+	 * received, obtained from an HTTP Range header (e.g., a header of
+	 * "Range: 0-55" would cause 56 to be returned). <code>null</code> or
+	 * malformed headers cause 0 to be returned.
+	 * 
+	 * @param rangeHeader
+	 *            in the server response
+	 * @return the byte index beginning where the server has yet to receive data
+	 */
+	private long getNextByteIndexFromRangeHeader(String rangeHeader) {
+		if (rangeHeader == null || rangeHeader.indexOf('-') == -1) {
 
-      // No valid range header, start from the beginning of the file.
-      return 0L;
-    }
+			// No valid range header, start from the beginning of the file.
+			return 0L;
+		}
 
-    try {
-      String[] rangeParts = rangeMatcher.group().split("-");
+		Matcher rangeMatcher = Pattern.compile("[0-9]+-[0-9]+").matcher(rangeHeader);
+		if (!rangeMatcher.find(1)) {
 
-      // Ensure that the start of the range is 0.
-      long firstByteIndex = Long.parseLong(rangeParts[0]);
-      if (firstByteIndex != 0) {
-        return 0L;
-      }
+			// No valid range header, start from the beginning of the file.
+			return 0L;
+		}
 
-      // Return the next byte index after the end of the range.
-      long lastByteIndex = Long.parseLong(rangeParts[1]);
-      uploader.setNumBytesUploaded(lastByteIndex + 1);
-      return  lastByteIndex + 1;
-    } catch (NumberFormatException e) {
-      return 0L;
-    }
-  }
+		try {
+			String[] rangeParts = rangeMatcher.group().split("-");
 
-  /**
-   * Sets required and relevant HTTP headers that should be used in the upload
-   * request.
-   *
-   * @param start byte index from which to begin sending data
-   * @param length of the byte range to send in the request
-   */
-  private void setHeaders(HttpURLConnection conn, long start, long length) {
-    long fileSize = uploader.getData().length();
+			// Ensure that the start of the range is 0.
+			long firstByteIndex = Long.parseLong(rangeParts[0]);
+			if (firstByteIndex != 0) {
+				return 0L;
+			}
 
-    // Generate the content length header.
-    conn.setRequestProperty(CONTENT_LENGTH_HEADER_NAME, String.valueOf(length));
+			// Return the next byte index after the end of the range.
+			long lastByteIndex = Long.parseLong(rangeParts[1]);
+			uploader.setNumBytesUploaded(lastByteIndex + 1);
+			return lastByteIndex + 1;
+		} catch (NumberFormatException e) {
+			return 0L;
+		}
+	}
 
-    // Generate content range header
-    // (in the form "Content-range: bytes 10-19/50".
-    String contentRange = "bytes " + (fileSize == 0 ? "*/0"
-        : start + "-" + (start + length - 1) + "/" + String.valueOf(fileSize));
-    conn.setRequestProperty(CONTENT_RANGE_HEADER_NAME, contentRange);
+	/**
+	 * Sets required and relevant HTTP headers that should be used in the upload
+	 * request.
+	 * 
+	 * @param start
+	 *            byte index from which to begin sending data
+	 * @param length
+	 *            of the byte range to send in the request
+	 */
+	private void setHeaders(HttpURLConnection conn, long start, long length) {
+		long fileSize = uploader.getData().length();
 
-    // NOTE: We intentionally leave out the "Content-type" header because
-    // the upload server does a better job of detecting file types by looking
-    // at the extension, and the content of the file, than we can do here.
-    // Leaving out the header causes the scotty server to try to determine the
-    // content type.
+		// Generate the content length header.
+		conn.setRequestProperty(CONTENT_LENGTH_HEADER_NAME, String.valueOf(length));
 
-    // add user headers
-    for (Map.Entry<String, String> header : uploader.getHeaders().entrySet()) {
-      conn.setRequestProperty(header.getKey(), header.getValue());
-    }
-  }
+		// Generate content range header
+		// (in the form "Content-range: bytes 10-19/50".
+		String contentRange = "bytes "
+				+ (fileSize == 0 ? "*/0" : start + "-" + (start + length - 1) + "/"
+						+ String.valueOf(fileSize));
+		conn.setRequestProperty(CONTENT_RANGE_HEADER_NAME, contentRange);
 
-  /**
-   * Writes an HTTP PUT or POST request to the output stream of the url
-   * connection . The request specifies appropriate HTTP headers and the
-   * specified byte range of <code>file</code>.
-   *
-   * @return the input stream from which the response to the HTTP request can
-   *     be read
-   * @throws IOException if no connection can be made to the server
-   */
-  private ResponseMessage upload() throws IOException {
-    long start = resume ? getNextStartByteFromServer() : 0L;
+		// NOTE: We intentionally leave out the "Content-type" header because
+		// the upload server does a better job of detecting file types by
+		// looking
+		// at the extension, and the content of the file, than we can do here.
+		// Leaving out the header causes the scotty server to try to determine
+		// the
+		// content type.
 
-    while (uploader.getUploadState().equals(IOState.IN_PROGRESS)) {
+		// add user headers
+		for (Map.Entry<String, String> header : uploader.getHeaders().entrySet()) {
+			conn.setRequestProperty(header.getKey(), header.getValue());
+		}
+	}
 
-      // Compute the length to upload.
-      long length = Math.min(
-          (uploader.getData().length() - start), uploader.getChunkSize());
+	/**
+	 * Writes an HTTP PUT or POST request to the output stream of the url
+	 * connection . The request specifies appropriate HTTP headers and the
+	 * specified byte range of <code>file</code>.
+	 * 
+	 * @return the input stream from which the response to the HTTP request can
+	 *         be read
+	 * @throws IOException
+	 *             if no connection can be made to the server
+	 */
+	private ResponseMessage upload() throws IOException {
+		long start = resume ? getNextStartByteFromServer() : 0L;
 
-      // Establish a writable connection at the request URL.
-      HttpURLConnection connection =
-          urlConnectionFactory.create(uploader.getUrl());
-      connection.setDoOutput(true);
-      connection.setDoInput(true);
-      connection.setRequestMethod(uploader.getHttpSettings().getHttpMethod().toString());
-      setHeaders(connection, start, length);
-      OutputStream out = connection.getOutputStream();
+		while (uploader.getUploadState().equals(IOState.IN_PROGRESS)) {
 
-      try {
+			// Compute the length to upload.
+			long length = Math.min((uploader.getData().length() - start),
+					uploader.getChunkSize());
 
-        // Write the contents of the file (slice) to the output stream and
-        // close the stream when completed.
-        writeSlice(start, length, out);
-        out.close();
+			// Establish a writable connection at the request URL.
+			HttpURLConnection connection = urlConnectionFactory.create(uploader.getUrl());
+			connection.setDoOutput(true);
+			connection.setDoInput(true);
+			connection.setRequestMethod(uploader.getHttpSettings().getHttpMethod().toString());
+			setHeaders(connection, start, length);
+			OutputStream out = connection.getOutputStream();
 
-        // Check for 308 and 503, and handle accordingly, otherwise return
-        // the response stream.
-        switch (connection.getResponseCode()) {
-          case 308:
+			try {
 
-            // Incomplete, set the byte range to the next chunk of bytes.
-            String range = connection.getHeaderField("Range");
-            if (range != null) {
-              start = getNextByteIndexFromRangeHeader(range);
-            } else {
-              start = start + length;
-            }
+				// Write the contents of the file (slice) to the output stream
+				// and
+				// close the stream when completed.
+				writeSlice(start, length, out);
+				out.close();
 
-            // Check for a new location.
-            String location = connection.getHeaderField("Location");
-            if (location != null) {
-              uploader.setUrl(new URL(location));
-            }
-            uploader.getBackoffPolicy().reset();
-            break;
-          case 503:
+				// Check for 308 and 503, and handle accordingly, otherwise
+				// return
+				// the response stream.
+				switch (connection.getResponseCode()) {
+				case 308:
 
-            // Server error, request the uploaded range, and start at the next
-            // byte index.
-            if (!uploader.isPaused()) {
-              start = getNextStartByteFromServer();
+					// Incomplete, set the byte range to the next chunk of
+					// bytes.
+					String range = connection.getHeaderField("Range");
+					if (range != null) {
+						start = getNextByteIndexFromRangeHeader(range);
+					} else {
+						start = start + length;
+					}
 
-              // Correct the number of total uploaded bytes.
-              uploader.addNumBytesUploaded(-length);
+					// Check for a new location.
+					String location = connection.getHeaderField("Location");
+					if (location != null) {
+						uploader.setUrl(new URL(location));
+					}
+					uploader.getBackoffPolicy().reset();
+					break;
+				case 503:
 
-              // Backoff before making another request (pausing the upload
-              // if the backoff has terminated).
-              try {
-                long backoffMs = uploader.getBackoffPolicy().getNextBackoffMs();
-                if (backoffMs == BackoffPolicy.STOP) {
-                  uploader.pause();
-                } else {
-                  Thread.sleep(backoffMs);
-                }
-              } catch (InterruptedException e) {
+					// Server error, request the uploaded range, and start at
+					// the next
+					// byte index.
+					if (!uploader.isPaused()) {
+						start = getNextStartByteFromServer();
 
-                // Ignore.
-              }
-            }
-            break;
-          default:
+						// Correct the number of total uploaded bytes.
+						uploader.addNumBytesUploaded(-length);
 
-            // Complete, return the input stream for the caller to read and send
-            // a completion notification.
-            uploader.setUploadState(IOState.COMPLETE);
-            if(callBack!=null){
-            	callBack.onComplete();
-            }
-            uploader.sendCompletionNotification();
-            uploader.getBackoffPolicy().reset();
-            return new ResponseMessage(connection.getContentLength(),
-                connection.getInputStream());
-        }
-      } catch (ServerException e) {
+						// Backoff before making another request (pausing the
+						// upload
+						// if the backoff has terminated).
+						try {
+							long backoffMs = uploader.getBackoffPolicy().getNextBackoffMs();
+							if (backoffMs == BackoffPolicy.STOP) {
+								uploader.pause();
+							} else {
+								Thread.sleep(backoffMs);
+							}
+						} catch (InterruptedException e) {
 
-        // If the connection was broken, try again.
-        if (!uploader.isPaused()) {
-          start = getNextStartByteFromServer();
-        }
-      } catch (IOException e) {
-        // There was a file read error.
-        uploader.setUploadState(IOState.CLIENT_ERROR);
-        if(callBack!=null){
-        	callBack.onError(e);
-        }
-      }
-    }
+							// Ignore.
+						}
+					}
+					break;
+				default:
 
-    // Return the input stream from which the response can be read.
-    return null;
-  }
+					// Complete, return the input stream for the caller to read
+					// and send
+					// a completion notification.
+					uploader.setUploadState(IOState.COMPLETE);
+					if (callBack != null) {
+						callBack.onComplete();
+					}
+					uploader.sendCompletionNotification();
+					uploader.getBackoffPolicy().reset();
+					return new ResponseMessage(connection.getContentLength(),
+							connection.getInputStream());
+				}
+			} catch (ServerException e) {
 
-  /**
-   * Writes the contents of <code>file</code> specified by the byte range
-   * beginning at <code>start</code> and ending at
-   * <code>start + length - 1</code> inclusive.  Chunks of 64 KB are written
-   * to the output stream successively, checking before each write to see
-   * if the uploader has been paused, until <code>length</code> bytes have
-   * been written to <code>out</code>.
-   *
-   * @param start byte index from which to begin sending data
-   * @param length of the byte range to send in the request
-   * @param out stream to write the request to
-   * @throws IOException if the contents of <code>file</code> cannot be read
-   *     or written properly
-   * @throws ServerException if the connection to the server is broken
-   */
-  void writeSlice(long start, long length, OutputStream out)
-      throws IOException, ServerException {
+				// If the connection was broken, try again.
+				if (!uploader.isPaused()) {
+					start = getNextStartByteFromServer();
+				}
+			} catch (IOException e) {
+				// There was a file read error.
+				uploader.setUploadState(IOState.CLIENT_ERROR);
+				if (callBack != null) {
+					callBack.onError(e);
+				}
+			}
+		}
 
-    // The number of bytes read from the file to be uploaded.
-    int numRead = 0;
+		// Return the input stream from which the response can be read.
+		return null;
+	}
 
-    // The number of expected remaining bytes to read/write. This number could
-    // actually differ from the number of bytes available in the file. When
-    // there is a difference, an InvalidStateException will be thrown.
-    long numRemaining = length;
+	/**
+	 * Writes the contents of <code>file</code> specified by the byte range
+	 * beginning at <code>start</code> and ending at
+	 * <code>start + length - 1</code> inclusive. Chunks of 64 KB are written to
+	 * the output stream successively, checking before each write to see if the
+	 * uploader has been paused, until <code>length</code> bytes have been
+	 * written to <code>out</code>.
+	 * 
+	 * @param start
+	 *            byte index from which to begin sending data
+	 * @param length
+	 *            of the byte range to send in the request
+	 * @param out
+	 *            stream to write the request to
+	 * @throws IOException
+	 *             if the contents of <code>file</code> cannot be read or
+	 *             written properly
+	 * @throws ServerException
+	 *             if the connection to the server is broken
+	 */
+	void writeSlice(long start, long length, OutputStream out) throws IOException,
+			ServerException {
 
-    // Buffer to read bytes from the file into (64 KB).
-    byte[] chunk = new byte[65536];
+		// The number of bytes read from the file to be uploaded.
+		int numRead = 0;
 
-    // Input stream to the file to upload (starting at <code>start</code>).
-    UploadData uploadData = uploader.getData();
-    uploadData.setPosition(start);
+		// The number of expected remaining bytes to read/write. This number
+		// could
+		// actually differ from the number of bytes available in the file. When
+		// there is a difference, an InvalidStateException will be thrown.
+		long numRemaining = length;
 
-    synchronized (uploadData) {
-      while (!uploader.isPaused()) {
+		// Buffer to read bytes from the file into (64 KB).
+		byte[] chunk = new byte[65536];
 
-        // Buffer some bytes from the file.
-        if (numRemaining < chunk.length) {
-          numRead = uploadData.read(chunk, 0, (int) numRemaining);
-        } else {
-          numRead = uploadData.read(chunk, 0, chunk.length);
-        }
+		// Input stream to the file to upload (starting at <code>start</code>).
+		UploadData uploadData = uploader.getData();
+		uploadData.setPosition(start);
 
-        try {
-          // Break out of the loop if the end of the file has been reached.
-          if (numRead < 0) {
+		synchronized (uploadData) {
+			while (!uploader.isPaused()) {
 
-            // If we expected to read more bytes from the file, but the end of
-            // the file has been reached, fail the upload.
-            if (numRemaining > 0) {
-              out.flush();
-              uploader.setUploadState(IOState.CLIENT_ERROR);
-            }
-            break;
-          }
+				// Buffer some bytes from the file.
+				if (numRemaining < chunk.length) {
+					numRead = uploadData.read(chunk, 0, (int) numRemaining);
+				} else {
+					numRead = uploadData.read(chunk, 0, chunk.length);
+				}
 
-          // Write a chunk of bytes to the output stream.
-          out.write(chunk, 0, numRead);
-          out.flush();
-          numRemaining -= numRead;
-          uploader.addNumBytesUploaded(numRead);
+				try {
+					// Break out of the loop if the end of the file has been
+					// reached.
+					if (numRead < 0) {
 
-          // Break out of the loop if the end of the slice has been reached.
-          if (numRemaining == 0) {
-            break;
-          }
-        } catch (IOException e) {
-          throw new ServerException();
-        }
-      }
-    }
-  }
+						// If we expected to read more bytes from the file, but
+						// the end of
+						// the file has been reached, fail the upload.
+						if (numRemaining > 0) {
+							out.flush();
+							uploader.setUploadState(IOState.CLIENT_ERROR);
+						}
+						break;
+					}
 
-  /**
-   * Exception that should be thrown when a connection with the server is
-   * broken.
-   */
-  class ServerException extends Exception {
-  }
+					// Write a chunk of bytes to the output stream.
+					out.write(chunk, 0, numRead);
+					out.flush();
+					numRemaining -= numRead;
+					uploader.addNumBytesUploaded(numRead);
+
+					// Break out of the loop if the end of the slice has been
+					// reached.
+					if (numRemaining == 0) {
+						break;
+					}
+				} catch (IOException e) {
+					throw new ServerException();
+				}
+			}
+		}
+	}
+
+	/**
+	 * Exception that should be thrown when a connection with the server is
+	 * broken.
+	 */
+	class ServerException extends Exception {
+	}
 }

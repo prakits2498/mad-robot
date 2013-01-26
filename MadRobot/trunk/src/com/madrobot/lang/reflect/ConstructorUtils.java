@@ -68,11 +68,9 @@ public class ConstructorUtils {
 	 * @return <code>null</code> if accessible constructor can not be found.
 	 * @see java.lang.SecurityManager
 	 */
-	public static <T> Constructor<T> getAccessibleConstructor(
-			Constructor<T> ctor) {
+	public static <T> Constructor<T> getAccessibleConstructor(Constructor<T> ctor) {
 		return MemberUtils.isAccessible(ctor)
-				&& Modifier.isPublic(ctor.getDeclaringClass().getModifiers()) ? ctor
-				: null;
+				&& Modifier.isPublic(ctor.getDeclaringClass().getModifiers()) ? ctor : null;
 	}
 
 	/**
@@ -98,8 +96,8 @@ public class ConstructorUtils {
 	 *         returns <code>null</code>.
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> Constructor<T> getMatchingAccessibleConstructor(
-			Class<T> cls, Class<?>... parameterTypes) {
+	public static <T> Constructor<T> getMatchingAccessibleConstructor(Class<T> cls,
+			Class<?>... parameterTypes) {
 		// see if we can find the constructor directly
 		// most of the time this works and it's much faster
 		try {
@@ -113,15 +111,13 @@ public class ConstructorUtils {
 		Constructor<?>[] ctors = cls.getConstructors();
 		for (int i = 0; i < ctors.length; i++) {
 			// compare parameters
-			if (ClassUtils.isAssignable(parameterTypes,
-					ctors[i].getParameterTypes(), true)) {
+			if (ClassUtils.isAssignable(parameterTypes, ctors[i].getParameterTypes(), true)) {
 				// get accessible version of method
 				Constructor<T> ctor = getAccessibleConstructor((Constructor<T>) ctors[i]);
 				if (ctor != null) {
 					MemberUtils.setAccessibleWorkaround(ctor);
 					if (result == null
-							|| MemberUtils.compareParameterTypes(
-									ctor.getParameterTypes(),
+							|| MemberUtils.compareParameterTypes(ctor.getParameterTypes(),
 									result.getParameterTypes(), parameterTypes) < 0) {
 						result = ctor;
 					}
@@ -163,10 +159,10 @@ public class ConstructorUtils {
 	 *      java.lang.Class[])
 	 */
 	public static <T> T invokeConstructor(Class<T> cls, Object... args)
-			throws NoSuchMethodException, IllegalAccessException,
-			InvocationTargetException, InstantiationException {
+			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException,
+			InstantiationException {
 		if (null == args) {
-			args = new Object[0];//ArrayUtils.EMPTY_OBJECT_ARRAY;
+			args = new Object[0];// ArrayUtils.EMPTY_OBJECT_ARRAY;
 		}
 		Class<?> parameterTypes[] = new Class[args.length];
 		for (int i = 0; i < args.length; i++) {
@@ -205,21 +201,18 @@ public class ConstructorUtils {
 	 * @see Constructor#newInstance
 	 */
 	public static <T> T invokeConstructor(Class<T> cls, Object[] args,
-			Class<?>[] parameterTypes) throws NoSuchMethodException,
-			IllegalAccessException, InvocationTargetException,
-			InstantiationException {
+			Class<?>[] parameterTypes) throws NoSuchMethodException, IllegalAccessException,
+			InvocationTargetException, InstantiationException {
 		if (parameterTypes == null) {
-			parameterTypes =new Class[0];// ArrayUtils.EMPTY_CLASS_ARRAY;
+			parameterTypes = new Class[0];// ArrayUtils.EMPTY_CLASS_ARRAY;
 		}
 		if (args == null) {
-			args = new Object[0];//ArrayUtils.EMPTY_OBJECT_ARRAY;
+			args = new Object[0];// ArrayUtils.EMPTY_OBJECT_ARRAY;
 		}
-		Constructor<T> ctor = getMatchingAccessibleConstructor(cls,
-				parameterTypes);
+		Constructor<T> ctor = getMatchingAccessibleConstructor(cls, parameterTypes);
 		if (null == ctor) {
-			throw new NoSuchMethodException(
-					"No such accessible constructor on object: "
-							+ cls.getName());
+			throw new NoSuchMethodException("No such accessible constructor on object: "
+					+ cls.getName());
 		}
 		return ctor.newInstance(args);
 	}
@@ -256,10 +249,10 @@ public class ConstructorUtils {
 	 *      java.lang.Class[])
 	 */
 	public static <T> T invokeExactConstructor(Class<T> cls, Object... args)
-			throws NoSuchMethodException, IllegalAccessException,
-			InvocationTargetException, InstantiationException {
+			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException,
+			InstantiationException {
 		if (null == args) {
-			args =new Object[0];// ArrayUtils.EMPTY_OBJECT_ARRAY;
+			args = new Object[0];// ArrayUtils.EMPTY_OBJECT_ARRAY;
 		}
 		int arguments = args.length;
 		Class<?> parameterTypes[] = new Class[arguments];
@@ -299,20 +292,18 @@ public class ConstructorUtils {
 	 * @see Constructor#newInstance
 	 */
 	public static <T> T invokeExactConstructor(Class<T> cls, Object[] args,
-			Class<?>[] parameterTypes) throws NoSuchMethodException,
-			IllegalAccessException, InvocationTargetException,
-			InstantiationException {
+			Class<?>[] parameterTypes) throws NoSuchMethodException, IllegalAccessException,
+			InvocationTargetException, InstantiationException {
 		if (args == null) {
-			args = new Object[0];//ArrayUtils.EMPTY_OBJECT_ARRAY;
+			args = new Object[0];// ArrayUtils.EMPTY_OBJECT_ARRAY;
 		}
 		if (parameterTypes == null) {
-			parameterTypes = new Class[0];//ArrayUtils.EMPTY_CLASS_ARRAY;
+			parameterTypes = new Class[0];// ArrayUtils.EMPTY_CLASS_ARRAY;
 		}
 		Constructor<T> ctor = getAccessibleConstructor(cls, parameterTypes);
 		if (null == ctor) {
-			throw new NoSuchMethodException(
-					"No such accessible constructor on object: "
-							+ cls.getName());
+			throw new NoSuchMethodException("No such accessible constructor on object: "
+					+ cls.getName());
 		}
 		return ctor.newInstance(args);
 	}

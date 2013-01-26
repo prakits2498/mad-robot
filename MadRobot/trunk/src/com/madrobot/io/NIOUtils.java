@@ -1,11 +1,12 @@
 package com.madrobot.io;
 
-import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
+import java.nio.ShortBuffer;
 import java.nio.channels.FileChannel;
 
 public class NIOUtils {
@@ -36,8 +37,7 @@ public class NIOUtils {
 		return res;
 	}
 
-	public static void copyFile(final File in, final File out)
-			throws IOException {
+	public static void copyFile(final File in, final File out) throws IOException {
 		RandomAccessFile f1 = new RandomAccessFile(in, "r");
 		RandomAccessFile f2 = new RandomAccessFile(out, "rw");
 		try {
@@ -63,5 +63,22 @@ public class NIOUtils {
 		}
 	}
 
-	
+	public static FloatBuffer toFloatBuffer(float[] v) {
+		ByteBuffer buf = ByteBuffer.allocateDirect(v.length * 4);
+		buf.order(ByteOrder.nativeOrder());
+		FloatBuffer buffer = buf.asFloatBuffer();
+		buffer.put(v);
+		buffer.position(0);
+		return buffer;
+	}
+
+	public static ShortBuffer toShortBuffer(short[] v) {
+		ByteBuffer buf = ByteBuffer.allocateDirect(v.length * 2);
+		buf.order(ByteOrder.nativeOrder());
+		ShortBuffer buffer = buf.asShortBuffer();
+		buffer.put(v);
+		buffer.position(0);
+		return buffer;
+	}
+
 }

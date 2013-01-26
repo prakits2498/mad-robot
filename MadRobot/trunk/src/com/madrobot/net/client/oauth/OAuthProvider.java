@@ -18,10 +18,8 @@ import java.util.Map;
  * </p>
  * 
  * <pre>
- * OAuthProvider provider = new DefaultOAuthProvider(
- * 		&quot;http://twitter.com/oauth/request_token&quot;,
- * 		&quot;http://twitter.com/oauth/access_token&quot;,
- * 		&quot;http://twitter.com/oauth/authorize&quot;);
+ * OAuthProvider provider = new DefaultOAuthProvider(&quot;http://twitter.com/oauth/request_token&quot;,
+ * 		&quot;http://twitter.com/oauth/access_token&quot;, &quot;http://twitter.com/oauth/authorize&quot;);
  * </pre>
  * <p>
  * Depending on the HTTP library you use, you may need a different provider
@@ -34,8 +32,7 @@ import java.util.Map;
  * <p>
  * 
  * <pre>
- * String url = provider.retrieveRequestToken(consumer,
- * 		&quot;http://www.example.com/callback&quot;);
+ * String url = provider.retrieveRequestToken(consumer, &quot;http://www.example.com/callback&quot;);
  * </pre>
  * 
  * </p>
@@ -178,10 +175,9 @@ public interface OAuthProvider extends Serializable {
 	 * @throws OAuthCommunicationException
 	 *             if server communication failed
 	 */
-	public String retrieveRequestToken(OAuthConsumer consumer,
-			String callbackUrl) throws OAuthMessageSignerException,
-			OAuthNotAuthorizedException, OAuthExpectationFailedException,
-			OAuthCommunicationException;
+	public String retrieveRequestToken(OAuthConsumer consumer, String callbackUrl)
+			throws OAuthMessageSignerException, OAuthNotAuthorizedException,
+			OAuthExpectationFailedException, OAuthCommunicationException;
 
 	public void setListener(OAuthProviderListener listener);
 

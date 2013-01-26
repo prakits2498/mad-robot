@@ -238,9 +238,8 @@ public class DurationFormatUtils {
 	 *            whether to pad
 	 * @return the formatted string
 	 */
-	static String format(Token[] tokens, int years, int months, int days,
-			int hours, int minutes, int seconds, int milliseconds,
-			boolean padWithZeros) {
+	static String format(Token[] tokens, int years, int months, int days, int hours,
+			int minutes, int seconds, int milliseconds, boolean padWithZeros) {
 		StringBuffer buffer = new StringBuffer();
 		boolean lastOutputSeconds = false;
 		int sz = tokens.length;
@@ -252,46 +251,40 @@ public class DurationFormatUtils {
 				buffer.append(value.toString());
 			} else {
 				if (value == y) {
-					buffer.append(padWithZeros ? StringUtils.leftPad(
-							Integer.toString(years), count, '0') : Integer
-							.toString(years));
+					buffer.append(padWithZeros ? StringUtils.leftPad(Integer.toString(years),
+							count, '0') : Integer.toString(years));
 					lastOutputSeconds = false;
 				} else if (value == M) {
-					buffer.append(padWithZeros ? StringUtils.leftPad(
-							Integer.toString(months), count, '0') : Integer
-							.toString(months));
+					buffer.append(padWithZeros ? StringUtils.leftPad(Integer.toString(months),
+							count, '0') : Integer.toString(months));
 					lastOutputSeconds = false;
 				} else if (value == d) {
-					buffer.append(padWithZeros ? StringUtils.leftPad(
-							Integer.toString(days), count, '0') : Integer
-							.toString(days));
+					buffer.append(padWithZeros ? StringUtils.leftPad(Integer.toString(days),
+							count, '0') : Integer.toString(days));
 					lastOutputSeconds = false;
 				} else if (value == H) {
-					buffer.append(padWithZeros ? StringUtils.leftPad(
-							Integer.toString(hours), count, '0') : Integer
-							.toString(hours));
+					buffer.append(padWithZeros ? StringUtils.leftPad(Integer.toString(hours),
+							count, '0') : Integer.toString(hours));
 					lastOutputSeconds = false;
 				} else if (value == m) {
 					buffer.append(padWithZeros ? StringUtils.leftPad(
-							Integer.toString(minutes), count, '0') : Integer
-							.toString(minutes));
+							Integer.toString(minutes), count, '0') : Integer.toString(minutes));
 					lastOutputSeconds = false;
 				} else if (value == s) {
 					buffer.append(padWithZeros ? StringUtils.leftPad(
-							Integer.toString(seconds), count, '0') : Integer
-							.toString(seconds));
+							Integer.toString(seconds), count, '0') : Integer.toString(seconds));
 					lastOutputSeconds = true;
 				} else if (value == S) {
 					if (lastOutputSeconds) {
 						milliseconds += 1000;
 						String str = padWithZeros ? StringUtils.leftPad(
-								Integer.toString(milliseconds), count, '0')
-								: Integer.toString(milliseconds);
+								Integer.toString(milliseconds), count, '0') : Integer
+								.toString(milliseconds);
 						buffer.append(str.substring(1));
 					} else {
 						buffer.append(padWithZeros ? StringUtils.leftPad(
-								Integer.toString(milliseconds), count, '0')
-								: Integer.toString(milliseconds));
+								Integer.toString(milliseconds), count, '0') : Integer
+								.toString(milliseconds));
 					}
 					lastOutputSeconds = false;
 				}
@@ -358,25 +351,21 @@ public class DurationFormatUtils {
 		}
 		if (Token.containsTokenWithValue(tokens, H)) {
 			hours = (int) (durationMillis / DateUtils.MILLIS_PER_HOUR);
-			durationMillis = durationMillis
-					- (hours * DateUtils.MILLIS_PER_HOUR);
+			durationMillis = durationMillis - (hours * DateUtils.MILLIS_PER_HOUR);
 		}
 		if (Token.containsTokenWithValue(tokens, m)) {
 			minutes = (int) (durationMillis / DateUtils.MILLIS_PER_MINUTE);
-			durationMillis = durationMillis
-					- (minutes * DateUtils.MILLIS_PER_MINUTE);
+			durationMillis = durationMillis - (minutes * DateUtils.MILLIS_PER_MINUTE);
 		}
 		if (Token.containsTokenWithValue(tokens, s)) {
 			seconds = (int) (durationMillis / DateUtils.MILLIS_PER_SECOND);
-			durationMillis = durationMillis
-					- (seconds * DateUtils.MILLIS_PER_SECOND);
+			durationMillis = durationMillis - (seconds * DateUtils.MILLIS_PER_SECOND);
 		}
 		if (Token.containsTokenWithValue(tokens, S)) {
 			milliseconds = (int) durationMillis;
 		}
 
-		return format(tokens, 0, 0, days, hours, minutes, seconds,
-				milliseconds, padWithZeros);
+		return format(tokens, 0, 0, days, hours, minutes, seconds, milliseconds, padWithZeros);
 	}
 
 	// -----------------------------------------------------------------------
@@ -416,8 +405,7 @@ public class DurationFormatUtils {
 	 * @return the time as a String
 	 */
 	public static String formatDurationISO(long durationMillis) {
-		return formatDuration(durationMillis, ISO_EXTENDED_FORMAT_PATTERN,
-				false);
+		return formatDuration(durationMillis, ISO_EXTENDED_FORMAT_PATTERN, false);
 	}
 
 	/**
@@ -439,8 +427,7 @@ public class DurationFormatUtils {
 	 * @return the formatted text in days/hours/minutes/seconds
 	 */
 	public static String formatDurationWords(long durationMillis,
-			boolean suppressLeadingZeroElements,
-			boolean suppressTrailingZeroElements) {
+			boolean suppressLeadingZeroElements, boolean suppressTrailingZeroElements) {
 
 		// This method is generally replacable by the format method, but
 		// there are a series of tweaks and special cases that require
@@ -459,8 +446,7 @@ public class DurationFormatUtils {
 					tmp = StringUtils.replaceOnce(duration, " 0 minutes", "");
 					duration = tmp;
 					if (tmp.length() != duration.length()) {
-						duration = StringUtils.replaceOnce(tmp, " 0 seconds",
-								"");
+						duration = StringUtils.replaceOnce(tmp, " 0 seconds", "");
 					}
 				}
 			}
@@ -505,10 +491,8 @@ public class DurationFormatUtils {
 	 *            the way in which to format the duration
 	 * @return the time as a String
 	 */
-	public static String formatPeriod(long startMillis, long endMillis,
-			String format) {
-		return formatPeriod(startMillis, endMillis, format, true,
-				TimeZone.getDefault());
+	public static String formatPeriod(long startMillis, long endMillis, String format) {
+		return formatPeriod(startMillis, endMillis, format, true, TimeZone.getDefault());
 	}
 
 	/**
@@ -544,8 +528,8 @@ public class DurationFormatUtils {
 	 *            the millis are defined in
 	 * @return the time as a String
 	 */
-	public static String formatPeriod(long startMillis, long endMillis,
-			String format, boolean padWithZeros, TimeZone timezone) {
+	public static String formatPeriod(long startMillis, long endMillis, String format,
+			boolean padWithZeros, TimeZone timezone) {
 
 		// Used to optimise for differences under 28 days and
 		// called formatDuration(millis, format); however this did not work
@@ -563,14 +547,11 @@ public class DurationFormatUtils {
 		end.setTime(new Date(endMillis));
 
 		// initial estimates
-		int milliseconds = end.get(Calendar.MILLISECOND)
-				- start.get(Calendar.MILLISECOND);
+		int milliseconds = end.get(Calendar.MILLISECOND) - start.get(Calendar.MILLISECOND);
 		int seconds = end.get(Calendar.SECOND) - start.get(Calendar.SECOND);
 		int minutes = end.get(Calendar.MINUTE) - start.get(Calendar.MINUTE);
-		int hours = end.get(Calendar.HOUR_OF_DAY)
-				- start.get(Calendar.HOUR_OF_DAY);
-		int days = end.get(Calendar.DAY_OF_MONTH)
-				- start.get(Calendar.DAY_OF_MONTH);
+		int hours = end.get(Calendar.HOUR_OF_DAY) - start.get(Calendar.HOUR_OF_DAY);
+		int days = end.get(Calendar.DAY_OF_MONTH) - start.get(Calendar.DAY_OF_MONTH);
 		int months = end.get(Calendar.MONTH) - start.get(Calendar.MONTH);
 		int years = end.get(Calendar.YEAR) - start.get(Calendar.YEAR);
 
@@ -677,8 +658,8 @@ public class DurationFormatUtils {
 			seconds = 0;
 		}
 
-		return format(tokens, years, months, days, hours, minutes, seconds,
-				milliseconds, padWithZeros);
+		return format(tokens, years, months, days, hours, minutes, seconds, milliseconds,
+				padWithZeros);
 	}
 
 	// -----------------------------------------------------------------------
@@ -698,8 +679,8 @@ public class DurationFormatUtils {
 	 * @return the time as a String
 	 */
 	public static String formatPeriodISO(long startMillis, long endMillis) {
-		return formatPeriod(startMillis, endMillis,
-				ISO_EXTENDED_FORMAT_PATTERN, false, TimeZone.getDefault());
+		return formatPeriod(startMillis, endMillis, ISO_EXTENDED_FORMAT_PATTERN, false,
+				TimeZone.getDefault());
 	}
 
 	/**

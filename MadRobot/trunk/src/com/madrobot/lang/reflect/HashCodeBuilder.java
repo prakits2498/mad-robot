@@ -174,8 +174,7 @@ class HashCodeBuilder implements Builder<Integer> {
 	 *            calculation of hash code
 	 */
 	private static void reflectionAppend(Object object, Class<?> clazz,
-			HashCodeBuilder builder, boolean useTransients,
-			String[] excludeFields) {
+			HashCodeBuilder builder, boolean useTransients, String[] excludeFields) {
 		if (isRegistered(object)) {
 			return;
 		}
@@ -186,8 +185,7 @@ class HashCodeBuilder implements Builder<Integer> {
 			for (Field field : fields) {
 				if (!ArrayUtils.contains(excludeFields, field.getName())
 						&& (field.getName().indexOf('$') == -1)
-						&& (useTransients || !Modifier.isTransient(field
-								.getModifiers()))
+						&& (useTransients || !Modifier.isTransient(field.getModifiers()))
 						&& (!Modifier.isStatic(field.getModifiers()))) {
 					try {
 						Object fieldValue = field.get(object);
@@ -197,8 +195,7 @@ class HashCodeBuilder implements Builder<Integer> {
 						// instead
 						// throw a runtime exception in case the impossible
 						// happens.
-						throw new InternalError(
-								"Unexpected IllegalAccessException");
+						throw new InternalError("Unexpected IllegalAccessException");
 					}
 				}
 			}
@@ -248,8 +245,8 @@ class HashCodeBuilder implements Builder<Integer> {
 	 */
 	public static int reflectionHashCode(int initialNonZeroOddNumber,
 			int multiplierNonZeroOddNumber, Object object) {
-		return reflectionHashCode(initialNonZeroOddNumber,
-				multiplierNonZeroOddNumber, object, false, null, null);
+		return reflectionHashCode(initialNonZeroOddNumber, multiplierNonZeroOddNumber, object,
+				false, null, null);
 	}
 
 	/**
@@ -295,10 +292,9 @@ class HashCodeBuilder implements Builder<Integer> {
 	 *             if the number is zero or even
 	 */
 	public static int reflectionHashCode(int initialNonZeroOddNumber,
-			int multiplierNonZeroOddNumber, Object object,
-			boolean testTransients) {
-		return reflectionHashCode(initialNonZeroOddNumber,
-				multiplierNonZeroOddNumber, object, testTransients, null, null);
+			int multiplierNonZeroOddNumber, Object object, boolean testTransients) {
+		return reflectionHashCode(initialNonZeroOddNumber, multiplierNonZeroOddNumber, object,
+				testTransients, null, null);
 	}
 
 	/**
@@ -322,9 +318,8 @@ class HashCodeBuilder implements Builder<Integer> {
 	public static <T> int reflectionHashCode(int initialNonZeroOddNumber,
 			int multiplierNonZeroOddNumber, T object, boolean testTransients,
 			Class<? super T> reflectUpToClass) {
-		return reflectionHashCode(initialNonZeroOddNumber,
-				multiplierNonZeroOddNumber, object, testTransients,
-				reflectUpToClass, null);
+		return reflectionHashCode(initialNonZeroOddNumber, multiplierNonZeroOddNumber, object,
+				testTransients, reflectUpToClass, null);
 	}
 
 	/**
@@ -392,8 +387,7 @@ class HashCodeBuilder implements Builder<Integer> {
 		reflectionAppend(object, clazz, builder, testTransients, excludeFields);
 		while (clazz.getSuperclass() != null && clazz != reflectUpToClass) {
 			clazz = clazz.getSuperclass();
-			reflectionAppend(object, clazz, builder, testTransients,
-					excludeFields);
+			reflectionAppend(object, clazz, builder, testTransients, excludeFields);
 		}
 		return builder.toHashCode();
 	}
@@ -508,8 +502,7 @@ class HashCodeBuilder implements Builder<Integer> {
 	 * @throws IllegalArgumentException
 	 *             if the object is <code>null</code>
 	 */
-	public static int reflectionHashCode(Object object,
-			Collection<String> excludeFields) {
+	public static int reflectionHashCode(Object object, Collection<String> excludeFields) {
 		return reflectionHashCode(object,
 				ReflectionToStringBuilder.toNoNullStringArray(excludeFields));
 	}
@@ -637,23 +630,20 @@ class HashCodeBuilder implements Builder<Integer> {
 	 * @throws IllegalArgumentException
 	 *             if the number is zero or even
 	 */
-	public HashCodeBuilder(int initialNonZeroOddNumber,
-			int multiplierNonZeroOddNumber) {
+	public HashCodeBuilder(int initialNonZeroOddNumber, int multiplierNonZeroOddNumber) {
 		if (initialNonZeroOddNumber == 0) {
 			throw new IllegalArgumentException(
 					"HashCodeBuilder requires a non zero initial value");
 		}
 		if (initialNonZeroOddNumber % 2 == 0) {
-			throw new IllegalArgumentException(
-					"HashCodeBuilder requires an odd initial value");
+			throw new IllegalArgumentException("HashCodeBuilder requires an odd initial value");
 		}
 		if (multiplierNonZeroOddNumber == 0) {
 			throw new IllegalArgumentException(
 					"HashCodeBuilder requires a non zero multiplier");
 		}
 		if (multiplierNonZeroOddNumber % 2 == 0) {
-			throw new IllegalArgumentException(
-					"HashCodeBuilder requires an odd multiplier");
+			throw new IllegalArgumentException("HashCodeBuilder requires an odd multiplier");
 		}
 		iConstant = multiplierNonZeroOddNumber;
 		iTotal = initialNonZeroOddNumber;

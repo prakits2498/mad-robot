@@ -46,9 +46,9 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.protocol.SyncBasicHttpContext;
 
-import com.madrobot.net.HttpConstants;
-
 import android.content.Context;
+
+import com.madrobot.net.HttpConstants;
 
 /**
  * The AsyncHttpClient can be used to make asynchronous GET, POST, PUT and
@@ -98,7 +98,6 @@ public class AsyncHttpClient {
 	private static final int DEFAULT_SOCKET_BUFFER_SIZE = 8192;
 	private static final int DEFAULT_SOCKET_TIMEOUT = 10 * 1000;
 	private static final String ENCODING_GZIP = "gzip";
-	
 
 	private static int maxConnections = DEFAULT_MAX_CONNECTIONS;
 	private static int socketTimeout = DEFAULT_SOCKET_TIMEOUT;
@@ -118,27 +117,23 @@ public class AsyncHttpClient {
 		BasicHttpParams httpParams = new BasicHttpParams();
 
 		ConnManagerParams.setTimeout(httpParams, socketTimeout);
-		ConnManagerParams.setMaxConnectionsPerRoute(httpParams,
-				new ConnPerRouteBean(maxConnections));
-		ConnManagerParams.setMaxTotalConnections(httpParams,
-				DEFAULT_MAX_CONNECTIONS);
+		ConnManagerParams.setMaxConnectionsPerRoute(httpParams, new ConnPerRouteBean(
+				maxConnections));
+		ConnManagerParams.setMaxTotalConnections(httpParams, DEFAULT_MAX_CONNECTIONS);
 
 		HttpConnectionParams.setSoTimeout(httpParams, socketTimeout);
 		HttpConnectionParams.setConnectionTimeout(httpParams, socketTimeout);
 		HttpConnectionParams.setTcpNoDelay(httpParams, true);
-		HttpConnectionParams.setSocketBufferSize(httpParams,
-				DEFAULT_SOCKET_BUFFER_SIZE);
+		HttpConnectionParams.setSocketBufferSize(httpParams, DEFAULT_SOCKET_BUFFER_SIZE);
 
 		HttpProtocolParams.setVersion(httpParams, HttpVersion.HTTP_1_1);
 		HttpProtocolParams.setUserAgent(httpParams, "MadRobot");
 
 		SchemeRegistry schemeRegistry = new SchemeRegistry();
-		schemeRegistry.register(new Scheme("http", PlainSocketFactory
-				.getSocketFactory(), 80));
-		schemeRegistry.register(new Scheme("https", SSLSocketFactory
-				.getSocketFactory(), 443));
-		ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(
-				httpParams, schemeRegistry);
+		schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
+		schemeRegistry.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), 443));
+		ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(httpParams,
+				schemeRegistry);
 
 		httpContext = new SyncBasicHttpContext(new BasicHttpContext());
 		httpClient = new DefaultHttpClient(cm, httpParams);
@@ -162,8 +157,7 @@ public class AsyncHttpClient {
 				if (encoding != null) {
 					for (HeaderElement element : encoding.getElements()) {
 						if (element.getName().equalsIgnoreCase(ENCODING_GZIP)) {
-							response.setEntity(new InflatingEntity(response
-									.getEntity()));
+							response.setEntity(new InflatingEntity(response.getEntity()));
 							break;
 						}
 					}
@@ -171,8 +165,7 @@ public class AsyncHttpClient {
 			}
 		});
 
-		httpClient.setHttpRequestRetryHandler(new AsyncHttpRetryHandler(
-				DEFAULT_MAX_RETRIES));
+		httpClient.setHttpRequestRetryHandler(new AsyncHttpRetryHandler(DEFAULT_MAX_RETRIES));
 
 		threadPool = (ThreadPoolExecutor) Executors.newCachedThreadPool();
 
@@ -240,11 +233,9 @@ public class AsyncHttpClient {
 	 * @param responseHandler
 	 *            the response handler instance that should handle the response.
 	 */
-	public void delete(Context context, String url,
-			AsyncHttpResponseHandler responseHandler) {
+	public void delete(Context context, String url, AsyncHttpResponseHandler responseHandler) {
 		final HttpDelete delete = new HttpDelete(url);
-		sendRequest(httpClient, httpContext, delete, null, responseHandler,
-				context);
+		sendRequest(httpClient, httpContext, delete, null, responseHandler, context);
 	}
 
 	/**
@@ -270,8 +261,7 @@ public class AsyncHttpClient {
 	 * @param responseHandler
 	 *            the response handler instance that should handle the response.
 	 */
-	public void get(Context context, String url,
-			AsyncHttpResponseHandler responseHandler) {
+	public void get(Context context, String url, AsyncHttpResponseHandler responseHandler) {
 		get(context, url, null, responseHandler);
 	}
 
@@ -294,9 +284,8 @@ public class AsyncHttpClient {
 	 */
 	public void get(Context context, String url, AsyncHttpRequestParams params,
 			AsyncHttpResponseHandler responseHandler) {
-		sendRequest(httpClient, httpContext,
-				new HttpGet(getUrlWithQueryString(url, params)), null,
-				responseHandler, context);
+		sendRequest(httpClient, httpContext, new HttpGet(getUrlWithQueryString(url, params)),
+				null, responseHandler, context);
 	}
 
 	/**
@@ -339,8 +328,7 @@ public class AsyncHttpClient {
 	// HTTP POST Requests
 	//
 
-	private String getUrlWithQueryString(String url,
-			AsyncHttpRequestParams params) {
+	private String getUrlWithQueryString(String url, AsyncHttpRequestParams params) {
 		if (params != null) {
 			String paramString = params.getParamString();
 			url += "?" + paramString;
@@ -377,8 +365,8 @@ public class AsyncHttpClient {
 	 * @param responseHandler
 	 *            the response handler instance that should handle the response.
 	 */
-	public void post(Context context, String url, HttpEntity entity,
-			String contentType, AsyncHttpResponseHandler responseHandler) {
+	public void post(Context context, String url, HttpEntity entity, String contentType,
+			AsyncHttpResponseHandler responseHandler) {
 		sendRequest(httpClient, httpContext,
 				addEntityToRequestBase(new HttpPost(url), entity), contentType,
 				responseHandler, context);
@@ -397,8 +385,7 @@ public class AsyncHttpClient {
 	 * @param responseHandler
 	 *            the response handler instance that should handle the response.
 	 */
-	public void post(Context context, String url,
-			AsyncHttpRequestParams params,
+	public void post(Context context, String url, AsyncHttpRequestParams params,
 			AsyncHttpResponseHandler responseHandler) {
 		post(context, url, paramsToEntity(params), null, responseHandler);
 	}
@@ -452,11 +439,10 @@ public class AsyncHttpClient {
 	 * @param responseHandler
 	 *            the response handler instance that should handle the response.
 	 */
-	public void put(Context context, String url, HttpEntity entity,
-			String contentType, AsyncHttpResponseHandler responseHandler) {
-		sendRequest(httpClient, httpContext,
-				addEntityToRequestBase(new HttpPut(url), entity), contentType,
-				responseHandler, context);
+	public void put(Context context, String url, HttpEntity entity, String contentType,
+			AsyncHttpResponseHandler responseHandler) {
+		sendRequest(httpClient, httpContext, addEntityToRequestBase(new HttpPut(url), entity),
+				contentType, responseHandler, context);
 	}
 
 	/**
@@ -516,13 +502,12 @@ public class AsyncHttpClient {
 			uriRequest.addHeader("Content-Type", contentType);
 		}
 
-		Future<?> request = threadPool.submit(new AsyncHttpRequest(client,
-				httpContext, uriRequest, responseHandler));
+		Future<?> request = threadPool.submit(new AsyncHttpRequest(client, httpContext,
+				uriRequest, responseHandler));
 
 		if (context != null) {
 			// Add request to request map
-			List<WeakReference<Future<?>>> requestList = requestMap
-					.get(context);
+			List<WeakReference<Future<?>>> requestList = requestMap.get(context);
 			if (requestList == null) {
 				requestList = new LinkedList<WeakReference<Future<?>>>();
 				requestMap.put(context, requestList);

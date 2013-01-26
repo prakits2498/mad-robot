@@ -54,8 +54,7 @@ public class WordUtils {
 	 * @return the abbreviated String.
 	 * @since 2.4
 	 */
-	public static String abbreviate(String str, int lower, int upper,
-			String appendToEnd) {
+	public static String abbreviate(String str, int lower, int upper, String appendToEnd) {
 		// initial parameter checks
 		if (str == null) {
 			return null;
@@ -167,27 +166,7 @@ public class WordUtils {
 	 * @since 2.1
 	 */
 	public static String capitalize(String str, char... delimiters) {
-		int delimLen = (delimiters == null ? -1 : delimiters.length);
-		if (str == null || str.length() == 0 || delimLen == 0) {
-			return str;
-		}
-		int strLen = str.length();
-		StringBuilder buffer = new StringBuilder(strLen);
-		boolean capitalizeNext = true;
-		for (int i = 0; i < strLen; i++) {
-			char ch = str.charAt(i);
-
-			if (isDelimiter(ch, delimiters)) {
-				buffer.append(ch);
-				capitalizeNext = true;
-			} else if (capitalizeNext) {
-				buffer.append(Character.toTitleCase(ch));
-				capitalizeNext = false;
-			} else {
-				buffer.append(ch);
-			}
-		}
-		return buffer.toString();
+		return doCapitalizeOps(str, true, delimiters);
 	}
 
 	// -----------------------------------------------------------------------
@@ -278,8 +257,8 @@ public class WordUtils {
 	 *            firstLineWidth
 	 * @return The array containing the substrings
 	 */
-	public static final String[] doTextWrap(final String string,
-			final Paint font, int firstLineWidth, final int lineWidth) {
+	public static final String[] doTextWrap(final String string, final Paint font,
+			int firstLineWidth, final int lineWidth) {
 		boolean hasLineBreaks = (string.indexOf('\n') != -1);
 		float completeWidth = font.measureText(string);
 		if (((completeWidth <= firstLineWidth) && !hasLineBreaks)) { // ||
@@ -312,8 +291,7 @@ public class WordUtils {
 					lineBreakCount++;
 					String line = null;
 					if (i == valueChars.length - 1) {
-						line = new String(valueChars, lastIndex, (i + 1)
-								- lastIndex);
+						line = new String(valueChars, lastIndex, (i + 1) - lastIndex);
 						// System.out.println("wrap: adding last line " + line
 						// );
 					} else {
@@ -324,8 +302,7 @@ public class WordUtils {
 					if (completeWidth <= firstLineWidth) {
 						lines.add(line);
 					} else {
-						wrap(line, font, completeWidth, firstLineWidth,
-								lineWidth, lines);
+						wrap(line, font, completeWidth, firstLineWidth, lineWidth, lines);
 					}
 					if (isCRLF) {
 						i++;
@@ -365,8 +342,8 @@ public class WordUtils {
 	 * @return <code>string</code> if it fits in the string width, else the
 	 *         string content that fits and with trailing dots (...)
 	 */
-	public static String getFittingString(final String string,
-			final float width, final Paint font, final String endPadding) {
+	public static String getFittingString(final String string, final float width,
+			final Paint font, final String endPadding) {
 		if (font.measureText(string) < width) {
 			return string;
 		} else {
@@ -379,8 +356,7 @@ public class WordUtils {
 			}
 			/* final check to see if it conforms to the width */
 			if (font.measureText(string.substring(0, endPad) + endPadding) > width) {
-				for (; font.measureText(string.substring(0, endPad)
-						+ endPadding) > width;) {
+				for (; font.measureText(string.substring(0, endPad) + endPadding) > width;) {
 					endPad--;
 				}
 			}
@@ -730,22 +706,29 @@ public class WordUtils {
 	 * @since 2.1
 	 */
 	public static String uncapitalize(String str, char... delimiters) {
+
+		return doCapitalizeOps(str, false, delimiters);
+	}
+
+	private static String doCapitalizeOps(String str, boolean capitalize, char... delimiters) {
 		int delimLen = (delimiters == null ? -1 : delimiters.length);
 		if (str == null || str.length() == 0 || delimLen == 0) {
 			return str;
 		}
 		int strLen = str.length();
 		StringBuilder buffer = new StringBuilder(strLen);
-		boolean uncapitalizeNext = true;
+		boolean capitalizeNext = true;
 		for (int i = 0; i < strLen; i++) {
 			char ch = str.charAt(i);
 
 			if (isDelimiter(ch, delimiters)) {
 				buffer.append(ch);
-				uncapitalizeNext = true;
-			} else if (uncapitalizeNext) {
-				buffer.append(Character.toLowerCase(ch));
-				uncapitalizeNext = false;
+				capitalizeNext = true;
+			} else if (capitalizeNext) {
+
+				buffer.append(capitalize ? Character.toTitleCase(ch) : Character
+						.toLowerCase(ch));
+				capitalizeNext = false;
 			} else {
 				buffer.append(ch);
 			}
@@ -870,16 +853,14 @@ public class WordUtils {
 				// really long word or URL
 				if (wrapLongWords) {
 					// wrap really long word one line at a time
-					wrappedLine.append(str.substring(offset, wrapLength
-							+ offset));
+					wrappedLine.append(str.substring(offset, wrapLength + offset));
 					wrappedLine.append(newLineStr);
 					offset += wrapLength;
 				} else {
 					// do not wrap really long word, just extend beyond limit
 					spaceToWrapAt = str.indexOf(' ', wrapLength + offset);
 					if (spaceToWrapAt >= 0) {
-						wrappedLine
-								.append(str.substring(offset, spaceToWrapAt));
+						wrappedLine.append(str.substring(offset, spaceToWrapAt));
 						wrappedLine.append(newLineStr);
 						offset = spaceToWrapAt + 1;
 					} else {
@@ -955,8 +936,7 @@ public class WordUtils {
 					currentLineWidth = 0;
 				} else {
 					currentLineWidth -= lastSpacePosLength;
-					list.add(new String(valueChars, startPos, lastSpacePos
-							- startPos));
+					list.add(new String(valueChars, startPos, lastSpacePos - startPos));
 					startPos = lastSpacePos + 1;
 					lastSpacePos = -1;
 				}

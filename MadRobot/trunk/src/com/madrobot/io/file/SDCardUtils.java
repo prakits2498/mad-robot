@@ -66,8 +66,7 @@ public class SDCardUtils {
 	 */
 	public static long getFreeSpaceOnSDCard() {
 		StatFs cardStatistics = new StatFs(getDirectory().toString());
-		long freeSpace = (long) cardStatistics.getBlockSize()
-				* cardStatistics.getFreeBlocks();
+		long freeSpace = (long) cardStatistics.getBlockSize() * cardStatistics.getFreeBlocks();
 		return freeSpace;
 	}
 

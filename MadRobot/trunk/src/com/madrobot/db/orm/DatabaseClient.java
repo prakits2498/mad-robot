@@ -142,8 +142,8 @@ public class DatabaseClient {
 	 * @throws IllegalAccessException
 	 * @throws InstantiationException
 	 */
-	public <T extends DatabaseClient> int delete(Class<T> type,
-			String whereClause, String[] whereArgs) throws DBException {
+	public <T extends DatabaseClient> int delete(Class<T> type, String whereClause,
+			String[] whereArgs) throws DBException {
 		if (m_Database == null)
 			throw new DBException("Set database first");
 		T entity;
@@ -172,10 +172,9 @@ public class DatabaseClient {
 	 * @return The number of rows affected.
 	 * @throws DBException
 	 */
-	public <T extends DatabaseClient> int deleteByColumn(Class<T> type,
-			String column, String value) throws DBException {
-		return delete(type, String.format("%s = ?", column),
-				new String[] { value });
+	public <T extends DatabaseClient> int deleteByColumn(Class<T> type, String column,
+			String value) throws DBException {
+		return delete(type, String.format("%s = ?", column), new String[] { value });
 	}
 
 	/**
@@ -199,10 +198,9 @@ public class DatabaseClient {
 	 * @throws IllegalAccessException
 	 * @throws InstantiationException
 	 */
-	public <T extends DatabaseClient> List<T> find(Class<T> type,
-			boolean distinct, String whereClause, String[] whereArgs,
-			String groupBy, String having, String orderBy, String limit)
-			throws DBException {
+	public <T extends DatabaseClient> List<T> find(Class<T> type, boolean distinct,
+			String whereClause, String[] whereArgs, String groupBy, String having,
+			String orderBy, String limit) throws DBException {
 		if (m_Database == null)
 			throw new DBException("Set database first");
 		T entity;
@@ -213,30 +211,9 @@ public class DatabaseClient {
 		} catch (InstantiationException e) {
 			throw new DBException(e.getLocalizedMessage());
 		}
-		List<T> toRet = new ArrayList<T>();
-		Cursor c = m_Database.query(distinct, entity.getTableName(), null,
-				whereClause, whereArgs, groupBy, having, orderBy, limit);
-		try {
-			while (c.moveToNext()) {
-				entity = s_EntitiesMap.get(type,
-						c.getLong(c.getColumnIndex("_id")));
-				if (entity == null) {
-					entity = type.newInstance();
-					entity.m_NeedsInsert = false;
-					entity.inflate(c);
-					entity.m_Database = m_Database;
-
-				}
-				toRet.add(entity);
-			}
-		} catch (IllegalAccessException e) {
-			throw new DBException(e.getLocalizedMessage());
-		} catch (InstantiationException e) {
-			throw new DBException(e.getLocalizedMessage());
-		} finally {
-			c.close();
-		}
-		return toRet;
+		Cursor c = m_Database.query(distinct, entity.getTableName(), null, whereClause,
+				whereArgs, groupBy, having, orderBy, limit);
+		return populateList(c, s_EntitiesMap, type);
 	}
 
 	/**
@@ -264,8 +241,8 @@ public class DatabaseClient {
 	 * @throws IllegalAccessException
 	 * @throws InstantiationException
 	 */
-	public <T extends DatabaseClient> List<T> find(Class<T> type,
-			String whereClause, String[] whereArgs) throws DBException {
+	public <T extends DatabaseClient> List<T> find(Class<T> type, String whereClause,
+			String[] whereArgs) throws DBException {
 		if (m_Database == null)
 			throw new DBException("Set database first");
 		T entity = null;
@@ -276,13 +253,17 @@ public class DatabaseClient {
 		} catch (InstantiationException e1) {
 			throw new DBException(e1.getLocalizedMessage());
 		}
+		Cursor c = m_Database.query(entity.getTableName(), null, whereClause, whereArgs);
+		return populateList(c, s_EntitiesMap, type);
+	}
+
+	private <T extends DatabaseClient> List<T> populateList(Cursor c,
+			EntitiesMap s_EntitiesMap, Class<T> type) throws DBException {
 		List<T> toRet = new ArrayList<T>();
-		Cursor c = m_Database.query(entity.getTableName(), null, whereClause,
-				whereArgs);
+		T entity = null;
 		try {
 			while (c.moveToNext()) {
-				entity = s_EntitiesMap.get(type,
-						c.getLong(c.getColumnIndex("_id")));
+				entity = s_EntitiesMap.get(type, c.getLong(c.getColumnIndex("_id")));
 				if (entity == null) {
 					entity = type.newInstance();
 					entity.m_NeedsInsert = false;
@@ -312,8 +293,7 @@ public class DatabaseClient {
 	 * @return A generic list of all matching entities.
 	 * @throws DBException
 	 */
-	public <T extends DatabaseClient> List<T> findAll(Class<T> type)
-			throws DBException {
+	public <T extends DatabaseClient> List<T> findAll(Class<T> type) throws DBException {
 		return find(type, null, null);
 	}
 
@@ -333,10 +313,9 @@ public class DatabaseClient {
 	 * @return A generic list of all matching entities.
 	 * @throws DBException
 	 */
-	public <T extends DatabaseClient> List<T> findByColumn(Class<T> type,
-			String column, String value) throws DBException {
-		return find(type, String.format("%s = ?", column),
-				new String[] { value });
+	public <T extends DatabaseClient> List<T> findByColumn(Class<T> type, String column,
+			String value) throws DBException {
+		return find(type, String.format("%s = ?", column), new String[] { value });
 	}
 
 	/**
@@ -351,8 +330,7 @@ public class DatabaseClient {
 	 * @return The matching entity if reocrd found in DB, null otherwise
 	 * @throws DBException
 	 */
-	public <T extends DatabaseClient> T findByID(Class<T> type, long id)
-			throws DBException {
+	public <T extends DatabaseClient> T findByID(Class<T> type, long id) throws DBException {
 		if (m_Database == null)
 			throw new DBException("Set database first");
 		T entity = s_EntitiesMap.get(type, id);
@@ -392,16 +370,14 @@ public class DatabaseClient {
 		Field[] fields = getClass().getDeclaredFields();
 		List<Field> columns = new ArrayList<Field>();
 		for (Field field : fields) {
-			if (!field.getName().startsWith("m_")
-					&& !field.getName().startsWith("s_")) {
+			if (!field.getName().startsWith("m_") && !field.getName().startsWith("s_")) {
 				columns.add(field);
 			}
 		}
 		if (!getClass().equals(DatabaseClient.class)) {
 			fields = DatabaseClient.class.getDeclaredFields();
 			for (Field field : fields) {
-				if (!field.getName().startsWith("m_")
-						&& !field.getName().startsWith("s_")) {
+				if (!field.getName().startsWith("m_") && !field.getName().startsWith("s_")) {
 					columns.add(field);
 				}
 			}
@@ -418,8 +394,7 @@ public class DatabaseClient {
 		Field[] fields = getClass().getDeclaredFields();
 		List<Field> columns = new ArrayList<Field>();
 		for (Field field : fields) {
-			if (!field.getName().startsWith("m_")
-					&& !field.getName().startsWith("s_"))
+			if (!field.getName().startsWith("m_") && !field.getName().startsWith("s_"))
 				columns.add(field);
 		}
 		return columns;
@@ -495,31 +470,23 @@ public class DatabaseClient {
 				String typeString = field.getType().getName();
 				String colName = WordUtils.toSQLName(field.getName());
 				if (typeString.equals("long")) {
-					field.setLong(this,
-							cursor.getLong(cursor.getColumnIndex(colName)));
+					field.setLong(this, cursor.getLong(cursor.getColumnIndex(colName)));
 				} else if (typeString.equals("java.lang.String")) {
-					String val = cursor.getString(cursor
-							.getColumnIndex(colName));
+					String val = cursor.getString(cursor.getColumnIndex(colName));
 					field.set(this, val.equals("null") ? null : val);
 				} else if (typeString.equals("double")) {
-					field.setDouble(this,
-							cursor.getDouble(cursor.getColumnIndex(colName)));
+					field.setDouble(this, cursor.getDouble(cursor.getColumnIndex(colName)));
 				} else if (typeString.equals("boolean")) {
-					field.setBoolean(this,
-							cursor.getString(cursor.getColumnIndex(colName))
-									.equals("true"));
+					field.setBoolean(this, cursor.getString(cursor.getColumnIndex(colName))
+							.equals("true"));
 				} else if (typeString.equals("[B")) {
-					field.set(this,
-							cursor.getBlob(cursor.getColumnIndex(colName)));
+					field.set(this, cursor.getBlob(cursor.getColumnIndex(colName)));
 				} else if (typeString.equals("int")) {
-					field.setInt(this,
-							cursor.getInt(cursor.getColumnIndex(colName)));
+					field.setInt(this, cursor.getInt(cursor.getColumnIndex(colName)));
 				} else if (typeString.equals("float")) {
-					field.setFloat(this,
-							cursor.getFloat(cursor.getColumnIndex(colName)));
+					field.setFloat(this, cursor.getFloat(cursor.getColumnIndex(colName)));
 				} else if (typeString.equals("short")) {
-					field.setShort(this,
-							cursor.getShort(cursor.getColumnIndex(colName)));
+					field.setShort(this, cursor.getShort(cursor.getColumnIndex(colName)));
 				} else if (typeString.equals("java.sql.Timestamp")) {
 					long l = cursor.getLong(cursor.getColumnIndex(colName));
 					field.set(this, new Timestamp(l));
@@ -530,8 +497,7 @@ public class DatabaseClient {
 					else
 						field.set(this, null);
 				} else
-					throw new DBException(
-							"Class cannot be read from Sqlite3 database.");
+					throw new DBException("Class cannot be read from Sqlite3 database.");
 			} catch (IllegalArgumentException e) {
 				throw new DBException(e.getLocalizedMessage());
 			} catch (IllegalAccessException e) {
@@ -543,9 +509,9 @@ public class DatabaseClient {
 		s_EntitiesMap.set(this);
 		for (Field f : entities.keySet()) {
 			try {
-				f.set(this, this.findByID(
-						(Class<? extends DatabaseClient>) f.getType(),
-						entities.get(f)));
+				f.set(this,
+						this.findByID((Class<? extends DatabaseClient>) f.getType(),
+								entities.get(f)));
 			} catch (SQLiteException e) {
 				throw new DBException(e.getLocalizedMessage());
 			} catch (IllegalArgumentException e) {
@@ -563,17 +529,15 @@ public class DatabaseClient {
 	 * @throws DBException
 	 */
 	public long insert() throws DBException {
-		List<Field> columns = _id > 0 ? getColumnFields()
-				: getColumnFieldsWithoutID();
+		List<Field> columns = _id > 0 ? getColumnFields() : getColumnFieldsWithoutID();
 		ContentValues values = new ContentValues(columns.size());
 		for (Field column : columns) {
 			try {
 				if (column.getType().getSuperclass() == DatabaseClient.class)
 					values.put(
 							WordUtils.toSQLName(column.getName()),
-							column.get(this) != null ? String
-									.valueOf(((DatabaseClient) column.get(this))._id)
-									: "0");
+							column.get(this) != null ? String.valueOf(((DatabaseClient) column
+									.get(this))._id) : "0");
 				else
 					values.put(WordUtils.toSQLName(column.getName()),
 							String.valueOf(column.get(this)));
@@ -605,8 +569,7 @@ public class DatabaseClient {
 	 *            The type of the required entity
 	 * @return New entity instance
 	 */
-	public <T extends DatabaseClient> T newEntity(Class<T> type)
-			throws DBException {
+	public <T extends DatabaseClient> T newEntity(Class<T> type) throws DBException {
 		T entity = null;
 		try {
 			entity = type.newInstance();
@@ -674,9 +637,8 @@ public class DatabaseClient {
 				if (column.getType().getSuperclass() == DatabaseClient.class)
 					values.put(
 							WordUtils.toSQLName(column.getName()),
-							column.get(this) != null ? String
-									.valueOf(((DatabaseClient) column.get(this))._id)
-									: "0");
+							column.get(this) != null ? String.valueOf(((DatabaseClient) column
+									.get(this))._id) : "0");
 				else
 					values.put(WordUtils.toSQLName(column.getName()),
 							String.valueOf(column.get(this)));

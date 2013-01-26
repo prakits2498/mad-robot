@@ -31,13 +31,12 @@ public class WireProtocol {
 	protected WireProtocol() {
 	}
 
-	public Message readMessage(WebSocket socket, DataInputStream input)
-			throws Exception {
+	public Message readMessage(WebSocket socket, DataInputStream input) throws Exception {
 		throw new UnsupportedOperationException();
 	}
 
-	public boolean sendMessage(WebSocket socket, DataOutputStream output,
-			Message message) throws Exception {
+	public boolean sendMessage(WebSocket socket, DataOutputStream output, Message message)
+			throws Exception {
 		throw new UnsupportedOperationException();
 	}
 
@@ -138,9 +137,8 @@ public class WireProtocol {
 	 * @throws IOException
 	 * @throws NoSuchAlgorithmException
 	 */
-	protected void validateHandshake(String key1, String key2,
-			byte[] clientQuad, byte[] serverHandshake) throws IOException,
-			NoSuchAlgorithmException {
+	protected void validateHandshake(String key1, String key2, byte[] clientQuad,
+			byte[] serverHandshake) throws IOException, NoSuchAlgorithmException {
 		StringBuilder key1Numbers = new StringBuilder(key1.length());
 		StringBuilder key2Numbers = new StringBuilder(key2.length());
 		int key1Spaces = 0, key2Spaces = 0;
@@ -177,11 +175,9 @@ public class WireProtocol {
 		byte[] clientHandshake = digest.digest(buffer);
 
 		if (!Arrays.equals(clientHandshake, serverHandshake)) {
-			throw new IOException(
-					"Client and server handshake don't match:\nraw="
-							+ Arrays.toString(buffer) + "\nclient="
-							+ Arrays.toString(clientHandshake) + "\nserver="
-							+ Arrays.toString(serverHandshake));
+			throw new IOException("Client and server handshake don't match:\nraw="
+					+ Arrays.toString(buffer) + "\nclient=" + Arrays.toString(clientHandshake)
+					+ "\nserver=" + Arrays.toString(serverHandshake));
 		} else {
 			// System.out.println("Handshakes match");
 		}

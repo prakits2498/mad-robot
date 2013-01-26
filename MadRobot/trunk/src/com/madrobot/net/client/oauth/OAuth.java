@@ -53,13 +53,11 @@ public class OAuth {
 	 */
 	public static final String OUT_OF_BAND = "oob";
 
-	private static final PercentEscaper percentEncoder = new PercentEscaper(
-			"-._~", false);
+	private static final PercentEscaper percentEncoder = new PercentEscaper("-._~", false);
 
 	public static final String VERSION_1_0 = "1.0";
 
-	public static String addQueryParameters(String url,
-			Map<String, String> params) {
+	public static String addQueryParameters(String url, Map<String, String> params) {
 		String[] kvPairs = new String[params.size() * 2];
 		int idx = 0;
 		for (String key : params.keySet()) {
@@ -111,10 +109,8 @@ public class OAuth {
 		}
 	}
 
-	public static HttpParameters decodeForm(InputStream content)
-			throws IOException {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(
-				content));
+	public static HttpParameters decodeForm(InputStream content) throws IOException {
+		BufferedReader reader = new BufferedReader(new InputStreamReader(content));
 		StringBuilder sb = new StringBuilder();
 		String line = reader.readLine();
 		while (line != null) {
@@ -175,11 +171,9 @@ public class OAuth {
 				} else {
 					into.write('&');
 				}
-				into.write(percentEncode(safeToString(entry.getKey()))
-						.getBytes());
+				into.write(percentEncode(safeToString(entry.getKey())).getBytes());
 				into.write('=');
-				into.write(percentEncode(safeToString(entry.getValue()))
-						.getBytes());
+				into.write(percentEncode(safeToString(entry.getValue())).getBytes());
 			}
 		}
 	}
@@ -226,8 +220,8 @@ public class OAuth {
 	 * parameters starting in 'oauth_*' will be percent encoded.
 	 * 
 	 * <pre>
-	 * String authHeader = OAuth.prepareOAuthHeader(&quot;realm&quot;, &quot;http://example.com&quot;,
-	 * 		&quot;oauth_token&quot;, &quot;x%y&quot;);
+	 * String authHeader = OAuth.prepareOAuthHeader(&quot;realm&quot;, &quot;http://example.com&quot;, &quot;oauth_token&quot;,
+	 * 		&quot;x%y&quot;);
 	 * </pre>
 	 * 
 	 * which yields:
@@ -270,8 +264,7 @@ public class OAuth {
 	 * @return a name/value pair, e.g. oauth_token="hello%20oauth"
 	 */
 	public static String toHeaderElement(String name, String value) {
-		return OAuth.percentEncode(name) + "=\"" + OAuth.percentEncode(value)
-				+ "\"";
+		return OAuth.percentEncode(name) + "=\"" + OAuth.percentEncode(value) + "\"";
 	}
 
 	/**

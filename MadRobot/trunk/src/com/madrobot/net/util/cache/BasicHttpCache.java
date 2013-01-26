@@ -1,4 +1,3 @@
-
 package com.madrobot.net.util.cache;
 
 import java.io.IOException;
@@ -16,9 +15,9 @@ import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.protocol.HTTP;
 
-import com.madrobot.net.HttpConstants;
-
 import android.util.Log;
+
+import com.madrobot.net.HttpConstants;
 
 class BasicHttpCache implements HttpCache {
 
@@ -30,35 +29,34 @@ class BasicHttpCache implements HttpCache {
 	private final CacheInvalidator cacheInvalidator;
 	private final HttpCacheStorage storage;
 
-	public BasicHttpCache(ResourceFactory resourceFactory,
-			HttpCacheStorage storage, CacheConfig config) {
+	public BasicHttpCache(ResourceFactory resourceFactory, HttpCacheStorage storage,
+			CacheConfig config) {
 		this.resourceFactory = resourceFactory;
 		this.uriExtractor = new CacheKeyGenerator();
 		this.cacheEntryUpdater = new CacheEntryUpdater(resourceFactory);
 		this.maxObjectSizeBytes = config.getMaxObjectSize();
 		this.responseGenerator = new CachedHttpResponseGenerator();
 		this.storage = storage;
-		this.cacheInvalidator = new CacheInvalidator(this.uriExtractor,
-				this.storage);
+		this.cacheInvalidator = new CacheInvalidator(this.uriExtractor, this.storage);
 	}
 
 	public BasicHttpCache(CacheConfig config) {
-		this(new HeapResourceFactory(), new BasicHttpCacheStorage(config),
-				config);
+		this(new HeapResourceFactory(), new BasicHttpCacheStorage(config), config);
 	}
 
 	public BasicHttpCache() {
 		this(new CacheConfig());
 	}
 
-	public void flushCacheEntriesFor(HttpHost host, HttpRequest request)
-			throws IOException {
+	@Override
+	public void flushCacheEntriesFor(HttpHost host, HttpRequest request) throws IOException {
 		String uri = uriExtractor.getURI(host, request);
 		storage.removeEntry(uri);
 	}
 
-	public void flushInvalidatedCacheEntriesFor(HttpHost host,
-			HttpRequest request, HttpResponse response) {
+	@Override
+	public void flushInvalidatedCacheEntriesFor(HttpHost host, HttpRequest request,
+			HttpResponse response) {
 		cacheInvalidator.flushInvalidatedCacheEntries(host, request, response);
 	}
 
@@ -71,38 +69,36 @@ class BasicHttpCache implements HttpCache {
 		}
 	}
 
-	void storeNonVariantEntry(HttpHost target, HttpRequest req,
-			HttpCacheEntry entry) throws IOException {
+	void storeNonVariantEntry(HttpHost target, HttpRequest req, HttpCacheEntry entry)
+			throws IOException {
 		String uri = uriExtractor.getURI(target, req);
 		storage.putEntry(uri, entry);
 	}
 
-	void storeVariantEntry(
-            final HttpHost target,
-            final HttpRequest req,
-            final HttpCacheEntry entry) throws IOException {
-        final String parentURI = uriExtractor.getURI(target, req);
-        final String variantURI = uriExtractor.getVariantURI(target, req, entry);
-        storage.putEntry(variantURI, entry);
+	void storeVariantEntry(final HttpHost target, final HttpRequest req,
+			final HttpCacheEntry entry) throws IOException {
+		final String parentURI = uriExtractor.getURI(target, req);
+		final String variantURI = uriExtractor.getVariantURI(target, req, entry);
+		storage.putEntry(variantURI, entry);
 
-        HttpCacheUpdateCallback callback = new HttpCacheUpdateCallback() {
+		HttpCacheUpdateCallback callback = new HttpCacheUpdateCallback() {
 
-            public HttpCacheEntry update(HttpCacheEntry existing) throws IOException {
-                return doGetUpdatedParentEntry(
-                        req.getRequestLine().getUri(), existing, entry,
-                        uriExtractor.getVariantKey(req, entry),
-                        variantURI);
-            }
+			@Override
+			public HttpCacheEntry update(HttpCacheEntry existing) throws IOException {
+				return doGetUpdatedParentEntry(req.getRequestLine().getUri(), existing, entry,
+						uriExtractor.getVariantKey(req, entry), variantURI);
+			}
 
-        };
+		};
 
-        try {
-            storage.updateEntry(parentURI, callback);
-        } catch (HttpCacheUpdateException e) {
-            Log.w("MadRobot","Could not update key [" + parentURI + "]", e);
-        }
-    }
+		try {
+			storage.updateEntry(parentURI, callback);
+		} catch (HttpCacheUpdateException e) {
+			Log.w("MadRobot", "Could not update key [" + parentURI + "]", e);
+		}
+	}
 
+	@Override
 	public void reuseVariantEntryFor(HttpHost target, final HttpRequest req,
 			final Variant variant) throws IOException {
 		final String parentCacheKey = uriExtractor.getURI(target, req);
@@ -111,24 +107,23 @@ class BasicHttpCache implements HttpCache {
 		final String variantCacheKey = variant.getCacheKey();
 
 		HttpCacheUpdateCallback callback = new HttpCacheUpdateCallback() {
-			public HttpCacheEntry update(HttpCacheEntry existing)
-					throws IOException {
-				return doGetUpdatedParentEntry(req.getRequestLine().getUri(),
-						existing, entry, variantKey, variantCacheKey);
+			@Override
+			public HttpCacheEntry update(HttpCacheEntry existing) throws IOException {
+				return doGetUpdatedParentEntry(req.getRequestLine().getUri(), existing, entry,
+						variantKey, variantCacheKey);
 			}
 		};
 
 		try {
 			storage.updateEntry(parentCacheKey, callback);
 		} catch (HttpCacheUpdateException e) {
-			  Log.d("MadRobot","Could not update key [" + parentCacheKey + "]", e);
+			Log.d("MadRobot", "Could not update key [" + parentCacheKey + "]", e);
 		}
 	}
 
 	boolean isIncompleteResponse(HttpResponse resp, Resource resource) {
 		int status = resp.getStatusLine().getStatusCode();
-		if (status != HttpStatus.SC_OK
-				&& status != HttpStatus.SC_PARTIAL_CONTENT) {
+		if (status != HttpStatus.SC_OK && status != HttpStatus.SC_PARTIAL_CONTENT) {
 			return false;
 		}
 		Header hdr = resp.getFirstHeader(HTTP.CONTENT_LEN);
@@ -143,16 +138,15 @@ class BasicHttpCache implements HttpCache {
 		return (resource.length() < contentLength);
 	}
 
-	HttpResponse generateIncompleteResponseError(HttpResponse response,
-			Resource resource) {
-		int contentLength = Integer.parseInt(response.getFirstHeader(
-				HTTP.CONTENT_LEN).getValue());
+	HttpResponse generateIncompleteResponseError(HttpResponse response, Resource resource) {
+		int contentLength = Integer.parseInt(response.getFirstHeader(HTTP.CONTENT_LEN)
+				.getValue());
 		HttpResponse error = new BasicHttpResponse(HttpVersion.HTTP_1_1,
 				HttpStatus.SC_BAD_GATEWAY, "Bad Gateway");
 		error.setHeader("Content-Type", "text/plain;charset=UTF-8");
 		String msg = String.format("Received incomplete response "
-				+ "with Content-Length %d but actual body length %d",
-				contentLength, resource.length());
+				+ "with Content-Length %d but actual body length %d", contentLength,
+				resource.length());
 		byte[] msgBytes = msg.getBytes();
 		error.setHeader("Content-Length", Integer.toString(msgBytes.length));
 		error.setEntity(new ByteArrayEntity(msgBytes));
@@ -161,49 +155,47 @@ class BasicHttpCache implements HttpCache {
 
 	HttpCacheEntry doGetUpdatedParentEntry(final String requestId,
 			final HttpCacheEntry existing, final HttpCacheEntry entry,
-			final String variantKey, final String variantCacheKey)
-			throws IOException {
+			final String variantKey, final String variantCacheKey) throws IOException {
 		HttpCacheEntry src = existing;
 		if (src == null) {
 			src = entry;
 		}
 
 		Resource resource = resourceFactory.copy(requestId, src.getResource());
-		Map<String, String> variantMap = new HashMap<String, String>(
-				src.getVariantMap());
+		Map<String, String> variantMap = new HashMap<String, String>(src.getVariantMap());
 		variantMap.put(variantKey, variantCacheKey);
 		return new HttpCacheEntry(src.getRequestDate(), src.getResponseDate(),
 				src.getStatusLine(), src.getAllHeaders(), resource, variantMap);
 	}
 
-	public HttpCacheEntry updateCacheEntry(HttpHost target,
-			HttpRequest request, HttpCacheEntry stale,
-			HttpResponse originResponse, Date requestSent, Date responseReceived)
-			throws IOException {
-		HttpCacheEntry updatedEntry = cacheEntryUpdater.updateCacheEntry(
-				request.getRequestLine().getUri(), stale, requestSent,
-				responseReceived, originResponse);
+	@Override
+	public HttpCacheEntry updateCacheEntry(HttpHost target, HttpRequest request,
+			HttpCacheEntry stale, HttpResponse originResponse, Date requestSent,
+			Date responseReceived) throws IOException {
+		HttpCacheEntry updatedEntry = cacheEntryUpdater.updateCacheEntry(request
+				.getRequestLine().getUri(), stale, requestSent, responseReceived,
+				originResponse);
 		storeInCache(target, request, updatedEntry);
 		return updatedEntry;
 	}
 
-	public HttpCacheEntry updateVariantCacheEntry(HttpHost target,
-			HttpRequest request, HttpCacheEntry stale,
-			HttpResponse originResponse, Date requestSent,
+	@Override
+	public HttpCacheEntry updateVariantCacheEntry(HttpHost target, HttpRequest request,
+			HttpCacheEntry stale, HttpResponse originResponse, Date requestSent,
 			Date responseReceived, String cacheKey) throws IOException {
-		HttpCacheEntry updatedEntry = cacheEntryUpdater.updateCacheEntry(
-				request.getRequestLine().getUri(), stale, requestSent,
-				responseReceived, originResponse);
+		HttpCacheEntry updatedEntry = cacheEntryUpdater.updateCacheEntry(request
+				.getRequestLine().getUri(), stale, requestSent, responseReceived,
+				originResponse);
 		storage.putEntry(cacheKey, updatedEntry);
 		return updatedEntry;
 	}
 
-	public HttpResponse cacheAndReturnResponse(HttpHost host,
-			HttpRequest request, HttpResponse originResponse, Date requestSent,
-			Date responseReceived) throws IOException {
+	@Override
+	public HttpResponse cacheAndReturnResponse(HttpHost host, HttpRequest request,
+			HttpResponse originResponse, Date requestSent, Date responseReceived)
+			throws IOException {
 
-		SizeLimitedResponseReader responseReader = getResponseReader(request,
-				originResponse);
+		SizeLimitedResponseReader responseReader = getResponseReader(request, originResponse);
 		responseReader.readResponse();
 
 		if (responseReader.isLimitReached()) {
@@ -215,23 +207,21 @@ class BasicHttpCache implements HttpCache {
 			return generateIncompleteResponseError(originResponse, resource);
 		}
 
-		HttpCacheEntry entry = new HttpCacheEntry(requestSent,
-				responseReceived, originResponse.getStatusLine(),
-				originResponse.getAllHeaders(), resource);
+		HttpCacheEntry entry = new HttpCacheEntry(requestSent, responseReceived,
+				originResponse.getStatusLine(), originResponse.getAllHeaders(), resource);
 		storeInCache(host, request, entry);
 		return responseGenerator.generateResponse(entry);
 	}
 
 	SizeLimitedResponseReader getResponseReader(HttpRequest request,
 			HttpResponse backEndResponse) {
-		return new SizeLimitedResponseReader(resourceFactory,
-				maxObjectSizeBytes, request, backEndResponse);
+		return new SizeLimitedResponseReader(resourceFactory, maxObjectSizeBytes, request,
+				backEndResponse);
 	}
 
-	public HttpCacheEntry getCacheEntry(HttpHost host, HttpRequest request)
-			throws IOException {
-		HttpCacheEntry root = storage.getEntry(uriExtractor.getURI(host,
-				request));
+	@Override
+	public HttpCacheEntry getCacheEntry(HttpHost host, HttpRequest request) throws IOException {
+		HttpCacheEntry root = storage.getEntry(uriExtractor.getURI(host, request));
 		if (root == null)
 			return null;
 		if (!root.hasVariants())
@@ -243,20 +233,20 @@ class BasicHttpCache implements HttpCache {
 		return storage.getEntry(variantCacheKey);
 	}
 
-	public void flushInvalidatedCacheEntriesFor(HttpHost host,
-			HttpRequest request) throws IOException {
+	@Override
+	public void flushInvalidatedCacheEntriesFor(HttpHost host, HttpRequest request)
+			throws IOException {
 		cacheInvalidator.flushInvalidatedCacheEntries(host, request);
 	}
 
+	@Override
 	public Map<String, Variant> getVariantCacheEntriesWithEtags(HttpHost host,
 			HttpRequest request) throws IOException {
 		Map<String, Variant> variants = new HashMap<String, Variant>();
-		HttpCacheEntry root = storage.getEntry(uriExtractor.getURI(host,
-				request));
+		HttpCacheEntry root = storage.getEntry(uriExtractor.getURI(host, request));
 		if (root == null || !root.hasVariants())
 			return variants;
-		for (Map.Entry<String, String> variant : root.getVariantMap()
-				.entrySet()) {
+		for (Map.Entry<String, String> variant : root.getVariantMap().entrySet()) {
 			String variantKey = variant.getKey();
 			String variantCacheKey = variant.getValue();
 			addVariantWithEtag(variantKey, variantCacheKey, variants);
@@ -272,8 +262,7 @@ class BasicHttpCache implements HttpCache {
 		Header etagHeader = entry.getFirstHeader(HttpConstants.ETAG);
 		if (etagHeader == null)
 			return;
-		variants.put(etagHeader.getValue(), new Variant(variantKey,
-				variantCacheKey, entry));
+		variants.put(etagHeader.getValue(), new Variant(variantKey, variantCacheKey, entry));
 	}
 
 }

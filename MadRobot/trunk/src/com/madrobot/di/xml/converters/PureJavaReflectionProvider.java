@@ -50,14 +50,13 @@ public class PureJavaReflectionProvider implements ReflectionProvider {
 	public boolean fieldDefinedInClass(String fieldName, Class type) {
 		Field field = fieldDictionary.fieldOrNull(type, fieldName, null);
 		return field != null
-				&& (fieldModifiersSupported(field) || Modifier
-						.isTransient(field.getModifiers()));
+				&& (fieldModifiersSupported(field) || Modifier.isTransient(field
+						.getModifiers()));
 	}
 
 	protected boolean fieldModifiersSupported(Field field) {
 		int modifiers = field.getModifiers();
-		return !(Modifier.isStatic(modifiers) || Modifier
-				.isTransient(modifiers));
+		return !(Modifier.isStatic(modifiers) || Modifier.isTransient(modifiers));
 	}
 
 	@Override
@@ -67,8 +66,7 @@ public class PureJavaReflectionProvider implements ReflectionProvider {
 
 	@Override
 	public Class getFieldType(Object object, String fieldName, Class definedIn) {
-		return fieldDictionary.field(object.getClass(), fieldName, definedIn)
-				.getType();
+		return fieldDictionary.field(object.getClass(), fieldName, definedIn).getType();
 	}
 
 	@Override
@@ -91,15 +89,13 @@ public class PureJavaReflectionProvider implements ReflectionProvider {
 				field.setAccessible(true);
 			} else {
 				throw new ObjectAccessException("Invalid final field "
-						+ field.getDeclaringClass().getName() + "."
-						+ field.getName());
+						+ field.getDeclaringClass().getName() + "." + field.getName());
 			}
 		}
 	}
 
 	@Override
-	public void visitSerializableFields(Object object,
-			ReflectionProvider.Visitor visitor) {
+	public void visitSerializableFields(Object object, ReflectionProvider.Visitor visitor) {
 		for (Iterator iterator = fieldDictionary.fieldsFor(object.getClass()); iterator
 				.hasNext();) {
 			Field field = (Field) iterator.next();
@@ -109,32 +105,30 @@ public class PureJavaReflectionProvider implements ReflectionProvider {
 			validateFieldAccess(field);
 			try {
 				Object value = field.get(object);
-				visitor.visit(field.getName(), field.getType(),
-						field.getDeclaringClass(), value);
+				visitor.visit(field.getName(), field.getType(), field.getDeclaringClass(),
+						value);
 			} catch (IllegalArgumentException e) {
-				throw new ObjectAccessException("Could not get field "
-						+ field.getClass() + "." + field.getName(), e);
+				throw new ObjectAccessException("Could not get field " + field.getClass()
+						+ "." + field.getName(), e);
 			} catch (IllegalAccessException e) {
-				throw new ObjectAccessException("Could not get field "
-						+ field.getClass() + "." + field.getName(), e);
+				throw new ObjectAccessException("Could not get field " + field.getClass()
+						+ "." + field.getName(), e);
 			}
 		}
 	}
 
 	@Override
-	public void writeField(Object object, String fieldName, Object value,
-			Class definedIn) {
-		Field field = fieldDictionary.field(object.getClass(), fieldName,
-				definedIn);
+	public void writeField(Object object, String fieldName, Object value, Class definedIn) {
+		Field field = fieldDictionary.field(object.getClass(), fieldName, definedIn);
 		validateFieldAccess(field);
 		try {
 			field.set(object, value);
 		} catch (IllegalArgumentException e) {
-			throw new ObjectAccessException("Could not set field "
-					+ object.getClass() + "." + field.getName(), e);
+			throw new ObjectAccessException("Could not set field " + object.getClass() + "."
+					+ field.getName(), e);
 		} catch (IllegalAccessException e) {
-			throw new ObjectAccessException("Could not set field "
-					+ object.getClass() + "." + field.getName(), e);
+			throw new ObjectAccessException("Could not set field " + object.getClass() + "."
+					+ field.getName(), e);
 		}
 	}
 

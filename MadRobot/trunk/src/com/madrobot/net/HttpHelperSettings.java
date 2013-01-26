@@ -46,14 +46,14 @@ public class HttpHelperSettings {
 
 	private HttpClient httpClient = new DefaultHttpClient();
 	{
-		httpClient.getParams().setParameter(
-				HttpConstants.HTTP_SOCKET_TIME_OUT_PARAM, getSocketTimeout());
-		httpClient.getParams().setParameter(
-				HttpConstants.HTTP_PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
-		httpClient.getParams().setParameter(
-				HttpConstants.HTTP_SINGLE_COOKIE_PARAM, isSingleCookieHeader());
-		httpClient.getParams().setParameter(
-				HttpConstants.HTTP_EXPECT_CONTINUE_PARAM, isExpectContinue());
+		httpClient.getParams().setParameter(HttpConstants.HTTP_SOCKET_TIME_OUT_PARAM,
+				getSocketTimeout());
+		httpClient.getParams().setParameter(HttpConstants.HTTP_PROTOCOL_VERSION,
+				HttpVersion.HTTP_1_1);
+		httpClient.getParams().setParameter(HttpConstants.HTTP_SINGLE_COOKIE_PARAM,
+				isSingleCookieHeader());
+		httpClient.getParams().setParameter(HttpConstants.HTTP_EXPECT_CONTINUE_PARAM,
+				isExpectContinue());
 	}
 
 	/**
@@ -110,8 +110,8 @@ public class HttpHelperSettings {
 	 */
 	public void setExpectContinue(boolean expectContinue) {
 		this.expectContinue = expectContinue;
-		httpClient.getParams().setParameter(
-				HttpConstants.HTTP_EXPECT_CONTINUE_PARAM, isExpectContinue());
+		httpClient.getParams().setParameter(HttpConstants.HTTP_EXPECT_CONTINUE_PARAM,
+				isExpectContinue());
 	}
 
 	/**
@@ -127,8 +127,8 @@ public class HttpHelperSettings {
 	 */
 	public void setHttpClient(HttpClient httpClient) {
 		this.httpClient = httpClient;
-		httpClient.getParams().setParameter(
-				HttpConstants.HTTP_PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+		httpClient.getParams().setParameter(HttpConstants.HTTP_PROTOCOL_VERSION,
+				HttpVersion.HTTP_1_1);
 	}
 
 	public void setHttpMethod(HttpMethod httpMethod) {
@@ -145,8 +145,8 @@ public class HttpHelperSettings {
 
 	public void setSingleCookieHeader(boolean isSingleCookieHeader) {
 		this.isSingleCookieHeader = isSingleCookieHeader;
-		httpClient.getParams().setParameter(
-				HttpConstants.HTTP_SINGLE_COOKIE_PARAM, isSingleCookieHeader());
+		httpClient.getParams().setParameter(HttpConstants.HTTP_SINGLE_COOKIE_PARAM,
+				isSingleCookieHeader());
 	}
 
 	/**
@@ -156,8 +156,8 @@ public class HttpHelperSettings {
 	 */
 	public void setSocketTimeout(int timeout) {
 		this.socketTimeout = timeout;
-		httpClient.getParams().setParameter(
-				HttpConstants.HTTP_SOCKET_TIME_OUT_PARAM, getSocketTimeout());
+		httpClient.getParams().setParameter(HttpConstants.HTTP_SOCKET_TIME_OUT_PARAM,
+				getSocketTimeout());
 	}
 
 }

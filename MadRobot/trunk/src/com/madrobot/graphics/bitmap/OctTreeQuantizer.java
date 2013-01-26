@@ -39,9 +39,8 @@ class OctTreeQuantizer {
 			if (count == 0)
 				System.out.println(index + ": count=" + count);
 			else
-				System.out.println(index + ": count=" + count + " red="
-						+ (totalRed / count) + " green=" + (totalGreen / count)
-						+ " blue=" + (totalBlue / count));
+				System.out.println(index + ": count=" + count + " red=" + (totalRed / count)
+						+ " green=" + (totalGreen / count) + " blue=" + (totalBlue / count));
 			for (int i = 0; i < 8; i++)
 				if (leaf[i] != null)
 					leaf[i].list(s, level + 2);

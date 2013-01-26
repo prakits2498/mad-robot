@@ -63,8 +63,7 @@ public class DefaultSocketFactory extends SocketFactory {
 	 * @exception IOException
 	 *                If an I/O error occurs while creating the ServerSocket.
 	 ***/
-	public ServerSocket createServerSocket(int port, int backlog)
-			throws IOException {
+	public ServerSocket createServerSocket(int port, int backlog) throws IOException {
 		return new ServerSocket(port, backlog);
 	}
 
@@ -84,8 +83,8 @@ public class DefaultSocketFactory extends SocketFactory {
 	 * @exception IOException
 	 *                If an I/O error occurs while creating the ServerSocket.
 	 ***/
-	public ServerSocket createServerSocket(int port, int backlog,
-			InetAddress bindAddr) throws IOException {
+	public ServerSocket createServerSocket(int port, int backlog, InetAddress bindAddr)
+			throws IOException {
 		return new ServerSocket(port, backlog, bindAddr);
 	}
 
@@ -102,8 +101,7 @@ public class DefaultSocketFactory extends SocketFactory {
 	 *                If an I/O error occurs while creating the Socket.
 	 ***/
 	@Override
-	public Socket createSocket(InetAddress address, int port)
-			throws IOException {
+	public Socket createSocket(InetAddress address, int port) throws IOException {
 		return new Socket(address, port);
 	}
 
@@ -125,8 +123,8 @@ public class DefaultSocketFactory extends SocketFactory {
 	 *                If an I/O error occurs while creating the Socket.
 	 ***/
 	@Override
-	public Socket createSocket(InetAddress address, int port,
-			InetAddress localAddr, int localPort) throws IOException {
+	public Socket createSocket(InetAddress address, int port, InetAddress localAddr,
+			int localPort) throws IOException {
 		return new Socket(address, port, localAddr, localPort);
 	}
 
@@ -145,8 +143,7 @@ public class DefaultSocketFactory extends SocketFactory {
 	 *                If an I/O error occurs while creating the Socket.
 	 ***/
 	@Override
-	public Socket createSocket(String host, int port)
-			throws UnknownHostException, IOException {
+	public Socket createSocket(String host, int port) throws UnknownHostException, IOException {
 		return new Socket(host, port);
 	}
 
@@ -170,8 +167,8 @@ public class DefaultSocketFactory extends SocketFactory {
 	 *                If an I/O error occurs while creating the Socket.
 	 ***/
 	@Override
-	public Socket createSocket(String host, int port, InetAddress localAddr,
-			int localPort) throws UnknownHostException, IOException {
+	public Socket createSocket(String host, int port, InetAddress localAddr, int localPort)
+			throws UnknownHostException, IOException {
 		return new Socket(host, port, localAddr, localPort);
 	}
 }

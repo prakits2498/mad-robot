@@ -44,8 +44,8 @@ public class ShapeTransformFilters extends TransformFilters {
 	 * @param outputConfig
 	 * @return
 	 */
-	public static Bitmap twirl(Bitmap bitmap, float centreX, float centreY,
-			float angle, float radius, int edgeAction, Config outputConfig) {
+	public static Bitmap twirl(Bitmap bitmap, float centreX, float centreY, float angle,
+			float radius, int edgeAction, Config outputConfig) {
 		int width = bitmap.getWidth();
 		int height = bitmap.getHeight();
 		float icentreX = width * centreX;
@@ -81,8 +81,7 @@ public class ShapeTransformFilters extends TransformFilters {
 					out[1] = y;
 				} else {
 					distance = (float) Math.sqrt(distance);
-					a = (float) Math.atan2(dy, dx) + angle
-							* (radius - distance) / radius;
+					a = (float) Math.atan2(dy, dx) + angle * (radius - distance) / radius;
 					out[0] = icentreX + distance * (float) Math.cos(a);
 					out[1] = icentreY + distance * (float) Math.sin(a);
 				}
@@ -93,8 +92,7 @@ public class ShapeTransformFilters extends TransformFilters {
 				float yWeight = out[1] - srcY;
 				int nw, ne, sw, se;
 
-				if (srcX >= 0 && srcX < srcWidth1 && srcY >= 0
-						&& srcY < srcHeight1) {
+				if (srcX >= 0 && srcX < srcWidth1 && srcY >= 0 && srcY < srcHeight1) {
 					// Easy case, all corners are in the image
 					int i = srcWidth * srcY + srcX;
 					nw = inPixels[i];
@@ -103,23 +101,21 @@ public class ShapeTransformFilters extends TransformFilters {
 					se = inPixels[i + srcWidth + 1];
 				} else {
 					// Some of the corners are off the image
-					nw = TransformFilters.getPixel(inPixels, srcX,
-							srcY, srcWidth, srcHeight, edgeAction);
-					ne = TransformFilters.getPixel(inPixels, srcX + 1,
-							srcY, srcWidth, srcHeight, edgeAction);
-					sw = TransformFilters.getPixel(inPixels, srcX,
-							srcY + 1, srcWidth, srcHeight, edgeAction);
-					se = TransformFilters.getPixel(inPixels, srcX + 1,
-							srcY + 1, srcWidth, srcHeight, edgeAction);
+					nw = TransformFilters.getPixel(inPixels, srcX, srcY, srcWidth, srcHeight,
+							edgeAction);
+					ne = TransformFilters.getPixel(inPixels, srcX + 1, srcY, srcWidth,
+							srcHeight, edgeAction);
+					sw = TransformFilters.getPixel(inPixels, srcX, srcY + 1, srcWidth,
+							srcHeight, edgeAction);
+					se = TransformFilters.getPixel(inPixels, srcX + 1, srcY + 1, srcWidth,
+							srcHeight, edgeAction);
 				}
-				outPixels[x] = ImageMath.bilinearInterpolate(xWeight, yWeight,
-						nw, ne, sw, se);
+				outPixels[x] = ImageMath.bilinearInterpolate(xWeight, yWeight, nw, ne, sw, se);
 			}
 			// setRGB(dst, 0, y, transformedSpace.width, 1, outPixels);
 			BitmapUtils.setPixelRow(outPixels, y, outWidth, destPixels);
 		}
-		return Bitmap.createBitmap(destPixels, outWidth, outHeight,
-				outputConfig);
+		return Bitmap.createBitmap(destPixels, outWidth, outHeight, outputConfig);
 	}
 
 	// private static void transformInverse(int x, int y, float[] out, float
@@ -128,8 +124,8 @@ public class ShapeTransformFilters extends TransformFilters {
 	// out[1] = (y * cos) + (x * sin);
 	// }
 
-	private static void transformRotateSpace(Rectangle rect, boolean resize,
-			float sin, float cos) {
+	private static void transformRotateSpace(Rectangle rect, boolean resize, float sin,
+			float cos) {
 		if (resize) {
 			com.madrobot.geom.Point out = new com.madrobot.geom.Point(0, 0);
 			int minx = Integer.MAX_VALUE;
@@ -182,8 +178,8 @@ public class ShapeTransformFilters extends TransformFilters {
 	 * 
 	 * @return
 	 */
-	public static Bitmap rotate(Bitmap src, float angle, boolean resize,
-			int edgeAction, Bitmap.Config outputConfig) {
+	public static Bitmap rotate(Bitmap src, float angle, boolean resize, int edgeAction,
+			Bitmap.Config outputConfig) {
 		int width = src.getWidth();
 		int height = src.getHeight();
 		float cos, sin;
@@ -224,8 +220,7 @@ public class ShapeTransformFilters extends TransformFilters {
 				float yWeight = out[1] - srcY;
 				int nw, ne, sw, se;
 
-				if (srcX >= 0 && srcX < srcWidth1 && srcY >= 0
-						&& srcY < srcHeight1) {
+				if (srcX >= 0 && srcX < srcWidth1 && srcY >= 0 && srcY < srcHeight1) {
 					// Easy case, all corners are in the image
 					int i = srcWidth * srcY + srcX;
 					nw = inPixels[i];
@@ -234,34 +229,28 @@ public class ShapeTransformFilters extends TransformFilters {
 					se = inPixels[i + srcWidth + 1];
 				} else {
 					// Some of the corners are off the image
-					nw = getPixel(inPixels, srcX, srcY, srcWidth, srcHeight,
+					nw = getPixel(inPixels, srcX, srcY, srcWidth, srcHeight, edgeAction);
+					ne = getPixel(inPixels, srcX + 1, srcY, srcWidth, srcHeight, edgeAction);
+					sw = getPixel(inPixels, srcX, srcY + 1, srcWidth, srcHeight, edgeAction);
+					se = getPixel(inPixels, srcX + 1, srcY + 1, srcWidth, srcHeight,
 							edgeAction);
-					ne = getPixel(inPixels, srcX + 1, srcY, srcWidth,
-							srcHeight, edgeAction);
-					sw = getPixel(inPixels, srcX, srcY + 1, srcWidth,
-							srcHeight, edgeAction);
-					se = getPixel(inPixels, srcX + 1, srcY + 1, srcWidth,
-							srcHeight, edgeAction);
 				}
-				outPixels[x] = ImageMath.bilinearInterpolate(xWeight, yWeight,
-						nw, ne, sw, se);
+				outPixels[x] = ImageMath.bilinearInterpolate(xWeight, yWeight, nw, ne, sw, se);
 			}
-			BitmapUtils.setPixelRow(outPixels, y, transformedSpace.width,
-					destPixels);
+			BitmapUtils.setPixelRow(outPixels, y, transformedSpace.width, destPixels);
 			// setRGB(dst, 0, y, transformedSpace.width, 1, outPixels);
 		}
 		return Bitmap.createBitmap(destPixels, transformedSpace.width,
 				transformedSpace.height, outputConfig);
 	}
 
-	private static void transform(int x, int y, com.madrobot.geom.Point out,
-			float sin, float cos) {
+	private static void transform(int x, int y, com.madrobot.geom.Point out, float sin,
+			float cos) {
 		out.x = (int) ((x * cos) + (y * sin));
 		out.y = (int) ((y * cos) - (x * sin));
 	}
 
-	protected static float[] transformShearSpace(Rectangle r, float xangle,
-			float yangle) {
+	protected static float[] transformShearSpace(Rectangle r, float xangle, float yangle) {
 		float tangent = (float) Math.tan(xangle);
 		float xoffset = -r.height * tangent;
 		if (tangent < 0.0)
@@ -275,8 +264,8 @@ public class ShapeTransformFilters extends TransformFilters {
 		return new float[] { xoffset, yoffset };
 	}
 
-	public static Bitmap shear(Bitmap src, float xangle, float yangle,
-			int edgeAction, Config outputConfig) {
+	public static Bitmap shear(Bitmap src, float xangle, float yangle, int edgeAction,
+			Config outputConfig) {
 		float shx = (float) Math.sin(xangle);
 		float shy = (float) Math.sin(yangle);
 
@@ -307,16 +296,14 @@ public class ShapeTransformFilters extends TransformFilters {
 
 		for (int y = 0; y < outHeight; y++) {
 			for (int x = 0; x < outWidth; x++) {
-				transformInverse(outX + x, outY + y, out, xoffset, yoffset,
-						shx, shy);
+				transformInverse(outX + x, outY + y, out, xoffset, yoffset, shx, shy);
 				srcX = (int) Math.floor(out[0]);
 				srcY = (int) Math.floor(out[1]);
 				xWeight = out[0] - srcX;
 				yWeight = out[1] - srcY;
 				int nw, ne, sw, se;
 
-				if (srcX >= 0 && srcX < srcWidth1 && srcY >= 0
-						&& srcY < srcHeight1) {
+				if (srcX >= 0 && srcX < srcWidth1 && srcY >= 0 && srcY < srcHeight1) {
 					// Easy case, all corners are in the image
 					int i = srcWidth * srcY + srcX;
 					nw = inPixels[i];
@@ -325,28 +312,23 @@ public class ShapeTransformFilters extends TransformFilters {
 					se = inPixels[i + srcWidth + 1];
 				} else {
 					// Some of the corners are off the image
-					nw = getPixel(inPixels, srcX, srcY, srcWidth, srcHeight,
+					nw = getPixel(inPixels, srcX, srcY, srcWidth, srcHeight, edgeAction);
+					ne = getPixel(inPixels, srcX + 1, srcY, srcWidth, srcHeight, edgeAction);
+					sw = getPixel(inPixels, srcX, srcY + 1, srcWidth, srcHeight, edgeAction);
+					se = getPixel(inPixels, srcX + 1, srcY + 1, srcWidth, srcHeight,
 							edgeAction);
-					ne = getPixel(inPixels, srcX + 1, srcY, srcWidth,
-							srcHeight, edgeAction);
-					sw = getPixel(inPixels, srcX, srcY + 1, srcWidth,
-							srcHeight, edgeAction);
-					se = getPixel(inPixels, srcX + 1, srcY + 1, srcWidth,
-							srcHeight, edgeAction);
 				}
-				outPixels[x] = ImageMath.bilinearInterpolate(xWeight, yWeight,
-						nw, ne, sw, se);
+				outPixels[x] = ImageMath.bilinearInterpolate(xWeight, yWeight, nw, ne, sw, se);
 			}
-			BitmapUtils.setPixelRow(outPixels, y, transformedSpace.width,
-					destPixels);
+			BitmapUtils.setPixelRow(outPixels, y, transformedSpace.width, destPixels);
 			// setRGB(dst, 0, y, transformedSpace.width, 1, outPixels);
 		}
 		return Bitmap.createBitmap(destPixels, transformedSpace.width,
 				transformedSpace.height, outputConfig);
 	}
 
-	private static void transformInverse(int x, int y, float[] out,
-			float xoffset, float yoffset, float shx, float shy) {
+	private static void transformInverse(int x, int y, float[] out, float xoffset,
+			float yoffset, float shx, float shy) {
 		out[0] = x + xoffset + (y * shx);
 		out[1] = y + yoffset + (x * shy);
 	}

@@ -18,8 +18,14 @@ import com.madrobot.io.FastByteArrayOutputStream;
 public class PackBits {
 
 	public byte[] compress(byte bytes[]) throws IOException {
-		FastByteArrayOutputStream baos = new FastByteArrayOutputStream(
-				bytes.length * 2); // max length 1 extra byte for every 128
+		FastByteArrayOutputStream baos = new FastByteArrayOutputStream(bytes.length * 2); // max
+																							// length
+																							// 1
+																							// extra
+																							// byte
+																							// for
+																							// every
+																							// 128
 
 		int ptr = 0;
 		int count = 0;
@@ -81,8 +87,8 @@ public class PackBits {
 		{
 			// Read the next source byte into n.
 			if (i >= bytes.length) {
-				throw new IOException("Tiff: Unpack bits source exhausted: "
-						+ i + ", done + " + total + ", expected + " + expected);
+				throw new IOException("Tiff: Unpack bits source exhausted: " + i + ", done + "
+						+ total + ", expected + " + expected);
 			}
 
 			int n = bytes[i++];

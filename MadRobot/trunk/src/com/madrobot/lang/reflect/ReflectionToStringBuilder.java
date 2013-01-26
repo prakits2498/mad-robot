@@ -48,8 +48,7 @@ import java.util.List;
  * </p>
  * 
  * <pre>
- * System.out
- * 		.println(&quot;An object: &quot; + ReflectionToStringBuilder.toString(anObject));
+ * System.out.println(&quot;An object: &quot; + ReflectionToStringBuilder.toString(anObject));
  * </pre>
  * 
  * 
@@ -97,7 +96,7 @@ class ReflectionToStringBuilder extends ToStringBuilder {
 	 */
 	static String[] toNoNullStringArray(Collection<String> collection) {
 		if (collection == null) {
-			return new String[0];//ArrayUtils.EMPTY_STRING_ARRAY;
+			return new String[0];// ArrayUtils.EMPTY_STRING_ARRAY;
 		}
 		return toNoNullStringArray(collection.toArray());
 	}
@@ -119,7 +118,7 @@ class ReflectionToStringBuilder extends ToStringBuilder {
 				list.add(e.toString());
 			}
 		}
-		return list.toArray( new String[0]/*ArrayUtils.EMPTY_STRING_ARRAY*/);
+		return list.toArray(new String[0]/* ArrayUtils.EMPTY_STRING_ARRAY */);
 	}
 
 	/**
@@ -224,8 +223,7 @@ class ReflectionToStringBuilder extends ToStringBuilder {
 	 * @throws IllegalArgumentException
 	 *             if the Object is <code>null</code>
 	 */
-	public static String toString(Object object, ToStringStyle style,
-			boolean outputTransients) {
+	public static String toString(Object object, ToStringStyle style, boolean outputTransients) {
 		return toString(object, style, outputTransients, false, null);
 	}
 
@@ -331,11 +329,10 @@ class ReflectionToStringBuilder extends ToStringBuilder {
 	 *             if the Object is <code>null</code>
 	 * @since 2.1
 	 */
-	public static <T> String toString(T object, ToStringStyle style,
-			boolean outputTransients, boolean outputStatics,
-			Class<? super T> reflectUpToClass) {
-		return new ReflectionToStringBuilder(object, style, null,
-				reflectUpToClass, outputTransients, outputStatics).toString();
+	public static <T> String toString(T object, ToStringStyle style, boolean outputTransients,
+			boolean outputStatics, Class<? super T> reflectUpToClass) {
+		return new ReflectionToStringBuilder(object, style, null, reflectUpToClass,
+				outputTransients, outputStatics).toString();
 	}
 
 	/**
@@ -347,8 +344,7 @@ class ReflectionToStringBuilder extends ToStringBuilder {
 	 *            The field names to exclude. Null excludes nothing.
 	 * @return The toString value.
 	 */
-	public static String toStringExclude(Object object,
-			Collection<String> excludeFieldNames) {
+	public static String toStringExclude(Object object, Collection<String> excludeFieldNames) {
 		return toStringExclude(object, toNoNullStringArray(excludeFieldNames));
 	}
 
@@ -361,8 +357,7 @@ class ReflectionToStringBuilder extends ToStringBuilder {
 	 *            The field name to exclude
 	 * @return The toString value.
 	 */
-	public static String toStringExclude(Object object,
-			final String excludeFieldName) {
+	public static String toStringExclude(Object object, final String excludeFieldName) {
 		return toStringExclude(object, new String[] { excludeFieldName });
 	}
 
@@ -375,10 +370,9 @@ class ReflectionToStringBuilder extends ToStringBuilder {
 	 *            The field names to exclude
 	 * @return The toString value.
 	 */
-	public static String toStringExclude(Object object,
-			String[] excludeFieldNames) {
-		return new ReflectionToStringBuilder(object).setExcludeFieldNames(
-				excludeFieldNames).toString();
+	public static String toStringExclude(Object object, String[] excludeFieldNames) {
+		return new ReflectionToStringBuilder(object).setExcludeFieldNames(excludeFieldNames)
+				.toString();
 	}
 
 	/**
@@ -468,8 +462,7 @@ class ReflectionToStringBuilder extends ToStringBuilder {
 	 * @throws IllegalArgumentException
 	 *             if the Object passed in is <code>null</code>
 	 */
-	public ReflectionToStringBuilder(Object object, ToStringStyle style,
-			StringBuffer buffer) {
+	public ReflectionToStringBuilder(Object object, ToStringStyle style, StringBuffer buffer) {
 		super(object, style, buffer);
 	}
 
@@ -493,9 +486,8 @@ class ReflectionToStringBuilder extends ToStringBuilder {
 	 *            whether to include static fields
 	 * @since 2.1
 	 */
-	public <T> ReflectionToStringBuilder(T object, ToStringStyle style,
-			StringBuffer buffer, Class<? super T> reflectUpToClass,
-			boolean outputTransients, boolean outputStatics) {
+	public <T> ReflectionToStringBuilder(T object, ToStringStyle style, StringBuffer buffer,
+			Class<? super T> reflectUpToClass, boolean outputTransients, boolean outputStatics) {
 		super(object, style, buffer);
 		this.setUpToClass(reflectUpToClass);
 		this.setAppendTransients(outputTransients);
@@ -521,8 +513,7 @@ class ReflectionToStringBuilder extends ToStringBuilder {
 			// Reject field from inner class.
 			return false;
 		}
-		if (Modifier.isTransient(field.getModifiers())
-				&& !this.isAppendTransients()) {
+		if (Modifier.isTransient(field.getModifiers()) && !this.isAppendTransients()) {
 			// Reject transient fields.
 			return false;
 		}
@@ -573,9 +564,8 @@ class ReflectionToStringBuilder extends ToStringBuilder {
 					// instead
 					// throw a runtime exception in case the impossible
 					// happens.
-					throw new InternalError(
-							"Unexpected IllegalAccessException: "
-									+ ex.getMessage());
+					throw new InternalError("Unexpected IllegalAccessException: "
+							+ ex.getMessage());
 				}
 			}
 		}
@@ -653,8 +643,7 @@ class ReflectionToStringBuilder extends ToStringBuilder {
 	 * @return this
 	 */
 	public ReflectionToStringBuilder reflectionAppendArray(Object array) {
-		this.getStyle().reflectionAppendArrayDetail(this.getStringBuffer(),
-				null, array);
+		this.getStyle().reflectionAppendArrayDetail(this.getStringBuffer(), null, array);
 		return this;
 	}
 
@@ -691,8 +680,7 @@ class ReflectionToStringBuilder extends ToStringBuilder {
 	 *            <code>null</code>.
 	 * @return <code>this</code>
 	 */
-	public ReflectionToStringBuilder setExcludeFieldNames(
-			String[] excludeFieldNamesParam) {
+	public ReflectionToStringBuilder setExcludeFieldNames(String[] excludeFieldNamesParam) {
 		if (excludeFieldNamesParam == null) {
 			this.excludeFieldNames = null;
 		} else {

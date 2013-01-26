@@ -38,8 +38,7 @@ class TaskPool extends ThreadPoolExecutor {
 
 		@Override
 		public Thread newThread(Runnable runnable) {
-			String threadName = "SessionThread="
-					+ atomicInteger.getAndIncrement();
+			String threadName = "SessionThread=" + atomicInteger.getAndIncrement();
 			return new Thread(runnable, threadName);
 		}
 	};
@@ -48,9 +47,8 @@ class TaskPool extends ThreadPoolExecutor {
 	 * Creates a new TaskThreadPool with the initial parameters.
 	 */
 	protected TaskPool() {
-		super(TaskPoolConstants.MAX_THREADS_COUNT,
-				TaskPoolConstants.MAX_THREADS_COUNT, 0L, TimeUnit.MILLISECONDS,
-				blockingQueue, threadFactory);
+		super(TaskPoolConstants.MAX_THREADS_COUNT, TaskPoolConstants.MAX_THREADS_COUNT, 0L,
+				TimeUnit.MILLISECONDS, blockingQueue, threadFactory);
 	}
 
 	/**

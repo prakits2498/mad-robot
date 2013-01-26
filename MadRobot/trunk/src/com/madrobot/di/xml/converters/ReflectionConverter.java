@@ -15,8 +15,7 @@ import com.madrobot.di.xml.Mapper;
 
 public class ReflectionConverter extends AbstractReflectionConverter {
 
-	public ReflectionConverter(Mapper mapper,
-			ReflectionProvider reflectionProvider) {
+	public ReflectionConverter(Mapper mapper, ReflectionProvider reflectionProvider) {
 		super(mapper, reflectionProvider);
 	}
 

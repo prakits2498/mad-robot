@@ -1,4 +1,3 @@
-
 package com.madrobot.net.util.cache;
 
 import java.util.ArrayList;
@@ -32,8 +31,7 @@ import com.madrobot.net.util.cache.annotation.Immutable;
 class RequestProtocolCompliance {
 
 	private static final List<String> disallowedWithNoCache = Arrays.asList(
-			HttpConstants.CACHE_CONTROL_MIN_FRESH,
-			HttpConstants.CACHE_CONTROL_MAX_STALE,
+			HttpConstants.CACHE_CONTROL_MIN_FRESH, HttpConstants.CACHE_CONTROL_MAX_STALE,
 			HttpConstants.CACHE_CONTROL_MAX_AGE);
 
 	/**
@@ -44,8 +42,7 @@ class RequestProtocolCompliance {
 	 *            the HttpRequest Object
 	 * @return list of {@link RequestProtocolError}
 	 */
-	public List<RequestProtocolError> requestIsFatallyNonCompliant(
-			HttpRequest request) {
+	public List<RequestProtocolError> requestIsFatallyNonCompliant(HttpRequest request) {
 		List<RequestProtocolError> theErrors = new ArrayList<RequestProtocolError>();
 
 		RequestProtocolError anError = requestHasWeakETagAndRange(request);
@@ -107,8 +104,7 @@ class RequestProtocolCompliance {
 				if (!disallowedWithNoCache.contains(elt.getName())) {
 					outElts.add(elt);
 				}
-				if (HttpConstants.CACHE_CONTROL_NO_CACHE
-						.equals(elt.getName())) {
+				if (HttpConstants.CACHE_CONTROL_NO_CACHE.equals(elt.getName())) {
 					shouldStrip = true;
 				}
 			}
@@ -116,8 +112,7 @@ class RequestProtocolCompliance {
 		if (!shouldStrip)
 			return;
 		request.removeHeaders(HttpConstants.CACHE_CONTROL);
-		request.setHeader(HttpConstants.CACHE_CONTROL,
-				buildHeaderFromElements(outElts));
+		request.setHeader(HttpConstants.CACHE_CONTROL, buildHeaderFromElements(outElts));
 	}
 
 	private String buildHeaderFromElements(List<HeaderElement> outElts) {
@@ -135,18 +130,16 @@ class RequestProtocolCompliance {
 	}
 
 	private boolean requestMustNotHaveEntity(HttpRequest request) {
-		return HttpMethod.TRACE.equals(request.getRequestLine()
-				.getMethod()) && request instanceof HttpEntityEnclosingRequest;
+		return HttpMethod.TRACE.equals(request.getRequestLine().getMethod())
+				&& request instanceof HttpEntityEnclosingRequest;
 	}
 
 	private void decrementOPTIONSMaxForwardsIfGreaterThen0(HttpRequest request) {
-		if (!HttpMethod.OPTIONS.equals(request.getRequestLine()
-				.getMethod())) {
+		if (!HttpMethod.OPTIONS.equals(request.getRequestLine().getMethod())) {
 			return;
 		}
 
-		Header maxForwards = request
-				.getFirstHeader(HttpConstants.MAX_FORWARDS);
+		Header maxForwards = request.getFirstHeader(HttpConstants.MAX_FORWARDS);
 		if (maxForwards == null) {
 			return;
 		}
@@ -154,13 +147,11 @@ class RequestProtocolCompliance {
 		request.removeHeaders(HttpConstants.MAX_FORWARDS);
 		int currentMaxForwards = Integer.parseInt(maxForwards.getValue());
 
-		request.setHeader(HttpConstants.MAX_FORWARDS,
-				Integer.toString(currentMaxForwards - 1));
+		request.setHeader(HttpConstants.MAX_FORWARDS, Integer.toString(currentMaxForwards - 1));
 	}
 
 	private void verifyOPTIONSRequestWithBodyHasContentType(HttpRequest request) {
-		if (!HttpMethod.OPTIONS.equals(request.getRequestLine()
-				.getMethod())) {
+		if (!HttpMethod.OPTIONS.equals(request.getRequestLine().getMethod())) {
 			return;
 		}
 
@@ -173,16 +164,14 @@ class RequestProtocolCompliance {
 
 	public static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
 
-	private void addContentTypeHeaderIfMissing(
-			HttpEntityEnclosingRequest request) {
+	private void addContentTypeHeaderIfMissing(HttpEntityEnclosingRequest request) {
 		if (request.getEntity().getContentType() == null) {
 			((AbstractHttpEntity) request.getEntity())
 					.setContentType(APPLICATION_OCTET_STREAM);
 		}
 	}
 
-	private void verifyRequestWithExpectContinueFlagHas100continueHeader(
-			HttpRequest request) {
+	private void verifyRequestWithExpectContinueFlagHas100continueHeader(HttpRequest request) {
 		if (request instanceof HttpEntityEnclosingRequest) {
 
 			if (((HttpEntityEnclosingRequest) request).expectContinue()
@@ -214,8 +203,8 @@ class RequestProtocolCompliance {
 			if (hasHeader) {
 				request.removeHeader(h);
 				for (HeaderElement elt : expectElementsThatAreNot100Continue) {
-					BasicHeader newHeader = new BasicHeader(
-							HTTP.EXPECT_DIRECTIVE, elt.getName());
+					BasicHeader newHeader = new BasicHeader(HTTP.EXPECT_DIRECTIVE,
+							elt.getName());
 					request.addHeader(newHeader);
 				}
 				return;
@@ -241,8 +230,8 @@ class RequestProtocolCompliance {
 		}
 	}
 
-	private HttpRequest upgradeRequestTo(HttpRequest request,
-			ProtocolVersion version) throws ClientProtocolException {
+	private HttpRequest upgradeRequestTo(HttpRequest request, ProtocolVersion version)
+			throws ClientProtocolException {
 		RequestWrapper newRequest;
 		try {
 			newRequest = new RequestWrapper(request);
@@ -254,8 +243,8 @@ class RequestProtocolCompliance {
 		return newRequest;
 	}
 
-	private HttpRequest downgradeRequestTo(HttpRequest request,
-			ProtocolVersion version) throws ClientProtocolException {
+	private HttpRequest downgradeRequestTo(HttpRequest request, ProtocolVersion version)
+			throws ClientProtocolException {
 		RequestWrapper newRequest;
 		try {
 			newRequest = new RequestWrapper(request);
@@ -267,8 +256,7 @@ class RequestProtocolCompliance {
 		return newRequest;
 	}
 
-	protected boolean requestMinorVersionIsTooHighMajorVersionsMatch(
-			HttpRequest request) {
+	protected boolean requestMinorVersionIsTooHighMajorVersionsMatch(HttpRequest request) {
 		ProtocolVersion requestProtocol = request.getProtocolVersion();
 		if (requestProtocol.getMajor() != HttpVersion.HTTP_1_1.getMajor()) {
 			return false;
@@ -282,8 +270,7 @@ class RequestProtocolCompliance {
 	}
 
 	protected boolean requestVersionIsTooLow(HttpRequest request) {
-		return request.getProtocolVersion().compareToVersion(
-				HttpVersion.HTTP_1_1) < 0;
+		return request.getProtocolVersion().compareToVersion(HttpVersion.HTTP_1_1) < 0;
 	}
 
 	/**
@@ -297,22 +284,21 @@ class RequestProtocolCompliance {
 	public HttpResponse getErrorForRequest(RequestProtocolError errorCheck) {
 		switch (errorCheck) {
 		case BODY_BUT_NO_LENGTH_ERROR:
-			return new BasicHttpResponse(new BasicStatusLine(
-					HttpVersion.HTTP_1_1, HttpStatus.SC_LENGTH_REQUIRED, ""));
+			return new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1,
+					HttpStatus.SC_LENGTH_REQUIRED, ""));
 
 		case WEAK_ETAG_AND_RANGE_ERROR:
-			return new BasicHttpResponse(new BasicStatusLine(
-					HttpVersion.HTTP_1_1, HttpStatus.SC_BAD_REQUEST,
-					"Weak eTag not compatible with byte range"));
+			return new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1,
+					HttpStatus.SC_BAD_REQUEST, "Weak eTag not compatible with byte range"));
 
 		case WEAK_ETAG_ON_PUTDELETE_METHOD_ERROR:
-			return new BasicHttpResponse(new BasicStatusLine(
-					HttpVersion.HTTP_1_1, HttpStatus.SC_BAD_REQUEST,
+			return new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1,
+					HttpStatus.SC_BAD_REQUEST,
 					"Weak eTag not compatible with PUT or DELETE requests"));
 
 		case NO_CACHE_DIRECTIVE_WITH_FIELD_NAME:
-			return new BasicHttpResponse(new BasicStatusLine(
-					HttpVersion.HTTP_1_1, HttpStatus.SC_BAD_REQUEST,
+			return new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1,
+					HttpStatus.SC_BAD_REQUEST,
 					"No-Cache directive MUST NOT include a field name"));
 
 		default:
@@ -345,14 +331,12 @@ class RequestProtocolCompliance {
 		return null;
 	}
 
-	private RequestProtocolError requestHasWeekETagForPUTOrDELETEIfMatch(
-			HttpRequest request) {
+	private RequestProtocolError requestHasWeekETagForPUTOrDELETEIfMatch(HttpRequest request) {
 		// TODO: Should these be looking at all the headers marked as
 		// If-Match/If-None-Match?
 
 		String method = request.getRequestLine().getMethod();
-		if (!(HttpMethod.PUT.equals(method) || HttpMethod.DELETE
-				.equals(method))) {
+		if (!(HttpMethod.PUT.equals(method) || HttpMethod.DELETE.equals(method))) {
 			return null;
 		}
 
@@ -363,8 +347,7 @@ class RequestProtocolCompliance {
 				return RequestProtocolError.WEAK_ETAG_ON_PUTDELETE_METHOD_ERROR;
 			}
 		} else {
-			Header ifNoneMatch = request
-					.getFirstHeader(HttpConstants.IF_NONE_MATCH);
+			Header ifNoneMatch = request.getFirstHeader(HttpConstants.IF_NONE_MATCH);
 			if (ifNoneMatch == null)
 				return null;
 
@@ -381,8 +364,8 @@ class RequestProtocolCompliance {
 			HttpRequest request) {
 		for (Header h : request.getHeaders(HttpConstants.CACHE_CONTROL)) {
 			for (HeaderElement elt : h.getElements()) {
-				if (HttpConstants.CACHE_CONTROL_NO_CACHE.equalsIgnoreCase(elt
-						.getName()) && elt.getValue() != null) {
+				if (HttpConstants.CACHE_CONTROL_NO_CACHE.equalsIgnoreCase(elt.getName())
+						&& elt.getValue() != null) {
 					return RequestProtocolError.NO_CACHE_DIRECTIVE_WITH_FIELD_NAME;
 				}
 			}

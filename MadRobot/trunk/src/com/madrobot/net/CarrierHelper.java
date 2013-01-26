@@ -156,8 +156,7 @@ public final class CarrierHelper {
 				}
 			}
 
-			final int wifiState = intent.getIntExtra(
-					WifiManager.EXTRA_WIFI_STATE, 0);
+			final int wifiState = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, 0);
 
 			if (wifiState == 0) {
 				final SupplicantState supplicantState = intent
@@ -226,8 +225,8 @@ public final class CarrierHelper {
 	private void init(Context context) {
 
 		this.context = context;
-		this.availableBearer = Collections
-				.synchronizedSet(new HashSet<Carrier>(Carrier.values().length));
+		this.availableBearer = Collections.synchronizedSet(new HashSet<Carrier>(Carrier
+				.values().length));
 		connectivityManager = (ConnectivityManager) context
 				.getSystemService(Context.CONNECTIVITY_SERVICE);
 
@@ -292,8 +291,7 @@ public final class CarrierHelper {
 	private void registerNetWorkChangeMonitorRecevier() {
 		IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-		intentFilter
-				.addAction(ConnectivityManager.ACTION_BACKGROUND_DATA_SETTING_CHANGED);
+		intentFilter.addAction(ConnectivityManager.ACTION_BACKGROUND_DATA_SETTING_CHANGED);
 		intentFilter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
 		intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
 
@@ -342,7 +340,7 @@ public final class CarrierHelper {
 		}
 		CarrierHelper.carrierHandler = null;
 	}
-	
+
 	/**
 	 * Check if airplane mode is enabled
 	 * 

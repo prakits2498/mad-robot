@@ -75,8 +75,6 @@ public class NetUtils {
 		return ctx;
 	}
 
-	
-
 	/**
 	 * Enable Http Response cache. Works only on Ice-cream sandwich.
 	 * 
@@ -94,8 +92,6 @@ public class NetUtils {
 		} catch (Exception e) {
 		}
 	}
-
-	
 
 	/**
 	 * Encodes the string in the string buffer

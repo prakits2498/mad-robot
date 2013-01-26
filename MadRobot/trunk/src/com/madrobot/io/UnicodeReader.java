@@ -41,12 +41,10 @@ public class UnicodeReader extends Reader {
 		byte bom[] = new byte[BOM_SIZE];
 		int n, unread;
 
-		PushbackInputStream pushbackStream = new PushbackInputStream(in,
-				BOM_SIZE);
+		PushbackInputStream pushbackStream = new PushbackInputStream(in, BOM_SIZE);
 		n = pushbackStream.read(bom, 0, bom.length);
 
-		if ((bom[0] == (byte) 0xEF) && (bom[1] == (byte) 0xBB)
-				&& (bom[2] == (byte) 0xBF)) {
+		if ((bom[0] == (byte) 0xEF) && (bom[1] == (byte) 0xBB) && (bom[2] == (byte) 0xBF)) {
 			encoding = "UTF-8";
 			unread = n - 3;
 		} else if ((bom[0] == (byte) 0xFE) && (bom[1] == (byte) 0xFF)) {
@@ -78,8 +76,7 @@ public class UnicodeReader extends Reader {
 		if (encoding == null) {
 			internalInputStreamReader = new InputStreamReader(pushbackStream);
 		} else {
-			internalInputStreamReader = new InputStreamReader(pushbackStream,
-					encoding);
+			internalInputStreamReader = new InputStreamReader(pushbackStream, encoding);
 		}
 	}
 

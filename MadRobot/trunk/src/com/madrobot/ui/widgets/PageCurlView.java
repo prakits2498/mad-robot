@@ -44,17 +44,19 @@ import com.madrobot.R;
  * </pre>
  * 
  * <br/>
- * <b>Demo</b><br/> <center><OBJECT
- * CLASSID="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" WIDTH="428" HEIGHT="716"
- * CODEBASE
+ * <b>Demo</b><br/>
+ * <center><OBJECT CLASSID="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
+ * WIDTH="428" HEIGHT="716" CODEBASE
  * ="http://active.macromedia.com/flash5/cabs/swflash.cab#version=7,0,0,0">
- * <PARAM NAME=movie VALUE="../../../../resources/demos/pagecurl.swf"> <PARAM NAME=play VALUE=true> <PARAM
- * NAME=loop VALUE=false> <PARAM NAME=wmode VALUE=transparent> <PARAM
- * NAME=quality VALUE=low> <EMBED SRC="../../../../resources/demos/pagecurl.swf" WIDTH=428 HEIGHT=716
+ * <PARAM NAME=movie VALUE="../../../../resources/demos/pagecurl.swf"> <PARAM
+ * NAME=play VALUE=true> <PARAM NAME=loop VALUE=false> <PARAM NAME=wmode
+ * VALUE=transparent> <PARAM NAME=quality VALUE=low> <EMBED
+ * SRC="../../../../resources/demos/pagecurl.swf" WIDTH=428 HEIGHT=716
  * quality=low loop=false wmode=transparent TYPE="application/x-shockwave-flash"
  * PLUGINSPAGE=
  * "http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash"
- * > </EMBED> </OBJECT></center> <SCRIPT src='../../../../resources/demos/pagecurl.js'></script>
+ * > </EMBED> </OBJECT></center> <SCRIPT
+ * src='../../../../resources/demos/pagecurl.js'></script>
  * </p>
  * 
  */
@@ -173,6 +175,7 @@ public class PageCurlView extends View {
 			return (x * x) + (y * y);
 		}
 
+		@Override
 		public boolean equals(Object o) {
 			if (o instanceof Vector2D) {
 				Vector2D p = (Vector2D) o;
@@ -269,22 +272,17 @@ public class PageCurlView extends View {
 
 		// Get the data from the XML AttributeSet
 		{
-			TypedArray a = context.obtainStyledAttributes(attrs,
-					R.styleable.PageCurlView);
+			TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.PageCurlView);
 
 			// Get data
-			bEnableDebugMode = a.getBoolean(
-					R.styleable.PageCurlView_enableDebugMode, bEnableDebugMode);
-			mCurlSpeed = a.getInt(R.styleable.PageCurlView_curlSpeed,
-					mCurlSpeed);
-			mUpdateRate = a.getInt(R.styleable.PageCurlView_updateRate,
-					mUpdateRate);
-			mInitialEdgeOffset = a.getInt(
-					R.styleable.PageCurlView_initialEdgeOffset,
+			bEnableDebugMode = a.getBoolean(R.styleable.PageCurlView_enableDebugMode,
+					bEnableDebugMode);
+			mCurlSpeed = a.getInt(R.styleable.PageCurlView_curlSpeed, mCurlSpeed);
+			mUpdateRate = a.getInt(R.styleable.PageCurlView_updateRate, mUpdateRate);
+			mInitialEdgeOffset = a.getInt(R.styleable.PageCurlView_initialEdgeOffset,
 					mInitialEdgeOffset);
 			mCurlMode = a.getInt(R.styleable.PageCurlView_curlMode, mCurlMode);
-			Drawable first = a
-					.getDrawable(R.styleable.PageCurlView_top_Drawable);
+			Drawable first = a.getDrawable(R.styleable.PageCurlView_top_Drawable);
 			if (first == null) {
 				throw new IllegalArgumentException("First drawable is not set");
 			}
@@ -420,8 +418,7 @@ public class PageCurlView extends View {
 	 */
 	public void SetCurlSpeed(int curlSpeed) {
 		if (curlSpeed < 1)
-			throw new IllegalArgumentException(
-					"curlSpeed must be greated than 0");
+			throw new IllegalArgumentException("curlSpeed must be greated than 0");
 		mCurlSpeed = curlSpeed;
 	}
 
@@ -444,8 +441,7 @@ public class PageCurlView extends View {
 	 */
 	public void SetUpdateRate(int updateRate) {
 		if (updateRate < 1)
-			throw new IllegalArgumentException(
-					"updateRate must be greated than 0");
+			throw new IllegalArgumentException("updateRate must be greated than 0");
 		mUpdateRate = updateRate;
 	}
 
@@ -468,8 +464,7 @@ public class PageCurlView extends View {
 	 */
 	public void SetInitialEdgeOffset(int initialEdgeOffset) {
 		if (initialEdgeOffset < 0)
-			throw new IllegalArgumentException(
-					"initialEdgeOffset can not negative");
+			throw new IllegalArgumentException("initialEdgeOffset can not negative");
 		mInitialEdgeOffset = initialEdgeOffset;
 	}
 
@@ -732,16 +727,14 @@ public class PageCurlView extends View {
 		if (point.distance(mOrigin) > mFlipRadius) {
 			if (bMaintainMoveDir) {
 				// Maintain the direction
-				point = mOrigin.sum(point.sub(mOrigin).normalize()
-						.mult(mFlipRadius));
+				point = mOrigin.sum(point.sub(mOrigin).normalize().mult(mFlipRadius));
 			} else {
 				// Change direction
 				if (point.x > (mOrigin.x + mFlipRadius))
 					point.x = (mOrigin.x + mFlipRadius);
 				else if (point.x < (mOrigin.x - mFlipRadius))
 					point.x = (mOrigin.x - mFlipRadius);
-				point.y = (float) (Math.sin(Math.acos(Math.abs(point.x
-						- mOrigin.x)
+				point.y = (float) (Math.sin(Math.acos(Math.abs(point.x - mOrigin.x)
 						/ mFlipRadius)) * mFlipRadius);
 			}
 		}
@@ -836,8 +829,7 @@ public class PageCurlView extends View {
 
 		// Now calculate E and F taking into account that the line
 		// AD is perpendicular to FB and EC. B and C are fixed points.
-		double angle = Math
-				.atan((height - mD.y) / (mD.x + mMovement.x - width));
+		double angle = Math.atan((height - mD.y) / (mD.x + mMovement.x - width));
 		double _cos = Math.cos(2 * angle);
 		double _sin = Math.sin(2 * angle);
 
@@ -1117,9 +1109,8 @@ public class PageCurlView extends View {
 	private void drawPageNum(Canvas canvas, int pageNum) {
 		mTextPaint.setColor(Color.WHITE);
 		String pageNumText = "- " + pageNum + " -";
-		drawCentered(canvas, pageNumText,
-				canvas.getHeight() - mTextPaint.getTextSize() - 5, mTextPaint,
-				mTextPaintShadow);
+		drawCentered(canvas, pageNumText, canvas.getHeight() - mTextPaint.getTextSize() - 5,
+				mTextPaint, mTextPaintShadow);
 	}
 
 	// ---------------------------------------------------------------
@@ -1129,8 +1120,8 @@ public class PageCurlView extends View {
 	/**
 	 * Draw a text with a nice shadow
 	 */
-	public static void drawTextShadowed(Canvas canvas, String text, float x,
-			float y, Paint textPain, Paint shadowPaint) {
+	public static void drawTextShadowed(Canvas canvas, String text, float x, float y,
+			Paint textPain, Paint shadowPaint) {
 		canvas.drawText(text, x - 1, y, shadowPaint);
 		canvas.drawText(text, x, y + 1, shadowPaint);
 		canvas.drawText(text, x + 1, y, shadowPaint);
@@ -1147,8 +1138,8 @@ public class PageCurlView extends View {
 	 * @param textPain
 	 * @param shadowPaint
 	 */
-	public static void drawCentered(Canvas canvas, String text, float y,
-			Paint textPain, Paint shadowPaint) {
+	public static void drawCentered(Canvas canvas, String text, float y, Paint textPain,
+			Paint shadowPaint) {
 		float posx = (canvas.getWidth() - textPain.measureText(text)) / 2;
 		drawTextShadowed(canvas, text, posx, y, textPain, shadowPaint);
 	}
@@ -1187,12 +1178,9 @@ public class PageCurlView extends View {
 		posY = debugDrawPoint(canvas, "D", mD, Color.CYAN, posX, posY);
 		posY = debugDrawPoint(canvas, "E", mE, Color.YELLOW, posX, posY);
 		posY = debugDrawPoint(canvas, "F", mF, Color.LTGRAY, posX, posY);
-		posY = debugDrawPoint(canvas, "Mov", mMovement, Color.DKGRAY, posX,
-				posY);
-		posY = debugDrawPoint(canvas, "Origin", mOrigin, Color.MAGENTA, posX,
-				posY);
-		posY = debugDrawPoint(canvas, "Finger", mFinger, Color.GREEN, posX,
-				posY);
+		posY = debugDrawPoint(canvas, "Mov", mMovement, Color.DKGRAY, posX, posY);
+		posY = debugDrawPoint(canvas, "Origin", mOrigin, Color.MAGENTA, posX, posY);
+		posY = debugDrawPoint(canvas, "Finger", mFinger, Color.GREEN, posX, posY);
 
 		// Draw some curl stuff (Just some test)
 		/*
@@ -1210,14 +1198,14 @@ public class PageCurlView extends View {
 		 */
 	}
 
-	private float debugDrawPoint(Canvas canvas, String name, Vector2D point,
-			int color, float posX, float posY) {
-		return debugDrawPoint(canvas, name + " " + point.toString(), point.x,
-				point.y, color, posX, posY);
+	private float debugDrawPoint(Canvas canvas, String name, Vector2D point, int color,
+			float posX, float posY) {
+		return debugDrawPoint(canvas, name + " " + point.toString(), point.x, point.y, color,
+				posX, posY);
 	}
 
-	private float debugDrawPoint(Canvas canvas, String name, float X, float Y,
-			int color, float posX, float posY) {
+	private float debugDrawPoint(Canvas canvas, String name, float X, float Y, int color,
+			float posX, float posY) {
 		mTextPaint.setColor(color);
 		drawTextShadowed(canvas, name, posX, posY, mTextPaint, mTextPaintShadow);
 		Paint paint = new Paint();

@@ -16,9 +16,9 @@ package com.madrobot.di.xml.converters;
  * String representation.
  * <p/>
  * <p>
- * {@link com.madrobot.di.xml.converters.AbstractSingleValueConverter}
- * provides a starting point for objects that can store all information in a
- * single value String.
+ * {@link com.madrobot.di.xml.converters.AbstractSingleValueConverter} provides
+ * a starting point for objects that can store all information in a single value
+ * String.
  * </p>
  * 
  * @see com.madrobot.di.xml.converters.Converter

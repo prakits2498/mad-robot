@@ -48,8 +48,7 @@ import java.util.WeakHashMap;
  */
 public class MethodUtils {
 
-	private static Map declaredMethodCache = Collections
-			.synchronizedMap(new WeakHashMap());
+	private static Map declaredMethodCache = Collections.synchronizedMap(new WeakHashMap());
 
 	/**
 	 * <p>
@@ -90,16 +89,15 @@ public class MethodUtils {
 		for (int i = 0, size = methods.length; i < size; i++) {
 			if (methods[i].getName().equals(methodName)) {
 				// compare parameters
-				if (ClassUtils.isAssignable(parameterTypes,
-						methods[i].getParameterTypes(), true)) {
+				if (ClassUtils.isAssignable(parameterTypes, methods[i].getParameterTypes(),
+						true)) {
 					// get accessible version of method
 					Method accessibleMethod = getAccessibleMethod(methods[i]);
 					if (accessibleMethod != null) {
 						if (bestMatch == null
 								|| MemberUtils.compareParameterTypes(
 										accessibleMethod.getParameterTypes(),
-										bestMatch.getParameterTypes(),
-										parameterTypes) < 0) {
+										bestMatch.getParameterTypes(), parameterTypes) < 0) {
 							bestMatch = accessibleMethod;
 						}
 					}
@@ -129,8 +127,8 @@ public class MethodUtils {
 	 *            on <code>argCount</code>
 	 * @return
 	 */
-	public static Method findAccessibleMethodIncludeInterfaces(Class start,
-			String methodName, int argCount, Class argumentTypes[]) {
+	public static Method findAccessibleMethodIncludeInterfaces(Class start, String methodName,
+			int argCount, Class argumentTypes[]) {
 
 		if (methodName == null) {
 			return null;
@@ -150,8 +148,7 @@ public class MethodUtils {
 
 				// make sure method signature matches.
 				Class params[] = method.getParameterTypes();
-				if (method.getName().equals(methodName)
-						&& params.length == argCount) {
+				if (method.getName().equals(methodName) && params.length == argCount) {
 					if (argumentTypes != null) {
 						boolean different = false;
 						if (argCount > 0) {
@@ -180,8 +177,7 @@ public class MethodUtils {
 			// Note: The original implementation had both methods calling
 			// the 3 arg method. This is preserved but perhaps it should
 			// pass the args array instead of null.
-			method = findAccessibleMethodIncludeInterfaces(ifcs[i], methodName,
-					argCount, null);
+			method = findAccessibleMethodIncludeInterfaces(ifcs[i], methodName, argCount, null);
 			if (method != null) {
 				break;
 			}
@@ -216,8 +212,7 @@ public class MethodUtils {
 	public static Method getAccessibleMethod(Class<?> cls, String methodName,
 			Class<?>... parameterTypes) {
 		try {
-			return getAccessibleMethod(cls
-					.getMethod(methodName, parameterTypes));
+			return getAccessibleMethod(cls.getMethod(methodName, parameterTypes));
 		} catch (NoSuchMethodException e) {
 			return (null);
 		}
@@ -247,13 +242,11 @@ public class MethodUtils {
 		Class<?>[] parameterTypes = method.getParameterTypes();
 
 		// Check the implemented interfaces and subinterfaces
-		method = getAccessibleMethodFromInterfaceNest(cls, methodName,
-				parameterTypes);
+		method = getAccessibleMethodFromInterfaceNest(cls, methodName, parameterTypes);
 
 		// Check the superclass chain
 		if (method == null) {
-			method = getAccessibleMethodFromSuperclass(cls, methodName,
-					parameterTypes);
+			method = getAccessibleMethodFromSuperclass(cls, methodName, parameterTypes);
 		}
 		return method;
 	}
@@ -296,8 +289,7 @@ public class MethodUtils {
 				}
 				// Does the method exist on this interface?
 				try {
-					method = interfaces[i].getDeclaredMethod(methodName,
-							parameterTypes);
+					method = interfaces[i].getDeclaredMethod(methodName, parameterTypes);
 				} catch (NoSuchMethodException e) {
 					/*
 					 * Swallow, if no method is found after the loop then this
@@ -308,8 +300,8 @@ public class MethodUtils {
 					break;
 				}
 				// Recursively check our parent interfaces
-				method = getAccessibleMethodFromInterfaceNest(interfaces[i],
-						methodName, parameterTypes);
+				method = getAccessibleMethodFromInterfaceNest(interfaces[i], methodName,
+						parameterTypes);
 				if (method != null) {
 					break;
 				}
@@ -333,8 +325,8 @@ public class MethodUtils {
 	 *            The parameter type signatures
 	 * @return the accessible method or <code>null</code> if not found
 	 */
-	private static Method getAccessibleMethodFromSuperclass(Class<?> cls,
-			String methodName, Class<?>... parameterTypes) {
+	private static Method getAccessibleMethodFromSuperclass(Class<?> cls, String methodName,
+			Class<?>... parameterTypes) {
 		Class<?> parentClass = cls.getSuperclass();
 		while (parentClass != null) {
 			if (Modifier.isPublic(parentClass.getModifiers())) {
@@ -373,13 +365,12 @@ public class MethodUtils {
 		}
 
 		// We have to raise privilege for getDeclaredMethods
-		result = (Method[]) AccessController
-				.doPrivileged(new PrivilegedAction() {
-					@Override
-					public Object run() {
-						return fclz.getDeclaredMethods();
-					}
-				});
+		result = (Method[]) AccessController.doPrivileged(new PrivilegedAction() {
+			@Override
+			public Object run() {
+				return fclz.getDeclaredMethods();
+			}
+		});
 
 		// Null out any non-public methods.
 		for (int i = 0; i < result.length; i++) {
@@ -419,11 +410,10 @@ public class MethodUtils {
 	 * @throws IllegalAccessException
 	 *             if the requested method is not accessible via reflection
 	 */
-	public static Object invokeExactMethod(Object object, String methodName,
-			Object... args) throws NoSuchMethodException,
-			IllegalAccessException, InvocationTargetException {
+	public static Object invokeExactMethod(Object object, String methodName, Object... args)
+			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 		if (args == null) {
-			args =  new Object[0];//ArrayUtils.EMPTY_OBJECT_ARRAY;
+			args = new Object[0];// ArrayUtils.EMPTY_OBJECT_ARRAY;
 		}
 		int arguments = args.length;
 		Class<?>[] parameterTypes = new Class[arguments];
@@ -461,22 +451,19 @@ public class MethodUtils {
 	 * @throws IllegalAccessException
 	 *             if the requested method is not accessible via reflection
 	 */
-	public static Object invokeExactMethod(Object object, String methodName,
-			Object[] args, Class<?>[] parameterTypes)
-			throws NoSuchMethodException, IllegalAccessException,
+	public static Object invokeExactMethod(Object object, String methodName, Object[] args,
+			Class<?>[] parameterTypes) throws NoSuchMethodException, IllegalAccessException,
 			InvocationTargetException {
 		if (args == null) {
-			args =  new Object[0];//ArrayUtils.EMPTY_OBJECT_ARRAY;
+			args = new Object[0];// ArrayUtils.EMPTY_OBJECT_ARRAY;
 		}
 		if (parameterTypes == null) {
-			parameterTypes = new Class[0];//ArrayUtils.EMPTY_CLASS_ARRAY;
+			parameterTypes = new Class[0];// ArrayUtils.EMPTY_CLASS_ARRAY;
 		}
-		Method method = getAccessibleMethod(object.getClass(), methodName,
-				parameterTypes);
+		Method method = getAccessibleMethod(object.getClass(), methodName, parameterTypes);
 		if (method == null) {
-			throw new NoSuchMethodException("No such accessible method: "
-					+ methodName + "() on object: "
-					+ object.getClass().getName());
+			throw new NoSuchMethodException("No such accessible method: " + methodName
+					+ "() on object: " + object.getClass().getName());
 		}
 		return method.invoke(object, args);
 	}
@@ -507,11 +494,11 @@ public class MethodUtils {
 	 * @throws IllegalAccessException
 	 *             if the requested method is not accessible via reflection
 	 */
-	public static Object invokeExactStaticMethod(Class<?> cls,
-			String methodName, Object... args) throws NoSuchMethodException,
-			IllegalAccessException, InvocationTargetException {
+	public static Object invokeExactStaticMethod(Class<?> cls, String methodName,
+			Object... args) throws NoSuchMethodException, IllegalAccessException,
+			InvocationTargetException {
 		if (args == null) {
-			args = new Object[0];//ArrayUtils.EMPTY_OBJECT_ARRAY;
+			args = new Object[0];// ArrayUtils.EMPTY_OBJECT_ARRAY;
 		}
 		int arguments = args.length;
 		Class<?>[] parameterTypes = new Class[arguments];
@@ -549,20 +536,19 @@ public class MethodUtils {
 	 * @throws IllegalAccessException
 	 *             if the requested method is not accessible via reflection
 	 */
-	public static Object invokeExactStaticMethod(Class<?> cls,
-			String methodName, Object[] args, Class<?>[] parameterTypes)
-			throws NoSuchMethodException, IllegalAccessException,
-			InvocationTargetException {
+	public static Object invokeExactStaticMethod(Class<?> cls, String methodName,
+			Object[] args, Class<?>[] parameterTypes) throws NoSuchMethodException,
+			IllegalAccessException, InvocationTargetException {
 		if (args == null) {
-			args = new Object[0];//ArrayUtils.EMPTY_OBJECT_ARRAY;
+			args = new Object[0];// ArrayUtils.EMPTY_OBJECT_ARRAY;
 		}
 		if (parameterTypes == null) {
-			parameterTypes = new Class[0];//ArrayUtils.EMPTY_CLASS_ARRAY;
+			parameterTypes = new Class[0];// ArrayUtils.EMPTY_CLASS_ARRAY;
 		}
 		Method method = getAccessibleMethod(cls, methodName, parameterTypes);
 		if (method == null) {
-			throw new NoSuchMethodException("No such accessible method: "
-					+ methodName + "() on class: " + cls.getName());
+			throw new NoSuchMethodException("No such accessible method: " + methodName
+					+ "() on class: " + cls.getName());
 		}
 		return method.invoke(null, args);
 	}
@@ -604,11 +590,10 @@ public class MethodUtils {
 	 * @throws IllegalAccessException
 	 *             if the requested method is not accessible via reflection
 	 */
-	public static Object invokeMethod(Object object, String methodName,
-			Object... args) throws NoSuchMethodException,
-			IllegalAccessException, InvocationTargetException {
+	public static Object invokeMethod(Object object, String methodName, Object... args)
+			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 		if (args == null) {
-			args = new Object[0];//ArrayUtils.EMPTY_OBJECT_ARRAY;
+			args = new Object[0];// ArrayUtils.EMPTY_OBJECT_ARRAY;
 		}
 		int arguments = args.length;
 		Class<?>[] parameterTypes = new Class[arguments];
@@ -651,22 +636,19 @@ public class MethodUtils {
 	 * @throws IllegalAccessException
 	 *             if the requested method is not accessible via reflection
 	 */
-	public static Object invokeMethod(Object object, String methodName,
-			Object[] args, Class<?>[] parameterTypes)
-			throws NoSuchMethodException, IllegalAccessException,
+	public static Object invokeMethod(Object object, String methodName, Object[] args,
+			Class<?>[] parameterTypes) throws NoSuchMethodException, IllegalAccessException,
 			InvocationTargetException {
 		if (parameterTypes == null) {
-			parameterTypes = new Class[0];//ArrayUtils.EMPTY_CLASS_ARRAY;
+			parameterTypes = new Class[0];// ArrayUtils.EMPTY_CLASS_ARRAY;
 		}
 		if (args == null) {
-			args = new Object[0];//ArrayUtils.EMPTY_OBJECT_ARRAY;
+			args = new Object[0];// ArrayUtils.EMPTY_OBJECT_ARRAY;
 		}
-		Method method = findAccessibleMethod(object.getClass(), methodName,
-				parameterTypes);
+		Method method = findAccessibleMethod(object.getClass(), methodName, parameterTypes);
 		if (method == null) {
-			throw new NoSuchMethodException("No such accessible method: "
-					+ methodName + "() on object: "
-					+ object.getClass().getName());
+			throw new NoSuchMethodException("No such accessible method: " + methodName
+					+ "() on object: " + object.getClass().getName());
 		}
 		return method.invoke(object, args);
 	}
@@ -709,11 +691,10 @@ public class MethodUtils {
 	 * @throws IllegalAccessException
 	 *             if the requested method is not accessible via reflection
 	 */
-	public static Object invokeStaticMethod(Class<?> cls, String methodName,
-			Object... args) throws NoSuchMethodException,
-			IllegalAccessException, InvocationTargetException {
+	public static Object invokeStaticMethod(Class<?> cls, String methodName, Object... args)
+			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 		if (args == null) {
-			args = new Object[0];//ArrayUtils.EMPTY_OBJECT_ARRAY;
+			args = new Object[0];// ArrayUtils.EMPTY_OBJECT_ARRAY;
 		}
 		int arguments = args.length;
 		Class<?>[] parameterTypes = new Class[arguments];
@@ -758,20 +739,19 @@ public class MethodUtils {
 	 * @throws IllegalAccessException
 	 *             if the requested method is not accessible via reflection
 	 */
-	public static Object invokeStaticMethod(Class<?> cls, String methodName,
-			Object[] args, Class<?>[] parameterTypes)
-			throws NoSuchMethodException, IllegalAccessException,
+	public static Object invokeStaticMethod(Class<?> cls, String methodName, Object[] args,
+			Class<?>[] parameterTypes) throws NoSuchMethodException, IllegalAccessException,
 			InvocationTargetException {
 		if (parameterTypes == null) {
-			parameterTypes = new Class[0];//ArrayUtils.EMPTY_CLASS_ARRAY;
+			parameterTypes = new Class[0];// ArrayUtils.EMPTY_CLASS_ARRAY;
 		}
 		if (args == null) {
-			args =new Object[0];// ArrayUtils.EMPTY_OBJECT_ARRAY;
+			args = new Object[0];// ArrayUtils.EMPTY_OBJECT_ARRAY;
 		}
 		Method method = findAccessibleMethod(cls, methodName, parameterTypes);
 		if (method == null) {
-			throw new NoSuchMethodException("No such accessible method: "
-					+ methodName + "() on class: " + cls.getName());
+			throw new NoSuchMethodException("No such accessible method: " + methodName
+					+ "() on class: " + cls.getName());
 		}
 		return method.invoke(null, args);
 	}

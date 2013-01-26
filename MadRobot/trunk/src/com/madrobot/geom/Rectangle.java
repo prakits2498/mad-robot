@@ -386,8 +386,8 @@ public class Rectangle {
 	 */
 	@Deprecated
 	public boolean inside(int x, int y) {
-		return width > 0 && height > 0 && x >= this.x && x < this.x + width
-				&& y >= this.y && y < this.y + height;
+		return width > 0 && height > 0 && x >= this.x && x < this.x + width && y >= this.y
+				&& y < this.y + height;
 	}
 
 	/**
@@ -402,9 +402,8 @@ public class Rectangle {
 	 * @since 1.2
 	 */
 	public boolean intersects(Rectangle r) {
-		return r.width > 0 && r.height > 0 && width > 0 && height > 0
-				&& r.x < x + width && r.x + r.width > x && r.y < y + height
-				&& r.y + r.height > y;
+		return r.width > 0 && r.height > 0 && width > 0 && height > 0 && r.x < x + width
+				&& r.x + r.width > x && r.y < y + height && r.y + r.height > y;
 	}
 
 	/**

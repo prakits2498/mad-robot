@@ -31,8 +31,7 @@ import com.madrobot.util.ThreadSafeSimpleDateFormat;
  * @author Joe Walnes
  * @author J&ouml;rg Schaible
  */
-public class DateConverter extends AbstractSingleValueConverter implements
-		ErrorReporter {
+public class DateConverter extends AbstractSingleValueConverter implements ErrorReporter {
 
 	private static final String[] DEFAULT_ACCEPTABLE_FORMATS;
 	private static final String DEFAULT_PATTERN;
@@ -41,8 +40,7 @@ public class DateConverter extends AbstractSingleValueConverter implements
 		final String defaultPattern = "yyyy-MM-dd HH:mm:ss.S z";
 		final List acceptablePatterns = new ArrayList();
 		final boolean utcSupported = JVM.canParseUTCDateFormat();
-		DEFAULT_PATTERN = utcSupported ? defaultPattern
-				: "yyyy-MM-dd HH:mm:ss.S 'UTC'";
+		DEFAULT_PATTERN = utcSupported ? defaultPattern : "yyyy-MM-dd HH:mm:ss.S 'UTC'";
 		if (!utcSupported) {
 			acceptablePatterns.add(defaultPattern);
 		}
@@ -104,8 +102,7 @@ public class DateConverter extends AbstractSingleValueConverter implements
 	 *            {@link SimpleDateFormat#setLenient(boolean)}
 	 * @since 1.3
 	 */
-	public DateConverter(String defaultFormat, String[] acceptableFormats,
-			boolean lenient) {
+	public DateConverter(String defaultFormat, String[] acceptableFormats, boolean lenient) {
 		this(defaultFormat, acceptableFormats, UTC, lenient);
 	}
 
@@ -118,8 +115,7 @@ public class DateConverter extends AbstractSingleValueConverter implements
 	 *            fallback formats
 	 * @since 1.4
 	 */
-	public DateConverter(String defaultFormat, String[] acceptableFormats,
-			TimeZone timeZone) {
+	public DateConverter(String defaultFormat, String[] acceptableFormats, TimeZone timeZone) {
 		this(defaultFormat, acceptableFormats, timeZone, false);
 	}
 
@@ -137,15 +133,15 @@ public class DateConverter extends AbstractSingleValueConverter implements
 	 *            {@link SimpleDateFormat#setLenient(boolean)}
 	 * @since 1.4
 	 */
-	public DateConverter(String defaultFormat, String[] acceptableFormats,
-			TimeZone timeZone, boolean lenient) {
-		this.defaultFormat = new ThreadSafeSimpleDateFormat(defaultFormat,
-				timeZone, 4, 20, lenient);
+	public DateConverter(String defaultFormat, String[] acceptableFormats, TimeZone timeZone,
+			boolean lenient) {
+		this.defaultFormat = new ThreadSafeSimpleDateFormat(defaultFormat, timeZone, 4, 20,
+				lenient);
 		this.acceptableFormats = acceptableFormats != null ? new ThreadSafeSimpleDateFormat[acceptableFormats.length]
 				: new ThreadSafeSimpleDateFormat[0];
 		for (int i = 0; i < this.acceptableFormats.length; i++) {
-			this.acceptableFormats[i] = new ThreadSafeSimpleDateFormat(
-					acceptableFormats[i], timeZone, 1, 20, lenient);
+			this.acceptableFormats[i] = new ThreadSafeSimpleDateFormat(acceptableFormats[i],
+					timeZone, 1, 20, lenient);
 		}
 	}
 
@@ -165,8 +161,7 @@ public class DateConverter extends AbstractSingleValueConverter implements
 	public void appendErrors(ErrorWriter errorWriter) {
 		errorWriter.add("Default date pattern", defaultFormat.toString());
 		for (int i = 0; i < acceptableFormats.length; i++) {
-			errorWriter.add("Alternative date pattern",
-					acceptableFormats[i].toString());
+			errorWriter.add("Alternative date pattern", acceptableFormats[i].toString());
 		}
 	}
 

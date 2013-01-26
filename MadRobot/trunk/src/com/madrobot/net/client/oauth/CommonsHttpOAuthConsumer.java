@@ -15,14 +15,11 @@ public class CommonsHttpOAuthConsumer extends AbstractOAuthConsumer {
 	@Override
 	protected HttpRequest wrap(Object request) {
 		if (!(request instanceof org.apache.http.HttpRequest)) {
-			throw new IllegalArgumentException(
-					"This consumer expects requests of type "
-							+ org.apache.http.HttpRequest.class
-									.getCanonicalName());
+			throw new IllegalArgumentException("This consumer expects requests of type "
+					+ org.apache.http.HttpRequest.class.getCanonicalName());
 		}
 
-		return new HttpRequestAdapter(
-				(org.apache.http.client.methods.HttpUriRequest) request);
+		return new HttpRequestAdapter((org.apache.http.client.methods.HttpUriRequest) request);
 	}
 
 }

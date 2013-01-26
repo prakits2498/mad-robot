@@ -16,8 +16,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.Enumeration;
-import java.util.Vector;
+import java.util.ArrayList;
 
 import com.madrobot.net.client.SocketClient;
 
@@ -41,7 +40,7 @@ import com.madrobot.net.client.SocketClient;
  * @see com.madrobot.net.client.mail.MalformedServerReplyException
  ***/
 
-public class POP3 extends SocketClient {
+public class POP3 extends MailClient {
 	// We have to ensure that the protocol communication is in ASCII
 	// but we use ISO-8859-1 just in case 8-bit characters cross
 	// the wire.
@@ -64,39 +63,34 @@ public class POP3 extends SocketClient {
 	/*** A constant representing the POP3 update state. ***/
 	public static final int UPDATE_STATE = 2;
 
-	private StringBuffer __commandBuffer;
 	private int __popState;
-	private BufferedWriter __writer;
 
-	/***
-	 * A ProtocolCommandSupport object used to manage the registering of
-	 * ProtocolCommandListeners and te firing of ProtocolCommandEvents.
-	 ***/
-	protected ProtocolCommandSupport _commandSupport_;
 	String _lastReplyLine;
 	BufferedReader _reader;
 	int _replyCode;
-
-	Vector<String> _replyLines;
 
 	/***
 	 * The default POP3Client constructor. Initializes the state to
 	 * <code>DISCONNECTED_STATE</code>.
 	 ***/
 	public POP3() {
-		setDefaultPort(DEFAULT_PORT);
-		__commandBuffer = new StringBuffer();
-		__popState = DISCONNECTED_STATE;
-		_reader = null;
-		__writer = null;
-		_replyLines = new Vector<String>();
-		_commandSupport_ = new ProtocolCommandSupport(this);
+		this(DEFAULT_PORT);
 	}
 
-	private void __getReply() throws IOException {
+	public POP3(int port) {
+		super(port);
+		commandBuffer = new StringBuffer();
+		__popState = DISCONNECTED_STATE;
+		_reader = null;
+		writer = null;
+		replyLines = new ArrayList<String>();
+		commandSupport = new ProtocolCommandSupport(this);
+	}
+
+	private void getReply() throws IOException {
 		String line;
 
-		_replyLines.setSize(0);
+		replyLines.clear();
 		line = _reader.readLine();
 
 		if (line == null) {
@@ -112,11 +106,11 @@ public class POP3 extends SocketClient {
 					"Received invalid POP3 protocol response from server.");
 		}
 
-		_replyLines.addElement(line);
+		replyLines.add(line);
 		_lastReplyLine = line;
 
-		if (_commandSupport_.getListenerCount() > 0) {
-			_commandSupport_.fireReplyReceived(_replyCode, getReplyString());
+		if (commandSupport.getListenerCount() > 0) {
+			commandSupport.fireReplyReceived(_replyCode, getReplyString());
 		}
 	}
 
@@ -127,24 +121,22 @@ public class POP3 extends SocketClient {
 	@Override
 	protected void _connectAction_() throws IOException {
 		super._connectAction_();
-		_reader = new BufferedReader(new InputStreamReader(_input_,
-				__DEFAULT_ENCODING));
-		__writer = new BufferedWriter(new OutputStreamWriter(_output_,
-				__DEFAULT_ENCODING));
-		__getReply();
+		_reader = new BufferedReader(new InputStreamReader(_input_, __DEFAULT_ENCODING));
+		writer = new BufferedWriter(new OutputStreamWriter(_output_, __DEFAULT_ENCODING));
+		getReply();
 		setState(AUTHORIZATION_STATE);
 	}
 
 	/***
 	 * Adds a ProtocolCommandListener. Delegates this task to
-	 * {@link #_commandSupport_ _commandSupport_ }.
+	 * {@link #commandSupport _commandSupport_ }.
 	 * <p>
 	 * 
 	 * @param listener
 	 *            The ProtocolCommandListener to add.
 	 ***/
 	public void addProtocolCommandListener(ProtocolCommandListener listener) {
-		_commandSupport_.addProtocolCommandListener(listener);
+		commandSupport.addProtocolCommandListener(listener);
 	}
 
 	/***
@@ -161,9 +153,9 @@ public class POP3 extends SocketClient {
 	public void disconnect() throws IOException {
 		super.disconnect();
 		_reader = null;
-		__writer = null;
+		writer = null;
 		_lastReplyLine = null;
-		_replyLines.setSize(0);
+		replyLines.clear();
 		setState(DISCONNECTED_STATE);
 	}
 
@@ -175,7 +167,7 @@ public class POP3 extends SocketClient {
 
 		line = _reader.readLine();
 		while (line != null) {
-			_replyLines.addElement(line);
+			replyLines.add(line);
 			if (line.equals(".")) {
 				break;
 			}
@@ -188,7 +180,7 @@ public class POP3 extends SocketClient {
 	 * single string containing all the reply lines including newlines. If the
 	 * reply is a single line, but its format ndicates it should be a multiline
 	 * reply, then you must call {@link #getAdditionalReply getAdditionalReply()
-	 * } to fetch the rest of the reply, and then call
+	 * * } to fetch the rest of the reply, and then call
 	 * <code>getReplyString</code> again. You only have to worry about this if
 	 * you are implementing your own client using the {@link #sendCommand
 	 * sendCommand } methods.
@@ -197,12 +189,9 @@ public class POP3 extends SocketClient {
 	 * @return The last server response.
 	 ***/
 	public String getReplyString() {
-		Enumeration<String> en;
 		StringBuilder buffer = new StringBuilder(256);
-
-		en = _replyLines.elements();
-		while (en.hasMoreElements()) {
-			buffer.append(en.nextElement());
+		for (String str : replyLines) {
+			buffer.append(str);
 			buffer.append(SocketClient.NETASCII_EOL);
 		}
 
@@ -223,8 +212,8 @@ public class POP3 extends SocketClient {
 	 ***/
 	public String[] getReplyStrings() {
 		String[] lines;
-		lines = new String[_replyLines.size()];
-		_replyLines.copyInto(lines);
+		lines = new String[replyLines.size()];
+		replyLines.toArray(lines);
 		return lines;
 	}
 
@@ -240,14 +229,14 @@ public class POP3 extends SocketClient {
 
 	/***
 	 * Removes a ProtocolCommandListener. Delegates this task to
-	 * {@link #_commandSupport_ _commandSupport_ }.
+	 * {@link #commandSupport _commandSupport_ }.
 	 * <p>
 	 * 
 	 * @param listener
 	 *            The ProtocolCommandListener to remove.
 	 ***/
 	public void removeProtocolCommandistener(ProtocolCommandListener listener) {
-		_commandSupport_.removeProtocolCommandListener(listener);
+		commandSupport.removeProtocolCommandListener(listener);
 	}
 
 	/***
@@ -259,6 +248,7 @@ public class POP3 extends SocketClient {
 	 *            The POP3 command to send (one of the POP3Command constants).
 	 * @return The server reply code (either POP3Reply.OK or POP3Reply.ERROR).
 	 ***/
+	@Override
 	public int sendCommand(int command) throws IOException {
 		return sendCommand(POP3Command.getCommand(command), null);
 	}
@@ -303,23 +293,23 @@ public class POP3 extends SocketClient {
 	public int sendCommand(String command, String args) throws IOException {
 		String message;
 
-		__commandBuffer.setLength(0);
-		__commandBuffer.append(command);
+		commandBuffer.setLength(0);
+		commandBuffer.append(command);
 
 		if (args != null) {
-			__commandBuffer.append(' ');
-			__commandBuffer.append(args);
+			commandBuffer.append(' ');
+			commandBuffer.append(args);
 		}
-		__commandBuffer.append(SocketClient.NETASCII_EOL);
+		commandBuffer.append(SocketClient.NETASCII_EOL);
 
-		__writer.write(message = __commandBuffer.toString());
-		__writer.flush();
+		writer.write(message = commandBuffer.toString());
+		writer.flush();
 
-		if (_commandSupport_.getListenerCount() > 0) {
-			_commandSupport_.fireCommandSent(command, message);
+		if (commandSupport.getListenerCount() > 0) {
+			commandSupport.fireCommandSent(command, message);
 		}
 
-		__getReply();
+		getReply();
 		return _replyCode;
 	}
 

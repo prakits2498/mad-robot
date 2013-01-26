@@ -27,12 +27,10 @@ import com.madrobot.util.collections.PrioritizedList;
  * The default implementation of converters lookup.
  * 
  */
-public class DefaultConverterLookup implements ConverterLookup,
-		ConverterRegistry, Caching {
+public class DefaultConverterLookup implements ConverterLookup, ConverterRegistry, Caching {
 
 	private final PrioritizedList converters = new PrioritizedList();
-	private transient Map typeToConverterMap = Collections
-			.synchronizedMap(new WeakHashMap());
+	private transient Map typeToConverterMap = Collections.synchronizedMap(new WeakHashMap());
 
 	public DefaultConverterLookup() {
 	}
@@ -74,8 +72,7 @@ public class DefaultConverterLookup implements ConverterLookup,
 	@Override
 	public void registerConverter(Converter converter, int priority) {
 		converters.add(converter, priority);
-		for (Iterator iter = typeToConverterMap.keySet().iterator(); iter
-				.hasNext();) {
+		for (Iterator iter = typeToConverterMap.keySet().iterator(); iter.hasNext();) {
 			Class type = (Class) iter.next();
 			if (converter.canConvert(type)) {
 				iter.remove();

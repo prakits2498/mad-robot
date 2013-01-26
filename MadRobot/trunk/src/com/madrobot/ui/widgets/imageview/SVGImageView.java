@@ -1,4 +1,4 @@
-package com.madrobot.ui.widgets;
+package com.madrobot.ui.widgets.imageview;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -46,18 +46,22 @@ import com.madrobot.graphics.svg.SVGFactory;
  * </table>
  * <br/>
  * <b>Demo</b><br/>
- * This demo uses the <a href="../../../../resources/giraffe.svg">Giraffe.svg</a> created by <a href="http://openclipart.org/detail/160609/new-cartoon-giraffe-by-ryanlerch">ryan lerch</a>.
- * <center><OBJECT CLASSID="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
- * WIDTH="725" HEIGHT="461" CODEBASE=
+ * This demo uses the <a
+ * href="../../../../../resources/giraffe.svg">Giraffe.svg</a> created by <a
+ * href="http://openclipart.org/detail/160609/new-cartoon-giraffe-by-ryanlerch">
+ * ryan lerch</a>. <center><OBJECT
+ * CLASSID="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" WIDTH="725" HEIGHT="461"
+ * CODEBASE=
  * "http://active.macromedia.com/flash5/cabs/swflash.cab#version=7,0,0,0">
- * <PARAM NAME=movie VALUE="../../../../resources/demos/svgimageview.swf"> <PARAM NAME=play VALUE=true> <PARAM
- * NAME=loop VALUE=false> <PARAM NAME=wmode VALUE=transparent> <PARAM
- * NAME=quality VALUE=low> <EMBED SRC="../../../../resources/demos/svgimageview.swf" WIDTH=725 HEIGHT=461
+ * <PARAM NAME=movie VALUE="../../../../../resources/demos/svgimageview.swf">
+ * <PARAM NAME=play VALUE=true> <PARAM NAME=loop VALUE=false> <PARAM NAME=wmode
+ * VALUE=transparent> <PARAM NAME=quality VALUE=low> <EMBED
+ * SRC="../../../../../resources/demos/svgimageview.swf" WIDTH=725 HEIGHT=461
  * quality=low loop=false wmode=transparent TYPE="application/x-shockwave-flash"
  * PLUGINSPAGE=
  * "http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash"
- * > </EMBED> </OBJECT></center> <SCRIPT src='../../../../resources/demos/pagecurl.js'></script>
- * <br/>
+ * > </EMBED> </OBJECT></center> <SCRIPT
+ * src='../../../../../resources/demos/pagecurl.js'></script> <br/>
  * <b>Using the SVGImageView</b><br/>
  * <code>
  * <pre>
@@ -69,8 +73,7 @@ import com.madrobot.graphics.svg.SVGFactory;
  *  app:svgResource="@raw/giraffe"
  * 	android:background="#ff0000" /&gt;
  * </pre>
- * </code>
- * <br/>
+ * </code> <br/>
  * </p>
  * 
  * @see SVGFactory
@@ -152,10 +155,8 @@ public class SVGImageView extends ImageView {
 	private void initAttributes(Context context, AttributeSet attrs) {
 		TypedArray styledAttrs = context.obtainStyledAttributes(attrs,
 				R.styleable.SVGImageView);
-		zoomFactor = styledAttrs.getInteger(
-				R.styleable.SVGImageView_svgZoomFactor, 100);
-		int resource = styledAttrs.getResourceId(
-				R.styleable.SVGImageView_svgResource, -1);
+		zoomFactor = styledAttrs.getInteger(R.styleable.SVGImageView_svgZoomFactor, 100);
+		int resource = styledAttrs.getResourceId(R.styleable.SVGImageView_svgResource, -1);
 		if (resource > 0) {
 			setSVGFromResource(resource);
 		}

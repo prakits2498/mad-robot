@@ -10,9 +10,8 @@
  ******************************************************************************/
 package com.madrobot.security.hash;
 
-
 /**
- * Various CRC implementations
+ * One stop class for the various Hash implementations.
  * 
  * @author elton.kent
  * 
@@ -47,7 +46,7 @@ public final class HashUtils {
 	 * @param data
 	 * @return String representation of the MD5 checksum
 	 */
-	public static String doMD5asHEX(byte[] data) {
+	public static String doMD5asHEX(final byte[] data) {
 		final MD5 md5 = new MD5(data);
 		return md5.asHex();
 	}
@@ -63,5 +62,15 @@ public final class HashUtils {
 		return md5.asHex();
 	}
 
-	
+	/**
+	 * Do a Jenkins hash on the given byte array
+	 * 
+	 * @param data
+	 * @return
+	 */
+	public static long doJenkinsHash(final byte[] data) {
+		final JenkinsHash hash = new JenkinsHash();
+		return hash.hash(data);
+	}
+
 }

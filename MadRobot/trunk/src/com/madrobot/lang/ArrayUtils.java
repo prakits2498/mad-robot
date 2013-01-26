@@ -37,7 +37,6 @@ import com.madrobot.lang.reflect.ToStringStyle;
  */
 public class ArrayUtils {
 
-
 	/**
 	 * The index value when an element is not found in a list or array:
 	 * <code>-1</code>. This value is returned by methods in this class and can
@@ -59,8 +58,7 @@ public class ArrayUtils {
 	 * @param numToMove
 	 *            The number of entries to move
 	 */
-	public static void arrayMoveWithin(Object[] array, int moveFrom,
-			int moveTo, int numToMove) {
+	public static void arrayMoveWithin(Object[] array, int moveFrom, int moveTo, int numToMove) {
 		// If we're not asked to do anything, return now
 		if (numToMove <= 0) {
 			return;
@@ -71,16 +69,13 @@ public class ArrayUtils {
 
 		// Check that the values supplied are valid
 		if (moveFrom < 0 || moveFrom >= array.length) {
-			throw new IllegalArgumentException(
-					"The moveFrom must be a valid array index");
+			throw new IllegalArgumentException("The moveFrom must be a valid array index");
 		}
 		if (moveTo < 0 || moveTo >= array.length) {
-			throw new IllegalArgumentException(
-					"The moveTo must be a valid array index");
+			throw new IllegalArgumentException("The moveTo must be a valid array index");
 		}
 		if (moveFrom + numToMove > array.length) {
-			throw new IllegalArgumentException(
-					"Asked to move more entries than the array has");
+			throw new IllegalArgumentException("Asked to move more entries than the array has");
 		}
 		if (moveTo + numToMove > array.length) {
 			throw new IllegalArgumentException(
@@ -104,8 +99,7 @@ public class ArrayUtils {
 			// Moving to a later point in the array
 			// Grab everything from after the toMove block, to the new point
 			toShift = new Object[(moveTo - moveFrom)];
-			System.arraycopy(array, moveFrom + numToMove, toShift, 0,
-					toShift.length);
+			System.arraycopy(array, moveFrom + numToMove, toShift, 0, toShift.length);
 			shiftTo = moveFrom;
 		}
 
@@ -192,8 +186,7 @@ public class ArrayUtils {
 	 *             array.length).
 	 */
 	public static boolean[] add(boolean[] array, int index, boolean element) {
-		return (boolean[]) add(array, index, Boolean.valueOf(element),
-				Boolean.TYPE);
+		return (boolean[]) add(array, index, Boolean.valueOf(element), Boolean.TYPE);
 	}
 
 	/**
@@ -348,8 +341,7 @@ public class ArrayUtils {
 	 *             array.length).
 	 */
 	public static char[] add(char[] array, int index, char element) {
-		return (char[]) add(array, index, Character.valueOf(element),
-				Character.TYPE);
+		return (char[]) add(array, index, Character.valueOf(element), Character.TYPE);
 	}
 
 	/**
@@ -426,8 +418,7 @@ public class ArrayUtils {
 	 *             array.length).
 	 */
 	public static double[] add(double[] array, int index, double element) {
-		return (double[]) add(array, index, Double.valueOf(element),
-				Double.TYPE);
+		return (double[]) add(array, index, Double.valueOf(element), Double.TYPE);
 	}
 
 	/**
@@ -676,12 +667,10 @@ public class ArrayUtils {
 	 *            the type of the element being added
 	 * @return A new array containing the existing elements and the new element
 	 */
-	private static Object add(Object array, int index, Object element,
-			Class<?> clss) {
+	private static Object add(Object array, int index, Object element, Class<?> clss) {
 		if (array == null) {
 			if (index != 0) {
-				throw new IndexOutOfBoundsException("Index: " + index
-						+ ", Length: 0");
+				throw new IndexOutOfBoundsException("Index: " + index + ", Length: 0");
 			}
 			Object joinedArray = Array.newInstance(clss, 1);
 			Array.set(joinedArray, 0, element);
@@ -689,8 +678,7 @@ public class ArrayUtils {
 		}
 		int length = Array.getLength(array);
 		if (index > length || index < 0) {
-			throw new IndexOutOfBoundsException("Index: " + index
-					+ ", Length: " + length);
+			throw new IndexOutOfBoundsException("Index: " + index + ", Length: " + length);
 		}
 		Object result = Array.newInstance(clss, length + 1);
 		System.arraycopy(array, 0, result, 0, index);
@@ -824,8 +812,7 @@ public class ArrayUtils {
 		} else if (element != null) {
 			clss = element.getClass();
 		} else {
-			throw new IllegalArgumentException(
-					"Array and element cannot both be null");
+			throw new IllegalArgumentException("Array and element cannot both be null");
 		}
 		@SuppressWarnings("unchecked")
 		// the add method creates an array of type clss, which is type T
@@ -1209,12 +1196,10 @@ public class ArrayUtils {
 		final Class<?> type1 = array1.getClass().getComponentType();
 		@SuppressWarnings("unchecked")
 		// OK, because array is of type T
-		T[] joinedArray = (T[]) Array.newInstance(type1, array1.length
-				+ array2.length);
+		T[] joinedArray = (T[]) Array.newInstance(type1, array1.length + array2.length);
 		System.arraycopy(array1, 0, joinedArray, 0, array1.length);
 		try {
-			System.arraycopy(array2, 0, joinedArray, array1.length,
-					array2.length);
+			System.arraycopy(array2, 0, joinedArray, array1.length, array2.length);
 		} catch (ArrayStoreException ase) {
 			// Check if problem was due to incompatible types
 			/*
@@ -1224,9 +1209,8 @@ public class ArrayUtils {
 			 */
 			final Class<?> type2 = array2.getClass().getComponentType();
 			if (!type1.isAssignableFrom(type2)) {
-				throw new IllegalArgumentException("Cannot store "
-						+ type2.getName() + " in an array of "
-						+ type1.getName(), ase);
+				throw new IllegalArgumentException("Cannot store " + type2.getName()
+						+ " in an array of " + type1.getName(), ase);
 			}
 			throw ase; // No, so rethrow original
 		}
@@ -1334,8 +1318,7 @@ public class ArrayUtils {
 	 *            the array contains the tolerance of the search
 	 * @return true if value falling within tolerance is in array
 	 */
-	public static boolean contains(double[] array, double valueToFind,
-			double tolerance) {
+	public static boolean contains(double[] array, double valueToFind, double tolerance) {
 		return indexOf(array, valueToFind, 0, tolerance) != INDEX_NOT_FOUND;
 	}
 
@@ -1453,12 +1436,11 @@ public class ArrayUtils {
 	 *            array of this type.
 	 * @return A new copy of the array of size 1 greater than the input.
 	 */
-	private static Object copyArrayGrow1(Object array,
-			Class<?> newArrayComponentType) {
+	private static Object copyArrayGrow1(Object array, Class<?> newArrayComponentType) {
 		if (array != null) {
 			int arrayLength = Array.getLength(array);
-			Object newArray = Array.newInstance(array.getClass()
-					.getComponentType(), arrayLength + 1);
+			Object newArray = Array.newInstance(array.getClass().getComponentType(),
+					arrayLength + 1);
 			System.arraycopy(array, 0, newArray, 0, arrayLength);
 			return newArray;
 		}
@@ -1550,8 +1532,7 @@ public class ArrayUtils {
 	 * @return the index of the value within the array, {@link #INDEX_NOT_FOUND}
 	 *         (<code>-1</code>) if not found or <code>null</code> array input
 	 */
-	public static int indexOf(boolean[] array, boolean valueToFind,
-			int startIndex) {
+	public static int indexOf(boolean[] array, boolean valueToFind, int startIndex) {
 		if (ArrayUtils.isEmpty(array)) {
 			return INDEX_NOT_FOUND;
 		}
@@ -1745,8 +1726,7 @@ public class ArrayUtils {
 	 * @return the index of the value within the array, {@link #INDEX_NOT_FOUND}
 	 *         (<code>-1</code>) if not found or <code>null</code> array input
 	 */
-	public static int indexOf(double[] array, double valueToFind,
-			double tolerance) {
+	public static int indexOf(double[] array, double valueToFind, double tolerance) {
 		return indexOf(array, valueToFind, 0, tolerance);
 	}
 
@@ -1821,8 +1801,8 @@ public class ArrayUtils {
 	 * @return the index of the value within the array, {@link #INDEX_NOT_FOUND}
 	 *         (<code>-1</code>) if not found or <code>null</code> array input
 	 */
-	public static int indexOf(double[] array, double valueToFind,
-			int startIndex, double tolerance) {
+	public static int indexOf(double[] array, double valueToFind, int startIndex,
+			double tolerance) {
 		if (ArrayUtils.isEmpty(array)) {
 			return INDEX_NOT_FOUND;
 		}
@@ -2089,8 +2069,7 @@ public class ArrayUtils {
 	 *         {@link #INDEX_NOT_FOUND} (<code>-1</code>) if not found or
 	 *         <code>null</code> array input
 	 */
-	public static int indexOf(Object[] array, Object objectToFind,
-			int startIndex) {
+	public static int indexOf(Object[] array, Object objectToFind, int startIndex) {
 		if (array == null) {
 			return INDEX_NOT_FOUND;
 		}
@@ -2772,8 +2751,7 @@ public class ArrayUtils {
 	 *         {@link #INDEX_NOT_FOUND} (<code>-1</code>) if not found or
 	 *         <code>null</code> array input
 	 */
-	public static int lastIndexOf(boolean[] array, boolean valueToFind,
-			int startIndex) {
+	public static int lastIndexOf(boolean[] array, boolean valueToFind, int startIndex) {
 		if (ArrayUtils.isEmpty(array)) {
 			return INDEX_NOT_FOUND;
 		}
@@ -2974,8 +2952,7 @@ public class ArrayUtils {
 	 * @return the index of the value within the array, {@link #INDEX_NOT_FOUND}
 	 *         (<code>-1</code>) if not found or <code>null</code> array input
 	 */
-	public static int lastIndexOf(double[] array, double valueToFind,
-			double tolerance) {
+	public static int lastIndexOf(double[] array, double valueToFind, double tolerance) {
 		return lastIndexOf(array, valueToFind, Integer.MAX_VALUE, tolerance);
 	}
 
@@ -3007,8 +2984,7 @@ public class ArrayUtils {
 	 *         {@link #INDEX_NOT_FOUND} (<code>-1</code>) if not found or
 	 *         <code>null</code> array input
 	 */
-	public static int lastIndexOf(double[] array, double valueToFind,
-			int startIndex) {
+	public static int lastIndexOf(double[] array, double valueToFind, int startIndex) {
 		if (ArrayUtils.isEmpty(array)) {
 			return INDEX_NOT_FOUND;
 		}
@@ -3057,8 +3033,8 @@ public class ArrayUtils {
 	 *         {@link #INDEX_NOT_FOUND} (<code>-1</code>) if not found or
 	 *         <code>null</code> array input
 	 */
-	public static int lastIndexOf(double[] array, double valueToFind,
-			int startIndex, double tolerance) {
+	public static int lastIndexOf(double[] array, double valueToFind, int startIndex,
+			double tolerance) {
 		if (ArrayUtils.isEmpty(array)) {
 			return INDEX_NOT_FOUND;
 		}
@@ -3128,8 +3104,7 @@ public class ArrayUtils {
 	 *         {@link #INDEX_NOT_FOUND} (<code>-1</code>) if not found or
 	 *         <code>null</code> array input
 	 */
-	public static int lastIndexOf(float[] array, float valueToFind,
-			int startIndex) {
+	public static int lastIndexOf(float[] array, float valueToFind, int startIndex) {
 		if (ArrayUtils.isEmpty(array)) {
 			return INDEX_NOT_FOUND;
 		}
@@ -3336,8 +3311,7 @@ public class ArrayUtils {
 	 *         {@link #INDEX_NOT_FOUND} (<code>-1</code>) if not found or
 	 *         <code>null</code> array input
 	 */
-	public static int lastIndexOf(Object[] array, Object objectToFind,
-			int startIndex) {
+	public static int lastIndexOf(Object[] array, Object objectToFind, int startIndex) {
 		if (array == null) {
 			return INDEX_NOT_FOUND;
 		}
@@ -3413,8 +3387,7 @@ public class ArrayUtils {
 	 *         {@link #INDEX_NOT_FOUND} (<code>-1</code>) if not found or
 	 *         <code>null</code> array input
 	 */
-	public static int lastIndexOf(short[] array, short valueToFind,
-			int startIndex) {
+	public static int lastIndexOf(short[] array, short valueToFind, int startIndex) {
 		if (array == null) {
 			return INDEX_NOT_FOUND;
 		}
@@ -3430,8 +3403,6 @@ public class ArrayUtils {
 		}
 		return INDEX_NOT_FOUND;
 	}
-
-
 
 	/**
 	 * <p>
@@ -3753,16 +3724,13 @@ public class ArrayUtils {
 	private static Object remove(Object array, int index) {
 		int length = getLength(array);
 		if (index < 0 || index >= length) {
-			throw new IndexOutOfBoundsException("Index: " + index
-					+ ", Length: " + length);
+			throw new IndexOutOfBoundsException("Index: " + index + ", Length: " + length);
 		}
 
-		Object result = Array.newInstance(array.getClass().getComponentType(),
-				length - 1);
+		Object result = Array.newInstance(array.getClass().getComponentType(), length - 1);
 		System.arraycopy(array, 0, result, 0, index);
 		if (index < length - 1) {
-			System.arraycopy(array, index + 1, result, index, length - index
-					- 1);
+			System.arraycopy(array, index + 1, result, index, length - index - 1);
 		}
 
 		return result;
@@ -4489,7 +4457,7 @@ public class ArrayUtils {
 		}
 		int newSize = endIndexExclusive - startIndexInclusive;
 		if (newSize <= 0) {
-			return new boolean[0];//EMPTY_BOOLEAN_ARRAY;
+			return new boolean[0];// EMPTY_BOOLEAN_ARRAY;
 		}
 
 		boolean[] subarray = new boolean[newSize];
@@ -4521,8 +4489,7 @@ public class ArrayUtils {
 	 *         indices.
 	 * @since 2.1
 	 */
-	public static byte[] subarray(byte[] array, int startIndexInclusive,
-			int endIndexExclusive) {
+	public static byte[] subarray(byte[] array, int startIndexInclusive, int endIndexExclusive) {
 		if (array == null) {
 			return null;
 		}
@@ -4534,7 +4501,7 @@ public class ArrayUtils {
 		}
 		int newSize = endIndexExclusive - startIndexInclusive;
 		if (newSize <= 0) {
-			return new byte[0];//EMPTY_BYTE_ARRAY;
+			return new byte[0];// EMPTY_BYTE_ARRAY;
 		}
 
 		byte[] subarray = new byte[newSize];
@@ -4566,8 +4533,7 @@ public class ArrayUtils {
 	 *         indices.
 	 * @since 2.1
 	 */
-	public static char[] subarray(char[] array, int startIndexInclusive,
-			int endIndexExclusive) {
+	public static char[] subarray(char[] array, int startIndexInclusive, int endIndexExclusive) {
 		if (array == null) {
 			return null;
 		}
@@ -4579,7 +4545,7 @@ public class ArrayUtils {
 		}
 		int newSize = endIndexExclusive - startIndexInclusive;
 		if (newSize <= 0) {
-			return new char[0];//EMPTY_CHAR_ARRAY;
+			return new char[0];// EMPTY_CHAR_ARRAY;
 		}
 
 		char[] subarray = new char[newSize];
@@ -4624,7 +4590,7 @@ public class ArrayUtils {
 		}
 		int newSize = endIndexExclusive - startIndexInclusive;
 		if (newSize <= 0) {
-			return new double[0];//EMPTY_DOUBLE_ARRAY;
+			return new double[0];// EMPTY_DOUBLE_ARRAY;
 		}
 
 		double[] subarray = new double[newSize];
@@ -4669,7 +4635,7 @@ public class ArrayUtils {
 		}
 		int newSize = endIndexExclusive - startIndexInclusive;
 		if (newSize <= 0) {
-			return new float[0];//EMPTY_FLOAT_ARRAY;
+			return new float[0];// EMPTY_FLOAT_ARRAY;
 		}
 
 		float[] subarray = new float[newSize];
@@ -4701,8 +4667,7 @@ public class ArrayUtils {
 	 *         indices.
 	 * @since 2.1
 	 */
-	public static int[] subarray(int[] array, int startIndexInclusive,
-			int endIndexExclusive) {
+	public static int[] subarray(int[] array, int startIndexInclusive, int endIndexExclusive) {
 		if (array == null) {
 			return null;
 		}
@@ -4714,7 +4679,7 @@ public class ArrayUtils {
 		}
 		int newSize = endIndexExclusive - startIndexInclusive;
 		if (newSize <= 0) {
-			return new int[0];//EMPTY_INT_ARRAY;
+			return new int[0];// EMPTY_INT_ARRAY;
 		}
 
 		int[] subarray = new int[newSize];
@@ -4746,8 +4711,7 @@ public class ArrayUtils {
 	 *         indices.
 	 * @since 2.1
 	 */
-	public static long[] subarray(long[] array, int startIndexInclusive,
-			int endIndexExclusive) {
+	public static long[] subarray(long[] array, int startIndexInclusive, int endIndexExclusive) {
 		if (array == null) {
 			return null;
 		}
@@ -4759,7 +4723,7 @@ public class ArrayUtils {
 		}
 		int newSize = endIndexExclusive - startIndexInclusive;
 		if (newSize <= 0) {
-			return new long[0];//EMPTY_LONG_ARRAY;
+			return new long[0];// EMPTY_LONG_ARRAY;
 		}
 
 		long[] subarray = new long[newSize];
@@ -4804,7 +4768,7 @@ public class ArrayUtils {
 		}
 		int newSize = endIndexExclusive - startIndexInclusive;
 		if (newSize <= 0) {
-			return new short[0];//EMPTY_SHORT_ARRAY;
+			return new short[0];// EMPTY_SHORT_ARRAY;
 		}
 
 		short[] subarray = new short[newSize];
@@ -4848,8 +4812,7 @@ public class ArrayUtils {
 	 *         indices.
 	 * @since 2.1
 	 */
-	public static <T> T[] subarray(T[] array, int startIndexInclusive,
-			int endIndexExclusive) {
+	public static <T> T[] subarray(T[] array, int startIndexInclusive, int endIndexExclusive) {
 		if (array == null) {
 			return null;
 		}
@@ -4968,8 +4931,7 @@ public class ArrayUtils {
 		if (array == null) {
 			return null;
 		}
-		final Map<Object, Object> map = new HashMap<Object, Object>(
-				(int) (array.length * 1.5));
+		final Map<Object, Object> map = new HashMap<Object, Object>((int) (array.length * 1.5));
 		for (int i = 0; i < array.length; i++) {
 			Object object = array[i];
 			if (object instanceof Map.Entry<?, ?>) {
@@ -4978,20 +4940,17 @@ public class ArrayUtils {
 			} else if (object instanceof Object[]) {
 				Object[] entry = (Object[]) object;
 				if (entry.length < 2) {
-					throw new IllegalArgumentException("Array element " + i
-							+ ", '" + object + "', has a length less than 2");
+					throw new IllegalArgumentException("Array element " + i + ", '" + object
+							+ "', has a length less than 2");
 				}
 				map.put(entry[0], entry[1]);
 			} else {
-				throw new IllegalArgumentException("Array element " + i + ", '"
-						+ object
+				throw new IllegalArgumentException("Array element " + i + ", '" + object
 						+ "', is neither of type Map.Entry nor an Array");
 			}
 		}
 		return map;
 	}
-
-
 
 	/**
 	 * <p>
@@ -5015,7 +4974,7 @@ public class ArrayUtils {
 		if (array == null) {
 			return null;
 		} else if (array.length == 0) {
-			return new boolean[0];//]EMPTY_BOOLEAN_ARRAY;
+			return new boolean[0];// ]EMPTY_BOOLEAN_ARRAY;
 		}
 		final boolean[] result = new boolean[array.length];
 		for (int i = 0; i < array.length; i++) {
@@ -5024,8 +4983,6 @@ public class ArrayUtils {
 		}
 		return result;
 	}
-
-	
 
 	// Basic methods handling multi-dimensional arrays
 	// -----------------------------------------------------------------------
@@ -5076,8 +5033,7 @@ public class ArrayUtils {
 		if (array == null) {
 			return stringIfNull;
 		}
-		return new ToStringBuilder(array, ToStringStyle.SIMPLE_STYLE).append(
-				array).toString();
+		return new ToStringBuilder(array, ToStringStyle.SIMPLE_STYLE).append(array).toString();
 	}
 
 	/**

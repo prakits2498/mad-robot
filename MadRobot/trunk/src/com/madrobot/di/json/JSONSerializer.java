@@ -70,8 +70,7 @@ public class JSONSerializer {
 
 	private String getKeyName(final Field field) {
 		if (field.isAnnotationPresent(SerializedName.class)) {
-			SerializedName serializedName = field
-					.getAnnotation(SerializedName.class);
+			SerializedName serializedName = field.getAnnotation(SerializedName.class);
 			return serializedName.value();
 		} else {
 			return field.getName();
@@ -107,12 +106,10 @@ public class JSONSerializer {
 
 				String getMethodName = getGetMethodName(fieldName, classType);
 				Method getMethod = userClass.getDeclaredMethod(getMethodName);
-				Object returnValue = getMethod.invoke(userObject,
-						new Object[] {});
+				Object returnValue = getMethod.invoke(userObject, new Object[] {});
 
 				if (Converter.isPseudoPrimitive(classType)) {
-					Converter.storeValue(jsonObject, jsonKeyName, returnValue,
-							field);
+					Converter.storeValue(jsonObject, jsonKeyName, returnValue, field);
 				} else if (Converter.isCollectionType(classType)) {
 
 					JSONArray jsonArray = new JSONArray();
@@ -133,8 +130,7 @@ public class JSONSerializer {
 								jsonArray.put(object);
 							}
 						} else if (field.isAnnotationPresent(ItemType.class)) {
-							ItemType itemType = field
-									.getAnnotation(ItemType.class);
+							ItemType itemType = field.getAnnotation(ItemType.class);
 							canAdd = itemType.canEmpty();
 						}
 

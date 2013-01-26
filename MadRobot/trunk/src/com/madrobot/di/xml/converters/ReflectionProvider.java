@@ -67,7 +67,6 @@ public interface ReflectionProvider {
 
 	void visitSerializableFields(Object object, Visitor visitor);
 
-	void writeField(Object object, String fieldName, Object value,
-			Class definedIn);
+	void writeField(Object object, String fieldName, Object value, Class definedIn);
 
 }

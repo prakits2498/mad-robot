@@ -78,8 +78,8 @@ public class CompositeClassLoader extends ClassLoader {
 				refClassLoader = ref;
 			}
 		}
-		classLoaders.add(0, refClassLoader != null ? refClassLoader
-				: new WeakReference(classLoader, queue));
+		classLoaders.add(0, refClassLoader != null ? refClassLoader : new WeakReference(
+				classLoader, queue));
 	}
 
 	private void cleanup() {
@@ -117,8 +117,7 @@ public class CompositeClassLoader extends ClassLoader {
 			copy.addAll(classLoaders);
 		}
 
-		ClassLoader contextClassLoader = Thread.currentThread()
-				.getContextClassLoader();
+		ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
 		for (Iterator iterator = copy.iterator(); iterator.hasNext();) {
 			ClassLoader classLoader = (ClassLoader) iterator.next();
 			if (classLoader == contextClassLoader) {

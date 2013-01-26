@@ -111,8 +111,12 @@ public class EdgeGlow {
 		final float distScale = (float) mHeight / mWidth;
 
 		mGlow.setAlpha((int) (Math.max(0, Math.min(mGlowAlpha, 1)) * 255));
-		mGlow.setBounds(-mWidth, 0, mWidth * 2, (int) Math.min(glowHeight
-				* mGlowScaleY * distScale * 0.6f, mHeight * MAX_GLOW_HEIGHT));
+		mGlow.setBounds(
+				-mWidth,
+				0,
+				mWidth * 2,
+				(int) Math.min(glowHeight * mGlowScaleY * distScale * 0.6f, mHeight
+						* MAX_GLOW_HEIGHT));
 		mGlow.draw(canvas);
 
 		if (mEdge != null) {
@@ -157,8 +161,7 @@ public class EdgeGlow {
 
 		// Factor the velocity by 8. Testing on device shows this works best to
 		// reflect the strength of the user's scrolling.
-		mEdgeAlphaFinish = Math.max(0,
-				Math.min(velocity * VELOCITY_EDGE_FACTOR, 1));
+		mEdgeAlphaFinish = Math.max(0, Math.min(velocity * VELOCITY_EDGE_FACTOR, 1));
 		// Edge should never get larger than the size of its asset.
 		mEdgeScaleYFinish = Math.max(HELD_EDGE_SCALE_Y,
 				Math.min(velocity * VELOCITY_EDGE_FACTOR, 1.f));
@@ -167,8 +170,7 @@ public class EdgeGlow {
 		// respond
 		// to a user's scrolling speed. The faster the scrolling speed, the more
 		// intense the effect should be for both the size and the saturation.
-		mGlowScaleYFinish = Math.min(
-				0.025f + (velocity * (velocity / 100) * 0.00015f), 1.75f);
+		mGlowScaleYFinish = Math.min(0.025f + (velocity * (velocity / 100) * 0.00015f), 1.75f);
 		// Alpha should change for the glow as well as size.
 		mGlowAlphaFinish = Math.max(mGlowAlphaStart,
 				Math.min(velocity * VELOCITY_GLOW_FACTOR * .00001f, MAX_ALPHA));
@@ -196,15 +198,13 @@ public class EdgeGlow {
 		mPullDistance += deltaDistance;
 		float distance = Math.abs(mPullDistance);
 
-		mEdgeAlpha = mEdgeAlphaStart = Math.max(PULL_EDGE_BEGIN,
-				Math.min(distance, MAX_ALPHA));
+		mEdgeAlpha = mEdgeAlphaStart = Math
+				.max(PULL_EDGE_BEGIN, Math.min(distance, MAX_ALPHA));
 		mEdgeScaleY = mEdgeScaleYStart = Math.max(HELD_EDGE_SCALE_Y,
 				Math.min(distance * PULL_DISTANCE_EDGE_FACTOR, 1.f));
 
-		mGlowAlpha = mGlowAlphaStart = Math
-				.min(MAX_ALPHA,
-						mGlowAlpha
-								+ (Math.abs(deltaDistance) * PULL_DISTANCE_ALPHA_GLOW_FACTOR));
+		mGlowAlpha = mGlowAlphaStart = Math.min(MAX_ALPHA,
+				mGlowAlpha + (Math.abs(deltaDistance) * PULL_DISTANCE_ALPHA_GLOW_FACTOR));
 
 		float glowChange = Math.abs(deltaDistance);
 		if (deltaDistance > 0 && mPullDistance < 0) {
@@ -215,10 +215,8 @@ public class EdgeGlow {
 		}
 
 		// Do not allow glow to get larger than MAX_GLOW_HEIGHT.
-		mGlowScaleY = mGlowScaleYStart = Math.min(
-				MAX_GLOW_HEIGHT,
-				Math.max(0, mGlowScaleY + glowChange
-						* PULL_DISTANCE_GLOW_FACTOR));
+		mGlowScaleY = mGlowScaleYStart = Math.min(MAX_GLOW_HEIGHT,
+				Math.max(0, mGlowScaleY + glowChange * PULL_DISTANCE_GLOW_FACTOR));
 
 		mEdgeAlphaFinish = mEdgeAlpha;
 		mEdgeScaleYFinish = mEdgeScaleY;
@@ -262,14 +260,10 @@ public class EdgeGlow {
 
 		final float interp = mInterpolator.getInterpolation(t);
 
-		mEdgeAlpha = mEdgeAlphaStart + (mEdgeAlphaFinish - mEdgeAlphaStart)
-				* interp;
-		mEdgeScaleY = mEdgeScaleYStart + (mEdgeScaleYFinish - mEdgeScaleYStart)
-				* interp;
-		mGlowAlpha = mGlowAlphaStart + (mGlowAlphaFinish - mGlowAlphaStart)
-				* interp;
-		mGlowScaleY = mGlowScaleYStart + (mGlowScaleYFinish - mGlowScaleYStart)
-				* interp;
+		mEdgeAlpha = mEdgeAlphaStart + (mEdgeAlphaFinish - mEdgeAlphaStart) * interp;
+		mEdgeScaleY = mEdgeScaleYStart + (mEdgeScaleYFinish - mEdgeScaleYStart) * interp;
+		mGlowAlpha = mGlowAlphaStart + (mGlowAlphaFinish - mGlowAlphaStart) * interp;
+		mGlowScaleY = mGlowScaleYStart + (mGlowScaleYFinish - mGlowScaleYStart) * interp;
 
 		if (t >= 1.f - EPSILON) {
 			switch (mState) {
@@ -310,9 +304,8 @@ public class EdgeGlow {
 				// than the glow.
 				float factor = mGlowScaleYFinish != 0 ? 1 / (mGlowScaleYFinish * mGlowScaleYFinish)
 						: Float.MAX_VALUE;
-				mEdgeScaleY = mEdgeScaleYStart
-						+ (mEdgeScaleYFinish - mEdgeScaleYStart) * interp
-						* factor;
+				mEdgeScaleY = mEdgeScaleYStart + (mEdgeScaleYFinish - mEdgeScaleYStart)
+						* interp * factor;
 				break;
 			case STATE_RECEDE:
 				mState = STATE_IDLE;

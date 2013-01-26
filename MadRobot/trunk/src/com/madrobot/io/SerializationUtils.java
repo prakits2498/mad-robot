@@ -65,8 +65,7 @@ public class SerializationUtils {
 	 * @throws SerializationException
 	 *             (runtime) if the serialization fails
 	 */
-	public static Object clone(Serializable object)
-			throws ClassNotFoundException, IOException {
+	public static Object clone(Serializable object) throws ClassNotFoundException, IOException {
 		return deserialize(serialize(object));
 	}
 
@@ -85,8 +84,8 @@ public class SerializationUtils {
 	 * @throws SerializationException
 	 *             (runtime) if the serialization fails
 	 */
-	public static Object deserialize(byte[] objectData)
-			throws ClassNotFoundException, IOException {
+	public static Object deserialize(byte[] objectData) throws ClassNotFoundException,
+			IOException {
 		if (objectData == null) {
 			throw new IllegalArgumentException("The byte[] must not be null");
 		}
@@ -122,11 +121,10 @@ public class SerializationUtils {
 	 * @throws SerializationException
 	 *             (runtime) if the serialization fails
 	 */
-	public static Object deserialize(InputStream inputStream)
-			throws ClassNotFoundException, IOException {
+	public static Object deserialize(InputStream inputStream) throws ClassNotFoundException,
+			IOException {
 		if (inputStream == null) {
-			throw new IllegalArgumentException(
-					"The InputStream must not be null");
+			throw new IllegalArgumentException("The InputStream must not be null");
 		}
 		ObjectInputStream in = null;
 		try {
@@ -196,8 +194,7 @@ public class SerializationUtils {
 	 */
 	public static void serialize(Serializable obj, OutputStream outputStream) {
 		if (outputStream == null) {
-			throw new IllegalArgumentException(
-					"The OutputStream must not be null");
+			throw new IllegalArgumentException("The OutputStream must not be null");
 		}
 		ObjectOutputStream out = null;
 		try {

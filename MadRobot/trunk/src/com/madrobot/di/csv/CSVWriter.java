@@ -112,8 +112,7 @@ public class CSVWriter implements Closeable {
 	 * @param escapechar
 	 *            the character to use for escaping quotechars or escapechars
 	 */
-	public CSVWriter(Writer writer, char separator, char quotechar,
-			char escapechar) {
+	public CSVWriter(Writer writer, char separator, char quotechar, char escapechar) {
 		this(writer, separator, quotechar, escapechar, DEFAULT_LINE_END);
 	}
 
@@ -132,8 +131,8 @@ public class CSVWriter implements Closeable {
 	 * @param lineEnd
 	 *            the line feed terminator to use
 	 */
-	public CSVWriter(Writer writer, char separator, char quotechar,
-			char escapechar, String lineEnd) {
+	public CSVWriter(Writer writer, char separator, char quotechar, char escapechar,
+			String lineEnd) {
 		this.rawWriter = writer;
 		this.pw = new PrintWriter(writer);
 		this.separator = separator;
@@ -154,8 +153,7 @@ public class CSVWriter implements Closeable {
 	 * @param lineEnd
 	 *            the line feed terminator to use
 	 */
-	public CSVWriter(Writer writer, char separator, char quotechar,
-			String lineEnd) {
+	public CSVWriter(Writer writer, char separator, char quotechar, String lineEnd) {
 		this(writer, separator, quotechar, DEFAULT_ESCAPE_CHARACTER, lineEnd);
 	}
 
@@ -198,8 +196,7 @@ public class CSVWriter implements Closeable {
 			char nextChar = nextElement.charAt(j);
 			if (escapechar != NO_ESCAPE_CHARACTER && nextChar == quotechar) {
 				sb.append(escapechar).append(nextChar);
-			} else if (escapechar != NO_ESCAPE_CHARACTER
-					&& nextChar == escapechar) {
+			} else if (escapechar != NO_ESCAPE_CHARACTER && nextChar == escapechar) {
 				sb.append(escapechar).append(nextChar);
 			} else {
 				sb.append(nextChar);

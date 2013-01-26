@@ -34,10 +34,8 @@ import javax.net.SocketFactory;
  * 
  */
 public class WebSocket {
-	private static final Pattern INVALID_HEADER_NAME_PATTERN = Pattern
-			.compile("[\\r\\n\\:]");
-	private static final Pattern INVALID_HEADER_VALUE_PATTERN = Pattern
-			.compile("[\\r\\n]");
+	private static final Pattern INVALID_HEADER_NAME_PATTERN = Pattern.compile("[\\r\\n\\:]");
+	private static final Pattern INVALID_HEADER_VALUE_PATTERN = Pattern.compile("[\\r\\n]");
 
 	public static class Event {
 		/**
@@ -185,8 +183,7 @@ public class WebSocket {
 	public synchronized String[] getResponseHeaderNames() {
 		if (responseHeaders == null)
 			return null;
-		return responseHeaders.keySet().toArray(
-				new String[responseHeaders.size()]);
+		return responseHeaders.keySet().toArray(new String[responseHeaders.size()]);
 	}
 
 	public synchronized String getResponseHeader(String name) {
@@ -347,8 +344,7 @@ public class WebSocket {
 		setReadyState(CLOSED);
 	}
 
-	public void waitForReadyState(int targetReadyState)
-			throws InterruptedException {
+	public void waitForReadyState(int targetReadyState) throws InterruptedException {
 		synchronized (this) {
 			while (readyState != targetReadyState) {
 				this.wait();
@@ -420,8 +416,7 @@ public class WebSocket {
 		return requestedProtocols;
 	}
 
-	protected synchronized void setResponseHeaders(
-			Map<String, String> responseHeaders) {
+	protected synchronized void setResponseHeaders(Map<String, String> responseHeaders) {
 		this.responseHeaders = responseHeaders;
 	}
 
@@ -522,8 +517,7 @@ public class WebSocket {
 			else
 				hostHeader = hostName;
 			socketFactory = netConfig.getPlainSocketFactory();
-		} else if ("wss".equalsIgnoreCase(scheme)
-				|| "https".equalsIgnoreCase(scheme)) {
+		} else if ("wss".equalsIgnoreCase(scheme) || "https".equalsIgnoreCase(scheme)) {
 			// Secure
 			if (port < 0)
 				port = 443;
@@ -543,10 +537,9 @@ public class WebSocket {
 		socket = socketFactory.createSocket(hostName, port);
 		try {
 			// Buffer the streams to a typical network packet size
-			in = new DataInputStream(new BufferedInputStream(
-					socket.getInputStream(), 1500));
-			out = new DataOutputStream(new BufferedOutputStream(
-					socket.getOutputStream(), 1500));
+			in = new DataInputStream(new BufferedInputStream(socket.getInputStream(), 1500));
+			out = new DataOutputStream(
+					new BufferedOutputStream(socket.getOutputStream(), 1500));
 		} catch (Throwable t) {
 			socket.close();
 			throw t;
@@ -590,8 +583,7 @@ public class WebSocket {
 			}
 
 			try {
-				boolean shouldContinue = wireProtocol.sendMessage(this, out,
-						next);
+				boolean shouldContinue = wireProtocol.sendMessage(this, out, next);
 				transmissionQueue.remove(next);
 				if (!shouldContinue)
 					break;

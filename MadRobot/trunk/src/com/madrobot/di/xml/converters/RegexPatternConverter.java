@@ -39,10 +39,8 @@ public class RegexPatternConverter implements Converter {
 	}
 
 	@Override
-	public Object unmarshal(HierarchicalStreamReader reader,
-			UnmarshallingContext context) {
-		Pattern notCompiled = (Pattern) defaultConverter.unmarshal(reader,
-				context);
+	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+		Pattern notCompiled = (Pattern) defaultConverter.unmarshal(reader, context);
 		return Pattern.compile(notCompiled.pattern(), notCompiled.flags());
 	}
 

@@ -52,8 +52,7 @@ class ReferenceByXPathUnmarshaller extends AbstractReferenceUnmarshaller {
 				isNameEncoding ? ((AbstractReader) reader.underlyingReader())
 						.decodeNode(reference) : reference);
 		// We have absolute references, if path starts with '/'
-		return reference.charAt(0) != '/' ? pathTracker.getPath().apply(path)
-				: path;
+		return reference.charAt(0) != '/' ? pathTracker.getPath().apply(path) : path;
 	}
 
 }

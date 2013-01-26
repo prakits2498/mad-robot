@@ -83,9 +83,8 @@ public class Contact {
 	@Override
 	public String toString() {
 		return "Contact [_id=" + _id + ", custom_ringtone=" + custom_ringtone
-				+ ", display_name=" + display_name + ", has_phone_number="
-				+ has_phone_number + ", last_time_contacted="
-				+ last_time_contacted + ", lookup=" + lookup
+				+ ", display_name=" + display_name + ", has_phone_number=" + has_phone_number
+				+ ", last_time_contacted=" + last_time_contacted + ", lookup=" + lookup
 				+ ", times_contacted=" + times_contacted + "]";
 	}
 

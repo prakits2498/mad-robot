@@ -40,8 +40,7 @@ class FieldAliasingMapper extends MapperWrapper {
 
 	private String getMember(Class type, String name, Map map) {
 		String member = null;
-		for (Class declaringType = type; member == null
-				&& declaringType != Object.class; declaringType = declaringType
+		for (Class declaringType = type; member == null && declaringType != Object.class; declaringType = declaringType
 				.getSuperclass()) {
 			member = (String) map.get(key(declaringType, name));
 		}

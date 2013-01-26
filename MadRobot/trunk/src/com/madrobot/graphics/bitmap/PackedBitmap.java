@@ -153,8 +153,8 @@ public class PackedBitmap {
 		if (lineCache == null) {
 			System.out.println("lineCache is null");
 		}
-		System.out.println("[PackedImage]Packing done! rgb data len "
-				+ imageDataByte.length + " bytes");
+		System.out.println("[PackedImage]Packing done! rgb data len " + imageDataByte.length
+				+ " bytes");
 	}
 
 	public void drawImage(Canvas canvas, int x, int y) {
@@ -181,8 +181,7 @@ public class PackedBitmap {
 				int i = imageDataByte[position + currentPos] & 0xff;
 				lineCache[position] = palette[i];
 			}
-			canvas.drawBitmap(lineCache, 0, width, x, y + line, width,
-					rowsToDraw, true, paint);
+			canvas.drawBitmap(lineCache, 0, width, x, y + line, width, rowsToDraw, true, paint);
 		}
 
 	}
@@ -218,8 +217,7 @@ public class PackedBitmap {
 				return iter;
 			}
 		}
-		throw new IllegalStateException(
-				"Invalid palette request in paletteOffset");
+		throw new IllegalStateException("Invalid palette request in paletteOffset");
 	}
 
 	/**

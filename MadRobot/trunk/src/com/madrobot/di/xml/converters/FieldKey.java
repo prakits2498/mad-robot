@@ -23,8 +23,7 @@ public class FieldKey {
 
 	public FieldKey(String fieldName, Class declaringClass, int order) {
 		if (fieldName == null || declaringClass == null) {
-			throw new IllegalArgumentException(
-					"fieldName or declaringClass is null");
+			throw new IllegalArgumentException("fieldName or declaringClass is null");
 		}
 		this.fieldName = fieldName;
 		this.declaringClass = declaringClass;
@@ -81,9 +80,8 @@ public class FieldKey {
 
 	@Override
 	public String toString() {
-		return "FieldKey{" + "order=" + order + ", writer=" + depth
-				+ ", declaringClass=" + declaringClass + ", fieldName='"
-				+ fieldName + "'" + "}";
+		return "FieldKey{" + "order=" + order + ", writer=" + depth + ", declaringClass="
+				+ declaringClass + ", fieldName='" + fieldName + "'" + "}";
 	}
 
 }

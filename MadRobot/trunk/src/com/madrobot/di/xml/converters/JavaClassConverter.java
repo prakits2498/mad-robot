@@ -56,8 +56,7 @@ public class JavaClassConverter extends AbstractSingleValueConverter {
 			if (className.charAt(dimension) == 'L') {
 				String componentTypeName = className.substring(dimension + 1,
 						className.length() - 1);
-				classLoaderToUse = classLoader.loadClass(componentTypeName)
-						.getClassLoader();
+				classLoaderToUse = classLoader.loadClass(componentTypeName).getClassLoader();
 			} else {
 				classLoaderToUse = null;
 			}

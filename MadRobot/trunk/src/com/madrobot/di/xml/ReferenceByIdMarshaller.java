@@ -23,21 +23,19 @@ class ReferenceByIdMarshaller extends AbstractReferenceMarshaller {
 
 	private final IDGenerator idGenerator;
 
-	ReferenceByIdMarshaller(HierarchicalStreamWriter writer,
-			ConverterLookup converterLookup, Mapper mapper) {
+	ReferenceByIdMarshaller(HierarchicalStreamWriter writer, ConverterLookup converterLookup,
+			Mapper mapper) {
 		this(writer, converterLookup, mapper, new SequenceGenerator(1));
 	}
 
-	ReferenceByIdMarshaller(HierarchicalStreamWriter writer,
-			ConverterLookup converterLookup, Mapper mapper,
-			IDGenerator idGenerator) {
+	ReferenceByIdMarshaller(HierarchicalStreamWriter writer, ConverterLookup converterLookup,
+			Mapper mapper, IDGenerator idGenerator) {
 		super(writer, converterLookup, mapper);
 		this.idGenerator = idGenerator;
 	}
 
 	@Override
-	protected String createReference(Path currentPath,
-			Object existingReferenceKey) {
+	protected String createReference(Path currentPath, Object existingReferenceKey) {
 		return existingReferenceKey.toString();
 	}
 

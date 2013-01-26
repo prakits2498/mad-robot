@@ -334,8 +334,7 @@ public class FilenameUtils {
 	 * @return the normalized filename, or null if invalid
 	 * @since 2.0
 	 */
-	public static String normalizeNoEndSeparator(String filename,
-			boolean unixSeparator) {
+	public static String normalizeNoEndSeparator(String filename, boolean unixSeparator) {
 		char separator = unixSeparator ? UNIX_SEPARATOR : WINDOWS_SEPARATOR;
 		return doNormalize(filename, separator, false);
 	}
@@ -351,8 +350,7 @@ public class FilenameUtils {
 	 *            true to keep the final separator
 	 * @return the normalized filename
 	 */
-	private static String doNormalize(String filename, char separator,
-			boolean keepSeparator) {
+	private static String doNormalize(String filename, char separator, boolean keepSeparator) {
 		if (filename == null) {
 			return null;
 		}
@@ -409,8 +407,7 @@ public class FilenameUtils {
 
 		// double dot slash
 		outer: for (int i = prefix + 2; i < size; i++) {
-			if (array[i] == separator && array[i - 1] == '.'
-					&& array[i - 2] == '.'
+			if (array[i] == separator && array[i - 1] == '.' && array[i - 2] == '.'
 					&& (i == prefix + 2 || array[i - 3] == separator)) {
 				if (i == prefix + 2) {
 					return null;
@@ -685,8 +682,7 @@ public class FilenameUtils {
 			} else if (isSeparator(ch0) && isSeparator(ch1)) {
 				int posUnix = filename.indexOf(UNIX_SEPARATOR, 2);
 				int posWin = filename.indexOf(WINDOWS_SEPARATOR, 2);
-				if (posUnix == -1 && posWin == -1 || posUnix == 2
-						|| posWin == 2) {
+				if (posUnix == -1 && posWin == -1 || posUnix == 2 || posWin == 2) {
 					return -1;
 				}
 				posUnix = posUnix == -1 ? posWin : posUnix;
@@ -958,8 +954,7 @@ public class FilenameUtils {
 	 *            true to include the end separator
 	 * @return the path
 	 */
-	private static String doGetFullPath(String filename,
-			boolean includeSeparator) {
+	private static String doGetFullPath(String filename, boolean includeSeparator) {
 		if (filename == null) {
 			return null;
 		}
@@ -1174,8 +1169,7 @@ public class FilenameUtils {
 	 * @return true if the filenames are equal, null equals null
 	 * @see IOCase#SYSTEM
 	 */
-	public static boolean equalsNormalizedOnSystem(String filename1,
-			String filename2) {
+	public static boolean equalsNormalizedOnSystem(String filename1, String filename2) {
 		return equals(filename1, filename2, true, IOCase.SYSTEM);
 	}
 
@@ -1194,8 +1188,8 @@ public class FilenameUtils {
 	 * @return true if the filenames are equal, null equals null
 	 * @since 1.3
 	 */
-	public static boolean equals(String filename1, String filename2,
-			boolean normalized, IOCase caseSensitivity) {
+	public static boolean equals(String filename1, String filename2, boolean normalized,
+			IOCase caseSensitivity) {
 
 		if (filename1 == null || filename2 == null) {
 			return filename1 == null && filename2 == null;
@@ -1282,8 +1276,7 @@ public class FilenameUtils {
 	 *            the extensions to check for, null checks for no extension
 	 * @return true if the filename is one of the extensions
 	 */
-	public static boolean isExtension(String filename,
-			Collection<String> extensions) {
+	public static boolean isExtension(String filename, Collection<String> extensions) {
 		if (filename == null) {
 			return false;
 		}
@@ -1358,8 +1351,7 @@ public class FilenameUtils {
 	 * @return true if the filename matches the wilcard string
 	 * @see IOCase#SYSTEM
 	 */
-	public static boolean wildcardMatchOnSystem(String filename,
-			String wildcardMatcher) {
+	public static boolean wildcardMatchOnSystem(String filename, String wildcardMatcher) {
 		return wildcardMatch(filename, wildcardMatcher, IOCase.SYSTEM);
 	}
 
@@ -1380,8 +1372,8 @@ public class FilenameUtils {
 	 * @return true if the filename matches the wilcard string
 	 * @since 1.3
 	 */
-	public static boolean wildcardMatch(String filename,
-			String wildcardMatcher, IOCase caseSensitivity) {
+	public static boolean wildcardMatch(String filename, String wildcardMatcher,
+			IOCase caseSensitivity) {
 		if (filename == null && wildcardMatcher == null) {
 			return true;
 		}
@@ -1428,21 +1420,20 @@ public class FilenameUtils {
 					// matching text token
 					if (anyChars) {
 						// any chars then try to locate text token
-						textIdx = caseSensitivity.checkIndexOf(filename,
-								textIdx, wcs[wcsIdx]);
+						textIdx = caseSensitivity.checkIndexOf(filename, textIdx, wcs[wcsIdx]);
 						if (textIdx == -1) {
 							// token not found
 							break;
 						}
-						int repeat = caseSensitivity.checkIndexOf(filename,
-								textIdx + 1, wcs[wcsIdx]);
+						int repeat = caseSensitivity.checkIndexOf(filename, textIdx + 1,
+								wcs[wcsIdx]);
 						if (repeat >= 0) {
 							backtrack.push(new int[] { wcsIdx, repeat });
 						}
 					} else {
 						// matching from current position
-						if (!caseSensitivity.checkRegionMatches(filename,
-								textIdx, wcs[wcsIdx])) {
+						if (!caseSensitivity
+								.checkRegionMatches(filename, textIdx, wcs[wcsIdx])) {
 							// couldnt match token
 							break;
 						}

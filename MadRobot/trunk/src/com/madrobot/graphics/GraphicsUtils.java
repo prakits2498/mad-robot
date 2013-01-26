@@ -20,9 +20,8 @@ public class GraphicsUtils {
 	 * Adapted from the Batik library (Apache-2 license) by SAU
 	 * 
 	 */
-	public static void drawArc(Path path, double x0, double y0, double x,
-			double y, double rx, double ry, double angle, boolean largeArcFlag,
-			boolean sweepFlag) {
+	public static void drawArc(Path path, double x0, double y0, double x, double y, double rx,
+			double ry, double angle, boolean largeArcFlag, boolean sweepFlag) {
 		double dx2 = (x0 - x) / 2.0;
 		double dy2 = (y0 - y) / 2.0;
 		angle = Math.toRadians(angle % 360.0);
@@ -50,8 +49,7 @@ public class GraphicsUtils {
 
 		// Step 2 : Compute (cx1, cy1)
 		double sign = (largeArcFlag == sweepFlag) ? -1 : 1;
-		double sq = ((Prx * Pry) - (Prx * Py1) - (Pry * Px1))
-				/ ((Prx * Py1) + (Pry * Px1));
+		double sq = ((Prx * Pry) - (Prx * Py1) - (Pry * Px1)) / ((Prx * Py1) + (Pry * Px1));
 		sq = (sq < 0) ? 0 : sq;
 		double coef = (sign * Math.sqrt(sq));
 		double cx1 = coef * ((rx * y1) / ry);
@@ -88,8 +86,8 @@ public class GraphicsUtils {
 		angleExtent %= 360f;
 		angleStart %= 360f;
 
-		RectF oval = new RectF((float) (cx - rx), (float) (cy - ry),
-				(float) (cx + rx), (float) (cy + ry));
+		RectF oval = new RectF((float) (cx - rx), (float) (cy - ry), (float) (cx + rx),
+				(float) (cy + ry));
 		path.addArc(oval, (float) angleStart, (float) angleExtent);
 	}
 

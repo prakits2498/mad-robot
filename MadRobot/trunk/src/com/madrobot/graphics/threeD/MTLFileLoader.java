@@ -30,8 +30,7 @@ public final class MTLFileLoader {
 		String line;
 		Material currentMtl = null;
 		try { // try to open file
-			reader = new BufferedReader(new InputStreamReader(
-					new FileInputStream(file)));
+			reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
 		} catch (IOException e) {
 		}
 		if (reader != null) {
@@ -45,18 +44,15 @@ public final class MTLFileLoader {
 					} else if (line.startsWith("Ka")) {
 						String[] str = line.split("[ ]+");
 						currentMtl.setAmbientColor(Float.parseFloat(str[1]),
-								Float.parseFloat(str[2]),
-								Float.parseFloat(str[3]));
+								Float.parseFloat(str[2]), Float.parseFloat(str[3]));
 					} else if (line.startsWith("Kd")) {
 						String[] str = line.split("[ ]+");
 						currentMtl.setDiffuseColor(Float.parseFloat(str[1]),
-								Float.parseFloat(str[2]),
-								Float.parseFloat(str[3]));
+								Float.parseFloat(str[2]), Float.parseFloat(str[3]));
 					} else if (line.startsWith("Ks")) {
 						String[] str = line.split("[ ]+");
 						currentMtl.setSpecularColor(Float.parseFloat(str[1]),
-								Float.parseFloat(str[2]),
-								Float.parseFloat(str[3]));
+								Float.parseFloat(str[2]), Float.parseFloat(str[3]));
 					} else if (line.startsWith("Tr") || line.startsWith("d")) {
 						String[] str = line.split("[ ]+");
 						currentMtl.setAlpha(Float.parseFloat(str[1]));

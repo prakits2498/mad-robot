@@ -29,17 +29,16 @@ import android.util.Log;
 public class XMLRPCServer extends XMLRPCCommon {
 
 	private static final String NEWLINES = "\n\n";
-	private static final String RESPONSE = "HTTP/1.1 200 OK\n"
-			+ "Connection: close\n" + "Content-Type: text/xml\n"
-			+ "Content-Length: ";
+	private static final String RESPONSE = "HTTP/1.1 200 OK\n" + "Connection: close\n"
+			+ "Content-Type: text/xml\n" + "Content-Length: ";
 	private XMLRPCSerializer iXMLRPCSerializer;
 
 	public XMLRPCServer() {
 		iXMLRPCSerializer = new XMLRPCSerializer();
 	}
 
-	private String methodResponse(Object[] params)
-			throws IllegalArgumentException, IllegalStateException, IOException {
+	private String methodResponse(Object[] params) throws IllegalArgumentException,
+			IllegalStateException, IOException {
 		StringWriter bodyWriter = new StringWriter();
 		serializer.setOutput(bodyWriter);
 		serializer.startDocument(null, null);
@@ -53,8 +52,7 @@ public class XMLRPCServer extends XMLRPCCommon {
 		return bodyWriter.toString();
 	}
 
-	public MethodCall readMethodCall(Socket socket) throws IOException,
-			XmlPullParserException {
+	public MethodCall readMethodCall(Socket socket) throws IOException, XmlPullParserException {
 		MethodCall methodCall = new MethodCall();
 		InputStream inputStream = socket.getInputStream();
 
@@ -101,22 +99,19 @@ public class XMLRPCServer extends XMLRPCCommon {
 		Log.d(Tag.LOG, "response:" + response);
 	}
 
-	XmlPullParser xmlPullParserFromSocket(InputStream socketInputStream)
-			throws IOException, XmlPullParserException {
+	XmlPullParser xmlPullParserFromSocket(InputStream socketInputStream) throws IOException,
+			XmlPullParserException {
 
 		String line, xmlRpcText = "";
-		BufferedReader br = new BufferedReader(new InputStreamReader(
-				socketInputStream));
+		BufferedReader br = new BufferedReader(new InputStreamReader(socketInputStream));
 		while ((line = br.readLine()) != null && line.length() > 0)
 			; // eat the HTTP POST headers
 		while (br.ready())
 			xmlRpcText = xmlRpcText + br.readLine();
 		// Log.d(Tag.LOG, "xml received:" + xmlRpcText);
 
-		InputStream inputStream = new ByteArrayInputStream(
-				xmlRpcText.getBytes("UTF-8"));
-		XmlPullParser pullParser = XmlPullParserFactory.newInstance()
-				.newPullParser();
+		InputStream inputStream = new ByteArrayInputStream(xmlRpcText.getBytes("UTF-8"));
+		XmlPullParser pullParser = XmlPullParserFactory.newInstance().newPullParser();
 		Reader streamReader = new InputStreamReader(inputStream);
 		pullParser.setInput(streamReader);
 		return pullParser;

@@ -130,8 +130,7 @@ public class SHA1Utils {
 	 */
 	public static String generateSHA1toString(InputStream is) {
 		try {
-			return new String((generateSHA1(IOUtils.toByteArray(is))),
-					"ISO-8859-1");
+			return new String((generateSHA1(IOUtils.toByteArray(is))), "ISO-8859-1");
 		} catch (Exception e) {
 			return null;
 		}

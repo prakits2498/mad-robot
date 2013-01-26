@@ -49,8 +49,7 @@ public class ThrowableConverter implements Converter {
 	}
 
 	@Override
-	public Object unmarshal(HierarchicalStreamReader reader,
-			UnmarshallingContext context) {
+	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
 		return defaultConverter.unmarshal(reader, context);
 	}
 }

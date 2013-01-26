@@ -1,4 +1,4 @@
-package com.madrobot.ui.widgets;
+package com.madrobot.ui.widgets.layouts;
 
 import android.os.Parcel;
 import android.os.Parcelable;

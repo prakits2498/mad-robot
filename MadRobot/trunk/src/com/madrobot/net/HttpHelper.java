@@ -18,10 +18,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.http.Header;
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
@@ -102,8 +100,8 @@ public class HttpHelper {
 	private void addQueryParameter() throws URISyntaxException {
 		this.requestUrl = URIUtils.createURI(this.requestUrl.getScheme(),
 				this.requestUrl.getAuthority(), -1, this.requestUrl.getPath(),
-				URLEncodedUtils.format(httpSettings.getHttpRequestParameters(),
-						HTTP.UTF_8), null);
+				URLEncodedUtils.format(httpSettings.getHttpRequestParameters(), HTTP.UTF_8),
+				null);
 	}
 
 	/**
@@ -174,8 +172,8 @@ public class HttpHelper {
 	 * @throws URISyntaxException
 	 *             in case of request url syntax error
 	 */
-	private HttpResponse handleOtherMethods(HttpRequestBase method)
-			throws IOException, URISyntaxException {
+	private HttpResponse handleOtherMethods(HttpRequestBase method) throws IOException,
+			URISyntaxException {
 
 		if (hasRequestParameter()) {
 			addQueryParameter();
@@ -184,8 +182,7 @@ public class HttpHelper {
 		this.initRequest(method);
 		HttpResponse httpResponse;
 		if (httpContext != null) {
-			httpResponse = httpSettings.getHttpClient().execute(method,
-					httpContext);
+			httpResponse = httpSettings.getHttpClient().execute(method, httpContext);
 		} else {
 			httpResponse = httpSettings.getHttpClient().execute(method);
 		}
@@ -224,8 +221,7 @@ public class HttpHelper {
 	 * @throws URISyntaxException
 	 *             in case of request url syntax error
 	 */
-	private HttpResponse handleHttpPost() throws IOException,
-			URISyntaxException {
+	private HttpResponse handleHttpPost() throws IOException, URISyntaxException {
 
 		HttpPost httpPost = new HttpPost(requestUrl);
 		this.initRequest(httpPost);
@@ -240,8 +236,8 @@ public class HttpHelper {
 		Log.d(TAG, "Request URL:[POST] " + requestUrl);
 		HttpResponse httpResponse;
 		if (httpContext != null) {
-			httpResponse = httpSettings.getHttpClient().execute(httpPost,httpContext);
-		}else{
+			httpResponse = httpSettings.getHttpClient().execute(httpPost, httpContext);
+		} else {
 			httpResponse = httpSettings.getHttpClient().execute(httpPost);
 		}
 
@@ -287,8 +283,7 @@ public class HttpHelper {
 	 *            - base object for http methods
 	 */
 	private void setDefaultRequestHeaders(HttpRequestBase httpRequestBase) {
-		List<NameValuePair> requestHeaders = httpSettings
-				.getHttpRequestHeaders();
+		List<NameValuePair> requestHeaders = httpSettings.getHttpRequestHeaders();
 		if (requestHeaders != null) {
 			NameValuePair pair = null;
 			for (int i = 0; i < requestHeaders.size(); i++) {
@@ -314,8 +309,7 @@ public class HttpHelper {
 	 *            - base object for http methods
 	 */
 	private void setRequestHeaders(HttpRequestBase httpRequestBase) {
-		List<NameValuePair> requestHeaders = httpSettings
-				.getHttpRequestHeaders();
+		List<NameValuePair> requestHeaders = httpSettings.getHttpRequestHeaders();
 		NameValuePair pair = null;
 		for (int i = 0; i < requestHeaders.size(); i++) {
 			pair = requestHeaders.get(i);

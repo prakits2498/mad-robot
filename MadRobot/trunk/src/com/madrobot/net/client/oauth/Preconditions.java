@@ -109,8 +109,7 @@ final class Preconditions {
 	static void checkArgument(boolean expression, String errorMessageTemplate,
 			Object... errorMessageArgs) {
 		if (!expression) {
-			throw new IllegalArgumentException(format(errorMessageTemplate,
-					errorMessageArgs));
+			throw new IllegalArgumentException(format(errorMessageTemplate, errorMessageArgs));
 		}
 	}
 
@@ -146,8 +145,7 @@ final class Preconditions {
 	 *             if {@code iterable} is null or contains at least one null
 	 *             element
 	 */
-	static <T extends Iterable<?>> T checkContentsNotNull(T iterable,
-			Object errorMessage) {
+	static <T extends Iterable<?>> T checkContentsNotNull(T iterable, Object errorMessage) {
 		if (containsOrIsNull(iterable)) {
 			throw new NullPointerException(String.valueOf(errorMessage));
 		}
@@ -180,8 +178,7 @@ final class Preconditions {
 	static <T extends Iterable<?>> T checkContentsNotNull(T iterable,
 			String errorMessageTemplate, Object... errorMessageArgs) {
 		if (containsOrIsNull(iterable)) {
-			throw new NullPointerException(format(errorMessageTemplate,
-					errorMessageArgs));
+			throw new NullPointerException(format(errorMessageTemplate, errorMessageArgs));
 		}
 		return iterable;
 	}
@@ -225,12 +222,12 @@ final class Preconditions {
 	static void checkElementIndex(int index, int size, String desc) {
 		checkArgument(size >= 0, "negative size: %s", size);
 		if (index < 0) {
-			throw new IndexOutOfBoundsException(format(
-					"%s (%s) must not be negative", desc, index));
+			throw new IndexOutOfBoundsException(format("%s (%s) must not be negative", desc,
+					index));
 		}
 		if (index >= size) {
-			throw new IndexOutOfBoundsException(format(
-					"%s (%s) must be less than size (%s)", desc, index, size));
+			throw new IndexOutOfBoundsException(format("%s (%s) must be less than size (%s)",
+					desc, index, size));
 		}
 	}
 
@@ -298,8 +295,7 @@ final class Preconditions {
 		if (reference == null) {
 			// If either of these parameters is null, the right thing happens
 			// anyway
-			throw new NullPointerException(format(errorMessageTemplate,
-					errorMessageArgs));
+			throw new NullPointerException(format(errorMessageTemplate, errorMessageArgs));
 		}
 		return reference;
 	}
@@ -343,13 +339,12 @@ final class Preconditions {
 	static void checkPositionIndex(int index, int size, String desc) {
 		checkArgument(size >= 0, "negative size: %s", size);
 		if (index < 0) {
-			throw new IndexOutOfBoundsException(format(
-					"%s (%s) must not be negative", desc, index));
+			throw new IndexOutOfBoundsException(format("%s (%s) must not be negative", desc,
+					index));
 		}
 		if (index > size) {
 			throw new IndexOutOfBoundsException(format(
-					"%s (%s) must not be greater than size (%s)", desc, index,
-					size));
+					"%s (%s) must not be greater than size (%s)", desc, index, size));
 		}
 	}
 
@@ -378,8 +373,7 @@ final class Preconditions {
 		checkPositionIndex(end, size, "end index");
 		if (end < start) {
 			throw new IndexOutOfBoundsException(format(
-					"end index (%s) must not be less than start index (%s)",
-					end, start));
+					"end index (%s) must not be less than start index (%s)", end, start));
 		}
 	}
 
@@ -443,8 +437,7 @@ final class Preconditions {
 	static void checkState(boolean expression, String errorMessageTemplate,
 			Object... errorMessageArgs) {
 		if (!expression) {
-			throw new IllegalStateException(format(errorMessageTemplate,
-					errorMessageArgs));
+			throw new IllegalStateException(format(errorMessageTemplate, errorMessageArgs));
 		}
 	}
 
@@ -488,8 +481,7 @@ final class Preconditions {
 	// VisibleForTesting
 	static String format(String template, Object... args) {
 		// start substituting the arguments into the '%s' placeholders
-		StringBuilder builder = new StringBuilder(template.length() + 16
-				* args.length);
+		StringBuilder builder = new StringBuilder(template.length() + 16 * args.length);
 		int templateStart = 0;
 		int i = 0;
 		while (i < args.length) {

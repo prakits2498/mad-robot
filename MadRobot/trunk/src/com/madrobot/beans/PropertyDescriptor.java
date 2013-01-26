@@ -110,12 +110,9 @@ public class PropertyDescriptor extends FeatureDescriptor {
 
 		// However, if both x and y reference read methods in the same class,
 		// give priority to a boolean "is" method over a boolean "get" method.
-		if (xr != null && yr != null
-				&& xr.getDeclaringClass() == yr.getDeclaringClass()
-				&& xr.getReturnType() == boolean.class
-				&& yr.getReturnType() == boolean.class
-				&& xr.getName().indexOf("is") == 0
-				&& yr.getName().indexOf("get") == 0) {
+		if (xr != null && yr != null && xr.getDeclaringClass() == yr.getDeclaringClass()
+				&& xr.getReturnType() == boolean.class && yr.getReturnType() == boolean.class
+				&& xr.getName().indexOf("is") == 0 && yr.getName().indexOf("get") == 0) {
 			try {
 				setReadMethod(xr);
 			} catch (IntrospectionException ex) {
@@ -186,9 +183,8 @@ public class PropertyDescriptor extends FeatureDescriptor {
 	 * @exception IntrospectionException
 	 *                if an exception occurs during introspection.
 	 */
-	public PropertyDescriptor(String propertyName, Class<?> beanClass,
-			String readMethodName, String writeMethodName)
-			throws IntrospectionException {
+	public PropertyDescriptor(String propertyName, Class<?> beanClass, String readMethodName,
+			String writeMethodName) throws IntrospectionException {
 		if (beanClass == null) {
 			throw new IntrospectionException("Target Bean class is null");
 		}
@@ -204,13 +200,11 @@ public class PropertyDescriptor extends FeatureDescriptor {
 
 		this.readMethodName = readMethodName;
 		if (readMethodName != null && getReadMethod() == null) {
-			throw new IntrospectionException("Method not found: "
-					+ readMethodName);
+			throw new IntrospectionException("Method not found: " + readMethodName);
 		}
 		this.writeMethodName = writeMethodName;
 		if (writeMethodName != null && getWriteMethod() == null) {
-			throw new IntrospectionException("Method not found: "
-					+ writeMethodName);
+			throw new IntrospectionException("Method not found: " + writeMethodName);
 		}
 
 	}
@@ -230,8 +224,8 @@ public class PropertyDescriptor extends FeatureDescriptor {
 	 * @exception IntrospectionException
 	 *                if an exception occurs during introspection.
 	 */
-	public PropertyDescriptor(String propertyName, Method readMethod,
-			Method writeMethod) throws IntrospectionException {
+	public PropertyDescriptor(String propertyName, Method readMethod, Method writeMethod)
+			throws IntrospectionException {
 		if (propertyName == null || propertyName.length() == 0) {
 			throw new IntrospectionException("bad property name");
 		}
@@ -299,8 +293,7 @@ public class PropertyDescriptor extends FeatureDescriptor {
 			} catch (Exception ex) {
 				// A serious error has occured.
 				// Proably due to an invalid property editor.
-				throw new RuntimeException("PropertyEditor not instantiated",
-						ex);
+				throw new RuntimeException("PropertyEditor not instantiated", ex);
 			}
 		}
 		return (PropertyEditor) editor;
@@ -333,10 +326,8 @@ public class PropertyDescriptor extends FeatureDescriptor {
 			}
 
 			if (getPropertyType() == other.getPropertyType()
-					&& getPropertyEditorClass() == other
-							.getPropertyEditorClass()
-					&& bound == other.isBound()
-					&& constrained == other.isConstrained()
+					&& getPropertyEditorClass() == other.getPropertyEditorClass()
+					&& bound == other.isBound() && constrained == other.isConstrained()
 					&& writeMethodName == other.writeMethodName
 					&& readMethodName == other.readMethodName) {
 				return true;
@@ -361,20 +352,20 @@ public class PropertyDescriptor extends FeatureDescriptor {
 			if (readMethod != null) {
 				Class[] params = readMethod.getParameterTypes();
 				if (params.length != 0) {
-					throw new IntrospectionException(
-							"bad read method arg count: " + readMethod);
+					throw new IntrospectionException("bad read method arg count: "
+							+ readMethod);
 				}
 				propertyType = readMethod.getReturnType();
 				if (propertyType == Void.TYPE) {
-					throw new IntrospectionException("read method "
-							+ readMethod.getName() + " returns void");
+					throw new IntrospectionException("read method " + readMethod.getName()
+							+ " returns void");
 				}
 			}
 			if (writeMethod != null) {
 				Class params[] = writeMethod.getParameterTypes();
 				if (params.length != 1) {
-					throw new IntrospectionException(
-							"bad write method arg count: " + writeMethod);
+					throw new IntrospectionException("bad write method arg count: "
+							+ writeMethod);
 				}
 				if (propertyType != null && propertyType != params[0]) {
 					throw new IntrospectionException(
@@ -447,8 +438,7 @@ public class PropertyDescriptor extends FeatureDescriptor {
 		Method readMethod = getReadMethod0();
 		if (readMethod == null) {
 			Class cls = getClass0();
-			if (cls == null
-					|| (readMethodName == null && readMethodRef == null)) {
+			if (cls == null || (readMethodName == null && readMethodRef == null)) {
 				// The read method was explicitly set to null.
 				return null;
 			}
@@ -470,8 +460,8 @@ public class PropertyDescriptor extends FeatureDescriptor {
 					readMethodName, 0, null);
 			if (readMethod == null) {
 				readMethodName = "get" + getBaseName();
-				readMethod = MethodUtils.findAccessibleMethodIncludeInterfaces(
-						cls, readMethodName, 0, null);
+				readMethod = MethodUtils.findAccessibleMethodIncludeInterfaces(cls,
+						readMethodName, 0, null);
 			}
 			try {
 				setReadMethod(readMethod);
@@ -496,8 +486,7 @@ public class PropertyDescriptor extends FeatureDescriptor {
 		Method writeMethod = getWriteMethod0();
 		if (writeMethod == null) {
 			Class cls = getClass0();
-			if (cls == null
-					|| (writeMethodName == null && writeMethodRef == null)) {
+			if (cls == null || (writeMethodName == null && writeMethodRef == null)) {
 				// The write method was explicitly set to null.
 				return null;
 			}
@@ -521,9 +510,8 @@ public class PropertyDescriptor extends FeatureDescriptor {
 				writeMethodName = "set" + getBaseName();
 			}
 
-			writeMethod = MethodUtils.findAccessibleMethodIncludeInterfaces(
-					cls, writeMethodName, 1, (type == null) ? null
-							: new Class[] { type });
+			writeMethod = MethodUtils.findAccessibleMethodIncludeInterfaces(cls,
+					writeMethodName, 1, (type == null) ? null : new Class[] { type });
 			try {
 				setWriteMethod(writeMethod);
 			} catch (IntrospectionException ex) {
@@ -548,23 +536,16 @@ public class PropertyDescriptor extends FeatureDescriptor {
 	public int hashCode() {
 		int result = 7;
 
+		result = 37 * result
+				+ ((getPropertyType() == null) ? 0 : getPropertyType().hashCode());
+		result = 37 * result + ((getReadMethod() == null) ? 0 : getReadMethod().hashCode());
+		result = 37 * result + ((getWriteMethod() == null) ? 0 : getWriteMethod().hashCode());
 		result = 37
 				* result
-				+ ((getPropertyType() == null) ? 0 : getPropertyType()
+				+ ((getPropertyEditorClass() == null) ? 0 : getPropertyEditorClass()
 						.hashCode());
-		result = 37 * result
-				+ ((getReadMethod() == null) ? 0 : getReadMethod().hashCode());
-		result = 37
-				* result
-				+ ((getWriteMethod() == null) ? 0 : getWriteMethod().hashCode());
-		result = 37
-				* result
-				+ ((getPropertyEditorClass() == null) ? 0
-						: getPropertyEditorClass().hashCode());
-		result = 37 * result
-				+ ((writeMethodName == null) ? 0 : writeMethodName.hashCode());
-		result = 37 * result
-				+ ((readMethodName == null) ? 0 : readMethodName.hashCode());
+		result = 37 * result + ((writeMethodName == null) ? 0 : writeMethodName.hashCode());
+		result = 37 * result + ((readMethodName == null) ? 0 : readMethodName.hashCode());
 		result = 37 * result + getName().hashCode();
 		result = 37 * result + ((bound == false) ? 0 : 1);
 		result = 37 * result + ((constrained == false) ? 0 : 1);
@@ -649,8 +630,7 @@ public class PropertyDescriptor extends FeatureDescriptor {
 	 * @param readMethod
 	 *            The new read method.
 	 */
-	public synchronized void setReadMethod(Method readMethod)
-			throws IntrospectionException {
+	public synchronized void setReadMethod(Method readMethod) throws IntrospectionException {
 		if (readMethod == null) {
 			readMethodName = null;
 			readMethodRef = null;
@@ -670,8 +650,7 @@ public class PropertyDescriptor extends FeatureDescriptor {
 	 * @param writeMethod
 	 *            The new write method.
 	 */
-	public synchronized void setWriteMethod(Method writeMethod)
-			throws IntrospectionException {
+	public synchronized void setWriteMethod(Method writeMethod) throws IntrospectionException {
 		if (writeMethod == null) {
 			writeMethodName = null;
 			writeMethodRef = null;

@@ -49,8 +49,8 @@ class TreeUnmarshaller implements UnmarshallingContext {
 		validationList.add(work, priority);
 	}
 
-	private void addInformationTo(ErrorWriter errorWriter, Class type,
-			Converter converter, Object parent) {
+	private void addInformationTo(ErrorWriter errorWriter, Class type, Converter converter,
+			Object parent) {
 		errorWriter.add("class", type.getName());
 		errorWriter.add("required-type", getRequiredType().getName());
 		errorWriter.add("converter-type", converter.getClass().getName());

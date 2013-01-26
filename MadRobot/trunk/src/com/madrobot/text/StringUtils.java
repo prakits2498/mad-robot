@@ -81,8 +81,8 @@ public final class StringUtils {
 	 * @return
 	 */
 	public static boolean isJsonObject(String s) {
-		if (s.startsWith("{") || s.startsWith("[") || s.equals("true")
-				|| s.equals("false") || s.equals("null")) {
+		if (s.startsWith("{") || s.startsWith("[") || s.equals("true") || s.equals("false")
+				|| s.equals("null")) {
 			return true;
 		}
 		try {
@@ -193,8 +193,8 @@ public final class StringUtils {
 				}
 				if (pattern.charAt(i) == '}') {
 					if (n == 1) {
-						toAppendTo.append(processPattern(
-								pattern.substring(lIndex + 1, i), args));
+						toAppendTo.append(processPattern(pattern.substring(lIndex + 1, i),
+								args));
 						lIndex = -1;
 						lastIndex = i + 1;
 					}
@@ -202,8 +202,7 @@ public final class StringUtils {
 				}
 			}
 			if (n > 0) {
-				toAppendTo.append(processPattern(pattern.substring(lIndex + 1),
-						args));
+				toAppendTo.append(processPattern(pattern.substring(lIndex + 1), args));
 			} else {
 				toAppendTo.append(pattern.substring(lastIndex));
 			}
@@ -554,8 +553,7 @@ public final class StringUtils {
 					break;
 				case 'u': {
 					try {
-						c = (char) (Integer.parseInt(s.substring(i + 1, i + 5),
-								16));
+						c = (char) (Integer.parseInt(s.substring(i + 1, i + 5), 16));
 					} catch (NumberFormatException e) {
 						throw new Exception("String format error");
 					}
@@ -566,8 +564,7 @@ public final class StringUtils {
 				default:
 					if (c >= '0' && c <= '9') {
 						try {
-							c = (char) (Integer.parseInt(s.substring(i, i + 3),
-									8));
+							c = (char) (Integer.parseInt(s.substring(i, i + 3), 8));
 						} catch (NumberFormatException e) {
 							throw new Exception("String format error");
 						}
@@ -861,8 +858,7 @@ public final class StringUtils {
 	 */
 	public static String random(int count, int start, int end, boolean letters,
 			boolean numbers, char[] chars, Random random) {
-		return RandomString.random(count, start, end, letters, numbers, chars,
-				random);
+		return RandomString.random(count, start, end, letters, numbers, chars, random);
 	}
 
 	/**
@@ -928,8 +924,8 @@ public final class StringUtils {
 			end = temp;
 		}
 		return new StringBuilder(len + start - end + overlay.length() + 1)
-				.append(str.substring(0, start)).append(overlay)
-				.append(str.substring(end)).toString();
+				.append(str.substring(0, start)).append(overlay).append(str.substring(end))
+				.toString();
 	}
 
 	/**
@@ -987,11 +983,9 @@ public final class StringUtils {
 	 *             if <code>repeat &lt; 0</code>
 	 * @see #repeat(String, int)
 	 */
-	private static String padding(int repeat, char padChar)
-			throws IndexOutOfBoundsException {
+	private static String padding(int repeat, char padChar) throws IndexOutOfBoundsException {
 		if (repeat < 0) {
-			throw new IndexOutOfBoundsException(
-					"Cannot pad a negative amount: " + repeat);
+			throw new IndexOutOfBoundsException("Cannot pad a negative amount: " + repeat);
 		}
 		final char[] buf = new char[repeat];
 		for (int i = 0; i < buf.length; i++) {
@@ -1032,8 +1026,7 @@ public final class StringUtils {
 	 *            Flag to remove leading an trailing spaces
 	 * @return String with spaces removed
 	 */
-	public static String removeExtraSpaces(String string,
-			boolean removeLeadTrailSpaces) {
+	public static String removeExtraSpaces(String string, boolean removeLeadTrailSpaces) {
 		StringBuilder buffer = new StringBuilder();
 		if (removeLeadTrailSpaces) {
 			string = string.trim();
@@ -1150,8 +1143,7 @@ public final class StringUtils {
 	 * @return the text with any replacements processed, <code>null</code> if
 	 *         null String input
 	 */
-	public static String replace(String text, String searchString,
-			String replacement) {
+	public static String replace(String text, String searchString, String replacement) {
 		return replace(text, searchString, replacement, -1);
 	}
 
@@ -1192,10 +1184,8 @@ public final class StringUtils {
 	 * @return the text with any replacements processed, <code>null</code> if
 	 *         null String input
 	 */
-	public static String replace(String text, String searchString,
-			String replacement, int max) {
-		if (isBlank(text) || isBlank(searchString) || replacement == null
-				|| max == 0) {
+	public static String replace(String text, String searchString, String replacement, int max) {
+		if (isBlank(text) || isBlank(searchString) || replacement == null || max == 0) {
 			return text;
 		}
 		int start = 0;
@@ -1280,8 +1270,7 @@ public final class StringUtils {
 	 * @return the text with any replacements processed, <code>null</code> if
 	 *         null String input
 	 */
-	public static String replaceOnce(String text, String searchString,
-			String replacement) {
+	public static String replaceOnce(String text, String searchString, String replacement) {
 		return replace(text, searchString, replacement, 1);
 	}
 
@@ -1659,8 +1648,7 @@ public final class StringUtils {
 					end--;
 				}
 			} else if (stripChars.length() != 0) {
-				while ((end != 0)
-						&& (stripChars.indexOf(str.charAt(end - 1)) != -1)) {
+				while ((end != 0) && (stripChars.indexOf(str.charAt(end - 1)) != -1)) {
 					end--;
 				}
 			}
@@ -1753,8 +1741,7 @@ public final class StringUtils {
 		if ((strLen = cs.length()) == 0) {
 			return cs.toString();
 		}
-		return new StringBuilder(strLen)
-				.append(Character.toLowerCase(cs.charAt(0)))
+		return new StringBuilder(strLen).append(Character.toLowerCase(cs.charAt(0)))
 				.append(subSequence(cs, 1)).toString();
 	}
 
@@ -1810,13 +1797,15 @@ public final class StringUtils {
 	 * countMatches=2;
 	 * </code>
 	 * </p>
-	 * @param str Input string
-	 * @param sub string to match with
+	 * 
+	 * @param str
+	 *            Input string
+	 * @param sub
+	 *            string to match with
 	 * @return number of matches found
 	 */
 	public static int countMatches(String str, String sub) {
-		if (str == null || str.length() == 0 || sub == null
-				|| sub.length() == 0) {
+		if (str == null || str.length() == 0 || sub == null || sub.length() == 0) {
 			return 0;
 		}
 		int count = 0;

@@ -36,8 +36,7 @@ public class JVM implements Caching {
 
 	private static final boolean optimizedTreeMapPutAll;
 	private static final boolean optimizedTreeSetAddAll;
-	private static final boolean reverseFieldOrder = isHarmony()
-			|| (isIBM() && !is15());
+	private static final boolean reverseFieldOrder = isHarmony() || (isIBM() && !is15());
 
 	private static final String vendor = System.getProperty("java.vm.vendor");
 	static {
@@ -173,8 +172,7 @@ public class JVM implements Caching {
 				return cached;
 			}
 
-			Class clazz = Class.forName(name, false, getClass()
-					.getClassLoader());
+			Class clazz = Class.forName(name, false, getClass().getClassLoader());
 			loaderCache.put(name, clazz);
 			return clazz;
 		} catch (ClassNotFoundException e) {

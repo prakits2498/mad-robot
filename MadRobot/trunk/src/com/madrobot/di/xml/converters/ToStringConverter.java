@@ -44,11 +44,10 @@ public class ToStringConverter extends AbstractSingleValueConverter {
 			throw new ConversionException(
 					"Unable to instantiate single String param constructor", e);
 		} catch (IllegalAccessException e) {
-			throw new ConversionException(
-					"Unable to access single String param constructor", e);
+			throw new ConversionException("Unable to access single String param constructor",
+					e);
 		} catch (InvocationTargetException e) {
-			throw new ConversionException(
-					"Unable to target single String param constructor",
+			throw new ConversionException("Unable to target single String param constructor",
 					e.getTargetException());
 		}
 	}

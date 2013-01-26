@@ -61,8 +61,8 @@ public class EditTexts {
 		}
 
 		@Override
-		public CharSequence filter(CharSequence source, int start, int end,
-				Spanned dest, int dstart, int dend) {
+		public CharSequence filter(CharSequence source, int start, int end, Spanned dest,
+				int dstart, int dend) {
 			int keep = mMaxGetter.getMax(source)
 					- (getFormattedDigits(dest).length() - (dend - dstart));
 
@@ -101,13 +101,11 @@ public class EditTexts {
 			}
 
 			@Override
-			public void beforeTextChanged(CharSequence arg0, int arg1,
-					int arg2, int arg3) {
+			public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
 			}
 
 			@Override
-			public void onTextChanged(CharSequence arg0, int arg1, int arg2,
-					int arg3) {
+			public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
 			}
 		}
 
@@ -115,8 +113,7 @@ public class EditTexts {
 			super(context, attrs);
 		}
 
-		public FormattedEditText(Context context, AttributeSet attrs,
-				int defStyle) {
+		public FormattedEditText(Context context, AttributeSet attrs, int defStyle) {
 			super(context, attrs, defStyle);
 		}
 
@@ -144,8 +141,8 @@ public class EditTexts {
 	public static class NumericFilter implements InputFilter {
 
 		@Override
-		public CharSequence filter(CharSequence arg0, int arg1, int arg2,
-				Spanned arg3, int arg4, int arg5) {
+		public CharSequence filter(CharSequence arg0, int arg1, int arg2, Spanned arg3,
+				int arg4, int arg5) {
 			return extractNumber(arg0.toString());
 		}
 	}

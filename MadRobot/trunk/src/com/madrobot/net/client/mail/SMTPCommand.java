@@ -25,9 +25,9 @@ package com.madrobot.net.client.mail;
 
 public final class SMTPCommand {
 
-	static final String[] _commands = { "HELO", "MAIL FROM:", "RCPT TO:",
-			"DATA", "SEND FROM:", "SOML FROM:", "SAML FROM:", "RSET", "VRFY",
-			"EXPN", "HELP", "NOOP", "TURN", "QUIT" };
+	static final String[] _commands = { "HELO", "MAIL FROM:", "RCPT TO:", "DATA",
+			"SEND FROM:", "SOML FROM:", "SAML FROM:", "RSET", "VRFY", "EXPN", "HELP", "NOOP",
+			"TURN", "QUIT" };
 	public static final int DATA = 3;
 	public static final int EXPN = 9;
 	public static final int EXPAND = EXPN;

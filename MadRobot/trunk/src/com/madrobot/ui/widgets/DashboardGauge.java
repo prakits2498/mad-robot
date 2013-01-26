@@ -139,8 +139,8 @@ public final class DashboardGauge extends View {
 
 	private void drawLogo(Canvas canvas) {
 		canvas.save(Canvas.MATRIX_SAVE_FLAG);
-		canvas.translate(0.5f - logo.getWidth() * logoScale / 2.0f,
-				0.5f - logo.getHeight() * logoScale / 2.0f);
+		canvas.translate(0.5f - logo.getWidth() * logoScale / 2.0f, 0.5f - logo.getHeight()
+				* logoScale / 2.0f);
 
 		int color = 0x00000000;
 		float position = getRelativeTemperaturePosition();
@@ -150,8 +150,7 @@ public final class DashboardGauge extends View {
 			color |= ((int) ((0xf0) * position)) << 16; // red
 		}
 		// Log.d(TAG, "*** " + Integer.toHexString(color));
-		LightingColorFilter logoFilter = new LightingColorFilter(0xff008822,
-				color);
+		LightingColorFilter logoFilter = new LightingColorFilter(0xff008822, color);
 		logoPaint.setColorFilter(logoFilter);
 		if (logo != null)
 			canvas.drawBitmap(logo, logoMatrix, logoPaint);
@@ -330,8 +329,7 @@ public final class DashboardGauge extends View {
 			background.recycle();
 		}
 
-		background = Bitmap.createBitmap(getWidth(), getHeight(),
-				Bitmap.Config.ARGB_8888);
+		background = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
 		Canvas backgroundCanvas = new Canvas(background);
 		float scale = getWidth();
 		backgroundCanvas.scale(scale, scale);
@@ -363,11 +361,10 @@ public final class DashboardGauge extends View {
 
 	public void setScaleTexture(Bitmap texture) {
 		this.faceTexture = texture;
-		BitmapShader paperShader = new BitmapShader(faceTexture,
-				Shader.TileMode.MIRROR, Shader.TileMode.MIRROR);
+		BitmapShader paperShader = new BitmapShader(faceTexture, Shader.TileMode.MIRROR,
+				Shader.TileMode.MIRROR);
 		Matrix paperMatrix = new Matrix();
-		paperMatrix.setScale(1.0f / faceTexture.getWidth(),
-				1.0f / faceTexture.getHeight());
+		paperMatrix.setScale(1.0f / faceTexture.getWidth(), 1.0f / faceTexture.getHeight());
 		paperShader.setLocalMatrix(paperMatrix);
 		facePaint.setFilterBitmap(true);
 		facePaint.setShader(paperShader);
@@ -385,9 +382,8 @@ public final class DashboardGauge extends View {
 		// the linear gradient is a bit skewed for realism
 		rimPaint = new Paint();
 		rimPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
-		rimPaint.setShader(new LinearGradient(0.40f, 0.0f, 0.60f, 1.0f, Color
-				.rgb(0xf0, 0xf5, 0xf0), Color.rgb(0x30, 0x31, 0x30),
-				Shader.TileMode.CLAMP));
+		rimPaint.setShader(new LinearGradient(0.40f, 0.0f, 0.60f, 1.0f, Color.rgb(0xf0, 0xf5,
+				0xf0), Color.rgb(0x30, 0x31, 0x30), Shader.TileMode.CLAMP));
 
 		rimCirclePaint = new Paint();
 		rimCirclePaint.setAntiAlias(true);
@@ -397,17 +393,16 @@ public final class DashboardGauge extends View {
 
 		float rimSize = 0.02f;
 		faceRect = new RectF();
-		faceRect.set(rimRect.left + rimSize, rimRect.top + rimSize,
-				rimRect.right - rimSize, rimRect.bottom - rimSize);
+		faceRect.set(rimRect.left + rimSize, rimRect.top + rimSize, rimRect.right - rimSize,
+				rimRect.bottom - rimSize);
 
 		facePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		facePaint.setStyle(Paint.Style.FILL);
 
 		rimShadowPaint = new Paint();
-		rimShadowPaint.setShader(new RadialGradient(0.5f, 0.5f, faceRect
-				.width() / 2.0f,
-				new int[] { 0x00000000, 0x00000500, 0x50000500 }, new float[] {
-						0.96f, 0.96f, 0.99f }, Shader.TileMode.MIRROR));
+		rimShadowPaint.setShader(new RadialGradient(0.5f, 0.5f, faceRect.width() / 2.0f,
+				new int[] { 0x00000000, 0x00000500, 0x50000500 }, new float[] { 0.96f, 0.96f,
+						0.99f }, Shader.TileMode.MIRROR));
 		rimShadowPaint.setStyle(Paint.Style.FILL);
 
 		scalePaint = new Paint();
@@ -423,9 +418,8 @@ public final class DashboardGauge extends View {
 
 		float scalePosition = 0.10f;
 		scaleRect = new RectF();
-		scaleRect.set(faceRect.left + scalePosition, faceRect.top
-				+ scalePosition, faceRect.right - scalePosition,
-				faceRect.bottom - scalePosition);
+		scaleRect.set(faceRect.left + scalePosition, faceRect.top + scalePosition,
+				faceRect.right - scalePosition, faceRect.bottom - scalePosition);
 
 		titlePaint = new Paint();
 		titlePaint.setColor(0xaf946109);
@@ -436,8 +430,7 @@ public final class DashboardGauge extends View {
 		titlePaint.setTextScaleX(0.8f);
 
 		titlePath = new Path();
-		titlePath.addArc(new RectF(0.24f, 0.24f, 0.76f, 0.76f), -180.0f,
-				-180.0f);
+		titlePath.addArc(new RectF(0.24f, 0.24f, 0.76f, 0.76f), -180.0f, -180.0f);
 
 		logoPaint = new Paint();
 		logoPaint.setFilterBitmap(true);

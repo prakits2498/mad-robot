@@ -205,8 +205,7 @@ public final class XMLDeserializer {
 	 *             {@see Method#invoke(Object, Object...)}
 	 */
 	private void addFieldValue(Object obj, FieldInfo info, Object value)
-			throws IllegalArgumentException, IllegalAccessException,
-			InvocationTargetException {
+			throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 		Method addMethod = info.getAddMethod();
 		addMethod.invoke(obj, value);
 	}
@@ -225,8 +224,8 @@ public final class XMLDeserializer {
 	 * @throws IOException
 	 *             If an exception occurs while reading
 	 */
-	private void deserialize(Object obj, XmlPullParser parser,
-			Stack<ClassInfo> stack) throws XmlPullParserException, IOException {
+	private void deserialize(Object obj, XmlPullParser parser, Stack<ClassInfo> stack)
+			throws XmlPullParserException, IOException {
 		int evtType = parser.next();
 		String name;
 		ClassInfo ci = stack.peek();
@@ -254,8 +253,7 @@ public final class XMLDeserializer {
 					// and set
 					String value = parser.nextText();
 					try {
-						setFieldValue(obj, info,
-								Converter.convertTo(value, info.getType()));
+						setFieldValue(obj, info, Converter.convertTo(value, info.getType()));
 					} catch (Throwable e) {
 						e.printStackTrace();
 					}
@@ -268,11 +266,9 @@ public final class XMLDeserializer {
 						Class<?> itemValueType = itemType.value();
 						Object value = null;
 						if (Converter.isPseudoPrimitive(itemValueType)) {
-							value = Converter.convertTo(parser.nextText(),
-									itemValueType);
+							value = Converter.convertTo(parser.nextText(), itemValueType);
 						} else {
-							ClassInfo itemCI = new ClassInfo(itemValueType,
-									name);
+							ClassInfo itemCI = new ClassInfo(itemValueType, name);
 							stack.push(itemCI);
 							try {
 								Object subObj = itemValueType.newInstance();
@@ -360,8 +356,8 @@ public final class XMLDeserializer {
 				if (List.class.isAssignableFrom(field.getType())) {
 					String methodName = getAddMethodName(fieldName);
 					ItemType itemType = field.getAnnotation(ItemType.class);
-					Class<?> itemValueType = (itemType != null) ? itemType
-							.value() : Object.class;
+					Class<?> itemValueType = (itemType != null) ? itemType.value()
+							: Object.class;
 					method = clz.getDeclaredMethod(methodName, itemValueType);
 					info.setAddMethod(method);
 				} else {
@@ -531,8 +527,7 @@ public final class XMLDeserializer {
 	 *             {@see Method#invoke(Object, Object...)}
 	 */
 	private void setFieldValue(Object obj, FieldInfo info, Object value)
-			throws IllegalArgumentException, IllegalAccessException,
-			InvocationTargetException {
+			throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 		if (value != null) {
 			Method setMethod = info.getSetMethod();
 			setMethod.invoke(obj, value);
@@ -561,8 +556,7 @@ public final class XMLDeserializer {
 
 		while (!finished) {
 			evtType = parser.next();
-			if ((evtType == XmlPullParser.START_TAG)
-					&& parser.getName().equals(elementName)) {
+			if ((evtType == XmlPullParser.START_TAG) && parser.getName().equals(elementName)) {
 				indent++;
 			} else if ((evtType == XmlPullParser.START_TAG)
 					&& parser.getName().equals(elementName)) {

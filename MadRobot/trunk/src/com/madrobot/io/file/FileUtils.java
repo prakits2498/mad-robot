@@ -130,8 +130,7 @@ public class FileUtils {
 	 * @throws IOException
 	 * @see {@link FileUtils#recursiveCopy(File, File, boolean, boolean)}
 	 */
-	public static final boolean copyFileNio(File src, File dst)
-			throws IOException {
+	public static final boolean copyFileNio(File src, File dst) throws IOException {
 		FileChannel srcChannel = null, dstChannel = null;
 		try {
 			// Create channel on the source
@@ -149,8 +148,7 @@ public class FileUtils {
 				long size = srcChannel.size();
 				long position = 0;
 				while (position < size) {
-					position += srcChannel.transferTo(position, safe_max,
-							dstChannel);
+					position += srcChannel.transferTo(position, safe_max, dstChannel);
 				}
 			}
 
@@ -215,7 +213,8 @@ public class FileUtils {
 	 * @param directory
 	 *            directory to delete
 	 * @throws IOException
-	 *             in case deletion is unsuccessful
+	 *             If the directory is not empty or in case deletion is
+	 *             unsuccessful.
 	 * @see FileUtils#recursiveDelete(File)
 	 */
 	public static void deleteDirectory(File directory) throws IOException {
@@ -298,8 +297,7 @@ public class FileUtils {
 			boolean filePresent = file.exists();
 			if (!file.delete()) {
 				if (!filePresent) {
-					throw new FileNotFoundException("File does not exist: "
-							+ file);
+					throw new FileNotFoundException("File does not exist: " + file);
 				}
 				String message = "Unable to delete file: " + file;
 				throw new IOException(message);
@@ -477,19 +475,16 @@ public class FileUtils {
 	 * @throws IOException
 	 *             if the file cannot be read
 	 */
-	public static final FileInputStream openInputStream(File file)
-			throws IOException {
+	public static final FileInputStream openInputStream(File file) throws IOException {
 		if (file.exists()) {
 			if (file.isDirectory()) {
-				throw new IOException("File '" + file
-						+ "' exists but is a directory");
+				throw new IOException("File '" + file + "' exists but is a directory");
 			}
 			if (file.canRead() == false) {
 				throw new IOException("File '" + file + "' cannot be read");
 			}
 		} else {
-			throw new FileNotFoundException("File '" + file
-					+ "' does not exist");
+			throw new FileNotFoundException("File '" + file + "' does not exist");
 		}
 		return new FileInputStream(file);
 	}
@@ -544,8 +539,7 @@ public class FileUtils {
 	 * @throws java.io.UnsupportedEncodingException
 	 *             if the encoding is not supported by the VM
 	 */
-	public static final List<String> readLines(File file, String encoding)
-			throws IOException {
+	public static final List<String> readLines(File file, String encoding) throws IOException {
 		InputStream in = null;
 		try {
 			in = openInputStream(file);
@@ -565,23 +559,20 @@ public class FileUtils {
 	 * @param callback
 	 *            Progress callback. can be null.
 	 */
-	public static void recursiveCopy(File from, File targetDirectory,
-			boolean overwrite, boolean deleteOriginal,
-			IOProgressCallback callback) {
+	public static void recursiveCopy(File from, File targetDirectory, boolean overwrite,
+			boolean deleteOriginal, IOProgressCallback callback) {
 		if (!from.exists())
 			return;
 
 		if (!targetDirectory.exists())
 			targetDirectory.mkdirs();
 
-		File newTo = new File(targetDirectory.getAbsolutePath() + "/"
-				+ from.getName());
+		File newTo = new File(targetDirectory.getAbsolutePath() + "/" + from.getName());
 		if (from.isDirectory()) {
 			newTo.mkdirs();
 			File[] contents = from.listFiles();
 			for (int i = 0; i < contents.length; i++) {
-				recursiveCopy(contents[i], newTo, overwrite, deleteOriginal,
-						callback);
+				recursiveCopy(contents[i], newTo, overwrite, deleteOriginal, callback);
 			}
 			if (deleteOriginal)
 				from.delete();
@@ -665,8 +656,7 @@ public class FileUtils {
 	 * @throws IOException
 	 * @throws IOException
 	 */
-	public static void removeAllFilesExcept(File directory, File[] toKeep)
-			throws IOException {
+	public static void removeAllFilesExcept(File directory, File[] toKeep) throws IOException {
 		File[] allfiles = directory.listFiles();
 		if (toKeep == null || toKeep.length == 0) {
 			// no files
@@ -687,8 +677,8 @@ public class FileUtils {
 	 * @return
 	 */
 	public static String removeInvalidFATChars(String str) {
-		String[] invalidChars = new String[] { ":", "\\", "/", "<", ">", "?",
-				"*", "|", "\"", ";" };
+		String[] invalidChars = new String[] { ":", "\\", "/", "<", ">", "?", "*", "|", "\"",
+				";" };
 		return StringUtils.strip(str, invalidChars);
 	}
 
@@ -735,8 +725,8 @@ public class FileUtils {
 	 *            Progress callback. can be null
 	 * @throws IOException
 	 */
-	public static void writeByteArrayToFile(byte[] src, File file,
-			IOProgressCallback callback) throws IOException {
+	public static void writeByteArrayToFile(byte[] src, File file, IOProgressCallback callback)
+			throws IOException {
 		ByteArrayInputStream stream = null;
 		try {
 			stream = new ByteArrayInputStream(src);
@@ -796,8 +786,7 @@ public class FileUtils {
 				}
 
 				int read = 0;
-				FileOutputStream out = new FileOutputStream(zipDir
-						+ entry.getName());
+				FileOutputStream out = new FileOutputStream(zipDir + entry.getName());
 				while ((read = zipstream.read(data, 0, 2048)) != -1)
 					out.write(data, 0, read);
 
@@ -835,8 +824,8 @@ public class FileUtils {
 			throw new IllegalArgumentException("No specified reference file");
 		}
 		if (!reference.exists()) {
-			throw new IllegalArgumentException("The reference file '"
-					+ reference + "' doesn't exist");
+			throw new IllegalArgumentException("The reference file '" + reference
+					+ "' doesn't exist");
 		}
 		return isFileNewer(file, reference.lastModified());
 	}
@@ -909,11 +898,9 @@ public class FileUtils {
 	 *             if an IO error occurs reading the file
 	 * @since 1.3
 	 */
-	public static Checksum checksum(File file, Checksum checksum)
-			throws IOException {
+	public static Checksum checksum(File file, Checksum checksum) throws IOException {
 		if (file.isDirectory()) {
-			throw new IllegalArgumentException(
-					"Checksums can't be computed on directories");
+			throw new IllegalArgumentException("Checksums can't be computed on directories");
 		}
 		InputStream in = null;
 		try {
@@ -952,14 +939,13 @@ public class FileUtils {
 	 * @return an collection of java.io.File with the matching files
 	 * @see FileFilterUtils
 	 */
-	public static Collection<File> listFiles(File directory,
-			IOFileFilter fileFilter, IOFileFilter dirFilter) {
+	public static Collection<File> listFiles(File directory, IOFileFilter fileFilter,
+			IOFileFilter dirFilter) {
 		validateListFilesParameters(directory, fileFilter);
 
 		// Find files
 		Collection<File> files = new java.util.LinkedList<File>();
-		innerListFiles(files, directory,
-				FileFilterUtils.or(fileFilter, dirFilter), false);
+		innerListFiles(files, directory, FileFilterUtils.or(fileFilter, dirFilter), false);
 		return files;
 	}
 
@@ -976,11 +962,9 @@ public class FileUtils {
 	 * @param fileFilter
 	 *            The IOFileFilter to test
 	 */
-	private static void validateListFilesParameters(File directory,
-			IOFileFilter fileFilter) {
+	private static void validateListFilesParameters(File directory, IOFileFilter fileFilter) {
 		if (!directory.isDirectory()) {
-			throw new IllegalArgumentException(
-					"Parameter 'directory' is not a directory");
+			throw new IllegalArgumentException("Parameter 'directory' is not a directory");
 		}
 		if (fileFilter == null) {
 			throw new NullPointerException("Parameter 'fileFilter' is null");
@@ -1036,8 +1020,7 @@ public class FileUtils {
 	 * @throws IOException
 	 *             in case of an I/O error
 	 */
-	public static boolean contentEquals(File file1, File file2)
-			throws IOException {
+	public static boolean contentEquals(File file1, File file2) throws IOException {
 		boolean file1Exists = file1.exists();
 		if (file1Exists != file2.exists()) {
 			return false;

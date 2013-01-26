@@ -21,8 +21,7 @@ public interface OAuthProviderListener {
 	 *         handling.
 	 * @throws Exception
 	 */
-	boolean onResponseReceived(HttpRequest request, HttpResponse response)
-			throws Exception;
+	boolean onResponseReceived(HttpRequest request, HttpResponse response) throws Exception;
 
 	/**
 	 * Called after the request has been created and default headers added, but

@@ -16,8 +16,8 @@ class AsyncHttpRequest implements Runnable {
 	private final HttpUriRequest request;
 	private final AsyncHttpResponseHandler responseHandler;
 
-	AsyncHttpRequest(AbstractHttpClient client, HttpContext context,
-			HttpUriRequest request, AsyncHttpResponseHandler responseHandler) {
+	AsyncHttpRequest(AbstractHttpClient client, HttpContext context, HttpUriRequest request,
+			AsyncHttpResponseHandler responseHandler) {
 		this.client = client;
 		this.context = context;
 		this.request = request;
@@ -45,24 +45,21 @@ class AsyncHttpRequest implements Runnable {
 		// https://github.com/kaeppler/droid-fu/blob/master/src/main/java/com/github/droidfu/http/BetterHttpRequestBase.java
 		boolean retry = true;
 		IOException cause = null;
-		HttpRequestRetryHandler retryHandler = client
-				.getHttpRequestRetryHandler();
+		HttpRequestRetryHandler retryHandler = client.getHttpRequestRetryHandler();
 		while (retry) {
 			try {
 				makeRequest();
 				return;
 			} catch (IOException e) {
 				cause = e;
-				retry = retryHandler.retryRequest(cause, ++executionCount,
-						context);
+				retry = retryHandler.retryRequest(cause, ++executionCount, context);
 			} catch (NullPointerException e) {
 				// there's a bug in HttpClient 4.0.x that on some occasions
 				// causes
 				// DefaultRequestExecutor to throw an NPE, see
 				// http://code.google.com/p/android/issues/detail?id=5255
 				cause = new IOException("NPE in HttpClient" + e.getMessage());
-				retry = retryHandler.retryRequest(cause, ++executionCount,
-						context);
+				retry = retryHandler.retryRequest(cause, ++executionCount, context);
 			}
 		}
 

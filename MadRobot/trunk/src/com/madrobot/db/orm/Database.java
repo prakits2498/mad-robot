@@ -43,8 +43,8 @@ public class Database {
 	 * @return
 	 * @throws DBException
 	 */
-	public static Database createInstance(Context ctx, String dbName,
-			int dbVersion) throws DBException {
+	public static Database createInstance(Context ctx, String dbName, int dbVersion)
+			throws DBException {
 		DatabaseBuilder builder = getBuilder(dbName);
 		if (null == builder)
 			throw new DBException(
@@ -52,8 +52,8 @@ public class Database {
 		return new Database(ctx, dbName, dbVersion, builder);
 	}
 
-	public static Database createInstance(Context ctx, String dbName,
-			int dbVersion, DatabaseBuilder builder) {
+	public static Database createInstance(Context ctx, String dbName, int dbVersion,
+			DatabaseBuilder builder) {
 		return new Database(ctx, dbName, dbVersion, builder);
 	}
 
@@ -100,8 +100,7 @@ public class Database {
 			return "bool";
 		if (c.getSuperclass() == DatabaseClient.class)
 			return "int";
-		throw new IllegalArgumentException(
-				"Class cannot be stored in Sqlite3 database.");
+		throw new IllegalArgumentException("Class cannot be stored in Sqlite3 database.");
 	}
 
 	/**
@@ -114,8 +113,7 @@ public class Database {
 	 * @return
 	 * @throws DBException
 	 */
-	public static Database open(Context ctx, String dbName, int dbVersion)
-			throws DBException {
+	public static Database open(Context ctx, String dbName, int dbVersion) throws DBException {
 		Database db = Database.createInstance(ctx, dbName, dbVersion);
 		db.open();
 		return db;
@@ -154,8 +152,7 @@ public class Database {
 	 *            be used to place the database on external storage if any is
 	 *            present, otherwise the context's application data directory.
 	 */
-	Database(Context context, String dbName, int dbVersion,
-			DatabaseBuilder builder) {
+	Database(Context context, String dbName, int dbVersion, DatabaseBuilder builder) {
 		_context = context;
 		// String dbPath = (Environment.getExternalStorageState().equals(
 		// Environment.MEDIA_MOUNTED) ? appendFilePath(Environment
@@ -232,10 +229,8 @@ public class Database {
 	 */
 	public String[] getTables() throws DBException {
 		if (null == _database || !_database.isOpen()) {
-			Log.e("MadRobot", CNAME
-					+ " .getTables(): ERROR - db object is null or closed");
-			throw new DBException(
-					"Database is closed. Did you forget to open database?");
+			Log.e("MadRobot", CNAME + " .getTables(): ERROR - db object is null or closed");
+			throw new DBException("Database is closed. Did you forget to open database?");
 		}
 
 		Cursor c = query("sqlite_master", new String[] { "name" }, "type = ?",
@@ -253,10 +248,8 @@ public class Database {
 
 	public int getVersion() throws DBException {
 		if (null == _database || !_database.isOpen()) {
-			Log.e("MadRobot", CNAME
-					+ ".getVersion(): ERROR - db object is null or closed");
-			throw new DBException(
-					"Database is closed. Did you forget to open database?");
+			Log.e("MadRobot", CNAME + ".getVersion(): ERROR - db object is null or closed");
+			throw new DBException("Database is closed. Did you forget to open database?");
 		}
 
 		return _database.getVersion();
@@ -292,8 +285,7 @@ public class Database {
 			_database = null;
 		}
 		_database = _dbHelper.getReadableDatabase();
-		Log.e("MadRobot",
-				CNAME + " .open(): new db obj  " + _database.toString());
+		Log.e("MadRobot", CNAME + " .open(): new db obj  " + _database.toString());
 	}
 
 	/**
@@ -316,18 +308,16 @@ public class Database {
 	 * @throws DBException
 	 *             is database is null or closed
 	 */
-	public Cursor query(boolean distinct, String table, String[] selectColumns,
-			String where, String[] whereArgs, String groupBy, String having,
-			String orderBy, String limit) throws DBException {
+	public Cursor query(boolean distinct, String table, String[] selectColumns, String where,
+			String[] whereArgs, String groupBy, String having, String orderBy, String limit)
+			throws DBException {
 		if (null == _database || !_database.isOpen()) {
-			Log.e("MadRobot", CNAME
-					+ ".query(): ERROR - db object is null or closed");
-			throw new DBException(
-					"Database is closed. Did you forget to open database?");
+			Log.e("MadRobot", CNAME + ".query(): ERROR - db object is null or closed");
+			throw new DBException("Database is closed. Did you forget to open database?");
 		}
 
-		return _database.query(distinct, table, selectColumns, where,
-				whereArgs, groupBy, having, orderBy, limit);
+		return _database.query(distinct, table, selectColumns, where, whereArgs, groupBy,
+				having, orderBy, limit);
 	}
 
 	/**
@@ -345,10 +335,9 @@ public class Database {
 	 * @throws DBException
 	 *             is database is null or closed
 	 */
-	public Cursor query(String table, String[] selectColumns, String where,
-			String[] whereArgs) throws DBException {
-		return query(false, table, selectColumns, where, whereArgs, null, null,
-				null, null);
+	public Cursor query(String table, String[] selectColumns, String where, String[] whereArgs)
+			throws DBException {
+		return query(false, table, selectColumns, where, whereArgs, null, null, null, null);
 	}
 
 	/**
@@ -377,10 +366,8 @@ public class Database {
 
 	public void setVersion(int version) throws DBException {
 		if (null == _database || !_database.isOpen()) {
-			Log.e("MadRobot", CNAME
-					+ ".setVersion(): ERROR - db object is null or closed");
-			throw new DBException(
-					"Database is closed. Did you forget to open database?");
+			Log.e("MadRobot", CNAME + ".setVersion(): ERROR - db object is null or closed");
+			throw new DBException("Database is closed. Did you forget to open database?");
 		}
 
 		_database.setVersion(version);

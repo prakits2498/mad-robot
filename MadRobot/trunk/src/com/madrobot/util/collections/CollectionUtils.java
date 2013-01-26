@@ -19,8 +19,7 @@ public class CollectionUtils {
 	}
 
 	private static int computeListCapacity(int arraySize) {
-		return (int) Math.min(5L + arraySize + (arraySize / 10),
-				Integer.MAX_VALUE);
+		return (int) Math.min(5L + arraySize + (arraySize / 10), Integer.MAX_VALUE);
 	}
 
 	public static <E> Set<E> asSet(E... elements) {

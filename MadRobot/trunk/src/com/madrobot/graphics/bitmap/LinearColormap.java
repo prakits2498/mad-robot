@@ -3,7 +3,7 @@ package com.madrobot.graphics.bitmap;
 /**
  * A colormap which interpolates linearly between two colors.
  */
- class LinearColormap implements Colormap {
+class LinearColormap implements Colormap {
 
 	private int color1;
 	private int color2;
@@ -23,7 +23,7 @@ package com.madrobot.graphics.bitmap;
 	 * @param color2
 	 *            the color corresponding to value 1 in the colormap
 	 */
-	 LinearColormap(int color1, int color2) {
+	LinearColormap(int color1, int color2) {
 		this.color1 = color1;
 		this.color2 = color2;
 	}
@@ -34,7 +34,7 @@ package com.madrobot.graphics.bitmap;
 	 * @param color1
 	 *            the color corresponding to value 0 in the colormap
 	 */
-	 void setColor1(int color1) {
+	void setColor1(int color1) {
 		this.color1 = color1;
 	}
 

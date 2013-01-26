@@ -104,16 +104,14 @@ public final class DateUtils {
 		}
 	}
 
-	private static final int[][] fields = { { Calendar.MILLISECOND },
-			{ Calendar.SECOND }, { Calendar.MINUTE },
-			{ Calendar.HOUR_OF_DAY, Calendar.HOUR },
+	private static final int[][] fields = { { Calendar.MILLISECOND }, { Calendar.SECOND },
+			{ Calendar.MINUTE }, { Calendar.HOUR_OF_DAY, Calendar.HOUR },
 			{ Calendar.DATE, Calendar.DAY_OF_MONTH, Calendar.AM_PM
 			/*
 			 * Calendar.DAY_OF_YEAR, Calendar.DAY_OF_WEEK,
 			 * Calendar.DAY_OF_WEEK_IN_MONTH
 			 */
-			}, { Calendar.MONTH, DateUtils.SEMI_MONTH }, { Calendar.YEAR },
-			{ Calendar.ERA } };
+			}, { Calendar.MONTH, DateUtils.SEMI_MONTH }, { Calendar.YEAR }, { Calendar.ERA } };
 	/**
 	 * Number of milliseconds in a standard second.
 	 * 
@@ -236,8 +234,7 @@ public final class DateUtils {
 	 *            the nanoseconds since midnight
 	 * @return the timestamp
 	 */
-	public static Timestamp convertDateValueToTimestamp(long dateValue,
-			long nanos) {
+	public static Timestamp convertDateValueToTimestamp(long dateValue, long nanos) {
 		long millis = nanos / 1000000;
 		nanos -= millis * 1000000;
 		long s = millis / 1000;
@@ -249,9 +246,8 @@ public final class DateUtils {
 		int yearFromDateValue = (int) (dateValue >>> 9);
 		int monthFromDateValue = (int) (dateValue >>> 5 & 15);
 		int dayFromDateValue = (int) (dateValue & 31);
-		long ms = getMillis(TimeZone.getDefault(), yearFromDateValue,
-				monthFromDateValue, dayFromDateValue, (int) h, (int) m,
-				(int) s, 0);
+		long ms = getMillis(TimeZone.getDefault(), yearFromDateValue, monthFromDateValue,
+				dayFromDateValue, (int) h, (int) m, (int) s, 0);
 		Timestamp ts = new Timestamp(ms);
 		ts.setNanos((int) (nanos + millis * 1000000));
 		return ts;
@@ -279,11 +275,10 @@ public final class DateUtils {
 	 *            the number of milliseconds
 	 * @return the number of milliseconds
 	 */
-	public static long getMillis(TimeZone tz, int year, int month, int day,
-			int hour, int minute, int second, int millis) {
+	public static long getMillis(TimeZone tz, int year, int month, int day, int hour,
+			int minute, int second, int millis) {
 		try {
-			return getTimeTry(false, tz, year, month, day, hour, minute,
-					second, millis);
+			return getTimeTry(false, tz, year, month, day, hour, minute, second, millis);
 		} catch (IllegalArgumentException e) {
 			// special case: if the time simply doesn't exist because of
 			// daylight saving time changes, use the lenient version
@@ -292,8 +287,7 @@ public final class DateUtils {
 				if (hour < 0 || hour > 23) {
 					throw e;
 				}
-				return getTimeTry(true, tz, year, month, day, hour, minute,
-						second, millis);
+				return getTimeTry(true, tz, year, month, day, hour, minute, second, millis);
 			} else if (message.indexOf("DAY_OF_MONTH") > 0) {
 				int maxDay;
 				if (month == 2) {
@@ -308,11 +302,9 @@ public final class DateUtils {
 				// using the timezone Brasilia and others,
 				// for example for 2042-10-12 00:00:00.
 				hour += 6;
-				return getTimeTry(true, tz, year, month, day, hour, minute,
-						second, millis);
+				return getTimeTry(true, tz, year, month, day, hour, minute, second, millis);
 			} else {
-				return getTimeTry(true, tz, year, month, day, hour, minute,
-						second, millis);
+				return getTimeTry(true, tz, year, month, day, hour, minute, second, millis);
 			}
 		}
 	}
@@ -328,8 +320,8 @@ public final class DateUtils {
 	private static Calendar cachedCalendar;
 	private static int zoneOffset;
 
-	private static long getTimeTry(boolean lenient, TimeZone tz, int year,
-			int month, int day, int hour, int minute, int second, int millis) {
+	private static long getTimeTry(boolean lenient, TimeZone tz, int year, int month, int day,
+			int hour, int minute, int second, int millis) {
 		Calendar c;
 		if (tz == null) {
 			c = getCalendar();
@@ -491,12 +483,10 @@ public final class DateUtils {
 		// Fragments bigger than a day require a breakdown to days
 		switch (fragment) {
 		case Calendar.YEAR:
-			result += (calendar.get(Calendar.DAY_OF_YEAR) * MILLIS_PER_DAY)
-					/ millisPerUnit;
+			result += (calendar.get(Calendar.DAY_OF_YEAR) * MILLIS_PER_DAY) / millisPerUnit;
 			break;
 		case Calendar.MONTH:
-			result += (calendar.get(Calendar.DAY_OF_MONTH) * MILLIS_PER_DAY)
-					/ millisPerUnit;
+			result += (calendar.get(Calendar.DAY_OF_MONTH) * MILLIS_PER_DAY) / millisPerUnit;
 			break;
 		}
 
@@ -508,16 +498,13 @@ public final class DateUtils {
 			// The rest of the valid cases
 		case Calendar.DAY_OF_YEAR:
 		case Calendar.DATE:
-			result += (calendar.get(Calendar.HOUR_OF_DAY) * MILLIS_PER_HOUR)
-					/ millisPerUnit;
+			result += (calendar.get(Calendar.HOUR_OF_DAY) * MILLIS_PER_HOUR) / millisPerUnit;
 			//$FALL-THROUGH$
 		case Calendar.HOUR_OF_DAY:
-			result += (calendar.get(Calendar.MINUTE) * MILLIS_PER_MINUTE)
-					/ millisPerUnit;
+			result += (calendar.get(Calendar.MINUTE) * MILLIS_PER_MINUTE) / millisPerUnit;
 			//$FALL-THROUGH$
 		case Calendar.MINUTE:
-			result += (calendar.get(Calendar.SECOND) * MILLIS_PER_SECOND)
-					/ millisPerUnit;
+			result += (calendar.get(Calendar.SECOND) * MILLIS_PER_SECOND) / millisPerUnit;
 			//$FALL-THROUGH$
 		case Calendar.SECOND:
 			result += (calendar.get(Calendar.MILLISECOND) * 1) / millisPerUnit;
@@ -1102,8 +1089,7 @@ public final class DateUtils {
 		}
 		return (cal1.get(Calendar.ERA) == cal2.get(Calendar.ERA)
 				&& cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) && cal1
-					.get(Calendar.DAY_OF_YEAR) == cal2
-				.get(Calendar.DAY_OF_YEAR));
+					.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR));
 	}
 
 	// -----------------------------------------------------------------------
@@ -1220,16 +1206,14 @@ public final class DateUtils {
 		if (cal1 == null || cal2 == null) {
 			throw new IllegalArgumentException("The date must not be null");
 		}
-		return (cal1.get(Calendar.MILLISECOND) == cal2
-				.get(Calendar.MILLISECOND)
+		return (cal1.get(Calendar.MILLISECOND) == cal2.get(Calendar.MILLISECOND)
 				&& cal1.get(Calendar.SECOND) == cal2.get(Calendar.SECOND)
 				&& cal1.get(Calendar.MINUTE) == cal2.get(Calendar.MINUTE)
 				&& cal1.get(Calendar.HOUR) == cal2.get(Calendar.HOUR)
-				&& cal1.get(Calendar.DAY_OF_YEAR) == cal2
-						.get(Calendar.DAY_OF_YEAR)
+				&& cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR)
 				&& cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR)
-				&& cal1.get(Calendar.ERA) == cal2.get(Calendar.ERA) && cal1
-					.getClass() == cal2.getClass());
+				&& cal1.get(Calendar.ERA) == cal2.get(Calendar.ERA) && cal1.getClass() == cal2
+				.getClass());
 	}
 
 	/**
@@ -1439,8 +1423,7 @@ public final class DateUtils {
 	 */
 	private static void modify(Calendar val, int field, int modType) {
 		if (val.get(Calendar.YEAR) > 280000000) {
-			throw new ArithmeticException(
-					"Calendar value too large for accurate calculations");
+			throw new ArithmeticException("Calendar value too large for accurate calculations");
 		}
 
 		if (field == Calendar.MILLISECOND) {
@@ -1496,8 +1479,7 @@ public final class DateUtils {
 			for (int j = 0; j < fields[i].length; j++) {
 				if (fields[i][j] == field) {
 					// This is our field... we stop looping
-					if (modType == MODIFY_CEILING
-							|| (modType == MODIFY_ROUND && roundUp)) {
+					if (modType == MODIFY_CEILING || (modType == MODIFY_ROUND && roundUp)) {
 						if (field == DateUtils.SEMI_MONTH) {
 							// This is a special case that's hard to generalize
 							// If the date is 1, we round up to 16, otherwise
@@ -1582,8 +1564,7 @@ public final class DateUtils {
 				val.set(fields[i][0], val.get(fields[i][0]) - offset);
 			}
 		}
-		throw new IllegalArgumentException("The field " + field
-				+ " is not supported");
+		throw new IllegalArgumentException("The field " + field + " is not supported");
 
 	}
 
@@ -1613,8 +1594,7 @@ public final class DateUtils {
 	 *             if none of the date patterns were suitable (or there were
 	 *             none)
 	 */
-	public static Date parseDate(String str, String... parsePatterns)
-			throws ParseException {
+	public static Date parseDate(String str, String... parsePatterns) throws ParseException {
 		return parseDateWithLeniency(str, parsePatterns, true);
 	}
 
@@ -1676,11 +1656,10 @@ public final class DateUtils {
 	 *             if none of the date patterns were suitable
 	 * @see java.util.Calender#isLenient()
 	 */
-	private static Date parseDateWithLeniency(String str,
-			String[] parsePatterns, boolean lenient) throws ParseException {
+	private static Date parseDateWithLeniency(String str, String[] parsePatterns,
+			boolean lenient) throws ParseException {
 		if (str == null || parsePatterns == null) {
-			throw new IllegalArgumentException(
-					"Date and Patterns must not be null");
+			throw new IllegalArgumentException("Date and Patterns must not be null");
 		}
 
 		SimpleDateFormat parser = new SimpleDateFormat();
@@ -2075,8 +2054,7 @@ public final class DateUtils {
 	 * @see #truncatedEquals(Date, Date, int)
 	 * @since 3.0
 	 */
-	public static boolean truncatedEquals(Calendar cal1, Calendar cal2,
-			int field) {
+	public static boolean truncatedEquals(Calendar cal1, Calendar cal2, int field) {
 		return truncatedCompareTo(cal1, cal2, field) == 0;
 	}
 
@@ -2117,23 +2095,24 @@ public final class DateUtils {
 		super();
 	}
 
-	 /**
-     * Calculate the nanoseconds since midnight (in the default timezone) from a
-     * given time in milliseconds in UTC.
-     *
-     * @param ms the milliseconds
-     * @return the date value
-     */
-    public static long nanosFromMilliSecs(long ms) {
-        Calendar cal = getCalendar();
-        synchronized (cal) {
-            cal.clear();
-            cal.setTimeInMillis(ms);
-            int h = cal.get(Calendar.HOUR_OF_DAY);
-            int m = cal.get(Calendar.MINUTE);
-            int s = cal.get(Calendar.SECOND);
-            int millis = cal.get(Calendar.MILLISECOND);
-            return ((((((h * 60L) + m) * 60) + s) * 1000) + millis) * 1000000;
-        }
-    }
+	/**
+	 * Calculate the nanoseconds since midnight (in the default timezone) from a
+	 * given time in milliseconds in UTC.
+	 * 
+	 * @param ms
+	 *            the milliseconds
+	 * @return the date value
+	 */
+	public static long nanosFromMilliSecs(long ms) {
+		Calendar cal = getCalendar();
+		synchronized (cal) {
+			cal.clear();
+			cal.setTimeInMillis(ms);
+			int h = cal.get(Calendar.HOUR_OF_DAY);
+			int m = cal.get(Calendar.MINUTE);
+			int s = cal.get(Calendar.SECOND);
+			int millis = cal.get(Calendar.MILLISECOND);
+			return ((((((h * 60L) + m) * 60) + s) * 1000) + millis) * 1000000;
+		}
+	}
 }

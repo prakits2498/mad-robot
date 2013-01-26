@@ -48,8 +48,7 @@ public class EnumMapConverter extends MapConverter {
 				}
 			}
 			if (assumedTypeField == null) {
-				throw new ExceptionInInitializerError(
-						"Cannot detect key type of EnumMap");
+				throw new ExceptionInInitializerError("Cannot detect key type of EnumMap");
 			}
 
 		} catch (SecurityException ex) {
@@ -86,8 +85,7 @@ public class EnumMapConverter extends MapConverter {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public Object unmarshal(HierarchicalStreamReader reader,
-			UnmarshallingContext context) {
+	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
 		String attributeName = mapper().aliasForSystemAttribute("enum-type");
 		if (attributeName == null) {
 			throw new ConversionException("No EnumType specified for EnumMap");
