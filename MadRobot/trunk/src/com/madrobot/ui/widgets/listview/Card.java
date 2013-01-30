@@ -25,7 +25,7 @@ import java.nio.ShortBuffer;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import com.madrobot.geom.Angle;
+import com.madrobot.geom.AngleUtils;
 import com.madrobot.io.NIOUtils;
 
 class Card {
@@ -193,18 +193,18 @@ class Card {
 			if (axis == AXIS_TOP) {
 				if (orientationVertical) {
 					h = (cardVertices[Y_00] - cardVertices[Y_01])
-							* (1.0f - cos(Angle.convertToRadians(angle)));
+							* (1.0f - cos(AngleUtils.convertToRadians(angle)));
 					z = (cardVertices[Y_00] - cardVertices[Y_01])
-							* sin(Angle.convertToRadians(angle));
+							* sin(AngleUtils.convertToRadians(angle));
 					shadowVertices = new float[] { cardVertices[X_00], cardVertices[Y_01] + h,
 							z, cardVertices[X_01], cardVertices[Y_01], 0f, cardVertices[X_11],
 							cardVertices[Y_11], 0f, cardVertices[X_10],
 							cardVertices[Y_01] + h, z };
 				} else { // horizontal
 					w = (cardVertices[X_10] - cardVertices[X_00])
-							* (1.0f - cos(Angle.convertToRadians(angle)));
+							* (1.0f - cos(AngleUtils.convertToRadians(angle)));
 					z = (cardVertices[X_10] - cardVertices[X_00])
-							* sin(Angle.convertToRadians(angle));
+							* sin(AngleUtils.convertToRadians(angle));
 					shadowVertices = new float[] { cardVertices[X_10] - w, cardVertices[Y_00],
 							z, cardVertices[X_11] - w, cardVertices[Y_01], z,
 							cardVertices[X_11], cardVertices[Y_11], 0f, cardVertices[X_10],
@@ -213,18 +213,18 @@ class Card {
 			} else {
 				if (orientationVertical) {
 					h = (cardVertices[Y_00] - cardVertices[Y_01])
-							* (1f - cos(Angle.convertToRadians(angle)));
+							* (1f - cos(AngleUtils.convertToRadians(angle)));
 					z = (cardVertices[Y_00] - cardVertices[Y_01])
-							* sin(Angle.convertToRadians(angle));
+							* sin(AngleUtils.convertToRadians(angle));
 					shadowVertices = new float[] { cardVertices[X_00], cardVertices[Y_00], 0f,
 							cardVertices[X_01], cardVertices[Y_00] - h, z, cardVertices[X_11],
 							cardVertices[Y_00] - h, z, cardVertices[X_10], cardVertices[Y_00],
 							0f };
 				} else { // horizontal
 					w = (cardVertices[X_10] - cardVertices[X_00])
-							* (1f - cos(Angle.convertToRadians(angle)));
+							* (1f - cos(AngleUtils.convertToRadians(angle)));
 					z = (cardVertices[X_10] - cardVertices[X_00])
-							* sin(Angle.convertToRadians(angle));
+							* sin(AngleUtils.convertToRadians(angle));
 					shadowVertices = new float[] { cardVertices[X_00], cardVertices[Y_00], 0f,
 							cardVertices[X_01], cardVertices[Y_01], 0f,
 							cardVertices[X_00] + w, cardVertices[Y_11], z,

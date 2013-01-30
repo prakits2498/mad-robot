@@ -23,10 +23,89 @@ import android.widget.AdapterView;
 import com.madrobot.R;
 
 /**
- * Adapter view that scrolls by flipping either horizontally or vertically. Similar to Flipboard's page flipping mechanism.
+ * Adapter view that scrolls by flipping either horizontally or vertically.
+ * Similar to Flipboard's page flipping mechanism.
+ * <p>
+ * <table cellspacing="1" cellpadding="3">
+ * <tr>
+ * <th><b>Attribute</b></td>
+ * <td width="50"><b>Type</b></td>
+ * <td><b>Default</b></td>
+ * <td><b>Description</b></td>
+ * </tr>
+ * <tr>
+ * <td><code>flipMode</code></td>
+ * <td>HORIZONTAL,<br/>
+ * VERTICAL</td>
+ * <td>VERTICAL</td>
+ * <td>Direction of flipping.</td>
+ * </tr>
+ * <tr>
+ * <td><code>animationBitmapFormat</code></td>
+ * <td>ARGB_4444,<br/>
+ * RGB_565,<br/>
+ * ARGB_8888</td>
+ * <td>ARGB_8888</td>
+ * <td>Bitmap format used when animating the flips.<br/>
+ * Heavy formats consume more memory but are more visually appealing</td>
+ * </tr>
+ * <tr>
+ * <td><code>flipAcceleration</code></td>
+ * <td>float</td>
+ * <td>0.65</td>
+ * <td>The acceleration of flipping pages.<b> its a value between 0 and 1 </b></td>
+ * </tr>
+ * <tr>
+ * <td><code>movementRate</code></td>
+ * <td>float</td>
+ * <td>1.5</td>
+ * <td>The movement rate of flipping pages.</td>
+ * </tr>
+ * <tr>
+ * <td><code>maxTipAngle</code></td>
+ * <td>integer</td>
+ * <td>60</td>
+ * <td>Angle at which the flipping page tips over</td>
+ * </tr>
+ * 
+ * <tr>
+ * <td><code>minimunMovement</code></td>
+ * <td>float</td>
+ * <td>4.0</td>
+ * <td>Pixels to move to trigger a flip event</td>
+ * </tr>
+ * <tr>
+ * <td><code>minimumMovement</code></td>
+ * <td>float</td>
+ * <td>4.0</td>
+ * <td>Pixels to move to trigger a flip event</td>
+ * </tr>
+ * <tr>
+ * <td><code>touchMovementAngle</code></td>
+ * <td>integer</td>
+ * <td>15</td>
+ * <td>Movement angle of touch interception</td>
+ * </tr>
+ * </table>
+ * <br/>
+ * <b>Using FlipView</b><br/>
+ * Using the flipview is simple as creating a layout and setting any adapter<br/>
+ * <code>
+ * &lt;com.madrobot.ui.widgets.listview.FlipView<br/>
+ * &emsp;android:id="@+id/flipper"<br/>
+ * &emsp;android:layout_width="300dp"<br/>
+ * &emsp;android:layout_height="300dp"/&gt;
+ * </code> <br/>.. in your code set the adapter <br/>
+ * <code>
+ * FlipView flipView=(FlipView)findViewById(R.id.flipper);
+ * <font color="green">//now set any adapter </font
+ * flipView.setAdapter(new ArrayListAdapter());
+ * </code>
+ * </p>
+ * 
  * @author elton.kent
  * @see ViewFlipListener
- *
+ * 
  */
 public class FlipView extends AdapterView<Adapter> {
 
@@ -35,14 +114,18 @@ public class FlipView extends AdapterView<Adapter> {
 
 	/**
 	 * View flip listener
+	 * 
 	 * @author ekent4
-	 *
+	 * 
 	 */
 	public static interface ViewFlipListener {
 		/**
-		 * Trigerred when a view is flipped. 
-		 * @param view that was flipped
-		 * @param position in the adapter
+		 * Trigerred when a view is flipped.
+		 * 
+		 * @param view
+		 *            that was flipped
+		 * @param position
+		 *            in the adapter
 		 */
 		void onViewFlipped(View view, int position);
 	}
@@ -84,7 +167,7 @@ public class FlipView extends AdapterView<Adapter> {
 	private DataSetObserver adapterDataObserver;
 
 	private final LinkedList<View> bufferedViews = new LinkedList<View>();
-	private final LinkedList<View> releasedViews = new LinkedList<View>(); 
+	private final LinkedList<View> releasedViews = new LinkedList<View>();
 	private int bufferIndex = -1;
 	private int adapterIndex = -1;
 	private int sideBufferSize = 1;
@@ -102,10 +185,9 @@ public class FlipView extends AdapterView<Adapter> {
 
 	public FlipView(Context context, int flipOrientation) {
 		super(context);
-		init(context, flipOrientation,0.65f,1.5f,10,4f,15);
+		init(context, flipOrientation, 0.65f, 1.5f, 60, 4f, 15);
 	}
 
-	
 	/**
 	 * Constructor required for XML inflation.
 	 */
@@ -114,8 +196,8 @@ public class FlipView extends AdapterView<Adapter> {
 
 		int orientation = VERTICAL;
 
-		TypedArray a = context.getTheme().obtainStyledAttributes(attrs,
-				R.styleable.FlipView, 0, 0);
+		TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.FlipView,
+				0, 0);
 
 		try {
 			int value = a.getInteger(R.styleable.FlipView_flipMode, VERTICAL);
@@ -132,8 +214,13 @@ public class FlipView extends AdapterView<Adapter> {
 		} finally {
 			a.recycle();
 		}
-		float acceleration=
-		init(context, orientation);
+		float acceleration = a.getFloat(R.styleable.FlipView_flipAcceleration, 0.65f);
+		float movementRate = a.getFloat(R.styleable.FlipView_movementRate, 1.5f);
+		int maxTipAngle = a.getInteger(R.styleable.FlipView_maxTipAngle, 60);
+		float minimumMovement = a.getFloat(R.styleable.FlipView_minimumMovement, 4f);
+		int touchMoveAngle = a.getInteger(R.styleable.FlipView_touchMovementAngle, 15);
+		init(context, orientation, acceleration, movementRate, maxTipAngle, minimumMovement,
+				touchMoveAngle);
 	}
 
 	/**
@@ -143,11 +230,13 @@ public class FlipView extends AdapterView<Adapter> {
 		this(context, attrs, 0);
 	}
 
-	private void init(Context context, int orientation,float acceleration,float movementRate,int maxTipAngle,float minMovement,int touchMoveAngle) {
+	private void init(Context context, int orientation, float acceleration,
+			float movementRate, int maxTipAngle, float minMovement, int touchMoveAngle) {
 		ViewConfiguration configuration = ViewConfiguration.get(getContext());
 		touchSlop = configuration.getScaledTouchSlop();
 		this.flipOrientation = orientation;
-		setupSurfaceView(context,acceleration,movementRate,maxTipAngle,minMovement,touchMoveAngle);
+		setupSurfaceView(context, acceleration, movementRate, maxTipAngle, minMovement,
+				touchMoveAngle);
 	}
 
 	public Bitmap.Config getAnimationBitmapFormat() {
@@ -367,10 +456,12 @@ public class FlipView extends AdapterView<Adapter> {
 
 	// --------------------------------------------------------------------------------------------------------------------
 	// Internals
-	private void setupSurfaceView(Context context,float acceleration,float movementRate,int maxTipAngle,float minMovement,int touchMoveAngle) {
+	private void setupSurfaceView(Context context, float acceleration, float movementRate,
+			int maxTipAngle, float minMovement, int touchMoveAngle) {
 		surfaceView = new GLSurfaceView(getContext());
 
-		cards = new FlipCards(this, flipOrientation == VERTICAL,acceleration,movementRate,maxTipAngle,minMovement,touchMoveAngle);//0.65f,1.5f,10,4f,15);
+		cards = new FlipCards(this, flipOrientation == VERTICAL, acceleration, movementRate,
+				maxTipAngle, minMovement, touchMoveAngle);// 0.65f,1.5f,10,4f,15);
 		renderer = new FlipRenderer(this, cards);
 
 		surfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
