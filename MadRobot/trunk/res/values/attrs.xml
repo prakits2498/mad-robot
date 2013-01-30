@@ -123,10 +123,10 @@
         <attr name="scrollBarPanelInAnimation" format="reference" />
         <attr name="scrollBarPanelOutAnimation" format="reference" />
     </declare-styleable>
-    
-    
-    <!--  Attributes for com.madrobot.ui.widgets.listview.FlipView-->
+
+    <!-- Attributes for com.madrobot.ui.widgets.listview.FlipView -->
     <declare-styleable name="FlipView">
+
         <!-- Flip orientation -->
         <attr name="flipMode" format="enum">
             <enum name="vertical" value="0" />
@@ -140,12 +140,16 @@
         </attr>
         <!-- Acceleration by which the views are flipped -->
         <attr name="flipAcceleration" format="float" />
-        
         <attr name="movementRate" format="float" />
         <attr name="maxTipAngle" format="integer" />
         <!-- Minimum pixels to initiate movement distance -->
-        <attr name="minimunMovement" format="float" />
+        <attr name="minimumMovement" format="float" />
         <attr name="touchMovementAngle" format="integer" />
+    </declare-styleable>
+    
+    <declare-styleable name="SignatureView">
+        <attr name="strokeColor" format="color" />
+        <attr name="strokeWidth" format="float" />
     </declare-styleable>
 
 </resources>
