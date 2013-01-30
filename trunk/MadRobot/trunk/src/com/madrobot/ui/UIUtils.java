@@ -13,11 +13,14 @@ package com.madrobot.ui;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 
+import com.madrobot.ui.drawables.ViewPressedDrawable;
+
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Spannable;
@@ -34,6 +37,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.TextView.BufferType;
 import android.widget.Toast;
@@ -366,5 +370,17 @@ public class UIUtils {
 			new Handler().post(task);
 			return task.get();
 		}
+	}
+
+	/**
+	 * 
+	 * @param view
+	 */
+	public static void setPressedState(View view) {
+		Drawable bg = view.getBackground();
+		if (bg == null) {
+			throw new IllegalStateException("View needs to have a background drawable");
+		}
+		view.setBackgroundDrawable(new ViewPressedDrawable(bg));
 	}
 }
