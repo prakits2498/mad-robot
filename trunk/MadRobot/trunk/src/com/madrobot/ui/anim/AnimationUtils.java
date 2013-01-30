@@ -17,7 +17,16 @@ public class AnimationUtils {
 		return anim;
 	}
 
-	public static Animation createFadeAnimation(boolean out, int duration,
+	public Animation createFadeInAnimation(int duration,
+			AnimationListener listener){
+		return createFadeAnimation(false, duration, listener);
+	}
+	
+	public Animation createFadeOutAnimation(int duration,
+			AnimationListener listener){
+		return createFadeAnimation(true, duration, listener);
+	}
+	private static Animation createFadeAnimation(boolean out, int duration,
 			AnimationListener listener) {
 		AlphaAnimation anim = new AlphaAnimation((out ? 1.0f : 0.0f), (out ? 0.0f : 1.0f));
 		anim.setDuration(duration);
@@ -73,6 +82,18 @@ public class AnimationUtils {
 		final Animation a = moveAnimation(0, 0, 0, -1);
 		a.setFillBefore(true);
 		return a;
+	}
+
+	public static Animation createSlideInDownAnimation() {
+		Animation slideInDownAnimation = new TranslateAnimation(0, 0, -50, 0);
+		slideInDownAnimation.setDuration(400);
+		return slideInDownAnimation;
+	}
+
+	public static Animation createSlideOutUpAnimation() {
+		Animation slideOutUpAnimation = new TranslateAnimation(0, 0, 0, -50);
+		slideOutUpAnimation.setDuration(400);
+		return slideOutUpAnimation;
 	}
 
 }

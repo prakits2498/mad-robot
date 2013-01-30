@@ -23,7 +23,7 @@ import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
 import android.view.View;
 
-import com.madrobot.geom.Angle;
+import com.madrobot.geom.AngleUtils;
 
 
  class FlipRenderer implements GLSurfaceView.Renderer {
@@ -66,7 +66,7 @@ import com.madrobot.geom.Angle;
 		gl.glLoadIdentity();
 
 		float fovy = 20f;
-		float eyeZ = height / 2f / (float) Math.tan(Angle.convertToRadians(fovy / 2));
+		float eyeZ = height / 2f / (float) Math.tan(AngleUtils.convertToRadians(fovy / 2));
 
 		GLU.gluPerspective(gl, fovy, (float) width / (float) height, 0.5f,
 				Math.max(2500.0f, eyeZ));

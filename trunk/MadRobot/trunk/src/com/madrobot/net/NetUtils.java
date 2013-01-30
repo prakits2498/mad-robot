@@ -14,13 +14,16 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.NetworkInterface;
+import java.net.Socket;
 import java.net.SocketException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
@@ -38,6 +41,9 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 
 import com.madrobot.security.HexUtils;
@@ -431,6 +437,130 @@ public class NetUtils {
 			index = url.indexOf('%', index + 1);
 		}
 		return true;
+	}
+
+	/**
+	 * check if the app has network connectivity
+	 * 
+	 * @param ctxt
+	 * @return
+	 */
+	public static boolean isConnected(Context ctxt) {
+		NetworkInfo nfo = ((ConnectivityManager) ctxt
+				.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
+		if (nfo != null) {
+			return nfo.isConnected();
+		}
+		return false;
+	}
+
+	/**
+	 * Converts the given IP address to Classless Inter-Domain Routing number
+	 * 
+	 * @throws IllegalArgumentException
+	 *             if the ip address is invalid.
+	 * @param ip
+	 * @return
+	 * 
+	 */
+	public static int IpToCidr(String ip) {
+		if (!isValidIPv4(ip)) {
+			throw new IllegalArgumentException("Invalid IP address");
+		}
+		double sum = -2;
+		String[] part = ip.split("\\.");
+		for (String p : part) {
+			sum += 256D - Double.parseDouble(p);
+		}
+		return 32 - (int) (Math.log(sum) / Math.log(2d));
+	}
+
+	/**
+	 * Check if the given host is reachable in the specified timeout.
+	 * 
+	 * @param host
+	 */
+	public static void doPing(String host, int timeout) {
+		try {
+			// TODO: Use ProcessBuilder ?
+			Runtime.getRuntime().exec(
+					String.format("/system/bin/ping -q -n -w 1 -c 1 %s", host));
+		} catch (Exception e) {
+			try {
+				if (InetAddress.getByName(host).isReachable(timeout)) {
+				}
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+		}
+	}
+
+	/**
+	 * Get the average response time of the given host.
+	 * <p>
+	 * </p>
+	 * 
+	 * @param host
+	 * @param timeout
+	 *            good timeout values are between 1000 and 5000
+	 * @return
+	 */
+	public static int getAverageResponseTime(String host, int timeout) {
+		// TODO: Reduce allocation
+		BufferedReader reader = null;
+		int rate = 800;
+		Matcher matcher;
+		try {
+			final Process proc = Runtime.getRuntime().exec(
+					"/system/bin/ping -A -q -n -w 3 -W 2 -c 3 " + host);
+			reader = new BufferedReader(new InputStreamReader(proc.getInputStream()), 512);
+			String line;
+			Pattern mPattern = null;
+			while ((line = reader.readLine()) != null) {
+				matcher = mPattern.matcher(line);
+				if (matcher.matches()) {
+					reader.close();
+					return (int) Float.parseFloat(matcher.group(1));
+				}
+			}
+			reader.close();
+		} catch (Exception e) {
+			try {
+				final long start = System.nanoTime();
+				if (InetAddress.getByName(host).isReachable(timeout)) {
+					return (int) ((System.nanoTime() - start) / 1000);
+				}
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+		} finally {
+			try {
+				if (reader != null) {
+					reader.close();
+				}
+			} catch (IOException e) {
+			}
+		}
+		return rate;
+	}
+
+	/**
+	 * Send a stop signal to the given port.
+	 * <p>
+	 * Stops any incoming stream on the given port.
+	 * </p>
+	 * 
+	 * @param port
+	 * @throws IOException
+	 * @throws UnknownHostException
+	 */
+	public static void sendStopSignal(int port) throws UnknownHostException, IOException {
+		Socket s = new Socket(InetAddress.getByName("127.0.0.1"), port);
+		OutputStream out = s.getOutputStream();
+		System.err.println("sending server stop request");
+		out.write(("\r\n").getBytes());
+		out.flush();
+		s.close();
 	}
 
 }

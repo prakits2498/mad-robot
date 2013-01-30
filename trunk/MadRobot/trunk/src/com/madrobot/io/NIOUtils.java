@@ -8,6 +8,8 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.channels.WritableByteChannel;
 
 public class NIOUtils {
 	public static final int KB = 1024;
@@ -79,6 +81,56 @@ public class NIOUtils {
 		buffer.put(v);
 		buffer.position(0);
 		return buffer;
+	}
+
+	/**
+	 * Perform a fast channel copy using two streams
+	 * <p>
+	 * <b>Doing a fast channel copy</b><br/>
+	 * This operation uses a buffer capacity of 16 kb. The overloaded method takes a custom buffer size
+	 * <pre>
+	 * <code>
+	 * InputStream is=<font color="green">//some inputstream source </font>
+	 * OutputStream os=<font color="green">//some outputstream source </font>
+	 * ReadableByteChannel inputChannel = Channels.newChannel(in);
+	 * WritableByteChannel outputChannel = Channels.newChannel(os);
+	 * <b>NIOUtils.fastChannelCopy(inputChannel, outputChannel);</b>
+	 * </code>
+	 * </pre>
+	 * 
+	 * </p>
+	 * 
+	 * @param src
+	 * @param dest
+	 * @throws IOException
+	 * @throws NullPointerException
+	 */
+	public static void fastChannelCopy(final ReadableByteChannel src,
+			final WritableByteChannel dest) throws IOException, NullPointerException {
+		fastChannelCopy(src,dest,(16 * 1024));
+	}
+	
+	
+	public static void fastChannelCopy(final ReadableByteChannel src,
+			final WritableByteChannel dest,int bufferSize) throws IOException, NullPointerException {
+		if (src != null && dest != null) {
+			final ByteBuffer buffer = ByteBuffer.allocateDirect(bufferSize);
+			while (src.read(buffer) != -1) {
+				// prepare the buffer to be drained
+				buffer.flip();
+				// write to the channel, may block
+				dest.write(buffer);
+				// If partial transfer, shift remainder down
+				// If buffer is empty, same as doing clear()
+				buffer.compact();
+			}
+			// EOF will leave buffer in fill state
+			buffer.flip();
+			// make sure the buffer is fully drained.
+			while (buffer.hasRemaining()) {
+				dest.write(buffer);
+			}
+		}
 	}
 
 }
