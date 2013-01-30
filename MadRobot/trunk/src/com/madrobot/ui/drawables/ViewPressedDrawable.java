@@ -1,5 +1,6 @@
 package com.madrobot.ui.drawables;
 
+
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
@@ -9,11 +10,11 @@ import android.graphics.drawable.LayerDrawable;
 /**
  * Drawable that can be used to set for a Button(or any view)  to change UI look when its pressed.
  * is pressed.
- * 
+ * {@link com.madrobot.ui.UIUtils.setPressedState}
  * @author elton.kent
  * 
  */
-public class ButtonPressedDrawable extends LayerDrawable {
+public class ViewPressedDrawable extends LayerDrawable {
 
 	// The color filter to apply when the button is pressed
 	protected ColorFilter _pressedFilter = new LightingColorFilter(Color.LTGRAY, 1);
@@ -22,7 +23,7 @@ public class ButtonPressedDrawable extends LayerDrawable {
 	// Alpha value when the button is enabled
 	protected int _fullAlpha = 255;
 
-	public ButtonPressedDrawable(Drawable d) {
+	public ViewPressedDrawable(Drawable d) {
 		super(new Drawable[] { d });
 	}
 
