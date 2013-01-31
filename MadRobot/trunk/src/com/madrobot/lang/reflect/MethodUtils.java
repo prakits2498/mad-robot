@@ -21,6 +21,8 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import android.database.Cursor;
+
 /**
  * <p>
  * Utility reflection methods focused on methods, originally from Commons
@@ -774,19 +776,5 @@ public class MethodUtils {
 		return false;
 	}
 
-	/**
-	 * <p>
-	 * MethodUtils instances should NOT be constructed in standard programming.
-	 * Instead, the class should be used as
-	 * <code>MethodUtils.getAccessibleMethod(method)</code>.
-	 * </p>
-	 * 
-	 * <p>
-	 * This constructor is public to permit tools that require a JavaBean
-	 * instance to operate.
-	 * </p>
-	 */
-	private MethodUtils() {
-		super();
-	}
+	
 }

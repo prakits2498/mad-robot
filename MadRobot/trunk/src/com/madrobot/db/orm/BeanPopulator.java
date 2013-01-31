@@ -25,6 +25,7 @@ import java.util.Map;
 import android.database.Cursor;
 
 import com.madrobot.beans.BeanInfo;
+import com.madrobot.beans.BeanUtils;
 import com.madrobot.beans.IntrospectionException;
 import com.madrobot.beans.Introspector;
 import com.madrobot.beans.PropertyDescriptor;
@@ -164,8 +165,8 @@ public class BeanPopulator {
 		return bean;
 	}
 
-	private static Object[] getMethodParamter(Method method, Cursor cursor, int columnIndex) {
 		// method.get
+	private static Object[] getPrimitveMethodParamter(Method method, Cursor cursor, int columnIndex) {
 		Class[] paramTypes = method.getParameterTypes();
 		if (paramTypes != null) {
 			if (paramTypes.length > 0) {
@@ -289,16 +290,12 @@ public class BeanPopulator {
 			PropertyDescriptor[] propDesc) throws IllegalArgumentException,
 			IllegalAccessException, InvocationTargetException {
 		for (int i = 0; i < columns.length; i++) {
-			for (int j = 0; j < propDesc.length; j++) {
-				if (columns[i].equalsIgnoreCase(propDesc[j].getName())) {
-					Method method = propDesc[j].getWriteMethod();
-					if (method != null) {
-						int columnIndex = cursor.getColumnIndex(columns[i]);
-						Object[] params = getMethodParamter(method, cursor, columnIndex);
-						if (params != null)
-							method.invoke(bean, params);
-					}
-				}
+			Method method= BeanUtils.getWriteMethod(propDesc, columns[i]);
+			if(method!=null){
+				int columnIndex = cursor.getColumnIndex(columns[i]);
+				Object[] params = getPrimitveMethodParamter(method, cursor, columnIndex);
+				if (params != null)
+					method.invoke(bean, params);
 			}
 		}
 	}
@@ -379,23 +376,7 @@ public class BeanPopulator {
 
 	}
 
-	/**
-	 * Returns a PropertyDescriptor[] for the given Class.
-	 * 
-	 * @param c
-	 *            The Class to retrieve PropertyDescriptors for.
-	 * @return A PropertyDescriptor[] describing the Class.
-	 * @throws SQLException
-	 *             if introspection failed.
-	 * @throws IntrospectionException
-	 */
-	private static PropertyDescriptor[] propertyDescriptors(Class<?> c)
-			throws IntrospectionException {
-		// Introspector caches BeanInfo classes for better performance
-		BeanInfo beanInfo = null;
-		beanInfo = Introspector.getBeanInfo(c);
-		return beanInfo.getPropertyDescriptors();
-	}
+
 
 	/**
 	 * Convert a <code>ResultSet</code> row into a JavaBean. This implementation
@@ -441,9 +422,7 @@ public class BeanPopulator {
 	 */
 	public static <T> T toBean(ResultSet rs, Class<T> type) throws IllegalAccessException,
 			InstantiationException, IntrospectionException, SQLException {
-
-		PropertyDescriptor[] props = propertyDescriptors(type);
-
+		PropertyDescriptor[] props = BeanUtils.getPropertyDescriptors(type);
 		ResultSetMetaData rsmd = rs.getMetaData();
 		int[] columnToProperty = mapColumnsToProperties(rsmd, props);
 
@@ -529,7 +508,7 @@ public class BeanPopulator {
 	public static <T> List<T> toBeanList(Cursor cursor, Class<T> type)
 			throws IllegalAccessException, InstantiationException, IntrospectionException,
 			IllegalArgumentException, InvocationTargetException {
-		List results = new ArrayList();
+		List<T> results = new ArrayList<T>();
 		if (cursor.getCount() == 0)
 			return results;
 
@@ -537,9 +516,9 @@ public class BeanPopulator {
 		if (columns == null || columns.length == 0)
 			return results;
 		cursor.moveToFirst();
-		PropertyDescriptor[] propDesc = propertyDescriptors(type);
+		PropertyDescriptor[] propDesc = BeanUtils.getPropertyDescriptors(type);
 		for (int i = 0; i < cursor.getCount(); i++) {
-			Object bean = ClassUtils.newInstance(type);
+			T bean = ClassUtils.newInstance(type);
 			populateBean(bean, cursor, columns, propDesc);
 			results.add(bean);
 			cursor.moveToNext();
@@ -594,7 +573,7 @@ public class BeanPopulator {
 			return results;
 		}
 
-		PropertyDescriptor[] props = propertyDescriptors(type);
+		PropertyDescriptor[] props = BeanUtils.getPropertyDescriptors(type);
 		ResultSetMetaData rsmd = rs.getMetaData();
 		int[] columnToProperty = mapColumnsToProperties(rsmd, props);
 

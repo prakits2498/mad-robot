@@ -176,10 +176,6 @@ class GenericBeanInfo extends SimpleBeanInfo {
  * <code>Introspector.flushFromCaches</code>} method to flush all of the
  * introspected classes out of the cache.
  * 
- * <b>Dependent packages/classes</b></br>
- * <ul>
- * <li>com.ek.android.text.StringUtils</li>
- * </ul>
  * <P>
  * For more information about introspection and design patterns, please consult
  * the <a

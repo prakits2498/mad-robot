@@ -89,7 +89,7 @@ public class JSONSerializer {
 	 * @throws JSONException
 	 *             If an exception occurs during parsing
 	 */
-	private void serializer(JSONObject jsonObject, final Stack<Object> stack)
+	private void serialize(JSONObject jsonObject, final Stack<Object> stack)
 			throws JSONException {
 
 		Object userObject = stack.peek();
@@ -126,7 +126,7 @@ public class JSONSerializer {
 								Object itemObject = iterator.next();
 								JSONObject object = new JSONObject();
 								stack.push(itemObject);
-								serializer(object, stack);
+								serialize(object, stack);
 								jsonArray.put(object);
 							}
 						} else if (field.isAnnotationPresent(ItemType.class)) {
@@ -145,7 +145,7 @@ public class JSONSerializer {
 				} else {
 					stack.push(returnValue);
 					JSONObject object = new JSONObject();
-					serializer(object, stack);
+					serialize(object, stack);
 					jsonObject.put(jsonKeyName, object);
 				}
 
@@ -170,7 +170,7 @@ public class JSONSerializer {
 	 * 
 	 * @return String valid json string
 	 * 
-	 * @see #serializer(JSONObject, Stack)
+	 * @see #serialize(JSONObject, Stack)
 	 */
 	public String serializer(final Object objType) throws JSONException {
 
@@ -179,7 +179,7 @@ public class JSONSerializer {
 
 		JSONObject jsonObject = new JSONObject();
 
-		serializer(jsonObject, stack);
+		serialize(jsonObject, stack);
 
 		return jsonObject.toString();
 	}

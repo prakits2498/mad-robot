@@ -7,6 +7,8 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
+import com.madrobot.security.Base64;
+
 /**
  * NSData objects are wrappers for byte buffers.
  */

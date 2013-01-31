@@ -17,7 +17,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PictureDrawable;
 
-import com.madrobot.di.plist.Base64.OutputStream;
+import com.madrobot.security.Base64.OutputStream;
 
 /**
  * Describes a vector Picture object, and optionally its bounds.

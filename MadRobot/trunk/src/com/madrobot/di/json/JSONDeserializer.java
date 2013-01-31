@@ -29,6 +29,7 @@ import android.util.Log;
 import com.madrobot.di.Converter;
 import com.madrobot.di.json.annotation.ItemType;
 import com.madrobot.di.json.annotation.SerializedName;
+import com.madrobot.io.IOUtils;
 
 /**
  * Utility class for json deserializer , by using this utility you can convert
@@ -59,16 +60,7 @@ public final class JSONDeserializer {
 
 	}
 
-	private String convertStreamToString(final InputStream is) throws IOException {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-		StringBuilder sb = new StringBuilder();
-		String line = null;
-		while ((line = reader.readLine()) != null) {
-			sb.append(line + "\n");
-		}
-		is.close();
-		return sb.toString();
-	}
+
 
 	/**
 	 * Deserialize the json data from the input to the corresponding entity type <br/>
@@ -90,9 +82,9 @@ public final class JSONDeserializer {
 	 * @throws IOException
 	 *             If an exception occurs during reading
 	 */
-	public <T> T deserialize(final Class<T> objType, final InputStream jsonContentStream)
+	public static <T> T deserialize(final Class<T> objType, final InputStream jsonContentStream)
 			throws JSONException, IOException {
-		return deserialize(objType, new JSONObject(convertStreamToString(jsonContentStream)));
+		return deserialize(objType, new JSONObject(IOUtils.streamWithLinesToString(jsonContentStream)));
 	}
 
 	/**
@@ -109,7 +101,7 @@ public final class JSONDeserializer {
 	 * @return Deserialized object, if successful, null otherwise
 	 * @see #deserialize(InputStream, Class)
 	 */
-	public <T> T deserialize(final Class<T> objType, final JSONObject jsonObject)
+	public  static <T> T deserialize(final Class<T> objType, final JSONObject jsonObject)
 			throws JSONException {
 
 		try {
@@ -165,7 +157,7 @@ public final class JSONDeserializer {
 	 * @throws JSONException
 	 *             If an exception occurs during parsing
 	 */
-	private void deserialize(Object obj, JSONObject jsonObject, Stack<Class<?>> stack)
+	private static void deserialize(Object obj, JSONObject jsonObject, Stack<Class<?>> stack)
 			throws JSONException {
 
 		Iterator<?> iterator = jsonObject.keys();
@@ -259,11 +251,11 @@ public final class JSONDeserializer {
 		}
 	}
 
-	private String getAddMethodName(String fieldName) {
+	private static String getAddMethodName(String fieldName) {
 		return "add" + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
 	}
 
-	private Field getField(final Class<?> userClass, final String jsonKey)
+	private static Field getField(final Class<?> userClass, final String jsonKey)
 			throws NoSuchFieldException {
 
 		Field targetField = null;
@@ -286,7 +278,7 @@ public final class JSONDeserializer {
 		return targetField;
 	}
 
-	private String getSetMethodName(final String fieldName, final Class<?> classType) {
+	private static String getSetMethodName(final String fieldName, final Class<?> classType) {
 		String methodName = null;
 		if (Converter.isBoolean(classType) && fieldName.startsWith("is")) {
 			methodName = "set" + Character.toUpperCase(fieldName.charAt(2))
