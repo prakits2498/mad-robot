@@ -219,6 +219,24 @@ public class IOUtils {
 	}
 
 	/**
+	 * Converts the input stream to a string by reading one line at a time.
+	 * 
+	 * @param is
+	 * @return
+	 * @throws IOException
+	 */
+	public static String streamWithLinesToString(final InputStream is) throws IOException {
+		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+		StringBuilder sb = new StringBuilder();
+		String line = null;
+		while ((line = reader.readLine()) != null) {
+			sb.append(line + "\n");
+		}
+		is.close();
+		return sb.toString();
+	}
+
+	/**
 	 * Copies the contents of the given {@link InputStream} to the given
 	 * {@link OutputStream}.
 	 * 
