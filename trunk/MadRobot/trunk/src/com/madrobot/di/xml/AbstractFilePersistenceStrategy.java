@@ -25,7 +25,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.madrobot.di.xml.converters.ConverterLookup;
+import com.madrobot.di.xml.converter.ConverterLookup;
 import com.madrobot.di.xml.core.PersistenceStrategy;
 import com.madrobot.di.xml.io.StreamException;
 

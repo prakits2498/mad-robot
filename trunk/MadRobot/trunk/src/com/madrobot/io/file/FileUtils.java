@@ -33,7 +33,7 @@ import android.util.Log;
 import com.madrobot.io.IOProgressCallback;
 import com.madrobot.io.IOUtils;
 import com.madrobot.io.NullOutputStream;
-import com.madrobot.io.file.filters.FileFilterUtils;
+import com.madrobot.io.file.filter.FileFilterUtils;
 import com.madrobot.text.StringUtils;
 
 /**

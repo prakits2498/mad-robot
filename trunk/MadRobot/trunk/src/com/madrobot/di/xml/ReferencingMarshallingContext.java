@@ -11,7 +11,7 @@
 
 package com.madrobot.di.xml;
 
-import com.madrobot.di.xml.converters.MarshallingContext;
+import com.madrobot.di.xml.converter.MarshallingContext;
 import com.madrobot.di.xml.io.path.Path;
 
 /**

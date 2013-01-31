@@ -14,7 +14,7 @@ package com.madrobot.di.xml.io;
 import java.util.ArrayList;
 import java.util.Map;
 
-import com.madrobot.di.xml.converters.ObjectAccessException;
+import com.madrobot.di.xml.converter.ObjectAccessException;
 import com.madrobot.util.collections.WeakCache;
 
 /**

@@ -17,10 +17,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.madrobot.di.xml.converters.Converter;
-import com.madrobot.di.xml.converters.ConverterLookup;
-import com.madrobot.di.xml.converters.ReflectionProvider;
-import com.madrobot.di.xml.converters.SingleValueConverter;
+import com.madrobot.di.xml.converter.Converter;
+import com.madrobot.di.xml.converter.ConverterLookup;
+import com.madrobot.di.xml.converter.ReflectionProvider;
+import com.madrobot.di.xml.converter.SingleValueConverter;
 
 /**
  * Mapper that allows the usage of attributes for fields and corresponding types

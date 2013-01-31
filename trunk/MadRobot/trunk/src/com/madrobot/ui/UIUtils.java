@@ -13,7 +13,7 @@ package com.madrobot.ui;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 
-import com.madrobot.ui.drawables.ViewPressedDrawable;
+import com.madrobot.ui.drawable.ViewPressedDrawable;
 
 import android.app.Activity;
 import android.app.Application;

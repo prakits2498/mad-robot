@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import com.madrobot.di.xml.converters.DataHolder;
+import com.madrobot.di.xml.converter.DataHolder;
 
 public class MapBackedDataHolder implements DataHolder {
 	private final Map map;

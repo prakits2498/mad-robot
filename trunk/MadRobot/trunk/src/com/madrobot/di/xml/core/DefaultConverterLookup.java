@@ -17,10 +17,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import com.madrobot.di.xml.converters.ConversionException;
-import com.madrobot.di.xml.converters.Converter;
-import com.madrobot.di.xml.converters.ConverterLookup;
-import com.madrobot.di.xml.converters.ConverterRegistry;
+import com.madrobot.di.xml.converter.ConversionException;
+import com.madrobot.di.xml.converter.Converter;
+import com.madrobot.di.xml.converter.ConverterLookup;
+import com.madrobot.di.xml.converter.ConverterRegistry;
 import com.madrobot.util.collections.PrioritizedList;
 
 /**

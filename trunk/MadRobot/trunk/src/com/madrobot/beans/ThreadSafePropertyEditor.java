@@ -1,6 +1,6 @@
 package com.madrobot.beans;
 
-import com.madrobot.di.xml.converters.ObjectAccessException;
+import com.madrobot.di.xml.converter.ObjectAccessException;
 import com.madrobot.util.collections.Pool;
 
 /**

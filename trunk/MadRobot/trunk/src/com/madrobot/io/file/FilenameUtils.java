@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Stack;
 
-import com.madrobot.io.file.filters.IOCase;
+import com.madrobot.io.file.filter.IOCase;
 
 /**
  * General filename and filepath manipulation utilities.

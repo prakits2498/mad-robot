@@ -20,8 +20,8 @@ import java.io.ObjectStreamClass;
 import java.io.StreamCorruptedException;
 import java.util.Map;
 
-import com.madrobot.di.xml.converters.ConversionException;
-import com.madrobot.di.xml.converters.DataHolder;
+import com.madrobot.di.xml.converter.ConversionException;
+import com.madrobot.di.xml.converter.DataHolder;
 import com.madrobot.util.collections.FastStack;
 
 public class CustomObjectInputStream extends ObjectInputStream {

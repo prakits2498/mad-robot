@@ -15,8 +15,8 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.madrobot.di.xml.converters.EnumSingleValueConverter;
-import com.madrobot.di.xml.converters.SingleValueConverter;
+import com.madrobot.di.xml.converter.EnumSingleValueConverter;
+import com.madrobot.di.xml.converter.SingleValueConverter;
 import com.madrobot.di.xml.core.Caching;
 
 /**

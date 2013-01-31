@@ -22,7 +22,7 @@
  */
 package com.madrobot.di.xml;
 
-import com.madrobot.di.xml.converters.ConverterLookup;
+import com.madrobot.di.xml.converter.ConverterLookup;
 import com.madrobot.di.xml.io.AbstractReader;
 import com.madrobot.di.xml.io.HierarchicalStreamReader;
 import com.madrobot.di.xml.io.path.Path;

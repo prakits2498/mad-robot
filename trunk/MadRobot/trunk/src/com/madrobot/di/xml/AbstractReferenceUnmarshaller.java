@@ -14,9 +14,9 @@ package com.madrobot.di.xml;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.madrobot.di.xml.converters.ConversionException;
-import com.madrobot.di.xml.converters.Converter;
-import com.madrobot.di.xml.converters.ConverterLookup;
+import com.madrobot.di.xml.converter.ConversionException;
+import com.madrobot.di.xml.converter.Converter;
+import com.madrobot.di.xml.converter.ConverterLookup;
 import com.madrobot.di.xml.io.HierarchicalStreamReader;
 import com.madrobot.util.collections.FastStack;
 
