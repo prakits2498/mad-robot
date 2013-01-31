@@ -11,7 +11,7 @@
 
 package com.madrobot.di.xml.io.path;
 
-import com.madrobot.di.xml.converters.ErrorWriter;
+import com.madrobot.di.xml.converter.ErrorWriter;
 import com.madrobot.di.xml.io.HierarchicalStreamReader;
 import com.madrobot.di.xml.io.ReaderWrapper;
 

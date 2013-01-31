@@ -51,55 +51,55 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Vector;
 
-import com.madrobot.di.xml.converters.ArrayConverter;
-import com.madrobot.di.xml.converters.BigDecimalConverter;
-import com.madrobot.di.xml.converters.BigIntegerConverter;
-import com.madrobot.di.xml.converters.BitSetConverter;
-import com.madrobot.di.xml.converters.BooleanConverter;
-import com.madrobot.di.xml.converters.ByteConverter;
-import com.madrobot.di.xml.converters.CharArrayConverter;
-import com.madrobot.di.xml.converters.CharConverter;
-import com.madrobot.di.xml.converters.CollectionConverter;
-import com.madrobot.di.xml.converters.ConversionException;
-import com.madrobot.di.xml.converters.Converter;
-import com.madrobot.di.xml.converters.ConverterLookup;
-import com.madrobot.di.xml.converters.ConverterRegistry;
-import com.madrobot.di.xml.converters.DataHolder;
-import com.madrobot.di.xml.converters.DateConverter;
-import com.madrobot.di.xml.converters.DoubleConverter;
-import com.madrobot.di.xml.converters.DynamicProxyConverter;
-import com.madrobot.di.xml.converters.EncodedByteArrayConverter;
-import com.madrobot.di.xml.converters.ExternalizableConverter;
-import com.madrobot.di.xml.converters.FileConverter;
-import com.madrobot.di.xml.converters.FloatConverter;
-import com.madrobot.di.xml.converters.GregorianCalendarConverter;
-import com.madrobot.di.xml.converters.IntConverter;
-import com.madrobot.di.xml.converters.JavaClassConverter;
-import com.madrobot.di.xml.converters.JavaFieldConverter;
-import com.madrobot.di.xml.converters.JavaMethodConverter;
-import com.madrobot.di.xml.converters.LocaleConverter;
-import com.madrobot.di.xml.converters.LongConverter;
-import com.madrobot.di.xml.converters.MapConverter;
-import com.madrobot.di.xml.converters.NullConverter;
-import com.madrobot.di.xml.converters.PropertiesConverter;
-import com.madrobot.di.xml.converters.ReflectionConverter;
-import com.madrobot.di.xml.converters.ReflectionProvider;
-import com.madrobot.di.xml.converters.SelfStreamingInstanceChecker;
-import com.madrobot.di.xml.converters.SerializableConverter;
-import com.madrobot.di.xml.converters.ShortConverter;
-import com.madrobot.di.xml.converters.SingleValueConverter;
-import com.madrobot.di.xml.converters.SingleValueConverterWrapper;
-import com.madrobot.di.xml.converters.SingletonCollectionConverter;
-import com.madrobot.di.xml.converters.SingletonMapConverter;
-import com.madrobot.di.xml.converters.SqlDateConverter;
-import com.madrobot.di.xml.converters.SqlTimeConverter;
-import com.madrobot.di.xml.converters.SqlTimestampConverter;
-import com.madrobot.di.xml.converters.StringBufferConverter;
-import com.madrobot.di.xml.converters.StringConverter;
-import com.madrobot.di.xml.converters.TreeMapConverter;
-import com.madrobot.di.xml.converters.TreeSetConverter;
-import com.madrobot.di.xml.converters.URIConverter;
-import com.madrobot.di.xml.converters.URLConverter;
+import com.madrobot.di.xml.converter.ArrayConverter;
+import com.madrobot.di.xml.converter.BigDecimalConverter;
+import com.madrobot.di.xml.converter.BigIntegerConverter;
+import com.madrobot.di.xml.converter.BitSetConverter;
+import com.madrobot.di.xml.converter.BooleanConverter;
+import com.madrobot.di.xml.converter.ByteConverter;
+import com.madrobot.di.xml.converter.CharArrayConverter;
+import com.madrobot.di.xml.converter.CharConverter;
+import com.madrobot.di.xml.converter.CollectionConverter;
+import com.madrobot.di.xml.converter.ConversionException;
+import com.madrobot.di.xml.converter.Converter;
+import com.madrobot.di.xml.converter.ConverterLookup;
+import com.madrobot.di.xml.converter.ConverterRegistry;
+import com.madrobot.di.xml.converter.DataHolder;
+import com.madrobot.di.xml.converter.DateConverter;
+import com.madrobot.di.xml.converter.DoubleConverter;
+import com.madrobot.di.xml.converter.DynamicProxyConverter;
+import com.madrobot.di.xml.converter.EncodedByteArrayConverter;
+import com.madrobot.di.xml.converter.ExternalizableConverter;
+import com.madrobot.di.xml.converter.FileConverter;
+import com.madrobot.di.xml.converter.FloatConverter;
+import com.madrobot.di.xml.converter.GregorianCalendarConverter;
+import com.madrobot.di.xml.converter.IntConverter;
+import com.madrobot.di.xml.converter.JavaClassConverter;
+import com.madrobot.di.xml.converter.JavaFieldConverter;
+import com.madrobot.di.xml.converter.JavaMethodConverter;
+import com.madrobot.di.xml.converter.LocaleConverter;
+import com.madrobot.di.xml.converter.LongConverter;
+import com.madrobot.di.xml.converter.MapConverter;
+import com.madrobot.di.xml.converter.NullConverter;
+import com.madrobot.di.xml.converter.PropertiesConverter;
+import com.madrobot.di.xml.converter.ReflectionConverter;
+import com.madrobot.di.xml.converter.ReflectionProvider;
+import com.madrobot.di.xml.converter.SelfStreamingInstanceChecker;
+import com.madrobot.di.xml.converter.SerializableConverter;
+import com.madrobot.di.xml.converter.ShortConverter;
+import com.madrobot.di.xml.converter.SingleValueConverter;
+import com.madrobot.di.xml.converter.SingleValueConverterWrapper;
+import com.madrobot.di.xml.converter.SingletonCollectionConverter;
+import com.madrobot.di.xml.converter.SingletonMapConverter;
+import com.madrobot.di.xml.converter.SqlDateConverter;
+import com.madrobot.di.xml.converter.SqlTimeConverter;
+import com.madrobot.di.xml.converter.SqlTimestampConverter;
+import com.madrobot.di.xml.converter.StringBufferConverter;
+import com.madrobot.di.xml.converter.StringConverter;
+import com.madrobot.di.xml.converter.TreeMapConverter;
+import com.madrobot.di.xml.converter.TreeSetConverter;
+import com.madrobot.di.xml.converter.URIConverter;
+import com.madrobot.di.xml.converter.URLConverter;
 import com.madrobot.di.xml.core.ClassLoaderReference;
 import com.madrobot.di.xml.core.CustomObjectInputStream;
 import com.madrobot.di.xml.core.CustomObjectOutputStream;
@@ -151,7 +151,7 @@ import com.madrobot.lang.reflect.CompositeClassLoader;
  * <h3>Converters</h3>
  * <p/>
  * <p>
- * XMLWizard contains a map of {@link com.madrobot.di.xml.converters.Converter}
+ * XMLWizard contains a map of {@link com.madrobot.di.xml.converter.Converter}
  * instances, each of which acts as a strategy for converting a particular type
  * of class to XML and back again. Out of the box, XMLWizard contains converters
  * for most basic types (String, Date, int, boolean, etc) and collections (Map,
@@ -162,8 +162,8 @@ import com.madrobot.lang.reflect.CompositeClassLoader;
  * <p>
  * Extra converters can be registered using the <code>registerConverter()</code>
  * method. Some non-standard converters are supplied in the
- * {@link com.madrobot.di.xml.converters} package and you can create your own by
- * implementing the {@link com.madrobot.di.xml.converters.Converter} interface.
+ * {@link com.madrobot.di.xml.converter} package and you can create your own by
+ * implementing the {@link com.madrobot.di.xml.converter.Converter} interface.
  * </p>
  * <p/>
  * <p>
@@ -184,7 +184,7 @@ import com.madrobot.lang.reflect.CompositeClassLoader;
  * converter, i.e. the converter which will be used if no other registered
  * converter is suitable, can be registered with priority
  * XMLWizard.PRIORITY_VERY_LOW. XMLWizard uses by default the
- * {@link com.madrobot.di.xml.converters.ReflectionConverter} as the fallback
+ * {@link com.madrobot.di.xml.converter.ReflectionConverter} as the fallback
  * converter.
  * </p>
  * <p/>

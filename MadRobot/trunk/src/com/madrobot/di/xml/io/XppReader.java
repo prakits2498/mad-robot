@@ -17,7 +17,7 @@ import java.io.Reader;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import com.madrobot.di.xml.converters.ErrorWriter;
+import com.madrobot.di.xml.converter.ErrorWriter;
 
 /**
  * XStream reader that pulls directly from the stream using the XmlPullParser

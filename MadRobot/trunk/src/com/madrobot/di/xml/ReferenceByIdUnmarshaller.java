@@ -11,7 +11,7 @@
 
 package com.madrobot.di.xml;
 
-import com.madrobot.di.xml.converters.ConverterLookup;
+import com.madrobot.di.xml.converter.ConverterLookup;
 import com.madrobot.di.xml.io.HierarchicalStreamReader;
 
 class ReferenceByIdUnmarshaller extends AbstractReferenceUnmarshaller {

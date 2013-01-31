@@ -13,7 +13,7 @@ package com.madrobot.di.xml.io;
 
 import java.util.Iterator;
 
-import com.madrobot.di.xml.converters.ErrorWriter;
+import com.madrobot.di.xml.converter.ErrorWriter;
 
 /**
  * Base class to make it easy to create wrappers (decorators) for

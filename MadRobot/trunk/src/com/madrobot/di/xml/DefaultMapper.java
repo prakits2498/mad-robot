@@ -11,8 +11,8 @@
 
 package com.madrobot.di.xml;
 
-import com.madrobot.di.xml.converters.Converter;
-import com.madrobot.di.xml.converters.SingleValueConverter;
+import com.madrobot.di.xml.converter.Converter;
+import com.madrobot.di.xml.converter.SingleValueConverter;
 
 /**
  * Default mapper implementation with 'vanilla' functionality. To build up the

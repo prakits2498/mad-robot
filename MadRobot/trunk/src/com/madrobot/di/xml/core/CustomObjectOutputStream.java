@@ -16,8 +16,8 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.util.Map;
 
-import com.madrobot.di.xml.converters.ConversionException;
-import com.madrobot.di.xml.converters.DataHolder;
+import com.madrobot.di.xml.converter.ConversionException;
+import com.madrobot.di.xml.converter.DataHolder;
 import com.madrobot.util.collections.FastStack;
 import com.madrobot.util.collections.OrderRetainingMap;
 
@@ -123,7 +123,7 @@ public class CustomObjectOutputStream extends ObjectOutputStream {
 	 * inherited from superclass). Use the static fetch() method instead,
 	 * wherever possible.
 	 * 
-	 * @see #getInstance(com.madrobot.di.xml.converters.DataHolder,
+	 * @see #getInstance(com.madrobot.di.xml.converter.DataHolder,
 	 *      com.madrobot.di.xml.core.thoughtworks.xstream.core.util.CustomObjectOutputStream.StreamCallback)
 	 */
 	public CustomObjectOutputStream(StreamCallback callback) throws IOException,

@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import com.madrobot.di.xml.converters.ObjectAccessException;
+import com.madrobot.di.xml.converter.ObjectAccessException;
 import com.madrobot.di.xml.core.TypedNull;
 import com.madrobot.lang.ArrayUtils;
 import com.madrobot.lang.PrimitiveUtils;

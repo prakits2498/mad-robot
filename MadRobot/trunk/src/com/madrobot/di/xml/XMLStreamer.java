@@ -20,7 +20,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 
-import com.madrobot.di.xml.converters.ConversionException;
+import com.madrobot.di.xml.converter.ConversionException;
 import com.madrobot.di.xml.io.HierarchicalStreamDriver;
 import com.madrobot.di.xml.io.HierarchicalStreamReader;
 import com.madrobot.di.xml.io.XppDriver;

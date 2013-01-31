@@ -11,8 +11,8 @@
 
 package com.madrobot.di.xml;
 
-import com.madrobot.di.xml.converters.ConverterLookup;
-import com.madrobot.di.xml.converters.DataHolder;
+import com.madrobot.di.xml.converter.ConverterLookup;
+import com.madrobot.di.xml.converter.DataHolder;
 import com.madrobot.di.xml.io.HierarchicalStreamReader;
 import com.madrobot.di.xml.io.HierarchicalStreamWriter;
 

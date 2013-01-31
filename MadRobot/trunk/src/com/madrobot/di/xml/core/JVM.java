@@ -21,8 +21,8 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import com.madrobot.di.xml.converters.PureJavaReflectionProvider;
-import com.madrobot.di.xml.converters.ReflectionProvider;
+import com.madrobot.di.xml.converter.PureJavaReflectionProvider;
+import com.madrobot.di.xml.converter.ReflectionProvider;
 import com.madrobot.util.collections.PresortedMap;
 import com.madrobot.util.collections.PresortedSet;
 import com.madrobot.util.collections.WeakCache;

@@ -14,8 +14,8 @@ package com.madrobot.di.xml;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.madrobot.di.xml.converters.Converter;
-import com.madrobot.di.xml.converters.SingleValueConverter;
+import com.madrobot.di.xml.converter.Converter;
+import com.madrobot.di.xml.converter.SingleValueConverter;
 import com.madrobot.di.xml.core.FastField;
 
 /**

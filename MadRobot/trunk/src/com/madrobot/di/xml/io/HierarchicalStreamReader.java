@@ -13,8 +13,8 @@ package com.madrobot.di.xml.io;
 
 import java.util.Iterator;
 
-import com.madrobot.di.xml.converters.ErrorReporter;
-import com.madrobot.di.xml.converters.ErrorWriter;
+import com.madrobot.di.xml.converter.ErrorReporter;
+import com.madrobot.di.xml.converter.ErrorWriter;
 
 /**
  */

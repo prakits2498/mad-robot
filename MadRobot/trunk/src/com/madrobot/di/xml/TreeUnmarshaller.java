@@ -13,13 +13,13 @@ package com.madrobot.di.xml;
 
 import java.util.Iterator;
 
-import com.madrobot.di.xml.converters.ConversionException;
-import com.madrobot.di.xml.converters.Converter;
-import com.madrobot.di.xml.converters.ConverterLookup;
-import com.madrobot.di.xml.converters.DataHolder;
-import com.madrobot.di.xml.converters.ErrorReporter;
-import com.madrobot.di.xml.converters.ErrorWriter;
-import com.madrobot.di.xml.converters.UnmarshallingContext;
+import com.madrobot.di.xml.converter.ConversionException;
+import com.madrobot.di.xml.converter.Converter;
+import com.madrobot.di.xml.converter.ConverterLookup;
+import com.madrobot.di.xml.converter.DataHolder;
+import com.madrobot.di.xml.converter.ErrorReporter;
+import com.madrobot.di.xml.converter.ErrorWriter;
+import com.madrobot.di.xml.converter.UnmarshallingContext;
 import com.madrobot.di.xml.core.HierarchicalStreams;
 import com.madrobot.di.xml.core.MapBackedDataHolder;
 import com.madrobot.di.xml.io.HierarchicalStreamReader;
