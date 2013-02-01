@@ -152,4 +152,10 @@
         <attr name="strokeWidth" format="float" />
     </declare-styleable>
 
+    
+     <declare-styleable name="SortableGridView">
+         <!-- Animation time in milliseconds. Lower values result in faster shifting animations -->
+        <attr name="animationSpeed" format="integer" />
+        
+    </declare-styleable>
 </resources>
