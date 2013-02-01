@@ -63,7 +63,7 @@ import android.widget.TextView;
  * mModelBinder = new ModelBinder();<br/> mModelBinder.bind(model, rootView);
  * </code>
  * </p>
- * 
+ * @see BindTo
  * @author elton.kent
  * 
  */
