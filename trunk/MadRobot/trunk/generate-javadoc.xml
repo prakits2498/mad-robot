@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project default="javadoc" >
     <!-- Properties -->
-	<property name="src.folder" value="src"/>
-     <property name="docs.dest.folder" value="docs/api"/>
+	<property name="src.folder" value="./src"/>
+     <property name="docs.dest.folder" value="./docs/api"/>
      <property name="docs.window.title" value="MadRobot"/>
     <property name="ref_link" value="file:/C:/Elton Worskpace/AndroidSDK_20/docs/reference"/>
     <!-- End properties -->
@@ -14,6 +14,9 @@
                 useexternalfile="yes"
                 version="true"
                 windowtitle="${docs.window.title}" >
+                 <doclet name="org.umlgraph.doclet.UmlGraph" path="${basedir}/lib/UmlGraph.jar">
+               <param name="-d" value="${uml.dir}"/>
+           	</doclet>
                 <fileset
                     defaultexcludes="yes"
                     dir="${src.folder}" >
@@ -35,4 +38,7 @@
             </javadoc>
              <echo message="Java Doc generation complete!" />
         </target>
+         <!--  <target name="javadocToZip" depends="javadoc">
+                <zip destfile="${zip.dir}\doc-new.zip" basedir="${docs.dest.folder}" includes="**" />
+        </target> -->
 </project>
