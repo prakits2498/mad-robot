@@ -191,10 +191,13 @@ public class SortableGridView extends ViewGroup implements View.OnTouchListener,
 			sub += 40;
 		}
 
+//		 //determine number of columns for 50dp children
+//        colCount = w / 50;
+		
 		// determine childSize and padding, in px
 		childSize = (r - l) / colCount;
 		childSize = Math.round(childSize * childRatio);
-		padding =100;//// ((r - l) - (childSize * colCount)) / (colCount + 1);
+		padding = ((r - l) - (childSize * colCount)) / (colCount + 1);
 
 		for (int i = 0; i < getChildCount(); i++)
 			if (i != dragged) {
