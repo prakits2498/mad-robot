@@ -16,6 +16,7 @@ import com.madrobot.graphics.AnimatedGIFDecoder;
 /**
  * Image view that displays animated GIF files.
  * <p>
+ * Its a good practice to call {@link #stopAnimating()} when the activity is paused and {@link #startAnimating()} when it is resumed.
  * Attributes<br/>
  * <table cellspacing="1" cellpadding="3">
  * <tr>
