@@ -1,7 +1,0 @@
-<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
-    android:oneshot="false">
-    <item android:drawable="@drawable/home_bg"  android:duration="5000" />
-    <item android:drawable="@drawable/home_bg2" android:duration="5000" />
-    <item android:drawable="@drawable/home_bg3" android:duration="5000" />
-    <item android:drawable="@drawable/home_bg4" android:duration="5000" />
-</animation-list>
